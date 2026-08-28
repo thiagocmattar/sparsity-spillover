@@ -1,0 +1,68 @@
+name: replace-after-design-approval
+
+model:
+  architecture: EleutherAI/pythia-14m-deduped
+  revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  initialization: random
+  topology_id: A0
+  site_gate: null
+
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  train_split: train
+  validation_split: validation
+  text_column: text
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  append_eos: true
+  sequence_length: 2048
+  validation_documents: 500
+  validation_mode: full
+  validation_batch_size: 4
+  validation_eval_batches: null
+
+seeds:
+  model: TODO
+  data_order: TODO
+
+training:
+  max_steps: TODO
+  peak_learning_rate: TODO
+  warmup_fraction: 0.01
+  minimum_learning_rate_ratio: 0.1
+  micro_batch_size: TODO
+  gradient_accumulation_steps: TODO
+  optimizer: adamw
+  adamw_betas: [0.9, 0.95]
+  adamw_eps: 1.0e-8
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  precision: bfloat16
+  parameter_dtype: float32
+  log_every_steps: TODO
+  validate_at_step_one: true
+  validate_every_steps: TODO
+  validate_at_final_step: true
+
+activation_pressure:
+  method: none
+  sites: []
+  weight: 0.0
+  step_budget: null
+  eps: 1.0e-12
+
+diagnostics:
+  activation_sites: []
+  near_zero_thresholds: [0.0, 0.001, 0.01]
+  activation_statistics: false
+  weight_statistics: false
+  gradient_interaction: false
+  logical_products: false
+  clipping_frontier: null
+
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer: false
+  retain_predictions: false
+

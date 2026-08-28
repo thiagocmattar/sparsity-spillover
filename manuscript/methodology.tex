@@ -1,0 +1,754 @@
+% Repository-aligned methodology section for orthogonal-ricker.
+% Source of truth: thiagocmattar/orthogonal-ricker, main branch,
+% inspected at commit 68c6958a51a572694b2f14f38da5821d5d98060b.
+%
+% Intended use:
+%   \input{pythia_methodology_repository_aligned}
+%
+% Required packages in the parent document:
+%   amsmath, amssymb, mathtools, bm, booktabs, tabularx, array, float
+%
+% The main text is deliberately compact. Exact product counters, partial-RoPE
+% semantics, ceiling derivations, and AdamW-step-space details are placed in
+% the appendix.
+
+\providecommand{\R}{\mathbb{R}}
+\providecommand{\ind}{\mathbf{1}}
+\providecommand{\norm}[1]{\left\lVert #1\right\rVert}
+\providecommand{\abs}[1]{\left\lvert #1\right\rvert}
+\providecommand{\LN}{\operatorname{LN}}
+\providecommand{\RoPE}{\operatorname{RoPE}}
+\providecommand{\softmax}{\operatorname{softmax}}
+\providecommand{\GELU}{\operatorname{GELU}}
+\providecommand{\ReLU}{\operatorname{ReLU}}
+\providecommand{\model}{\mathrm{model}}
+\providecommand{\block}{\mathrm{block}}
+\providecommand{\pre}{\mathrm{pre}}
+\providecommand{\post}{\mathrm{post}}
+
+\section{Methodology: Activation Interventions and Model-Wide Compute}
+\label{sec:methodology}
+
+We study how activation interventions change the amount of matrix-multiplication
+work that is logically removable in a complete Pythia forward pass. Local
+activation sparsity is not itself a compute metric: different activation
+coordinates feed operations with different output widths, and attention
+operands are reused across causally valid token pairs. We therefore report both
+(i) exact-zero fractions at named activation sites and (ii) the fraction of
+model-wide scalar products that have at least one exactly-zero activation
+operand. The latter is a logical opportunity count, not a wall-clock speedup.
+
+\subsection{Pythia forward pass and intervention sites}
+\label{sec:forward-pass}
+
+Consider a Pythia/GPT-NeoX causal language model with $L$ parallel-residual
+Transformer blocks, residual width $d$, FFN width $d_f$, $H$ attention heads,
+head width $d_h=d/H$, sequence length $T$, and vocabulary size $V$. For the
+Pythia family considered here, $d_f=4d$. Let
+$H_\ell\in\R^{B\times T\times d}$ be the residual stream entering block
+$\ell$. Token lookup initializes
+\begin{equation}
+    H_0 = E[x_{1:T}].
+    \label{eq:embedding}
+\end{equation}
+
+Let $\Phi_s^\tau$ denote the activation map executed at site $s$ under topology
+$\tau$. At an unselected branch or attention site it is the identity; at the
+unselected FFN-hidden site it is Pythia's stock GELU. The two parallel branch
+inputs are
+\begin{align}
+    X^a_\ell
+      &= \Phi_a^\tau\!\left(\LN_{a,\ell}(H_\ell)\right),
+    &
+    X^m_\ell
+      &= \Phi_m^\tau\!\left(\LN_{m,\ell}(H_\ell)\right).
+    \label{eq:branch-inputs}
+\end{align}
+The fused QKV projection is
+\begin{equation}
+    [Q^0_\ell\mid K^0_\ell\mid V^0_\ell]
+      = X^a_\ell W_{QKV,\ell}+b_{QKV,\ell},
+    \qquad W_{QKV,\ell}\in\R^{d\times3d},
+    \label{eq:qkv-projection}
+\end{equation}
+followed by the standard GPT-NeoX per-head reshape and split. Query and key may
+be transformed before or after partial RoPE, while value is transformed
+immediately after the split:
+\begin{align}
+    Q_\ell
+      &= \Phi_{q_{\post}}^\tau\!\left(
+           \RoPE\!\left(\Phi_{q_{\pre}}^\tau(Q^0_\ell)\right)
+         \right),
+    \label{eq:q-path}\\
+    K_\ell
+      &= \Phi_{k_{\post}}^\tau\!\left(
+           \RoPE\!\left(\Phi_{k_{\pre}}^\tau(K^0_\ell)\right)
+         \right),
+    \label{eq:k-path}\\
+    V_\ell
+      &= \Phi_v^\tau(V^0_\ell).
+    \label{eq:v-path}
+\end{align}
+The tensors in Eqs.~\eqref{eq:q-path}--\eqref{eq:v-path} are the operands
+actually consumed by attention. For valid causal pairs $u\le t$,
+\begin{align}
+    S_{\ell,bhtu}
+      &=\frac{\langle Q_{\ell,bht:},K_{\ell,bhu:}\rangle}{\sqrt{d_h}},
+    \label{eq:attention-score}\\
+    P_{\ell,bht,1:t}
+      &=\softmax\!\left(S_{\ell,bht,1:t}\right),
+    \label{eq:attention-probabilities}\\
+    C_{\ell,bht:}
+      &=\sum_{u\le t}P_{\ell,bhtu}V_{\ell,bhu:},
+    \label{eq:attention-context}\\
+    O_\ell
+      &=\operatorname{ConcatHeads}(C_\ell)W_{o,\ell}+b_{o,\ell}.
+    \label{eq:attention-output}
+\end{align}
+In parallel, the FFN branch is
+\begin{align}
+    U_\ell &= X^m_\ell W_{1,\ell}+b_{1,\ell},
+    & W_{1,\ell}&\in\R^{d\times d_f},
+    \label{eq:ffn-up}\\
+    A_\ell &= \Phi_h^\tau(U_\ell),
+    \label{eq:ffn-activation}\\
+    F_\ell &= A_\ell W_{2,\ell}+b_{2,\ell},
+    & W_{2,\ell}&\in\R^{d_f\times d}.
+    \label{eq:ffn-down}
+\end{align}
+The parallel-residual update is
+\begin{equation}
+    H_{\ell+1}=H_\ell+O_\ell+F_\ell.
+    \label{eq:parallel-residual}
+\end{equation}
+After the final block, Pythia applies an unchanged final LayerNorm and an
+unbiased language-model projection:
+\begin{align}
+    Y &= \LN_f(H_L)W_{\mathrm{LM}}^{\top},
+    & W_{\mathrm{LM}}&\in\R^{V\times d},
+    \label{eq:lm-logits}\\
+    p(x_{t+1}\mid x_{\le t})&=\softmax(Y_{t,:}).
+    \label{eq:next-token-probability}
+\end{align}
+Appendix~\ref{app:forward-details} gives the indexed partial-RoPE form and the
+precise topology-dependent maps.
+
+\subsection{Activation operators and sparsity pressure}
+\label{sec:activation-operators}
+
+For a scalar activation $x$ and fixed threshold $\kappa\ge0$, the implemented
+fixed operators are
+\begin{align}
+    \phi_{\mathrm{ReLU}}(x)
+      &=\max(x,0),
+    \label{eq:relu-operator}\\
+    \phi_{+,\kappa}(x)
+      &=x\,\ind\{x\ge\kappa\},
+    \label{eq:one-sided-operator}\\
+    \phi_{\pm,\kappa}(x)
+      &=x\,\ind\{\abs{x}\ge\kappa\}.
+    \label{eq:symmetric-operator}
+\end{align}
+Values exactly equal to the threshold survive. Branch sites $a,m,h$ use ReLU
+or one-sided thresholding; post-QKV $Q,K,V$ sites additionally support the
+symmetric operator. The topology specifies where an operator is executed,
+while the operator family, threshold, pressure set, and optimization rule are
+separate experimental choices.
+
+Let $\mathcal I_{\mathcal P}$ be the set of captured site-layer tensors that
+receive $\ell_1$ pressure. If $X_i$ has $N_i$ scalar elements, the repository
+implements
+\begin{equation}
+    \mathcal L_1(\theta)
+      =\frac{1}{\abs{\mathcal I_{\mathcal P}}}
+       \sum_{i\in\mathcal I_{\mathcal P}}
+       \frac{\norm{X_i}_1}{N_i}.
+    \label{eq:l1-pressure}
+\end{equation}
+Thus each captured tensor contributes one mean absolute activation, and those
+means are averaged. In the naive method,
+\begin{equation}
+    \mathcal L_{\mathrm{naive}}
+      =\mathcal L_{\mathrm{task}}+\lambda\mathcal L_1.
+    \label{eq:naive-objective}
+\end{equation}
+In the orthogonal method, task and $\ell_1$ gradients are computed separately;
+AdamW updates its moments and parameters using task gradients only, after which
+a preconditioned $\ell_1$ correction is applied as described in
+Section~\ref{sec:adam-relative-update}.
+
+\subsection{Exact-zero statistics}
+\label{sec:zero-statistics}
+
+For measured site $s$ in block $\ell$, let $X_{s,\ell}$ be the captured tensor
+and $\Omega_{s,\ell}$ its valid element indices. Define
+\begin{align}
+    Z_{s,\ell}
+      &=\sum_{i\in\Omega_{s,\ell}}\ind\{X_{s,\ell}[i]=0\},
+    &
+    N_{s,\ell}&=\abs{\Omega_{s,\ell}},
+    \label{eq:site-zero-counts}\\
+    z_{s,\ell}
+      &=\frac{Z_{s,\ell}}{N_{s,\ell}},
+    &
+    z_s&=\frac{\sum_\ell Z_{s,\ell}}{\sum_\ell N_{s,\ell}}.
+    \label{eq:site-zero-fractions}
+\end{align}
+The comparison is direct equality to numeric floating-point zero, with no
+tolerance. Counts are accumulated as integers across evaluation batches and
+layers before forming percentages. We write
+\begin{equation}
+    \bm z_\star=(z_s)_{s\in\mathcal S}
+    \label{eq:z-star}
+\end{equation}
+for the reported vector of sitewise exact-zero fractions. These sitewise
+statistics diagnose where sparsity moves; model-wide compute uses the exact
+product counters below.
+
+\subsection{Scalar-product accounting and measured removable compute}
+\label{sec:compute-accounting}
+
+One scalar product denotes one scalar multiplication contributing to a matrix
+product. Bias additions, LayerNorm, RoPE, softmax, residual additions, and
+embedding lookup are not included. For full-sequence uncached causal attention,
+future positions are excluded. One Pythia block contributes
+\begin{align}
+    C_{\block}
+      &=\underbrace{3d^2}_{QKV}
+        +\underbrace{\frac{d(T+1)}{2}}_{QK^\top}
+        +\underbrace{\frac{d(T+1)}{2}}_{PV}
+        +\underbrace{d^2}_{W_o}
+        +\underbrace{dd_f}_{W_1}
+        +\underbrace{d_f d}_{W_2}
+    \nonumber\\
+      &=4d^2+2dd_f+d(T+1).
+    \label{eq:block-denominator-general}
+\end{align}
+For Pythia, $d_f=4d$, so
+\begin{equation}
+    C_{\block}=12d^2+d(T+1).
+    \label{eq:block-denominator-pythia}
+\end{equation}
+The full-model denominator adds the dense language-model projection:
+\begin{equation}
+    C_{\model}=LC_{\block}+dV.
+    \label{eq:model-denominator}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Scalar-product accounting for one Pythia-14M block at $T=2{,}048$.
+Future causal positions are excluded.}
+\label{tab:block-accounting}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{@{}X r r r@{}}
+\toprule
+Operation & Formula & Products/token & Share \\
+\midrule
+QKV projection & $3d^2$ & $49{,}152$ & $10.711\%$ \\
+QK scores & $d(T+1)/2$ & $131{,}136$ & $28.577\%$ \\
+PV mix & $d(T+1)/2$ & $131{,}136$ & $28.577\%$ \\
+Attention output projection & $d^2$ & $16{,}384$ & $3.570\%$ \\
+FFN up ($W_1$) & $dd_f=4d^2$ & $65{,}536$ & $14.282\%$ \\
+FFN down ($W_2$) & $d_f d=4d^2$ & $65{,}536$ & $14.282\%$ \\
+\midrule
+Complete block & $12d^2+d(T+1)$ & $458{,}880$ & $100.000\%$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Let
+\begin{equation}
+    \mathcal O=\{QKV,QK,PV,W_o,W_1,W_2\}
+    \label{eq:operation-set}
+\end{equation}
+be the six measured block operations. For operation $o$ in block $\ell$, let
+$Z^{\mathrm{prod}}_{\ell,o}$ be the exact number of scalar multiplications
+with at least one zero activation operand, and let
+$N^{\mathrm{prod}}_{\ell,o}$ be its full valid product count. The measured
+fractions are
+\begin{align}
+    R_{\block}
+      &=100\,
+        \frac{\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal O}
+                    Z^{\mathrm{prod}}_{\ell,o}}
+             {\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal O}
+                    N^{\mathrm{prod}}_{\ell,o}},
+    \label{eq:r-block-measured}\\
+    R_{\model}
+      &=100\,
+        \frac{\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal O}
+                    Z^{\mathrm{prod}}_{\ell,o}}
+             {\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal O}
+                    N^{\mathrm{prod}}_{\ell,o}
+              +N_{\mathrm{tok}}dV},
+    \label{eq:r-model-measured}
+\end{align}
+where $N_{\mathrm{tok}}$ is the number of evaluated tokens. Crucially,
+Eqs.~\eqref{eq:r-block-measured}--\eqref{eq:r-model-measured} count observed
+zero products in all six operations, whether or not the corresponding zero was
+created at a topology-selected site. Topology selection enters the architecture
+ceiling, not the measured numerator.
+
+For linear maps, an input zero removes one product per output coordinate. For
+attention, the repository counts the actual operands: $Q$ and $K$ after RoPE,
+$P$ and $V$ on valid causal pairs, and the realized context $C=PV$ entering
+$W_o$. The exact formulas are given in Appendix~\ref{app:product-counters}.
+
+\subsection{Executed topologies and architecture ceilings}
+\label{sec:topologies}
+
+An executed topology $\tau$ specifies the selected intervention sites repeated
+in every block. Its architecture ceiling is the model-wide fraction of products
+in operations deterministically reachable when every selected-site output is
+identically zero. Let $\mathcal R(\tau)\subseteq\mathcal O$ be that reachable
+operation set. Then
+\begin{equation}
+    R_{\model}^{\max}(\tau)
+      =100\,
+       \frac{\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal R(\tau)}
+                    N^{\mathrm{prod}}_{\ell,o}}
+            {\sum_{\ell=0}^{L-1}\sum_{o\in\mathcal O}
+                    N^{\mathrm{prod}}_{\ell,o}
+             +N_{\mathrm{tok}}dV}.
+    \label{eq:r-model-max}
+\end{equation}
+Equivalently, for a fixed full-length workload, the numerator and denominator
+may be expressed per token. Define $A_T=d(T+1)/2$. The reach rules are
+\begin{equation}
+    a\!\to\!QKV,\qquad
+    m\!\to\!W_1,\qquad
+    h\!\to\!W_2,\qquad
+    q\ \text{or}\ k\!\to\!QK,\qquad
+    v\!\to\!PV\ \text{and}\ W_o.
+    \label{eq:reach-rules}
+\end{equation}
+The last rule follows from $V\equiv0\Rightarrow C=PV\equiv0$. It is an
+all-zero closure rule; partial value masks are not assumed to survive $PV$.
+
+\begin{table}[H]
+\centering
+\caption{Executed topologies and logical model-wide architecture ceilings at
+$T=2{,}048$. The 12B column is an analytical Pythia-architecture ceiling, not
+a measured repository run. Pythia-14M uses $(L,d,V)=(6,128,50{,}304)$ and
+Pythia-12B uses $(36,5{,}120,50{,}688)$.}
+\label{tab:topology-ceilings}
+\small
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabularx}{\linewidth}{@{}l X l r r@{}}
+\toprule
+Topology & Selected sites & Ceiling numerator & 14M & 12B analytic \\
+\midrule
+A0 & none; stock GELU at $h$ & $0$ & $0.0000\%$ & $0.0000\%$ \\
+A1-H & $h$ & $4Ld^2$ & $4.2777\%$ & $31.5577\%$ \\
+A3 & $a,m,h$ & $11Ld^2$ & $11.7637\%$ & $86.7837\%$ \\
+A4-Q & $a,m,h,q_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
+A4-K & $a,m,h,k_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
+A4-V & $a,m,h,v$ & $L(12d^2+A_T)$ & $21.3928\%$ & $96.2518\%$ \\
+A5-QK-PRE & $a,m,h,q_{\pre},k_{\pre}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
+A5-QK-POST & $a,m,h,q_{\post},k_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
+A6-PRE & $a,m,h,q_{\pre},k_{\pre},v$ & $LC_{\block}$ & $29.9524\%$ & $97.8304\%$ \\
+A6-POST & $a,m,h,q_{\post},k_{\post},v$ & $LC_{\block}$ & $29.9524\%$ & $97.8304\%$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A fully zero $Q$ or fully zero $K$ independently removes all valid $QK$
+products, so selecting both does not double this term. PRE and POST have the
+same all-zero ceiling because RoPE maps zero to zero, although partial PRE
+masks can be repopulated in the rotary coordinates. A0 has a zero selected-site
+ceiling, but its measured $R_{\model}$ can still be nonzero if exact zeros occur
+naturally in actual matrix-multiplication operands.
+
+\subsection{AdamW-relative $\ell_1$ correction}
+\label{sec:adam-relative-update}
+
+The orthogonal implementation compares the $\ell_1$ direction with the
+adaptive task direction that AdamW actually forms, rather than with the raw
+task gradient. Let
+\begin{equation}
+    g_t^{\mathrm{task}}=\nabla_\theta\mathcal L_{\mathrm{task}}(\theta_t),
+    \qquad
+    g_t^{(1)}=\nabla_\theta\mathcal L_1(\theta_t).
+    \label{eq:raw-gradients}
+\end{equation}
+AdamW updates its first and second moments using $g_t^{\mathrm{task}}$ only.
+With bias-corrected moments $\widehat m_t,\widehat v_t$, define
+\begin{equation}
+    D_t=\sqrt{\widehat v_t}+\varepsilon_{\mathrm{Adam}},
+    \qquad
+    d_t^{\mathrm{task}}=\frac{\widehat m_t}{D_t},
+    \qquad
+    d_t^{(1)}=\frac{g_t^{(1)}}{D_t},
+    \label{eq:adam-space-directions}
+\end{equation}
+where all divisions are coordinatewise. The pressure direction uses AdamW's
+current second-moment denominator but has no pressure momentum. Projection is
+triggered only under conflict:
+\begin{equation}
+    \widetilde d_t^{(1)}
+      =
+      \begin{cases}
+      \displaystyle
+      d_t^{(1)}-
+      \frac{\langle d_t^{(1)},d_t^{\mathrm{task}}\rangle}
+           {\norm{d_t^{\mathrm{task}}}_2^2+\varepsilon_{\mathrm{proj}}}
+      d_t^{\mathrm{task}},
+      &\langle d_t^{(1)},d_t^{\mathrm{task}}\rangle<0,\\[1.1em]
+      d_t^{(1)},&\text{otherwise}.
+      \end{cases}
+    \label{eq:conflict-projection}
+\end{equation}
+A trust budget $b$ optionally caps the regularization-to-task direction ratio:
+\begin{align}
+    r_t
+      &=\lambda\,
+        \frac{\norm{\widetilde d_t^{(1)}}_2}
+             {\norm{d_t^{\mathrm{task}}}_2+\varepsilon_{\mathrm{proj}}},
+    \label{eq:raw-step-ratio}\\
+    s_t
+      &=\begin{cases}
+        \min\!\left(1,\dfrac{b}{r_t+\varepsilon_{\mathrm{proj}}}\right),
+        &b\ \text{is configured},\\
+        1,&\text{otherwise}.
+        \end{cases}
+    \label{eq:budget-scale}
+\end{align}
+The task step is executed first:
+\begin{equation}
+    \theta_t'=\operatorname{AdamWStep}
+      \!\left(\theta_t;g_t^{\mathrm{task}}\right),
+    \label{eq:task-adamw-step}
+\end{equation}
+including AdamW's ordinary decoupled weight decay. The memoryless pressure
+correction is then applied with each parameter group's learning rate
+$\alpha_{t,p}$:
+\begin{equation}
+    \theta_{t+1,p}
+      =\theta_{t,p}'-
+       \alpha_{t,p}\lambda s_t\widetilde d_{t,p}^{(1)}.
+    \label{eq:post-adam-pressure-step}
+\end{equation}
+The projection inner product and norms are pooled globally over parameters that
+have both task and pressure gradients and initialized AdamW state. The adaptive
+direction $d_t^{\mathrm{task}}$ excludes the decoupled weight-decay displacement
+and learning-rate multiplication. Appendix~\ref{app:adam-details} gives the
+complete procedural definition.
+
+\subsection{Reporting scope}
+\label{sec:reporting-scope}
+
+For every experimental condition, the executed topology, activation operator,
+threshold, pressure sites, pressure weight, trust budget, optimizer settings,
+and evaluation workload must be reported. Sitewise exact-zero fractions,
+product-level counts, $R_{\block}$, $R_{\model}$,
+$R_{\model}^{\max}$, and task quality are measured from the same checkpoint and
+forward configuration. The repository's propagation diagnostic uses eager,
+uncached, unpadded causal attention and excludes future causal positions. The
+resulting $R$ values are logical scalar-product opportunities; realizing
+runtime speedups additionally requires suitable sparse kernels and hardware.
+
+% -----------------------------------------------------------------------------
+% Appendix
+% -----------------------------------------------------------------------------
+\clearpage
+\appendix
+
+\section{Detailed Forward Graph and Intervention Semantics}
+\label{app:forward-details}
+
+\subsection{Topology-dependent activation maps}
+
+Let
+\begin{equation}
+    \mathcal U=
+    \{a,m,h,q_{\pre},k_{\pre},q_{\post},k_{\post},v\}
+    \label{eq:available-sites}
+\end{equation}
+be the available sites in every block. For $s\ne h$,
+\begin{equation}
+    \Phi_s^\tau(X)=
+    \begin{cases}
+        \phi_s(X;\kappa_s),&s\in\tau,\\
+        X,&s\notin\tau.
+    \end{cases}
+    \label{eq:activation-map-general}
+\end{equation}
+At the FFN-hidden site,
+\begin{equation}
+    \Phi_h^\tau(X)=
+    \begin{cases}
+        \phi_h(X;\kappa_h),&h\in\tau,\\
+        \GELU(X),&h\notin\tau.
+    \end{cases}
+    \label{eq:activation-map-hidden}
+\end{equation}
+The topology sets are
+\begin{align*}
+    \tau_{\mathrm{A0}}&=\varnothing,\\
+    \tau_{\mathrm{A1-H}}&=\{h\},\\
+    \tau_{\mathrm{A3}}&=\{a,m,h\},\\
+    \tau_{\mathrm{A4-Q}}&=\{a,m,h,q_{\post}\},\\
+    \tau_{\mathrm{A4-K}}&=\{a,m,h,k_{\post}\},\\
+    \tau_{\mathrm{A4-V}}&=\{a,m,h,v\},\\
+    \tau_{\mathrm{A5-QK-PRE}}&=\{a,m,h,q_{\pre},k_{\pre}\},\\
+    \tau_{\mathrm{A5-QK-POST}}&=\{a,m,h,q_{\post},k_{\post}\},\\
+    \tau_{\mathrm{A6-PRE}}&=\{a,m,h,q_{\pre},k_{\pre},v\},\\
+    \tau_{\mathrm{A6-POST}}&=\{a,m,h,q_{\post},k_{\post},v\}.
+\end{align*}
+The same topology and operator specification is required in every layer.
+
+\subsection{Partial RoPE}
+
+Let $d_R\le d_h$ be the even rotary width. GPT-NeoX rotates only the first
+$d_R$ coordinates of each query and key head and passes the remaining
+$d_h-d_R$ coordinates unchanged:
+\begin{equation}
+    \RoPE_t^{(d_R)}(x)
+      =\left[R_t x_{1:d_R}\,;\,x_{d_R+1:d_h}\right].
+    \label{eq:partial-rope}
+\end{equation}
+For a rotary pair $(j,j+d_R/2)$,
+\begin{align}
+    x'_{t,j}
+      &=x_{t,j}\cos\omega_{t,j}
+        -x_{t,j+d_R/2}\sin\omega_{t,j},
+    \label{eq:rope-first}\\
+    x'_{t,j+d_R/2}
+      &=x_{t,j+d_R/2}\cos\omega_{t,j}
+        +x_{t,j}\sin\omega_{t,j}.
+    \label{eq:rope-second}
+\end{align}
+An all-zero rotary pair remains zero, but an isolated zero paired with a
+nonzero coordinate is generally repopulated. Consequently, PRE zero-product
+accounting is performed on the actual post-RoPE operands entering $QK^\top$.
+For Pythia-14M, $d_h=32$ and $d_R=8$.
+
+\section{Exact Product Counters}
+\label{app:product-counters}
+
+All product counts are accumulated as integers across batches and layers before
+forming fractions.
+
+\subsection{Linear operations}
+
+For $X\in\R^{n\times p}$ and $W\in\R^{p\times q}$, the implementation counts
+\begin{align}
+    Z^{\mathrm{prod}}(XW)
+      &=q\sum_{i=1}^{n}\sum_{j=1}^{p}\ind\{X_{ij}=0\},
+    \label{eq:linear-zero-products}\\
+    N^{\mathrm{prod}}(XW)&=npq.
+    \label{eq:linear-total-products}
+\end{align}
+This rule is applied directly to the actual inputs of QKV, $W_o$, $W_1$, and
+$W_2$. In particular, $W_o$ credit is determined by exact zeros in the realized
+context $C=PV$, not inferred from value sparsity.
+
+\subsection{Valid-causal QK products}
+
+Let
+\begin{equation}
+    \mathcal I_T=\{(t,u):1\le u\le t\le T\}.
+    \label{eq:causal-index-set}
+\end{equation}
+For actual post-RoPE operands $Q_\ell,K_\ell$, the exact zero-product count is
+\begin{equation}
+\begin{aligned}
+    Z^{\mathrm{prod}}_{\ell,QK}
+      =\sum_{b=1}^{B}\sum_{h=1}^{H}
+       \sum_{(t,u)\in\mathcal I_T}\sum_{j=1}^{d_h}
+       \ind\{Q_{\ell,bhtj}=0\ \lor\ K_{\ell,bhuj}=0\}.
+\end{aligned}
+    \label{eq:qk-zero-products}
+\end{equation}
+The corresponding denominator is
+\begin{equation}
+    N^{\mathrm{prod}}_{\ell,QK}
+      =BHd_h\frac{T(T+1)}{2}.
+    \label{eq:qk-total-products}
+\end{equation}
+The logical OR prevents double counting when both factors are zero.
+
+\subsection{Valid-causal PV products}
+
+The repository counts zero products from either attention-probability or value
+operands:
+\begin{equation}
+\begin{aligned}
+    Z^{\mathrm{prod}}_{\ell,PV}
+      =\sum_{b=1}^{B}\sum_{h=1}^{H}
+       \sum_{(t,u)\in\mathcal I_T}\sum_{j=1}^{d_h}
+       \ind\{P_{\ell,bhtu}=0\ \lor\ V_{\ell,bhuj}=0\}.
+\end{aligned}
+    \label{eq:pv-zero-products}
+\end{equation}
+The denominator is
+\begin{equation}
+    N^{\mathrm{prod}}_{\ell,PV}
+      =BHd_h\frac{T(T+1)}{2}.
+    \label{eq:pv-total-products}
+\end{equation}
+Future masked entries are excluded rather than credited as zeros. Probability
+zeros on valid causal entries, including exact floating-point underflow, are
+counted when present. A value coordinate at position $u$ is reused by
+$T-u+1$ valid queries, so a marginal unweighted $z_V$ does not by itself
+determine $Z^{\mathrm{prod}}_{PV}$.
+
+\section{Architecture Ceiling Derivations}
+\label{app:ceiling-derivations}
+
+For Pythia, $d_f=4d$ and
+\begin{equation}
+    C_{\block}=12d^2+2A_T,
+    \qquad A_T=\frac{d(T+1)}{2}.
+    \label{eq:block-cost-at}
+\end{equation}
+The per-block reachable products are
+\begin{align*}
+    N_{\mathrm{A0}}&=0,\\
+    N_{\mathrm{A1-H}}&=4d^2,\\
+    N_{\mathrm{A3}}&=3d^2+4d^2+4d^2=11d^2,\\
+    N_{\mathrm{A4-Q}}=N_{\mathrm{A4-K}}
+      &=N_{\mathrm{A5-QK-PRE}}=N_{\mathrm{A5-QK-POST}}
+        =11d^2+A_T,\\
+    N_{\mathrm{A4-V}}&=11d^2+A_T+d^2=12d^2+A_T,\\
+    N_{\mathrm{A6-PRE}}=N_{\mathrm{A6-POST}}
+      &=11d^2+A_T+A_T+d^2=C_{\block}.
+\end{align*}
+Hence
+\begin{equation}
+    R_{\model}^{\max}(\tau)
+      =100\,
+       \frac{L N_\tau}
+            {L[12d^2+d(T+1)]+dV}.
+    \label{eq:closed-form-ceiling}
+\end{equation}
+For Pythia-14M at $T=2{,}048$,
+\begin{equation}
+    C_{\block}=458{,}880,
+    \qquad
+    C_{\model}=9{,}192{,}192
+    \label{eq:14m-denominators}
+\end{equation}
+products per token. For any topology with nonzero ceiling, the repository's
+architecture-utilization statistic is
+\begin{equation}
+    U_{\mathrm{arch}}
+      =\frac{R_{\model}}{R_{\model}^{\max}}.
+    \label{eq:architecture-utilization}
+\end{equation}
+It is undefined for A0 because the selected-site ceiling is zero.
+
+\section{AdamW-Step-Space Correction Details}
+\label{app:adam-details}
+
+\subsection{Task moments and adaptive directions}
+
+For task gradient $g_t^{\mathrm{task}}$, AdamW forms
+\begin{align}
+    m_t
+      &=\beta_1m_{t-1}+(1-\beta_1)g_t^{\mathrm{task}},
+    \label{eq:adam-first-moment}\\
+    v_t
+      &=\beta_2v_{t-1}
+        +(1-\beta_2)g_t^{\mathrm{task}}\odot g_t^{\mathrm{task}},
+    \label{eq:adam-second-moment}\\
+    \widehat m_t&=\frac{m_t}{1-\beta_1^t},
+    &
+    \widehat v_t&=\frac{v_t}{1-\beta_2^t}.
+    \label{eq:adam-bias-correction}
+\end{align}
+For each optimizer parameter group, the implementation reconstructs
+\begin{align}
+    d_t^{\mathrm{task}}
+      &=\frac{\widehat m_t}
+              {\sqrt{\widehat v_t}+\varepsilon_{\mathrm{Adam}}},
+    \label{eq:task-adaptive-direction}\\
+    d_t^{(1)}
+      &=\frac{g_t^{(1)}}
+              {\sqrt{\widehat v_t}+\varepsilon_{\mathrm{Adam}}}.
+    \label{eq:pressure-adaptive-direction}
+\end{align}
+If AMSGrad is enabled, the maximum second-moment buffer replaces $v_t$ in the
+denominator. Parameters lacking either gradient or initialized AdamW state are
+excluded from the correction.
+
+\subsection{Global conflict test and projection}
+
+The implementation pools
+\begin{equation}
+    c_t=\sum_p\langle d_{t,p}^{\mathrm{task}},d_{t,p}^{(1)}\rangle,
+    \qquad
+    q_t=\sum_p\norm{d_{t,p}^{\mathrm{task}}}_2^2
+    \label{eq:global-conflict-statistics}
+\end{equation}
+over all eligible parameters, including parameters from different optimizer
+groups. If $c_t<0$ and $q_t$ is non-negligible, it uses one global coefficient
+\begin{equation}
+    \gamma_t=\frac{c_t}{q_t+\varepsilon_{\mathrm{proj}}}
+    \label{eq:projection-coefficient}
+\end{equation}
+and sets
+\begin{equation}
+    \widetilde d_{t,p}^{(1)}
+      =d_{t,p}^{(1)}-\gamma_t d_{t,p}^{\mathrm{task}}.
+    \label{eq:global-projected-direction}
+\end{equation}
+Otherwise $\widetilde d_{t,p}^{(1)}=d_{t,p}^{(1)}$. Up to numerical
+stabilization, the conflicting case makes the pooled post-projection inner
+product zero.
+
+\subsection{Trust budget and update order}
+
+Let
+\begin{equation}
+    \rho_t
+      =\lambda\,
+       \frac{\left(\sum_p\norm{\widetilde d_{t,p}^{(1)}}_2^2\right)^{1/2}}
+            {\left(\sum_p\norm{d_{t,p}^{\mathrm{task}}}_2^2\right)^{1/2}
+             +\varepsilon_{\mathrm{proj}}}.
+    \label{eq:trust-ratio-full}
+\end{equation}
+If a budget $b$ is configured, the scale is
+\begin{equation}
+    s_t=\min\left(1,\frac{b}{\rho_t+\varepsilon_{\mathrm{proj}}}\right);
+    \label{eq:trust-scale-full}
+\end{equation}
+otherwise $s_t=1$. The implementation order is:
+\begin{enumerate}
+    \item accumulate task gradients and pressure gradients separately over the
+          same microbatches;
+    \item call AdamW using task gradients only, thereby updating task moments
+          and applying the ordinary AdamW task/weight-decay step;
+    \item reconstruct $d_t^{\mathrm{task}}$ from the updated optimizer state
+          and form $d_t^{(1)}$ with the same second-moment denominator;
+    \item apply the global conflict test and optional projection;
+    \item apply the correction
+          $-\alpha_{t,p}\lambda s_t\widetilde d_{t,p}^{(1)}$ to each eligible
+          parameter using its optimizer-group learning rate.
+\end{enumerate}
+The pressure contribution is memoryless: it does not enter AdamW's first- or
+second-moment buffers.
+
+\section{Measurement Contract}
+\label{app:measurement-contract}
+
+The repository's exact propagation diagnostic enforces the following contract:
+\begin{enumerate}
+    \item the evaluated model uses the Pythia parallel-residual block;
+    \item the attention implementation is forced to eager mode so the actual
+          $Q$, $K$, $P$, $V$, and $C$ operands can be counted;
+    \item inference is uncached and uses equal query/key lengths;
+    \item only valid causal pairs are included in $QK$ and $PV$ denominators;
+    \item exact-zero and zero-product counts are stored as integers and pooled
+          before division;
+    \item $R_{\block}$ uses the six block operations in
+          Eq.~\eqref{eq:operation-set};
+    \item $R_{\model}$ retains the same numerator and adds the dense LM head to
+          the denominator;
+    \item $R_{\model}^{\max}$ uses only operations reachable from the runtime
+          topology at the all-zero limit;
+    \item all reported $R$ values are logical product opportunities rather than
+          measured kernel speedups.
+\end{enumerate}
