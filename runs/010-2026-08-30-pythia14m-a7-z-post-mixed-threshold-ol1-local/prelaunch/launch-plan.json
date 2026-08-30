@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "status": "approved_for_launch",
+  "launch_approved": true,
+  "approved_at": "2026-08-30T11:24:50.9193657Z",
+  "run": "010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local",
+  "execution_location": "local",
+  "calibration": {
+    "path": "prelaunch/calibration-20260830-111454.json",
+    "sha256": "35041b07a3e96d2fbaf07a952cee8b5f00a658d5c4716ad660ce9ab8418270dc",
+    "kind": "non_evidence_prelaunch_calibration"
+  },
+  "config_sha256": "85b4aa2da0b3c16949d8b2395e4e2f8386c80f3fe25559021eb4cf4884751fb9",
+  "run_code_content_sha256": "42c5fb2f48d22b7cc9ee3122eebed71d794d5d39431bed476c46aae1d05bca22",
+  "training_schedule_sha256": "c254893f0ea521e5834405d7a4e6edaed74472733d533aff68fb119e600151d4",
+  "initial_parameter_sha256": "8e511149aac21f3fcacccb9968299bf3938473ff38f4d53cb99f2e9e1a2403bc",
+  "scientific_definition": {
+    "model": "randomly initialized pinned Pythia-14M",
+    "topology_id": "A7-Z-POST",
+    "active_sites": ["a", "m", "h", "q_post", "k_post", "v", "z"],
+    "one_sided_sites": ["a", "m", "h", "z"],
+    "symmetric_sites": ["q_post", "k_post", "v"],
+    "qk_boundary": "q_post and k_post after partial RoPE, immediately before causal QK scores",
+    "z_boundary": "concatenated PV context [B,T,D] immediately before W_o",
+    "common_gate_thresholds": [0.0, 0.01, 0.05, 0.1, 0.5],
+    "pressure_method": "orthogonal_l1",
+    "pressure_sites": ["a", "m", "h", "q_post", "k_post", "v", "z"],
+    "pressure_placement": "post-threshold outputs in all six layers",
+    "pressure_aggregation": "unweighted mean of 42 site-layer mean-absolute tensors",
+    "pressure_weight": 1.0,
+    "step_budget": 1.0,
+    "task_gradient_clip_norm": 1.0,
+    "peak_learning_rate": 0.001,
+    "common_steps": 581,
+    "global_batch_sequences": 64,
+    "micro_batch_sequences": 4,
+    "gradient_accumulation_steps": 16,
+    "sequence_length": 2048,
+    "training_input_tokens_per_condition": 76152832,
+    "total_training_input_tokens": 380764160,
+    "condition_count": 5
+  },
+  "architecture_ceiling": {
+    "topology_id": "A7-Z-POST",
+    "reachable_operations": [
+      "qkv_projection",
+      "qk_scores",
+      "probability_value",
+      "attention_output_projection",
+      "mlp_w1",
+      "mlp_w2"
+    ],
+    "reachable_product_count": 5638717440,
+    "model_product_count": 18825609216,
+    "R_model_max_fraction": 0.2995237697384911,
+    "unit": "logical products for one full 2,048-token sequence",
+    "z_overlap_note": "v already supplies the all-zero closure into W_o, so z adds no distinct all-zero reach"
+  },
+  "execution": {
+    "python": "C:/Users/thima/AppData/Local/Programs/Python/Python312/python.exe",
+    "command": "powershell -ExecutionPolicy Bypass -File runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/04_launch.ps1",
+    "entrypoint": "02_train.py",
+    "detached": true,
+    "serial_conditions": true,
+    "attempt_policy": "one immutable numbered attempt per condition; no automatic relaunch after an attempt exists"
+  },
+  "estimated_etc": {
+    "median_seconds": 3854.811101499543,
+    "p90_seconds": 3895.851024200745,
+    "planning_seconds": 4140,
+    "hard_ceiling_seconds": 4200,
+    "p90_planning_headroom_seconds": 244.148975799255,
+    "p90_hard_ceiling_headroom_seconds": 304.148975799255,
+    "includes": [
+      "cache verification",
+      "five model and 42-tensor OL1 capture setups",
+      "2905 OL1 optimizer updates",
+      "five step-one full validations",
+      "five reloaded-final activation validations",
+      "five eager logical-product validations",
+      "weight statistics",
+      "checkpoint save, hash, and reload",
+      "60 seconds terminal headroom"
+    ]
+  },
+  "local_resource_fit": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "total_memory_bytes": 12820480000,
+    "peak_allocated_bytes": 7261024256,
+    "peak_reserved_bytes": 8334082048,
+    "desktop_baseline_mib_after_calibration": 961,
+    "conservative_headroom_bytes": 3478716416,
+    "bf16_supported": true,
+    "torch": "2.11.0+cu128",
+    "cuda_runtime": "12.8",
+    "calibration_endpoints": ["kappa=0 plus OL1", "kappa=0.5 plus OL1"],
+    "optimizer_boundaries_per_endpoint": 8,
+    "timed_optimizer_boundaries_per_endpoint": 6
+  },
+  "validation": {
+    "documents_per_pass": 500,
+    "complete_blocks_per_pass": 338,
+    "input_tokens_per_pass": 692224,
+    "excluded_tail_tokens": 1444,
+    "passes_per_condition": 3,
+    "total_complete_passes": 15
+  },
+  "diagnostics": {
+    "activation_sites": ["a", "m", "h", "q_post", "k_post", "v", "z", "attention_output"],
+    "near_zero_thresholds": [0.0, 0.001, 0.01],
+    "weight_statistics": "all named parameters including bias and normalization",
+    "logical_products": "six actual-operand operation families over complete validation",
+    "gradient_interaction": "every optimizer boundary, including OL1 projection and trust metrics",
+    "clipping_frontier": null
+  },
+  "artifact_inventory": {
+    "final_checkpoint_count": 5,
+    "estimated_checkpoint_total_bytes": 281405115,
+    "estimated_total_run_bytes_upper_bound": 314572800,
+    "local_available_storage_bytes_at_planning": 1398372241408,
+    "optimizer_states": false,
+    "predictions": "empty by design",
+    "cloud_transfer": null,
+    "cloud_resources": null
+  },
+  "monitoring": {
+    "interval_seconds": 1800,
+    "projected_updates": ["launch", "approximately 30 minutes", "approximately 60 minutes", "completion"],
+    "short_etc_behavior": "sleep until the projected completion window when refreshed ETC is below 1800 seconds",
+    "report_fields": ["progress", "task_loss", "validation_loss", "throughput_tokens_per_second", "etc_seconds"],
+    "warnings": [
+      "non-finite loss, gradients, adaptive directions, or logical fractions",
+      "OL1 final correction ratio above trust budget 1.0",
+      "OOM or less than 1 GiB conservative GPU headroom",
+      "event stream stale for more than 10 minutes",
+      "throughput more than 25 percent below calibration",
+      "refreshed ETC above 4200 seconds",
+      "early process exit",
+      "stderr traceback",
+      "identity, topology, pressure, coverage, or artifact mismatch"
+    ]
+  },
+  "verification": {
+    "focused_tests": "31 passed",
+    "full_bootstrap_tests": "141 passed",
+    "run_010_failures": 0,
+    "python_files": "compiled",
+    "powershell_scripts": "both parsed",
+    "calibration_complete_validation_passes": 6,
+    "checkpoint_roundtrips": 2,
+    "activation_layer_rows_per_endpoint": 48,
+    "activation_pooled_rows_per_endpoint": 8,
+    "weight_parameter_rows_per_endpoint": 76,
+    "launch_provenance": "launcher records Git, config, run-code, schedule, and calibration identities before starting the detached process"
+  }
+}

@@ -164,8 +164,8 @@ recipe. Logical opportunity is not hardware speedup.
 ## Where we stopped
 
 Implementation, testing, complete endpoint calibration, and the locked local
-launch packet are complete. Local launch approval has been recorded; execution
-and monitoring status will be appended here.
+launch packet are complete. The approved local cohort subsequently completed
+and terminally verified valid; detailed execution status follows.
 
 ## Execution status
 
@@ -181,3 +181,28 @@ and left two read-only monitor processes consuming host RAM; those monitor-only
 PIDs were terminated without touching the cohort. Subsequent monitoring uses a
 nonblocking Python file reader. This is a monitoring-infrastructure note, not a
 scientific retry or change to the locked run.
+
+## Execution completion
+
+The cohort completed and terminally verified at 2026-08-30T10:47:30Z. Driver
+wall time was about 46m49s, earlier than the calibrated 51m56s p90 window. All
+five conditions completed 581 updates and 76,152,832 input tokens. The verifier
+reconciled five final checkpoint hashes, 15 complete validation passes, the
+common initialization and schedule identities, every diagnostic, and
+380,764,160 total training tokens. `artifacts/verification.json` has status
+`verified` and evidence label `valid`; retained checkpoints total 281,405,129
+bytes.
+
+| kappa | final validation loss | R_model | R_block | exact-zero q_post | exact-zero k_post | exact-zero v | exact-zero z | median tokens/s |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.657176 | 0.078823 | 0.263160 | 0.000000004 | 0.000000015 | 0.000000002 | 0.696083 | 140,398 |
+| 0.01 | 5.656776 | 0.084122 | 0.280853 | 0.008247 | 0.014631 | 0.019307 | 0.735389 | 143,019 |
+| 0.05 | 5.662928 | 0.102549 | 0.342374 | 0.040421 | 0.065405 | 0.089862 | 0.838275 | 144,090 |
+| 0.1 | 5.648046 | 0.120822 | 0.403381 | 0.065180 | 0.122371 | 0.170288 | 0.935149 | 143,775 |
+| 0.5 | 6.036204 | 0.275723 | 0.920539 | 0.999388 | 0.999546 | 0.999507 | 1.000000 | 136,098 |
+
+Within this one-seed run, `R_model` increases monotonically across the threshold
+grid. `kappa=0.1` has the lowest observed final validation loss, while
+`kappa=0.5` approaches the analytic logical-opportunity ceiling with a much
+higher validation loss. These are standalone Run 008 observations; a formal
+matched comparison with Run 006 belongs in a numbered cross-run analysis.

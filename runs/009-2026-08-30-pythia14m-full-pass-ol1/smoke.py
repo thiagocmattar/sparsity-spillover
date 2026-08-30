@@ -1,0 +1,202 @@
+"""Non-evidence memory and numerical probes for the exact Run 009 OL1 boundary."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+import gc
+import math
+from typing import Any, Iterable
+
+from _reuse_run004 import load_run004_module
+from run_config import RUN_DIR, load_config, mapping, require_cuda, write_json
+
+
+CONDITION_ID = "relu-ol1-1"
+_BASE = load_run004_module("_run009_frozen_run004_smoke", "smoke.py")
+
+
+def run_smoke(
+    *,
+    batch_sizes: Iterable[int] = (2, 4),
+    sequence_length: int = 2048,
+    boundaries: int = 2,
+    accumulation_steps: int = 1,
+    target_gpu: str = "NVIDIA A100-SXM4-80GB",
+    target_memory_bytes: int = 80 * 1024**3,
+) -> dict[str, Any]:
+    import torch
+
+    config = load_config()
+    sizes = tuple(int(value) for value in batch_sizes)
+    if not sizes or any(value <= 0 for value in sizes):
+        raise ValueError("Smoke batch sizes must be positive.")
+    if sequence_length <= 1 or sequence_length > int(mapping(config, "data")["sequence_length"]):
+        raise ValueError("Smoke sequence length must be in [2, 2048].")
+    if boundaries <= 0 or accumulation_steps <= 0:
+        raise ValueError("Smoke boundary and accumulation counts must be positive.")
+    if not target_gpu or target_memory_bytes <= 0:
+        raise ValueError("Target GPU identity and memory must be declared.")
+
+    device = torch.device("cuda")
+    if not torch.cuda.is_available():
+        raise RuntimeError("CUDA is required for the prelaunch smoke.")
+    flash_probe = getattr(torch.backends.cuda, "is_flash_attention_available", None)
+    flash_available = bool(flash_probe is not None and flash_probe())
+    result: dict[str, Any] = {
+        "schema_version": 1,
+        "kind": "non_evidence_prelaunch_smoke",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "device": {
+            "name": torch.cuda.get_device_name(0),
+            "total_memory_bytes": int(torch.cuda.get_device_properties(0).total_memory),
+            "torch": torch.__version__,
+            "cuda_runtime": torch.version.cuda,
+            "flash_attention_available": flash_available,
+        },
+        "target": {
+            "gpu": target_gpu,
+            "memory_bytes": int(target_memory_bytes),
+            "micro_batch_size": int(mapping(config, "training")["micro_batch_size"]),
+            "sequence_length": int(mapping(config, "data")["sequence_length"]),
+            "gradient_accumulation_steps": int(mapping(config, "training")["gradient_accumulation_steps"]),
+        },
+        "probe": {
+            "condition_id": CONDITION_ID,
+            "batch_sizes": list(sizes),
+            "sequence_length": int(sequence_length),
+            "boundaries_per_sample": int(boundaries),
+            "accumulation_steps": int(accumulation_steps),
+            "note": "Repeated synthetic batches exercise the exact graph, FP16 dual-gradient accumulation, task-only AdamW, and OL1 correction without creating scientific evidence.",
+        },
+        "samples": [],
+    }
+    if not flash_available:
+        result.update(
+            status="blocked_local_environment",
+            blocker="This CUDA build has no flash-attention kernel; its timing and memory are not representative.",
+            projection={"status": "unavailable", "reason": "flash_attention_unavailable"},
+            exact_target={"status": "not_sampled", "all_conditions_fit": False},
+        )
+        return _publish(result)
+
+    require_cuda(torch)
+    for batch_size in sizes:
+        try:
+            sample = _BASE._sample(
+                config=config,
+                condition_id=CONDITION_ID,
+                batch_size=batch_size,
+                sequence_length=sequence_length,
+                boundaries=boundaries,
+                accumulation_steps=accumulation_steps,
+                torch=torch,
+                device=device,
+            )
+        except torch.cuda.OutOfMemoryError as error:
+            sample = {
+                "condition_id": CONDITION_ID,
+                "batch_size": batch_size,
+                "sequence_length": sequence_length,
+                "gradient_accumulation_steps": accumulation_steps,
+                "status": "cuda_out_of_memory",
+                "error": str(error),
+            }
+            gc.collect()
+            torch.cuda.empty_cache()
+        result["samples"].append(sample)
+    result["projection"] = _project_target(result["samples"], result["target"])
+    result["exact_target"] = _exact_target(
+        result["samples"], result["target"], sequence_length, accumulation_steps
+    )
+    result["status"] = "completed"
+    return _publish(result)
+
+
+def _publish(result: dict[str, Any]) -> dict[str, Any]:
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    output = RUN_DIR / "prelaunch" / f"smoke-{stamp}.json"
+    result["output"] = output.relative_to(RUN_DIR).as_posix()
+    write_json(output, result)
+    return result
+
+
+def _project_target(samples: list[dict[str, Any]], target: dict[str, Any]) -> dict[str, Any]:
+    pairs = sorted(
+        (float(row["batch_size"]), float(row["peak_memory_allocated_bytes"]))
+        for row in samples
+        if row.get("condition_id") == CONDITION_ID and row.get("status") == "completed"
+    )
+    output: dict[str, Any] = {
+        "method": "affine peak-allocation projection by batch size",
+        "target_headroom_fraction": 0.9,
+        "condition_id": CONDITION_ID,
+    }
+    if len(pairs) < 2 or len({x for x, _ in pairs}) < 2:
+        return {**output, "status": "insufficient_samples"}
+    count = float(len(pairs))
+    mean_x = sum(x for x, _ in pairs) / count
+    mean_y = sum(y for _, y in pairs) / count
+    denominator = sum((x - mean_x) ** 2 for x, _ in pairs)
+    slope = sum((x - mean_x) * (y - mean_y) for x, y in pairs) / denominator
+    intercept = mean_y - slope * mean_x
+    projected = max(0.0, intercept + slope * int(target["micro_batch_size"]))
+    limit = 0.9 * float(target["memory_bytes"])
+    return {
+        **output,
+        "status": "projected",
+        "intercept_bytes": int(intercept),
+        "bytes_per_sequence": int(slope),
+        "target_peak_allocated_bytes": int(projected),
+        "target_peak_allocated_gib": projected / 1024**3,
+        "target_90pct_limit_gib": limit / 1024**3,
+        "fits_with_10pct_headroom": bool(math.isfinite(projected) and projected <= limit),
+        "caveat": "Projection does not replace the exact target-GPU preflight.",
+    }
+
+
+def _exact_target(
+    samples: list[dict[str, Any]],
+    target: dict[str, Any],
+    sequence_length: int,
+    accumulation_steps: int,
+) -> dict[str, Any]:
+    if (
+        sequence_length != int(target["sequence_length"])
+        or accumulation_steps != int(target["gradient_accumulation_steps"])
+    ):
+        return {"status": "not_sampled", "all_conditions_fit": False}
+    rows = [
+        row for row in samples
+        if row.get("condition_id") == CONDITION_ID
+        and int(row.get("batch_size", -1)) == int(target["micro_batch_size"])
+    ]
+    if len(rows) != 1:
+        return {"status": "incomplete", "all_conditions_fit": False}
+    row = rows[0]
+    boundary_health = row.get("boundary_health", [])
+    last = row.get("last_boundary", {})
+    healthy = (
+        row.get("status") == "completed"
+        and bool(boundary_health)
+        and all(
+            not bool(item.get("optimizer_step_skipped"))
+            and not bool(item.get("gradient_overflow"))
+            for item in boundary_health
+        )
+        and last.get("ol1_correction_applied") is True
+        and math.isfinite(float(last.get("pressure_to_task_ratio_final", math.nan)))
+        and float(last["pressure_to_task_ratio_final"]) <= 1.0 + 1e-9
+    )
+    reserved = float(row.get("peak_memory_reserved_bytes", math.inf))
+    limit = 0.9 * float(target["memory_bytes"])
+    fits = bool(healthy and reserved <= limit)
+    return {
+        "status": "sampled",
+        "condition_id": CONDITION_ID,
+        "memory_limit_gib": limit / 1024**3,
+        "peak_memory_reserved_gib": None if not math.isfinite(reserved) else reserved / 1024**3,
+        "finite_nonoverflowing_boundaries": healthy,
+        "fits_with_10pct_headroom": fits,
+        "boundary_seconds": row.get("boundary_seconds", []),
+        "all_conditions_fit": fits,
+    }
