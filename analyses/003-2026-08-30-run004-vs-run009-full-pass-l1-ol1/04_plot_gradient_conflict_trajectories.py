@@ -197,7 +197,7 @@ def _format_axes(axes: list[Any], ylim: tuple[float, float], yticks: tuple[float
     axes[0].set_ylabel("Gradient-conflict cosine\n(negative = conflict)")
 
 
-def _legend(fig: Any, styles: list[dict[str, Any]]) -> None:
+def _legend(fig: Any, styles: list[dict[str, Any]], *, y: float = 0.91) -> None:
     from matplotlib.lines import Line2D
 
     handles = [
@@ -216,7 +216,7 @@ def _legend(fig: Any, styles: list[dict[str, Any]]) -> None:
     fig.legend(
         handles=handles,
         loc="upper center",
-        bbox_to_anchor=(0.535, 0.91),
+        bbox_to_anchor=(0.535, y),
         ncols=len(handles),
         frameon=False,
         handlelength=2.2,
@@ -342,7 +342,7 @@ def _ol1_figure(events: dict[str, dict[float, list[dict[str, Any]]]]) -> Path:
             styles[1],
         )
     _format_axes(axes, (-0.19, 0.02), (-0.18, -0.12, -0.06, 0.0))
-    _legend(fig, styles)
+    _legend(fig, styles, y=0.96)
     _save(
         fig,
         OUTPUT_OL1,
