@@ -8,6 +8,36 @@ installed `runpod` router skill and confirm current MCP schemas or
 `runpodctl --help`. The command shapes below were checked during this handoff,
 but live tool output is authoritative.
 
+## Run 004 deployment evidence
+
+Run 004 is the repository's first complete multi-Pod deployment record. Its
+full chronology and measured commands are in
+`../runs/004-2026-08-29-pythia14m-full-pass-l1n/RUNPOD_STATUS_2026-08-29.md`
+and `DEPLOYMENT_PLAYBOOK.md`. Reusable lessons are:
+
+- `RUNNING`, visible `nvidia-smi`, CUDA initialization, flash-attention
+  availability, and production memory fit are separate checks. The exact
+  MB32/GAS32 workload failed on a healthy Secure RTX 4090 and passed on A100
+  80 GB with about 56.95 GiB peak reserved memory.
+- Choose exact GPU fit and live placement before creating a network volume.
+  RunPod volumes constrain attached Pods to one data center and Secure Cloud;
+  they do not synchronize across regions.
+- A pinned Hugging Face rebuild can be faster and safer than a poor workstation
+  upload when it reproduces the declared cache hash. Build once, then distribute
+  the immutable cache and verify it on every worker; do not retokenize
+  independently on each Pod.
+- Keep the training cache on fast local container storage during random block
+  access even when a durable master lives on a network volume.
+- Measure complete update elapsed time. A timer beginning after batch assembly
+  and host-to-device staging understates ETC.
+- Prefer resumable transfer for checkpoint trees. Accept artifacts only after
+  byte-count and SHA-256 inventory reconciliation.
+- Delete each worker only after its artifacts pass locally, then perform an
+  account-level Pod/volume audit and a later posted-billing refresh.
+
+These are deployment facts, not authorization to reuse Run 004's A100 fleet,
+region, storage, historical price, or scientific configuration.
+
 ## 1. Authenticate and inventory without exposing secrets
 
 For an interactive human setup, `runpodctl doctor` can configure the API key and

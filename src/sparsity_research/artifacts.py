@@ -83,11 +83,16 @@ def start_attempt(
     command: str,
     mode: str,
     extra_identity: Mapping[str, Any] | None = None,
+    attempt_sequence: int | None = None,
 ) -> Attempt:
     root = Path(run_dir).resolve()
     attempts = root / "artifacts" / "attempts"
     attempts.mkdir(parents=True, exist_ok=True)
-    sequence = _next_sequence(attempts)
+    sequence = (
+        _next_sequence(attempts)
+        if attempt_sequence is None
+        else _explicit_sequence(attempts, attempt_sequence)
+    )
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     attempt_id = f"{sequence:03d}-{stamp}-{uuid4().hex[:8]}"
     attempt_dir = attempts / attempt_id
@@ -120,6 +125,7 @@ def attempt_lifecycle(
     command: str,
     mode: str,
     extra_identity: Mapping[str, Any] | None = None,
+    attempt_sequence: int | None = None,
 ) -> Iterator[Attempt]:
     attempt = start_attempt(
         run_dir,
@@ -127,6 +133,7 @@ def attempt_lifecycle(
         command=command,
         mode=mode,
         extra_identity=extra_identity,
+        attempt_sequence=attempt_sequence,
     )
     try:
         yield attempt
@@ -231,6 +238,15 @@ def _next_sequence(attempts: Path) -> int:
     return max(values, default=0) + 1
 
 
+def _explicit_sequence(attempts: Path, value: int) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0 or value > 999:
+        raise ValueError("Explicit attempt sequence must be an integer in [1, 999].")
+    prefix = f"{value:03d}-"
+    if any(path.is_dir() and path.name.startswith(prefix) for path in attempts.iterdir()):
+        raise FileExistsError(f"Attempt sequence {value:03d} already exists.")
+    return value
+
+
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -265,4 +281,3 @@ def _atomic_text(path: Path) -> Iterator[TextIO]:
         temporary.replace(path)
     finally:
         temporary.unlink(missing_ok=True)
-

@@ -64,10 +64,37 @@ def test_v_reaches_pv_and_context_output_projection():
     assert "attention_output_projection" in result["reachable_operations"]
 
 
+def test_z_reaches_output_projection_but_not_probability_value():
+    result = architecture_ceiling("A4-Z", **PYTHIA_14M)
+    assert result["reachable_operations"] == [
+        "qkv_projection",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2",
+    ]
+    assert result["reachable_product_count"] == 6 * 2048 * 12 * 128 * 128
+    assert result["R_model_max_percent"] == pytest.approx(12.8331523101345)
+
+
 def test_a6_reaches_every_block_operation_but_not_lm_head():
     result = architecture_ceiling("A6-POST", **PYTHIA_14M)
     assert result["reachable_product_count"] == result["block_product_count"]
     assert result["R_model_max_fraction"] < 1.0
+
+
+def test_a7_z_post_reaches_every_block_operation_without_double_counting_z():
+    result = architecture_ceiling("A7-Z-POST", **PYTHIA_14M)
+    assert result["reachable_operations"] == [
+        "qkv_projection",
+        "qk_scores",
+        "probability_value",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2",
+    ]
+    assert result["reachable_product_count"] == result["block_product_count"] == 5_638_717_440
+    assert result["model_product_count"] == 18_825_609_216
+    assert result["R_model_max_fraction"] == pytest.approx(0.2995237697384911)
 
 
 def test_ceiling_changes_with_sequence_length():

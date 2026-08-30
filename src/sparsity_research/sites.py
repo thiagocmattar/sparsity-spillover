@@ -19,6 +19,7 @@ SITE_ORDER = (
     "q_post",
     "k_post",
     "v",
+    "z",
 )
 SUPPORTED_SITES = frozenset(SITE_ORDER)
 
@@ -41,6 +42,12 @@ SITE_SPECS = {
     "q_post": SiteSpec("q_post", "query after partial RoPE", "[B,H,T,d]", "QK scores"),
     "k_post": SiteSpec("k_post", "key after partial RoPE", "[B,H,T,d]", "QK scores"),
     "v": SiteSpec("v", "value from fused QKV projection", "[B,H,T,d]", "probability-value product"),
+    "z": SiteSpec(
+        "z",
+        "concatenated attention context immediately before W_o",
+        "[B,T,D]",
+        "attention output projection",
+    ),
 }
 
 
@@ -66,10 +73,12 @@ _TOPOLOGY_ROWS = (
     ("A4-Q", ("a", "m", "h", "q_post")),
     ("A4-K", ("a", "m", "h", "k_post")),
     ("A4-V", ("a", "m", "h", "v")),
+    ("A4-Z", ("a", "m", "h", "z")),
     ("A5-QK-PRE", ("a", "m", "h", "q_pre", "k_pre")),
     ("A5-QK-POST", ("a", "m", "h", "q_post", "k_post")),
     ("A6-PRE", ("a", "m", "h", "q_pre", "k_pre", "v")),
     ("A6-POST", ("a", "m", "h", "q_post", "k_post", "v")),
+    ("A7-Z-POST", ("a", "m", "h", "q_post", "k_post", "v", "z")),
 )
 TOPOLOGIES = {name: Topology(name, sites) for name, sites in _TOPOLOGY_ROWS}
 
@@ -93,6 +102,8 @@ class FixedSymmetricThreshold(torch.nn.Module):
         self.kappa = _nonnegative_finite(kappa, "kappa")
 
     def forward(self, value: Any) -> Any:
+        if self.kappa == 0.0:
+            return value
         return value.masked_fill(value.detach().abs() < self.kappa, 0.0)
 
 
@@ -140,6 +151,70 @@ def resolve_topology_and_gate(
     return topology, {"operator": operator, "kappa": _nonnegative_finite(site_gate["kappa"], "kappa")}
 
 
+def resolve_topology_and_gates(
+    topology_id: Any,
+    site_gate: Any,
+    site_gates: Any = None,
+) -> tuple[Topology, dict[str, dict[str, Any]]]:
+    """Resolve either the legacy uniform gate or an explicit per-site mapping."""
+
+    topology = resolve_topology(topology_id)
+    if site_gates is None:
+        resolved_topology, uniform = resolve_topology_and_gate(topology_id, site_gate)
+        if uniform is None:
+            return resolved_topology, {}
+        return resolved_topology, {
+            site: dict(uniform) for site in resolved_topology.active_sites
+        }
+    if site_gate is not None:
+        raise ValueError("Declare either site_gate or site_gates, not both.")
+    if topology.topology_id == "A0":
+        if site_gates != {}:
+            raise ValueError("A0 requires an empty site_gates mapping.")
+        return topology, {}
+    if not isinstance(site_gates, Mapping):
+        raise ValueError(f"{topology.topology_id} site_gates must be a mapping.")
+    expected = set(topology.active_sites)
+    observed = set(site_gates)
+    if observed != expected:
+        missing = sorted(expected - observed)
+        extra = sorted(observed - expected)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if extra:
+            details.append("extra " + ", ".join(extra))
+        raise ValueError("site_gates must exactly cover active sites (" + "; ".join(details) + ").")
+    resolved: dict[str, dict[str, Any]] = {}
+    for site in topology.active_sites:
+        spec = site_gates[site]
+        if not isinstance(spec, Mapping):
+            raise ValueError(f"site_gates.{site} must be a mapping.")
+        extra = set(spec) - {"operator", "kappa"}
+        if extra:
+            raise ValueError(
+                f"Unsupported site_gates.{site} fields: " + ", ".join(sorted(extra))
+            )
+        operator = spec.get("operator")
+        if operator == "relu":
+            if "kappa" in spec:
+                raise ValueError(f"site_gates.{site} ReLU does not accept kappa.")
+            resolved[site] = {"operator": "relu"}
+            continue
+        if operator not in {"one_sided_threshold", "symmetric_threshold"}:
+            raise ValueError(
+                f"site_gates.{site} operator must be relu, one_sided_threshold, "
+                "or symmetric_threshold."
+            )
+        if "kappa" not in spec:
+            raise ValueError(f"site_gates.{site} {operator} requires kappa.")
+        resolved[site] = {
+            "operator": operator,
+            "kappa": _nonnegative_finite(spec["kappa"], f"site_gates.{site}.kappa"),
+        }
+    return topology, resolved
+
+
 def build_gate(spec: Mapping[str, Any], *, torch_module: Any = torch) -> Any:
     operator = spec.get("operator")
     if operator == "relu":
@@ -168,4 +243,3 @@ def _nonnegative_finite(value: Any, label: str) -> float:
     if not math.isfinite(result) or result < 0.0:
         raise ValueError(f"{label} must be a finite nonnegative number.")
     return result
-

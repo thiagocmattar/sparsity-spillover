@@ -63,3 +63,30 @@ def test_attempt_ids_are_monotonic(tmp_path):
     assert first.attempt_id.startswith("001-")
     assert second.attempt_id.startswith("002-")
 
+
+def test_explicit_attempt_sequence_supports_disjoint_worker_merge(tmp_path):
+    attempt = start_attempt(
+        tmp_path,
+        config={"condition": "worker-five"},
+        command="test",
+        mode="pretrain",
+        attempt_sequence=5,
+    )
+    attempt.fail(RuntimeError("deliberate terminal state"))
+    assert attempt.attempt_id.startswith("005-")
+    with pytest.raises(FileExistsError, match="005"):
+        start_attempt(
+            tmp_path,
+            config={"condition": "collision"},
+            command="test",
+            mode="pretrain",
+            attempt_sequence=5,
+        )
+    with pytest.raises(ValueError, match=r"\[1, 999\]"):
+        start_attempt(
+            tmp_path,
+            config={"condition": "invalid"},
+            command="test",
+            mode="pretrain",
+            attempt_sequence=0,
+        )

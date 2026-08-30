@@ -71,6 +71,14 @@ suite. Perform a production-shaped smoke/calibration that uses the proposed
 model, sequence length, precision, microbatch, accumulation, pressure path, and
 diagnostics. A small smoke run tests mechanics; it is not paper evidence.
 
+Keep every pytest temporary base under the single repository-root
+`.pytest_tmp/` directory. The default test configuration uses
+`.pytest_tmp/default`; when a separately named base is useful, use a child such
+as `--basetemp=.pytest_tmp/focused` or `--basetemp=.pytest_tmp/full`. Do not
+create sibling `.pytest_tmp_*`/`pytest_tmp*` directories or pytest temp
+directories inside `runs/`, `analyses/`, or other workflow folders. These
+directories are disposable test scratch, never experiment evidence.
+
 ## 5. Launch packet and launch approval
 
 Before any scientific execution or cloud creation, report:

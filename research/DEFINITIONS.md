@@ -28,11 +28,14 @@ Add or refine a term before using it ambiguously in a run.
 - **Sparsification site / site** — an exact activation tensor port feeding a
   counted downstream matrix multiplication and eligible for an intervention or
   diagnostic. Canonical aliases are `a`, `m`, `h`, `q_pre`, `k_pre`, `q_post`,
-  `k_post`, and `v`.
+  `k_post`, `v`, and `z`; `z` is the concatenated attention context
+  immediately before `W_o`.
 - **Topology** — the set of ports where an architecture gate is active. It does
   not choose the gate, pressure method, optimizer, or pressure target.
 - **Gate** — an architecture intervention replacing values at active topology
-  sites: ReLU, one-sided threshold, or symmetric threshold.
+  sites: ReLU, one-sided threshold, or symmetric threshold. A topology may use
+  one uniform gate or an explicitly approved per-site gate mapping that exactly
+  covers its active sites.
 - **Pressure target** — site activations used to construct the auxiliary pressure
   objective. It is independent of active gate sites.
 - **`l1_naive` / L1** — optimize task loss plus a weighted mean absolute
@@ -69,7 +72,8 @@ Add or refine a term before using it ambiguously in a run.
   of the same model denominator reachable when every site selected by the
   topology is identically zero. Reach is `a→QKV`, `m→W1`, `h→W2`, either selected
   Q or K operand `→QK`, and `v→PV` plus the deterministic `V=0→C=0→W_o` closure.
-  It is an architecture/workload ceiling, not an observed sparsity rate.
+  The reach set also includes `z` to the attention output projection. It is an
+  architecture/workload ceiling, not an observed sparsity rate.
 - **Architecture utilization (`U_arch`)** — manuscript normalization
   `R_model / R_model_max` for nonzero ceilings. Because measured `R_model`
   includes natural zeros outside selected-site reach, this ratio is not assumed

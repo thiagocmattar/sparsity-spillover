@@ -10,7 +10,7 @@ from pathlib import Path
 from types import MethodType
 from typing import Any
 
-from .sites import SITE_ORDER, build_gate, gate_metadata, resolve_topology_and_gate
+from .sites import SITE_ORDER, build_gate, gate_metadata, resolve_topology_and_gates
 
 
 def build_random_pythia(
@@ -29,11 +29,17 @@ def build_random_pythia(
         model_config["architecture"],
         revision=model_config["revision"],
     )
-    topology, gate = resolve_topology_and_gate(
-        model_config.get("topology_id"), model_config.get("site_gate")
+    topology, gates = resolve_topology_and_gates(
+        model_config.get("topology_id"),
+        model_config.get("site_gate"),
+        model_config.get("site_gates"),
     )
     architecture.topology_id = topology.topology_id
-    architecture.site_gate = None if gate is None else dict(gate)
+    architecture.site_gate = (
+        None if model_config.get("site_gates") is not None else model_config.get("site_gate")
+    )
+    if model_config.get("site_gates") is not None:
+        architecture.site_gates = {site: dict(spec) for site, spec in gates.items()}
     architecture.torch_dtype = torch.float32
     model = auto_model.from_config(architecture)
     apply_activation_topology(model, torch=torch)
@@ -47,9 +53,10 @@ def load_checkpoint_pythia(auto_model: Any, checkpoint: str | Path, *, torch: An
 
 def apply_activation_topology(model: Any, *, torch: Any) -> Any:
     config = getattr(model, "config", None)
-    topology, gate = resolve_topology_and_gate(
+    topology, gates = resolve_topology_and_gates(
         getattr(config, "topology_id", None),
         getattr(config, "site_gate", None),
+        getattr(config, "site_gates", None),
     )
     if getattr(model, "_sparsity_topology_applied", False):
         return model
@@ -61,15 +68,15 @@ def apply_activation_topology(model: Any, *, torch: Any) -> Any:
         _validate_layer(layer, index=index, active=active)
     for layer in layers:
         if "a" in active:
-            layer.a_gate = build_gate(gate, torch_module=torch)
+            layer.a_gate = build_gate(gates["a"], torch_module=torch)
             layer.input_layernorm.register_forward_hook(_gate_output_hook(layer.a_gate))
         if "m" in active:
-            layer.m_gate = build_gate(gate, torch_module=torch)
+            layer.m_gate = build_gate(gates["m"], torch_module=torch)
             layer.post_attention_layernorm.register_forward_hook(_gate_output_hook(layer.m_gate))
         if "h" in active:
-            layer.mlp.act = build_gate(gate, torch_module=torch)
-        if active.intersection({"q_pre", "k_pre", "q_post", "k_post", "v"}):
-            _install_attention_ports(layer.attention, active=active, gate=gate, torch=torch)
+            layer.mlp.act = build_gate(gates["h"], torch_module=torch)
+        if active.intersection(_ATTENTION_SITES):
+            _install_attention_ports(layer.attention, active=active, gates=gates, torch=torch)
     model._sparsity_topology_applied = True
     return model
 
@@ -90,7 +97,7 @@ def expose_attention_sites(model: Any, *, torch: Any) -> Any:
         _install_attention_ports(
             attention,
             active=frozenset(),
-            gate=None,
+            gates={},
             torch=torch,
         )
     return model
@@ -100,15 +107,15 @@ def topology_metadata(model: Any) -> dict[str, Any]:
     """Verify every layer realizes the configured topology and gate."""
 
     config = getattr(model, "config", None)
-    topology, expected_gate = resolve_topology_and_gate(
+    topology, expected_gates = resolve_topology_and_gates(
         getattr(config, "topology_id", None),
         getattr(config, "site_gate", None),
+        getattr(config, "site_gates", None),
     )
     layers = getattr(getattr(model, "gpt_neox", None), "layers", None)
     if layers is None:
         raise ValueError("Topology inspection requires GPT-NeoX layers.")
     expected = frozenset(topology.active_sites)
-    observed_gates: list[dict[str, Any]] = []
     for index, layer in enumerate(layers):
         modules = {
             "a": getattr(layer, "a_gate", None),
@@ -123,20 +130,27 @@ def topology_metadata(model: Any) -> dict[str, Any]:
             raise ValueError(
                 f"Layer {index} realizes {sorted(realized)}, expected {list(topology.active_sites)}."
             )
-        observed_gates.extend(gate_metadata(modules[site]) for site in SITE_ORDER if site in expected)
-    if observed_gates and any(item != observed_gates[0] for item in observed_gates[1:]):
-        raise ValueError("Gate configuration differs across layers or active sites.")
-    if observed_gates and observed_gates[0] != expected_gate:
-        raise ValueError("Realized gate differs from model.site_gate.")
-    return {
+        for site in SITE_ORDER:
+            if site in expected and gate_metadata(modules[site]) != expected_gates[site]:
+                raise ValueError(f"Layer {index} realized gate differs at site {site}.")
+    metadata = {
         "topology_id": topology.topology_id,
         "active_sites": list(topology.active_sites),
         "qk_placement": topology.qk_placement,
-        "site_gate": None if expected_gate is None else dict(expected_gate),
     }
+    configured_site_gates = getattr(config, "site_gates", None)
+    if configured_site_gates is None:
+        uniform = None if not expected_gates else dict(next(iter(expected_gates.values())))
+        metadata["site_gate"] = uniform
+    else:
+        metadata["site_gate"] = None
+        metadata["site_gates"] = {
+            site: dict(expected_gates[site]) for site in topology.active_sites
+        }
+    return metadata
 
 
-_ATTENTION_SITES = ("q_pre", "k_pre", "q_post", "k_post", "v")
+_ATTENTION_SITES = ("q_pre", "k_pre", "q_post", "k_post", "v", "z")
 
 
 def _validate_layer(layer: Any, *, index: int, active: frozenset[str]) -> None:
@@ -165,13 +179,13 @@ def _install_attention_ports(
     attention: Any,
     *,
     active: frozenset[str],
-    gate: dict[str, Any] | None,
+    gates: dict[str, dict[str, Any]],
     torch: Any,
 ) -> None:
     for site in _ATTENTION_SITES:
         setattr(attention, f"{site}_site", torch.nn.Identity())
         if site in active:
-            setattr(attention, f"{site}_gate", build_gate(gate, torch_module=torch))
+            setattr(attention, f"{site}_gate", build_gate(gates[site], torch_module=torch))
     attention.forward = MethodType(_attention_forward, attention)
 
 
@@ -219,7 +233,9 @@ def _attention_forward(
         dropout=0.0 if not self.training else self.attention_dropout,
         **kwargs,
     )
-    output = self.dense(output.reshape(*input_shape, -1).contiguous())
+    output = output.reshape(*input_shape, -1).contiguous()
+    output = self.z_site(_optional_gate(self, "z", output))
+    output = self.dense(output)
     return output, weights
 
 
@@ -233,4 +249,3 @@ def _gate_output_hook(gate: Any) -> Any:
         return gate(output)
 
     return hook
-

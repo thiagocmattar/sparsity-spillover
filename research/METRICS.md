@@ -53,7 +53,8 @@ MLP W2, embeddings/LM head, normalization, and bias. Site `a` feeds fused QKV,
 `m` feeds MLP W1, and `h` feeds MLP W2; Q/K/V use the fused projection and must
 not be presented as separate parameter tensors unless an explicit tested slice
 definition is added. If pooling tensors, sum squared norms and take one square
-root. State whether biases and normalization parameters are excluded.
+root. Site `z` feeds the attention output projection. State whether biases and
+normalization parameters are excluded.
 
 ## Logical-product metrics
 
@@ -92,6 +93,7 @@ h                 -> MLP W2
 q_pre/q_post or
 k_pre/k_post      -> causal QK products (credited once)
 v                 -> causal PV products and, by V=0 => C=0, output projection
+z                 -> attention output projection
 ```
 
 `R_model_max` is the reachable product count divided by the same block plus

@@ -1,0 +1,72 @@
+{
+  "command": "python runs/001-2026-08-28-local-lr-pipeline-calibration/02_train.py",
+  "conditions": [
+    {
+      "id": "lr-5e-4",
+      "peak_learning_rate": 0.0005
+    },
+    {
+      "id": "lr-1e-3",
+      "peak_learning_rate": 0.001
+    },
+    {
+      "id": "lr-2e-3",
+      "peak_learning_rate": 0.002
+    },
+    {
+      "id": "lr-4e-3",
+      "peak_learning_rate": 0.004
+    }
+  ],
+  "execution": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "location": "local",
+    "pid_file": "artifacts/cohort.pid",
+    "process_mode": "detached_hidden_windows_process",
+    "precision": "bfloat16_autocast_fp32_parameters_and_optimizer",
+    "serial": true,
+    "stderr_log": "artifacts/cohort.stderr.log",
+    "stdout_log": "artifacts/cohort.stdout.log"
+  },
+  "resource_fit": {
+    "device_total_memory_bytes": 12820480000,
+    "preflight_non_run_memory_used_mib": 2974,
+    "measured_peak_allocated_bytes": 6263572992,
+    "measured_peak_reserved_bytes": 7769948160,
+    "device_minus_process_reservation_bytes": 5050531840,
+    "conservative_combined_headroom_bytes": 1932066816
+  },
+  "schedule": {
+    "block_size": 2048,
+    "complete_blocks": 728374,
+    "data_order_seed": 0,
+    "excluded_tail_tokens": 1464,
+    "global_batch_size": 64,
+    "gradient_accumulation_steps": 16,
+    "max_steps": 449,
+    "micro_batch_size": 4,
+    "model_seed": 0,
+    "scheduled_blocks": 28736,
+    "sha256": "d61d355668223d092d2d0f1b04daf9c614c45d6bffe2670ab4a6c63b1ae47523",
+    "tokens_per_condition": 58851328,
+    "tokens_total": 235405312,
+    "warmup_steps": 5,
+    "wrapped_blocks": 0
+  },
+  "timing": {
+    "calibration": "prelaunch/calibration-20260828-190736.json",
+    "median_etc_seconds": 1582.9685631351895,
+    "p90_etc_seconds": 1617.1363030577195,
+    "requested_target_seconds": 1800,
+    "validation_passes": 8
+  },
+  "validation": {
+    "batch_size": 4,
+    "complete_sequences_per_pass": 338,
+    "documents": 500,
+    "excluded_tail_tokens": 1444,
+    "input_tokens_per_pass": 692224,
+    "passes_per_condition": 2,
+    "tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  }
+}

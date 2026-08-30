@@ -48,11 +48,16 @@ draft:
   gradient drives AdamW and its adaptive task direction;
 - the bootstrap's `orthogonal_l1` requires a positive trust budget, while the
   draft describes a budget as optional;
-- the bootstrap currently realizes one gate operator across all active topology
-  sites; the draft notation can express site-specific operators and the proposed
-  branch-ReLU/attention-threshold combination requires a future implementation;
+- the bootstrap retains a uniform-gate interface and now also supports an
+  explicit per-site mapping; approved Run 008 uses one-sided `a,m,h,z` gates
+  with symmetric post-RoPE Q/K/V gates, while the draft's proposed
+  branch-ReLU/attention-threshold combination remains a different unexecuted
+  operator assignment;
 - the operational topology registry includes A2 = `m,h`, which is not listed in
   the current manuscript table;
+- the architecture-map artifact includes the pre-`W_o` context site `z`, while
+  the current methodology prose and topology table omit it; approved Run 006
+  operationalizes `z` and topology A4-Z without silently editing manuscript TeX;
 - artifacts store `R` fractions in `[0,1]`, while manuscript prose and tables
   display percentages;
 - the default evaluation protocol uses all 500 MiniPile validation documents,

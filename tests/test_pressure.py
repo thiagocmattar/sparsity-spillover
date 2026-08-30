@@ -3,7 +3,11 @@ import math
 import pytest
 import torch
 
-from sparsity_research.optimization import learning_rate, warmup_steps
+from sparsity_research.optimization import (
+    learning_rate,
+    prepare_adamw_gradients,
+    warmup_steps,
+)
 from sparsity_research.pressure import (
     activation_l1,
     apply_ol1_correction,
@@ -69,3 +73,26 @@ def test_learning_rate_schedule_hits_peak_and_final_ratio():
     assert learning_rate(2, peak=1.0, max_steps=101, warmup=2) == 1.0
     assert learning_rate(101, peak=1.0, max_steps=101, warmup=2) == 0.1
 
+
+def test_unclipped_gradient_path_validates_without_rescaling():
+    parameter = torch.nn.Parameter(torch.tensor([0.0, 0.0]))
+    parameter.grad = torch.tensor([3.0, 4.0])
+    before = parameter.grad.detach().clone()
+    result = prepare_adamw_gradients(
+        [parameter], gradient_clip_norm=None, torch=torch
+    )
+    assert result == {
+        "adamw_gradient_norm_pre_clip": 5.0,
+        "adamw_gradient_norm_post_clip": 5.0,
+        "adamw_gradient_clip_norm": None,
+        "adamw_gradient_clipping_enabled": False,
+        "adamw_gradient_was_clipped": False,
+    }
+    assert torch.equal(parameter.grad, before)
+
+
+def test_unclipped_gradient_path_rejects_nonfinite_norm():
+    parameter = torch.nn.Parameter(torch.tensor([0.0]))
+    parameter.grad = torch.tensor([float("inf")])
+    with pytest.raises(RuntimeError, match="Non-finite accumulated gradient norm"):
+        prepare_adamw_gradients([parameter], gradient_clip_norm=None, torch=torch)

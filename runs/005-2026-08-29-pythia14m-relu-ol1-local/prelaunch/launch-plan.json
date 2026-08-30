@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "status": "locked_prelaunch",
+  "approval": {
+    "design_approved": true,
+    "launch_approved": true,
+    "design_approved_on": "2026-08-29",
+    "launch_approved_on": "2026-08-29"
+  },
+  "calibration": {
+    "path": "prelaunch/calibration-20260829-185146.json",
+    "timing_config_max_steps": 500,
+    "locked_common_steps": 581,
+    "median_seconds": 3244.161841729714,
+    "p90_seconds": 3297.0456237004255,
+    "planning_seconds": 3300,
+    "approved_etc_ceiling_seconds": 3600,
+    "timed_boundaries_per_runtime_class": 6,
+    "peak_gpu_memory_allocated_bytes": 7119201792,
+    "peak_gpu_memory_reserved_bytes": 7763656704,
+    "logical_product_seconds_control": 12.234749900002498,
+    "logical_product_seconds_ol1": 12.14224340004148
+  },
+  "execution": {
+    "location": "local",
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "device_total_memory_bytes": 12820480000,
+    "condition_count": 5,
+    "serial": true,
+    "launcher": "runs/005-2026-08-29-pythia14m-relu-ol1-local/04_launch.ps1",
+    "python": "C:/Users/thima/AppData/Local/Programs/Python/Python312/python.exe",
+    "python_reason": "Repository .venv has CPU-only Torch 2.11.0; this interpreter has the previously used CUDA Torch 2.11.0+cu128 environment.",
+    "entrypoint": "runs/005-2026-08-29-pythia14m-relu-ol1-local/02_train.py",
+    "condition_ids": [
+      "relu-control",
+      "relu-ol1-0p01",
+      "relu-ol1-0p1",
+      "relu-ol1-0p5",
+      "relu-ol1-1"
+    ],
+    "steps_per_condition": 581,
+    "training_input_tokens_per_condition": 76152832,
+    "total_optimizer_steps": 2905,
+    "total_training_input_tokens": 380764160,
+    "complete_validation_passes": 15
+  },
+  "identity": {
+    "git_commit": "39e5be7b27a9f0b6df3746b71991e3439526871f",
+    "git_dirty": true,
+    "config_sha256": "30cd7453cdc88d17b66667501de62f945636d0c7ec607f13405670dd8d38ee32",
+    "run_code_content_sha256": "77e3ff7820e820cc6705508e8b89a020bd117a47ca2a9e6294928b8b8dac4e3d",
+    "training_schedule_sha256": "c254893f0ea521e5834405d7a4e6edaed74472733d533aff68fb119e600151d4",
+    "initial_parameter_sha256_from_calibration": "8e511149aac21f3fcacccb9968299bf3938473ff38f4d53cb99f2e9e1a2403bc"
+  },
+  "verification": {
+    "focused": "28 passed",
+    "full_bootstrap": "90 passed in 3.56 s",
+    "powershell_parser": "passed for launcher and monitor",
+    "calibration": "control and OL1 paths finite; complete activation/logical coverage; checkpoint hashes and reloads passed"
+  },
+  "artifacts": {
+    "retain_final_checkpoints": 5,
+    "estimated_checkpoint_bytes": 281402180,
+    "retain_optimizer_state": false,
+    "activation_statistics": true,
+    "weight_statistics": true,
+    "logical_products": true,
+    "events": true,
+    "predictions": "empty by design",
+    "local_transfer_required": false
+  },
+  "monitoring": {
+    "script": "runs/005-2026-08-29-pythia14m-relu-ol1-local/05_monitor.ps1",
+    "interval_seconds": 60,
+    "polls": 65,
+    "reads": [
+      "cohort process state",
+      "condition progress",
+      "latest immutable attempt manifest",
+      "latest train or validation event",
+      "event-file age",
+      "stderr tail"
+    ],
+    "warnings": [
+      "non-finite loss, gradient, adaptive direction, or logical fraction",
+      "OL1 final correction ratio above trust budget 1.0",
+      "CUDA OOM or less than 1 GiB conservative memory headroom",
+      "event file stale for more than 180 seconds while the process is active",
+      "throughput degradation above 25 percent from calibrated runtime class",
+      "refreshed inclusive ETC above 3600 seconds",
+      "process exit before terminal verification",
+      "stderr traceback or explicit runtime error",
+      "cache, config, schedule, code, checkpoint, or validation coverage mismatch"
+    ]
+  },
+  "cost": {
+    "cloud": false,
+    "compute_cost": 0,
+    "storage_cost": 0
+  },
+  "teardown": "Detached local process exits after terminal verification; CUDA memory is released. No billable resources or artifact transfer are involved."
+}

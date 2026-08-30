@@ -29,6 +29,7 @@ Pythia/GPT-NeoX has parallel attention and MLP residual branches. Sites `a` and
 | `q_post` | Query immediately after partial RoPE | `[B,H,T,d]` | actual QK operand |
 | `k_post` | Key immediately after partial RoPE | `[B,H,T,d]` | actual QK operand |
 | `v` | Value from fused QKV projection | `[B,H,T,d]` | PV product |
+| `z` | Concatenated attention context after PV, immediately before `W_o` | `[B,T,D]` | Attention output projection |
 
 PRE-RoPE zeros cannot be counted as actual QK operand zeros because RoPE may
 rotate sparse coordinate pairs into dense ones.
@@ -44,10 +45,12 @@ rotate sparse coordinate pairs into dense ones.
 | `A4-Q` | `a`, `m`, `h`, `q_post` |
 | `A4-K` | `a`, `m`, `h`, `k_post` |
 | `A4-V` | `a`, `m`, `h`, `v` |
+| `A4-Z` | `a`, `m`, `h`, `z` |
 | `A5-QK-PRE` | `a`, `m`, `h`, `q_pre`, `k_pre` |
 | `A5-QK-POST` | `a`, `m`, `h`, `q_post`, `k_post` |
 | `A6-PRE` | `a`, `m`, `h`, `q_pre`, `k_pre`, `v` |
 | `A6-POST` | `a`, `m`, `h`, `q_post`, `k_post`, `v` |
+| `A7-Z-POST` | `a`, `m`, `h`, `q_post`, `k_post`, `v`, `z` |
 
 A topology chooses ports only. The gate operator, threshold, optimizer, pressure
 method, pressure sites, and pressure weight remain separate.
@@ -74,9 +77,14 @@ detached, so surviving inputs receive identity input gradient and rejected
 inputs receive zero input gradient. Exact zeros do not make a dense kernel skip
 work automatically.
 
-The bootstrap preserves the source implementation's one-operator-per-topology
-contract. Mixed one-sided MLP and symmetric attention gates require a new
-approved implementation and tests.
+The signed pre-`W_o` context site `z` supports the same fixed one-sided or
+symmetric gates as the other signed attention sites. A uniform `site_gate`
+remains the default contract. An explicitly approved `site_gates` mapping may
+instead assign one gate specification to each active site; it must cover the
+topology exactly and repeat unchanged in every layer. Run 008 introduces the
+tested mixed case: one-sided gates at `a,m,h,z`, symmetric gates at
+`q_post,k_post,v`, and one common `kappa`. At `kappa=0`, the symmetric gate is
+an exact identity in both values and gradients.
 
 ## Activation pressure
 

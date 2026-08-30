@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo=/workspace/sparsity-spillover
+environment=/workspace/run004-venv
+run_dir="$repo/runs/004-2026-08-29-pythia14m-full-pass-l1n"
+
+test -d "$repo/.git"
+python3.12 -m venv "$environment"
+"$environment/bin/python" -m pip install --no-cache-dir --upgrade \
+  pip==25.0.1 setuptools==70.2.0
+"$environment/bin/python" -m pip install --no-cache-dir \
+  torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+"$environment/bin/python" -m pip install --no-cache-dir \
+  datasets==5.0.0 \
+  matplotlib==3.11.0 \
+  numpy==2.5.0 \
+  pyyaml==6.0.3 \
+  safetensors==0.8.0 \
+  transformers==5.12.1
+"$environment/bin/python" -m pip install --no-cache-dir --no-deps -e "$repo"
+"$environment/bin/python" -m pip check
+mkdir -p "$run_dir/prelaunch"
+"$environment/bin/python" -m pip freeze > "$run_dir/prelaunch/runpod-pip-freeze.txt"
+"$environment/bin/python" -c 'import torch, transformers; assert torch.__version__.split("+", 1)[0] == "2.11.0"; assert torch.version.cuda == "12.8"; assert transformers.__version__ == "5.12.1"'

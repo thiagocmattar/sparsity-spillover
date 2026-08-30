@@ -1,0 +1,76 @@
+name: local-pythia-14m-a4z-one-sided-threshold
+
+model:
+  architecture: EleutherAI/pythia-14m-deduped
+  revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  initialization: random
+  topology_id: A4-Z
+  site_gate:
+    operator: one_sided_threshold
+    kappa: 0.0
+
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  append_eos: true
+  sequence_length: 2048
+  training_metadata: data/tokenized/minipile-pythia-14m-full/train/metadata.json
+  validation_metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+
+seeds:
+  model: 0
+  data_order: 0
+
+conditions:
+  active_sites: [a, m, h, z]
+  gate_operator: one_sided_threshold
+  gate_thresholds: [0.0, 0.01, 0.05, 0.1, 0.5]
+  pressure_method: none
+
+training:
+  # Exact Run 005 token budget: 581 * 64 * 2,048 per condition.
+  max_steps: 581
+  target_cohort_seconds: 3600
+  planning_cohort_seconds: 3540
+  peak_learning_rate: 1.0e-3
+  global_batch_size: 64
+  micro_batch_size: 4
+  gradient_accumulation_steps: 16
+  optimizer: adamw
+  adamw_betas: [0.9, 0.95]
+  adamw_eps: 1.0e-8
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  warmup_fraction: 0.01
+  minimum_learning_rate_ratio: 0.1
+  precision: bfloat16
+  parameter_dtype: float32
+  device: cuda
+  log_every_steps: 1
+
+validation:
+  documents: 500
+  complete_sequences: 338
+  input_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 4
+  at_step_one: true
+  at_final_step: true
+
+diagnostics:
+  activation_sites: [a, m, h, q_post, k_post, v, z, attention_output]
+  near_zero_thresholds: [0.0, 0.001, 0.01]
+  activation_statistics: true
+  weight_statistics: true
+  weight_statistics_include_bias_and_norm: true
+  gradient_interaction: false
+  logical_products: true
+  logical_product_batch_size: 1
+  clipping_frontier: null
+
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer: false
+  retain_predictions: false

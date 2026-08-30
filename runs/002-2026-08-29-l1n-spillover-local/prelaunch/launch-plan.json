@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "locked_prelaunch",
+  "approval": {
+    "design_approved": true,
+    "local_launch_preapproved": true,
+    "approved_on": "2026-08-29"
+  },
+  "calibration": {
+    "primary": "prelaunch/calibration-20260829-120142.json",
+    "repeat_of": "prelaunch/calibration-20260829-115945.json",
+    "common_steps": 451,
+    "median_seconds": 6804.445075884636,
+    "p90_seconds": 6888.700264507264,
+    "target_seconds": 7200,
+    "planning_seconds": 6900,
+    "peak_gpu_memory_allocated_bytes": 6450855424,
+    "peak_gpu_memory_reserved_bytes": 8306819072
+  },
+  "execution": {
+    "location": "local",
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "condition_count": 10,
+    "serial": true,
+    "command": "python runs/002-2026-08-29-l1n-spillover-local/02_train.py",
+    "condition_ids": [
+      "gelu-control",
+      "relu-control",
+      "gelu-l1n-0p1",
+      "relu-l1n-0p1",
+      "gelu-l1n-0p5",
+      "relu-l1n-0p5",
+      "gelu-l1n-1",
+      "relu-l1n-1",
+      "gelu-l1n-5",
+      "relu-l1n-5"
+    ],
+    "steps_per_condition": 451,
+    "training_input_tokens_per_condition": 59113472,
+    "total_optimizer_steps": 4510,
+    "total_training_input_tokens": 591134720,
+    "validation_passes": 20,
+    "monitor_interval_seconds": 1378,
+    "monitor_milestones_percent": [20, 40, 60, 80, 100]
+  },
+  "identity": {
+    "git_commit": "39e5be7b27a9f0b6df3746b71991e3439526871f",
+    "git_dirty": true,
+    "config_sha256": "45f670d3d82fea09cf3a65207d85c8d1343bd3e00324f0c32235965b837fcdae",
+    "run_code_content_sha256": "7c538cd0b15516e9b91a79757a4e21efc86772220cf8be1a0b7838fb4cf4392c",
+    "training_schedule_sha256": "4ee14c05906046815967e9e77c73df9acc41f44d96438fcef651cb40b7ea9014",
+    "initial_parameter_sha256_from_calibration": "8e511149aac21f3fcacccb9968299bf3938473ff38f4d53cb99f2e9e1a2403bc"
+  },
+  "verification": {
+    "run_focused_tests": "6 passed",
+    "full_tests": "60 passed in 3.22 s",
+    "python_compilation": "passed",
+    "git_diff_check": "passed"
+  },
+  "artifacts": {
+    "retain_final_checkpoints": 10,
+    "estimated_checkpoint_bytes": 562804080,
+    "retain_optimizer_state": false,
+    "terminal_verification": "artifacts/verification.json",
+    "figure": "figures/01-h-vs-attention-near-zero.pdf",
+    "observation": "observations/O001-h-vs-attention-near-zero.md"
+  },
+  "warnings": [
+    "nonfinite task, pressure, augmented, gradient, or validation metrics",
+    "CUDA out of memory or less than 1 GiB free headroom",
+    "stale or missing progress at a planned 20 percent milestone",
+    "throughput degradation above 25 percent from calibrated class timing",
+    "refreshed inclusive ETC above 7200 seconds",
+    "cache, schedule, code, config, checkpoint, or coverage identity mismatch"
+  ],
+  "cloud_cost": 0,
+  "teardown": "Detached local processes exit after terminal verification and figure generation; no billable resources exist."
+}

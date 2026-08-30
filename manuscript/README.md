@@ -33,6 +33,9 @@ variant.
 - `methodology.tex` gives the formal Pythia graph, sites, activation operators,
   L1/OL1 definitions, exact product counters, `R_block`, `R_model`, and the
   draft architecture ceiling `R_model_max`.
+- `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
+  intervention-neutral, paper-ready map of one shared Pythia block; the
+  adjacent Markdown file records its notation, scope, caption, and caveats.
 
 The methodology records upstream provenance in its header. The lean handoff was
 separately distilled from `orthogonal-sparsity-pressure` commit

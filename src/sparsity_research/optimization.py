@@ -44,6 +44,7 @@ def run_optimizer_boundary(
     torch: Any,
     device: Any,
     autocast_dtype: Any | None,
+    gradient_clip_norm: float | None = GLOBAL_GRADIENT_CLIP_NORM,
     activation_observer: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Run one optimizer boundary over an explicit sequence of microbatches."""
@@ -65,6 +66,7 @@ def run_optimizer_boundary(
             torch=torch,
             device=device,
             autocast_dtype=autocast_dtype,
+            gradient_clip_norm=gradient_clip_norm,
             observer=activation_observer,
         )
     return _standard_boundary(
@@ -77,6 +79,7 @@ def run_optimizer_boundary(
         torch=torch,
         device=device,
         autocast_dtype=autocast_dtype,
+        gradient_clip_norm=gradient_clip_norm,
         observer=activation_observer,
     )
 
@@ -92,6 +95,7 @@ def _standard_boundary(
     torch: Any,
     device: Any,
     autocast_dtype: Any | None,
+    gradient_clip_norm: float | None,
     observer: Callable[[dict[str, Any]], None] | None,
 ) -> dict[str, Any]:
     optimizer.zero_grad(set_to_none=True)
@@ -134,7 +138,11 @@ def _standard_boundary(
             weighted_pressure_loss=pressure.weight * pressure_mean,
             augmented_loss=task_total / count + pressure.weight * pressure_mean,
         )
-    result.update(clip_adamw_gradients(parameters, torch=torch))
+    result.update(
+        prepare_adamw_gradients(
+            parameters, gradient_clip_norm=gradient_clip_norm, torch=torch
+        )
+    )
     optimizer.step()
     return result
 
@@ -150,6 +158,7 @@ def _ol1_boundary(
     torch: Any,
     device: Any,
     autocast_dtype: Any | None,
+    gradient_clip_norm: float | None,
     observer: Callable[[dict[str, Any]], None] | None,
 ) -> dict[str, Any]:
     optimizer.zero_grad(set_to_none=True)
@@ -174,7 +183,9 @@ def _ol1_boundary(
         if observer is not None:
             observer(capture.activations)
 
-    clip = clip_adamw_gradients(parameters, torch=torch)
+    clip = prepare_adamw_gradients(
+        parameters, gradient_clip_norm=gradient_clip_norm, torch=torch
+    )
     task_grads = clone_grads(parameters)
     result = {
         "task_loss": task_total / count,
@@ -200,10 +211,35 @@ def _ol1_boundary(
     return result
 
 
-def clip_adamw_gradients(parameters: list[Any], *, torch: Any) -> dict[str, float | bool]:
+def prepare_adamw_gradients(
+    parameters: list[Any], *, gradient_clip_norm: float | None, torch: Any
+) -> dict[str, float | bool | None]:
+    """Validate accumulated gradients and optionally apply one global L2 clip."""
+
+    if gradient_clip_norm is None:
+        norm = parameter_gradient_norm(parameters)
+        if not math.isfinite(norm):
+            raise RuntimeError("Non-finite accumulated gradient norm.")
+        return {
+            "adamw_gradient_norm_pre_clip": norm,
+            "adamw_gradient_norm_post_clip": norm,
+            "adamw_gradient_clip_norm": None,
+            "adamw_gradient_clipping_enabled": False,
+            "adamw_gradient_was_clipped": False,
+        }
+    return clip_adamw_gradients(
+        parameters, max_norm=float(gradient_clip_norm), torch=torch
+    )
+
+
+def clip_adamw_gradients(
+    parameters: list[Any], *, max_norm: float = GLOBAL_GRADIENT_CLIP_NORM, torch: Any
+) -> dict[str, float | bool | None]:
+    if not math.isfinite(max_norm) or max_norm <= 0.0:
+        raise ValueError("Gradient clip norm must be positive and finite, or None.")
     pre = torch.nn.utils.clip_grad_norm_(
         parameters,
-        max_norm=GLOBAL_GRADIENT_CLIP_NORM,
+        max_norm=max_norm,
         norm_type=2.0,
         error_if_nonfinite=True,
     )
@@ -212,8 +248,9 @@ def clip_adamw_gradients(parameters: list[Any], *, torch: Any) -> dict[str, floa
     return {
         "adamw_gradient_norm_pre_clip": pre_norm,
         "adamw_gradient_norm_post_clip": post_norm,
-        "adamw_gradient_clip_norm": GLOBAL_GRADIENT_CLIP_NORM,
-        "adamw_gradient_was_clipped": pre_norm > GLOBAL_GRADIENT_CLIP_NORM,
+        "adamw_gradient_clip_norm": max_norm,
+        "adamw_gradient_clipping_enabled": True,
+        "adamw_gradient_was_clipped": pre_norm > max_norm,
     }
 
 
@@ -264,4 +301,3 @@ def _autocast(torch: Any, device: Any, dtype: Any | None) -> Any:
 def _finite_loss(loss: Any, label: str, torch: Any) -> None:
     if not bool(torch.isfinite(loss.detach()).item()):
         raise RuntimeError(f"Non-finite {label}.")
-

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "status": "ready_for_launch_confirmation",
+  "execution": {
+    "location": "local",
+    "command": "python runs/003-2026-08-29-l1n-lambda5-no-gradient-clipping/02_train.py",
+    "detached": true,
+    "launcher": "PowerShell Start-Process with -WindowStyle Hidden, redirected stdout/stderr, and recorded PID",
+    "working_directory": "C:/Users/thima/Documents/Doutorado/exps/sparsity-spillover",
+    "condition_order": [
+      "gelu-l1n-5-no-clip",
+      "relu-l1n-5-no-clip"
+    ],
+    "common_steps": 451,
+    "total_optimizer_steps": 902,
+    "total_training_input_tokens": 118226944,
+    "maximum_duration_seconds": 1800
+  },
+  "scientific_delta": {
+    "gradient_clipping_enabled": false,
+    "gradient_clip_norm": null,
+    "finite_gradient_check": true,
+    "all_other_scientific_inputs": "matched to the Run 002 lambda=5 comparators"
+  },
+  "identity": {
+    "config_path": "config.yaml",
+    "config_file_sha256": "162b99d5673f581d664eae0ec40084d45b3979188a67311f8c9110c3608daa2b",
+    "run_code_content_sha256": "3eaeb81349deb927f3c0580d43ef517f4a5de09ba539c6d99d74ce1491c3362f",
+    "shared_optimizer_path": "src/sparsity_research/optimization.py",
+    "shared_optimizer_sha256": "1869e21bccc34a31724c1a30c6852b86dc3f0f5cb6b68239fc700128777a1927",
+    "baseline_verification_path": "../002-2026-08-29-l1n-spillover-local/artifacts/verification.json",
+    "baseline_verification_sha256": "3cf403ad32bee6a79d43c8ff759379ec62f927d8994fc55a6030eddb6d8d8d99",
+    "training_schedule_sha256": "4ee14c05906046815967e9e77c73df9acc41f44d96438fcef651cb40b7ea9014",
+    "initial_parameter_sha256": "8e511149aac21f3fcacccb9968299bf3938473ff38f4d53cb99f2e9e1a2403bc"
+  },
+  "calibration": {
+    "path": "calibration-20260829-153201.json",
+    "sha256": "acf6db05b4b355669c548fd71c910343c861de0b008f288a7c64007fcde45441",
+    "timed_boundaries_per_condition": 6,
+    "median_etc_seconds": 1521.4893277038354,
+    "p90_etc_seconds": 1580.9644114829134,
+    "fits_maximum_duration": true
+  },
+  "local_resource_fit": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "total_memory_bytes": 12820480000,
+    "peak_torch_allocated_bytes": 6450265600,
+    "peak_torch_reserved_bytes": 8489271296,
+    "prelaunch_desktop_memory_used_mib": 2715,
+    "conservative_headroom_bytes": 1484324864,
+    "impact": "occupies the local GPU for approximately 25-27 minutes; avoid other GPU-heavy work"
+  },
+  "validation": {
+    "passes_per_condition": 2,
+    "documents_per_pass": 500,
+    "complete_blocks_per_pass": 338,
+    "input_tokens_per_pass": 692224,
+    "excluded_tail_tokens": 1444
+  },
+  "artifacts": {
+    "persistent_root": "artifacts/",
+    "attempts": 2,
+    "final_checkpoints_retained": 2,
+    "expected_checkpoint_bytes_each": 56280422,
+    "optimizer_state_retained": false,
+    "predictions_retained": false,
+    "diagnostics": [
+      "full-validation activation integer counts and RMS/L2 for six sites",
+      "per-layer and pooled weight statistics",
+      "task/pressure gradient interaction at every optimizer boundary",
+      "raw unscaled combined gradient norm at every optimizer boundary",
+      "checkpoint transfer inventories and SHA-256 identities"
+    ],
+    "transfer": "none; execution and artifacts are local",
+    "teardown": "training process exits; model/optimizer are released; no billable resource"
+  },
+  "monitoring": {
+    "interval_seconds": 300,
+    "stale_event_seconds": 420,
+    "script": "04_monitor.ps1",
+    "warning_conditions": [
+      "driver or attempt enters failed state",
+      "no durable event for more than 420 seconds",
+      "nonfinite task, pressure, or combined-gradient metric",
+      "CUDA OOM or traceback in stderr",
+      "wall time exceeds 1800 seconds",
+      "unexpected gradient-clipping-enabled event"
+    ]
+  },
+  "verification": {
+    "focused_tests": "11 passed",
+    "full_suite": "72 passed",
+    "python_compile": "passed",
+    "smoke_conditions": [
+      "gelu-l1n-5-no-clip",
+      "relu-l1n-5-no-clip"
+    ],
+    "smoke_checkpoint_roundtrip": "passed",
+    "smoke_attention_output_boundary": "510 expected full-run comparisons per condition; smoke coverage exactly reconciled"
+  },
+  "cost": {
+    "cloud_compute": 0,
+    "cloud_storage": 0,
+    "currency": "USD"
+  }
+}

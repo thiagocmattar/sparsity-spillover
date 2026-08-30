@@ -1,0 +1,640 @@
+{
+  "schema_version": 1,
+  "status": "scientific_run_completed_verified_zero_pods_volume_retained",
+  "launch_approved_at": "2026-08-29T16:06:20-03:00",
+  "launch_attempts": [
+    {
+      "attempted_at": "2026-08-29T16:09:37-03:00",
+      "stage": "stage_one_preflight_pod_creation",
+      "source_archive_bytes": 416465,
+      "source_archive_sha256": "aeaaa055f74247fce523a993dcc21c67440d6340b21b8d3a9ce7dd0852bca5e6",
+      "result": "capacity_unavailable",
+      "provider_error": "There are no longer any instances available with the requested specifications. Please refresh and try again.",
+      "created_pods_after_attempt": 0,
+      "created_network_volumes_after_attempt": 0,
+      "billable_cost_usd": 0.0,
+      "policy_action": "stop without Secure Cloud, GPU, batch, or runtime substitution"
+    },
+    {
+      "attempted_at": "2026-08-29T16:12:56-03:00",
+      "stage": "stage_one_preflight_pod_creation_retry",
+      "source_archive_bytes": 418097,
+      "source_archive_sha256": "c908ddbbc1bdb683c6ace7d2385c2e88deabb2ab43a1ef7889fdbace88fc5e57",
+      "result": "created_running",
+      "pod_id": "ottlrd7awawf8h",
+      "pod_name": "run004-preflight-r2",
+      "cloud_type": "COMMUNITY",
+      "gpu_type": "NVIDIA GeForce RTX 4090",
+      "price_usd_per_gpu_hour": 0.34,
+      "automatic_terminate_at": "2026-08-30T02:12:35Z",
+      "authorization": "user authorized continued retries and GPU-type substitution; RTX 4090 capacity returned before substitution"
+    },
+    {
+      "attempted_at": "2026-08-29T16:44:35-03:00",
+      "stage": "shared_volume_seed_and_secure_preflight_pod_creation",
+      "source_archive_bytes": 274183,
+      "source_archive_sha256": "5bfca065217c9b474a2d756d6e394efd97628ab7203ccec4eefb1a5e795694be",
+      "result": "created_running",
+      "pod_id": "qq6u7wif86vdyk",
+      "pod_name": "run004-shared-preflight-r1",
+      "cloud_type": "SECURE",
+      "data_center_id": "EUR-IS-1",
+      "gpu_type": "NVIDIA GeForce RTX 4090",
+      "price_usd_per_gpu_hour": 0.74,
+      "network_volume_id": "9luykg5yc3",
+      "automatic_terminate_at": "2026-08-30T02:43:55Z",
+      "authorization": "user explicitly requested reusable storage accessible to future RunPod workloads"
+    }
+  ],
+  "live_audit": {
+    "audited_at": "2026-08-29T20:07:49Z",
+    "scientific_training_started": false,
+    "running_pods": 2,
+    "community_pod": {
+      "pod_id": "ottlrd7awawf8h",
+      "name": "run004-preflight-r2",
+      "role": "exact Hugging Face cache producer and cross-region transfer source",
+      "result": "cuda_initialization_failed_before_optimizer_boundary",
+      "provider_runtime_present_at_audit": false
+    },
+    "secure_pod": {
+      "pod_id": "qq6u7wif86vdyk",
+      "name": "run004-shared-preflight-r1",
+      "role": "shared-volume seed and authoritative preflight candidate",
+      "cuda_available": true,
+      "flash_sdp_enabled": true,
+      "authoritative_preflight_completed": false
+    },
+    "shared_cache": {
+      "validation_status": "published_exact_identity_passed",
+      "train_status": "byte_and_sha256_verified_atomic_publication_pending",
+      "train_staging_path": "/workspace/shared-cache/minipile-pythia-14m-full/train/tokens.int32.bin.partial",
+      "train_bytes": 5966845664,
+      "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "remaining_publication_steps": [
+        "atomically rename the verified train file to tokens.int32.bin",
+        "copy and verify train metadata.json"
+      ]
+    },
+    "active_training_or_transfer_processes": 0,
+    "approximate_accrued_total_usd": 0.61,
+    "cost_note": "derived from creation timestamps and live rates because the provider billing endpoint had not yet posted records"
+  },
+  "step_one_cache_publication": {
+    "completed_at": "2026-08-29T17:32:59-03:00",
+    "result": "passed",
+    "scientific_training_started": false,
+    "train_path": "/workspace/shared-cache/minipile-pythia-14m-full/train/tokens.int32.bin",
+    "train_metadata_path": "/workspace/shared-cache/minipile-pythia-14m-full/train/metadata.json",
+    "train_bytes": 5966845664,
+    "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+    "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+    "normal_loader": {
+      "result": "passed",
+      "load_seconds": 5.051560206338763,
+      "schedule_shape": [712, 32, 32],
+      "scheduled_blocks": 729088,
+      "wrapped_blocks": 714,
+      "schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa"
+    },
+    "evidence": {
+      "persistent_path": "/workspace/run004-infrastructure/community-preflight-r2",
+      "local_path": "prelaunch/attempt-community-r2",
+      "inventory": "SHA256SUMS",
+      "persistent_inventory_verified": true,
+      "local_inventory_verified": true,
+      "verification_log": "prelaunch/step1-cache-verification.log"
+    },
+    "remaining_before_community_termination": "remove the temporary Pod-to-Pod transfer credentials in approved Step 2"
+  },
+  "step_two_community_teardown": {
+    "completed_at": "2026-08-29T17:38:42-03:00",
+    "result": "passed",
+    "scientific_training_started": false,
+    "transfer_credentials": {
+      "temporary_public_authorization_removed_from_secure_pod": true,
+      "temporary_private_and_public_key_files_removed_from_community_pod": true,
+      "revoked_key_connection_test": "permission_denied_as_expected",
+      "normal_account_ssh_connection_after_removal": "passed"
+    },
+    "terminated_pod": {
+      "id": "ottlrd7awawf8h",
+      "name": "run004-preflight-r2",
+      "cloud_type": "COMMUNITY",
+      "price_usd_per_gpu_hour": 0.34,
+      "delete_status": 204,
+      "post_delete_get_status": 404
+    },
+    "remaining_pod": {
+      "id": "qq6u7wif86vdyk",
+      "name": "run004-shared-preflight-r1",
+      "cloud_type": "SECURE",
+      "status": "RUNNING",
+      "gpu_type": "NVIDIA GeForce RTX 4090",
+      "price_usd_per_gpu_hour": 0.74,
+      "network_volume_id": "9luykg5yc3"
+    },
+    "remaining_network_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center_id": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD"
+    },
+    "running_pods_after_step": 1,
+    "active_gpu_rate_usd_per_hour_after_step": 0.74
+  },
+  "step_three_secure_preflight": {
+    "completed_at": "2026-08-29T17:45:59-03:00",
+    "result": "exact_target_failed_cuda_out_of_memory",
+    "scientific_training_started": false,
+    "pod": {
+      "id": "qq6u7wif86vdyk",
+      "name": "run004-shared-preflight-r1",
+      "cloud_type": "SECURE",
+      "gpu_type": "NVIDIA GeForce RTX 4090",
+      "reported_total_memory_bytes": 25250627584,
+      "price_usd_per_gpu_hour": 0.74,
+      "network_volume_id": "9luykg5yc3"
+    },
+    "local_cache": {
+      "source": "/workspace/shared-cache/minipile-pythia-14m-full",
+      "destination": "/run004-local-data/minipile-pythia-14m-full",
+      "copy_seconds": 14,
+      "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+      "normal_loader_result": "passed",
+      "schedule_shape": [712, 32, 32],
+      "schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa"
+    },
+    "runtime": {
+      "python": "3.12",
+      "torch": "2.11.0",
+      "transformers": "5.12.1",
+      "cuda_runtime": "12.8",
+      "flash_attention_available": true
+    },
+    "target": {
+      "sequence_length": 2048,
+      "micro_batch_size": 32,
+      "gradient_accumulation_steps": 32,
+      "boundaries_per_condition": 2,
+      "conditions": ["relu-control", "relu-l1n-1"]
+    },
+    "samples": [
+      {
+        "condition_id": "relu-control",
+        "status": "cuda_out_of_memory",
+        "allocated_gib_before_failed_request": 20.0,
+        "free_gib_before_failed_request": 3.03,
+        "failed_request_gib": 12.28
+      },
+      {
+        "condition_id": "relu-l1n-1",
+        "status": "cuda_out_of_memory",
+        "free_gib_before_failed_request": 3.1,
+        "failed_request_gib": 12.28
+      }
+    ],
+    "exact_target_status": "incomplete",
+    "complete_optimizer_boundaries": 0,
+    "measured_boundary_timing_available": false,
+    "gate": "failed_closed_no_scale_out_no_scientific_launch",
+    "evidence": {
+      "persistent_path": "/workspace/sparsity-spillover/runs/004-2026-08-29-pythia14m-full-pass-l1n/prelaunch",
+      "local_path": "prelaunch/attempt-secure-preflight-r1",
+      "inventory": "SHA256SUMS",
+      "local_inventory_verified": true,
+      "remote_preflight_sha256": "65372a081ee0c769bd1ac5df00cab0f45d4899c58f4739dffba6a7b90b204b55",
+      "smoke_sha256": "811f58232dd79980cd8de46483c046ccfe875575c40134720778ef0fb0211c68"
+    },
+    "decision_required": "Use a larger-memory GPU with a fresh exact preflight, or explicitly approve a different microbatch/accumulation decomposition and its throughput and numerical implications."
+  },
+  "step_four_secure_preflight_teardown": {
+    "completed_at": "2026-08-29T17:54:24-03:00",
+    "result": "passed",
+    "scientific_training_started": false,
+    "terminated_pod": {
+      "id": "qq6u7wif86vdyk",
+      "name": "run004-shared-preflight-r1",
+      "cloud_type": "SECURE",
+      "gpu_type": "NVIDIA GeForce RTX 4090",
+      "price_usd_per_gpu_hour": 0.74,
+      "delete_status": 204,
+      "post_delete_get_status": 404
+    },
+    "post_delete_pod_inventory": {
+      "total": 0,
+      "returned": 0
+    },
+    "retained_network_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center_id": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD",
+      "list_inventory_total": 1,
+      "get_after_pod_deletion": "passed"
+    },
+    "active_gpu_rate_usd_per_hour_after_step": 0.0,
+    "persistent_volume_rate_usd_per_month_after_step": 7.0,
+    "estimated_gpu_compute_usd_upper_bound_through_step": 1.347
+  },
+  "latest_live_state": {
+    "audited_at": "2026-08-29T20:54:24Z",
+    "running_pods": 0,
+    "active_gpu_rate_usd_per_hour": 0.0,
+    "active_training_or_preflight_processes": 0,
+    "scientific_training_started": false,
+    "network_volume_id": "9luykg5yc3",
+    "network_volume_present": true,
+    "network_volume_monthly_rate_usd": 7.0
+  },
+  "catalog_observed_at": "2026-08-29T16:07:45-03:00",
+  "catalog": {
+    "source": "RunPod MCP live GPU catalog",
+    "gpu_type_id": "NVIDIA GeForce RTX 4090",
+    "memory_gb": 24,
+    "cloud_type": "COMMUNITY",
+    "price_usd_per_gpu_hour": 0.34,
+    "overall_availability": "LOW",
+    "data_center_availability": {
+      "EU-CZ-1": "LOW",
+      "EUR-IS-1": "LOW",
+      "EUR-IS-2": "LOW",
+      "US-IL-1": "LOW",
+      "US-NC-1": "LOW"
+    },
+    "cuda_12_8_available": true,
+    "existing_pods": 0,
+    "existing_network_volumes": 0
+  },
+  "software": {
+    "base_image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "base_image_tag_reference": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404",
+    "python": "3.12",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1",
+    "setup_script": "00_setup_remote.sh",
+    "runpodctl": {
+      "pod_creation_version": "2.8.0-22dc71f",
+      "pod_creation_windows_binary_sha256": "85c8e7daac6f11a1e7047a06113dfbed0d778cc0aac6e57560ce116aca09ada7",
+      "matched_transfer_version": "2.12.0-51ca7f0",
+      "matched_transfer_windows_binary_sha256": "f434915e19632097c0ec89d48fac3e25af187e14ee3d172dc37e4d5b2154a7f3",
+      "matched_transfer_checksum_manifest_verified": true
+    },
+    "base_git_commit": "39e5be7b27a9f0b6df3746b71991e3439526871f",
+    "git_dirty_disclosed": true,
+    "run_code_sha256": "501744d66aec47c469c04a1885c97372b39315bd3bc2a67297d8353e4efe5e2d",
+    "resolved_config_sha256": "e5eba31eefe5a721c6908abff7cc5a1db6a8dccda50bdc7e6b7ff9d4a8ecf511",
+    "staging": "clone the base commit, then overlay the exact inventoried Run 004 folder, src/sparsity_research tree, pyproject.toml, and tests; verify run-code and config hashes before preflight"
+  },
+  "staged_execution": {
+    "stage_one": {
+      "pod_count": 2,
+      "purpose": "exact RTX 4090 cache/runtime/flash/memory/timing preflight plus user-requested reusable shared-volume seed",
+      "script": "05_remote_preflight.py",
+      "maximum_minutes": 45,
+      "failure_action": "transfer preflight JSON, terminate both preflight/seed Pods, create no training Pods, retain the shared volume"
+    },
+    "stage_two": {
+      "condition": "stage-one status passed",
+      "pod_count_total": 5,
+      "cloud_type": "SECURE",
+      "data_center_id": "EUR-IS-1",
+      "network_volume_id": "9luykg5yc3",
+      "workers": {
+        "controls": ["gelu-control", "relu-control"],
+        "relu-l1n-0p05": ["relu-l1n-0p05"],
+        "relu-l1n-0p1": ["relu-l1n-0p1"],
+        "relu-l1n-0p5": ["relu-l1n-0p5"],
+        "relu-l1n-1": ["relu-l1n-1"]
+      },
+      "detached_command": "setsid /workspace/run004-venv/bin/python -u 02_train.py --worker WORKER > /workspace/run004-WORKER.log 2>&1 < /dev/null &",
+      "workdir": "/workspace/sparsity-spillover/runs/004-2026-08-29-pythia14m-full-pass-l1n"
+    }
+  },
+  "creation": {
+    "cli_shape": "runpodctl pod create --name NAME --image IMAGE_DIGEST --gpu-id NVIDIA_GEFORCE_RTX_4090 --gpu-count 1 --cloud-type COMMUNITY --container-disk-in-gb 30 --volume-in-gb 25 --volume-mount-path /workspace --ports 22/tcp --min-cuda-version 12.8 --terminate-after RFC3339_NOW_PLUS_7H",
+    "data_center_policy": "do not pin a data center; preserve access to all live Community stock",
+    "capacity_failure": "user later authorized continued retries and GPU substitution; any substituted target requires a fresh preflight and recorded price/ETC implication"
+  },
+  "resources_per_pod": {
+    "gpu_count": 1,
+    "container_disk_gb": 30,
+    "volume_disk_gb": 25,
+    "volume_mount_path": "/workspace",
+    "network_volume": null,
+    "ports": ["22/tcp"],
+    "automatic_terminate_after_hours": 7
+  },
+  "persistent_network_volume": {
+    "created_at": "2026-08-29T16:43:00-03:00",
+    "id": "9luykg5yc3",
+    "name": "sparsity-spillover-shared",
+    "data_center_id": "EUR-IS-1",
+    "type": "STANDARD",
+    "size_gb": 100,
+    "price_usd_per_gb_month": 0.07,
+    "price_usd_per_month": 7.0,
+    "retention": "retain intentionally after Run 004",
+    "pod_constraints": "Secure Cloud only; attach at Pod creation; Pod constrained to EUR-IS-1",
+    "current_attached_pod_id": "qq6u7wif86vdyk",
+    "master_cache_path": "/workspace/shared-cache/minipile-pythia-14m-full",
+    "worker_read_policy": "copy the exact master to /run004-local-data on each Pod before training"
+  },
+  "estimate": {
+    "status": "revised_for_user_requested_shared_network_volume",
+    "original_community_only_maximum_total_usd": 12.17,
+    "expected_wall_hours": [3.8, 5.5],
+    "expected_secure_gpu_hours": [19.0, 27.5],
+    "expected_secure_compute_usd": [14.06, 20.35],
+    "expected_community_preflight_compute_usd": [0.10, 0.27],
+    "expected_run_total_usd": [14.4, 20.9],
+    "maximum_secure_gpu_hours": 35.0,
+    "maximum_secure_compute_usd": 25.90,
+    "maximum_community_preflight_gpu_hours": 7.0,
+    "maximum_community_preflight_compute_usd": 2.38,
+    "maximum_compute_usd": 28.28,
+    "maximum_storage_usd_during_seven_hour_guards": 0.27,
+    "maximum_total_usd": 28.55,
+    "persistent_network_volume_usd_per_month": 7.0,
+    "storage_assumption": "$0.10/GB/month for running container and Pod-volume disk, $0.07/GB/month for the 100 GB Standard network volume, using 730 hours/month",
+    "uncertainty": "Target-GPU calibration is pending. Shared-volume startup adds a local 5.56 GiB cache copy per worker; preflight replaces the training ETC with measured full-boundary timings before rollout."
+  },
+  "transfer": {
+    "training_cache_bytes_per_pod": 5966845664,
+    "training_cache_gib_per_pod": 5.557058066,
+    "training_cache_total_gib_five_pods": 27.785290331,
+    "estimated_retrieved_artifacts_gib": [5.4, 7.2],
+    "inventory": [
+      "resolved config, manifest, events, metrics, and empty predictions file",
+      "activation, weight, logical-product, and checkpoint inventories",
+      "all 12 model snapshots and optimizer/scaler/RNG states at 256, 512, and 712",
+      "worker progress, detached logs, preflight output, and transfer inventories"
+    ],
+    "source_transport": "small inventoried tar archive; direct SCP where available",
+    "cache_transport_trials": [
+      "runpodctl 2.8 local-to-Pod transfer cancelled after stalling at 74 percent",
+      "matched runpodctl 2.12 local-to-Pod transfer cancelled after stalling at 91 percent"
+    ],
+    "cache_primary_path": "download pinned JeanKaddour/minipile and pinned Pythia tokenizer directly from Hugging Face; require exact cache identities; retain master on network volume",
+    "cache_worker_path": "copy the 5.56 GiB immutable master from network volume to disposable container storage before preflight/training",
+    "verification": "recompute every SHA-256 locally, merge six non-colliding attempts, run 03_verify.py before teardown"
+  },
+  "hf_cache_build": {
+    "script": "06_build_cache_from_hf.py",
+    "script_sha256": "9c3a4f5b10fa655b32e47c793dcea3e07805cce9333984369216c5002d327404",
+    "dataset_revision": "18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0",
+    "tokenizer_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+    "validation": {
+      "status": "exact_identity_passed",
+      "documents": 500,
+      "tokens": 693668,
+      "excluded_tail_tokens": 1444,
+      "tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+      "tokenize_publish_seconds": 0.683,
+      "initial_download_and_dataset_preparation_minutes_approx": 2.0
+    },
+    "train": {
+      "status": "exact_identity_passed",
+      "documents": 1000000,
+      "tokens": 1491711416,
+      "excluded_tail_tokens": 1464,
+      "tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "tokenize_publish_seconds": 894.326
+    }
+  },
+  "a100_pcie80_preflight": {
+    "status": "passed",
+    "pod_id": "zqet1vl0hzsxa0",
+    "pod_name": "run004-preflight-a100pcie80-r1",
+    "created_at": "2026-08-29T21:02:05Z",
+    "data_center_id": "CA-MTL-3",
+    "cloud_type": "SECURE",
+    "gpu_type": "NVIDIA A100 80GB PCIe",
+    "gpu_memory_bytes": 85093777408,
+    "price_usd_per_gpu_hour": 1.39,
+    "automatic_terminate_after_hours": 3,
+    "cache_build": {
+      "policy": "build once from pinned Hugging Face inputs, transfer exact cache to later unrestricted-placement workers, never retokenize per worker",
+      "train_publish_seconds": 1034.9165189880878,
+      "train_tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+    },
+    "exact_target": {
+      "memory_limit_gib": 71.3247802734375,
+      "relu_control_boundary_seconds": [6.383623926900327, 4.805823085829616],
+      "relu_control_peak_reserved_gib": 56.94140625,
+      "relu_l1n_1_boundary_seconds": [6.879069955088198, 5.7280414421111345],
+      "relu_l1n_1_peak_reserved_gib": 56.953125,
+      "finite_nonoverflowing_non_skipped": true
+    },
+    "evidence_directory": "prelaunch/attempt-a100pcie80-r1",
+    "remote_preflight_sha256": "8080d61236eb1239f1c3e372b1a78f2dd6095aac0268d42485fe67024d536d1b",
+    "preflight_log_sha256": "bee3f3f78068302a9a2d6c52de9ea1625ec5bd7d2785beb9e8b98b5dd706b047",
+    "scientific_training_started": false
+  },
+  "a100_scale_out_estimate": {
+    "measured_at": "2026-08-29T18:40:43-03:00",
+    "proposed_fleet": [
+      {"count": 1, "gpu_type": "NVIDIA A100 80GB PCIe", "price_usd_per_gpu_hour": 1.39},
+      {"count": 4, "gpu_type": "NVIDIA A100-SXM4-80GB", "price_usd_per_gpu_hour": 1.59}
+    ],
+    "assignment_policy": "existing PCIe Pod receives one pressure condition before its guard; one new SXM Pod receives the two controls; three new SXM Pods receive the remaining pressure conditions",
+    "measured_training_only_hours": {
+      "two_control_worker_using_pcie_control_proxy": 1.90097002061705,
+      "single_pressure_worker_using_lambda_1_proxy": 1.13287930743976
+    },
+    "expected_wall_hours_from_scale_out_approval": [2.6, 3.1],
+    "expected_local_finish_if_approved_at_2026_08_29_18_40_minus_03": ["2026-08-29T21:16:00-03:00", "2026-08-29T21:46:00-03:00"],
+    "expected_remaining_compute_usd_with_per_worker_teardown": 14.50,
+    "conservative_three_hour_all_five_online_compute_usd": 23.25,
+    "four_hour_guard_compute_envelope_usd": 31.0,
+    "prior_terminated_4090_compute_upper_bound_usd": 1.347,
+    "a100_accrued_through_estimate_timestamp_usd": 0.895,
+    "persistent_network_volume_usd_per_month_separate": 7.0,
+    "uncertainty": "A100 SXM timing is not yet measured; the estimate conservatively uses PCIe timings. Capacity retries and cross-region cache transfer can extend wall time. Every substituted GPU still requires CUDA, flash-attention, cache, and exact-boundary verification before scientific work."
+  },
+  "a100_scale_out_provisioning": {
+    "status": "five_gpu_fleet_running_staging_not_started",
+    "completed_at": "2026-08-29T21:45:03Z",
+    "data_center_policy": "unrestricted placement",
+    "active_rate_usd_per_hour": 7.75,
+    "pods": [
+      {"id": "zqet1vl0hzsxa0", "name": "run004-preflight-a100pcie80-r1", "gpu_type": "NVIDIA A100 80GB PCIe", "location": "CA", "price_usd_per_hour": 1.39, "assignment": "relu-l1n-1"},
+      {"id": "7b41lfe965txbh", "name": "run004-worker-controls-a100sxm-r1", "gpu_type": "NVIDIA A100-SXM4-80GB", "location": "US", "price_usd_per_hour": 1.59, "assignment": "controls"},
+      {"id": "58ukutbtquykle", "name": "run004-worker-l1n-0p05-a100sxm-r2", "gpu_type": "NVIDIA A100-SXM4-80GB", "location": "US", "price_usd_per_hour": 1.59, "assignment": "relu-l1n-0p05"},
+      {"id": "6pi00lbzvp6kpx", "name": "run004-worker-l1n-0p1-a100sxm-r1", "gpu_type": "NVIDIA A100-SXM4-80GB", "location": "US", "price_usd_per_hour": 1.59, "assignment": "relu-l1n-0p1"},
+      {"id": "15vi5yw3cw1u1j", "name": "run004-worker-l1n-0p5-a100sxm-r1", "gpu_type": "NVIDIA A100-SXM4-80GB", "location": "US", "price_usd_per_hour": 1.59, "assignment": "relu-l1n-0p5"}
+    ],
+    "failed_requests": [
+      {"name": "run004-worker-l1n-0p05-a100sxm-r1", "result": "machine_resource_race_no_pod_created", "billable_cost_usd": 0.0}
+    ],
+    "new_worker_terminate_after": "2026-08-30T01:45:00Z",
+    "all_direct_ssh_ports_ready": true,
+    "scientific_training_started": false
+  },
+  "step9_a100_fleet_readiness": {
+    "status": "passed_scientific_launch_not_started",
+    "completed_at": "2026-08-29T22:06:02Z",
+    "evidence_directory": "prelaunch/step9-a100-fleet-readiness",
+    "worker_data_centers": {
+      "7b41lfe965txbh": "US-MD-1",
+      "58ukutbtquykle": "US-MD-1",
+      "15vi5yw3cw1u1j": "US-MD-1",
+      "6pi00lbzvp6kpx": "US-MO-1"
+    },
+    "cache_replication": {
+      "method": "four concurrent direct rsync transfers from the A100 PCIe seed using a forced-command write-only rrsync key confined to the Run 004 cache directory",
+      "bytes_per_worker": 5969621629,
+      "started_at": ["2026-08-29T21:52:38Z", "2026-08-29T21:52:40Z", "2026-08-29T21:52:42Z", "2026-08-29T21:52:44Z"],
+      "all_finished_at": "2026-08-29T21:54:02Z",
+      "elapsed_seconds_range": [78, 84],
+      "train_tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+      "all_destination_hashes_passed": true,
+      "temporary_key_revoked_and_rejected": true,
+      "temporary_private_and_public_files_removed_from_seed": true
+    },
+    "readiness": {
+      "all_four_workers_passed": true,
+      "runtime": {"python": "3.12", "torch": "2.11.0", "transformers": "5.12.1", "cuda_runtime": "12.8"},
+      "flash_attention_available": true,
+      "schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "run_code_content_sha256": "501744d66aec47c469c04a1885c97372b39315bd3bc2a67297d8353e4efe5e2d",
+      "pip_freeze_sha256": "2fb0bddde1bd36623b940bb81983cff39e2011ac0a60afb7821eb449d65f08b5"
+    },
+    "a100_sxm_exact_preflight": {
+      "status": "passed",
+      "remote_preflight_sha256": "2ffa1854b0229b81d10be1e8106f27799a1e9192a6bd1902ab8fdf7399c3b3a2",
+      "preflight_log_sha256": "3867325da8076184891c1921074988b5cd1eedeb6747fb7d7ed9127c7c8b7cae",
+      "memory_limit_gib": 71.3247802734375,
+      "relu_control_boundary_seconds": [5.462593261152506, 4.716551220044494],
+      "relu_control_peak_reserved_gib": 56.94140625,
+      "relu_l1n_1_boundary_seconds": [6.832018270157278, 5.6258832910098135],
+      "relu_l1n_1_peak_reserved_gib": 56.953125,
+      "finite_nonoverflowing_non_skipped": true
+    },
+    "updated_launch_estimate": {
+      "controls_worker_hours_including_posthoc_allowance": 2.16565803815093,
+      "sxm_pressure_worker_hours_including_posthoc_allowance": 1.26267469533305,
+      "pcie_pressure_worker_hours_including_posthoc_allowance": 1.28287930743976,
+      "expected_wall_hours": [2.2, 2.6],
+      "expected_local_finish_if_approved_at_2026_08_29_19_07_minus_03": ["2026-08-29T21:19:00-03:00", "2026-08-29T21:43:00-03:00"],
+      "expected_remaining_compute_usd": [11.25, 12.94],
+      "conservative_all_five_online_2p6_hours_usd": 20.15
+    },
+    "all_gpu_idle_at_closing_audit": true,
+    "scientific_training_started": false
+  },
+  "step10_scientific_launch": {
+    "status": "all_five_workers_running_first_events_healthy",
+    "launched_at_approx": "2026-08-29T22:10:00Z",
+    "workers": [
+      {"pod_id": "zqet1vl0hzsxa0", "worker_id": "relu-l1n-1", "pid": 2775, "attempt_id": "006-20260829-221054-e7b8a083", "first_snapshot_step": 4},
+      {"pod_id": "7b41lfe965txbh", "worker_id": "controls", "pid": 1082, "attempt_id": "001-20260829-221007-bb5288c8", "first_condition": "gelu-control", "first_snapshot_step": 16},
+      {"pod_id": "58ukutbtquykle", "worker_id": "relu-l1n-0p05", "pid": 893, "attempt_id": "003-20260829-221010-062e6eae", "first_snapshot_step": 9},
+      {"pod_id": "6pi00lbzvp6kpx", "worker_id": "relu-l1n-0p1", "pid": 949, "attempt_id": "004-20260829-221037-231415c7", "first_snapshot_step": 6},
+      {"pod_id": "15vi5yw3cw1u1j", "worker_id": "relu-l1n-0p5", "pid": 893, "attempt_id": "005-20260829-221010-866aa09f", "first_snapshot_step": 10}
+    ],
+    "first_snapshot": {
+      "captured_at_latest": "2026-08-29T22:11:43Z",
+      "all_processes_present": true,
+      "all_manifests_running": true,
+      "all_losses_finite": true,
+      "all_loss_scales": 4096.0,
+      "any_gradient_overflow": false,
+      "any_optimizer_step_skipped": false,
+      "memory_within_preflight_envelope": true
+    },
+    "monitoring_interval_minutes": 5,
+    "monitoring_interval_minutes_after_user_change": 10
+  },
+  "monitoring": {
+    "initial_interval_minutes": 5,
+    "final_interval_minutes": 10,
+    "change_scope": "controller polling only; detached scientific processes and run-code identity unchanged",
+    "warnings": [
+      "authoritative process absent while manifest is running",
+      "no new event for 10 minutes",
+      "any non-finite task/pressure loss or FP16 overflow/skipped optimizer step",
+      "peak reserved CUDA memory above 90 percent",
+      "less than 5 GB free on /workspace",
+      "projected completion after the seven-hour termination deadline",
+      "validation or diagnostic coverage mismatch"
+    ]
+  },
+  "final_completion": {
+    "status": "verified",
+    "all_training_terminal_at": "2026-08-30T00:19:45Z",
+    "local_cross_condition_verification_completed_at": "2026-08-30T00:27:19Z",
+    "zero_pod_audit_at_approx": "2026-08-30T00:28:00Z",
+    "attempts": [
+      {"attempt_id": "001-20260829-221007-bb5288c8", "condition_id": "gelu-control", "declared_files": 60, "declared_bytes": 1013910055, "final_validation_loss": 5.208582500028893},
+      {"attempt_id": "002-20260829-231305-195b22c6", "condition_id": "relu-control", "declared_files": 60, "declared_bytes": 1013914278, "final_validation_loss": 5.269645995642307},
+      {"attempt_id": "003-20260829-221010-062e6eae", "condition_id": "relu-l1n-0p05", "declared_files": 60, "declared_bytes": 1014222381, "final_validation_loss": 5.206149132294063},
+      {"attempt_id": "004-20260829-221037-231415c7", "condition_id": "relu-l1n-0p1", "declared_files": 60, "declared_bytes": 1014220023, "final_validation_loss": 5.16547385052111},
+      {"attempt_id": "005-20260829-221010-866aa09f", "condition_id": "relu-l1n-0p5", "declared_files": 60, "declared_bytes": 1014220259, "final_validation_loss": 5.112688293118449},
+      {"attempt_id": "006-20260829-221054-e7b8a083", "condition_id": "relu-l1n-1", "declared_files": 60, "declared_bytes": 1014217543, "final_validation_loss": 5.10227634215496}
+    ],
+    "verification": {
+      "condition_count": 6,
+      "completed_optimizer_steps": 4272,
+      "training_input_tokens": 8959033344,
+      "all_transfer_hashes_passed": true,
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "run_code_sha256": "501744d66aec47c469c04a1885c97372b39315bd3bc2a67297d8353e4efe5e2d",
+      "focused_tests": "12 passed",
+      "repository_wide_tests": "107 passed; one unrelated Run 007 approval-state assertion failed"
+    },
+    "event_history": {
+      "status": "verified_with_one_recoverable_prefix_normalization",
+      "audit_path": "artifacts/event-history-audit.json",
+      "relu_control_normalization": "strip 4055 leading NUL bytes from the first JSONL line for parsing only; raw hash-matched evidence remains unchanged",
+      "train_events_per_condition_after_normalization": 712,
+      "gradient_overflow_count": 0,
+      "skipped_optimizer_update_count": 0,
+      "nonfinite_recorded_loss_count": 0
+    },
+    "local_artifacts": {"files": 370, "bytes": 6084775993},
+    "billing": {
+      "provider_posted_pod_total_usd_through_2026_08_30T00_00_00Z": 16.156824025441892,
+      "provider_posted_gpu_usd_through_2026_08_30T00_00_00Z": 16.065446705557406,
+      "provider_posted_pod_disk_usd_through_2026_08_30T00_00_00Z": 0.0913773198844865,
+      "estimated_final_pod_total_usd_pending_last_hour_bucket": [17.67, 17.80],
+      "provider_posted_network_volume_usd_through_2026_08_30T00_00_00Z": 0.03888889029622078,
+      "network_volume_ongoing_usd_per_month": 7.0
+    }
+  },
+  "teardown": {
+    "status": "complete",
+    "sequence": [
+      "finish diagnostics and terminal manifests",
+      "build remote transfer inventories",
+      "copy and hash-verify each completed worker locally",
+      "terminate each exact single-condition Pod after its local verification",
+      "retain the controls Pod until both controls are complete and verified",
+      "run cross-condition verification before terminating the final controls Pod",
+      "re-list Pods and network volumes and confirm zero unintended resources"
+    ],
+    "deleted_pod_ids": [
+      "58ukutbtquykle",
+      "6pi00lbzvp6kpx",
+      "15vi5yw3cw1u1j",
+      "zqet1vl0hzsxa0",
+      "7b41lfe965txbh"
+    ],
+    "remaining_pod_ids": [],
+    "continuing_resources_after_success": [
+      {
+        "type": "network_volume",
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "monthly_cost_usd": 7.0,
+        "reason": "user-requested reusable cache and artifact storage"
+      }
+    ]
+  }
+}

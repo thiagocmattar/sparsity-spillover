@@ -1,0 +1,37 @@
+{
+  "blocker": "The local PyTorch CUDA build has no flash-attention kernel; math-attention memory/timing would not represent the approved recipe.",
+  "device": {
+    "cuda_runtime": "12.8",
+    "flash_attention_available": false,
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.11.0+cu128",
+    "total_memory_bytes": 12820480000
+  },
+  "kind": "non_evidence_prelaunch_smoke",
+  "output": "prelaunch/smoke-20260829-185528.json",
+  "probe": {
+    "accumulation_steps": 1,
+    "batch_sizes": [
+      2,
+      4
+    ],
+    "boundaries_per_sample": 2,
+    "note": "Each sampled boundary repeats one resident input tensor; this represents the graph, component-gradient, optimizer-state, and accumulation path without consuming scientific cache blocks.",
+    "sequence_length": 2048
+  },
+  "projection": {
+    "reason": "flash_attention_unavailable",
+    "status": "unavailable"
+  },
+  "samples": [],
+  "schema_version": 1,
+  "status": "blocked_local_environment",
+  "target": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gradient_accumulation_steps": 32,
+    "memory_bytes": 25769803776,
+    "micro_batch_size": 32,
+    "sequence_length": 2048
+  },
+  "timestamp": "2026-08-29T18:55:28.565596+00:00"
+}

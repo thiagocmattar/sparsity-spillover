@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "status": "approved_for_launch",
+  "launch_approved": true,
+  "approved_at": "2026-08-29T22:28:05.1761202Z",
+  "run": "007-2026-08-29-pythia14m-a4z-threshold-ol1-local",
+  "execution_location": "local",
+  "calibration": {
+    "path": "prelaunch/calibration-20260829-222217.json",
+    "sha256": "093e0765f310e882d31d2ad144907a7377535c2b08a27a4913635f13861a46bd",
+    "kind": "non_evidence_prelaunch_calibration"
+  },
+  "config_sha256": "273a8161de8235d97e8c7383eb3b079231c4adda4a94d609d3f992d5c6242b9b",
+  "run_code_content_sha256": "8c72fdf48510020fa305f6be9b747e3bae5b0a9f6b61b528adb52c18aea731f5",
+  "training_schedule_sha256": "c254893f0ea521e5834405d7a4e6edaed74472733d533aff68fb119e600151d4",
+  "initial_parameter_sha256": "8e511149aac21f3fcacccb9968299bf3938473ff38f4d53cb99f2e9e1a2403bc",
+  "scientific_definition": {
+    "model": "randomly initialized pinned Pythia-14M",
+    "topology_id": "A4-Z",
+    "active_sites": ["a", "m", "h", "z"],
+    "z_boundary": "concatenated PV context [B,T,D] immediately before W_o",
+    "gate_operator": "one_sided_threshold",
+    "gate_thresholds": [0.0, 0.01, 0.05, 0.1, 0.5],
+    "pressure_method": "orthogonal_l1",
+    "pressure_sites": ["a", "m", "h", "z"],
+    "pressure_placement": "post-threshold outputs in all six layers",
+    "pressure_aggregation": "unweighted mean of 24 site-layer mean-absolute tensors",
+    "pressure_weight": 1.0,
+    "step_budget": 1.0,
+    "peak_learning_rate": 0.001,
+    "common_steps": 581,
+    "global_batch_sequences": 64,
+    "sequence_length": 2048,
+    "training_input_tokens_per_condition": 76152832,
+    "total_training_input_tokens": 380764160,
+    "condition_count": 5
+  },
+  "architecture_ceiling": {
+    "topology_id": "A4-Z",
+    "reachable_operations": [
+      "qkv_projection",
+      "attention_output_projection",
+      "mlp_w1",
+      "mlp_w2"
+    ],
+    "reachable_product_count": 2415919104,
+    "model_product_count": 18825609216,
+    "R_model_max_fraction": 0.12833152310134513,
+    "unit": "logical products for one full 2,048-token sequence"
+  },
+  "execution": {
+    "python": "C:/Users/thima/AppData/Local/Programs/Python/Python312/python.exe",
+    "command": "powershell -ExecutionPolicy Bypass -File runs/007-2026-08-29-pythia14m-a4z-threshold-ol1-local/04_launch.ps1",
+    "entrypoint": "02_train.py",
+    "detached": true,
+    "serial_conditions": true,
+    "attempt_policy": "one immutable numbered attempt per condition; no relaunch after any attempt exists"
+  },
+  "estimated_etc": {
+    "median_seconds": 3788.0734284263162,
+    "p90_seconds": 3893.743558720569,
+    "planning_seconds": 4140,
+    "hard_ceiling_seconds": 4200,
+    "p90_headroom_seconds": 306.256441279431,
+    "includes": [
+      "cache verification",
+      "five model and all-site capture setups",
+      "2905 OL1 optimizer updates",
+      "five step-one full validations",
+      "five reloaded-final activation validations",
+      "five eager logical-product validations",
+      "weight statistics",
+      "checkpoint save, hash, and reload",
+      "60 seconds terminal headroom"
+    ]
+  },
+  "local_resource_fit": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "total_memory_bytes": 12820480000,
+    "peak_allocated_bytes": 7209447424,
+    "peak_reserved_bytes": 8315207680,
+    "desktop_baseline_mib_after_calibration": 2252,
+    "conservative_headroom_bytes": 2143879168,
+    "bf16_supported": true,
+    "torch": "2.11.0+cu128",
+    "cuda_runtime": "12.8"
+  },
+  "validation": {
+    "documents_per_pass": 500,
+    "complete_blocks_per_pass": 338,
+    "input_tokens_per_pass": 692224,
+    "excluded_tail_tokens": 1444,
+    "passes_per_condition": 3,
+    "total_complete_passes": 15
+  },
+  "diagnostics": {
+    "activation_sites": ["a", "m", "h", "q_post", "k_post", "v", "z", "attention_output"],
+    "near_zero_thresholds": [0.0, 0.001, 0.01],
+    "weight_statistics": "all named parameters including bias and normalization",
+    "logical_products": "six actual-operand operation families over complete validation",
+    "gradient_interaction": "every optimizer boundary, including OL1 projection and trust metrics",
+    "clipping_frontier": null
+  },
+  "artifact_inventory": {
+    "final_checkpoint_count": 5,
+    "estimated_checkpoint_total_bytes": 281402350,
+    "optimizer_states": false,
+    "predictions": "empty by design",
+    "cloud_transfer": null,
+    "cloud_resources": null
+  },
+  "monitoring": {
+    "interval_seconds": 1800,
+    "planned_updates": ["launch", "approximately 30 minutes", "approximately 60 minutes", "completion"],
+    "report_fields": ["progress", "task_loss", "throughput_tokens_per_second", "etc_seconds"],
+    "warnings": [
+      "non-finite loss, gradients, adaptive directions, or logical fractions",
+      "OL1 final correction ratio above trust budget 1.0",
+      "OOM or less than 1 GiB conservative GPU headroom",
+      "event stream stale for more than 10 minutes",
+      "throughput more than 25 percent below calibration",
+      "refreshed ETC above 4200 seconds",
+      "early process exit",
+      "stderr traceback",
+      "identity, topology, pressure, coverage, or artifact mismatch"
+    ]
+  },
+  "verification": {
+    "focused_tests": "41 passed",
+    "full_bootstrap_tests": "108 passed",
+    "powershell_scripts": "both parsed",
+    "calibration_conditions": ["kappa=0 plus OL1", "kappa=0.5 plus OL1"],
+    "timed_optimizer_boundaries_per_calibration_condition": 6,
+    "checkpoint_roundtrips": 2,
+    "activation_layer_rows_per_condition": 48,
+    "activation_pooled_rows_per_condition": 8,
+    "weight_parameter_rows_per_condition": 76,
+    "launch_provenance": "launcher records Git, config, run-code, schedule, and calibration identities before starting the detached process"
+  }
+}

@@ -43,7 +43,7 @@ def architecture_ceiling(
         "qkv_projection": "a" in active,
         "qk_scores": bool(active.intersection({"q_pre", "k_pre", "q_post", "k_post"})),
         "probability_value": "v" in active,
-        "attention_output_projection": "v" in active,
+        "attention_output_projection": bool(active.intersection({"v", "z"})),
         "mlp_w1": "m" in active,
         "mlp_w2": "h" in active,
     }

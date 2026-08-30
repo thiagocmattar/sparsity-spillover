@@ -1,0 +1,427 @@
+{
+  "device": {
+    "cuda_runtime": "12.8",
+    "flash_attention_available": true,
+    "name": "NVIDIA A100-SXM4-80GB",
+    "torch": "2.11.0+cu128",
+    "total_memory_bytes": 85093777408
+  },
+  "exact_target": {
+    "all_conditions_fit": true,
+    "conditions": {
+      "relu-control": {
+        "boundary_seconds": [
+          5.462593261152506,
+          4.716551220044494
+        ],
+        "finite_nonoverflowing_boundaries": true,
+        "fits_with_10pct_headroom": true,
+        "peak_memory_reserved_gib": 56.94140625,
+        "status": "completed"
+      },
+      "relu-l1n-1": {
+        "boundary_seconds": [
+          6.832018270157278,
+          5.6258832910098135
+        ],
+        "finite_nonoverflowing_boundaries": true,
+        "fits_with_10pct_headroom": true,
+        "peak_memory_reserved_gib": 56.953125,
+        "status": "completed"
+      }
+    },
+    "memory_limit_gib": 71.3247802734375,
+    "status": "sampled"
+  },
+  "kind": "non_evidence_prelaunch_smoke",
+  "output": "prelaunch/smoke-20260829-215936.json",
+  "probe": {
+    "accumulation_steps": 32,
+    "batch_sizes": [
+      32
+    ],
+    "boundaries_per_sample": 2,
+    "note": "Each sampled boundary repeats one resident input tensor; this represents the graph, component-gradient, optimizer-state, and accumulation path without consuming scientific cache blocks.",
+    "sequence_length": 2048
+  },
+  "projection": {
+    "conditions": {
+      "relu-control": {
+        "status": "insufficient_samples"
+      },
+      "relu-l1n-1": {
+        "status": "insufficient_samples"
+      }
+    },
+    "method": "two-or-more-point affine projection of peak allocated bytes by batch size, separately by condition",
+    "target_headroom_fraction": 0.9
+  },
+  "samples": [
+    {
+      "batch_size": 32,
+      "boundary_health": [
+        {
+          "gradient_overflow": false,
+          "optimizer_step_skipped": false
+        },
+        {
+          "gradient_overflow": false,
+          "optimizer_step_skipped": false
+        }
+      ],
+      "boundary_seconds": [
+        5.462593261152506,
+        4.716551220044494
+      ],
+      "condition_id": "relu-control",
+      "gradient_accumulation_steps": 32,
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "initialization": {
+        "bias_elements_zeroed": 6912,
+        "normalization_elements_initialized": 3328,
+        "ordinary": "small_init",
+        "ordinary_weight_elements": 13565952,
+        "residual_output": "wang_init",
+        "residual_output_weight_elements": 491520,
+        "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+        "small_init_std": 0.05590169943749474,
+        "wang_init_std": 0.029462782549439476
+      },
+      "input_tokens_per_boundary": 2097152,
+      "last_boundary": {
+        "adamw_gradient_clip_norm": 1.0,
+        "adamw_gradient_clipping_enabled": true,
+        "adamw_gradient_norm_post_clip": 0.2798113750949114,
+        "adamw_gradient_norm_pre_clip": 0.27981138229370117,
+        "adamw_gradient_was_clipped": false,
+        "gradient_overflow": false,
+        "loss_scale": 4096.0,
+        "loss_scale_action": "hold",
+        "loss_scale_growth_tracker": 2,
+        "loss_scale_hysteresis_tracker": 2,
+        "loss_scale_previous": 4096.0,
+        "optimizer_step_skipped": false,
+        "task_loss": 10.923519134521484
+      },
+      "optimizer": {
+        "decay_parameter_elements": 14057472,
+        "decay_parameter_names": [
+          "gpt_neox.embed_in.weight",
+          "gpt_neox.layers.0.attention.query_key_value.weight",
+          "gpt_neox.layers.0.attention.dense.weight",
+          "gpt_neox.layers.0.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.0.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.1.attention.query_key_value.weight",
+          "gpt_neox.layers.1.attention.dense.weight",
+          "gpt_neox.layers.1.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.1.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.2.attention.query_key_value.weight",
+          "gpt_neox.layers.2.attention.dense.weight",
+          "gpt_neox.layers.2.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.2.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.3.attention.query_key_value.weight",
+          "gpt_neox.layers.3.attention.dense.weight",
+          "gpt_neox.layers.3.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.3.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.4.attention.query_key_value.weight",
+          "gpt_neox.layers.4.attention.dense.weight",
+          "gpt_neox.layers.4.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.4.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.5.attention.query_key_value.weight",
+          "gpt_neox.layers.5.attention.dense.weight",
+          "gpt_neox.layers.5.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.5.mlp.dense_4h_to_h.weight",
+          "embed_out.weight"
+        ],
+        "decay_parameter_tensors": 26,
+        "mapped_optimizer": "torch.optim.AdamW(fused=True)",
+        "no_decay_parameter_elements": 10240,
+        "no_decay_parameter_names": [
+          "gpt_neox.layers.0.input_layernorm.weight",
+          "gpt_neox.layers.0.input_layernorm.bias",
+          "gpt_neox.layers.0.post_attention_layernorm.weight",
+          "gpt_neox.layers.0.post_attention_layernorm.bias",
+          "gpt_neox.layers.0.attention.query_key_value.bias",
+          "gpt_neox.layers.0.attention.dense.bias",
+          "gpt_neox.layers.0.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.0.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.1.input_layernorm.weight",
+          "gpt_neox.layers.1.input_layernorm.bias",
+          "gpt_neox.layers.1.post_attention_layernorm.weight",
+          "gpt_neox.layers.1.post_attention_layernorm.bias",
+          "gpt_neox.layers.1.attention.query_key_value.bias",
+          "gpt_neox.layers.1.attention.dense.bias",
+          "gpt_neox.layers.1.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.1.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.2.input_layernorm.weight",
+          "gpt_neox.layers.2.input_layernorm.bias",
+          "gpt_neox.layers.2.post_attention_layernorm.weight",
+          "gpt_neox.layers.2.post_attention_layernorm.bias",
+          "gpt_neox.layers.2.attention.query_key_value.bias",
+          "gpt_neox.layers.2.attention.dense.bias",
+          "gpt_neox.layers.2.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.2.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.3.input_layernorm.weight",
+          "gpt_neox.layers.3.input_layernorm.bias",
+          "gpt_neox.layers.3.post_attention_layernorm.weight",
+          "gpt_neox.layers.3.post_attention_layernorm.bias",
+          "gpt_neox.layers.3.attention.query_key_value.bias",
+          "gpt_neox.layers.3.attention.dense.bias",
+          "gpt_neox.layers.3.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.3.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.4.input_layernorm.weight",
+          "gpt_neox.layers.4.input_layernorm.bias",
+          "gpt_neox.layers.4.post_attention_layernorm.weight",
+          "gpt_neox.layers.4.post_attention_layernorm.bias",
+          "gpt_neox.layers.4.attention.query_key_value.bias",
+          "gpt_neox.layers.4.attention.dense.bias",
+          "gpt_neox.layers.4.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.4.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.5.input_layernorm.weight",
+          "gpt_neox.layers.5.input_layernorm.bias",
+          "gpt_neox.layers.5.post_attention_layernorm.weight",
+          "gpt_neox.layers.5.post_attention_layernorm.bias",
+          "gpt_neox.layers.5.attention.query_key_value.bias",
+          "gpt_neox.layers.5.attention.dense.bias",
+          "gpt_neox.layers.5.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.5.mlp.dense_4h_to_h.bias",
+          "gpt_neox.final_layer_norm.weight",
+          "gpt_neox.final_layer_norm.bias"
+        ],
+        "no_decay_parameter_tensors": 50,
+        "source_optimizer": "GPT-NeoX v1 Apex/DeepSpeed FusedAdam in AdamW mode"
+      },
+      "peak_memory_allocated_bytes": 47986620928,
+      "peak_memory_reserved_bytes": 61140369408,
+      "recipe": {
+        "architecture": {
+          "attention_bias": true,
+          "hidden_act": "gelu",
+          "hidden_size": 128,
+          "intermediate_size": 512,
+          "layer_norm_eps": 1e-05,
+          "max_position_embeddings": 2048,
+          "num_attention_heads": 4,
+          "num_hidden_layers": 6,
+          "rotary_pct": 0.25,
+          "tie_word_embeddings": false,
+          "use_parallel_residual": true,
+          "vocab_size": 50304
+        },
+        "attention_implementation": "sdpa_flash",
+        "initialization": {
+          "ordinary": "small_init",
+          "residual_output": "wang_init",
+          "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+          "small_init_std": 0.05590169943749474,
+          "wang_init_std": 0.029462782549439476
+        }
+      },
+      "sequence_length": 2048,
+      "status": "completed",
+      "topology": {
+        "active_sites": [
+          "h"
+        ],
+        "qk_placement": null,
+        "site_gate": {
+          "operator": "relu"
+        },
+        "topology_id": "A1-H"
+      }
+    },
+    {
+      "batch_size": 32,
+      "boundary_health": [
+        {
+          "gradient_overflow": false,
+          "optimizer_step_skipped": false
+        },
+        {
+          "gradient_overflow": false,
+          "optimizer_step_skipped": false
+        }
+      ],
+      "boundary_seconds": [
+        6.832018270157278,
+        5.6258832910098135
+      ],
+      "condition_id": "relu-l1n-1",
+      "gradient_accumulation_steps": 32,
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "initialization": {
+        "bias_elements_zeroed": 6912,
+        "normalization_elements_initialized": 3328,
+        "ordinary": "small_init",
+        "ordinary_weight_elements": 13565952,
+        "residual_output": "wang_init",
+        "residual_output_weight_elements": 491520,
+        "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+        "small_init_std": 0.05590169943749474,
+        "wang_init_std": 0.029462782549439476
+      },
+      "input_tokens_per_boundary": 2097152,
+      "last_boundary": {
+        "adamw_gradient_clip_norm": 1.0,
+        "adamw_gradient_clipping_enabled": true,
+        "adamw_gradient_norm_post_clip": 0.3488469676426828,
+        "adamw_gradient_norm_pre_clip": 0.348846971988678,
+        "adamw_gradient_was_clipped": false,
+        "augmented_loss": 11.14342975616455,
+        "gradient_conflict": false,
+        "gradient_overflow": false,
+        "loss_scale": 4096.0,
+        "loss_scale_action": "hold",
+        "loss_scale_growth_tracker": 2,
+        "loss_scale_hysteresis_tracker": 2,
+        "loss_scale_previous": 4096.0,
+        "optimizer_step_skipped": false,
+        "pressure_gradient_norm": 0.1625071698121292,
+        "pressure_loss": 0.2088298797607422,
+        "pressure_to_task_gradient_norm_ratio": 0.5729551227601304,
+        "pressure_weight": 1.0,
+        "task_gradient_norm": 0.28362984002778596,
+        "task_loss": 10.934599876403809,
+        "task_pressure_gradient_cosine": 0.16097986655951674,
+        "task_pressure_gradient_dot": 0.007419865106912726,
+        "weighted_pressure_loss": 0.2088298797607422
+      },
+      "optimizer": {
+        "decay_parameter_elements": 14057472,
+        "decay_parameter_names": [
+          "gpt_neox.embed_in.weight",
+          "gpt_neox.layers.0.attention.query_key_value.weight",
+          "gpt_neox.layers.0.attention.dense.weight",
+          "gpt_neox.layers.0.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.0.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.1.attention.query_key_value.weight",
+          "gpt_neox.layers.1.attention.dense.weight",
+          "gpt_neox.layers.1.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.1.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.2.attention.query_key_value.weight",
+          "gpt_neox.layers.2.attention.dense.weight",
+          "gpt_neox.layers.2.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.2.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.3.attention.query_key_value.weight",
+          "gpt_neox.layers.3.attention.dense.weight",
+          "gpt_neox.layers.3.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.3.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.4.attention.query_key_value.weight",
+          "gpt_neox.layers.4.attention.dense.weight",
+          "gpt_neox.layers.4.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.4.mlp.dense_4h_to_h.weight",
+          "gpt_neox.layers.5.attention.query_key_value.weight",
+          "gpt_neox.layers.5.attention.dense.weight",
+          "gpt_neox.layers.5.mlp.dense_h_to_4h.weight",
+          "gpt_neox.layers.5.mlp.dense_4h_to_h.weight",
+          "embed_out.weight"
+        ],
+        "decay_parameter_tensors": 26,
+        "mapped_optimizer": "torch.optim.AdamW(fused=True)",
+        "no_decay_parameter_elements": 10240,
+        "no_decay_parameter_names": [
+          "gpt_neox.layers.0.input_layernorm.weight",
+          "gpt_neox.layers.0.input_layernorm.bias",
+          "gpt_neox.layers.0.post_attention_layernorm.weight",
+          "gpt_neox.layers.0.post_attention_layernorm.bias",
+          "gpt_neox.layers.0.attention.query_key_value.bias",
+          "gpt_neox.layers.0.attention.dense.bias",
+          "gpt_neox.layers.0.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.0.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.1.input_layernorm.weight",
+          "gpt_neox.layers.1.input_layernorm.bias",
+          "gpt_neox.layers.1.post_attention_layernorm.weight",
+          "gpt_neox.layers.1.post_attention_layernorm.bias",
+          "gpt_neox.layers.1.attention.query_key_value.bias",
+          "gpt_neox.layers.1.attention.dense.bias",
+          "gpt_neox.layers.1.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.1.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.2.input_layernorm.weight",
+          "gpt_neox.layers.2.input_layernorm.bias",
+          "gpt_neox.layers.2.post_attention_layernorm.weight",
+          "gpt_neox.layers.2.post_attention_layernorm.bias",
+          "gpt_neox.layers.2.attention.query_key_value.bias",
+          "gpt_neox.layers.2.attention.dense.bias",
+          "gpt_neox.layers.2.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.2.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.3.input_layernorm.weight",
+          "gpt_neox.layers.3.input_layernorm.bias",
+          "gpt_neox.layers.3.post_attention_layernorm.weight",
+          "gpt_neox.layers.3.post_attention_layernorm.bias",
+          "gpt_neox.layers.3.attention.query_key_value.bias",
+          "gpt_neox.layers.3.attention.dense.bias",
+          "gpt_neox.layers.3.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.3.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.4.input_layernorm.weight",
+          "gpt_neox.layers.4.input_layernorm.bias",
+          "gpt_neox.layers.4.post_attention_layernorm.weight",
+          "gpt_neox.layers.4.post_attention_layernorm.bias",
+          "gpt_neox.layers.4.attention.query_key_value.bias",
+          "gpt_neox.layers.4.attention.dense.bias",
+          "gpt_neox.layers.4.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.4.mlp.dense_4h_to_h.bias",
+          "gpt_neox.layers.5.input_layernorm.weight",
+          "gpt_neox.layers.5.input_layernorm.bias",
+          "gpt_neox.layers.5.post_attention_layernorm.weight",
+          "gpt_neox.layers.5.post_attention_layernorm.bias",
+          "gpt_neox.layers.5.attention.query_key_value.bias",
+          "gpt_neox.layers.5.attention.dense.bias",
+          "gpt_neox.layers.5.mlp.dense_h_to_4h.bias",
+          "gpt_neox.layers.5.mlp.dense_4h_to_h.bias",
+          "gpt_neox.final_layer_norm.weight",
+          "gpt_neox.final_layer_norm.bias"
+        ],
+        "no_decay_parameter_tensors": 50,
+        "source_optimizer": "GPT-NeoX v1 Apex/DeepSpeed FusedAdam in AdamW mode"
+      },
+      "peak_memory_allocated_bytes": 54945782272,
+      "peak_memory_reserved_bytes": 61152952320,
+      "recipe": {
+        "architecture": {
+          "attention_bias": true,
+          "hidden_act": "gelu",
+          "hidden_size": 128,
+          "intermediate_size": 512,
+          "layer_norm_eps": 1e-05,
+          "max_position_embeddings": 2048,
+          "num_attention_heads": 4,
+          "num_hidden_layers": 6,
+          "rotary_pct": 0.25,
+          "tie_word_embeddings": false,
+          "use_parallel_residual": true,
+          "vocab_size": 50304
+        },
+        "attention_implementation": "sdpa_flash",
+        "initialization": {
+          "ordinary": "small_init",
+          "residual_output": "wang_init",
+          "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+          "small_init_std": 0.05590169943749474,
+          "wang_init_std": 0.029462782549439476
+        }
+      },
+      "sequence_length": 2048,
+      "status": "completed",
+      "topology": {
+        "active_sites": [
+          "h"
+        ],
+        "qk_placement": null,
+        "site_gate": {
+          "operator": "relu"
+        },
+        "topology_id": "A1-H"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "status": "completed",
+  "target": {
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gradient_accumulation_steps": 32,
+    "memory_bytes": 85093777408,
+    "micro_batch_size": 32,
+    "sequence_length": 2048
+  },
+  "timestamp": "2026-08-29T21:59:06.487280+00:00"
+}

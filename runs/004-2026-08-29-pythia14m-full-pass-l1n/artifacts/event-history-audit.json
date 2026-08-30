@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-08-30T00:33:23.6735174Z",
+  "status": "verified_with_one_recoverable_prefix_normalization",
+  "attempt_count": 6,
+  "strictly_valid_attempts": [
+    "001-20260829-221007-bb5288c8",
+    "003-20260829-221010-062e6eae",
+    "004-20260829-221037-231415c7",
+    "005-20260829-221010-866aa09f",
+    "006-20260829-221054-e7b8a083"
+  ],
+  "normalized_attempt": {
+    "attempt_id": "002-20260829-231305-195b22c6",
+    "condition_id": "relu-control",
+    "raw_events_bytes": 597831,
+    "raw_events_sha256": "33484adf815c554e549dd5fde1f1475c2a748dd4d52e9303155b4960ae3f0862",
+    "raw_hash_matches_remote_transfer_inventory": true,
+    "raw_artifact_modified": false,
+    "anomaly": "The first JSONL line begins with 4055 NUL bytes followed by a complete valid step-1 JSON object.",
+    "normalization": "For parsing only, remove exactly the leading NUL bytes from line 1; preserve the raw evidence unchanged.",
+    "recovered_first_event": {
+      "event": "train",
+      "step": 1,
+      "input_tokens_seen": 2097152,
+      "task_loss": 11.036670565605164,
+      "learning_rate": 0.0,
+      "loss_scale": 4096.0,
+      "gradient_overflow": false,
+      "optimizer_step_skipped": false,
+      "adamw_gradient_norm_pre_clip": 2.3357067108154297,
+      "adamw_gradient_norm_post_clip": 0.9999995337145842,
+      "adamw_gradient_was_clipped": true
+    },
+    "normalized_train_event_count": 712,
+    "normalized_missing_steps": [],
+    "normalized_gradient_overflow_count": 0,
+    "normalized_skipped_update_count": 0,
+    "normalized_nonfinite_task_loss_count": 0,
+    "normalized_loss_scales": [4096.0],
+    "normalized_clipped_update_count": 25
+  },
+  "all_attempts_after_declared_normalization": {
+    "train_events_per_attempt": 712,
+    "missing_train_steps": 0,
+    "gradient_overflow_count": 0,
+    "skipped_optimizer_update_count": 0,
+    "nonfinite_recorded_loss_count": 0,
+    "validation_events_per_attempt": 2
+  },
+  "interpretation": "No optimizer update or recorded boundary datum is missing. The anomaly changes parser handling only and does not change checkpoints, metrics, diagnostics, validation, or scientific inputs."
+}

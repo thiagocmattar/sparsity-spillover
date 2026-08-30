@@ -28,6 +28,17 @@ After warmup, measure several complete optimizer boundaries. Separately measure:
 
 Report sample count and variability, not one convenient step.
 
+### Timer boundary
+
+The representative step timer must include every recurring part of an update:
+batch/index construction, host-to-device staging, forward/backward work,
+gradient processing, and the optimizer update. A narrower synchronized kernel
+or optimizer-boundary timer may also be retained, but it must be labeled and
+must not drive ETC by itself. Run 004 demonstrated this failure mode: its
+boundary timer omitted batch construction and staging and therefore
+underestimated pressure-worker wall time even though the measured CUDA work was
+correct.
+
 ## ETC model
 
 ```text
@@ -88,6 +99,13 @@ The operational connection, launch, transfer, and teardown sequence is in
   maximum duration, termination deadline, maximum cost, and cleanup intent.
 - Ensure an SSH public key is registered/injected before Pod creation.
 
+Resolve these choices in dependency order: exact workload memory fit, live GPU
+availability and acceptable data centers, then persistent-storage placement. A
+network volume is data-center-bound; creating it first can unnecessarily reduce
+the GPU pool. If placement flexibility dominates persistence, seed one verified
+Pod and distribute an immutable hash-checked cache, or use an approved
+region-independent object-transfer path.
+
 Never send credentials to chat or commit them.
 
 ### Persistence
@@ -122,6 +140,11 @@ Do not infer that a Pod marked `Running` means the training process is healthy.
 4. Recompute local hashes against the inventory.
 5. Only then terminate the Pod.
 6. Re-list Pods and volumes; report anything retained and its continuing cost.
+
+Provider billing buckets can lag resource deletion. Record the teardown-time
+estimate as provisional, then refresh posted billing during run closeout and
+state which value supersedes it. Keep one-time Pod charges separate from any
+retained volume's continuing monthly cost.
 
 Use an automatic termination deadline as a backstop, not as the primary cleanup
 mechanism.

@@ -1,0 +1,264 @@
+{
+  "activation_pressure": {
+    "eps": 1e-12,
+    "method": "orthogonal_l1",
+    "sites": [
+      "a",
+      "m",
+      "h",
+      "z"
+    ],
+    "step_budget": 1.0,
+    "weight": 1.0
+  },
+  "attempt_id": "006-20260829-234710-5872533a",
+  "code": {
+    "git_commit": "39e5be7b27a9f0b6df3746b71991e3439526871f",
+    "git_dirty": true
+  },
+  "command": "python runs/007-2026-08-29-pythia14m-a4z-threshold-ol1-local/02_train.py",
+  "condition": {
+    "active_sites": [
+      "a",
+      "m",
+      "h",
+      "z"
+    ],
+    "gate_operator": "one_sided_threshold",
+    "gate_threshold": 0.5,
+    "id": "a4z-one-sided-kappa-0p5-ol1-1",
+    "is_control": false,
+    "label": "kappa=0.5, lambda=1",
+    "order": 5,
+    "pressure_method": "orthogonal_l1",
+    "pressure_sites": [
+      "a",
+      "m",
+      "h",
+      "z"
+    ],
+    "pressure_weight": 1.0,
+    "step_budget": 1.0,
+    "topology_id": "A4-Z"
+  },
+  "config_sha256": "1f5fe28ecbc8190252cb685d2def4bf215c60c67def92399a0e2a2f5edb39344",
+  "data": {
+    "train": {
+      "append_eos": true,
+      "block_size": 2048,
+      "complete_blocks": 728374,
+      "dataset_name": "JeanKaddour/minipile",
+      "dataset_revision": "18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0",
+      "documents": 1000000,
+      "evaluated_complete_block_tokens": 1491709952,
+      "excluded_tail_tokens": 1464,
+      "split": "train",
+      "text_column": "text",
+      "tokenizer_name": "EleutherAI/pythia-14m-deduped",
+      "tokenizer_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+      "tokens": 1491711416,
+      "tokens_bytes": 5966845664,
+      "tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c"
+    },
+    "training_schedule": {
+      "block_size": 2048,
+      "complete_blocks": 728374,
+      "excluded_tail_tokens": 1464,
+      "gradient_accumulation_steps": 16,
+      "max_steps": 581,
+      "micro_batch_size": 4,
+      "scheduled_blocks": 37184,
+      "scheme": "seeded_complete_block_permutation_wrap_v1",
+      "seed": 0,
+      "sequences_per_update": 64,
+      "token_count": 1491711416,
+      "wrapped_blocks": 0
+    },
+    "training_schedule_hash": "c254893f0ea521e5834405d7a4e6edaed74472733d533aff68fb119e600151d4",
+    "validation": {
+      "append_eos": true,
+      "block_size": 2048,
+      "complete_blocks": 338,
+      "dataset_name": "JeanKaddour/minipile",
+      "dataset_revision": "18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0",
+      "documents": 500,
+      "evaluated_complete_block_tokens": 692224,
+      "excluded_tail_tokens": 1444,
+      "split": "validation",
+      "text_column": "text",
+      "tokenizer_name": "EleutherAI/pythia-14m-deduped",
+      "tokenizer_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+      "tokens": 693668,
+      "tokens_bytes": 2774672,
+      "tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+    }
+  },
+  "environment": {
+    "cuda_available": true,
+    "cuda_runtime": "12.8",
+    "devices": [
+      "NVIDIA GeForce RTX 5070 Ti Laptop GPU"
+    ],
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1"
+  },
+  "failure": {
+    "message": "CUDA error: out of memory\nSearch for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.\nCUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\nFor debugging consider passing CUDA_LAUNCH_BLOCKING=1\nCompile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n",
+    "type": "AcceleratorError"
+  },
+  "finished_at": "2026-08-29T23:54:59.573716+00:00",
+  "gradient_clipping": {
+    "enabled": true,
+    "max_norm": 1.0
+  },
+  "launch_provenance": {
+    "calibration": {
+      "kind": "non_evidence_prelaunch_calibration",
+      "path": "prelaunch/calibration-20260829-222217.json",
+      "sha256": "093e0765f310e882d31d2ad144907a7377535c2b08a27a4913635f13861a46bd"
+    },
+    "config_sha256": "273a8161de8235d97e8c7383eb3b079231c4adda4a94d609d3f992d5c6242b9b",
+    "git_commit": "39e5be7b27a9f0b6df3746b71991e3439526871f",
+    "git_dirty": true,
+    "recorded_at": "2026-08-29T22:28:29.4222728Z",
+    "run_code_content_sha256": "8c72fdf48510020fa305f6be9b747e3bae5b0a9f6b61b528adb52c18aea731f5",
+    "schema_version": 1,
+    "training_schedule_sha256": "c254893f0ea521e5834405d7a4e6edaed74472733d533aff68fb119e600151d4"
+  },
+  "mode": "pretrain",
+  "model": {
+    "architecture": "EleutherAI/pythia-14m-deduped",
+    "initialization": "random",
+    "loaded_checkpoint_weights": false,
+    "revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+    "site_gate": {
+      "kappa": 0.5,
+      "operator": "one_sided_threshold"
+    },
+    "topology_id": "A4-Z"
+  },
+  "run_code": {
+    "content_sha256": "8c72fdf48510020fa305f6be9b747e3bae5b0a9f6b61b528adb52c18aea731f5",
+    "files": [
+      {
+        "bytes": 307,
+        "path": "01_calibrate.py",
+        "sha256": "505b4ea2c3b2f5350dd6c1199dab8c51c9630d151dc87adb0927de2cec03a96e"
+      },
+      {
+        "bytes": 1778,
+        "path": "02_train.py",
+        "sha256": "fb6803eee13be5d948de3e160663ba04df47338eaaa56e808b208434e55c8d23"
+      },
+      {
+        "bytes": 321,
+        "path": "03_verify.py",
+        "sha256": "fba4b3b397f02310b7647ff85614b7ed105b7ab042bc7955b3308478116e6785"
+      },
+      {
+        "bytes": 2891,
+        "path": "04_launch.ps1",
+        "sha256": "0f0a83269359456cbadcb16416caf21b6a58e577fb05c8eef796f13bf4cb5511"
+      },
+      {
+        "bytes": 4610,
+        "path": "05_monitor.ps1",
+        "sha256": "39d8bf976ab2666f3044a3b25ae533e28b1b82922328e4640a12c42b97a39e95"
+      },
+      {
+        "bytes": 14407,
+        "path": "calibration.py",
+        "sha256": "3e8afd7b096205bfcb9b36aeca9c32cd8bf0b39e9586c1eb86f9d4f0f7f417a1"
+      },
+      {
+        "bytes": 6033,
+        "path": "diagnostics.py",
+        "sha256": "68bad5a92d69432787de8713132c2685047347b3d651cfe0e4157b824d75df72"
+      },
+      {
+        "bytes": 1024,
+        "path": "launch_detached.py",
+        "sha256": "e436de04a8f66dee6415a1242e3ae9ebfa497429aa0f637c48ef42bcc8ba83b7"
+      },
+      {
+        "bytes": 16266,
+        "path": "run_config.py",
+        "sha256": "bde95d8218c01b34029eb1ab5106f6438c5cdebb72cbd75a1d1aca351341dd29"
+      },
+      {
+        "bytes": 22137,
+        "path": "training.py",
+        "sha256": "cf9c0f6cb555462bdd4df7017a174365ebf826e6a0a0940819cd4c12c73a8dc7"
+      },
+      {
+        "bytes": 18215,
+        "path": "verification.py",
+        "sha256": "9d26adff2db4108d264f9d24a4845768cb1158410b48d0fd9971a861def309e3"
+      },
+      {
+        "bytes": 9270,
+        "path": "../../src/sparsity_research/artifacts.py",
+        "sha256": "6ca4ecab84d578cc2b87ea32d58e4a93d8f5d03b260e531b6d0b68167793acbe"
+      },
+      {
+        "bytes": 6837,
+        "path": "../../src/sparsity_research/capture.py",
+        "sha256": "3b5d95a963341fe442e80dfe346d8ebd6a06381e493dd44e52e9f6d871cfd417"
+      },
+      {
+        "bytes": 3103,
+        "path": "../../src/sparsity_research/ceilings.py",
+        "sha256": "0cf15ca2812345249c6ca56a4637af003a7f4fdd7fc08a67a2e057bb72c84025"
+      },
+      {
+        "bytes": 8773,
+        "path": "../../src/sparsity_research/data.py",
+        "sha256": "3f5de7b561df68320d65f58be27551cc66a77d4f435a46d6b39b5a813469131b"
+      },
+      {
+        "bytes": 2098,
+        "path": "../../src/sparsity_research/evaluation.py",
+        "sha256": "3577d65fbe3a82c9e159a543492ffd9cea4a9c8b23b01b67b4efa4d25d9733f4"
+      },
+      {
+        "bytes": 5324,
+        "path": "../../src/sparsity_research/logical_capture.py",
+        "sha256": "4d01454e9cb0cb002034f5f677650394d432dfa8a9e7dd93fff34d792cdfe6cb"
+      },
+      {
+        "bytes": 10828,
+        "path": "../../src/sparsity_research/metrics.py",
+        "sha256": "e20bd9b8657639281c12e7def102a3c02e1605e4b02106433c4ff204e519c58f"
+      },
+      {
+        "bytes": 10538,
+        "path": "../../src/sparsity_research/optimization.py",
+        "sha256": "1869e21bccc34a31724c1a30c6852b86dc3f0f5cb6b68239fc700128777a1927"
+      },
+      {
+        "bytes": 8509,
+        "path": "../../src/sparsity_research/pressure.py",
+        "sha256": "d67dd1a032505e7f603e2808058adc5a311b6270735f40dbe0409d996bdde4ee"
+      },
+      {
+        "bytes": 9213,
+        "path": "../../src/sparsity_research/pythia.py",
+        "sha256": "0372c77be85a80f7ab06382a37416b8b95307b9804905705ce558ae2593e4dbb"
+      },
+      {
+        "bytes": 6365,
+        "path": "../../src/sparsity_research/sites.py",
+        "sha256": "1dba21c84c67010082593dc7c0567fea9eb2b78097a8908757160a432bcb953f"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "seeds": {
+    "data_order": 0,
+    "model": 0
+  },
+  "started_at": "2026-08-29T23:47:10.020828+00:00",
+  "status": "failed"
+}
