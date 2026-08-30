@@ -16,7 +16,7 @@ by a separate five-worker scientific-launch decision.
 - [x] 3. Pass focused, affected-run, and repository-wide tests; reconcile local
   fit, historical ETC, live RunPod inventory, capacity, and price.
 - [ ] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at the two
-  threshold extremes. **Awaiting explicit preflight-launch approval.**
+  threshold extremes. **Approved on 2026-08-30; provisioning is in progress.**
 - [ ] 5. Retrieve the preflight packet, update the measured five-worker ETC and
   cost, and reconfirm the post-hoc inventory.
 - [ ] 6. Obtain separate scientific-launch approval and start five concurrent
@@ -222,5 +222,8 @@ claim without a separate user-approved finding.
 - 2026-08-30: the user approved all five kappas, operational A4-Z, the complete
   paper-scale contract, five condition-parallel A100 workers, reuse of Run 004's
   A1-H comparator, checkpoint retention, and omission of a clipping frontier.
-- Preflight launch approval: requested after implementation; not yet granted.
+- 2026-08-30: the user explicitly replied `Approved for preflight` to authorize
+  exactly one non-evidence Secure A100 SXM 80 GB Pod under the `$2.60`
+  incremental envelope and 1.5-hour absolute termination guard. This approval
+  does not authorize scientific training.
 - Scientific launch approval: not requested or granted.

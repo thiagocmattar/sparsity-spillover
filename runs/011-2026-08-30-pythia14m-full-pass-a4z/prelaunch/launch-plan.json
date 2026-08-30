@@ -1,9 +1,12 @@
 {
   "schema_version": 1,
-  "status": "awaiting_preflight_launch_approval",
+  "status": "preflight_launch_approved_provisioning_pending",
   "prepared_at": "2026-08-30T16:10:00Z",
+  "revised_at": "2026-08-30T16:33:17.3789179Z",
   "design_approved": true,
-  "preflight_launch_approved": false,
+  "preflight_launch_approved": true,
+  "preflight_launch_approved_at": "2026-08-30T16:33:17.3789179Z",
+  "preflight_launch_approval_record": "User explicitly replied 'Approved for preflight' to the one-Pod, non-evidence Secure A100 SXM 80 GB packet under a $2.60 incremental envelope and 1.5-hour termination guard.",
   "scientific_launch_approved": false,
   "approval_scope_requested": "one guarded non-evidence Secure A100 SXM 80 GB preflight Pod; no scientific training",
   "identities": {
@@ -21,7 +24,7 @@
     "target_gpu_preflight": "not run; awaiting approval"
   },
   "live_inventory": {
-    "queried_at": "2026-08-30T16:10:00Z",
+    "queried_at": "2026-08-30T16:33:17.3789179Z",
     "source": "RunPod MCP live v2 inventory",
     "pods": 0,
     "network_volumes": [
@@ -42,7 +45,7 @@
         "secure_availability": "MEDIUM",
         "secure_price_usd_per_gpu_hour": 1.59,
         "cuda_12_8_available": true,
-        "eligible_data_centers": ["US-CA-2", "US-KS-2", "US-MD-1", "US-MO-1", "US-WA-1"]
+        "eligible_data_centers": ["EUR-IS-1", "US-CA-2", "US-KS-2", "US-MD-1", "US-MO-1", "US-WA-1"]
       },
       {
         "id": "NVIDIA A100 80GB PCIe",
@@ -66,7 +69,9 @@
     "pod_volume_gb": 25,
     "volume_mount_path": "/workspace",
     "ports": ["22/tcp"],
-    "data_center_scope": "any advertised Secure A100 SXM data center; no current A100 capacity in EUR-IS-1",
+    "data_center_scope": "any advertised Secure A100 SXM data center",
+    "existing_network_volume_attached": false,
+    "existing_network_volume_rule": "leave 9luykg5yc3 untouched under the approved packet even though low A100 capacity appeared in EUR-IS-1 at the final audit",
     "source_rule": "create a Git bundle from the approved tracked commit only, transfer it over the verified SSH endpoint, clone it under /workspace, and verify commit plus config/code identities before setup",
     "storage_rule": "stage or rebuild one cache under /workspace and require pinned metadata and byte hashes; create no new network volume",
     "maximum_preflight_minutes": 45,
