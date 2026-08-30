@@ -343,7 +343,7 @@ def _ol1_figure(events: dict[str, dict[float, list[dict[str, Any]]]]) -> Path:
         "OL1 removes Adam-relative gradient conflict",
         top=0.84,
         bottom=0.30,
-        xlabel_y=0.035,
+        xlabel_y=0.14,
     )
     for ax, weight in zip(axes, LAMBDAS, strict=True):
         rows = events["orthogonal_l1"][weight]
@@ -361,7 +361,7 @@ def _ol1_figure(events: dict[str, dict[float, list[dict[str, Any]]]]) -> Path:
             styles[1],
         )
     _format_axes(axes, (-0.19, 0.02), (-0.18, -0.12, -0.06, 0.0))
-    _legend(fig, styles, y=0.16, location="center", fontsize=6.8)
+    _legend(fig, styles, y=0.035, location="center", fontsize=6.8)
     _save(
         fig,
         OUTPUT_OL1,
