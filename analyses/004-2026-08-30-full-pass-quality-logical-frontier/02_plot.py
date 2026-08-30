@@ -26,7 +26,7 @@ STYLES = {
         "linestyle": "--",
     },
     "a4z_threshold": {
-        "label": "A4-Z threshold",
+        "label": "A4",
         "color": "#009E73",
         "marker": "D",
         "linestyle": "-.",

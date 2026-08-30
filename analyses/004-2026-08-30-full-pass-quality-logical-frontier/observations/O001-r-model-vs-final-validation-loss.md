@@ -33,15 +33,16 @@ writing the reduced artifact. `02_plot.py` reads only that artifact.
 opportunity after one full MiniPile pass.** The single panel shows all 15 unique
 endpoints. Blue circles and a solid line show Run 004's A1-H naive-L1 grid;
 orange squares and a dashed line show Run 009's matched A1-H OL1 grid; green
-diamonds and a dash-dot line show Run 011's joint A4-Z one-sided-threshold grid.
-The gray plus and black triangle mark the reused Run 004 GeLU and A1-H ReLU
-controls. Labels give lambda for pressure endpoints and kappa for threshold
-endpoints. Lines connect increasing doses for readability and do not imply
-interpolation. Horizontal position is exact-zero `R_model` as a percentage, a
-logical-product opportunity rather than measured speedup. Vertical position is
-final loss from the reloaded checkpoint on all 338 complete validation blocks;
-lower is better. The loss axis shows endpoint detail and does not start at zero.
-No uncertainty bars are shown because only one seed was evaluated.
+diamonds and a dash-dot line labeled A4 show Run 011's joint one-sided-threshold
+grid at operational topology A4-Z. The gray plus and black triangle mark the
+reused Run 004 GeLU and A1-H ReLU controls. Labels give lambda for pressure
+endpoints and kappa for threshold endpoints. Lines connect increasing doses for
+readability and do not imply interpolation. Horizontal position is exact-zero
+`R_model` as a percentage, a logical-product opportunity rather than measured
+speedup. Vertical position is final loss from the reloaded checkpoint on all
+338 complete validation blocks; lower is better. The loss axis shows endpoint
+detail and does not start at zero. No uncertainty bars are shown because only
+one seed was evaluated.
 
 ## Observed pattern
 
