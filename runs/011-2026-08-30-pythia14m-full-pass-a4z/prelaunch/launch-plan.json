@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "status": "scientific_launch_approved_provisioning_pending",
+  "status": "scientific_execution_completed_valid",
   "prepared_at": "2026-08-30T16:10:00Z",
-  "revised_at": "2026-08-30T17:13:01.0817036Z",
+  "revised_at": "2026-08-30T19:35:00Z",
   "design_approved": true,
   "preflight_launch_approved": true,
   "preflight_launch_approved_at": "2026-08-30T16:33:17.3789179Z",
@@ -26,10 +26,10 @@
     "target_gpu_preflight": "passed locally after hash-verified retrieval; five exact boundaries at each kappa endpoint"
   },
   "live_inventory": {
-    "queried_at": "2026-08-30T17:10:03.2521513Z",
+    "queried_at": "2026-08-30T19:34:00Z",
     "source": "RunPod MCP live v2 inventory",
-    "pods": 1,
-    "pod_inventory_note": "one stopped Run 011 preflight Pod; GPU billing inactive; automatic termination remains scheduled",
+    "pods": 0,
+    "pod_inventory_note": "all five scientific Pods and the stopped preflight Pod are deleted; no Pod billing remains active",
     "network_volumes": [
       {
         "id": "9luykg5yc3",
@@ -98,10 +98,11 @@
       "price_usd_per_hour": 1.59,
       "automatic_termination_deadline": "2026-08-30T18:04:31Z",
       "runtime_at_record_seconds": 1770,
-      "state_at_record": "EXITED",
+      "state_at_record": "DELETED",
       "stopped_and_verified_at": "2026-08-30T17:04:43.6536865Z",
       "stopped_storage_retention_deadline": "2026-08-30T18:04:31Z",
       "gpu_billing_active": false,
+      "deletion_note": "the guard did not delete the stopped Pod at its deadline; it was explicitly deleted during final closeout after its local packet had been verified",
       "scientific_execution_authorized": false
     },
     "cache_preparation": {
@@ -179,6 +180,79 @@
     },
     "expected_transfer_bytes_from_run004_per_condition": 1014000000,
     "expected_transfer_bytes_for_cohort": 5070000000
+  },
+  "scientific_execution": {
+    "status": "completed_valid",
+    "pods_created": 5,
+    "pods_deleted": 5,
+    "process_launch_window_utc": ["2026-08-30T17:43:50Z", "2026-08-30T17:45:21Z"],
+    "source_bundle": {
+      "commit": "cc3e6d16377edc11826f2846f5aeb4b5a617440f",
+      "bytes": 7683425,
+      "sha256": "a714d4e8ea807c7af12265c4de817bc2aa96b6e62a7d49fa827bda8ec9194eaa"
+    },
+    "cache_distribution": {
+      "method": "one exact local seed followed by four concurrent direct worker copies",
+      "train_tokens_bytes": 5966845664,
+      "train_tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_tokens_bytes": 2774672,
+      "validation_tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+      "infrastructure_retry": "the first fanout failed before data transfer because destination cache directories were absent; the empty directories were created and the identical approved copy was retried successfully"
+    },
+    "attempts": [
+      {
+        "condition_id": "a4z-one-sided-kappa-0",
+        "pod_id": "w773jy4xqbufow",
+        "attempt_id": "001-20260830-174350-716db646",
+        "final_validation_loss": 5.470497405035256,
+        "R_model": 0.07212018636951158
+      },
+      {
+        "condition_id": "a4z-one-sided-kappa-0p01",
+        "pod_id": "mt45hhgln0xjog",
+        "attempt_id": "002-20260830-174353-bad92c8a",
+        "final_validation_loss": 5.466499520476753,
+        "R_model": 0.07413704224307557
+      },
+      {
+        "condition_id": "a4z-one-sided-kappa-0p05",
+        "pod_id": "2svhs6tv5wo81u",
+        "attempt_id": "003-20260830-174407-dec7abf0",
+        "final_validation_loss": 5.434109907883864,
+        "R_model": 0.08205892926203266
+      },
+      {
+        "condition_id": "a4z-one-sided-kappa-0p1",
+        "pod_id": "wfhpsrnk7aew5r",
+        "attempt_id": "004-20260830-174521-6819b5a6",
+        "final_validation_loss": 5.41964218602378,
+        "R_model": 0.08953004995419465
+      },
+      {
+        "condition_id": "a4z-one-sided-kappa-0p5",
+        "pod_id": "rleb31p80ccvp1",
+        "attempt_id": "005-20260830-174409-0df99a05",
+        "final_validation_loss": 5.6596795426317925,
+        "R_model": 0.10215537061773293
+      }
+    ],
+    "cohort_verification": {
+      "status": "passed",
+      "evidence_label": "valid",
+      "conditions": 5,
+      "completed_optimizer_steps": 3560,
+      "complete_validation_passes": 20,
+      "training_input_tokens": 7465861120
+    },
+    "transfer_closeout": "prelaunch/scientific-transfer-closeout.json",
+    "billing_audit": {
+      "queried_at": "2026-08-30T19:39:32Z",
+      "posted_cost_usd_across_six_run011_pods": 11.469428527343553,
+      "posting_status": "final_partial_hour_not_yet_posted",
+      "approved_all_in_ceiling_usd": 22.75,
+      "active_pods_after_audit": 0,
+      "note": "RunPod billing lagged the final partial-hour charges at the first post-teardown query; refresh this field when they post"
+    }
   },
   "monitoring": {
     "interval_minutes": 5,

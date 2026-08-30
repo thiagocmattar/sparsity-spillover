@@ -2,11 +2,11 @@
 
 ## Status
 
-Design approved by the user on 2026-08-30. The run-local implementation,
-non-billable verification, and approved one-Pod A100 preflight are complete. The
-preflight passed, its packet is verified locally, and the Pod is stopped with
-GPU billing inactive. The user approved the five-worker scientific launch under
-the `$20.15` envelope and listed post-hoc inventory; provisioning is pending.
+Completed with valid evidence on 2026-08-30. The approved preflight and all five
+condition-parallel A100 workers completed, their packets were hash-verified and
+accepted locally, and the cohort verifier passed. All Run 011 Pods were deleted;
+the one pre-existing retained network volume remains unchanged. No finding or
+manuscript claim has been promoted from these results.
 
 ## Maintained execution checklist
 
@@ -19,11 +19,10 @@ the `$20.15` envelope and listed post-hoc inventory; provisioning is pending.
   threshold extremes; retrieve and locally hash-verify its packet; stop the Pod.
 - [x] 5. Present the measured five-worker ETC, cost, cache-distribution choice,
   and post-hoc inventory; obtain explicit scientific-launch approval.
-- [ ] 6. Start five concurrent one-condition workers. **Provisioning in
-  progress.**
-- [ ] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
+- [x] 6. Start five concurrent one-condition workers.
+- [x] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
   cohort.
-- [ ] 8. Terminate the exact Pods, reconcile billing/resources, and consolidate
+- [x] 8. Terminate the exact Pods, reconcile billing/resources, and consolidate
   only user-approved observations or findings.
 
 ## Question and hypothesis
@@ -198,18 +197,17 @@ distribution pattern. If the stopped preflight Pod expires before approval, the
 seed will come from the retained EUR volume when compatible capacity exists, or
 from one pinned, verified rebuild; no new network volume is proposed.
 
-For planning only, the measured preflight updates the concurrent five-worker
+For planning, the measured preflight updated the concurrent five-worker
 projection to 1.676 hours median and 1.790 hours p90 from provisioning through
 local retrieval, or `$13.33` median and `$14.23` p90 compute at the current
 price. Five scientific Pods at the current ceiling cost at most
 `5 * 2.5 * $1.59 = $19.875` compute; `$0.25` storage allowance gives a rounded
 `$20.15` scientific envelope. The separate maximum for both stages would be
-`$22.75`. Neither scientific amount is approved or billable yet.
+`$22.75`. The user approved that scientific envelope before provisioning.
 
-The final live audit still reports `$1.59/GPU-hour` and `MEDIUM` overall Secure
-A100 SXM availability, but only `LOW` availability in every advertised data
-center, including `EUR-IS-1`. The stopped preflight Pod is the only Pod and GPU
-billing is inactive; posted Pod billing has not yet populated.
+The pre-launch audit reported `$1.59/GPU-hour` and `MEDIUM` overall Secure A100
+SXM availability, but only `LOW` availability in each advertised data center,
+including `EUR-IS-1`.
 
 The preflight retrieval inventory is the JSON result, stdout/stderr log,
 environment freeze, source/config identities, cache identities, and an archive
@@ -230,9 +228,62 @@ The confirmed post-hoc inventory retains exact and near-zero counts, activation
 RMS/L2 moments, per-parameter weight norms, six logical-product counter families,
 and the final checkpoint with optimizer/scaler/RNG state. Gradient conflict is
 inapplicable without a pressure objective; a clipping frontier, histograms, and
-predictions remain excluded. This inventory will be explicitly reconfirmed
-before the separate scientific-launch decision because gradient-time quantities
-cannot be reconstructed later.
+predictions remain excluded. This inventory was explicitly reconfirmed before
+scientific launch because gradient-time quantities cannot be reconstructed
+later.
+
+## Scientific execution and closeout
+
+Five fresh Secure A100 SXM 80 GB Pods were provisioned at approximately
+17:16 UTC. Each passed the full remote readiness check before training. One
+worker received the exact local cache and then seeded four concurrent direct
+copies; every worker matched the declared train and validation byte counts and
+SHA-256 identities before launch. The first fanout command found that the four
+empty destination cache directories had not yet been created, so it failed
+before transferring data. Creating those directories and repeating the same
+hash-checked copy was an infrastructure retry and did not change any scientific
+input. The five processes launched between 17:43:50 and 17:45:21 UTC.
+
+All conditions completed 712 optimizer boundaries and four complete validation
+passes. The locally verified endpoint summary is:
+
+| `kappa` | Final train loss | Final validation loss | `R_block` | `R_model` |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.553432 | 5.470497 | 24.0783% | 7.2120% |
+| 0.01 | 5.544739 | 5.466500 | 24.7516% | 7.4137% |
+| 0.05 | 5.508773 | 5.434110 | 27.3965% | 8.2059% |
+| 0.1 | 5.493523 | 5.419642 | 29.8908% | 8.9530% |
+| 0.5 | 5.744903 | 5.659680 | 34.1059% | 10.2155% |
+
+The monotone logical-opportunity response supports the predicted direction:
+every positive threshold increases selected-site exact-zero mass and
+`R_model`. Quality improves through `kappa=0.1`, which is better than the
+within-run `kappa=0` reference on both final validation loss and logical
+opportunity; `kappa=0.5` buys the most opportunity but reverses the quality
+gain. The A4-Z `kappa=0` validation loss is 0.200851 higher than Run 004's
+matched A1-H ReLU control. These are descriptive one-seed, one-scale outcomes,
+not a promoted finding.
+
+Each 1,014,016,000-byte transfer archive matched its remote SHA-256, contained
+only its declared attempt directory, and passed the local standalone verifier
+before its Pod was deleted. The cohort verifier then accepted all five
+attempts: 3,560 completed optimizer steps, 20 complete validation passes,
+7,465,861,120 training input tokens, common initialization/schedule/code
+identities, exact checkpoint inventories, and all approved diagnostics. The
+archive and support-file hashes, Pod mapping, and teardown state are recorded
+in `prelaunch/scientific-transfer-closeout.json`; the accepted metrics are in
+`artifacts/verification.json`.
+
+The five scientific Pods and the stopped preflight Pod are deleted, and the
+live Pod inventory is empty. The preflight deletion guard did not remove its
+already-stopped Pod, so closeout explicitly deleted it after confirming its
+packet was local. No network volume was created or changed. Pre-existing volume
+`9luykg5yc3` remains intentionally retained at its independent `$7/month`
+charge. The 19:39 UTC post-teardown billing query showed `$11.469429` posted
+across the six Run 011 Pods, but RunPod had not yet posted the final partial-hour
+charges; the absence of billable Pods and the approved `$22.75` all-in ceiling
+bound the lagging remainder. The post-teardown billing state is recorded in
+`prelaunch/launch-plan.json`.
 
 ## Verification and interpretation limits
 

@@ -5,11 +5,13 @@
 
 ## Current status
 
-Run 011's implementation passes all 150 repository tests. Its approved A100 SXM
-endpoint preflight passed at both A4-Z threshold extremes with 57.242 GiB peak
-reserved memory, about 430k input tokens/s, and no skipped boundary. The packet
-is locally hash-verified and the Pod is stopped; scientific launch awaits a
-separate user decision.
+Run 011 completed its five-condition, paper-scale A4-Z threshold cohort with
+valid evidence. `R_model` rose monotonically from 7.212% at `kappa=0` to
+10.216% at `kappa=0.5`; the lowest final validation loss was 5.419642 at
+`kappa=0.1`, while `kappa=0.5` degraded to 5.659680. All requested diagnostics
+and final recovery checkpoints are local and verified. All Pods are deleted,
+the pre-existing 100 GB volume remains intentionally retained, and no finding
+or manuscript claim was promoted.
 Run 010 completed its mixed A7-Z-POST plus all-site OL1 cohort in 62m00s with
 valid evidence. `R_model` rose from 7.774% at `kappa=0` to the 29.952% analytic
 ceiling at `kappa=0.5`; the lowest validation loss was 5.645979 at `kappa=0.01`.
@@ -32,10 +34,11 @@ Next run number: `012`. Next analysis number: `004`. Next finding number: `F001`
 
 ## Where we stopped
 
-- 2026-08-30: Run 011's approved A100 endpoint preflight passed, was retrieved
-  and hash-verified locally, and the Pod was stopped after 1,770 seconds. The
-  five-worker ETC is now 1.676h median/1.790h p90; scientific launch remains
-  separately prohibited.
+- 2026-08-30: Run 011 completed and verified valid: five condition-parallel
+  A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, exact checkpoint inventories, and
+  all approved diagnostics reconcile. All Run 011 Pods were deleted; no finding
+  was promoted.
 - 2026-08-30: Analysis 003 completed the verified Run 004 naive-L1 versus Run
   009 OL1 endpoint and gradient-interaction comparison, with count-reconciled
   exact/near-zero tables, endpoint, per-boundary conflict, and OL1-projection
@@ -95,7 +98,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 008 | Do symmetric post-RoPE Q/K/V gates extend Run 006's joint threshold quality--logical-opportunity frontier? | completed (valid) | `runs/008-2026-08-29-pythia14m-a7-z-post-mixed-threshold-local/` |
 | 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; Analysis 003 complete) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
-| 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | preflight passed; awaiting scientific-launch approval | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
+| 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; no finding promoted) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 
 ## Analyses
 
