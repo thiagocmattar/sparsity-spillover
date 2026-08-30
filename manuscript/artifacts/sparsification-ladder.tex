@@ -11,136 +11,117 @@
 \usepackage{lmodern}
 \usepackage{tikz}
 \usepackage[table]{xcolor}
-\usetikzlibrary{positioning}
 
+% Shared visual system with pythia-architecture-map.tex.
 \definecolor{ink}{HTML}{203246}
-\definecolor{muted}{HTML}{66737F}
-\definecolor{rule}{HTML}{C8D0D6}
-\definecolor{headerfill}{HTML}{F2F4F5}
-\definecolor{gelufill}{HTML}{EEF2F4}
-\definecolor{geluborder}{HTML}{637784}
-\definecolor{relufill}{HTML}{EDF4F2}
-\definecolor{reluborder}{HTML}{3D746C}
-\definecolor{onesidefill}{HTML}{F1F3EF}
-\definecolor{onesideborder}{HTML}{68786C}
-\definecolor{symfill}{HTML}{F0F1F5}
-\definecolor{symborder}{HTML}{66718A}
-\definecolor{inactiveborder}{HTML}{B7C0C7}
-\definecolor{pressurefill}{HTML}{F4F5F6}
-\definecolor{pressureborder}{HTML}{A7B0B7}
-\definecolor{olfill}{HTML}{EDF2F5}
-\definecolor{olborder}{HTML}{637784}
+\definecolor{muted}{HTML}{657483}
+\definecolor{panelborder}{HTML}{A9B6C2}
+\definecolor{panelfill}{HTML}{FBFCFD}
+\definecolor{gelucolor}{HTML}{294F63}
+\definecolor{relucolor}{HTML}{197A63}
+\definecolor{onesidecolor}{HTML}{C97818}
+\definecolor{symcolor}{HTML}{76508F}
+\definecolor{nonecolor}{HTML}{CBD2D8}
 
 \renewcommand{\familydefault}{\sfdefault}
-\setlength{\tabcolsep}{2.5pt}
-\renewcommand{\arraystretch}{1.52}
-\arrayrulecolor{rule}
+\renewcommand{\arraystretch}{1.46}
+\arrayrulecolor{panelborder}
 
-\newcommand{\stepnum}[1]{\textcolor{muted}{\bfseries 0#1}}
-\newcommand{\gatemark}[4]{%
-  \tikz[baseline=(n.base)]\node[
-    circle, draw=#2, fill=#1, text=#3, line width=0.65pt,
-    minimum size=5.0mm, inner sep=0pt,
-    font=\sffamily\bfseries\scriptsize] (n) {#4};%
+\newcommand{\dotmark}[1]{%
+  \tikz[baseline=-0.50ex]\fill[#1] (0,0) circle[radius=1.30mm];%
 }
-\newcommand{\inactive}{\gatemark{white}{inactiveborder}{muted}{}}
-\newcommand{\gelu}{\gatemark{gelufill}{geluborder}{geluborder}{G}}
-\newcommand{\relu}{\gatemark{relufill}{reluborder}{reluborder}{R}}
-\newcommand{\onesided}{\gatemark{onesidefill}{onesideborder}{onesideborder}{$+$}}
-\newcommand{\symmetric}{\gatemark{symfill}{symborder}{symborder}{$\pm$}}
-\newcommand{\pressurepill}[4]{%
-  \tikz[baseline=(n.base)]\node[
-    rectangle, rounded corners=2.2pt, draw=#2, fill=#1, text=#3,
-    line width=0.6pt, minimum width=12.5mm, minimum height=4.8mm,
-    inner xsep=2.5pt, inner ysep=0.5pt,
-    font=\sffamily\bfseries\scriptsize] (n) {#4};%
-}
-\newcommand{\nonepressure}{\textcolor{muted}{---}}
-\newcommand{\lonepressure}{\pressurepill{pressurefill}{pressureborder}{ink}{L1N}}
-\newcommand{\olpressure}{\pressurepill{olfill}{olborder}{olborder}{OL1}}
-\newcommand{\ladderid}[1]{\textbf{#1}}
+\newcommand{\inactive}{\dotmark{nonecolor}}
+\newcommand{\gelu}{\dotmark{gelucolor}}
+\newcommand{\relu}{\dotmark{relucolor}}
+\newcommand{\onesided}{\dotmark{onesidecolor}}
+\newcommand{\symmetric}{\dotmark{symcolor}}
+\newcommand{\nonepressure}{none}
+\newcommand{\lonepressure}{L1N}
+\newcommand{\olpressure}{OL1}
 \newcommand{\pct}[1]{#1\%}
 
 \begin{document}
-\begin{minipage}{19.15cm}
-  \color{ink}
-  \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
-    {\large\bfseries Sparsification ladder} &
-    {\scriptsize\bfseries\color{muted} PYTHIA INTERVENTION MAP}
-  \end{tabular*}
-  \par\vspace{1.4mm}
-  {\color{rule}\rule{\linewidth}{0.55pt}}
-  \par\vspace{2.8mm}
+\begin{tikzpicture}
+  \node[
+    rectangle,
+    rounded corners=4pt,
+    draw=panelborder,
+    fill=panelfill,
+    line width=0.55pt,
+    inner xsep=10pt,
+    inner ysep=9pt
+  ] {
+  \begin{minipage}{20cm}
+    \color{ink}
+    \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+      {\large\bfseries Sparsification ladder} &
+      {\scriptsize
+        Non-linearity\quad
+        \gelu\, GeLU\qquad
+        \relu\, ReLU\qquad
+        \onesided\, $G_{+,\kappa}$\qquad
+        \symmetric\, $G_{\pm,\kappa}$\qquad
+        \inactive\, none}
+    \end{tabular*}
+    \par\vspace{2.0mm}
+    {\color{panelborder}\rule{\linewidth}{0.45pt}}
+    \par\vspace{2.6mm}
 
-    \small
-    \begin{tabular}{
-      >{\centering\arraybackslash}p{7mm}
-      >{\raggedright\arraybackslash}p{28mm}
-      *{7}{>{\centering\arraybackslash}p{7.4mm}}
-      >{\centering\arraybackslash}p{16mm}
-      *{3}{>{\centering\arraybackslash}p{17.2mm}}
+    \footnotesize
+    \begin{tabular*}{\linewidth}{
+      @{}c l
+      @ {\extracolsep{\fill}}
+      *{7}{c}
+      c
+      *{3}{c}
+      @{}
     }
-      \rowcolor{headerfill}
-      \multicolumn{2}{c}{} &
-      \multicolumn{4}{c}{\bfseries One-sided / nonlinearity} &
-      \multicolumn{3}{c}{\bfseries Symmetric} &
-      &
-      \multicolumn{3}{c}{$\boldsymbol{R_{\mathrm{model}}^{\max}}$ at $\boldsymbol{T=2{,}048}$} \\
-      \rowcolor{headerfill}
-      \textbf{Step} & \textbf{Ladder ID} &
-      \textbf{$h$} & \textbf{$m$} & \textbf{$a$} & \textbf{$z$} &
-      \textbf{$q$} & \textbf{$k$} & \textbf{$v$} & \textbf{Pressure} &
-      \shortstack{\textbf{17M}\\[-1pt]\tiny 14M config} &
-      \textbf{70M} &
-      \shortstack{\textbf{400M}\\[-1pt]\tiny 410M config} \\
+      \toprule
+      \multicolumn{10}{c}{} &
+      \multicolumn{3}{c}{$R_{\mathrm{model}}^{\max}$ at $T=2{,}048$} \\
+      Step & ID &
+      $h$ & $m$ & $a$ & $z$ & $q$ & $k$ & $v$ & Pressure &
+      14M & 70M & 410M \\
       \midrule
-      \stepnum{1} & \ladderid{A0} &
+      1 & A0 &
       \gelu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \nonepressure &
-      \pct{0.000} & \pct{0.000} & \pct{0.000} \\
+      \pct{0.0} & \pct{0.0} & \pct{0.0} \\
       \addlinespace[0.8mm]
-      \stepnum{2} & \ladderid{A1-H} &
+      2 & A1-H &
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \nonepressure &
-      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
-      \stepnum{3} & \ladderid{A1-H-L1} &
+      \pct{4.3} & \pct{12.4} & \pct{24.9} \\
+      3 & A1-H-L1 &
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \lonepressure &
-      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
-      \stepnum{4} & \ladderid{A1-H-OL1} &
+      \pct{4.3} & \pct{12.4} & \pct{24.9} \\
+      4 & A1-H-OL1 &
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \olpressure &
-      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
+      \pct{4.3} & \pct{12.4} & \pct{24.9} \\
       \addlinespace[0.8mm]
-      \stepnum{5} & \ladderid{A4-Z} &
+      5 & A4 &
       \onesided & \onesided & \onesided & \onesided &
       \inactive & \inactive & \inactive & \nonepressure &
-      \pct{12.833} & \pct{37.063} & \pct{74.776} \\
-      \stepnum{6} & \ladderid{A4-Z-OL1} &
+      \pct{12.8} & \pct{37.1} & \pct{74.8} \\
+      6 & A4-OL1 &
       \onesided & \onesided & \onesided & \onesided &
       \inactive & \inactive & \inactive & \olpressure &
-      \pct{12.833} & \pct{37.063} & \pct{74.776} \\
+      \pct{12.8} & \pct{37.1} & \pct{74.8} \\
       \addlinespace[0.8mm]
-      \stepnum{7} & \ladderid{A7-Z} &
+      7 & A7 &
       \onesided & \onesided & \onesided & \onesided &
       \symmetric & \symmetric & \symmetric & \nonepressure &
-      \pct{29.952} & \pct{49.424} & \pct{87.245} \\
-      \stepnum{8} & \ladderid{A7-Z-OL1} &
+      \pct{30.0} & \pct{49.4} & \pct{87.2} \\
+      8 & A7-OL1 &
       \onesided & \onesided & \onesided & \onesided &
       \symmetric & \symmetric & \symmetric & \olpressure &
-      \pct{29.952} & \pct{49.424} & \pct{87.245} \\
+      \pct{30.0} & \pct{49.4} & \pct{87.2} \\
       \bottomrule
-    \end{tabular}
+    \end{tabular*}
 
-  \vspace{2.7mm}
-  \scriptsize
-  \textbf{Gate}\quad
-  \gelu\, GeLU\quad
-  \relu\, ReLU\quad
-  \onesided\, $G_{+,\kappa}$\quad
-  \symmetric\, $G_{\pm,\kappa}$\quad
-  \inactive\, no gate
-  \hfill
-  \textcolor{muted}{Pressure applies to every active site in the row.}
-\end{minipage}
+  \end{minipage}
+  };
+\end{tikzpicture}
 \end{document}
