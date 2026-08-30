@@ -30,10 +30,14 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `012`. Next analysis number: `004`. Next finding number: `F001`.
+Next run number: `012`. Next analysis number: `005`. Next finding number: `F001`.
 
 ## Where we stopped
 
+- 2026-08-30: Analysis 004 combined the verified full-pass Run 004/009 A1-H
+  naive-L1/OL1 endpoints with Run 011's A4-Z threshold cohort in a
+  count-reconciled quality--logical-opportunity table and paper-ready PDF. The
+  topology/intervention difference is explicit; no finding was promoted.
 - 2026-08-30: Run 011 completed and verified valid: five condition-parallel
   A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
   initialization/schedule/code identities, exact checkpoint inventories, and
@@ -107,6 +111,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 001 | How does seven-site OL1 change Run 008 at each matched kappa? | completed; descriptive, no finding promoted | `analyses/001-2026-08-30-run008-vs-run010-all-site-ol1/` |
 | 002 | How does four-site OL1 change Run 006 at each completed matched kappa? | completed for four available pairs; descriptive, no finding promoted | `analyses/002-2026-08-30-run006-vs-run007-partial-a4z-ol1/` |
 | 003 | How does `h`-only OL1 change Run 004's matched endpoints and gradient interactions? | completed; descriptive, no finding promoted | `analyses/003-2026-08-30-run004-vs-run009-full-pass-l1-ol1/` |
+| 004 | Where do the verified full-pass A1-H pressure and A4-Z threshold endpoints lie on the quality--logical-opportunity plane? | completed; descriptive, no finding promoted | `analyses/004-2026-08-30-full-pass-quality-logical-frontier/` |
 
 ## Key documents
 
