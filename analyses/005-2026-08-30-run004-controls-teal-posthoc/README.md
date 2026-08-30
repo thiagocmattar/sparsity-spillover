@@ -87,8 +87,16 @@ replicate uncertainty and is not promoted to a finding.
 - `tables.md` - endpoint, site-zero, loss-delta, and global-frontier table.
 - `figures/01-r-model-vs-final-validation-loss.pdf` - requested full-range and
   low-loss-detail figure.
+- `figure_data_02.json` - reduced, source-hashed data for the combined
+  full-pass/post-hoc figure, including the points omitted above its display cap.
+- `figures/02-full-pass-frontier-with-posthoc-controls.pdf` - single-panel
+  comparison of the Analysis 004 A1/A4 trained endpoints with the GeLU/ReLU
+  control curves under evaluation-only post-hoc clipping; displayed loss is
+  capped at 6.
 - `observations/O001-r-model-vs-final-validation-loss.md` - caption,
   provenance, result, and limits.
+- `observations/O002-full-pass-frontier-with-posthoc-controls.md` - caption,
+  cross-analysis provenance, display-cap rule, result, and limits for Figure 2.
 
 ## Limits
 
