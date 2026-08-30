@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_preflight_launch_approval",
+  "prepared_at": "2026-08-30T16:10:00Z",
+  "design_approved": true,
+  "preflight_launch_approved": false,
+  "scientific_launch_approved": false,
+  "approval_scope_requested": "one guarded non-evidence Secure A100 SXM 80 GB preflight Pod; no scientific training",
+  "identities": {
+    "config_sha256": "6e65db62bd3a5cc4673b44d3bd0e09ef963663460ccf14e874ed6b458913a770",
+    "run_code_content_sha256": "c253d6cba5511e7e43f3599a5776b846b4a8b8048a32c23fcfc66317d8b1bf09",
+    "expected_initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "expected_training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+    "run004_comparator_code_sha256": "501744d66aec47c469c04a1885c97372b39315bd3bc2a67297d8353e4efe5e2d"
+  },
+  "verification": {
+    "focused": "7 passed",
+    "affected_runs": "58 passed",
+    "repository_wide": "150 passed",
+    "compileall": "passed",
+    "target_gpu_preflight": "not run; awaiting approval"
+  },
+  "live_inventory": {
+    "queried_at": "2026-08-30T16:10:00Z",
+    "source": "RunPod MCP live v2 inventory",
+    "pods": 0,
+    "network_volumes": [
+      {
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "data_center": "EUR-IS-1",
+        "size_gb": 100,
+        "type": "STANDARD",
+        "continuing_cost_usd_per_month": 7.0,
+        "retention": "pre-existing user-requested resource; do not delete or attribute to Run 011"
+      }
+    ],
+    "gpu_catalog": [
+      {
+        "id": "NVIDIA A100-SXM4-80GB",
+        "memory_gb": 80,
+        "secure_availability": "MEDIUM",
+        "secure_price_usd_per_gpu_hour": 1.59,
+        "cuda_12_8_available": true,
+        "eligible_data_centers": ["US-CA-2", "US-KS-2", "US-MD-1", "US-MO-1", "US-WA-1"]
+      },
+      {
+        "id": "NVIDIA A100 80GB PCIe",
+        "memory_gb": 80,
+        "secure_availability": "LOW",
+        "secure_price_usd_per_gpu_hour": 1.39,
+        "cuda_12_8_available": false,
+        "eligible_for_run011": false
+      }
+    ]
+  },
+  "preflight": {
+    "pod_name": "run011-a4z-preflight-a100sxm-r1",
+    "purpose": "non-evidence exact FP16 A4-Z MB32/GAS32 memory, health, and timing calibration at kappa 0 and 0.5",
+    "cloud_type": "SECURE",
+    "gpu_type": "NVIDIA A100-SXM4-80GB",
+    "gpu_count": 1,
+    "maximum_live_price_usd_per_gpu_hour": 1.59,
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "container_disk_gb": 30,
+    "pod_volume_gb": 25,
+    "volume_mount_path": "/workspace",
+    "ports": ["22/tcp"],
+    "data_center_scope": "any advertised Secure A100 SXM data center; no current A100 capacity in EUR-IS-1",
+    "storage_rule": "stage one hash-verified 5.97 GB cache copy onto /workspace; create no new network volume",
+    "maximum_preflight_minutes": 45,
+    "automatic_termination_guard_hours": 1.5,
+    "maximum_compute_cost_usd": 2.385,
+    "estimated_maximum_incremental_pod_storage_cost_usd": 0.20,
+    "maximum_incremental_total_cost_usd": 2.60,
+    "success_action": "retrieve and hash-verify the preflight packet, then stop the reusable Pod for at most 24 hours and request separate scientific-launch approval",
+    "failure_action": "retrieve failure evidence, terminate the exact Pod, create no scientific workers, and request a design-preserving resource decision",
+    "scientific_execution_authorized": false
+  },
+  "historical_etc": {
+    "sources": ["Run 004 gelu-control", "Run 004 relu-control"],
+    "optimizer_step_samples": 1424,
+    "validation_and_diagnostic_samples": 8,
+    "median_optimizer_step_seconds": 4.750691790599376,
+    "p90_optimizer_step_seconds": 4.813270003069192,
+    "fixed_provision_setup_transfer_seconds": 2558.7437627254985,
+    "median_wall_hours_from_first_provisioning": 1.652235012415719,
+    "p90_wall_hours_from_first_provisioning": 1.673744282387585,
+    "projected_compute_cost_median_usd": 13.135268348704965,
+    "projected_compute_cost_p90_usd": 13.3062670449813,
+    "limitation": "closest no-pressure full-pass controls; target A4-Z endpoint step timing remains unmeasured"
+  },
+  "scientific_plan_not_yet_approved": {
+    "workers": 5,
+    "parallelism": "one condition per one-GPU Pod; no DDP",
+    "automatic_termination_guard_hours_per_pod": 2.5,
+    "maximum_compute_cost_usd_at_current_price": 19.875,
+    "maximum_incremental_storage_cost_usd": 0.25,
+    "maximum_incremental_total_cost_usd": 20.15,
+    "maximum_all_in_run011_cost_including_preflight_usd": 22.75,
+    "expected_transfer_bytes_from_run004_per_condition": 1014000000,
+    "expected_transfer_bytes_for_cohort": 5070000000
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "stale_event_minutes": 10,
+    "report": ["step", "input_tokens", "task_loss", "throughput", "refreshed_etc", "loss_scale_and_overflow", "gpu_memory_and_utilization", "disk", "process_health", "last_event_age"],
+    "warnings": ["missing_process", "stale_event", "nonfinite_value", "skipped_boundary", "memory_above_preflight_envelope", "free_disk_below_5_gb", "incomplete_validation", "projected_deadline_overrun"]
+  },
+  "post_hoc_inventory": {
+    "activation_exact_and_near_zero_counts": true,
+    "near_zero_thresholds": [0.0, 0.001, 0.01],
+    "activation_rms_and_l2_moments": true,
+    "per_parameter_weight_norms": true,
+    "gradient_conflict": "inapplicable_without_pressure_objective",
+    "logical_product_counters": true,
+    "clipping_frontier": false,
+    "final_checkpoint_with_recovery_state": true,
+    "must_reconfirm_before_scientific_launch": true
+  }
+}

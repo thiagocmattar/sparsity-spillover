@@ -5,6 +5,10 @@
 
 ## Current status
 
+Run 011 is designed and its run-local A4-Z paper-scale implementation passes all
+150 repository tests. Live RunPod inventory is reconciled; it is awaiting
+explicit approval for one non-evidence Secure A100 SXM preflight. No Run 011
+billable resource or scientific attempt exists.
 Run 010 completed its mixed A7-Z-POST plus all-site OL1 cohort in 62m00s with
 valid evidence. `R_model` rose from 7.774% at `kappa=0` to the 29.952% analytic
 ceiling at `kappa=0.5`; the lowest validation loss was 5.645979 at `kappa=0.01`.
@@ -21,10 +25,14 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `011`. Next analysis number: `003`. Next finding number: `F001`.
+Next run number: `012`. Next analysis number: `003`. Next finding number: `F001`.
 
 ## Where we stopped
 
+- 2026-08-30: Run 011 design and implementation are complete. Focused (7),
+  affected-run (58), and repository-wide (150) tests pass. The guarded,
+  one-GPU preflight packet awaits explicit approval; scientific launch remains
+  separately prohibited.
 - 2026-08-30: Run 010 completed and verified valid: five conditions, 2,905
   updates, 15 complete validation passes, five checkpoints, mixed-gate and
   seven-site OL1 identities, gradient diagnostics, and logical counters all
@@ -80,6 +88,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 008 | Do symmetric post-RoPE Q/K/V gates extend Run 006's joint threshold quality--logical-opportunity frontier? | completed (valid) | `runs/008-2026-08-29-pythia14m-a7-z-post-mixed-threshold-local/` |
 | 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; comparison analysis pending) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
+| 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | designed; implementation verified; awaiting preflight approval | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 
 ## Analyses
 
