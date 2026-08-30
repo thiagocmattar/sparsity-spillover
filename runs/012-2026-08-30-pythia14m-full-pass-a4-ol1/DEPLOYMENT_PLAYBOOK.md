@@ -37,12 +37,15 @@ silently change the scientific design.
 1. Create four additional guarded Secure A100 SXM4 80 GB Pods, allowing any
    approved live data center. Transfer the same source bundle and install the
    pinned environment concurrently.
-2. Generate one ephemeral seed-to-worker transfer key. Add only its public half
-   to the four targets, copy the immutable cache concurrently onto isolated Pod
-   volumes, verify bytes and SHA-256 on every worker, then remove the key and
-   its authorization everywhere.
-3. Run a lightweight remote readiness check on every worker: source/config/code,
-   environment, CUDA/GPU, cache, initialization, schedule, and Flash SDPA.
+2. Copy the immutable cache concurrently onto isolated Pod volumes and verify
+   bytes and SHA-256 on every worker. The planned seed-to-worker copy was not
+   used because exporting its temporary private key failed the credential
+   safety gate; execution used resumable local-to-worker streams instead, and
+   deleted the unused local keypair and uploaded public files.
+3. Run a lightweight remote readiness check on every worker: exact source,
+   environment, CUDA/GPU, cache, and clean-tree identity. The scientific
+   entrypoint then asserts config/code, initialization, schedule, and Flash SDPA
+   identities before emitting its first event.
 4. Launch one detached `02_train.py --worker <condition-id>` process per Pod,
    logging PID/stdout/stderr under `/workspace`. Confirm the first finite train
    event from all five before normal monitoring.

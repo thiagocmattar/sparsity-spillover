@@ -1,23 +1,28 @@
 {
   "schema_version": 1,
-  "status": "approved_ready_for_seed_preflight",
+  "status": "completed_verified_and_torn_down",
   "approved_by_user": true,
   "approval_scope": "design, implementation, billable preflight, five-condition scientific execution, monitoring, retrieval, verification, and teardown",
   "audit_timestamp_utc": "2026-08-30T19:56:02.7580220Z",
   "source": {
-    "launch_commit": null,
-    "launch_commit_note": "record after the launch-ready commit; remote execution must use that exact clean commit",
+    "launch_commit": "23872b9a89bf84c8a786965f50d57a21b299f4dd",
+    "launch_commit_note": "all five remote checkouts use this exact detached clean commit",
     "config_sha256": "81a973a982a1b1370fdeb8c53fd41e03edece3c181e9d979cd287568852c1091",
     "run_code_sha256": "dcd66dec0a572a3654e0cc2f6f85fdab067c3515faffd6acad93ded9f4b039eb",
     "expected_initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
     "expected_training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
-    "run011_comparator_code_sha256": "c253d6cba5511e7e43f3599a5776b846b4a8b8048a32c23fcfc66317d8b1bf09"
+    "run011_comparator_code_sha256": "c253d6cba5511e7e43f3599a5776b846b4a8b8048a32c23fcfc66317d8b1bf09",
+    "common_runpod_pip_freeze_sha256": "144f055059969fa1de4df98cbf780135f449b696f3b7f25288b1451fd6ae72b1"
   },
   "verification": {
     "focused": "9 passed",
     "affected_runs_004_009_011_012": "39 passed",
     "repository_wide": "159 passed",
-    "python_compileall": "passed"
+    "python_compileall": "passed",
+    "target_gpu_preflight": "passed",
+    "remote_scientific_attempts": "5 of 5 passed",
+    "local_scientific_attempts": "5 of 5 passed",
+    "local_cohort": "verified 5"
   },
   "live_account": {
     "pods_before_creation": 0,
@@ -61,7 +66,10 @@
     "temporary_pod_storage_allowance_usd": 0.3,
     "maximum_run_total_usd": 22.56,
     "retained_volume_cost_excluded": "$7/month pre-existing and intentionally retained",
-    "billing_note": "posted billing may lag resource deletion; zero Pods is the compute teardown authority"
+    "lifecycle_gpu_seconds": 33442.643,
+    "lifecycle_gpu_cost_estimate_usd": 14.770500658333333,
+    "posted_run012_pod_subtotal_usd_at_closeout": 7.091411671368405,
+    "billing_note": "posted billing lagged resource deletion; zero Pods is the compute teardown authority"
   },
   "fit_and_etc": {
     "run009_ol1_peak_reserved_bytes": 61169729536,
@@ -69,10 +77,17 @@
     "a100_memory_bytes_approx": 85899345920,
     "local_24gb_fit": false,
     "historical_slowest_scientific_worker_hours": 1.76,
+    "preflight_mean_boundary_seconds_kappa_0": 6.05217395685613,
+    "preflight_mean_boundary_seconds_kappa_0p5": 6.02550864033401,
+    "preflight_peak_reserved_gib": 61.90234375,
+    "preflight_memory_limit_gib": 71.3247802734375,
+    "projected_training_minutes": 71.8,
     "projected_wall_hours_through_retrieval": 1.8,
-    "uncertainty": "the exact Run 012 two-endpoint preflight replaces recurring step time and memory before scientific fanout"
+    "uncertainty": "validation, checkpoint serialization, cross-region cache transfer, and teardown remain outside the measured optimizer-boundary time"
   },
   "preflight": {
+    "status": "passed",
+    "completed_at_utc": "2026-08-30T20:19:45.433227+00:00",
     "seed_condition_after_pass": "a4z-ol1-kappa-0p5",
     "conditions": ["a4z-ol1-kappa-0", "a4z-ol1-kappa-0p5"],
     "boundaries_per_condition": 5,
@@ -92,8 +107,8 @@
     "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
     "validation_bytes": 2774672,
     "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
-    "seed_strategy": "use retained EUR volume only if compatible scheduling succeeds; otherwise upload one exact local cache",
-    "fanout": "four concurrent seed-to-worker copies using an ephemeral key removed after hash verification"
+    "seed_strategy": "EUR-IS-1 had no matching capacity; exact local cache uploaded to a fresh US-MD-1 seed volume and hash-verified",
+    "fanout": "direct concurrent local-to-worker resumable streams; credential export to the seed was rejected and abandoned"
   },
   "retrieval": {
     "per_worker": [
@@ -127,9 +142,60 @@
       "projected termination-deadline overrun"
     ]
   },
-  "pods": [],
+  "pods": [
+    {
+      "condition_id": "a4z-ol1-kappa-0p5",
+      "pod_id": "yxzbjiw9xl3h9b",
+      "name": "run012-a4ol1-seed-0p5",
+      "data_center": "US-MD-1",
+      "created_at_utc": "2026-08-30T20:00:52.974Z",
+      "terminate_after_utc": "2026-08-30T23:59:56Z"
+    },
+    {
+      "condition_id": "a4z-ol1-kappa-0",
+      "pod_id": "q2tizuecg4bpp9",
+      "name": "run012-a4ol1-0",
+      "data_center": "US-MD-1",
+      "created_at_utc": "2026-08-30T20:22:00.440Z",
+      "terminate_after_utc": "2026-08-30T22:51:37Z"
+    },
+    {
+      "condition_id": "a4z-ol1-kappa-0p01",
+      "pod_id": "9izgbzujgrpfe3",
+      "name": "run012-a4ol1-0p01",
+      "data_center": "US-KS-2",
+      "created_at_utc": "2026-08-30T20:22:19.210Z",
+      "terminate_after_utc": "2026-08-30T22:51:37Z"
+    },
+    {
+      "condition_id": "a4z-ol1-kappa-0p05",
+      "pod_id": "bzz2muag9oyxwm",
+      "name": "run012-a4ol1-0p05",
+      "data_center": "US-MD-1",
+      "created_at_utc": "2026-08-30T20:22:00.145Z",
+      "terminate_after_utc": "2026-08-30T22:51:37Z"
+    },
+    {
+      "condition_id": "a4z-ol1-kappa-0p1",
+      "pod_id": "s74tz9yj2xrcpo",
+      "name": "run012-a4ol1-0p1",
+      "data_center": "US-WA-1",
+      "created_at_utc": "2026-08-30T20:22:18.903Z",
+      "terminate_after_utc": "2026-08-30T22:51:37Z"
+    }
+  ],
   "teardown": {
     "policy": "delete each Pod only after its local standalone verifier passes; retain no Run 012 Pod",
-    "final_audit": "list Pods and volumes, confirm the retained volume is the only intentional billable resource, then refresh posted billing"
+    "completed_at_utc": "2026-08-30T22:14:34.6765412Z",
+    "final_account_audit_at_utc": "2026-08-30T22:19:09.8573839Z",
+    "pods_after_teardown": 0,
+    "serverless_endpoints_after_teardown": 0,
+    "volumes_after_teardown": 1,
+    "retained_volume_id": "9luykg5yc3",
+    "run012_created_retained_resources": 0,
+    "retrieved_attempts": 5,
+    "archive_bytes_verified": 5073725440,
+    "local_cohort_verification": "passed",
+    "closeout_record": "prelaunch/scientific-closeout.json"
   }
 }

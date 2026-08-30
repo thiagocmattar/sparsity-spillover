@@ -2,11 +2,16 @@
 
 ## Status and approval
 
+Completed, retrieved, and verified on 2026-08-30. All five conditions reached
+712 optimizer boundaries, their complete declared artifacts and final
+checkpoints are stored locally, the cohort verifier passed, and the final
+RunPod audit reported zero Pods.
+
 The user requested this run on 2026-08-30 and explicitly pre-approved the
 scientific design, implementation, RunPod preflight, scientific launch,
 monitoring, artifact retrieval, and teardown without waiting at the usual two
-confirmation gates. The design below is therefore locked before implementation
-and billable execution, but approval is not evidence that any condition ran.
+confirmation gates. The design below was therefore locked before implementation
+and billable execution; approval itself was not treated as run evidence.
 
 ## Question and hypothesis
 
@@ -147,10 +152,12 @@ to this run.
 
 If the seed schedules in `EUR-IS-1`, the retained volume may provide the exact
 cache without changing it. Otherwise one local 5.97 GB cache copy is staged and
-hash-verified. Four isolated Pod volumes receive concurrent copies from the
-verified seed using an ephemeral transfer key removed after use. Source is a
-clean Git bundle of the launch commit. Checkouts, environments, caches, logs,
-attempts, and checkpoints remain below `/workspace`.
+hash-verified. Source is a clean Git bundle of the launch commit. Checkouts,
+environments, caches, logs, attempts, and checkpoints remain below `/workspace`.
+The planned seed-to-worker transfer would have required placing a private
+ephemeral key on the seed; the credential safety gate rejected that action, so
+the actual fanout used concurrent resumable local-to-worker byte streams. All
+copies were accepted only after their complete SHA-256 values matched.
 
 Historical Run 009 OL1 and Run 011 A4 evidence projects roughly 1.8 hours for
 the slowest scientific worker plus setup/retrieval; the exact preflight replaces
@@ -173,3 +180,74 @@ and records lagging posted billing separately from resource teardown.
 - 2026-08-30: the user explicitly authorized autonomous execution through
   completion, local retrieval, and RunPod teardown, and stated that all usual
   design and launch confirmations were pre-approved.
+
+## Live execution record
+
+- Launch source is clean commit
+  `23872b9a89bf84c8a786965f50d57a21b299f4dd`; the self-contained Git bundle
+  SHA-256 is
+  `841fc8473b1ddd29385d5f4e6f78067411b1cf2758ce005f1f9a397d153e05bc`.
+- `EUR-IS-1` had no matching capacity at allocation time. The seed scheduled in
+  `US-MD-1`; the other workers scheduled in `US-MD-1`, `US-KS-2`, and
+  `US-WA-1`. The five Pod IDs and absolute termination deadlines are retained
+  in `prelaunch/launch-plan.json`.
+- The seed preflight passed on the exact cache and runtime at 2026-08-30
+  20:19:45 UTC. Mean optimizer-boundary times were 6.0522 seconds at
+  `kappa=0` and 6.0255 seconds at `kappa=0.5`; peak reservation was
+  61.9023 GiB against the 71.3248 GiB gate.
+- Every worker independently matched the train, validation, and metadata
+  hashes before launch. The `US-KS-2` worker spent 9.5 minutes in network-volume
+  `python -m venv`; that setup process was stopped before scientific execution
+  and retried with the identical pinned packages on container disk. Its source,
+  cache, condition, and scientific attempt were unchanged. The retry script and
+  both setup records remain under `prelaunch/`.
+- The `kappa=0.5` attempt launched first after preflight. The remaining four
+  attempts launched independently as their cache, runtime, and clean-tree gates
+  passed. All five had emitted finite, non-skipped training events by 2026-08-30
+  20:46:12 UTC.
+
+## Verified result
+
+The cohort verifier accepted five completed conditions, 3,560 optimizer
+boundaries, 7,465,861,120 training input tokens, and 20 complete validation
+passes. Every validation pass covered all 338 complete blocks and 692,224 input
+tokens, with the declared 1,444-token tail excluded. Initialization, schedule,
+source, checkpoint, diagnostic, and transfer identities all passed.
+
+| `kappa` | validation loss | `R_model` | loss delta versus matched A4 | `R_model` delta versus matched A4 |
+|---:|---:|---:|---:|---:|
+| 0 | 5.215749 | 8.4094% | -0.254749 | +1.1974 pp |
+| 0.01 | 5.204504 | 8.5858% | -0.261996 | +1.1721 pp |
+| 0.05 | 5.195590 | 9.0356% | -0.238520 | +0.8297 pp |
+| 0.1 | 5.228687 | 9.3435% | -0.190955 | +0.3905 pp |
+| 0.5 | 5.722666 | 10.2274% | +0.062986 | +0.0119 pp |
+
+At matched `kappa <= 0.1`, A4-OL1 lowers complete-validation loss and
+increases logical-product opportunity relative to Run 011 A4. The gain
+contracts as `kappa` increases and reverses in quality at `kappa=0.5`,
+where the opportunity increment is negligible. Run 012's lowest loss occurs at
+`kappa=0.05`; `kappa=0.1` offers a higher-opportunity tradeoff. This is
+descriptive one-seed, one-scale evidence, and `R_model` is not measured
+speedup. The complete result, caveats, and provenance are in
+`observations/001-a4-ol1-matched-outcome.md`.
+
+## Retrieval and RunPod closeout
+
+Each terminal attempt first passed `03_verify.py --condition` remotely. Its
+single-root tar archive was then copied locally, matched against the remote
+SHA-256, checked for path safety, extracted, reconciled against the internal
+transfer inventory, and passed the same standalone verifier before that exact
+Pod was deleted. The five archives totaled 5,073,725,440 bytes; all temporary
+tar files were removed only after extraction, while the five extracted attempt
+trees and final checkpoints remain under `artifacts/attempts/`.
+
+The final cohort invocation of `03_verify.py` wrote
+`artifacts/verification.json` with status `verified`. The 2026-08-30
+22:14:34 UTC RunPod audit found zero Pods and one unchanged pre-existing
+100 GB standard volume, `9luykg5yc3` in `EUR-IS-1`. Run 012 created no
+retained resource. Lifecycle duration at the live $1.59/GPU-hour price implies
+about $14.77 of GPU compute, below the $22.56 run envelope. Posted RunPod Pod
+billing was still incomplete at closeout ($7.0914 attributable subtotal), so
+resource absence rather than the lagging ledger is the teardown authority.
+Exact retrieval, resource, and billing records are in
+`prelaunch/scientific-closeout.json`.
