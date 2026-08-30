@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_launch_approval",
+  "design_approved": true,
+  "scientific_execution_started": false,
+  "execution": {
+    "location": "local",
+    "cloud_cost_usd": 0.0,
+    "python": "C:/Users/thima/AppData/Local/Programs/Python/Python312/python.exe",
+    "pythonpath": "C:/Users/thima/Documents/Doutorado/exps/sparsity-spillover/src",
+    "working_directory": "C:/Users/thima/Documents/Doutorado/exps/sparsity-spillover",
+    "entrypoint": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/01_evaluate.py",
+    "detach": "PowerShell Start-Process with WindowStyle Hidden",
+    "stdout": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/artifacts/evaluate.stdout.log",
+    "stderr": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/artifacts/evaluate.stderr.log",
+    "durable_state": [
+      "artifacts/run-state.json",
+      "artifacts/progress.jsonl",
+      "artifacts/calibration/*.json"
+    ]
+  },
+  "workload": {
+    "new_checkpoints": 13,
+    "targets_per_checkpoint": 10,
+    "new_complete_validation_points": 130,
+    "new_validation_input_tokens": 89989120,
+    "calibration_blocks_per_checkpoint": 10,
+    "calibration_input_tokens_total": 266240,
+    "reused_control_points": 20,
+    "combined_result_points": 150,
+    "validation_documents_per_point": 500,
+    "validation_sequences_per_point": 338,
+    "validation_input_tokens_per_point": 692224,
+    "excluded_tail_tokens_per_point": 1444
+  },
+  "smoke": {
+    "path": "prelaunch/smoke.json",
+    "status": "passed_non_evidence_smoke",
+    "condition_id": "relu-l1n-0p05",
+    "target_sparsity": 0.2,
+    "calibration_blocks": 10,
+    "calibration_seconds": 2.2629535000014585,
+    "validation_blocks": 32,
+    "evaluation_seconds": 1.7056803999948897,
+    "input_tokens_per_second": 38422.20383150111,
+    "peak_gpu_memory_allocated_bytes": 1348858880,
+    "peak_gpu_memory_reserved_bytes": 1776287744,
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "device_memory_bytes": 12820938752,
+    "reserved_memory_fraction": 0.13854584117117855,
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1"
+  },
+  "etc": {
+    "projected_full_point_seconds_from_smoke": 18.016249224946023,
+    "historical_analysis005_median_full_point_seconds": 16.919388750000508,
+    "projected_new_evaluation_seconds": 2342.112399242983,
+    "projected_calibration_seconds": 29.41839550001896,
+    "checkpoint_hash_load_reduction_allowance_seconds": 90.0,
+    "expected_total_minutes": 41.026,
+    "maximum_planned_minutes": 50.0,
+    "method": "32-block smoke scaled linearly to 338 blocks, checked against the 20-point Analysis 005 full-pass median, plus measured calibration and conservative hash/load/reduction allowance"
+  },
+  "storage_and_retention": {
+    "new_checkpoint_bytes": 0,
+    "estimated_new_artifact_bytes": 5000000,
+    "source_checkpoints": "already retained and content-hash verified locally",
+    "outputs": [
+      "thirteen calibration JSON files",
+      "durable progress JSONL",
+      "150-point combined result JSON",
+      "reduced figure JSON and Markdown table",
+      "one PDF and one observation Markdown file"
+    ],
+    "transfer": "none; all sources, caches, and outputs are local",
+    "teardown": "none; no cloud or billable resource is created"
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "command": "python analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/03_monitor.py",
+    "report": [
+      "completed and total points",
+      "current condition and target",
+      "latest validation loss and R_model",
+      "input-token throughput",
+      "median point duration and refreshed ETC"
+    ],
+    "warnings": [
+      "evaluator process missing without a complete result",
+      "no new durable point for 10 minutes",
+      "nonfinite loss or counter value",
+      "zero-threshold source-loss mismatch greater than 5e-4",
+      "logical or validation coverage reconciliation failure",
+      "throughput below 19000 input tokens/second",
+      "PyTorch reserved GPU memory above 3 GiB",
+      "less than 5 GB free workspace storage",
+      "projected runtime beyond the 50-minute maximum"
+    ]
+  },
+  "posthoc_measurements": {
+    "activation_exact_zero_counts": true,
+    "activation_rms_l2": true,
+    "activation_sites": ["a", "m", "h", "z"],
+    "logical_product_counters": true,
+    "clipping_thresholds": true,
+    "near_zero_1e_3_1e_2": "not repeated; source diagnostics retain the pre-clipping values",
+    "weight_norms": "linked from source diagnostics because post-hoc clipping cannot change weights",
+    "gradient_conflict": "not reconstructable post hoc; existing source training records remain authoritative",
+    "final_checkpoint": "all source final checkpoints already retained and verified"
+  }
+}
