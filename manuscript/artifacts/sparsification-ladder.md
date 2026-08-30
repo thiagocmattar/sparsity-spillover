@@ -61,11 +61,13 @@ A1-H, A4-Z, and A7-Z, the per-block reachable numerators are respectively
 
 ## Visual encoding and caption
 
-Blue `G` circles denote stock GeLU, green `R` circles denote ReLU, amber `+`
-circles denote one-sided thresholding, purple `+/-` circles denote symmetric
-thresholding, and gray circles denote identity/no gate. Separate pills encode
-none, L1N, and OL1 pressure. The site columns are grouped by gate family, and
-the final three columns report the analytic model-wide ceilings.
+Muted `G`, `R`, `+`, and `+/-` circles distinguish stock GeLU, ReLU,
+one-sided thresholding, and symmetric thresholding; light outline circles
+denote identity/no gate. Compact labels encode none, L1N, and OL1 pressure.
+The site columns are grouped by gate family, and the final three columns report
+the analytic model-wide ceilings. The PDF intentionally omits the detailed
+ceiling-assumption block; the reproducibility inputs remain recorded in the
+section above.
 
 **Figure caption.** Sparsification ladder from the stock Pythia block (A0) to
 mixed architecture-wide thresholding with orthogonal L1 pressure. Rows separate
