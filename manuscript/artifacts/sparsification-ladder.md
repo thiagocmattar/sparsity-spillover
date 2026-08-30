@@ -64,11 +64,11 @@ one-sided thresholding, symmetric thresholding, and no non-linearity. Pressure
 is encoded as plain `none`, `L1N`, or `OL1` text. The rounded light panel,
 sans-serif typography, navy ink, cool-gray rules, and compact header key reuse
 the visual system of `pythia-architecture-map.pdf`. A shaded two-level table
-header and thin separators distinguish the `Labels`, `Sparsification
-intervention`, and `R_model^max` column groups; subtle alternating row bands aid
-horizontal reading. The final three columns report the analytic model-wide
-ceilings to one decimal place. Detailed reproducibility inputs remain recorded
-in the section above rather than in the PDF.
+header and thin separators distinguish the `Labels`, `Intervention`, and
+`R_model^max` column groups; subtle alternating row bands aid horizontal
+reading. The final three columns report the analytic model-wide ceilings to one
+decimal place. Detailed reproducibility inputs remain recorded in the section
+above rather than in the PDF.
 
 **Figure caption.** Sparsification ladder from the stock Pythia block (A0) to
 mixed architecture-wide thresholding with orthogonal L1 pressure. Rows separate
