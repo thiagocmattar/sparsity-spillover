@@ -5,6 +5,16 @@
 
 ## Current status
 
+Analysis 007 augments the complete-validation trained/post-hoc frontier with
+Run 012 A4-OL1. At matched `kappa <= 0.1`, A4-OL1 lowers loss and increases
+`R_model` relative to A4; the lowest A4-OL1 loss is 5.195590 at `kappa=0.05`,
+while `kappa=0.5` reverses the loss advantage. The count-pooled per-site table,
+machine-readable data, observation, and PDF are complete; no finding or
+manuscript claim was promoted.
+Run 012 completed its five-condition paper-scale A4-OL1 cohort with valid
+evidence. All 3,560 optimizer steps and 20 complete validation passes reconcile;
+all five checkpoints and agreed diagnostics are local and verified. All Pods
+are deleted and the pre-existing volume remains intentionally retained.
 Run 011 completed its five-condition, paper-scale A4-Z threshold cohort with
 valid evidence. `R_model` rose monotonically from 7.212% at `kappa=0` to
 10.216% at `kappa=0.5`; the lowest final validation loss was 5.419642 at
@@ -30,10 +40,17 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `012`. Next analysis number: `007`. Next finding number: `F001`.
+Next run number: `013`. Next analysis number: `008`. Next finding number: `F001`.
 
 ## Where we stopped
 
+- 2026-08-30: Analysis 007 added Run 012 A4-OL1 to Analysis 005's full-pass
+  trained/post-hoc frontier and produced the count-pooled `R_model`, exact-zero
+  `a/m/h/z`, and validation-loss table. No finding was promoted.
+- 2026-08-30: Run 012 completed and verified valid: five condition-parallel A100
+  attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, five checkpoints, and all approved
+  diagnostics reconcile. All Run 012 Pods were deleted.
 - 2026-08-30: Analysis 006 completed uniform TEAL-style clipping of all 13
   trained full-pass A1-H/A4-Z checkpoints and combined them with the two frozen
   control sweeps. All 150 points are verified; the one-panel PDF and table are
@@ -112,6 +129,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; Analysis 003 complete) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
 | 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; no finding promoted) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
+| 012 | Does four-site OL1 improve the paper-scale A4-Z threshold quality--logical-opportunity frontier? | completed (valid; Analysis 007 complete; no finding promoted) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
 
 ## Analyses
 
@@ -123,6 +141,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 004 | Where do the verified full-pass A1-H pressure and A4-Z threshold endpoints lie on the quality--logical-opportunity plane? | completed; descriptive, no finding promoted | `analyses/004-2026-08-30-full-pass-quality-logical-frontier/` |
 | 005 | How does uniform TEAL-style post-hoc clipping change the Run 004 GeLU/ReLU control frontiers? | completed; descriptive; reported in Status Report Number 1; no finding promoted | `analyses/005-2026-08-30-run004-controls-teal-posthoc/` |
 | 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
+| 007 | Where do the full-pass A4-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; descriptive, no finding promoted | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
 
 ## Key documents
 
