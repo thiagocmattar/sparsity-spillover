@@ -161,7 +161,13 @@ def _plot_series(
     )
 
 
-def _base_figure(title: str) -> tuple[Any, list[Any]]:
+def _base_figure(
+    title: str,
+    *,
+    top: float = 0.76,
+    bottom: float = 0.23,
+    xlabel_y: float = 0.06,
+) -> tuple[Any, list[Any]]:
     import matplotlib.pyplot as plt
 
     fig, axes_array = plt.subplots(
@@ -174,8 +180,8 @@ def _base_figure(title: str) -> tuple[Any, list[Any]]:
     )
     axes = list(axes_array)
     fig.suptitle(title, x=0.535, y=0.985, fontsize=10.5, fontweight="bold")
-    fig.supxlabel("Training input tokens (billions)", x=0.535, y=0.06, fontsize=8.8)
-    fig.subplots_adjust(left=0.09, right=0.995, top=0.76, bottom=0.23, wspace=0.15)
+    fig.supxlabel("Training input tokens (billions)", x=0.535, y=xlabel_y, fontsize=8.8)
+    fig.subplots_adjust(left=0.09, right=0.995, top=top, bottom=bottom, wspace=0.15)
     return fig, axes
 
 
@@ -197,7 +203,14 @@ def _format_axes(axes: list[Any], ylim: tuple[float, float], yticks: tuple[float
     axes[0].set_ylabel("Gradient-conflict cosine\n(negative = conflict)")
 
 
-def _legend(fig: Any, styles: list[dict[str, Any]], *, y: float = 0.91) -> None:
+def _legend(
+    fig: Any,
+    styles: list[dict[str, Any]],
+    *,
+    y: float = 0.91,
+    location: str = "upper center",
+    fontsize: float | None = None,
+) -> None:
     from matplotlib.lines import Line2D
 
     handles = [
@@ -215,12 +228,13 @@ def _legend(fig: Any, styles: list[dict[str, Any]], *, y: float = 0.91) -> None:
     ]
     fig.legend(
         handles=handles,
-        loc="upper center",
+        loc=location,
         bbox_to_anchor=(0.535, y),
         ncols=len(handles),
         frameon=False,
         handlelength=2.2,
         columnspacing=1.4,
+        fontsize=fontsize,
     )
 
 
@@ -325,7 +339,12 @@ def _ol1_figure(events: dict[str, dict[float, list[dict[str, Any]]]]) -> Path:
             "band_alpha": 0.16,
         },
     ]
-    fig, axes = _base_figure("OL1 removes Adam-relative gradient conflict")
+    fig, axes = _base_figure(
+        "OL1 removes Adam-relative gradient conflict",
+        top=0.84,
+        bottom=0.30,
+        xlabel_y=0.035,
+    )
     for ax, weight in zip(axes, LAMBDAS, strict=True):
         rows = events["orthogonal_l1"][weight]
         x = [float(row["input_tokens_seen"]) / 1e9 for row in rows]
@@ -342,7 +361,7 @@ def _ol1_figure(events: dict[str, dict[float, list[dict[str, Any]]]]) -> Path:
             styles[1],
         )
     _format_axes(axes, (-0.19, 0.02), (-0.18, -0.12, -0.06, 0.0))
-    _legend(fig, styles, y=0.96)
+    _legend(fig, styles, y=0.16, location="center", fontsize=6.8)
     _save(
         fig,
         OUTPUT_OL1,
