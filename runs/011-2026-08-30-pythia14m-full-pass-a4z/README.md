@@ -2,11 +2,11 @@
 
 ## Status
 
-Design approved by the user on 2026-08-30. The run-local implementation and
-non-billable verification are complete. Scientific execution and all billable
-RunPod resource creation remain prohibited. The next gate is explicit approval
-for one non-evidence A100 preflight Pod; a successful preflight will be followed
-by a separate five-worker scientific-launch decision.
+Design approved by the user on 2026-08-30. The run-local implementation,
+non-billable verification, and approved one-Pod A100 preflight are complete. The
+preflight passed, its packet is verified locally, and the Pod is stopped with
+GPU billing inactive. Scientific execution and creation of the other four Pods
+remain prohibited pending a separate five-worker scientific-launch decision.
 
 ## Maintained execution checklist
 
@@ -15,10 +15,10 @@ by a separate five-worker scientific-launch decision.
   diagnostics, verification, and RunPod playbook.
 - [x] 3. Pass focused, affected-run, and repository-wide tests; reconcile local
   fit, historical ETC, live RunPod inventory, capacity, and price.
-- [ ] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at the two
-  threshold extremes. **Approved on 2026-08-30; provisioning is in progress.**
-- [ ] 5. Retrieve the preflight packet, update the measured five-worker ETC and
-  cost, and reconfirm the post-hoc inventory.
+- [x] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at the two
+  threshold extremes; retrieve and locally hash-verify its packet; stop the Pod.
+- [ ] 5. Present the measured five-worker ETC, cost, cache-distribution choice,
+  and post-hoc inventory. **Awaiting explicit scientific-launch decision.**
 - [ ] 6. Obtain separate scientific-launch approval and start five concurrent
   one-condition workers.
 - [ ] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
@@ -166,19 +166,50 @@ substitute. No A100 capacity was advertised in the retained volume's
 `EUR-IS-1` data center, so the proposed preflight uses a 25 GB per-Pod
 `/workspace` volume and a hash-verified local cache copy.
 
-The requested next action is exactly one Secure A100 SXM 80 GB Pod, one GPU,
-the pinned image digest, 30 GB container disk, 25 GB persistent Pod volume,
-SSH only, and an absolute 1.5-hour termination guard. The preflight itself is
-limited to 45 minutes. Maximum compute is `$2.385`; allowing `$0.20` for
-incremental Pod storage yields a rounded `$2.60` preflight envelope. Success
-causes retrieval and hash verification followed by a Pod stop for no more than
-24 hours; failure causes evidence retrieval and exact-Pod termination. No
-scientific condition may start under this approval.
+The approved preflight created exactly one Secure A100 SXM 80 GB Pod with the
+pinned image, 30 GB container disk, 25 GB `/workspace` volume, SSH, and a
+1.5-hour absolute termination guard. It completed and was stopped after 1,770
+runtime seconds. Estimated compute is `$0.78175` before posted-billing
+reconciliation, below the `$2.60` envelope. The automatic deletion deadline is
+`2026-08-30T18:04:31Z`; scientific execution was not authorized or started.
 
-For planning only, five scientific Pods at the current ceiling cost at most
+Both endpoint conditions passed five exact MB32/GAS32 boundaries with no
+overflow or skipped update. Median steady boundary time was 4.872 seconds
+(about 430,490 input tokens/second); peak reserved memory was 57.242 GiB, leaving
+27.77% headroom. Initialization, schedule, cache, config, and code identities
+matched, and flash attention was active. The retrieved packet is under
+`prelaunch/preflight-attempt-001/`.
+
+The first cache setup attempted a fresh pinned Hugging Face build. At 75% it
+crossed the free-disk warning because the source cache and growing token file
+coexisted. The non-evidence builder was stopped, its exact partial file and
+re-downloadable cache were removed, and the already-approved local token cache
+was transferred instead. Remote byte counts and hashes matched. That cache is
+private to the stopped Pod, not automatically shared with the other workers.
+The pre-existing EUR network volume remains the authoritative reusable copy for
+future compatible runs; the preflight did not replace or modify it.
+
+For the scientific fleet, the proposed distribution is one verified seed and
+four concurrent seed-to-worker copies onto isolated per-Pod volumes, each
+accepted only after byte-count and SHA-256 verification. This avoids five
+independent tokenizations and preserves writable-workspace isolation and GPU
+placement flexibility. Run 004 measured 78--84 seconds for the same concurrent
+distribution pattern. If the stopped preflight Pod expires before approval, the
+seed will come from the retained EUR volume when compatible capacity exists, or
+from one pinned, verified rebuild; no new network volume is proposed.
+
+For planning only, the measured preflight updates the concurrent five-worker
+projection to 1.676 hours median and 1.790 hours p90 from provisioning through
+local retrieval, or `$13.33` median and `$14.23` p90 compute at the current
+price. Five scientific Pods at the current ceiling cost at most
 `5 * 2.5 * $1.59 = $19.875` compute; `$0.25` storage allowance gives a rounded
 `$20.15` scientific envelope. The separate maximum for both stages would be
 `$22.75`. Neither scientific amount is approved or billable yet.
+
+The final live audit still reports `$1.59/GPU-hour` and `MEDIUM` overall Secure
+A100 SXM availability, but only `LOW` availability in every advertised data
+center, including `EUR-IS-1`. The stopped preflight Pod is the only Pod and GPU
+billing is inactive; posted Pod billing has not yet populated.
 
 The preflight retrieval inventory is the JSON result, stdout/stderr log,
 environment freeze, source/config identities, cache identities, and an archive

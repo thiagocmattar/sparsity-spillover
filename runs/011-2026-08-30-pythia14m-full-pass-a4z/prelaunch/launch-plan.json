@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "status": "preflight_launch_approved_provisioning_pending",
+  "status": "preflight_passed_stopped_awaiting_scientific_launch_approval",
   "prepared_at": "2026-08-30T16:10:00Z",
-  "revised_at": "2026-08-30T16:33:17.3789179Z",
+  "revised_at": "2026-08-30T17:10:03.2521513Z",
   "design_approved": true,
   "preflight_launch_approved": true,
   "preflight_launch_approved_at": "2026-08-30T16:33:17.3789179Z",
@@ -21,12 +21,13 @@
     "affected_runs": "58 passed",
     "repository_wide": "150 passed",
     "compileall": "passed",
-    "target_gpu_preflight": "not run; awaiting approval"
+    "target_gpu_preflight": "passed locally after hash-verified retrieval; five exact boundaries at each kappa endpoint"
   },
   "live_inventory": {
-    "queried_at": "2026-08-30T16:33:17.3789179Z",
+    "queried_at": "2026-08-30T17:10:03.2521513Z",
     "source": "RunPod MCP live v2 inventory",
-    "pods": 0,
+    "pods": 1,
+    "pod_inventory_note": "one stopped Run 011 preflight Pod; GPU billing inactive; automatic termination remains scheduled",
     "network_volumes": [
       {
         "id": "9luykg5yc3",
@@ -42,7 +43,7 @@
       {
         "id": "NVIDIA A100-SXM4-80GB",
         "memory_gb": 80,
-        "secure_availability": "MEDIUM",
+        "secure_availability": "MEDIUM overall; LOW in each advertised data center at the final audit",
         "secure_price_usd_per_gpu_hour": 1.59,
         "cuda_12_8_available": true,
         "eligible_data_centers": ["EUR-IS-1", "US-CA-2", "US-KS-2", "US-MD-1", "US-MO-1", "US-WA-1"]
@@ -79,7 +80,64 @@
     "maximum_compute_cost_usd": 2.385,
     "estimated_maximum_incremental_pod_storage_cost_usd": 0.20,
     "maximum_incremental_total_cost_usd": 2.60,
-    "success_action": "retrieve and hash-verify the preflight packet, then stop the reusable Pod for at most 24 hours and request separate scientific-launch approval",
+    "source_bundle": {
+      "commit": "5cb8afc9eddd62a532f8a07c597f25e4f8128aa0",
+      "bytes": 7652566,
+      "sha256": "c6248e62a9a0da217602f7dafb926cef443a70885fd28495fa8e5cf20af47846"
+    },
+    "live_pod": {
+      "id": "n4e5u5ln2wyih9",
+      "created_at": "2026-08-30T16:34:41.158Z",
+      "name": "run011-a4z-preflight-a100sxm-r1",
+      "gpu_type": "NVIDIA A100-SXM4-80GB",
+      "gpu_count": 1,
+      "cuda_version": "12.8",
+      "cloud_type": "SECURE",
+      "price_usd_per_hour": 1.59,
+      "automatic_termination_deadline": "2026-08-30T18:04:31Z",
+      "runtime_at_record_seconds": 1770,
+      "state_at_record": "EXITED",
+      "stopped_and_verified_at": "2026-08-30T17:04:43.6536865Z",
+      "stopped_storage_retention_deadline": "2026-08-30T18:04:31Z",
+      "gpu_billing_active": false,
+      "scientific_execution_authorized": false
+    },
+    "cache_preparation": {
+      "initial_method": "rebuild from pinned public Hugging Face revisions on the private Pod volume",
+      "warning": "the combined 8.6 GB Hugging Face cache and growing token file left 1.3 GB free at 75 percent document coverage",
+      "corrective_action": "stopped the non-evidence builder, removed only its 4.87 GB partial token file and re-downloadable Hugging Face cache, then transferred the existing exact local cache",
+      "train_tokens_bytes": 5966845664,
+      "train_tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_tokens_bytes": 2774672,
+      "validation_tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+      "remote_cache_verification_seconds": 5.293882023543119,
+      "fleet_scope": "private to this stopped Pod; scientific fleet distribution or shared storage requires the separate launch decision"
+    },
+    "result": {
+      "status": "passed",
+      "completed_at": "2026-08-30T17:01:21.325415+00:00",
+      "conditions": ["a4z-one-sided-kappa-0", "a4z-one-sided-kappa-0p5"],
+      "complete_boundaries_per_condition": 5,
+      "last_task_loss": {
+        "a4z-one-sided-kappa-0": 10.641378402709961,
+        "a4z-one-sided-kappa-0p5": 10.577690124511719
+      },
+      "median_boundary_seconds": 4.872743697836995,
+      "median_steady_boundary_seconds": 4.8715513604693115,
+      "median_steady_tokens_per_second": 430489.5596539428,
+      "peak_memory_reserved_gib": 57.2421875,
+      "memory_headroom_fraction": 0.2777166797590992,
+      "overflow_or_skipped_boundaries": 0,
+      "flash_attention_available": true,
+      "initialization_matches_run004": true,
+      "schedule_matches_run004": true,
+      "config_and_code_match_approved_packet": true,
+      "retrieved_result_sha256": "659ae2e3b7c41a7449b358d058067a21e7e6b6363a786449eed859138fe759b6",
+      "retrieved_files_hash_verified": 5,
+      "estimated_preflight_compute_cost_usd": 0.78175,
+      "billing_note": "estimate from 1770 runtime seconds at $1.59/hour; posted billing may lag"
+    },
+    "success_action": "retrieve and hash-verify the preflight packet, then stop the reusable Pod until its automatic deletion deadline and request separate scientific-launch approval",
     "failure_action": "retrieve failure evidence, terminate the exact Pod, create no scientific workers, and request a design-preserving resource decision",
     "scientific_execution_authorized": false
   },
@@ -104,6 +162,19 @@
     "maximum_incremental_storage_cost_usd": 0.25,
     "maximum_incremental_total_cost_usd": 20.15,
     "maximum_all_in_run011_cost_including_preflight_usd": 22.75,
+    "measured_preflight_step_samples": 10,
+    "projected_wall_hours_median": 1.6763741674027146,
+    "projected_wall_hours_p90": 1.7903118865433822,
+    "projected_compute_cost_median_usd": 13.32717463085158,
+    "projected_compute_cost_p90_usd": 14.232979498019889,
+    "cache_distribution": {
+      "authoritative_reusable_cache": "pre-existing network volume 9luykg5yc3 in EUR-IS-1, with the exact Run 004/Run 011 train and validation hashes",
+      "worker_strategy": "reuse or recreate one hash-verified seed worker, then distribute the immutable cache concurrently to four isolated per-Pod volumes before scientific training",
+      "reason": "preserves independent writable workspaces and placement flexibility while avoiding five independent tokenizations; Run 004 measured 78-84 seconds for concurrent seed-to-worker distribution",
+      "fallback": "if the stopped seed Pod has auto-terminated, seed from the retained EUR volume when compatible capacity exists, otherwise perform one pinned rebuild and hash verification before distribution",
+      "new_network_volume": false,
+      "independent_tokenization_per_worker": false
+    },
     "expected_transfer_bytes_from_run004_per_condition": 1014000000,
     "expected_transfer_bytes_for_cohort": 5070000000
   },
