@@ -313,3 +313,10 @@ claim without a separate user-approved finding.
   presented, the user explicitly replied `Approved`. This authorizes five
   condition-parallel Secure A100 SXM 80 GB workers under the `$20.15`
   scientific envelope and 2.5-hour per-worker termination guard.
+
+## Subsequent consolidation
+
+- 2026-08-30: the user approved tentative Finding F001 from the five matched
+  Run 011 A4 and Run 012 A4-OL1 pairs. Analysis 007 owns the count-reconciled
+  synthesis; this run remains the immutable A4 evidence source. This later
+  approval supersedes the no-finding status recorded at run closeout above.

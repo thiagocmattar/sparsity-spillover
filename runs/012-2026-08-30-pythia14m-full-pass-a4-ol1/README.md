@@ -251,3 +251,9 @@ billing was still incomplete at closeout ($7.0914 attributable subtotal), so
 resource absence rather than the lagging ledger is the teardown authority.
 Exact retrieval, resource, and billing records are in
 `prelaunch/scientific-closeout.json`.
+
+## Subsequent consolidation
+
+- 2026-08-30: the user approved tentative Finding F001 from the five matched
+  Run 011 A4 and Run 012 A4-OL1 pairs. Analysis 007 owns the count-reconciled
+  synthesis; this run remains the immutable A4-OL1 evidence source.

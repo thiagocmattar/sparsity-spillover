@@ -30,3 +30,8 @@ From the repository root:
 
 This is a one-seed descriptive comparison. `R_model` is a logical-product
 opportunity, not a measured runtime speedup.
+
+## Consolidation
+
+On 2026-08-30, the user approved this matched result as tentative Finding F001:
+`research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md`.

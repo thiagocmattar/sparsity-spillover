@@ -66,3 +66,5 @@ in the source figure.
 - A4-OL1 verification: `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/verification.json`
 - Figure: `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/figures/01-full-pass-frontier-with-a4-ol1.pdf`
 - Table: `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/tables.md`
+- Consolidated finding:
+  `research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md`

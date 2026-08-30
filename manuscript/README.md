@@ -33,6 +33,9 @@ variant.
 - `methodology.tex` gives the formal Pythia graph, sites, activation operators,
   L1/OL1 definitions, exact product counters, `R_block`, `R_model`, and the
   draft architecture ceiling `R_model_max`.
+- `experiment-control/README.md` records the paper-intent, execution, analysis,
+  and finding status of the intervention ladder. Its A4 and A4-OL1 Pythia-14M
+  cells are backed by Runs 011/012, Analysis 007, and Finding F001.
 - `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
   intervention-neutral, paper-ready map of one shared Pythia block; the
   adjacent Markdown file records its notation, scope, caption, and caveats.
@@ -102,6 +105,14 @@ actually needs it.
 
 ## Result evidence crosswalk
 
+- On 30 August 2026, the user approved tentative Finding F001 from the five
+  matched Pythia-14M A4/A4-OL1 full-pass pairs. Four-site OL1 lowers validation
+  loss and increases measured `R_model` at `kappa <= 0.1`; at `kappa=0.5`, the
+  loss advantage reverses and the opportunity increment is negligible. The
+  finding is limited to one seed, one 14M scale, one MiniPile pass, and logical
+  product opportunity rather than measured speedup. Analysis 007 owns the
+  figure, count-pooled site table, and machine-readable reduction; Runs 011 and
+  012 own the verified endpoints.
 - On 30 August 2026, the user approved reporting Analysis 005's uniform
   TEAL-style post-hoc GeLU/ReLU controls as a strong descriptive result in
   `reports/01-2026-08-30-status-update/status-update.tex`. The report references
@@ -110,3 +121,13 @@ actually needs it.
   logical-opportunity caveats. No centralized finding was promoted. The
   `manuscript/reports/` directory remains intentionally Git-ignored; the tracked
   analysis observations and figures are the evidence record.
+- On 30 August 2026, the user approved updating Status Report Number 1 with
+  Analysis 007's paper-scale A4-OL1 result as a very strong descriptive result.
+  The report replaces the prior combined trained/post-hoc plot with Analysis
+  007's augmented frontier PDF, replaces the incomplete pilot-only A4-OL1
+  subsection with all five Run 012 endpoints, and links Observation O001. It
+  retains the one-seed, joint-intervention, logical-opportunity, and
+  no-runtime-speedup caveats. The report update preceded the later approval of
+  tentative Finding F001; the finding and this tracked crosswalk now carry the
+  consolidated status. The report directory remains intentionally Git-ignored,
+  while Analysis 007 retains the numerical provenance.

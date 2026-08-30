@@ -101,8 +101,11 @@ actually consumed by attention. For valid causal pairs $u\le t$,
     C_{\ell,bht:}
       &=\sum_{u\le t}P_{\ell,bhtu}V_{\ell,bhu:},
     \label{eq:attention-context}\\
+    Z_\ell
+      &=\Phi_z^\tau\!\left(\operatorname{ConcatHeads}(C_\ell)\right),
+    \label{eq:pre-wo-context}\\
     O_\ell
-      &=\operatorname{ConcatHeads}(C_\ell)W_{o,\ell}+b_{o,\ell}.
+      &=Z_\ell W_{o,\ell}+b_{o,\ell}.
     \label{eq:attention-output}
 \end{align}
 In parallel, the FFN branch is
@@ -150,10 +153,10 @@ fixed operators are
     \label{eq:symmetric-operator}
 \end{align}
 Values exactly equal to the threshold survive. Branch sites $a,m,h$ use ReLU
-or one-sided thresholding; post-QKV $Q,K,V$ sites additionally support the
-symmetric operator. The topology specifies where an operator is executed,
-while the operator family, threshold, pressure set, and optimization rule are
-separate experimental choices.
+or one-sided thresholding; post-QKV $Q,K,V$ sites and the signed pre-$W_o$
+context site $z$ additionally support fixed threshold operators. The topology
+specifies where an operator is executed, while the operator family, threshold,
+pressure set, and optimization rule are separate experimental choices.
 
 Let $\mathcal I_{\mathcal P}$ be the set of captured site-layer tensors that
 receive $\ell_1$ pressure. If $X_i$ has $N_i$ scalar elements, the repository
@@ -293,8 +296,9 @@ ceiling, not the measured numerator.
 
 For linear maps, an input zero removes one product per output coordinate. For
 attention, the repository counts the actual operands: $Q$ and $K$ after RoPE,
-$P$ and $V$ on valid causal pairs, and the realized context $C=PV$ entering
-$W_o$. The exact formulas are given in Appendix~\ref{app:product-counters}.
+$P$ and $V$ on valid causal pairs, and the actual post-gate context
+$Z=\Phi_z^\tau(\operatorname{ConcatHeads}(PV))$ entering $W_o$. The exact
+formulas are given in Appendix~\ref{app:product-counters}.
 
 \subsection{Executed topologies and architecture ceilings}
 \label{sec:topologies}
@@ -321,11 +325,13 @@ may be expressed per token. Define $A_T=d(T+1)/2$. The reach rules are
     m\!\to\!W_1,\qquad
     h\!\to\!W_2,\qquad
     q\ \text{or}\ k\!\to\!QK,\qquad
-    v\!\to\!PV\ \text{and}\ W_o.
+    v\!\to\!PV\ \text{and}\ W_o,\qquad
+    z\!\to\!W_o.
     \label{eq:reach-rules}
 \end{equation}
-The last rule follows from $V\equiv0\Rightarrow C=PV\equiv0$. It is an
-all-zero closure rule; partial value masks are not assumed to survive $PV$.
+The $v$ rule follows from $V\equiv0\Rightarrow C=PV\equiv0$; it is an
+all-zero closure rule, and partial value masks are not assumed to survive
+$PV$. The $z$ rule is direct because $z$ is the actual input to $W_o$.
 
 \begin{table}[H]
 \centering
@@ -343,6 +349,7 @@ Topology & Selected sites & Ceiling numerator & 14M & 12B analytic \\
 A0 & none; stock GELU at $h$ & $0$ & $0.0000\%$ & $0.0000\%$ \\
 A1-H & $h$ & $4Ld^2$ & $4.2777\%$ & $31.5577\%$ \\
 A3 & $a,m,h$ & $11Ld^2$ & $11.7637\%$ & $86.7837\%$ \\
+A4-Z & $a,m,h,z$ & $12Ld^2$ & $12.8332\%$ & $94.6731\%$ \\
 A4-Q & $a,m,h,q_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
 A4-K & $a,m,h,k_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
 A4-V & $a,m,h,v$ & $L(12d^2+A_T)$ & $21.3928\%$ & $96.2518\%$ \\
@@ -350,6 +357,7 @@ A5-QK-PRE & $a,m,h,q_{\pre},k_{\pre}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\
 A5-QK-POST & $a,m,h,q_{\post},k_{\post}$ & $L(11d^2+A_T)$ & $20.3233\%$ & $88.3623\%$ \\
 A6-PRE & $a,m,h,q_{\pre},k_{\pre},v$ & $LC_{\block}$ & $29.9524\%$ & $97.8304\%$ \\
 A6-POST & $a,m,h,q_{\post},k_{\post},v$ & $LC_{\block}$ & $29.9524\%$ & $97.8304\%$ \\
+A7-Z-POST & $a,m,h,q_{\post},k_{\post},v,z$ & $LC_{\block}$ & $29.9524\%$ & $97.8304\%$ \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -463,7 +471,7 @@ runtime speedups additionally requires suitable sparse kernels and hardware.
 Let
 \begin{equation}
     \mathcal U=
-    \{a,m,h,q_{\pre},k_{\pre},q_{\post},k_{\post},v\}
+    \{a,m,h,q_{\pre},k_{\pre},q_{\post},k_{\post},v,z\}
     \label{eq:available-sites}
 \end{equation}
 be the available sites in every block. For $s\ne h$,
@@ -489,13 +497,15 @@ The topology sets are
     \tau_{\mathrm{A0}}&=\varnothing,\\
     \tau_{\mathrm{A1-H}}&=\{h\},\\
     \tau_{\mathrm{A3}}&=\{a,m,h\},\\
+    \tau_{\mathrm{A4-Z}}&=\{a,m,h,z\},\\
     \tau_{\mathrm{A4-Q}}&=\{a,m,h,q_{\post}\},\\
     \tau_{\mathrm{A4-K}}&=\{a,m,h,k_{\post}\},\\
     \tau_{\mathrm{A4-V}}&=\{a,m,h,v\},\\
     \tau_{\mathrm{A5-QK-PRE}}&=\{a,m,h,q_{\pre},k_{\pre}\},\\
     \tau_{\mathrm{A5-QK-POST}}&=\{a,m,h,q_{\post},k_{\post}\},\\
     \tau_{\mathrm{A6-PRE}}&=\{a,m,h,q_{\pre},k_{\pre},v\},\\
-    \tau_{\mathrm{A6-POST}}&=\{a,m,h,q_{\post},k_{\post},v\}.
+    \tau_{\mathrm{A6-POST}}&=\{a,m,h,q_{\post},k_{\post},v\},\\
+    \tau_{\mathrm{A7-Z-POST}}&=\{a,m,h,q_{\post},k_{\post},v,z\}.
 \end{align*}
 The same topology and operator specification is required in every layer.
 
@@ -542,8 +552,9 @@ For $X\in\R^{n\times p}$ and $W\in\R^{p\times q}$, the implementation counts
     \label{eq:linear-total-products}
 \end{align}
 This rule is applied directly to the actual inputs of QKV, $W_o$, $W_1$, and
-$W_2$. In particular, $W_o$ credit is determined by exact zeros in the realized
-context $C=PV$, not inferred from value sparsity.
+$W_2$. In particular, $W_o$ credit is determined by exact zeros in the actual
+post-gate context $Z=\Phi_z^\tau(\operatorname{ConcatHeads}(PV))$, not inferred
+from value sparsity.
 
 \subsection{Valid-causal QK products}
 
@@ -609,11 +620,13 @@ The per-block reachable products are
     N_{\mathrm{A0}}&=0,\\
     N_{\mathrm{A1-H}}&=4d^2,\\
     N_{\mathrm{A3}}&=3d^2+4d^2+4d^2=11d^2,\\
+    N_{\mathrm{A4-Z}}&=12d^2,\\
     N_{\mathrm{A4-Q}}=N_{\mathrm{A4-K}}
       &=N_{\mathrm{A5-QK-PRE}}=N_{\mathrm{A5-QK-POST}}
         =11d^2+A_T,\\
     N_{\mathrm{A4-V}}&=11d^2+A_T+d^2=12d^2+A_T,\\
     N_{\mathrm{A6-PRE}}=N_{\mathrm{A6-POST}}
+      =N_{\mathrm{A7-Z-POST}}
       &=11d^2+A_T+A_T+d^2=C_{\block}.
 \end{align*}
 Hence

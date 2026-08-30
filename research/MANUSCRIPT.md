@@ -36,7 +36,9 @@ such a new discrepancy silently.
   kernels and direct measurements.
 
 Contribution statements in the introduction are hypotheses or candidate claims
-until their evidence is linked to approved findings.
+until their evidence is linked to approved findings. Finding F001 now supports
+the explicitly scoped, tentative Pythia-14M A4/A4-OL1 statement; it does not
+support scale-independent or runtime-speedup language.
 
 ## Acknowledged starting differences
 
@@ -55,9 +57,6 @@ draft:
   operator assignment;
 - the operational topology registry includes A2 = `m,h`, which is not listed in
   the current manuscript table;
-- the architecture-map artifact includes the pre-`W_o` context site `z`, while
-  the current methodology prose and topology table omit it; approved Run 006
-  operationalizes `z` and topology A4-Z without silently editing manuscript TeX;
 - artifacts store `R` fractions in `[0,1]`, while manuscript prose and tables
   display percentages;
 - the default evaluation protocol uses all 500 MiniPile validation documents,
@@ -92,3 +91,14 @@ After the user approves a finding or requests manuscript work:
    crosswalk.
 
 Do not automatically promote a successful run into a paper conclusion.
+
+## Approved evidence integration
+
+- Finding F001 tentatively establishes that, for one matched Pythia-14M seed
+  and one full MiniPile pass, adding four-site OL1 to A4-Z improves validation
+  loss and measured `R_model` through `kappa=0.1`, but not at `kappa=0.5`.
+- Analysis 007 owns the count-reconciled figure, table, observation, and source
+  hashes. Runs 011 and 012 own the immutable A4 and A4-OL1 evidence.
+- `manuscript/introduction.tex` states this limited empirical scope;
+  `manuscript/methodology.tex` now names the executed pre-`W_o` site `z` and
+  topology A4-Z. Logical opportunity remains distinct from runtime speedup.
