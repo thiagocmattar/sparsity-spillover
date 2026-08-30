@@ -47,7 +47,7 @@ an instruction to execute the full matrix.
 | `A1-H-OL1` | 4 | 4/4 full pass complete: Run 009 | 0/4 | 0/4 |
 | `A4` | 5 | 5/5 full pass: Run 011; F001 source | 0/5 | 0/5 |
 | `A4-OL1` | 5 | 5/5 full pass: Run 012; F001 source | 0/5 | 0/5 |
-| `A7` | 5 | 0/5 full pass; 5/5 pilot: Run 008 | 0/5 | 0/5 |
+| `A7` | 5 | 0/5 full pass; Run 013 launch approved; 5/5 pilot: Run 008 | 0/5 | 0/5 |
 | `A7-OL1` | 5 | 0/5 full pass; 5/5 pilot: Run 010 | 0/5 | 0/5 |
 | **Total** | **30** | **20/30 full pass; 10 complete pilot conditions in the remaining A7 cells** | **0/30** | **0/30** |
 
@@ -242,12 +242,14 @@ step remains `not cited` unless updated explicitly.
 
 #### `A7` - mixed threshold at seven sites
 
-- [ ] `kappa=0` - pilot completed in Run 008; paper-scale full pass not run.
-- [ ] `kappa=0.01` - pilot completed in Run 008; paper-scale full pass not run.
-- [ ] `kappa=0.05` - pilot completed in Run 008; paper-scale full pass not run.
-- [ ] `kappa=0.1` - pilot completed in Run 008; paper-scale full pass not run.
-- [ ] `kappa=0.5` - pilot completed in Run 008; paper-scale full pass not run.
+- [ ] `kappa=0` - pilot completed in Run 008; Run 013 full pass launch approved.
+- [ ] `kappa=0.01` - pilot completed in Run 008; Run 013 full pass launch approved.
+- [ ] `kappa=0.05` - pilot completed in Run 008; Run 013 full pass launch approved.
+- [ ] `kappa=0.1` - pilot completed in Run 008; Run 013 full pass launch approved.
+- [ ] `kappa=0.5` - pilot completed in Run 008; Run 013 full pass launch approved.
 - Pilot identity: seed 0, global batch 64, 581 updates, BF16.
+- Paper-scale identity: seed 1234, global batch 1,024, 712 updates, dynamic
+  FP16; five condition-parallel Secure A100 workers in Run 013.
 
 #### `A7-OL1` - mixed A7 plus OL1 at all seven sites
 
@@ -424,8 +426,9 @@ Interpretation cautions:
 
 ## Open decisions before selecting the paper subset
 
-- Which A7/A7-OL1 kappa rows, if any, merit paper-scale full passes; A4 and
-  A4-OL1 are complete at all five planned Pythia-14M thresholds.
+- Which A7-OL1 kappa rows, if any, merit paper-scale full passes. All five A7
+  rows were selected and launch-approved in Run 013; A4 and A4-OL1 are complete
+  at all five planned Pythia-14M thresholds.
 - Whether all four A1-H lambda rows are needed at 70M/410M or a preregistered
   subset should be selected from 14M evidence.
 - Whether one seed (`1234`) is sufficient for the paper claim or selected
@@ -453,6 +456,8 @@ Interpretation cautions:
 - A7-OL1 pilot: `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/`.
 - Full-pass A4 source: `runs/011-2026-08-30-pythia14m-full-pass-a4z/`.
 - Full-pass A4-OL1 source: `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/`.
+- Full-pass A7 source in progress:
+  `runs/013-2026-08-30-pythia14m-full-pass-a7/`.
 - Full-pass A4/A4-OL1 synthesis:
   `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` and
   `research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md`.

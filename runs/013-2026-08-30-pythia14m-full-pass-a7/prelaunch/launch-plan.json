@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "state": "approved_for_preflight_and_scientific_launch",
+  "recorded_at": "2026-08-30T23:49:29.566189Z",
+  "approval": {
+    "design_approved": true,
+    "preflight_approved": true,
+    "scientific_launch_approved": true,
+    "source": "User explicitly pre-approved design, execution, retrieval, verification, and teardown on 2026-08-30."
+  },
+  "scientific_identity": {
+    "config_sha256": "ac1a78d40966525bcceb5c760d0b8bd77260f0be24f295b49209d99ed2731fb2",
+    "run_code_sha256": "518199e6f845fd88281525f5cdc1e7c323168504d4bf4393593d9c7ddc8d7453",
+    "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+    "source_commit": null
+  },
+  "verification": {
+    "focused": "7 passed",
+    "affected": "68 passed",
+    "full_repository": "166 passed",
+    "python_compile": "passed",
+    "bash_parse": "passed with Git for Windows bash"
+  },
+  "live_runpod_snapshot": {
+    "queried_at": "2026-08-30T23:49:29.566189Z",
+    "active_pods": 0,
+    "account_balance_usd": 82.8190418053,
+    "current_spend_per_hour_usd": 0.01,
+    "gpu_type": "NVIDIA A100-SXM4-80GB",
+    "gpu_memory_gb": 80,
+    "cloud_type": "SECURE",
+    "cuda_version": "12.8",
+    "price_per_gpu_hour_usd": 1.59,
+    "overall_availability": "MEDIUM",
+    "retained_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD",
+      "continuing_monthly_cost_usd": 7.0,
+      "pre_existing_and_intentionally_retained": true
+    }
+  },
+  "preflight": {
+    "pod_count": 1,
+    "gpu_count_per_pod": 1,
+    "gpu_type": "NVIDIA A100-SXM4-80GB",
+    "maximum_hours": 1.5,
+    "maximum_compute_cost_usd": 2.385,
+    "storage_allowance_usd": 0.115,
+    "maximum_total_cost_usd": 2.5,
+    "conditions": [
+      "a7-z-post-mixed-kappa-0",
+      "a7-z-post-mixed-kappa-0p5"
+    ],
+    "boundaries_per_condition": 5,
+    "scientific_evidence": false
+  },
+  "scientific_fleet": {
+    "pod_count": 5,
+    "gpu_count_per_pod": 1,
+    "parallelism": "one_condition_per_gpu_no_ddp",
+    "maximum_hours_per_pod": 2.5,
+    "maximum_compute_cost_usd": 19.875,
+    "storage_allowance_usd": 0.25,
+    "maximum_total_cost_usd": 20.125,
+    "rounded_authorized_envelope_usd": 20.15,
+    "historical_concurrent_etc_hours_p90": 1.79,
+    "measured_etc": null
+  },
+  "combined_maximum_cost_usd": 22.65,
+  "image": {
+    "digest": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "tag_reference": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
+  },
+  "storage": {
+    "container_disk_gb": 30,
+    "pod_volume_gb": 25,
+    "mount_path": "/workspace",
+    "new_network_volume": false,
+    "cache_strategy": "Verify and reuse the pre-existing EUR-IS-1 cache when placement permits; otherwise make hash-checked worker-local copies."
+  },
+  "termination": {
+    "preflight_terminate_after_hours": 1.5,
+    "scientific_terminate_after_hours": 2.5,
+    "mechanism": "RunPod GraphQL terminateAfter at creation; verify the stored deadline, then delete each Pod immediately after local acceptance.",
+    "cli_note": "runpodctl 2.12.0 live help omits the documented --terminate-after flag."
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "stale_event_minutes": 10,
+    "warning_conditions": [
+      "missing process",
+      "event older than ten minutes",
+      "nonfinite metric or skipped boundary",
+      "reserved memory outside preflight envelope",
+      "less than 5 GB free disk",
+      "incomplete validation coverage",
+      "projected termination-deadline overrun"
+    ]
+  },
+  "transfer_inventory": [
+    "resolved config and manifest",
+    "events and terminal metrics",
+    "all declared model and recovery checkpoints",
+    "activation, weight, logical-product, and checkpoint diagnostics",
+    "remote transfer inventory",
+    "environment freeze and preflight evidence"
+  ],
+  "teardown": {
+    "delete_every_run013_pod_after_local_hash_and_verifier_acceptance": true,
+    "retain_pre_existing_network_volume": true,
+    "final_account_level_pod_and_volume_audit": true,
+    "posted_billing_refresh_required": true
+  }
+}
