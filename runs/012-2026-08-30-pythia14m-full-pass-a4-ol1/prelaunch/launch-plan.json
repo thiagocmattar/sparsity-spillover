@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "status": "approved_ready_for_seed_preflight",
+  "approved_by_user": true,
+  "approval_scope": "design, implementation, billable preflight, five-condition scientific execution, monitoring, retrieval, verification, and teardown",
+  "audit_timestamp_utc": "2026-08-30T19:56:02.7580220Z",
+  "source": {
+    "launch_commit": null,
+    "launch_commit_note": "record after the launch-ready commit; remote execution must use that exact clean commit",
+    "config_sha256": "81a973a982a1b1370fdeb8c53fd41e03edece3c181e9d979cd287568852c1091",
+    "run_code_sha256": "dcd66dec0a572a3654e0cc2f6f85fdab067c3515faffd6acad93ded9f4b039eb",
+    "expected_initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "expected_training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+    "run011_comparator_code_sha256": "c253d6cba5511e7e43f3599a5776b846b4a8b8048a32c23fcfc66317d8b1bf09"
+  },
+  "verification": {
+    "focused": "9 passed",
+    "affected_runs_004_009_011_012": "39 passed",
+    "repository_wide": "159 passed",
+    "python_compileall": "passed"
+  },
+  "live_account": {
+    "pods_before_creation": 0,
+    "volumes_before_creation": 1,
+    "retained_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD",
+      "cleanup": "retain unchanged; pre-existing independent charge"
+    },
+    "cli": {
+      "version": "2.8.0-22dc71f",
+      "sha256": "85c8e7daac6f11a1e7047a06113dfbed0d778cc0aac6e57560ce116aca09ada7",
+      "authentication": "verified without recording credentials",
+      "ssh_key_registration": "verified"
+    }
+  },
+  "resource": {
+    "cloud_type": "SECURE",
+    "gpu_type": "NVIDIA A100-SXM4-80GB",
+    "gpu_count_per_pod": 1,
+    "scientific_pod_count": 5,
+    "parallelism": "one independent condition per GPU; no DDP",
+    "availability": "LOW",
+    "eligible_data_centers": ["EUR-IS-1", "US-KS-2", "US-MD-1", "US-WA-1"],
+    "secure_price_per_gpu_hour_usd": 1.59,
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "container_disk_gb": 30,
+    "pod_volume_gb": 25,
+    "volume_mount_path": "/workspace",
+    "ports": ["22/tcp"],
+    "seed_worker_termination_guard_hours": 4.0,
+    "additional_worker_termination_guard_hours": 2.5
+  },
+  "cost": {
+    "maximum_seed_gpu_usd": 6.36,
+    "maximum_four_additional_gpu_usd": 15.9,
+    "maximum_gpu_compute_usd": 22.26,
+    "temporary_pod_storage_allowance_usd": 0.3,
+    "maximum_run_total_usd": 22.56,
+    "retained_volume_cost_excluded": "$7/month pre-existing and intentionally retained",
+    "billing_note": "posted billing may lag resource deletion; zero Pods is the compute teardown authority"
+  },
+  "fit_and_etc": {
+    "run009_ol1_peak_reserved_bytes": 61169729536,
+    "run011_a4_peak_reserved_bytes": 61467525120,
+    "a100_memory_bytes_approx": 85899345920,
+    "local_24gb_fit": false,
+    "historical_slowest_scientific_worker_hours": 1.76,
+    "projected_wall_hours_through_retrieval": 1.8,
+    "uncertainty": "the exact Run 012 two-endpoint preflight replaces recurring step time and memory before scientific fanout"
+  },
+  "preflight": {
+    "seed_condition_after_pass": "a4z-ol1-kappa-0p5",
+    "conditions": ["a4z-ol1-kappa-0", "a4z-ol1-kappa-0p5"],
+    "boundaries_per_condition": 5,
+    "micro_batch_size": 32,
+    "gradient_accumulation_steps": 32,
+    "sequence_length": 2048,
+    "requirements": [
+      "pinned runtime and Flash SDPA",
+      "cache, initialization, schedule, config, and code identities",
+      "finite task and pressure metrics with zero skipped boundaries",
+      "OL1 final ratio at or below trust budget",
+      "peak reserved memory below 90 percent of device memory"
+    ]
+  },
+  "cache": {
+    "train_bytes": 5966845664,
+    "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+    "validation_bytes": 2774672,
+    "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+    "seed_strategy": "use retained EUR volume only if compatible scheduling succeeds; otherwise upload one exact local cache",
+    "fanout": "four concurrent seed-to-worker copies using an ephemeral key removed after hash verification"
+  },
+  "retrieval": {
+    "per_worker": [
+      "resolved config and completed manifest",
+      "all 712 train events and complete validation events",
+      "metrics and activation, weight, logical-product, and checkpoint inventories",
+      "model snapshots at 0,1,2,4,8,16,32,64,128,256,512,712",
+      "optimizer/scaler/RNG state at 256,512,712",
+      "final checkpoint and transfer inventory",
+      "remote logs, environment freeze, and source/config identities"
+    ],
+    "acceptance": "remote archive SHA-256, local archive SHA-256, internal inventory, and standalone verifier must all pass before deleting that Pod"
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "reports": [
+      "step and input tokens",
+      "task and pressure loss",
+      "throughput and refreshed ETC",
+      "loss scale, overflow, OL1 raw/final ratio and trust scale",
+      "GPU memory/utilization, disk, process state, and event age"
+    ],
+    "warnings": [
+      "missing process",
+      "event older than ten minutes",
+      "nonfinite or skipped boundary",
+      "OL1 final ratio above one",
+      "memory beyond preflight envelope",
+      "less than 5 GB free disk",
+      "incomplete validation",
+      "projected termination-deadline overrun"
+    ]
+  },
+  "pods": [],
+  "teardown": {
+    "policy": "delete each Pod only after its local standalone verifier passes; retain no Run 012 Pod",
+    "final_audit": "list Pods and volumes, confirm the retained volume is the only intentional billable resource, then refresh posted billing"
+  }
+}
