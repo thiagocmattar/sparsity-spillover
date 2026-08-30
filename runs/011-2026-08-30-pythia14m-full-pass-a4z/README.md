@@ -5,8 +5,8 @@
 Design approved by the user on 2026-08-30. The run-local implementation,
 non-billable verification, and approved one-Pod A100 preflight are complete. The
 preflight passed, its packet is verified locally, and the Pod is stopped with
-GPU billing inactive. Scientific execution and creation of the other four Pods
-remain prohibited pending a separate five-worker scientific-launch decision.
+GPU billing inactive. The user approved the five-worker scientific launch under
+the `$20.15` envelope and listed post-hoc inventory; provisioning is pending.
 
 ## Maintained execution checklist
 
@@ -17,10 +17,10 @@ remain prohibited pending a separate five-worker scientific-launch decision.
   fit, historical ETC, live RunPod inventory, capacity, and price.
 - [x] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at the two
   threshold extremes; retrieve and locally hash-verify its packet; stop the Pod.
-- [ ] 5. Present the measured five-worker ETC, cost, cache-distribution choice,
-  and post-hoc inventory. **Awaiting explicit scientific-launch decision.**
-- [ ] 6. Obtain separate scientific-launch approval and start five concurrent
-  one-condition workers.
+- [x] 5. Present the measured five-worker ETC, cost, cache-distribution choice,
+  and post-hoc inventory; obtain explicit scientific-launch approval.
+- [ ] 6. Start five concurrent one-condition workers. **Provisioning in
+  progress.**
 - [ ] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
   cohort.
 - [ ] 8. Terminate the exact Pods, reconcile billing/resources, and consolidate
@@ -257,4 +257,8 @@ claim without a separate user-approved finding.
   exactly one non-evidence Secure A100 SXM 80 GB Pod under the `$2.60`
   incremental envelope and 1.5-hour absolute termination guard. This approval
   does not authorize scientific training.
-- Scientific launch approval: not requested or granted.
+- 2026-08-30: after the passing preflight packet, measured ETC/cost, cache plan,
+  transfer/teardown plan, monitoring warnings, and post-hoc inventory were
+  presented, the user explicitly replied `Approved`. This authorizes five
+  condition-parallel Secure A100 SXM 80 GB workers under the `$20.15`
+  scientific envelope and 2.5-hour per-worker termination guard.
