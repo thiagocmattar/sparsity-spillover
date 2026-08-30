@@ -477,7 +477,7 @@ def _plot(data: Mapping[str, Any]) -> Path:
                 marker=".",
                 linestyle=":",
                 linewidth=1.2,
-                label="Post-hoc TEAL trajectory from each checkpoint",
+                label="Post-hoc TEAL trajectory (includes GeLU/ReLU controls)",
             ),
             Line2D(
                 [0],
@@ -499,7 +499,7 @@ def _plot(data: Mapping[str, Any]) -> Path:
     figure.text(
         0.5,
         0.938,
-        "Uniform magnitude clipping is evaluation-only; displayed validation loss is capped at 6",
+        "Post-hoc magnitude clipping includes both controls and is evaluation-only; displayed validation loss is capped at 6",
         ha="center",
         va="center",
         fontsize=9.3,

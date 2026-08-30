@@ -2,9 +2,12 @@
 
 ## Status
 
-Design approved on 2026-08-30. Implementation, focused tests, and the bounded
-local smoke are complete and pass. The 130-point scientific evaluation has not
-been launched and still requires the separate launch confirmation.
+Complete and verified. The approved local evaluator ran from
+2026-08-30T18:42:27.7802292-03:00 to 2026-08-30T19:18:13.0615690-03:00 and
+wrote all 130 new full-validation points. The combined artifact contains the
+130 new points plus the 20 frozen Analysis 005 control points. The one-panel
+PDF was rendered and visually inspected with its displayed loss axis capped at
+6.
 
 ## Question
 
@@ -66,7 +69,7 @@ linked rather than recomputed. Gradient interaction is training-time-only and
 cannot be reconstructed; existing Run 004/009 records remain authoritative.
 All source final checkpoints are already retained and content-hash verified.
 
-## Planned outputs
+## Outputs
 
 - `teal_all_variants.json` - 150-point combined artifact: 130 new points plus
   20 reused control points.
@@ -78,10 +81,42 @@ All source final checkpoints are already retained and content-hash verified.
 - `observations/O001-all-full-pass-teal-frontiers.md` - result, caption,
   provenance, and limits after execution.
 
-The figure will retain all 15 trained endpoints, show the visible portion of
-every complete post-hoc trajectory, and highlight the pooled TEAL-augmented
+The figure retains all 15 trained endpoints, shows the visible portion of
+every complete post-hoc trajectory, and highlights the pooled TEAL-augmented
 nondominated envelope. Above-cap points remain in JSON/table and are omitted,
 not clamped, in the PDF.
+
+## Result
+
+All 15 conditions have the complete target grid `p in {0.0, ..., 0.9}` and
+all 150 rows cover the same 338 complete validation blocks. The new run has no
+non-finite activation rows or logical-count discrepancies; all 13 `p=0` losses
+match their source endpoints exactly within the `5e-4` guard. Median evaluation
+time was 16.141 seconds per point (42,887 input tokens/second), and the new
+evaluation completed in 2,145.35 seconds.
+
+In the pooled descriptive frontier, A1-H naive L1 at `lambda=1` supplies the
+low-loss segment through `R_model=6.4902%` at loss 5.2456. A4-Z one-sided
+thresholding at `kappa=0.1` extends it to `R_model=9.3424%` at loss 5.4466;
+`kappa=0.5` reaches `R_model=10.5631%` at loss 5.7058 while remaining under the
+display cap. The GeLU and ReLU control trajectories are explicitly shown as
+evaluation-only post-hoc clipping. Fifty-four higher-loss points are outside
+the displayed range but remain in `teal_all_variants.json`, `figure_data.json`,
+and `tables.md`. See `observations/O001-all-full-pass-teal-frontiers.md`.
+
+## Post-run verification
+
+- Structural reconciliation: 150 rows, 15 conditions, 10 targets per
+  condition, 13 new zero-threshold guards passed, 130 durable progress rows,
+  13 calibration artifacts, zero validation-coverage failures, zero non-finite
+  activation rows, and zero logical-count reconciliation failures.
+- Focused Analysis 006 tests: 5 passed.
+- Full bootstrap suite: 159 passed.
+- PDF QA: one 800.167 by 447.134 point page, rendered to PNG and visually
+  inspected; extracted text confirms the control/evaluation-only wording,
+  loss-6 cap, and 54-point disclosure.
+- Deterministic PDF regeneration reproduced SHA-256
+  `1217ea4ca69d30c66912c8f00b4a20772ec488c58c9fb0ff0d5e27f4218fcdf9`.
 
 ## Pre-launch evidence
 
@@ -113,5 +148,6 @@ to a finding or manuscript claim automatically.
 - 2026-08-30: the user confirmed the 13-checkpoint, 130-new-point design, reuse
   of the two complete control sweeps, complete target grid, full validation,
   diagnostic scope, and one-panel loss-capped figure.
-- Scientific execution remains pending a separate launch confirmation after
-  implementation tests, bounded smoke, resource fit, and ETC are reported.
+- 2026-08-30T18:40:31.6483242-03:00: the user approved launch of the exact
+  local 130-point evaluation described here, with a 50-minute maximum-duration
+  cap.

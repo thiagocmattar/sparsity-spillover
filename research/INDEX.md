@@ -34,10 +34,10 @@ Next run number: `012`. Next analysis number: `007`. Next finding number: `F001`
 
 ## Where we stopped
 
-- 2026-08-30: Analysis 006 design and local implementation are approved and
-  launch-ready for uniform TEAL-style clipping of all 13 trained full-pass
-  A1-H/A4-Z checkpoints. Focused/full tests and the bounded CUDA smoke pass;
-  the 130-point scientific evaluation awaits separate launch approval.
+- 2026-08-30: Analysis 006 completed uniform TEAL-style clipping of all 13
+  trained full-pass A1-H/A4-Z checkpoints and combined them with the two frozen
+  control sweeps. All 150 points are verified; the one-panel PDF and table are
+  complete, with no finding promoted.
 - 2026-08-30: Analysis 005 evaluated uniform TEAL-style post-hoc clipping of
   Run 004's verified full-pass GeLU and ReLU controls over 20 complete-validation
   points. The count-reconciled PDFs and observations are complete, and the user
@@ -122,7 +122,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 003 | How does `h`-only OL1 change Run 004's matched endpoints and gradient interactions? | completed; descriptive, no finding promoted | `analyses/003-2026-08-30-run004-vs-run009-full-pass-l1-ol1/` |
 | 004 | Where do the verified full-pass A1-H pressure and A4-Z threshold endpoints lie on the quality--logical-opportunity plane? | completed; descriptive, no finding promoted | `analyses/004-2026-08-30-full-pass-quality-logical-frontier/` |
 | 005 | How does uniform TEAL-style post-hoc clipping change the Run 004 GeLU/ReLU control frontiers? | completed; descriptive; reported in Status Report Number 1; no finding promoted | `analyses/005-2026-08-30-run004-controls-teal-posthoc/` |
-| 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | design approved; implementation/smoke complete; launch pending | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
+| 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
 
 ## Key documents
 
