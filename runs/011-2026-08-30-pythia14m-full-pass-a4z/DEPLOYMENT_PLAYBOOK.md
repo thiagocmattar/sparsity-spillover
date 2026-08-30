@@ -20,23 +20,28 @@ approval gate.
 
 1. Re-query live capacity and price. Create exactly one approved guarded Secure
    A100 80 GB Pod, recording its ID even if readiness waiting fails.
-2. Verify SSH, pinned image/runtime, source identity, package lock, caches, and
-   disk before running GPU work. Use the existing volume only if placement is
-   `EUR-IS-1`; otherwise stage one hash-verified cache onto the Pod volume.
-3. Run `05_remote_preflight.py`: five exact MB32/GAS32 boundaries at each of
+2. From the approved tracked commit, create a local Git bundle that excludes all
+   untracked data, caches, artifacts, and concurrent work. Transfer it over the
+   Pod's verified SSH endpoint, clone it to `/workspace/sparsity-spillover`, and
+   verify the remote commit and Run 011 config/code identities.
+3. Verify the pinned image/runtime, package lock, caches, and disk before
+   running GPU work. Use the existing volume only if placement is `EUR-IS-1`;
+   otherwise stage or rebuild one cache under `/workspace` and require its
+   pinned metadata and byte hashes to pass before use.
+4. Run `05_remote_preflight.py`: five exact MB32/GAS32 boundaries at each of
    `kappa=0` and `kappa=0.5`.
-4. Reject any nonfinite loss or gradient, skipped boundary, wrong topology,
+5. Reject any nonfinite loss or gradient, skipped boundary, wrong topology,
    wrong initialization/schedule hash, missing flash kernel, or reserved memory
    above 90 percent of device memory.
-5. Retrieve and hash-verify the preflight JSON, log, environment lock, and
+6. Retrieve and hash-verify the preflight JSON, log, environment lock, and
    transfer inventory locally.
-6. Stop the successful Pod to release GPU compute billing while preserving its
+7. Stop the successful Pod to release GPU compute billing while preserving its
    `/workspace` for at most 24 hours; otherwise retain failure evidence and
    terminate it.
-7. Use measured step timings plus matched Run 004 validation, diagnostics,
+8. Use measured step timings plus matched Run 004 validation, diagnostics,
    checkpoint, setup, and transfer evidence to refresh the five-worker ETC and
    maximum cost.
-8. Present the pre-launch post-hoc checklist and stop for explicit scientific
+9. Present the pre-launch post-hoc checklist and stop for explicit scientific
    launch approval.
 
 ## Stage 3 - five-worker scientific launch
