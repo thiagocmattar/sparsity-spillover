@@ -141,6 +141,14 @@ artifacts have been copied and verified locally.
   schemas or `runpodctl --help`; do not copy stale CLI syntax or prices.
 - Long work must write logs and artifacts to persistent storage and survive a
   disconnected terminal. Monitor read-only with bounded sleep/poll intervals.
+- During expected idle work, wait instead of busy-polling. For Windows local
+  runs, use PowerShell `Start-Sleep` for the agreed monitoring interval, then
+  perform one read-only status check; use the platform-equivalent idle wait
+  elsewhere. Do not repeatedly query an unchanged process between intervals.
+- Every monitoring update reports progress, current loss, throughput, and a
+  refreshed ETC. If the refreshed ETC is shorter than the normal interval,
+  sleep until the projected completion window and check then; check sooner only
+  for a previously declared warning condition.
 - Never expose credentials. Discover existing resources before creation.
 - Verify transferred artifact hashes, terminate the Pod, and confirm no unintended
   billable resources remain.
@@ -163,3 +171,17 @@ artifacts have been copied and verified locally.
 Run focused tests while implementing and the full bootstrap suite before launch.
 Do not claim completion from a green test that does not cover the requirement.
 Reconcile README claims, configs, artifacts, and actual files before handoff.
+
+## Version-control closeout
+
+- After completing and verifying a coherent change, review the scoped diff,
+  stage only the intended files, and commit it before handoff unless the user
+  explicitly asks not to commit or the repository is unsafe to commit.
+- Before committing, exclude credentials, datasets, model weights, caches,
+  temporary files, and unintended generated artifacts. Never commit files that
+  are still being written by an active run.
+- Use a commit message that accurately describes the state captured. Do not
+  fabricate historical commits, dates, or intermediate states that Git did not
+  record.
+- Report the commit hash at handoff. Do not push unless the user explicitly
+  requests it.
