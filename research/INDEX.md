@@ -17,8 +17,8 @@ Run 009 completed its separate full-pass, `h`-only OL1 grid with valid evidence
 and reused Run 004 controls. Matched validation loss was lower than naive L1 at
 lambda `0.05`, `0.1`, and `0.5`, and higher at `1.0`. Analysis 003 now records
 the complete per-site, validation-loss, and quality--logical-opportunity
-comparison with a PDF figure, together with the boundary-level gradient
-interference and OL1 geometry; no finding was promoted.
+comparison, together with boundary-level gradient interference, OL1 geometry,
+and matched conflict-trajectory PDFs; no finding was promoted.
 Run 008 completed its five-condition mixed A7-Z-POST threshold cohort in 46m49s
 with valid evidence. `R_model` rose from 7.882% at `kappa=0` to 27.572% at
 `kappa=0.5`; the lowest final validation loss was 5.648046 at `kappa=0.1`.
@@ -38,8 +38,8 @@ Next run number: `012`. Next analysis number: `004`. Next finding number: `F001`
   separately prohibited.
 - 2026-08-30: Analysis 003 completed the verified Run 004 naive-L1 versus Run
   009 OL1 endpoint and gradient-interaction comparison, with count-reconciled
-  exact/near-zero tables, an `R_model` versus final-validation-loss PDF, and
-  explicit limits on the OL1 guarantee. No finding was promoted.
+  exact/near-zero tables, endpoint and gradient-trajectory PDFs, and explicit
+  limits on the OL1 guarantee. No finding was promoted.
 - 2026-08-30: Run 010 completed and verified valid: five conditions, 2,905
   updates, 15 complete validation passes, five checkpoints, mixed-gate and
   seven-site OL1 identities, gradient diagnostics, and logical counters all

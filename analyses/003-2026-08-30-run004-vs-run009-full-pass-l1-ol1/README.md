@@ -106,6 +106,15 @@ hyperparameter-free. Its correction is the largest requested scalar along the
 projected ray that satisfies this bound, not the globally largest
 pressure-reducing step that is safe for task loss.
 
+The gradient-trajectory figure uses the raw interaction shared by both methods.
+It divides each 712-boundary history into 24 contiguous bins of 29 or 30
+boundaries. The top row shows the within-bin median cosine and interquartile
+range; the bottom row shows the fraction of boundaries with a negative dot.
+At lambda `0.05`, both methods remain centered near zero and finish near a 50%
+conflict rate. Larger lambdas develop a clearer negative cosine and a rising
+conflict rate late in training. The binned naive-L1 and OL1 raw trajectories
+are similar at each lambda, although they are not stepwise identical.
+
 ## Outputs
 
 - `comparison.json` - count-reconciled machine-readable endpoint and paired data.
@@ -114,10 +123,14 @@ pressure-reducing step that is safe for task loss.
 - `gradient_tables.md` - raw-gradient, combined-gradient, adaptive-direction,
   projection, and trust-cap tables.
 - `figures/01-r-model-vs-final-validation-loss.pdf` - quality/logical-opportunity scatter.
+- `figures/02-gradient-conflict-trajectories.pdf` - matched raw-cosine and
+  negative-dot-rate trajectories.
 - `observations/O001-r-model-vs-final-validation-loss.md` - caption, provenance,
   observed pattern, and limits.
 - `observations/O002-gradient-interference-and-ol1-geometry.md` - gradient
   interpretation, operational guarantee, and nonclaims.
+- `observations/O003-gradient-conflict-trajectories.md` - trajectory reduction,
+  caption, observed pattern, and limits.
 
 ## Limits
 
