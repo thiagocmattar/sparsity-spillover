@@ -1,9 +1,9 @@
-# O003 - Gradient-conflict trajectories
+# O003 - Naive-L1 context and OL1 projection trajectories
 
 ## Question
 
-How does raw task-pressure gradient interaction evolve during training for
-naive L1 and OL1 at each matched lambda?
+How do naive L1's raw task-pressure interaction and OL1's Adam-relative
+interaction before and after projection evolve during training?
 
 ## Sources and coverage
 
@@ -11,79 +11,81 @@ naive L1 and OL1 at each matched lambda?
   `events.jsonl` histories selected from their run verification records.
 - One seed, Pythia-14M, ReLU topology `A1-H`, pressure only at `h`, and lambda
   `{0.05, 0.1, 0.5, 1.0}`.
-- All 712 completed optimizer boundaries and 1,493,172,224 training input tokens
-  per condition. No selected boundary overflowed or skipped its optimizer step.
-- The runs have the same initial-parameter and training-schedule hashes.
+- All 712 optimizer boundaries and 1,493,172,224 training input tokens per
+  condition. No selected boundary overflowed or skipped its optimizer step.
+- The runs have identical initial-parameter and training-schedule hashes, and
+  their cumulative token counts match at every boundary.
 
 `04_plot_gradient_conflict_trajectories.py` rejects invalid evidence status,
-unmatched initialization or schedule, incomplete or non-contiguous event
-histories, a lambda-grid mismatch, non-finite interaction values, cosines
-outside `[-1, 1]`, or conflict flags inconsistent with the raw dot-product
-sign.
+unmatched initialization, schedule, or per-boundary token counts, incomplete or
+non-contiguous event histories, a lambda-grid mismatch, non-finite interaction
+values, raw cosines outside `[-1, 1]`, raw conflict flags inconsistent with the
+dot sign, or OL1 projection flags inconsistent with the adaptive dot sign.
 
 ## Reduction
 
-Each 712-boundary history is divided in order into 24 contiguous bins. Each bin
-contains 29 or 30 boundaries. The horizontal coordinate is the bin's median
-cumulative input-token count.
+Every optimizer boundary is plotted. Each lambda panel therefore contains 712
+naive-L1 raw-cosine points, 712 OL1 pre-projection adaptive-cosine points, and
+712 OL1 post-projection adaptive-cosine points.
 
-The top row reports the median and interquartile range of the raw task-pressure
-gradient cosine within each bin. The bottom row reports
+For each series, a centered 51-boundary window computes the arithmetic mean and
+the p05 and p95 quantiles. The window covers 106,954,752 input tokens. Rolling
+curves are drawn only where the complete window is available; the first and
+last 25 boundaries remain visible as individual points.
 
-```text
-count(raw task-pressure dot < 0) / boundaries in bin.
-```
+The three series do not share one geometry:
 
-This is a count-first boundary fraction. The bins summarize local temporal
-variation; their bands are not confidence intervals, and the boundaries are
-not independent replicates.
+- Naive L1 uses the raw cosine between the separately accumulated task and
+  pressure gradients.
+- OL1 before projection uses the cosine between the task-only AdamW adaptive
+  direction and the pressure direction under the same task second-moment
+  denominator.
+- OL1 after projection replaces the pressure direction with its projected
+  version.
+
+Run 004 did not retain a task-only AdamW direction for naive L1. The naive-L1
+series is therefore context, not a direct adaptive-space comparator.
 
 ## Figure caption and legend
 
-**Figure 2. Raw task-pressure gradient interaction over one full MiniPile
-training pass.** Columns show lambda `0.05`, `0.1`, `0.5`, and `1.0`. The top
-row shows the within-bin median raw gradient cosine; shaded bands span the
-within-bin interquartile range. The bottom row shows the percentage of
-boundaries in each bin whose raw task-pressure dot product is negative. Blue
-solid lines with circles denote Run 004 naive L1; orange dashed lines with
-squares denote Run 009 OL1. The horizontal reference lines mark zero cosine
-and 50% conflict incidence. All cosine panels share `[-0.5, 0.5]`; all conflict
-panels share `[0%, 100%]`. Each condition contributes 712 boundaries, grouped
-into 24 contiguous bins of 29 or 30. The OL1 raw task gradient is globally
-clipped before this diagnostic, whereas Run 004 records the naive-L1 task
-component before the combined gradient is clipped. Global clipping multiplies
-the task gradient by a positive scalar, so it does not change the raw cosine or
-dot-product sign shown here. One seed was evaluated.
+**Figure 2. Per-boundary gradient-conflict trajectories with naive-L1 context
+and OL1 projection.** Columns show lambda `0.05`, `0.1`, `0.5`, and `1.0`.
+Every point is one optimizer boundary. Blue circles show Run 004's raw
+task-pressure gradient cosine. Orange squares show Run 009's Adam-relative
+task-pressure cosine before projection, and green triangles show the same OL1
+cosine after projection. Lines are centered 51-boundary rolling means; shaded
+regions are rolling p05-p95 intervals. The horizontal line marks zero;
+negative cosine denotes conflict. All panels share `[-0.7, 0.8]`, which covers
+every plotted point. Each condition contributes 712 boundaries, one every
+2,097,152 input tokens. The naive-L1 and OL1 series use different geometries,
+as stated in the legend and reduction. One seed was evaluated.
 
 ## Observed pattern
 
-At lambda `0.05`, both methods remain centered close to zero cosine and finish
-near a 50% conflict rate. At lambda `0.1`, the median cosine becomes modestly
-negative and the conflict rate rises during the second half of training.
-Lambda `0.5` and `1.0` show a stronger late-training shift: median cosine moves
-further below zero, and most boundaries in the final bins have negative dots.
-The effect is strongest at lambda `1.0`.
+The naive-L1 raw cosine is broad and noisy around its rolling mean. Its mean
+becomes more negative during later training as lambda increases, most clearly
+at lambda `0.5` and `1.0`.
 
-The binned naive-L1 and OL1 raw trajectories broadly track one another within
-each lambda. At the larger lambdas, OL1 is generally less negative late in
-training, consistent with the overall raw-cosine summaries in
-`gradient_tables.md`. This is a comparison of the shared raw-gradient metric;
-it does not compare naive L1 with OL1's AdamW-relative direction cosine.
+The OL1 Adam-relative cosine has a narrower but consistently negative
+pre-projection trajectory. Its negative displacement grows with lambda. After
+projection, the OL1 cosine lies at numerical zero on projected boundaries;
+compatible positive directions are left unchanged. The green trajectory thus
+shows the operational removal of the negative adaptive component.
 
 ## Caveats and nonclaims
 
-- The trajectory is descriptive evidence from one seed, one model scale, and
-  one training recipe. Bin-to-bin variation is not replicate uncertainty.
-- Lambda does not algebraically change the angle between the recorded
-  unweighted component gradients at a fixed parameter state. Differences emerge
-  as the conditions follow different training trajectories.
-- A negative pressure-component dot does not imply that the complete naive-L1
-  gradient opposes the task gradient. O002 shows that the combined raw gradient
-  remained task-aligned at every recorded naive-L1 boundary.
-- The figure does not show the OL1 adaptive cosine before projection. That
-  quantity is defined only on the OL1 task-only AdamW state and is not
-  reconstructible for the naive-L1 trajectories.
-- No finding or manuscript claim is promoted from this figure.
+- Raw naive-L1 cosine and Adam-relative OL1 cosine are not directly comparable
+  values. The figure juxtaposes them only to provide training context and show
+  the OL1 transformation.
+- A naive-L1 pressure-versus-task-only-Adam cosine cannot be recovered because
+  naive-L1 moments combine task and pressure and historical gradient tensors
+  were not retained.
+- Rolling p05-p95 regions summarize local temporal variation. They are not
+  confidence intervals, and the 712 boundaries are not independent replicates.
+- OL1's post-projection zero is an algorithmic property. It does not prove that
+  the finite correction preserves training or validation loss.
+- The evidence covers one seed, one model scale, and one training recipe. No
+  finding or manuscript claim is promoted from this figure.
 
 ## Provenance
 

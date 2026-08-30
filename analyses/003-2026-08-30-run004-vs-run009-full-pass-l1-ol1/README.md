@@ -106,14 +106,15 @@ hyperparameter-free. Its correction is the largest requested scalar along the
 projected ray that satisfies this bound, not the globally largest
 pressure-reducing step that is safe for task loss.
 
-The gradient-trajectory figure uses the raw interaction shared by both methods.
-It divides each 712-boundary history into 24 contiguous bins of 29 or 30
-boundaries. The top row shows the within-bin median cosine and interquartile
-range; the bottom row shows the fraction of boundaries with a negative dot.
-At lambda `0.05`, both methods remain centered near zero and finish near a 50%
-conflict rate. Larger lambdas develop a clearer negative cosine and a rising
-conflict rate late in training. The binned naive-L1 and OL1 raw trajectories
-are similar at each lambda, although they are not stepwise identical.
+The two gradient-trajectory figures plot every optimizer boundary. Lines are
+centered 51-boundary rolling means, and fills span the rolling p05-p95 range.
+Figure 2 places naive L1's raw task-pressure cosine beside OL1's Adam-relative
+cosines before and after projection. These are different geometries: Run 004
+did not retain the task-only AdamW state required for a naive-L1 adaptive
+cosine. Figure 3 therefore isolates the internally comparable OL1 before/after
+pair. It shows the negative adaptive interaction before projection and its
+collapse to numerical zero after projection, except on the few already
+compatible boundaries where OL1 correctly does not project.
 
 ## Outputs
 
@@ -123,14 +124,18 @@ are similar at each lambda, although they are not stepwise identical.
 - `gradient_tables.md` - raw-gradient, combined-gradient, adaptive-direction,
   projection, and trust-cap tables.
 - `figures/01-r-model-vs-final-validation-loss.pdf` - quality/logical-opportunity scatter.
-- `figures/02-gradient-conflict-trajectories.pdf` - matched raw-cosine and
-  negative-dot-rate trajectories.
+- `figures/02-gradient-conflict-trajectories.pdf` - per-boundary naive-L1 raw
+  context and OL1 adaptive before/after trajectories.
+- `figures/03-ol1-orthogonalization-trajectories.pdf` - internally comparable
+  OL1 adaptive trajectories before and after projection.
 - `observations/O001-r-model-vs-final-validation-loss.md` - caption, provenance,
   observed pattern, and limits.
 - `observations/O002-gradient-interference-and-ol1-geometry.md` - gradient
   interpretation, operational guarantee, and nonclaims.
 - `observations/O003-gradient-conflict-trajectories.md` - trajectory reduction,
   caption, observed pattern, and limits.
+- `observations/O004-ol1-orthogonalization-trajectories.md` - OL1-only
+  before/after caption, result, and limits.
 
 ## Limits
 
