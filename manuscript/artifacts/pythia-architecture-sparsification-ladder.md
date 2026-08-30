@@ -11,7 +11,9 @@ The composite places `pythia-architecture-map.pdf` above
 `sparsification-ladder.pdf` on a single page. Both source PDFs are included as
 vector graphics at the same displayed width. Their internal notation, values,
 legends, colors, borders, and typography are unchanged; the composite adds only
-a neutral vertical gap between the panels.
+a neutral vertical gap between the panels. The two titles share a common left
+inset, while both semantic keys use colored markers plus text aligned to the
+right edge of their respective panel content.
 
 The upper panel defines the shared Pythia block and the seven intervention
 sites used by the ladder. The lower panel maps the eight proposed conditions
