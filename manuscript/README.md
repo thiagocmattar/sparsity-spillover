@@ -36,6 +36,10 @@ variant.
 - `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
   intervention-neutral, paper-ready map of one shared Pythia block; the
   adjacent Markdown file records its notation, scope, caption, and caveats.
+- `artifacts/sparsification-ladder.tex` and its compiled PDF define the
+  paper-facing eight-step intervention ladder, visually separating gate sites,
+  gate families, pressure methods, and topology-conditioned architecture
+  ceilings; the adjacent Markdown file records its terminology and assumptions.
 
 The methodology records upstream provenance in its header. The lean handoff was
 separately distilled from `orthogonal-sparsity-pressure` commit

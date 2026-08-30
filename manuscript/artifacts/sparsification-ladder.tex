@@ -1,0 +1,172 @@
+% Standalone vector table for the manuscript sparsification ladder.
+% Compile with:
+%   pdflatex -interaction=nonstopmode -halt-on-error sparsification-ladder.tex
+% Manuscript inclusion:
+%   \includegraphics[width=\linewidth]{artifacts/sparsification-ladder.pdf}
+\documentclass[border=5pt]{standalone}
+
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usepackage[table]{xcolor}
+\usetikzlibrary{positioning}
+
+\definecolor{ink}{HTML}{203246}
+\definecolor{muted}{HTML}{657483}
+\definecolor{panelborder}{HTML}{A9B6C2}
+\definecolor{panelfill}{HTML}{FBFCFD}
+\definecolor{headerfill}{HTML}{EEF2F5}
+\definecolor{rowalt}{HTML}{F6F8FA}
+\definecolor{deepblue}{HTML}{294F63}
+\definecolor{gelufill}{HTML}{DDEAF4}
+\definecolor{geluborder}{HTML}{3977A6}
+\definecolor{relufill}{HTML}{E3F3ED}
+\definecolor{reluborder}{HTML}{197A63}
+\definecolor{onesidefill}{HTML}{F9E8C8}
+\definecolor{onesideborder}{HTML}{B86B13}
+\definecolor{symfill}{HTML}{E9E0F1}
+\definecolor{symborder}{HTML}{76508F}
+\definecolor{inactivefill}{HTML}{F0F2F4}
+\definecolor{inactiveborder}{HTML}{A9B2BA}
+\definecolor{lonefill}{HTML}{FDEBD8}
+\definecolor{loneborder}{HTML}{B85C19}
+\definecolor{olfill}{HTML}{E1EBF5}
+\definecolor{olborder}{HTML}{356C9C}
+
+\renewcommand{\familydefault}{\sfdefault}
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.58}
+
+\newcommand{\stepdot}[1]{%
+  \tikz[baseline=(n.base)]\node[
+    circle, draw=deepblue, fill=deepblue, text=white,
+    minimum size=4.9mm, inner sep=0pt,
+    font=\sffamily\bfseries\scriptsize] (n) {#1};%
+}
+\newcommand{\gatemark}[4]{%
+  \tikz[baseline=(n.base)]\node[
+    circle, draw=#2, fill=#1, text=#3, line width=0.65pt,
+    minimum size=5.7mm, inner sep=0pt,
+    font=\sffamily\bfseries\scriptsize] (n) {#4};%
+}
+\newcommand{\inactive}{\gatemark{inactivefill}{inactiveborder}{muted}{}}
+\newcommand{\gelu}{\gatemark{gelufill}{geluborder}{geluborder}{G}}
+\newcommand{\relu}{\gatemark{relufill}{reluborder}{reluborder}{R}}
+\newcommand{\onesided}{\gatemark{onesidefill}{onesideborder}{onesideborder}{$+$}}
+\newcommand{\symmetric}{\gatemark{symfill}{symborder}{symborder}{$\pm$}}
+\newcommand{\pressurepill}[4]{%
+  \tikz[baseline=(n.base)]\node[
+    rectangle, rounded corners=2.2pt, draw=#2, fill=#1, text=#3,
+    line width=0.6pt, minimum width=12.5mm, minimum height=4.8mm,
+    inner xsep=2.5pt, inner ysep=0.5pt,
+    font=\sffamily\bfseries\scriptsize] (n) {#4};%
+}
+\newcommand{\nonepressure}{\pressurepill{inactivefill}{inactiveborder}{muted}{none}}
+\newcommand{\lonepressure}{\pressurepill{lonefill}{loneborder}{loneborder}{L1N}}
+\newcommand{\olpressure}{\pressurepill{olfill}{olborder}{olborder}{OL1}}
+\newcommand{\ladderid}[1]{\textbf{#1}}
+\newcommand{\pct}[1]{\textbf{#1\%}}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[
+    rectangle, rounded corners=4pt, draw=panelborder, fill=panelfill,
+    line width=0.55pt, inner xsep=10pt, inner ysep=9pt
+  ] (panel) {\begin{minipage}{19.15cm}
+    \color{ink}
+    {\large\bfseries Sparsification ladder}\par
+    \vspace{1.0mm}
+    {\footnotesize\color{muted}
+      Gate placement expands by row; pressure remains an independent intervention.}
+    \par\vspace{3.0mm}
+
+    \footnotesize
+    \rowcolors{3}{white}{rowalt}
+    \begin{tabular}{
+      >{\centering\arraybackslash}p{7mm}
+      >{\raggedright\arraybackslash}p{28mm}
+      *{7}{>{\centering\arraybackslash}p{7.4mm}}
+      >{\centering\arraybackslash}p{16mm}
+      *{3}{>{\centering\arraybackslash}p{17.2mm}}
+    }
+      \rowcolor{headerfill}
+      \multicolumn{2}{c}{} &
+      \multicolumn{4}{c}{\bfseries One-sided / nonlinearity} &
+      \multicolumn{3}{c}{\bfseries Symmetric} &
+      &
+      \multicolumn{3}{c}{$\boldsymbol{R_{\mathrm{model}}^{\max}}$ at $\boldsymbol{T=2{,}048}$} \\
+      \rowcolor{headerfill}
+      \textbf{Step} & \textbf{Ladder ID} &
+      \textbf{$h$} & \textbf{$m$} & \textbf{$a$} & \textbf{$z$} &
+      \textbf{$q$} & \textbf{$k$} & \textbf{$v$} & \textbf{Pressure} &
+      \shortstack{\textbf{17M}\\[-1pt]\tiny 14M config} &
+      \textbf{70M} &
+      \shortstack{\textbf{400M}\\[-1pt]\tiny 410M config} \\
+      \midrule
+      \stepdot{1} & \ladderid{A0} &
+      \gelu & \inactive & \inactive & \inactive &
+      \inactive & \inactive & \inactive & \nonepressure &
+      \pct{0.000} & \pct{0.000} & \pct{0.000} \\
+      \stepdot{2} & \ladderid{A1-H} &
+      \relu & \inactive & \inactive & \inactive &
+      \inactive & \inactive & \inactive & \nonepressure &
+      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
+      \stepdot{3} & \ladderid{A1-H-L1} &
+      \relu & \inactive & \inactive & \inactive &
+      \inactive & \inactive & \inactive & \lonepressure &
+      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
+      \stepdot{4} & \ladderid{A1-H-OL1} &
+      \relu & \inactive & \inactive & \inactive &
+      \inactive & \inactive & \inactive & \olpressure &
+      \pct{4.278} & \pct{12.354} & \pct{24.925} \\
+      \stepdot{5} & \ladderid{A4-Z} &
+      \onesided & \onesided & \onesided & \onesided &
+      \inactive & \inactive & \inactive & \nonepressure &
+      \pct{12.833} & \pct{37.063} & \pct{74.776} \\
+      \stepdot{6} & \ladderid{A4-Z-OL1} &
+      \onesided & \onesided & \onesided & \onesided &
+      \inactive & \inactive & \inactive & \olpressure &
+      \pct{12.833} & \pct{37.063} & \pct{74.776} \\
+      \stepdot{7} & \ladderid{A7-Z} &
+      \onesided & \onesided & \onesided & \onesided &
+      \symmetric & \symmetric & \symmetric & \nonepressure &
+      \pct{29.952} & \pct{49.424} & \pct{87.245} \\
+      \stepdot{8} & \ladderid{A7-Z-OL1} &
+      \onesided & \onesided & \onesided & \onesided &
+      \symmetric & \symmetric & \symmetric & \olpressure &
+      \pct{29.952} & \pct{49.424} & \pct{87.245} \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{3.1mm}
+    \begin{minipage}[t]{11.7cm}
+      \scriptsize
+      \textbf{Gate key}\quad
+      \gelu\, GeLU at $h$\quad
+      \relu\, ReLU at $h$\quad
+      \onesided\, $G_{+,\kappa}$\quad
+      \symmetric\, $G_{\pm,\kappa}$\quad
+      \inactive\, identity / no gate
+
+      \vspace{1.8mm}
+      \color{muted}
+      Pressure, when present, is applied to every colored gate site in the row.
+      A7-Z is ladder shorthand for the operational topology A7-Z-POST; $q$ and
+      $k$ are the post-RoPE operands. Pressure-only changes do not alter the
+      topology-conditioned architecture ceiling.
+    \end{minipage}\hfill
+    \begin{minipage}[t]{7.0cm}
+      \scriptsize\raggedleft
+      \textbf{Ceiling assumptions}\par
+      \color{muted}
+      Full-sequence, uncached Pythia; $d_f=4d$; dense LM head included.
+      Requested size labels use
+      $(L,d,V)=(6,128,50{,}304)$,
+      $(6,512,50{,}304)$, and
+      $(24,1{,}024,50{,}304)$, respectively.
+    \end{minipage}
+  \end{minipage}};
+\end{tikzpicture}
+\end{document}
