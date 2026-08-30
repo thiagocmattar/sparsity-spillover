@@ -99,3 +99,14 @@ table fragment, but it does not become a second results store.
 Do not build a generalized manuscript pipeline yet. Add a parent document,
 bibliography, build command, or generated-fragment directory only when the paper
 actually needs it.
+
+## Result evidence crosswalk
+
+- On 30 August 2026, the user approved reporting Analysis 005's uniform
+  TEAL-style post-hoc GeLU/ReLU controls as a strong descriptive result in
+  `reports/01-2026-08-30-status-update/status-update.tex`. The report references
+  Analysis 005 Observations O001 and O002, includes the analysis-owned combined
+  trained/post-hoc PDF, and retains the one-seed, intervention-semantics, and
+  logical-opportunity caveats. No centralized finding was promoted. The
+  `manuscript/reports/` directory remains intentionally Git-ignored; the tracked
+  analysis observations and figures are the evidence record.

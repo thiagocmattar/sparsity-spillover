@@ -5,8 +5,10 @@
 Completed as a verified local post-hoc analysis of the two Run 004 controls.
 All 20 target/control points cover complete validation, all activation and
 logical fractions reconcile to integer counts, and the requested PDF has been
-rendered and visually verified. No finding was promoted and no manuscript text
-was changed.
+rendered and visually verified. No centralized finding was promoted. On
+30 August 2026, the user approved reporting the analysis as a strong
+descriptive result in
+`manuscript/reports/01-2026-08-30-status-update/status-update.tex`.
 
 ## Question
 
@@ -104,5 +106,5 @@ This analysis evaluates one seed and one 14M-scale model family. Calibration
 uses a deterministic 10-block sample and does not estimate calibration-sample
 uncertainty. The full-sequence workload differs materially from TEAL's focal
 decode setting. `R_model` is exact-zero logical-product opportunity, not
-removed FLOPs or measured acceleration. No finding or manuscript claim is
-promoted by opening or completing this analysis.
+removed FLOPs or measured acceleration. The result is reported in Status
+Report Number 1 with these limits; no centralized finding is promoted.

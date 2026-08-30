@@ -83,7 +83,9 @@ autoregressive decoding; Pythia uses a fused QKV matrix and this analysis uses
 full-sequence pretraining loss. This is uniform target allocation, not TEAL's
 optional block-wise greedy allocation. Logical zero products are not removed
 FLOPs or measured runtime acceleration. The arithmetic frontier has no
-replicate uncertainty and is not promoted to a finding or manuscript claim.
+replicate uncertainty. On 30 August 2026, the user approved reporting it as a
+descriptive result in Status Report Number 1; it is not promoted to a
+centralized finding.
 
 ## Provenance
 
