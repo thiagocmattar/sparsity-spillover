@@ -9,6 +9,7 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{lmodern}
+\usepackage{tabularx}
 \usepackage{tikz}
 \usepackage[table]{xcolor}
 
@@ -22,8 +23,11 @@
 \definecolor{onesidecolor}{HTML}{C97818}
 \definecolor{symcolor}{HTML}{76508F}
 \definecolor{nonecolor}{HTML}{CBD2D8}
+\definecolor{headerfill}{HTML}{EDF1F4}
+\definecolor{rowfill}{HTML}{F4F6F8}
 
 \renewcommand{\familydefault}{\sfdefault}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.46}
 \arrayrulecolor{panelborder}
 
@@ -54,7 +58,7 @@
   \begin{minipage}{20cm}
     \color{ink}
     \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
-      {\large\bfseries Sparsification ladder} &
+      {\small\bfseries Sparsification ladder} &
       {\scriptsize
         Non-linearity\quad
         \gelu\, GeLU\qquad
@@ -68,17 +72,27 @@
     \par\vspace{2.6mm}
 
     \footnotesize
-    \begin{tabular*}{\linewidth}{
-      @{}c l
-      @ {\extracolsep{\fill}}
-      *{7}{c}
-      c
-      *{3}{c}
+    \begin{tabularx}{\linewidth}{
+      @{}
+      >{\centering\arraybackslash}p{7mm}
+      >{\raggedright\arraybackslash}p{25mm}
+      !{{\color{panelborder}\vrule width 0.42pt}}
+      *{7}{>{\centering\arraybackslash}X}
+      >{\centering\arraybackslash}p{17mm}
+      !{{\color{panelborder}\vrule width 0.42pt}}
+      *{3}{>{\centering\arraybackslash}p{17mm}}
       @{}
     }
       \toprule
-      \multicolumn{10}{c}{} &
-      \multicolumn{3}{c}{$R_{\mathrm{model}}^{\max}$ at $T=2{,}048$} \\
+      \rowcolor{headerfill}
+      \multicolumn{2}{c!{{\color{panelborder}\vrule width 0.42pt}}}{%
+        \textcolor{muted}{\bfseries\scriptsize LABELS}} &
+      \multicolumn{8}{c!{{\color{panelborder}\vrule width 0.42pt}}}{%
+        \textcolor{muted}{\bfseries\scriptsize SPARSIFICATION INTERVENTION}} &
+      \multicolumn{3}{c}{%
+        \textcolor{muted}{\bfseries\scriptsize
+          $R_{\mathrm{model}}^{\max}$ AT $T=2{,}048$}} \\
+      \rowcolor{headerfill}
       Step & ID &
       $h$ & $m$ & $a$ & $z$ & $q$ & $k$ & $v$ & Pressure &
       14M & 70M & 410M \\
@@ -88,6 +102,7 @@
       \inactive & \inactive & \inactive & \nonepressure &
       \pct{0.0} & \pct{0.0} & \pct{0.0} \\
       \addlinespace[0.8mm]
+      \rowcolor{rowfill}
       2 & A1-H &
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \nonepressure &
@@ -96,6 +111,7 @@
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \lonepressure &
       \pct{4.3} & \pct{12.4} & \pct{24.9} \\
+      \rowcolor{rowfill}
       4 & A1-H-OL1 &
       \relu & \inactive & \inactive & \inactive &
       \inactive & \inactive & \inactive & \olpressure &
@@ -105,6 +121,7 @@
       \onesided & \onesided & \onesided & \onesided &
       \inactive & \inactive & \inactive & \nonepressure &
       \pct{12.8} & \pct{37.1} & \pct{74.8} \\
+      \rowcolor{rowfill}
       6 & A4-OL1 &
       \onesided & \onesided & \onesided & \onesided &
       \inactive & \inactive & \inactive & \olpressure &
@@ -114,12 +131,13 @@
       \onesided & \onesided & \onesided & \onesided &
       \symmetric & \symmetric & \symmetric & \nonepressure &
       \pct{30.0} & \pct{49.4} & \pct{87.2} \\
+      \rowcolor{rowfill}
       8 & A7-OL1 &
       \onesided & \onesided & \onesided & \onesided &
       \symmetric & \symmetric & \symmetric & \olpressure &
       \pct{30.0} & \pct{49.4} & \pct{87.2} \\
       \bottomrule
-    \end{tabular*}
+    \end{tabularx}
 
   \end{minipage}
   };
