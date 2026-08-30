@@ -40,6 +40,10 @@ variant.
   paper-facing eight-step intervention ladder, visually separating gate sites,
   gate families, pressure methods, and topology-conditioned architecture
   ceilings; the adjacent Markdown file records its terminology and assumptions.
+- `artifacts/pythia-architecture-sparsification-ladder.tex` and its compiled PDF
+  combine the architecture map above the intervention ladder as a single
+  publication-ready vector figure; the adjacent Markdown file records its
+  layout, caption, sources, and scope.
 
 The methodology records upstream provenance in its header. The lean handoff was
 separately distilled from `orthogonal-sparsity-pressure` commit
