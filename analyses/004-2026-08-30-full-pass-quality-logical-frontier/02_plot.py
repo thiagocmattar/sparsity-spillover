@@ -128,18 +128,11 @@ def main() -> Path:
         }
     )
 
-    fig, (ax_main, ax_detail) = plt.subplots(
-        1,
-        2,
-        figsize=(11.2, 5.55),
-        gridspec_kw={"width_ratios": (1.62, 1.0)},
-    )
+    fig, ax = plt.subplots(figsize=(10.2, 5.65))
 
     all_series = {series_id: _series_rows(value, series_id) for series_id in SERIES_ORDER}
     for series_id in SERIES_ORDER:
-        _plot_series(ax_main, all_series[series_id], series_id, label=True)
-    for series_id in ("a1h_naive_l1", "a1h_ol1"):
-        _plot_series(ax_detail, all_series[series_id], series_id, label=False)
+        _plot_series(ax, all_series[series_id], series_id, label=True)
 
     controls = {
         row["series_id"]: row
@@ -152,17 +145,16 @@ def main() -> Path:
     }
     for control_id, (_, marker, color) in control_styles.items():
         row = controls[control_id]
-        for ax in (ax_main, ax_detail):
-            ax.scatter(
-                [100.0 * float(row["R_model"])],
-                [float(row["final_validation_loss"])],
-                marker=marker,
-                color=color,
-                s=61,
-                edgecolor="white",
-                linewidth=0.9,
-                zorder=5,
-            )
+        ax.scatter(
+            [100.0 * float(row["R_model"])],
+            [float(row["final_validation_loss"])],
+            marker=marker,
+            color=color,
+            s=61,
+            edgecolor="white",
+            linewidth=0.9,
+            zorder=5,
+        )
 
     threshold_offsets = {
         0.0: (-17, -15),
@@ -174,49 +166,42 @@ def main() -> Path:
     for row in all_series["a4z_threshold"]:
         dose = float(row["dose"])
         _annotate(
-            ax_main,
+            ax,
             row,
             rf"$\kappa={dose:g}$",
             threshold_offsets[dose],
             STYLES["a4z_threshold"]["color"],
         )
 
-    detail_offsets = {
-        ("a1h_naive_l1", 0.05): (-4, 12),
-        ("a1h_ol1", 0.05): (-4, -13),
-        ("a1h_naive_l1", 0.1): (-31, 11),
-        ("a1h_ol1", 0.1): (7, -10),
-        ("a1h_naive_l1", 0.5): (-40, 11),
-        ("a1h_ol1", 0.5): (7, -10),
-        ("a1h_naive_l1", 1.0): (-43, -10),
-        ("a1h_ol1", 1.0): (7, 7),
+    pressure_offsets = {
+        ("a1h_naive_l1", 0.05): (-38, 12),
+        ("a1h_ol1", 0.05): (7, -10),
+        ("a1h_naive_l1", 0.1): (-42, 10),
+        ("a1h_ol1", 0.1): (7, -11),
+        ("a1h_naive_l1", 0.5): (-45, -4),
+        ("a1h_ol1", 0.5): (-45, 12),
+        ("a1h_naive_l1", 1.0): (7, -8),
+        ("a1h_ol1", 1.0): (7, 9),
     }
     for series_id in ("a1h_naive_l1", "a1h_ol1"):
         for row in all_series[series_id]:
             dose = float(row["dose"])
             _annotate(
-                ax_detail,
+                ax,
                 row,
                 rf"$\lambda={dose:g}$",
-                detail_offsets[(series_id, dose)],
+                pressure_offsets[(series_id, dose)],
                 STYLES[series_id]["color"],
             )
 
-    _annotate(ax_main, controls["gelu_control"], "GeLU", (7, -7), "#666666")
-    _annotate(ax_main, controls["relu_control"], "ReLU", (7, 7), "#222222")
+    _annotate(ax, controls["gelu_control"], "GeLU", (7, -7), "#666666")
+    _annotate(ax, controls["relu_control"], "ReLU", (7, 7), "#222222")
 
-    ax_main.set_xlim(-0.25, 10.65)
-    ax_main.set_ylim(5.075, 5.69)
-    ax_main.set_title("(a) Full quality-opportunity range", loc="left", pad=8, fontweight="bold")
-    ax_main.set_ylabel("Final validation loss (lower is better)")
-
-    ax_detail.set_xlim(2.60, 4.08)
-    ax_detail.set_ylim(5.09, 5.285)
-    ax_detail.set_title("(b) A1-H endpoint detail", loc="left", pad=8, fontweight="bold")
-
-    for ax in (ax_main, ax_detail):
-        ax.set_xlabel(r"Measured $R_{\mathrm{model}}$ (%)")
-        _style_axis(ax)
+    ax.set_xlim(-0.25, 10.65)
+    ax.set_ylim(5.075, 5.69)
+    ax.set_xlabel(r"Measured $R_{\mathrm{model}}$ (%)")
+    ax.set_ylabel("Final validation loss (lower is better)")
+    _style_axis(ax)
 
     legend_handles = [
         Line2D(
@@ -252,18 +237,9 @@ def main() -> Path:
     fig.suptitle(
         "Pythia-14M: validation quality versus logical sparsity opportunity",
         x=0.5,
-        y=0.977,
+        y=0.965,
         fontsize=14.0,
         fontweight="bold",
-    )
-    fig.text(
-        0.5,
-        0.927,
-        "One MiniPile pass, one seed, and all 338 complete validation blocks",
-        ha="center",
-        va="center",
-        fontsize=9.5,
-        color="#444444",
     )
     fig.legend(
         handles=legend_handles,
@@ -274,18 +250,7 @@ def main() -> Path:
         handlelength=2.5,
         columnspacing=1.25,
     )
-    fig.text(
-        0.5,
-        0.031,
-        "Lines connect increasing dose only. Validation-loss axes show endpoint detail and do not start at zero.\n"
-        r"$R_{\mathrm{model}}$ is exact-zero logical-product opportunity, not measured speedup; no uncertainty bars (one seed).",
-        ha="center",
-        va="bottom",
-        fontsize=8.2,
-        color="#444444",
-        linespacing=1.35,
-    )
-    fig.subplots_adjust(left=0.078, right=0.987, top=0.79, bottom=0.19, wspace=0.28)
+    fig.subplots_adjust(left=0.09, right=0.985, top=0.80, bottom=0.13)
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     temporary = OUTPUT.with_suffix(".pdf.tmp")

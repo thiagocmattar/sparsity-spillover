@@ -52,8 +52,8 @@ untargeted `q_post`, `k_post`, `v`, and post-`W_o` attention-output sites.
 The `A1-H` pressure series occupy lower-`R_model`, lower-loss endpoints than
 the `A4-Z` series. That separation is consistent with their different topology
 and intervention definitions and must not be read as an isolated method effect.
-The two-panel figure shows the full range and an explicitly labeled `A1-H`
-detail panel so the close naive-L1/OL1 endpoints remain legible.
+The single-panel figure shows all 15 endpoints and labels every lambda and
+kappa value directly.
 
 ## Outputs
 
