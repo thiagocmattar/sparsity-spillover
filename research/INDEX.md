@@ -17,7 +17,8 @@ Run 009 completed its separate full-pass, `h`-only OL1 grid with valid evidence
 and reused Run 004 controls. Matched validation loss was lower than naive L1 at
 lambda `0.05`, `0.1`, and `0.5`, and higher at `1.0`. Analysis 003 now records
 the complete per-site, validation-loss, and quality--logical-opportunity
-comparison with a PDF figure; no finding was promoted.
+comparison with a PDF figure, together with the boundary-level gradient
+interference and OL1 geometry; no finding was promoted.
 Run 008 completed its five-condition mixed A7-Z-POST threshold cohort in 46m49s
 with valid evidence. `R_model` rose from 7.882% at `kappa=0` to 27.572% at
 `kappa=0.5`; the lowest final validation loss was 5.648046 at `kappa=0.1`.
@@ -36,8 +37,9 @@ Next run number: `012`. Next analysis number: `004`. Next finding number: `F001`
   five-worker ETC is now 1.676h median/1.790h p90; scientific launch remains
   separately prohibited.
 - 2026-08-30: Analysis 003 completed the verified Run 004 naive-L1 versus Run
-  009 OL1 endpoint comparison, with count-reconciled exact/near-zero tables and
-  an `R_model` versus final-validation-loss PDF. No finding was promoted.
+  009 OL1 endpoint and gradient-interaction comparison, with count-reconciled
+  exact/near-zero tables, an `R_model` versus final-validation-loss PDF, and
+  explicit limits on the OL1 guarantee. No finding was promoted.
 - 2026-08-30: Run 010 completed and verified valid: five conditions, 2,905
   updates, 15 complete validation passes, five checkpoints, mixed-gate and
   seven-site OL1 identities, gradient diagnostics, and logical counters all
@@ -91,7 +93,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 006 | How does joint one-sided thresholding at `a,m,h,z` change quality and logical opportunity locally? | completed (valid) | `runs/006-2026-08-29-pythia14m-a4z-threshold-local/` |
 | 007 | Does all-site OL1 improve the joint A4-Z threshold quality--logical-opportunity frontier? | four conditions complete; repeated local OOM, paused | `runs/007-2026-08-29-pythia14m-a4z-threshold-ol1-local/` |
 | 008 | Do symmetric post-RoPE Q/K/V gates extend Run 006's joint threshold quality--logical-opportunity frontier? | completed (valid) | `runs/008-2026-08-29-pythia14m-a7-z-post-mixed-threshold-local/` |
-| 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; comparison analysis pending) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
+| 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; Analysis 003 complete) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
 | 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | preflight passed; awaiting scientific-launch approval | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 
@@ -101,7 +103,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | --- | --- | --- | --- |
 | 001 | How does seven-site OL1 change Run 008 at each matched kappa? | completed; descriptive, no finding promoted | `analyses/001-2026-08-30-run008-vs-run010-all-site-ol1/` |
 | 002 | How does four-site OL1 change Run 006 at each completed matched kappa? | completed for four available pairs; descriptive, no finding promoted | `analyses/002-2026-08-30-run006-vs-run007-partial-a4z-ol1/` |
-| 003 | How does `h`-only OL1 change Run 004's full-pass naive-L1 endpoints at matched lambda? | completed; descriptive, no finding promoted | `analyses/003-2026-08-30-run004-vs-run009-full-pass-l1-ol1/` |
+| 003 | How does `h`-only OL1 change Run 004's matched endpoints and gradient interactions? | completed; descriptive, no finding promoted | `analyses/003-2026-08-30-run004-vs-run009-full-pass-l1-ol1/` |
 
 ## Key documents
 
