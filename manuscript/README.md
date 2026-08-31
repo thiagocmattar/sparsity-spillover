@@ -34,9 +34,10 @@ variant.
   L1/OL1 definitions, exact product counters, `R_block`, `R_model`, and the
   draft architecture ceiling `R_model_max`.
 - `experiment-control/README.md` records the paper-intent, execution, analysis,
-  and finding status of the intervention ladder. Its A4 and A4-OL1 Pythia-14M
-  cells are backed by Runs 011/012, Analysis 007, and Finding F001; its A7 cell
-  is backed by Run 013, Analysis 008, and Finding F002; its completed A7-OL1
+  and finding status of the intervention ladder. Its A4-OL1 Pythia-14M cell is
+  reopened under corrective Run 015 because Run 012 actually applied OL1 only
+  at `h`; Finding F001 is discarded. Its A7 cell is backed by Run 013,
+  Analysis 008, and Finding F002; its completed A7-OL1
   cell is backed by Run 014 and reported descriptively through Analysis 008.
 - `reports/01-2026-08-30-status-update/` contains the user-requested TeX source,
   PDF, and report-local provenance notes for Status Report Number 1. This
@@ -120,14 +121,13 @@ actually needs it.
   pass, and logical product opportunity rather than measured speedup. Analysis
   008 owns the expanded frontier, count-pooled eight-site table, and
   machine-readable reduction; Runs 011 and 013 own the verified endpoints.
-- On 30 August 2026, the user approved tentative Finding F001 from the five
-  matched Pythia-14M A4/A4-OL1 full-pass pairs. Four-site OL1 lowers validation
-  loss and increases measured `R_model` at `kappa <= 0.1`; at `kappa=0.5`, the
-  loss advantage reverses and the opportunity increment is negligible. The
-  finding is limited to one seed, one 14M scale, one MiniPile pass, and logical
-  product opportunity rather than measured speedup. Analysis 007 owns the
-  figure, count-pooled site table, and machine-readable reduction; Runs 011 and
-  012 own the verified endpoints.
+- On 31 August 2026, Finding F001 was discarded after implementation audit.
+  Run 012 declared four-site pressure but reused a training capture fixed to
+  `h`; its endpoints are A4-Z + OL1@h, not A4-OL1. Analysis 007 remains a
+  historical reduction of those endpoints. Corrective Run 015 is implemented
+  and awaiting launch confirmation. Existing F001-backed result prose in
+  `introduction.tex` is known stale and is not evidence until explicitly
+  revised or replaced after corrected evidence and user approval.
 - On 30 August 2026, the user approved reporting Analysis 005's uniform
   TEAL-style post-hoc GeLU/ReLU controls as a strong descriptive result in
   `reports/01-2026-08-30-status-update/status-update.tex`. The report references
@@ -136,14 +136,15 @@ actually needs it.
   logical-opportunity caveats. No centralized finding was promoted. Analysis
   005's tracked observations and figures remain the numerical evidence record.
 - On 30 August 2026, the user approved updating Status Report Number 1 with
-  Analysis 007's paper-scale A4-OL1 result as a very strong descriptive result.
+  what was then interpreted as Analysis 007's paper-scale A4-OL1 result.
   The report replaces the prior combined trained/post-hoc plot with Analysis
   007's augmented frontier PDF, replaces the incomplete pilot-only A4-OL1
   subsection with all five Run 012 endpoints, and links Observation O001. It
   retains the one-seed, joint-intervention, logical-opportunity, and
   no-runtime-speedup caveats. The report update preceded the later approval of
-  tentative Finding F001; the finding and this tracked crosswalk now carry the
-  consolidated status. Analysis 007 retains the numerical provenance.
+  tentative Finding F001. The 31 August implementation audit supersedes that
+  interpretation: the report's Run 012 labels are stale, F001 is discarded,
+  and Analysis 007 retains numerical provenance only for A4-Z + OL1@h.
 - On 31 August 2026, the user approved updating Status Report Number 1 with
   Run 014's completed A7-OL1 cohort. The report now contains the ten-row matched
   A7/A7-OL1 count-pooled table and embeds Analysis 008's corrected single-panel

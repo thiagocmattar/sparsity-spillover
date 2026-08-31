@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_launch_confirmation",
+  "queried_at": "2026-08-31T17:12:00Z",
+  "no_resources_created": true,
+  "existing_resources": {
+    "pods": [],
+    "network_volumes": [
+      {
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "data_center": "EUR-IS-1",
+        "size_gb": 100,
+        "type": "STANDARD",
+        "action": "retain_unchanged"
+      }
+    ]
+  },
+  "target": {
+    "gpu_type_id": "NVIDIA A100-SXM4-80GB",
+    "cloud_type": "SECURE",
+    "host_cuda": "12.8",
+    "live_price_usd_per_gpu_hour": 1.59,
+    "aggregate_availability": "MEDIUM",
+    "per_data_center_availability": {
+      "EUR-IS-1": "LOW",
+      "US-KS-2": "LOW",
+      "US-MD-1": "LOW",
+      "US-WA-1": "LOW"
+    },
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "container_disk_gb_per_pod": 30,
+    "pod_volume_gb_per_pod": 25,
+    "volume_mount_path": "/workspace"
+  },
+  "execution": {
+    "preflight": {
+      "gpu_count": 1,
+      "maximum_hours": 1.5,
+      "maximum_compute_usd": 2.385,
+      "scientific_evidence": false
+    },
+    "scientific_fleet": {
+      "gpu_count": 5,
+      "conditions_per_gpu": 1,
+      "ddp": false,
+      "maximum_hours_per_gpu": 2.5,
+      "maximum_compute_usd": 19.875
+    },
+    "maximum_compute_usd": 22.26,
+    "proposed_incremental_cost_cap_usd": 22.5
+  },
+  "transfer": {
+    "cache_token_bytes_per_worker": 5969620336,
+    "cache_identity": "verify metadata byte counts and SHA-256 before every worker starts",
+    "estimated_return_bytes_per_condition": 1014672168,
+    "estimated_return_bytes_total": 5073360842,
+    "return_inventory": [
+      "resolved config",
+      "manifest and events",
+      "metrics",
+      "activation/weight/logical diagnostics",
+      "all declared model and optimizer checkpoints",
+      "transfer inventory"
+    ]
+  },
+  "teardown": "verify remote and local inventories, delete each exact Pod, then re-list resources; retain network volume unchanged"
+}

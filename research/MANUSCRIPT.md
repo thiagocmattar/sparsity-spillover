@@ -36,9 +36,12 @@ such a new discrepancy silently.
   kernels and direct measurements.
 
 Contribution statements in the introduction are hypotheses or candidate claims
-until their evidence is linked to approved findings. Findings F001 and F002 now
-support explicitly scoped, tentative Pythia-14M A4/A4-OL1 and A4/A7 statements;
-neither supports scale-independent or runtime-speedup language.
+until their evidence is linked to approved findings. Finding F001 is discarded:
+Run 012 applied OL1 only at `h` despite declaring four pressure sites. Finding
+F002 still supports the scoped, tentative Pythia-14M A4/A7 statement. Neither
+supports scale-independent or runtime-speedup language. The F001-backed
+introduction text is now a known stale claim pending explicit user-approved TeX
+revision or corrected Run 015 evidence.
 
 ## Acknowledged starting differences
 
@@ -94,11 +97,11 @@ Do not automatically promote a successful run into a paper conclusion.
 
 ## Approved evidence integration
 
-- Finding F001 tentatively establishes that, for one matched Pythia-14M seed
-  and one full MiniPile pass, adding four-site OL1 to A4-Z improves validation
-  loss and measured `R_model` through `kappa=0.1`, but not at `kappa=0.5`.
-- Analysis 007 owns the count-reconciled figure, table, observation, and source
-  hashes. Runs 011 and 012 own the immutable A4 and A4-OL1 evidence.
+- Finding F001 is discarded because Run 012's declared four-site pressure was
+  actually realized only at `h`. Analysis 007 remains a historical reduction
+  of Run 011 A4 versus Run 012 A4-Z + OL1@h and does not support A4-OL1.
+- Run 015 is the designed correction and must complete, be reconciled in a new
+  analysis, and receive user approval before a four-site claim is restored.
 - Finding F002 tentatively establishes that, for the same one-seed and
   one-pass scope, adding symmetric post-RoPE Q/K/V gates to A4 is near-null at
   `kappa=0`, improves both matched axes at `kappa=0.01`, and exchanges
