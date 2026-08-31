@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "status": "awaiting_preflight_launch_approval",
+  "generated_at": "2026-08-31T22:45:18.5666674Z",
+  "authorized_scientific_design": "Run 016 Pythia-70M selected ladder, 12 matched conditions",
+  "next_requested_action": {
+    "kind": "non_evidence_exact_gpu_preflight",
+    "pod_count": 1,
+    "gpu_type": "NVIDIA A40",
+    "gpu_count_per_pod": 1,
+    "cloud_type": "SECURE",
+    "preferred_data_centers": [
+      "EU-SE-1",
+      "CA-MTL-1"
+    ],
+    "maximum_hours": 1.5,
+    "maximum_compute_cost_usd": 0.66,
+    "maximum_prorated_pod_storage_cost_usd": 0.012,
+    "maximum_total_cost_usd": 0.672,
+    "creates_scientific_attempt": false,
+    "science_launch_requires_later_approval": true
+  },
+  "live_runpod_snapshot": {
+    "active_pods": 0,
+    "a40": {
+      "memory_gb": 48,
+      "secure_price_usd_per_gpu_hour": 0.44,
+      "availability": "LOW",
+      "secure_max_count": 10,
+      "cuda_12_8_available": true,
+      "data_centers": [
+        {
+          "id": "EU-SE-1",
+          "availability": "LOW"
+        },
+        {
+          "id": "CA-MTL-1",
+          "availability": "LOW"
+        }
+      ]
+    },
+    "retained_network_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD",
+      "used_by_run016": false,
+      "reason": "No current A40 availability in the volume's data center.",
+      "continuing_monthly_cost_usd": 7.0
+    }
+  },
+  "storage": {
+    "container_disk_gb_per_pod": 30,
+    "volume_disk_gb_per_pod": 25,
+    "mount_path": "/workspace",
+    "container_and_running_volume_price_usd_per_gb_month": 0.1,
+    "data_ingress_egress_fee_usd": 0.0,
+    "cache_transfer": {
+      "train_bytes": 5966845664,
+      "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+      "validation_bytes": 2774672,
+      "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+    },
+    "estimated_final_recovery_checkpoint_gib_per_condition": 0.81,
+    "estimated_final_recovery_checkpoint_gib_cohort": 9.7
+  },
+  "local_fit": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "total_memory_mib": 12227,
+    "exact_science_fit": false,
+    "flash_attention_available_in_pinned_system_runtime": false,
+    "structural_cpu_70m_forward": "passed",
+    "local_cuda_smoke": "blocked_before_boundary_as_unrepresentative"
+  },
+  "preflight_measurements": [
+    "five complete end-to-end A0 optimizer boundaries",
+    "five complete end-to-end A7 kappa=0 OL1 optimizer boundaries",
+    "cache slicing and host-to-device staging inside each timer",
+    "full 338-block validation",
+    "full activation diagnostics",
+    "full eager logical-product diagnostics",
+    "complete final checkpoint serialization",
+    "peak allocated and reserved GPU memory",
+    "condition and initialization identities",
+    "science and TEAL ETC projection"
+  ],
+  "preflight_pass_conditions": {
+    "finite_nonoverflowing_boundaries": true,
+    "pinned_initial_parameter_sha256": "724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17",
+    "pinned_training_schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+    "maximum_reserved_memory_fraction": 0.9,
+    "complete_validation_coverage": true,
+    "all_diagnostics_reconcile": true
+  },
+  "scientific_execution_if_later_approved": {
+    "parallelism": "one condition per GPU, no DDP",
+    "sentinel_condition_count": 4,
+    "remainder_condition_count": 8,
+    "maximum_concurrent_pods": 8,
+    "twelve_concurrent_a40s_feasible_at_snapshot": false,
+    "fallback_if_eight_a40s_unavailable": "split remainder into two four-Pod waves",
+    "maximum_hours_per_pod": 8.0,
+    "maximum_aggregate_gpu_hours": 96.0,
+    "maximum_compute_cost_usd_at_snapshot": 42.24,
+    "maximum_prorated_pod_storage_cost_usd": 0.73,
+    "maximum_total_cost_usd": 42.97,
+    "etc_status": "requires exact preflight"
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "stale_event_minutes": 10,
+    "warning_conditions": [
+      "non-finite loss or gradient metric",
+      "skipped optimizer boundary",
+      "pressure capture mismatch",
+      "reserved VRAM above 90 percent",
+      "runtime, cache, schedule, initialization, or code identity mismatch",
+      "disk pressure",
+      "refreshed ETC beyond the termination guard"
+    ]
+  },
+  "teardown": [
+    "verify terminal remote status and required files",
+    "build remote byte-count and SHA-256 inventory",
+    "transfer the approved inventory locally",
+    "recompute and verify every local hash",
+    "terminate the Pod",
+    "confirm no unintended Pods remain",
+    "refresh posted billing"
+  ],
+  "verification": {
+    "focused_run016_tests": "15 passed",
+    "full_bootstrap_tests": "183 passed",
+    "cache_hash_and_schedule_check": "passed",
+    "python_compile": "passed",
+    "ruff": "not available in the repository environment"
+  }
+}
