@@ -49,7 +49,7 @@ TRAINED_STYLES = {
         "linestyle": "--",
     },
     "a4z_threshold": {
-        "label": "A4 (trained threshold)",
+        "label": "A4",
         "color": "#009E73",
         "marker": "D",
         "linestyle": "-.",
@@ -61,7 +61,7 @@ TRAINED_STYLES = {
         "linestyle": "--",
     },
     "a7z_post_mixed_threshold": {
-        "label": "A7 (trained mixed threshold)",
+        "label": "A7",
         "color": "#E69F00",
         "marker": "*",
         "linestyle": "-",
