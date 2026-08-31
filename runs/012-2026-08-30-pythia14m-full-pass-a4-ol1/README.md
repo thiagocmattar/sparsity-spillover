@@ -257,3 +257,8 @@ Exact retrieval, resource, and billing records are in
 - 2026-08-30: the user approved tentative Finding F001 from the five matched
   Run 011 A4 and Run 012 A4-OL1 pairs. Analysis 007 owns the count-reconciled
   synthesis; this run remains the immutable A4-OL1 evidence source.
+- 2026-08-31: an implementation audit superseded the four-site interpretation
+  above. This run inherited Run 004's `ActivationCapture(model, ["h"], ...)`
+  and is valid only as A4-Z gates plus OL1@h; F001 is discarded. Run 015 is the
+  corrected four-site experiment, and Analysis 009 owns their direct matched
+  comparison and all-site exact-zero table.

@@ -5,6 +5,14 @@
 
 ## Current status
 
+Analysis 009 directly compares historical Run 012 A4-Z + OL1@h with corrected
+Run 015 four-site A4-OL1 at all five matched thresholds. Four-site pressure
+raises validation loss by 0.242--0.320 at every `kappa`; its `R_model` is lower
+at `kappa=0`, effectively tied at `0.01`, and 1.42--2.49 percentage points
+higher at `0.05`--`0.5`. The analysis owns the two-series PDF, all-eight-site
+count-pooled exact-zero table, and machine-readable reduction. The result is
+descriptive; discarded F001 is not restored and no manuscript claim changes.
+
 Run 015 completed and verified the corrective paper-scale Pythia-14M A4-OL1
 cohort. Every one of 3,560 boundaries realized all 24
 `{a,m,h,z}.layer_{0..5}` pressure tensors, and all five conditions completed
@@ -12,9 +20,9 @@ full validation and local artifact reconciliation. Against matched Run 011,
 corrected OL1 improves both validation loss and `R_model` at `kappa=0` and
 `0.01`; at larger thresholds it adds 2.25--2.50 percentage points of logical
 opportunity with increasing validation-loss cost. All Pods are deleted and the
-pre-existing volume is unchanged. The run-local result is descriptive pending
-a new numbered analysis; discarded F001 is not restored, and Analysis 007
-remains historical A4-Z + OL1@h evidence from Run 012.
+pre-existing volume is unchanged. Analysis 009 now compares the corrected
+result directly with Run 012's historical `h`-only realization; Analysis 007
+remains historical A4-Z + OL1@h frontier evidence.
 
 Run 014 completed the five-condition paper-scale A7-OL1 cohort with valid
 evidence. At matched `kappa=0.1`, OL1 adds 1.3717 percentage points of
@@ -66,10 +74,15 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `016`. Next analysis number: `009`. Next finding number: `F003`.
+Next run number: `016`. Next analysis number: `010`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-08-31: Analysis 009 completed the matched Run 012/015 pressure-target
+  comparison. Its PDF plots measured `R_model` against terminal validation loss
+  for historical `h`-only and corrected four-site OL1; its observation contains
+  the count-pooled exact-zero table for all eight recorded diagnostics. The
+  result remains descriptive and does not restore F001.
 - 2026-08-31: Run 015 completed and verified the corrected five-condition
   four-site A4-OL1 full pass. All 3,560 boundaries proved the 24-tensor pressure
   identity; complete validation, diagnostics, checkpoints, archive hashes, and
@@ -195,7 +208,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 012 | What happened under A4-Z gates plus the realized `h`-only OL1 pressure? | completed (valid only as A4-Z + OL1@h; declared four-site identity invalid) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
 | 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 and F002 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
 | 014 | Does seven-site OL1 improve the paper-scale A7 quality--logical-opportunity frontier? | completed (valid; run-local observation, no finding promoted) | `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/` |
-| 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | completed (valid; run-local observation, new analysis pending) | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
+| 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | completed (valid; Analysis 009 complete) | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
 
 ## Analyses
 
@@ -209,6 +222,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
 | 007 | Where do the historical Run 012 A4-Z + OL1@h endpoints lie relative to the trained and post-hoc frontiers? | completed as historical reduction; does not support four-site A4-OL1 or F001 | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
 | 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
+| 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
 
 ## Key documents
 

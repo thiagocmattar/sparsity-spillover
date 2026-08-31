@@ -4,7 +4,8 @@ Correction (2026-08-31): Run 012 captured OL1 pressure only at `h` despite
 declaring `a,m,h,z`. This analysis remains reproducible for its source numbers,
 but its Run 012 series must be interpreted as **A4-Z + OL1@h**, not four-site
 A4-OL1. It does not support Finding F001, which is discarded. Corrected
-four-site evidence is designed in Run 015 and has not been launched.
+four-site evidence completed in Run 015; Analysis 009 owns its direct matched
+comparison with this historical series.
 
 This analysis augments Analysis 005's full-validation frontier with the five
 historical Run 012 A4-Z + OL1@h endpoints. It also reports Run 012 validation loss, measured
