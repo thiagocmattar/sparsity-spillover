@@ -13,7 +13,9 @@ count-reconciled figure, table, observation, and machine-readable evidence.
 Run 013 completed its five-condition paper-scale A7-Z-POST cohort with valid
 evidence. Relative to matched A4, `kappa=0.01` improved validation loss by
 0.007678 and `R_model` by 0.2039 percentage points; larger thresholds gained
-more logical opportunity with increasing quality cost. All 3,560 steps, 20
+more logical opportunity with increasing quality cost. Analysis 008 owns the
+count-reconciled A7 zero-mass table, the expanded full-pass frontier figure,
+its observation, and machine-readable evidence. All 3,560 steps, 20
 complete validation passes, checkpoints, and diagnostics are local and
 verified. All Run 013 Pods are deleted; no volume was created, and the
 pre-existing volume remains intentionally retained. This is a candidate run
@@ -47,10 +49,14 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `014`. Next analysis number: `008`. Next finding number: `F002`.
+Next run number: `014`. Next analysis number: `009`. Next finding number: `F002`.
 
 ## Where we stopped
 
+- 2026-08-31: Analysis 008 added Run 013 A7 to Analysis 007's full-pass
+  trained/post-hoc frontier and produced one count-pooled table containing
+  `kappa`, validation loss, `R_model`, and all eight recorded exact-zero site
+  masses. No finding or manuscript claim was promoted.
 - 2026-08-31: Run 013 completed and verified valid: five condition-parallel
   A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
   initialization/schedule/code identities, retained recovery checkpoints, and
@@ -146,7 +152,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
 | 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; source for F001) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 | 012 | Does four-site OL1 improve the paper-scale A4-Z threshold quality--logical-opportunity frontier? | completed (valid; Analysis 007 and F001 complete) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
-| 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; candidate observation complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
+| 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
 
 ## Analyses
 
@@ -159,6 +165,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 005 | How does uniform TEAL-style post-hoc clipping change the Run 004 GeLU/ReLU control frontiers? | completed; descriptive; reported in Status Report Number 1; no finding promoted | `analyses/005-2026-08-30-run004-controls-teal-posthoc/` |
 | 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
 | 007 | Where do the full-pass A4-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F001 | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
+| 008 | Where do the full-pass A7 endpoints lie relative to the trained and post-hoc frontiers? | completed; descriptive, no finding promoted | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
 
 ## Key documents
 
