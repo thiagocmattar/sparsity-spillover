@@ -41,8 +41,9 @@ Run 012 applied OL1 only at `h` despite declaring four pressure sites. Finding
 F002 still supports the scoped, tentative Pythia-14M A4/A7 statement. Neither
 supports scale-independent or runtime-speedup language. The F001-backed
 introduction text is now a known stale claim pending explicit user-approved TeX
-revision. Corrected Run 015 evidence exists, but it is not yet reconciled in a
-new numbered analysis or approved as a finding.
+revision. Analysis 009 reconciles corrected Run 015 against Run 011 and the
+historical Run 012 realization; the result remains descriptive and has not been
+approved as a finding.
 
 ## Acknowledged starting differences
 
@@ -102,17 +103,19 @@ Do not automatically promote a successful run into a paper conclusion.
   actually realized only at `h`. Analysis 007 remains a historical reduction
   of Run 011 A4 versus Run 012 A4-Z + OL1@h and does not support A4-OL1.
 - Run 015 completed the corrected five-condition four-site objective with a
-  verified 24-tensor capture identity. It must still be reconciled in a new
-  numbered analysis and receive user approval before any four-site claim is
-  restored or replaced.
+  verified 24-tensor capture identity. Analysis 009 owns the matched corrected
+  reduction. Status Report Number 1 uses Run 015 only for the main A4-OL1
+  result and retains Run 012 as historical A4-OL1[`h`] evidence in an appendix.
+  No four-site finding has been promoted.
 - Finding F002 tentatively establishes that, for the same one-seed and
   one-pass scope, adding symmetric post-RoPE Q/K/V gates to A4 is near-null at
   `kappa=0`, improves both matched axes at `kappa=0.01`, and exchanges
   increasing validation-loss cost for increasing `R_model` at larger doses.
 - Analysis 008 owns the count-reconciled interleaved A7/A7-OL1 zero-mass table,
-  single-panel expanded frontier, observation, and source hashes. Runs 011,
-  013, and 014 own the immutable A4, A7, and A7-OL1 evidence. Status Report
-  Number 1 includes the Analysis 008 table and figure as requested; the
+  corrected single-panel frontier, observation, and source hashes. Its main
+  A4-OL1 series comes from Run 015 through Analysis 009; Run 012 is excluded.
+  Runs 011, 013, and 014 own the immutable A4, A7, and A7-OL1 evidence. Status
+  Report Number 1 includes the Analysis 008 table and corrected figure; the
   A7/A7-OL1 comparison remains descriptive and is not part of Finding F002.
 - `manuscript/introduction.tex` states these limited empirical scopes;
   `manuscript/methodology.tex` names the executed `z`, post-RoPE Q/K/V, A4-Z,

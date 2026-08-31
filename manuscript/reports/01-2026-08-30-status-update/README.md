@@ -173,7 +173,7 @@ Tables 6, 8, and 9. Link the table caption or adjacent sentence to the new
 analysis and observation. Preserve the original Run 004 and Run 009 diagnostic
 files as the record of what was measured during those runs.
 
-## Analysis 007 manuscript integration
+## Analysis 007 historical integration (superseded)
 
 On 30 August 2026, the user approved updating the status report with Analysis
 007 as a very strong descriptive result. The report now:
@@ -190,10 +190,9 @@ On 30 August 2026, the user approved updating the status report with Analysis
 - preserves the one-seed, joint-intervention, logical-opportunity, and
   no-runtime-speedup caveats.
 
-The report links Analysis 007 Observation O001 and leaves the analysis-owned
-PDF and machine-readable evidence in its numbered analysis folder. The matched
-moderate-threshold conclusion was subsequently consolidated as tentative
-Finding F001, and the report now names that evidence status explicitly.
+This integration record is retained as history. The Run 012 implementation
+audit later established that pressure was realized only at `h`; Finding F001
+was discarded, and the current report moves Run 012 to an A4-OL1[`h`] appendix.
 
 ## Analysis 008 manuscript integration
 
@@ -230,3 +229,24 @@ completed five-condition Run 014 A7-OL1 full pass. The report now:
 The Run 014 extension remains descriptive one-seed, one-scale evidence. No
 A7/A7-OL1 finding or runtime-speedup claim is promoted; Analysis 008 retains
 the machine-readable and count-pooled numerical provenance.
+
+## Corrected A4-OL1 integration
+
+On 31 August 2026, the user requested that the status report use only corrected
+Run 015 for the main A4-OL1 result and retain Run 012 as historical
+A4-OL1[`h`] evidence in an appendix. The report now:
+
+- identifies Run 015 as the completed five-condition A4-OL1 cohort;
+- reports the corrected four-site `a,m,h,z` pressure endpoints from Analysis
+  009 in the main A4/A4-OL1 table and keeps the result descriptive;
+- states that discarded Finding F001 is not restored;
+- moves the historical Run 012 endpoint table, direct three-series comparison,
+  intervention mismatch, and compute cost to an appendix;
+- updates Analysis 008's main full-pass frontier so its A4-OL1 series is Run
+  015 and no Run 012 endpoint appears there;
+- reports at least `$88.39` for the six main-ladder runs and at least `$103.16`
+  including historical Run 012, with Run 015's billing lag disclosed.
+
+The corrected frontier retains the inherited loss-6 filter only for post-hoc
+control points and expands the trained-endpoint display through loss 6.1 so the
+Run 015 `kappa=0.5` endpoint is visible.

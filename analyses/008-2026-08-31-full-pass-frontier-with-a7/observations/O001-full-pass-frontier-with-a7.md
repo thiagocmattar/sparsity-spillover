@@ -2,19 +2,19 @@
 
 ## Question
 
-Where do the five verified Run 013 A7 endpoints and five matched Run 014
-A7-OL1 endpoints lie relative to the full-pass trained and post-hoc Pythia-14M
-frontier assembled by Analysis 007?
+Where do corrected four-site Run 015 A4-OL1, the five verified Run 013 A7
+endpoints, and the five matched Run 014 A7-OL1 endpoints lie on the full-pass
+trained and post-hoc Pythia-14M frontier?
 
 ## Method and reduction
 
-The figure reproduces Analysis 007's 20 trained endpoints and visible post-hoc
-GeLU/ReLU control curves, then adds the five Run 013 `A7-Z-POST` conditions and
-the five Run 014 conditions with the same mixed gates plus seven-site OL1. For
-every added row, measured `R_model` is recomputed from the integer zero-product
-and model-product counts. Exact-zero activation mass at `a`, `m`, `h`,
-`q_post`, `k_post`, `v`, `z`, and `attention_output` is recomputed from pooled
-integer counts over all six layers and the complete validation pass.
+The figure retains Analysis 007's 15 unaffected trained endpoints and visible
+post-hoc GeLU/ReLU control curves, removes its five historical Run 012 rows,
+and imports the five corrected Run 015 four-site A4-OL1 rows verified by
+Analysis 009. It then adds the five Run 013 `A7-Z-POST` conditions and the five
+Run 014 conditions with the same mixed gates plus seven-site OL1. Measured
+`R_model` and site exact-zero fractions are checked against their pooled integer
+counts over all six layers and the complete validation pass.
 
 ## Coverage
 
@@ -22,7 +22,8 @@ All plotted trained endpoints use one matched seed and all 338 complete
 2,048-token MiniPile validation blocks: 692,224 input tokens from 500 documents,
 with the 1,444-token incomplete tail excluded. Each Run 013 and Run 014
 condition trained for 712 optimizer steps and 1,493,172,224 input tokens.
-Post-hoc points retain Analysis 007's inherited loss-6 display cap.
+All trained endpoints are shown through loss 6.1. Post-hoc points retain
+Analysis 007's inherited loss-6 source filter.
 
 ## Caption and legend
 
@@ -31,13 +32,20 @@ stars are Run 013 A7 endpoints: one-sided thresholds at `a,m,h,z`, symmetric
 thresholds at post-RoPE `q_post,k_post` and `v`, one common annotated `kappa`,
 and no pressure objective. Sky-blue pentagons are matched Run 014 A7-OL1
 endpoints, adding orthogonal L1 at all seven active sites with `lambda=1` and
-trust budget `1`. Purple hexagons are A4-OL1, green diamonds are A4, and the
-remaining trained and post-hoc series are inherited unchanged from Analysis
-007. The single panel retains the complete range through the A7-OL1
+trust budget `1`. Purple hexagons are corrected Run 015 A4-OL1, green diamonds
+are A4, and the remaining trained and post-hoc series are inherited unchanged
+from Analysis 007. Historical Run 012 A4-OL1[`h`] is excluded. The single panel
+retains the complete range through the A7-OL1
 `kappa=0.5` endpoint; the interleaved table supplies every matched `kappa` and
 site value. Lines connect dose or clipping-target order only.
 
 ## Result
+
+Corrected four-site A4-OL1 improves both matched axes over A4 at `kappa=0` and
+`0.01`. At `kappa=0.05`, `0.1`, and `0.5`, it adds 2.2506, 2.4413, and 2.4979
+percentage points of `R_model` for validation-loss costs of 0.055693, 0.128681,
+and 0.378307. The historical Run 012 result is not used to characterize this
+objective.
 
 A7 increases measured `R_model` from 7.2177% at `kappa=0` to 15.3868% at
 `kappa=0.5`. Its lowest final validation loss is 5.428681 at `kappa=0.1`, with
@@ -77,13 +85,15 @@ eight measured exact-zero site masses. At `kappa=0.5`, A7-OL1 reaches 93.5450%
 - Connected lines are visual dose-order guides, not fitted response curves.
 - `R_model` is logical exact-zero product opportunity, not removed FLOPs or
   measured sparse-kernel speedup.
-- Post-hoc points above loss 6 remain omitted exactly as in Analysis 007.
+- Post-hoc points above loss 6 remain omitted by Analysis 007's source filter;
+  all trained endpoints are displayed.
 
 ## Provenance
 
 - Source script: `analyses/008-2026-08-31-full-pass-frontier-with-a7/01_build.py`
 - Figure data: `analyses/008-2026-08-31-full-pass-frontier-with-a7/figure_data.json`
 - Source frontier: `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/figure_data.json`
+- Corrected A4-OL1 reduction: `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/figure_data.json`
 - A7 verification: `runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/verification.json`
 - A7-OL1 verification: `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/verification.json`
 - Figure: `analyses/008-2026-08-31-full-pass-frontier-with-a7/figures/01-full-pass-frontier-with-a7.pdf`

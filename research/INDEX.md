@@ -6,13 +6,15 @@
 ## Current status
 
 Analysis 009 directly compares historical Run 012 A4-Z + OL1@h with corrected
-Run 015 four-site A4-OL1 at all five matched thresholds. Four-site pressure
+Run 015 four-site A4-OL1 at all five matched thresholds. Status Report Number 1
+now uses Run 015 only in its main A4-OL1 result and corrected Analysis 008
+frontier, retaining Run 012 as an A4-OL1[`h`] appendix. Four-site pressure
 raises validation loss by 0.242--0.320 at every `kappa`; its `R_model` is lower
 at `kappa=0`, effectively tied at `0.01`, and 1.42--2.49 percentage points
 higher at `0.05`--`0.5`. Its PDF also includes matched Run 011 A4 without OL1
 as the common baseline. The analysis owns the all-eight-site count-pooled
 exact-zero table and machine-readable reduction. The result is
-descriptive; discarded F001 is not restored and no manuscript claim changes.
+descriptive; discarded F001 is not restored and no paper finding is promoted.
 
 Run 015 completed and verified the corrective paper-scale Pythia-14M A4-OL1
 cohort. Every one of 3,560 boundaries realized all 24
@@ -79,6 +81,11 @@ Next run number: `016`. Next analysis number: `010`. Next finding number: `F003`
 
 ## Where we stopped
 
+- 2026-08-31: Status Report Number 1 now uses corrected Run 015 as its only
+  main-text A4-OL1 evidence, updates Analysis 008's full-pass frontier to the
+  same series, and retains historical Run 012 as an A4-OL1[`h`] appendix with
+  its endpoint table, direct comparison figure, and compute accounting. F001
+  remains discarded; the corrected A4/A4-OL1 comparison remains descriptive.
 - 2026-08-31: Analysis 009 completed the matched Run 012/015 pressure-target
   comparison. Its PDF plots matched A4 without OL1, historical `h`-only OL1,
   and corrected four-site OL1; its observation contains
@@ -88,8 +95,8 @@ Next run number: `016`. Next analysis number: `010`. Next finding number: `F003`
   four-site A4-OL1 full pass. All 3,560 boundaries proved the 24-tensor pressure
   identity; complete validation, diagnostics, checkpoints, archive hashes, and
   local verification reconcile. All RunPod Pods are deleted. The candidate
-  observation is not a promoted finding; F001 remains discarded pending a new
-  analysis and explicit approval.
+  observation is not a promoted finding; Analysis 009 is complete and F001
+  remains discarded.
 - 2026-08-31: Status Report Number 1 was updated through Run 014: A7-OL1 is
   complete at the cutoff, the report contains the interleaved all-site
   A7/A7-OL1 table, Run 014 compute/cost, and Analysis 008's corrected

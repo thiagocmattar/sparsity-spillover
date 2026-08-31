@@ -101,11 +101,12 @@
     "sequences": 338
   },
   "display": {
-    "rule": "Post-hoc points above the explicit loss cap are omitted rather than clipped to the boundary.",
-    "y_max": 6.0,
+    "posthoc_source_loss_cap": 6.0,
+    "y_max": 6.1,
     "y_min": 5.075
   },
   "interpretation": {
+    "a4_ol1_operator": "A4 one-sided gates plus corrected Run 015 orthogonal L1 pressure at a,m,h,z with lambda=1 and trust budget=1; historical Run 012 h-only pressure is excluded.",
     "a7_ol1_operator": "The same mixed A7 gates plus orthogonal L1 pressure at all seven active sites with lambda=1 and trust budget=1.",
     "a7_operator": "One-sided gates at a,m,h,z and symmetric gates at post-RoPE q,k and v, with one common kappa and no pressure.",
     "logical_products": "Exact-zero logical-product opportunities, not removed FLOPs or measured speedup.",
@@ -294,12 +295,16 @@
       ]
     }
   },
-  "question": "Where do the five full-pass A7 and five A7-OL1 endpoints lie relative to the trained and post-hoc frontier in Analysis 007?",
+  "question": "Where do corrected four-site A4-OL1, A7, and A7-OL1 lie on the full-pass trained and post-hoc Pythia-14M frontier?",
   "schema_version": 1,
   "sources": {
     "analysis_007_figure_data": {
       "path": "analyses/007-2026-08-30-full-pass-frontier-a4-ol1/figure_data.json",
       "sha256": "123ef2a3423e70f9986942c3f84e69ffabb2e298d481c6449bf696725f0adafc"
+    },
+    "analysis_009_figure_data": {
+      "path": "analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/figure_data.json",
+      "sha256": "38b339972d9040a314cd174faff0c4e8b5936087ee6e1d60e7dc1b956bc27401"
     },
     "run_013_attempts": {
       "a7-z-post-mixed-kappa-0": {
@@ -917,248 +922,463 @@
       "topology": "A4-Z"
     },
     {
-      "R_block": 0.28075945704448296,
-      "R_model": 0.08409413096369549,
-      "R_model_max": 0.12833152310134513,
-      "activation": "one_sided_threshold",
-      "attempt_id": "001-20260830-203456-3b24b353",
+      "R_model": 0.0781004229286857,
+      "attempt_id": "001-20260831-185531-47e3fd85",
       "condition_id": "a4z-ol1-kappa-0",
       "dose": 0.0,
       "dose_name": "kappa",
-      "final_validation_loss": 5.21574851323867,
-      "lambda": 1.0,
+      "final_validation_loss": 5.458170360362036,
       "logical_product_counts": {
         "model_product_count": 6363055915008,
-        "zero_product_count": 535095657446
+        "zero_product_count": 496957358081
       },
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
       "pressure_method": "orthogonal_l1",
-      "run": "run012",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "run": "run015",
       "series_id": "a4z_ol1",
-      "series_label": "A4-Z plus four-site OL1",
+      "series_label": "A4-Z plus corrected four-site OL1",
       "site_exact_zero": {
         "a": {
-          "exact_zero_count": 262695415,
-          "exact_zero_fraction": 0.4941338665151502,
+          "exact_zero_count": 366241969,
+          "exact_zero_fraction": 0.688906428846852,
+          "total_count": 531628032
+        },
+        "attention_output": {
+          "exact_zero_count": 1747,
+          "exact_zero_fraction": 3.286132210575382e-06,
           "total_count": 531628032
         },
         "h": {
-          "exact_zero_count": 1989200901,
-          "exact_zero_fraction": 0.9354289001261694,
+          "exact_zero_count": 1577969271,
+          "exact_zero_fraction": 0.7420457425202138,
           "total_count": 2126512128
         },
+        "k_post": {
+          "exact_zero_count": 22,
+          "exact_zero_fraction": 4.138231747719428e-08,
+          "total_count": 531628032
+        },
         "m": {
-          "exact_zero_count": 264833449,
-          "exact_zero_fraction": 0.49815553932265183,
+          "exact_zero_count": 208909255,
+          "exact_zero_fraction": 0.3929613233788244,
+          "total_count": 531628032
+        },
+        "q_post": {
+          "exact_zero_count": 6,
+          "exact_zero_fraction": 1.1286086584689349e-08,
+          "total_count": 531628032
+        },
+        "v": {
+          "exact_zero_count": 338,
+          "exact_zero_fraction": 6.357828776041666e-07,
           "total_count": 531628032
         },
         "z": {
-          "exact_zero_count": 343809065,
-          "exact_zero_fraction": 0.6467098126985147,
+          "exact_zero_count": 370144992,
+          "exact_zero_fraction": 0.6962480714335244,
           "total_count": 531628032
         }
       },
       "site_exact_zero_fraction": {
-        "a": 0.4941338665151502,
-        "h": 0.9354289001261694,
-        "m": 0.49815553932265183,
-        "z": 0.6467098126985147
+        "a": 0.688906428846852,
+        "attention_output": 3.286132210575382e-06,
+        "h": 0.7420457425202138,
+        "k_post": 4.138231747719428e-08,
+        "m": 0.3929613233788244,
+        "q_post": 1.1286086584689349e-08,
+        "v": 6.357828776041666e-07,
+        "z": 0.6962480714335244
       },
+      "source_files": {
+        "activation_statistics": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/diagnostics/activation_statistics.json",
+        "activation_statistics_sha256": "830a216c717669af2d038adf1d571c2f66774f1acee1b3e0d4549690456f9153",
+        "logical_products": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/diagnostics/logical_products.json",
+        "logical_products_sha256": "0a9d5d802a47528adf932438cfd3f9ccd7f47f5d137d10172822282205a4ac3d",
+        "manifest": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/manifest.json",
+        "manifest_sha256": "a6c9995c283bd49ff516250bb90cdb9e05f1641003be7b87a024e3274c3bc91f"
+      },
+      "step_budget": 1.0,
+      "symmetric_sites": [],
       "topology": "A4-Z"
     },
     {
-      "R_block": 0.28664847379185693,
-      "R_model": 0.08585803145992206,
-      "R_model_max": 0.12833152310134513,
-      "activation": "one_sided_threshold",
-      "attempt_id": "002-20260830-204526-86141a25",
-      "condition_id": "a4z-ol1-kappa-0p01",
+      "R_model": 0.08586708994090508,
+      "attempt_id": "002-20260831-185533-e3b22eae",
+      "condition_id": "a4z-ol1-kappa-0.01",
       "dose": 0.01,
       "dose_name": "kappa",
-      "final_validation_loss": 5.204503547510452,
-      "lambda": 1.0,
+      "final_validation_loss": 5.458277163420909,
       "logical_product_counts": {
         "model_product_count": 6363055915008,
-        "zero_product_count": 546319454932
+        "zero_product_count": 546377094553
       },
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
       "pressure_method": "orthogonal_l1",
-      "run": "run012",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "run": "run015",
       "series_id": "a4z_ol1",
-      "series_label": "A4-Z plus four-site OL1",
+      "series_label": "A4-Z plus corrected four-site OL1",
       "site_exact_zero": {
         "a": {
-          "exact_zero_count": 265505114,
-          "exact_zero_fraction": 0.4994189508803027,
+          "exact_zero_count": 390698047,
+          "exact_zero_fraction": 0.7349086644851714,
+          "total_count": 531628032
+        },
+        "attention_output": {
+          "exact_zero_count": 1589,
+          "exact_zero_fraction": 2.9889319305118958e-06,
           "total_count": 531628032
         },
         "h": {
-          "exact_zero_count": 2017440706,
-          "exact_zero_fraction": 0.9487087703080337,
+          "exact_zero_count": 1718930341,
+          "exact_zero_fraction": 0.8083331942323162,
           "total_count": 2126512128
         },
+        "k_post": {
+          "exact_zero_count": 29,
+          "exact_zero_fraction": 5.454941849266519e-08,
+          "total_count": 531628032
+        },
         "m": {
-          "exact_zero_count": 267885691,
-          "exact_zero_fraction": 0.5038968505708894,
+          "exact_zero_count": 231065453,
+          "exact_zero_fraction": 0.43463745154807787,
+          "total_count": 531628032
+        },
+        "q_post": {
+          "exact_zero_count": 17,
+          "exact_zero_fraction": 3.197724532328649e-08,
+          "total_count": 531628032
+        },
+        "v": {
+          "exact_zero_count": 343,
+          "exact_zero_fraction": 6.451879497580745e-07,
           "total_count": 531628032
         },
         "z": {
-          "exact_zero_count": 382619546,
-          "exact_zero_fraction": 0.7197128875250882,
+          "exact_zero_count": 453263177,
+          "exact_zero_fraction": 0.8525945768788956,
           "total_count": 531628032
         }
       },
       "site_exact_zero_fraction": {
-        "a": 0.4994189508803027,
-        "h": 0.9487087703080337,
-        "m": 0.5038968505708894,
-        "z": 0.7197128875250882
+        "a": 0.7349086644851714,
+        "attention_output": 2.9889319305118958e-06,
+        "h": 0.8083331942323162,
+        "k_post": 5.454941849266519e-08,
+        "m": 0.43463745154807787,
+        "q_post": 3.197724532328649e-08,
+        "v": 6.451879497580745e-07,
+        "z": 0.8525945768788956
       },
+      "source_files": {
+        "activation_statistics": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/diagnostics/activation_statistics.json",
+        "activation_statistics_sha256": "89f5f108e1c0bd3da149201c6109560a4cd90a78fc09a9bdc2284845d780e944",
+        "logical_products": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/diagnostics/logical_products.json",
+        "logical_products_sha256": "0f5f8ef1dcc8edb0a0c73b71ae73f9de8357bc25cbe62da1097d32159dfb5b7c",
+        "manifest": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/manifest.json",
+        "manifest_sha256": "8caec4b6d81952f55ce1737c0e011739e382080e2227826aa01832abb70b0cfe"
+      },
+      "step_budget": 1.0,
+      "symmetric_sites": [],
       "topology": "A4-Z"
     },
     {
-      "R_block": 0.301666509554897,
-      "R_model": 0.09035629014573529,
-      "R_model_max": 0.12833152310134513,
-      "activation": "one_sided_threshold",
-      "attempt_id": "003-20260830-203458-6293407b",
-      "condition_id": "a4z-ol1-kappa-0p05",
+      "R_model": 0.1045644512413755,
+      "attempt_id": "003-20260831-185532-bdfeb27f",
+      "condition_id": "a4z-ol1-kappa-0.05",
       "dose": 0.05,
       "dose_name": "kappa",
-      "final_validation_loss": 5.19558994304499,
-      "lambda": 1.0,
+      "final_validation_loss": 5.489802651151398,
       "logical_product_counts": {
         "model_product_count": 6363055915008,
-        "zero_product_count": 574942126470
+        "zero_product_count": 665349449971
       },
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
       "pressure_method": "orthogonal_l1",
-      "run": "run012",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "run": "run015",
       "series_id": "a4z_ol1",
-      "series_label": "A4-Z plus four-site OL1",
+      "series_label": "A4-Z plus corrected four-site OL1",
       "site_exact_zero": {
         "a": {
-          "exact_zero_count": 275335154,
-          "exact_zero_fraction": 0.5179093979754626,
+          "exact_zero_count": 470516359,
+          "exact_zero_fraction": 0.8850480611977963,
+          "total_count": 531628032
+        },
+        "attention_output": {
+          "exact_zero_count": 636,
+          "exact_zero_fraction": 1.196325177977071e-06,
           "total_count": 531628032
         },
         "h": {
-          "exact_zero_count": 2082166560,
-          "exact_zero_fraction": 0.9791463366626988,
+          "exact_zero_count": 1983496116,
+          "exact_zero_fraction": 0.9327462043987929,
           "total_count": 2126512128
         },
+        "k_post": {
+          "exact_zero_count": 59,
+          "exact_zero_fraction": 1.1097985141611193e-07,
+          "total_count": 531628032
+        },
         "m": {
-          "exact_zero_count": 278523914,
-          "exact_zero_fraction": 0.5239075015517617,
+          "exact_zero_count": 321310746,
+          "exact_zero_fraction": 0.6043901499911878,
+          "total_count": 531628032
+        },
+        "q_post": {
+          "exact_zero_count": 17,
+          "exact_zero_fraction": 3.197724532328649e-08,
+          "total_count": 531628032
+        },
+        "v": {
+          "exact_zero_count": 313,
+          "exact_zero_fraction": 5.887575168346278e-07,
           "total_count": 531628032
         },
         "z": {
-          "exact_zero_count": 469465820,
-          "exact_zero_fraction": 0.8830719821786974,
+          "exact_zero_count": 517762926,
+          "exact_zero_fraction": 0.973919535529684,
           "total_count": 531628032
         }
       },
       "site_exact_zero_fraction": {
-        "a": 0.5179093979754626,
-        "h": 0.9791463366626988,
-        "m": 0.5239075015517617,
-        "z": 0.8830719821786974
+        "a": 0.8850480611977963,
+        "attention_output": 1.196325177977071e-06,
+        "h": 0.9327462043987929,
+        "k_post": 1.1097985141611193e-07,
+        "m": 0.6043901499911878,
+        "q_post": 3.197724532328649e-08,
+        "v": 5.887575168346278e-07,
+        "z": 0.973919535529684
       },
+      "source_files": {
+        "activation_statistics": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/diagnostics/activation_statistics.json",
+        "activation_statistics_sha256": "e0321978c8a9011b3272dd843fe447be0e16731b0261c30c2ae0a36d0f99a2ef",
+        "logical_products": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/diagnostics/logical_products.json",
+        "logical_products_sha256": "46020757bbf299555810ed87436c3b51194fabb70d163734fadc378e624b1d01",
+        "manifest": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/manifest.json",
+        "manifest_sha256": "36c9cfe9e7999f77e701d933f6d68d651af74d2b02ba474847a2cb744c073cc8"
+      },
+      "step_budget": 1.0,
+      "symmetric_sites": [],
       "topology": "A4-Z"
     },
     {
-      "R_block": 0.3119446925664608,
-      "R_model": 0.093434850267421,
-      "R_model_max": 0.12833152310134513,
-      "activation": "one_sided_threshold",
-      "attempt_id": "004-20260830-204238-8b4a903d",
-      "condition_id": "a4z-ol1-kappa-0p1",
+      "R_model": 0.11394280537892908,
+      "attempt_id": "004-20260831-185953-85233728",
+      "condition_id": "a4z-ol1-kappa-0.1",
       "dose": 0.1,
       "dose_name": "kappa",
-      "final_validation_loss": 5.228686820825882,
-      "lambda": 1.0,
+      "final_validation_loss": 5.54832332091924,
       "logical_product_counts": {
         "model_product_count": 6363055915008,
-        "zero_product_count": 594531176662
+        "zero_product_count": 725024441739
       },
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
       "pressure_method": "orthogonal_l1",
-      "run": "run012",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "run": "run015",
       "series_id": "a4z_ol1",
-      "series_label": "A4-Z plus four-site OL1",
+      "series_label": "A4-Z plus corrected four-site OL1",
       "site_exact_zero": {
         "a": {
-          "exact_zero_count": 286062613,
-          "exact_zero_fraction": 0.5380879031600801,
+          "exact_zero_count": 485427155,
+          "exact_zero_fraction": 0.9130954836482362,
+          "total_count": 531628032
+        },
+        "attention_output": {
+          "exact_zero_count": 127,
+          "exact_zero_fraction": 2.388888327092579e-07,
           "total_count": 531628032
         },
         "h": {
-          "exact_zero_count": 2107898991,
-          "exact_zero_fraction": 0.9912471051752214,
+          "exact_zero_count": 2065885514,
+          "exact_zero_fraction": 0.9714901160441441,
           "total_count": 2126512128
         },
+        "k_post": {
+          "exact_zero_count": 38,
+          "exact_zero_fraction": 7.14785483696992e-08,
+          "total_count": 531628032
+        },
         "m": {
-          "exact_zero_count": 291052836,
-          "exact_zero_fraction": 0.5474745846358982,
+          "exact_zero_count": 403568135,
+          "exact_zero_fraction": 0.7591174857386,
+          "total_count": 531628032
+        },
+        "q_post": {
+          "exact_zero_count": 14,
+          "exact_zero_fraction": 2.6334202030941813e-08,
+          "total_count": 531628032
+        },
+        "v": {
+          "exact_zero_count": 154,
+          "exact_zero_fraction": 2.8967622234035996e-07,
           "total_count": 531628032
         },
         "z": {
-          "exact_zero_count": 514476586,
-          "exact_zero_fraction": 0.9677378825652294,
+          "exact_zero_count": 527817689,
+          "exact_zero_fraction": 0.9928326898307726,
           "total_count": 531628032
         }
       },
       "site_exact_zero_fraction": {
-        "a": 0.5380879031600801,
-        "h": 0.9912471051752214,
-        "m": 0.5474745846358982,
-        "z": 0.9677378825652294
+        "a": 0.9130954836482362,
+        "attention_output": 2.388888327092579e-07,
+        "h": 0.9714901160441441,
+        "k_post": 7.14785483696992e-08,
+        "m": 0.7591174857386,
+        "q_post": 2.6334202030941813e-08,
+        "v": 2.8967622234035996e-07,
+        "z": 0.9928326898307726
       },
+      "source_files": {
+        "activation_statistics": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728/diagnostics/activation_statistics.json",
+        "activation_statistics_sha256": "efad46ed1b2c10f0df9894b27cee3d037479a3f48437db16fe90e7b9d94e9b8d",
+        "logical_products": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728/diagnostics/logical_products.json",
+        "logical_products_sha256": "68e29356ce653bbe483fa61dea378dc1538b25b3fde87e9982dd9991795fffaa",
+        "manifest": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728/manifest.json",
+        "manifest_sha256": "a25c4d31a581027b80fb2f1a97f4157b4dbe80ed31e82d285d2f2be07f866a2f"
+      },
+      "step_budget": 1.0,
+      "symmetric_sites": [],
       "topology": "A4-Z"
     },
     {
-      "R_block": 0.3414550492512973,
-      "R_model": 0.10227390354799072,
-      "R_model_max": 0.12833152310134513,
-      "activation": "one_sided_threshold",
-      "attempt_id": "005-20260830-202955-8e694b5b",
-      "condition_id": "a4z-ol1-kappa-0p5",
+      "R_model": 0.12713448684742273,
+      "attempt_id": "005-20260831-185726-17913c68",
+      "condition_id": "a4z-ol1-kappa-0.5",
       "dose": 0.5,
       "dose_name": "kappa",
-      "final_validation_loss": 5.722665995535766,
-      "lambda": 1.0,
+      "final_validation_loss": 6.0379865042556675,
       "logical_product_counts": {
         "model_product_count": 6363055915008,
-        "zero_product_count": 650774566922
+        "zero_product_count": 808963848536
       },
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
       "pressure_method": "orthogonal_l1",
-      "run": "run012",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "run": "run015",
       "series_id": "a4z_ol1",
-      "series_label": "A4-Z plus four-site OL1",
+      "series_label": "A4-Z plus corrected four-site OL1",
       "site_exact_zero": {
         "a": {
-          "exact_zero_count": 338231453,
-          "exact_zero_fraction": 0.6362182440372144,
+          "exact_zero_count": 525811787,
+          "exact_zero_fraction": 0.9890595592220389,
+          "total_count": 531628032
+        },
+        "attention_output": {
+          "exact_zero_count": 0,
+          "exact_zero_fraction": 0.0,
           "total_count": 531628032
         },
         "h": {
-          "exact_zero_count": 2125329762,
-          "exact_zero_fraction": 0.9994439881228836,
+          "exact_zero_count": 2125244245,
+          "exact_zero_fraction": 0.9994037734451143,
           "total_count": 2126512128
         },
+        "k_post": {
+          "exact_zero_count": 4,
+          "exact_zero_fraction": 7.524057723126233e-09,
+          "total_count": 531628032
+        },
         "m": {
-          "exact_zero_count": 353219280,
-          "exact_zero_fraction": 0.6644105629102718,
+          "exact_zero_count": 514432675,
+          "exact_zero_fraction": 0.9676552853405593,
+          "total_count": 531628032
+        },
+        "q_post": {
+          "exact_zero_count": 90,
+          "exact_zero_fraction": 1.6929129877034023e-07,
+          "total_count": 531628032
+        },
+        "v": {
+          "exact_zero_count": 3513847,
+          "exact_zero_fraction": 0.006609596914558486,
           "total_count": 531628032
         },
         "z": {
-          "exact_zero_count": 531275593,
-          "exact_zero_fraction": 0.9993370571550297,
+          "exact_zero_count": 531498925,
+          "exact_zero_fraction": 0.9997571478698851,
           "total_count": 531628032
         }
       },
       "site_exact_zero_fraction": {
-        "a": 0.6362182440372144,
-        "h": 0.9994439881228836,
-        "m": 0.6644105629102718,
-        "z": 0.9993370571550297
+        "a": 0.9890595592220389,
+        "attention_output": 0.0,
+        "h": 0.9994037734451143,
+        "k_post": 7.524057723126233e-09,
+        "m": 0.9676552853405593,
+        "q_post": 1.6929129877034023e-07,
+        "v": 0.006609596914558486,
+        "z": 0.9997571478698851
       },
+      "source_files": {
+        "activation_statistics": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68/diagnostics/activation_statistics.json",
+        "activation_statistics_sha256": "05f11daf8d43f54bf697496c73ebffc5458cba2c904e978d93dc394e215c47c8",
+        "logical_products": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68/diagnostics/logical_products.json",
+        "logical_products_sha256": "adde6ae277b5631776fa76a1021040286986466454c7a503c521c282df45a100",
+        "manifest": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68/manifest.json",
+        "manifest_sha256": "80633a3c0f5024ad64f6d8d270da9420bd14e711966b3be4aacde7cb32cb6600"
+      },
+      "step_budget": 1.0,
+      "symmetric_sites": [],
       "topology": "A4-Z"
     },
     {

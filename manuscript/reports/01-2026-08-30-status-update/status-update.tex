@@ -73,7 +73,7 @@ A1-H & 1 & Full pass complete: Run 004 & 0/1 & 0/1 \\
 A1-H-L1 & 4 & 4/4 full pass: Run 004 & 0/4 & 0/4 \\
 A1-H-OL1 & 4 & 4/4 full pass: Run 009 & 0/4 & 0/4 \\
 A4 & 5 & 5/5 full pass: Run 011 & 0/5 & 0/5 \\
-A4-OL1 & 5 & 5/5 full pass: Run 012 & 0/5 & 0/5 \\
+A4-OL1 & 5 & 5/5 full pass: Run 015 & 0/5 & 0/5 \\
 A7 & 5 & 5/5 full pass: Run 013 & 0/5 & 0/5 \\
 A7-OL1 & 5 & 5/5 full pass: Run 014 & 0/5 & 0/5 \\
 \bottomrule
@@ -129,7 +129,7 @@ A7-OL1 & A7 gates; OL1 at seven sites & Same $\kappa$ grid; $\lambda=1$; budget 
 
 \section{RunPod compute}
 
-Table~\ref{tab:runpod} reports elapsed wall-clock time for each condition's scientific process. Effective recorded RunPod cost across the six runs is \$89.99; the retained 100 GB network volume remains separate at \$7/month.
+Table~\ref{tab:runpod} reports elapsed wall-clock time for each condition's scientific process. Latest recorded RunPod cost across the six main-ladder runs is at least \$88.39; the retained 100 GB network volume remains separate at \$7/month.
 
 {\small
 \begin{center}
@@ -144,17 +144,17 @@ Table~\ref{tab:runpod} reports elapsed wall-clock time for each condition's scie
 004 & $5\times$ A100 80 GB; six conditions & 63--108 min & \$21.52 \\
 009 & $4\times$ A100 80 GB; four conditions & 86--105 min & \$12.27 \\
 011 & $5\times$ A100 80 GB; five conditions & 59--104 min & \$11.47 \\
-012 & $5\times$ A100 80 GB; five conditions & 70--100 min & \$14.77 \\
+015 & $5\times$ A100 80 GB; five conditions & 94--101 min & \$13.17* \\
 013 & $5\times$ A100 80 GB; five conditions & 82--89 min & \$15.83 \\
 014 & $5\times$ A100 80 GB; five conditions & 74--115 min & \$14.13 \\
 \midrule
-\textbf{Total} & \textbf{Effective recorded spend} & --- & \textbf{\$89.99} \\
+\textbf{Total} & \textbf{Latest recorded spend} & --- & \textbf{$\geq$\$88.39} \\
 \bottomrule
 \end{tabularx}
 \end{minipage}
 \end{center}}
 
-Deployment required an 80 GB memory class, cache staging, detached execution, resumable artifact transfer, hash verification, and explicit teardown. The final Run 014 audit found zero Pods; the pre-existing retained volume was unchanged.
+*Run 015's \$13.17 is provisional because billing posting lagged teardown. Deployment required an 80 GB memory class, cache staging, detached execution, resumable artifact transfer, hash verification, and explicit teardown. The final Run 015 audit found zero Pods; the pre-existing retained volume was unchanged. Historical Run 012 compute and the combined spend including it are retained in Appendix~\ref{app:a4-ol1-h}.
 
 \section{Results}
 
@@ -176,7 +176,7 @@ Control & A0/A1-H $\rightarrow$ uniform post-hoc clipping & Full-pass Analysis 0
 2 & A1-H $\rightarrow$ A1-H-L1 & Full-pass dose response complete \\
 3 & A1-H-L1 $\rightarrow$ A1-H-OL1 & Matched full-pass Analysis 003 complete \\
 4 & A1-H $\rightarrow$ A4 & Matched full-pass Analysis 004 complete \\
-5 & A4 $\rightarrow$ A4-OL1 & Matched full-pass Analysis 007; tentative F001 \\
+5 & A4 $\rightarrow$ A4-OL1 & Corrected Run 015 in Analysis 009; descriptive; F001 discarded \\
 6 & A4 $\rightarrow$ A7 & Matched full-pass Analysis 008; tentative F002 \\
 7 & A7 $\rightarrow$ A7-OL1 & Five matched full-pass pairs in Analysis 008; descriptive \\
 \bottomrule
@@ -297,12 +297,12 @@ Figure~\ref{fig:ol1-projection} isolates the OL1 Adam-relative geometry before a
 
 \subsection{Architecture-wide thresholding and OL1: A4 to A4-OL1}
 
-A4 applies one-sided thresholds at \code{a}, \code{m}, \code{h}, and \code{z}; A4-OL1 adds four-site OL1 pressure with $\lambda=1$ and trust budget 1.0. A4-OL1 improves loss and \Rmodel{} at every matched $\kappa\leq0.1$, supporting \href{../../../research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md}{tentative Finding F001}; at $\kappa=0.5$, the loss advantage reverses.
+A4 applies one-sided thresholds at \code{a}, \code{m}, \code{h}, and \code{z}. The corrected A4-OL1 objective in Run 015 adds post-gate OL1 pressure at all four sites with $\lambda=1$ and trust budget 1.0. It improves both validation loss and \Rmodel{} over matched A4 at $\kappa=0$ and $0.01$. At $\kappa=0.05$, $0.1$, and $0.5$, it adds 2.2506, 2.4413, and 2.4979 percentage points of \Rmodel{} for validation-loss costs of 0.055693, 0.128681, and 0.378307. This one-seed result remains descriptive; discarded Finding F001 is not restored.
 
 {\small
 \begin{table}[htbp]
 \centering
-\caption{Absolute A4 and A4-OL1 full-pass endpoints from \href{../../../analyses/007-2026-08-30-full-pass-frontier-a4-ol1/observations/O001-full-pass-frontier-with-a4-ol1.md}{Analysis 007, Observation O001}.}
+\caption{Absolute A4 and corrected four-site A4-OL1 full-pass endpoints from \href{../../../analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/observations/O001-h-only-vs-four-site-a4-ol1.md}{Analysis 009, Observation O001}. Every percentage is recomputed after pooling integer counts over all six layers and 338 complete validation blocks.}
 \label{tab:a4-ol1-fullpass}
 \setlength{\tabcolsep}{2.0pt}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}rl*{9}{r}@{}}
@@ -312,19 +312,19 @@ $\boldsymbol{\kappa}$ & \textbf{Method} & \textbf{Loss} & \textbf{\Rmodel{} (\%)
 & & & & \textbf{\code{h}} & \textbf{\code{m}} & \textbf{\code{a}} & \textbf{\code{z}} & \textbf{\code{q}} & \textbf{\code{k}} & \textbf{\code{v}} \\
 \midrule
 \multirow{2}{*}{0.00} & A4     & 5.470 & 7.212  & 68.765 & 49.779 & 48.560 & 54.525 & $<0.001$ & $<0.001$ & $<0.001$ \\
-                      & A4-OL1 & 5.216 & 8.409  & 93.543 & 49.816 & 49.413 & 64.671 & $<0.001$ & $<0.001$ & $<0.001$ \\
+                      & A4-OL1 & 5.458 & 7.810  & 74.205 & 39.296 & 68.891 & 69.625 & $<0.001$ & $<0.001$ & $<0.001$ \\
 \hline
 \multirow{2}{*}{0.01} & A4     & 5.466 & 7.414  & 71.181 & 50.397 & 49.095 & 59.643 & $<0.001$ & $<0.001$ & $<0.001$ \\
-                      & A4-OL1 & 5.205 & 8.586  & 94.871 & 50.390 & 49.942 & 71.971 & $<0.001$ & $<0.001$ & $<0.001$ \\
+                      & A4-OL1 & 5.458 & 8.587  & 80.833 & 43.464 & 73.491 & 85.259 & $<0.001$ & $<0.001$ & $<0.001$ \\
 \hline
 \multirow{2}{*}{0.05} & A4     & 5.434 & 8.206  & 81.340 & 52.712 & 51.155 & 77.641 & $<0.001$ & $<0.001$ & $<0.001$ \\
-                      & A4-OL1 & 5.196 & 9.036  & 97.915 & 52.391 & 51.791 & 88.307 & $<0.001$ & $<0.001$ & $<0.001$ \\
+                      & A4-OL1 & 5.490 & 10.456 & 93.275 & 60.439 & 88.505 & 97.392 & $<0.001$ & $<0.001$ & $<0.001$ \\
 \hline
 \multirow{2}{*}{0.10} & A4     & 5.420 & 8.953  & 91.853 & 55.200 & 53.244 & 89.234 & $<0.001$ & $<0.001$ & $<0.001$ \\
-                      & A4-OL1 & 5.229 & 9.343  & 99.125 & 54.747 & 53.809 & 96.774 & $<0.001$ & $<0.001$ & $<0.001$ \\
+                      & A4-OL1 & 5.548 & 11.394 & 97.149 & 75.912 & 91.310 & 99.283 & $<0.001$ & $<0.001$ & $<0.001$ \\
 \hline
 \multirow{2}{*}{0.50} & A4     & 5.660 & 10.216 & 99.876 & 66.386 & 63.434 & 99.881 & $<0.001$ & $<0.001$ & $<0.001$ \\
-                      & A4-OL1 & 5.723 & 10.227 & 99.944 & 66.441 & 63.622 & 99.934 & $<0.001$ & $<0.001$ & $<0.001$ \\
+                      & A4-OL1 & 6.038 & 12.713 & 99.940 & 96.766 & 98.906 & 99.976 & $<0.001$ & $<0.001$ & 0.661 \\
 \bottomrule
 \end{tabular*}
 \end{table}}
@@ -368,13 +368,50 @@ $\boldsymbol{\kappa}$ & \textbf{Variant} & \textbf{Loss} & \textbf{\Rmodel{} (\%
 
 \subsection{Trained and post-hoc full-pass frontier}
 
-Figure~\ref{fig:fullpass-frontier} places the trained endpoints and uniform TEAL-style clipping of the Run 004 controls on one validation-loss--\Rmodel{} plane. It includes all five A7 and five A7-OL1 full-pass endpoints; Table~\ref{tab:a7-a7-ol1-fullpass} supplies their matched thresholds and count-pooled site values.
+Figure~\ref{fig:fullpass-frontier} places the trained endpoints and uniform TEAL-style clipping of the Run 004 controls on one validation-loss--\Rmodel{} plane. Its A4-OL1 series is the corrected four-site Run 015 result; historical Run 012 A4-OL1[\code{h}] is excluded from the main frontier and retained in Appendix~\ref{app:a4-ol1-h}. The figure also includes all five A7 and five A7-OL1 full-pass endpoints; Table~\ref{tab:a7-a7-ol1-fullpass} supplies their matched thresholds and count-pooled site values.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.92\textwidth]{../../../analyses/008-2026-08-31-full-pass-frontier-with-a7/figures/01-full-pass-frontier-with-a7.pdf}
-  \caption{Trained full-pass endpoints, uniform TEAL-style post-hoc clipping of the Run 004 controls, and the matched Run 013 A7 and Run 014 A7-OL1 endpoints. A7 uses one-sided thresholds at \code{a,m,h,z} and symmetric thresholds at post-RoPE \code{q,k,v}; A7-OL1 adds seven-site orthogonal L1 pressure. The vertical display is capped at loss 6; above-cap post-hoc points remain in the complete source sweep. Lines indicate dose or target order only. Source: \href{../../../analyses/008-2026-08-31-full-pass-frontier-with-a7/observations/O001-full-pass-frontier-with-a7.md}{Analysis 008, Observation O001}.}
+  \caption{Corrected trained full-pass frontier, uniform TEAL-style post-hoc clipping of the Run 004 controls, Run 015 four-site A4-OL1, and the matched Run 013 A7 and Run 014 A7-OL1 endpoints. A7 uses one-sided thresholds at \code{a,m,h,z} and symmetric thresholds at post-RoPE \code{q,k,v}; A7-OL1 adds seven-site orthogonal L1 pressure. All trained endpoints are shown through loss 6.1; post-hoc points above loss 6 remain omitted by the inherited source filter. Lines indicate dose or target order only. Source: \href{../../../analyses/008-2026-08-31-full-pass-frontier-with-a7/observations/O001-full-pass-frontier-with-a7.md}{Analysis 008, Observation O001}.}
   \label{fig:fullpass-frontier}
 \end{figure}
+
+\appendix
+\clearpage
+\section{Historical A4-OL1[h] realization (Run 012)}
+\label{app:a4-ol1-h}
+
+Run 012 declared A4-OL1 pressure at \code{a,m,h,z}, but its frozen training code constructed the pressure capture with \code{["h"]}; the realized intervention was therefore A4 gates plus OL1 pressure only at \code{h}. The five endpoints remain valid for that realized A4-OL1[\code{h}] intervention, but they are excluded from the main four-site A4-OL1 result and cannot support discarded Finding F001.
+
+{\small
+\begin{table}[htbp]
+\centering
+\caption{Historical Run 012 A4-OL1[\code{h}] full-pass endpoints. Exact-zero percentages pool integer counts over all six layers and 338 complete validation blocks. Source: \href{../../../analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/observations/O001-h-only-vs-four-site-a4-ol1.md}{Analysis 009, Observation O001}.}
+\label{tab:a4-ol1-h-historical}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r*{9}{r}@{}}
+\toprule
+$\boldsymbol{\kappa}$ & \textbf{Loss} & \textbf{\Rmodel{} (\%)} & \multicolumn{7}{c}{\textbf{Exact-zero (\%)}} \\
+\cmidrule(l){4-10}
+& & & \textbf{\code{h}} & \textbf{\code{m}} & \textbf{\code{a}} & \textbf{\code{z}} & \textbf{\code{q}} & \textbf{\code{k}} & \textbf{\code{v}} \\
+\midrule
+0.00 & 5.216 & 8.409  & 93.543 & 49.816 & 49.413 & 64.671 & $<0.001$ & $<0.001$ & $<0.001$ \\
+0.01 & 5.205 & 8.586  & 94.871 & 50.390 & 49.942 & 71.971 & $<0.001$ & $<0.001$ & $<0.001$ \\
+0.05 & 5.196 & 9.036  & 97.915 & 52.391 & 51.791 & 88.307 & $<0.001$ & $<0.001$ & $<0.001$ \\
+0.10 & 5.229 & 9.343  & 99.125 & 54.747 & 53.809 & 96.774 & $<0.001$ & $<0.001$ & $<0.001$ \\
+0.50 & 5.723 & 10.227 & 99.944 & 66.441 & 63.622 & 99.934 & $<0.001$ & $<0.001$ & $<0.001$ \\
+\bottomrule
+\end{tabular*}
+\end{table}}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{../../../analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/figures/01-rmodel-vs-validation-loss.pdf}
+  \caption{Matched A4, historical Run 012 A4-OL1[\code{h}], and corrected Run 015 four-site A4-OL1. The historical and corrected pressure objectives are scientifically different interventions. Source: \href{../../../analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/observations/O001-h-only-vs-four-site-a4-ol1.md}{Analysis 009, Observation O001}.}
+  \label{fig:a4-ol1-h-appendix}
+\end{figure}
+
+Run 012 used five A100 80 GB Pods for 70--100 minutes per condition and cost \$14.77. Including this historical run, total recorded spend across the six main-ladder runs plus Run 012 is at least \$103.16; the Run 015 billing caveat stated in Section~3 still applies.
 
 \end{document}

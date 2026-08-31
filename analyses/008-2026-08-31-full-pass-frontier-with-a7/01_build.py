@@ -1,4 +1,4 @@
-"""Add verified Run 013 A7 and Run 014 A7-OL1 endpoints to the frontier."""
+"""Build the corrected full-pass frontier through A7 and A7-OL1."""
 
 from __future__ import annotations
 
@@ -16,6 +16,11 @@ SOURCE_007 = (
     / "007-2026-08-30-full-pass-frontier-a4-ol1"
     / "figure_data.json"
 )
+SOURCE_009 = (
+    ANALYSIS_DIR.parent
+    / "009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites"
+    / "figure_data.json"
+)
 RUN_013 = REPO_ROOT / "runs" / "013-2026-08-30-pythia14m-full-pass-a7"
 RUN_013_VERIFICATION = RUN_013 / "artifacts" / "verification.json"
 RUN_014 = REPO_ROOT / "runs" / "014-2026-08-31-pythia14m-full-pass-a7-ol1"
@@ -25,7 +30,8 @@ TABLES = ANALYSIS_DIR / "tables.md"
 OUTPUT = ANALYSIS_DIR / "figures" / "01-full-pass-frontier-with-a7.pdf"
 
 Y_MIN = 5.075
-Y_MAX = 6.0
+SOURCE_Y_MAX = 6.0
+Y_MAX = 6.1
 ACTIVE_SITES = ("a", "m", "h", "q_post", "k_post", "v", "z")
 ALL_SITES = ACTIVE_SITES + ("attention_output",)
 ONE_SIDED_SITES = ("a", "m", "h", "z")
@@ -153,8 +159,91 @@ def _validate_base(data: Mapping[str, Any]) -> None:
     }:
         raise ValueError("Analysis 007 post-hoc control curves are incomplete.")
     display = data.get("display", {})
-    if display.get("y_min") != Y_MIN or display.get("y_max") != Y_MAX:
+    if display.get("y_min") != Y_MIN or display.get("y_max") != SOURCE_Y_MAX:
         raise ValueError("Analysis 007 display cap changed unexpectedly.")
+
+
+def _corrected_a4_ol1(data: Mapping[str, Any]) -> list[dict[str, Any]]:
+    expected_coverage = {
+        "documents": 500,
+        "sequences": 338,
+        "input_tokens": 692_224,
+        "excluded_tail_tokens": 1_444,
+        "seed_count": 1,
+    }
+    if (
+        data.get("schema_version") != 1
+        or data.get("status") != "complete_verified_analysis"
+        or data.get("coverage") != expected_coverage
+    ):
+        raise ValueError("Analysis 009 is not complete verified evidence.")
+    rows = sorted(
+        (
+            row
+            for row in data.get("series", [])
+            if row["series_id"] == "run015_four_site"
+        ),
+        key=lambda row: float(row["kappa"]),
+    )
+    expected_kappas = [0.0, 0.01, 0.05, 0.1, 0.5]
+    if [float(row["kappa"]) for row in rows] != expected_kappas:
+        raise ValueError("Analysis 009 omits a corrected Run 015 threshold.")
+
+    endpoints: list[dict[str, Any]] = []
+    for row in rows:
+        if (
+            tuple(row["realized_pressure_sites"]) != ONE_SIDED_SITES
+            or tuple(row["declared_pressure_sites"]) != ONE_SIDED_SITES
+        ):
+            raise ValueError("Run 015 does not realize the required four-site pressure.")
+        logical = row["logical_product_counts"]
+        _close(
+            int(logical["zero_product_count"])
+            / int(logical["model_product_count"]),
+            float(row["R_model"]),
+            tolerance=1e-16,
+        )
+        site_counts = row["site_exact_zero"]
+        if set(site_counts) != set(ALL_SITES):
+            raise ValueError("Run 015 does not contain all eight diagnostic sites.")
+        for site in ALL_SITES:
+            counts = site_counts[site]
+            _close(
+                int(counts["exact_zero_count"]) / int(counts["total_count"]),
+                float(counts["exact_zero_fraction"]),
+            )
+        dose = float(row["kappa"])
+        endpoints.append(
+            {
+                "series_id": "a4z_ol1",
+                "series_label": "A4-Z plus corrected four-site OL1",
+                "run": "run015",
+                "condition_id": f"a4z-ol1-kappa-{dose:g}",
+                "attempt_id": row["attempt_id"],
+                "dose_name": "kappa",
+                "dose": dose,
+                "topology": "A4-Z",
+                "one_sided_sites": list(ONE_SIDED_SITES),
+                "symmetric_sites": [],
+                "pressure_method": "orthogonal_l1",
+                "pressure_sites": list(ONE_SIDED_SITES),
+                "pressure_weight": 1.0,
+                "step_budget": 1.0,
+                "final_validation_loss": float(row["final_validation_loss"]),
+                "R_model": float(row["R_model"]),
+                "logical_product_counts": {
+                    "zero_product_count": int(logical["zero_product_count"]),
+                    "model_product_count": int(logical["model_product_count"]),
+                },
+                "site_exact_zero": site_counts,
+                "site_exact_zero_fraction": {
+                    site: float(site_counts[site]["exact_zero_fraction"])
+                    for site in ALL_SITES
+                },
+                "source_files": row["source_files"],
+            }
+        )
+    return endpoints
 
 
 def _logical_counts(
@@ -382,9 +471,11 @@ def _build_a7_ol1(
 
 def build_figure_data() -> dict[str, Any]:
     base = json.loads(SOURCE_007.read_text(encoding="utf-8"))
+    analysis_009 = json.loads(SOURCE_009.read_text(encoding="utf-8"))
     verification_013 = json.loads(RUN_013_VERIFICATION.read_text(encoding="utf-8"))
     verification_014 = json.loads(RUN_014_VERIFICATION.read_text(encoding="utf-8"))
     _validate_base(base)
+    corrected_a4_ol1 = _corrected_a4_ol1(analysis_009)
     a7, run_013_attempt_sources = _build_a7(verification_013)
     a7_ol1, run_014_attempt_sources = _build_a7_ol1(verification_014)
     a7_a4_comparisons = verification_013["comparison"]["matched_pairs"]
@@ -396,12 +487,20 @@ def build_figure_data() -> dict[str, Any]:
     return {
         "schema_version": 1,
         "status": "complete_verified_figure_data",
-        "question": "Where do the five full-pass A7 and five A7-OL1 endpoints lie relative to the trained and post-hoc frontier in Analysis 007?",
-        "display": dict(base["display"]),
+        "question": "Where do corrected four-site A4-OL1, A7, and A7-OL1 lie on the full-pass trained and post-hoc Pythia-14M frontier?",
+        "display": {
+            "y_min": Y_MIN,
+            "y_max": Y_MAX,
+            "posthoc_source_loss_cap": SOURCE_Y_MAX,
+        },
         "sources": {
             "analysis_007_figure_data": {
                 "path": _repo_path(SOURCE_007),
                 "sha256": _sha256(SOURCE_007),
+            },
+            "analysis_009_figure_data": {
+                "path": _repo_path(SOURCE_009),
+                "sha256": _sha256(SOURCE_009),
             },
             "run_013_verification": {
                 "path": _repo_path(RUN_013_VERIFICATION),
@@ -415,7 +514,14 @@ def build_figure_data() -> dict[str, Any]:
             "run_014_attempts": run_014_attempt_sources,
         },
         "coverage": dict(base["coverage"]),
-        "trained_endpoints": [dict(row) for row in base["trained_endpoints"]] + a7 + a7_ol1,
+        "trained_endpoints": [
+            dict(row)
+            for row in base["trained_endpoints"]
+            if row["series_id"] != "a4z_ol1"
+        ]
+        + corrected_a4_ol1
+        + a7
+        + a7_ol1,
         "posthoc_control_curves": base["posthoc_control_curves"],
         "a7_matched_a4_comparison": a7_a4_comparisons,
         "a7_ol1_matched_a7_comparison": a7_ol1_a7_comparisons,
@@ -423,6 +529,7 @@ def build_figure_data() -> dict[str, Any]:
             "logical_products": "Exact-zero logical-product opportunities, not removed FLOPs or measured speedup.",
             "site_reduction": "Pool integer exact-zero counts and totals over all layers and validation batches before dividing.",
             "scope": "One seed, one Pythia-14M scale, one MiniPile training pass, and all 338 complete validation blocks.",
+            "a4_ol1_operator": "A4 one-sided gates plus corrected Run 015 orthogonal L1 pressure at a,m,h,z with lambda=1 and trust budget=1; historical Run 012 h-only pressure is excluded.",
             "a7_operator": "One-sided gates at a,m,h,z and symmetric gates at post-RoPE q,k and v, with one common kappa and no pressure.",
             "a7_ol1_operator": "The same mixed A7 gates plus orthogonal L1 pressure at all seven active sites with lambda=1 and trust budget=1.",
         },
@@ -792,7 +899,7 @@ def plot(data: Mapping[str, Any]) -> Path:
     figure.text(
         0.5,
         0.94,
-        "A7 adds symmetric post-RoPE Q/K/V gates to A4; A7-OL1 adds seven-site conflict-aware pressure; loss is capped at 6",
+        "Corrected A4-OL1 uses Run 015; A7 adds post-RoPE Q/K/V gates; A7-OL1 adds seven-site pressure",
         ha="center",
         va="center",
         fontsize=9.4,
@@ -811,7 +918,7 @@ def plot(data: Mapping[str, Any]) -> Path:
     figure.text(
         0.5,
         0.022,
-        "Post-hoc points above loss 6 are omitted by the inherited display cap (GeLU p >= 0.5; ReLU p >= 0.6).\n"
+        "Post-hoc points above loss 6 are omitted by the inherited source filter (GeLU p >= 0.5; ReLU p >= 0.6); all trained endpoints are shown.\n"
         r"Lines connect dose/target order only. $R_{\mathrm{model}}$ is exact-zero logical-product opportunity, not measured speedup; one seed.",
         ha="center",
         va="bottom",
@@ -828,9 +935,9 @@ def plot(data: Mapping[str, Any]) -> Path:
         format="pdf",
         bbox_inches="tight",
         metadata={
-            "Title": "Pythia-14M trained frontiers with A7, A7-OL1, and post-hoc controls",
+            "Title": "Corrected Pythia-14M trained frontiers with A4-OL1, A7, A7-OL1, and post-hoc controls",
             "Author": "sparsity-spillover analysis 008",
-            "Subject": "Measured R_model versus final validation loss capped at 6",
+            "Subject": "Measured R_model versus final validation loss with corrected Run 015 A4-OL1",
             "CreationDate": None,
             "ModDate": None,
         },

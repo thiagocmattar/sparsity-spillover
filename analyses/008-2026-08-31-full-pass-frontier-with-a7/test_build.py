@@ -1,4 +1,4 @@
-"""Focused tests for Analysis 008's A7/A7-OL1 immutable-source reduction."""
+"""Focused tests for Analysis 008's corrected full-pass source reduction."""
 
 from __future__ import annotations
 
@@ -41,6 +41,31 @@ def test_reduction_has_complete_coverage_and_expected_a7_grids() -> None:
     assert len(data["trained_endpoints"]) == 30
     assert len(data["a7_matched_a4_comparison"]) == 5
     assert len(data["a7_ol1_matched_a7_comparison"]) == 5
+    assert data["display"] == {
+        "y_min": 5.075,
+        "y_max": 6.1,
+        "posthoc_source_loss_cap": 6.0,
+    }
+
+
+def test_a4_ol1_is_corrected_run015_four_site_evidence() -> None:
+    data = MODULE.build_figure_data()
+    rows = [
+        row
+        for row in data["trained_endpoints"]
+        if row["series_id"] == "a4z_ol1"
+    ]
+    assert [row["dose"] for row in rows] == [0.0, 0.01, 0.05, 0.1, 0.5]
+    assert {row["run"] for row in rows} == {"run015"}
+    assert all(row["pressure_sites"] == ["a", "m", "h", "z"] for row in rows)
+    assert all(row["pressure_weight"] == 1.0 for row in rows)
+    assert all(row["step_budget"] == 1.0 for row in rows)
+    assert rows[0]["site_exact_zero"]["a"] == {
+        "exact_zero_count": 366_241_969,
+        "total_count": 531_628_032,
+        "exact_zero_fraction": 0.688906428846852,
+    }
+    assert not any(row.get("run") == "run012" for row in data["trained_endpoints"])
 
 
 def test_site_and_logical_fractions_are_derived_from_integer_counts() -> None:
