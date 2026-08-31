@@ -72,6 +72,5 @@ rise monotonically from effectively zero at `kappa=0` to 17.4347% (`q_post`),
 - A7 verification: `runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/verification.json`
 - Figure: `analyses/008-2026-08-31-full-pass-frontier-with-a7/figures/01-full-pass-frontier-with-a7.pdf`
 - Table: `analyses/008-2026-08-31-full-pass-frontier-with-a7/tables.md`
-
-No finding or manuscript text is changed by this analysis. Promotion requires
-a separate user-approved finding or explicit manuscript request.
+- Consolidated finding:
+  `research/findings/F002-a7-extends-a4-logical-opportunity.md`

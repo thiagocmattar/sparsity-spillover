@@ -36,9 +36,9 @@ such a new discrepancy silently.
   kernels and direct measurements.
 
 Contribution statements in the introduction are hypotheses or candidate claims
-until their evidence is linked to approved findings. Finding F001 now supports
-the explicitly scoped, tentative Pythia-14M A4/A4-OL1 statement; it does not
-support scale-independent or runtime-speedup language.
+until their evidence is linked to approved findings. Findings F001 and F002 now
+support explicitly scoped, tentative Pythia-14M A4/A4-OL1 and A4/A7 statements;
+neither supports scale-independent or runtime-speedup language.
 
 ## Acknowledged starting differences
 
@@ -99,6 +99,14 @@ Do not automatically promote a successful run into a paper conclusion.
   loss and measured `R_model` through `kappa=0.1`, but not at `kappa=0.5`.
 - Analysis 007 owns the count-reconciled figure, table, observation, and source
   hashes. Runs 011 and 012 own the immutable A4 and A4-OL1 evidence.
-- `manuscript/introduction.tex` states this limited empirical scope;
-  `manuscript/methodology.tex` now names the executed pre-`W_o` site `z` and
-  topology A4-Z. Logical opportunity remains distinct from runtime speedup.
+- Finding F002 tentatively establishes that, for the same one-seed and
+  one-pass scope, adding symmetric post-RoPE Q/K/V gates to A4 is near-null at
+  `kappa=0`, improves both matched axes at `kappa=0.01`, and exchanges
+  increasing validation-loss cost for increasing `R_model` at larger doses.
+- Analysis 008 owns the count-reconciled A7 zero-mass table, expanded frontier,
+  observation, and source hashes. Runs 011 and 013 own the immutable A4 and A7
+  evidence.
+- `manuscript/introduction.tex` states these limited empirical scopes;
+  `manuscript/methodology.tex` names the executed `z`, post-RoPE Q/K/V, A4-Z,
+  and A7-Z-POST definitions. Logical opportunity remains distinct from runtime
+  speedup.

@@ -31,10 +31,11 @@ verification, complete validation coverage, and artifact inventory.
 ## Scope dashboard
 
 Cells remain paper candidates until explicitly selected or dropped. The
-Pythia-14M A4 and A4-OL1 cells are now finding-backed by tentative Finding
-F001, but their paper intent remains `candidate` pending explicit subset
-selection; this does not select the same cells at larger scales. If every
-grid point were executed, the inventory would contain 30
+Pythia-14M A4 and A4-OL1 cells are finding-backed by tentative Finding F001,
+and the A7 cell is finding-backed by tentative Finding F002. Their paper intent
+remains `candidate` pending explicit subset selection; this does not select the
+same cells at larger scales. If every grid point were executed, the inventory
+would contain 30
 unique conditions per model, 90 conditions total, 64,080 optimizer boundaries,
 and 134,385,500,160 training input tokens. These totals are planning scale, not
 an instruction to execute the full matrix.
@@ -45,9 +46,9 @@ an instruction to execute the full matrix.
 | `A1-H` | 1 | full pass complete: Run 004 | not started | not started |
 | `A1-H-L1` | 4 | 4/4 full pass complete: Run 004 | 0/4 | 0/4 |
 | `A1-H-OL1` | 4 | 4/4 full pass complete: Run 009 | 0/4 | 0/4 |
-| `A4` | 5 | 5/5 full pass: Run 011; F001 source | 0/5 | 0/5 |
+| `A4` | 5 | 5/5 full pass: Run 011; F001/F002 source | 0/5 | 0/5 |
 | `A4-OL1` | 5 | 5/5 full pass: Run 012; F001 source | 0/5 | 0/5 |
-| `A7` | 5 | 5/5 full pass: Run 013; Analysis 008 complete | 0/5 | 0/5 |
+| `A7` | 5 | 5/5 full pass: Run 013; F002 source | 0/5 | 0/5 |
 | `A7-OL1` | 5 | 0/5 full pass; 5/5 pilot: Run 010 | 0/5 | 0/5 |
 | **Total** | **30** | **25/30 full pass; 5 complete pilot conditions in the remaining A7-OL1 cell** | **0/30** | **0/30** |
 
@@ -188,8 +189,9 @@ equally weighted tensors; it is not an element-count-weighted pressure.
 ### Pythia-14M
 
 Paper intent remains `candidate` for every step. Manuscript status is
-`finding-backed` for A4 and A4-OL1 through tentative Finding F001; every other
-step remains `not cited` unless updated explicitly.
+`finding-backed` for A4 and A4-OL1 through tentative Finding F001 and for A7
+through tentative Finding F002; every other step remains `not cited` unless
+updated explicitly.
 
 #### `A0` - stock GeLU control
 
@@ -251,8 +253,7 @@ step remains `not cited` unless updated explicitly.
 - Paper-scale identity: seed 1234, global batch 1,024, 712 updates, dynamic
   FP16; five condition-parallel Secure A100 workers completed in Run 013.
 - Analysis: Analysis 008 provides the numbered count-reconciled A7 table and
-  expanded full-pass frontier. It remains descriptive; no finding or manuscript
-  claim has been promoted.
+  expanded full-pass frontier and supports tentative Finding F002.
 
 #### `A7-OL1` - mixed A7 plus OL1 at all seven sites
 
@@ -401,14 +402,14 @@ not matched comparisons.
 | P04 | `A1-H -> A4(kappa=0)` | What changes when ReLU-equivalent one-sided gates expand from `h` to `a,m,h,z`? | Use A4 at zero threshold. | Matched 14M full-pass endpoints available from Runs 004/011; Analysis 004 places them on the common frontier. |
 | P05 | `A4(0) -> A4(kappa>0)` | What is the threshold-strength effect at fixed A4 topology? | Within-run kappa contrast; zero row is mandatory. | 14M full-pass evidence complete in Run 011 and Analyses 004/007. |
 | P06 | `A4(kappa) -> A4-OL1(kappa)` | Does all-active-site OL1 change A4 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs complete in Analysis 007; tentative Finding F001 approved. |
-| P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | Five 14M full-pass pairs are complete in Analysis 008; no finding promoted. |
+| P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | Five 14M full-pass pairs are complete in Analysis 008; tentative Finding F002 approved. |
 | P08 | `A7(kappa) -> A7-OL1(kappa)` | Does all-seven-site OL1 change A7 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Pilot analysis 001 completed for all five pairs. |
 | P09 | `A4-OL1(kappa) -> A7-OL1(kappa)` | Does attention-site expansion matter when OL1 is present? | Match kappa, lambda, and trust budget. | Four 14M pilot pairs available; analysis not started. |
 | P10 | `(A7-OL1 - A7) - (A4-OL1 - A4)` | Does the OL1 effect interact with topology expansion? | Four-condition difference-in-differences at each matched kappa. | Four complete pilot quartets available; `kappa=0.5` incomplete because of Run 007. |
 | P11 | within `A1-H-L1` and within `A1-H-OL1` | What are the lambda dose-response and saturation patterns? | Compare the four lambdas to one shared A1-H control; do not treat lambda as equally spaced. | 14M full-pass Analysis 003 complete. |
-| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4/A4-OL1 full-pass Analysis 007 and A7 full-pass Analysis 008 are complete; A7-OL1 remains pilot-scale. |
+| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4/A4-OL1 full-pass Analysis 007 supports F001; A7 full-pass Analysis 008 supports F002; A7-OL1 remains pilot-scale. |
 | P13 | same step/parameters across 14M, 70M, 410M | Which intervention effects persist with scale? | Match the complete condition identity; use size-specific recipe LR and report architecture separately. | Not started. |
-| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Analysis 008 plots the available 14M full-pass A1-H, A4, A4-OL1, and A7 endpoints with post-hoc controls. |
+| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Analysis 008 plots the available 14M full-pass A1-H, A4, A4-OL1, and A7 endpoints with post-hoc controls; F001/F002 consolidate the selected paired claims. |
 | P15 | `A1-H` versus L1/OL1 at `h` | Does targeted `h` pressure produce sparsity spillover at untargeted attention sites? | Sitewise count-first exact/near-zero and RMS changes at matched lambda/control. | Run 004 observations and full-pass Analysis 003 complete; finding selection remains open. |
 | P16 | OL1 across A1-H, A4, and A7 | How do conflict, projection, trust saturation, and correction ratios change with pressure topology? | Use training-time OL1 boundary metrics; checkpoint-only reconstruction is invalid. | Full-pass A1-H and A4-OL1 metrics exist; A7-OL1 remains pilot-scale, so a matched three-topology paper-scale analysis is unavailable. |
 | P17 | measured `R_model` versus analytic `R_model_max` across scales | How much of topology-conditioned reach is realized, and how does the ceiling scale? | Preserve integer counts and architecture/workload identity; `U_arch` needs its numerator caveat. | 14M partial evidence; 70M/410M not started. |
@@ -464,7 +465,8 @@ Interpretation cautions:
   `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` and
   `research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md`.
 - Full-pass frontier with A7:
-  `analyses/008-2026-08-31-full-pass-frontier-with-a7/`.
+  `analyses/008-2026-08-31-full-pass-frontier-with-a7/` and
+  `research/findings/F002-a7-extends-a4-logical-opportunity.md`.
 - Existing paired pilots: `analyses/001-2026-08-30-run008-vs-run010-all-site-ol1/`
   and `analyses/002-2026-08-30-run006-vs-run007-partial-a4z-ol1/`.
 - Operational contracts: `research/DATA.md`, `research/METHODS.md`,

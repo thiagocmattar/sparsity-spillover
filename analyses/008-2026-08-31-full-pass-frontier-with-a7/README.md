@@ -30,5 +30,9 @@ From the repository root:
 ```
 
 This is a one-seed descriptive analysis. `R_model` is logical-product
-opportunity, not measured runtime speedup. No finding or manuscript claim is
-promoted by this analysis alone.
+opportunity, not measured runtime speedup.
+
+## Consolidation
+
+On 2026-08-31, the user approved this matched result as tentative Finding F002:
+`research/findings/F002-a7-extends-a4-logical-opportunity.md`.

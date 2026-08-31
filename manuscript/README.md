@@ -35,7 +35,8 @@ variant.
   draft architecture ceiling `R_model_max`.
 - `experiment-control/README.md` records the paper-intent, execution, analysis,
   and finding status of the intervention ladder. Its A4 and A4-OL1 Pythia-14M
-  cells are backed by Runs 011/012, Analysis 007, and Finding F001.
+  cells are backed by Runs 011/012, Analysis 007, and Finding F001; its A7 cell
+  is backed by Run 013, Analysis 008, and Finding F002.
 - `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
   intervention-neutral, paper-ready map of one shared Pythia block; the
   adjacent Markdown file records its notation, scope, caption, and caveats.
@@ -105,6 +106,15 @@ actually needs it.
 
 ## Result evidence crosswalk
 
+- On 31 August 2026, the user approved tentative Finding F002 from the five
+  matched Pythia-14M A4/A7 full-pass pairs. Adding symmetric post-RoPE Q/K/V
+  gates is a near-null topology expansion at `kappa=0`, improves both
+  validation loss and measured `R_model` at `kappa=0.01`, and yields increasing
+  logical opportunity with increasing validation-loss cost at larger
+  thresholds. The finding is limited to one seed, one 14M scale, one MiniPile
+  pass, and logical product opportunity rather than measured speedup. Analysis
+  008 owns the expanded frontier, count-pooled eight-site table, and
+  machine-readable reduction; Runs 011 and 013 own the verified endpoints.
 - On 30 August 2026, the user approved tentative Finding F001 from the five
   matched Pythia-14M A4/A4-OL1 full-pass pairs. Four-site OL1 lowers validation
   loss and increases measured `R_model` at `kappa <= 0.1`; at `kappa=0.5`, the
