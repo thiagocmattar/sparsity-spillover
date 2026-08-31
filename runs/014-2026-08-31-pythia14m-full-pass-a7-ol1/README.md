@@ -9,12 +9,18 @@ closeout. The evidence gates below therefore do not pause for additional
 permission. This folder is the next free run number recorded by
 `research/INDEX.md`.
 
-Implementation and non-billable verification are complete. The focused Run
-014 suite passes 8/8, the affected Run 010/012/013/014 suite passes 33/33,
-the full bootstrap suite passes 174/174, and all Python files compile. Bash is
-not installed on the Windows controller, so `00_setup_remote.sh` receives its
-syntax/execution check on the Linux preflight Pod. No scientific attempt has
-started yet.
+Execution and cloud closeout are complete. Five condition-parallel scientific
+attempts completed, were verified remotely, transferred with matching archive
+hashes, safely extracted, and independently verified locally. The cohort
+verifier reports valid evidence for all 3,560 optimizer steps and 20 complete
+validation passes. All RunPod Pods were deleted; the pre-existing volume is
+unchanged.
+
+Before launch, the focused Run 014 suite passed 8/8, the affected Run
+010/012/013/014 suite passed 33/33, the full bootstrap suite passed 174/174,
+and all Python files compiled. Bash is not installed on the Windows controller,
+so `00_setup_remote.sh` received its syntax/execution check on the Linux
+preflight Pod.
 
 ## Question and hypothesis
 
@@ -59,6 +65,31 @@ gate families, and threshold are matched. The only scientific delta is adding
 post-gate OL1 at all seven active sites with fixed weight and trust budget.
 Run 010 is pilot precedent only: it used seed 0, BF16, global batch 64, 581
 boundaries, and another decomposition, so it is not pooled with this run.
+
+## Verified result
+
+| `kappa` | A7-OL1 loss | A7-OL1 `R_model` | A7 loss | A7 `R_model` | OL1 loss delta | OL1 `R_model` delta |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.480184 | 7.0542% | 5.468401 | 7.2177% | +0.011783 | -0.1634 pp |
+| 0.01 | 5.475797 | 7.7234% | 5.458822 | 7.6176% | +0.016975 | +0.1057 pp |
+| 0.05 | 5.462811 | 9.8630% | 5.437888 | 9.1269% | +0.024923 | +0.7361 pp |
+| 0.1 | 5.429497 | 11.7968% | 5.428681 | 10.4250% | +0.000816 | +1.3717 pp |
+| 0.5 | 5.829390 | 27.4827% | 5.702923 | 15.3868% | +0.126466 | +12.0959 pp |
+
+The hypothesis is supported only in a threshold-dependent form. At
+`kappa=0.1`, OL1 adds 1.3717 percentage points of logical opportunity for
+`+0.000816` validation loss. At `kappa=0.5`, it adds 12.0959 points for a
+larger `+0.126466` loss. Those two A7-OL1 endpoints are new nondominated points
+among the ten matched Run 013/014 endpoints. The zero-threshold OL1 row instead
+loses 0.1634 points and has higher loss, refuting a blanket claim that OL1
+improves every A7 threshold.
+
+All five conditions realized the required 42 pressure tensors at every
+boundary, completed without overflow or skipped updates, and respected the
+OL1 trust budget. The full count-reconciled result, boundary summary, caveats,
+and evidence sources are in
+`observations/O001-paper-scale-a7-ol1-versus-a7.md`. This candidate observation
+is not a promoted finding or manuscript claim.
 
 ## Model, initialization, data, budget, and optimizer
 
@@ -195,3 +226,34 @@ runs only after all five attempts are local. Closeout re-lists all Pods and
 volumes, confirms zero unintended compute, records the unchanged retained
 volume, and separates lagging posted billing from authoritative resource
 teardown.
+
+## Actual RunPod closeout
+
+The exact A100 preflight passed at 67,851,255,808 bytes reserved on an
+85,093,777,408-byte device and verified the 42-tensor capture identity. One
+empty Pod was deleted when source-transfer approval paused provisioning. A
+second preflight Pod completed and was deleted after its evidence was retrieved.
+One planned `kappa=0` scientific Pod was deleted before any scientific attempt
+because dependency installation remained in one phase for more than 27
+minutes; its replacement completed the unchanged condition. This was an
+infrastructure retry, not a new scientific run.
+
+All five accepted attempt archives are 1,014,855,680 bytes. Their remote and
+local SHA-256 values match, their member paths were safe, their internal
+transfer/checkpoint inventories reconcile, and both remote and local
+standalone verification passed. `artifacts/verification.json` then verified
+the complete cohort. `prelaunch/scientific-transfer-closeout.json` records the
+per-Pod, archive, log, readiness, billing, and teardown provenance.
+
+At the final 2026-08-31 14:19 UTC audit, RunPod listed zero Pods and the one
+unchanged pre-existing 100 GB Standard volume `9luykg5yc3`. Posted billing was
+settled at `$14.1285` for the same eight Run 014 Pod identities: `$14.0587`
+GPU plus `$0.06985` temporary Pod disk. This is below the approved `$22.56`
+ceiling. There is no continuing compute charge; the pre-existing volume
+continues its independent approximately `$0.01/hour` charge.
+
+Closeout verification passed the focused Run 014 suite 8/8 and the complete
+bootstrap suite 174/174. The first full-suite invocation encountered seven
+Windows fixture-setup errors because the shared `.pytest_tmp/default` directory
+could not be cleaned; it had no assertion failures. Repeating the same 174
+tests with a fresh run-specific `--basetemp` passed completely.

@@ -5,6 +5,13 @@
 
 ## Current status
 
+Run 014 completed the five-condition paper-scale A7-OL1 cohort with valid
+evidence. At matched `kappa=0.1`, OL1 adds 1.3717 percentage points of
+`R_model` for `+0.000816` validation loss; at `kappa=0.5`, it adds 12.0959
+points for `+0.126466` loss. The zero-threshold row regresses, so the effect is
+threshold-dependent rather than uniform. All attempts, diagnostics, and final
+checkpoints are local and verified; all Pods are deleted. The run-local
+observation is descriptive and has not been promoted to a finding.
 Finding F001 tentatively consolidates the one-seed Pythia-14M A4/A4-OL1
 comparison. At matched `kappa <= 0.1`, A4-OL1 lowers loss and increases
 `R_model` relative to A4; the lowest A4-OL1 loss is 5.195590 at `kappa=0.05`,
@@ -48,10 +55,15 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `014`. Next analysis number: `009`. Next finding number: `F003`.
+Next run number: `015`. Next analysis number: `009`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-08-31: Run 014 completed and verified the five paper-scale A7-OL1
+  conditions against matched Run 013 A7 endpoints. It adds nondominated
+  `kappa=0.1` and `0.5` points, while `kappa=0` regresses. All eight Run 014
+  infrastructure/science Pods were deleted; the pre-existing volume is
+  unchanged. No finding or manuscript claim was promoted.
 - 2026-08-31: Finding F002 tentatively consolidated Analysis 008's matched
   full-pass A4/A7 result and linked its dose-dependent
   quality--logical-opportunity statement into the manuscript and
@@ -157,6 +169,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; source for F001/F002) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 | 012 | Does four-site OL1 improve the paper-scale A4-Z threshold quality--logical-opportunity frontier? | completed (valid; Analysis 007 and F001 complete) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
 | 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 and F002 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
+| 014 | Does seven-site OL1 improve the paper-scale A7 quality--logical-opportunity frontier? | completed (valid; run-local observation, no finding promoted) | `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/` |
 
 ## Analyses
 

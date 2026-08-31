@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
-  "status": "approved_for_launch",
+  "status": "scientific_execution_complete_retrieved_verified_and_torn_down",
   "recorded_at_utc": "2026-08-31T10:52:01.8057325Z",
+  "updated_at_utc": "2026-08-31T14:06:30Z",
   "authorization": {
     "user_preapproved_end_to_end": true,
     "design_approved": true,
@@ -38,10 +39,16 @@
     "affected_runs": "33 passed",
     "full_bootstrap": "174 passed",
     "python_compile": "passed",
-    "local_bash_parse": "unavailable because Bash is not installed on the Windows controller; the script remains exercised on the Linux preflight Pod"
+    "local_bash_parse": "passed on the RunPod Linux preflight Pod",
+    "remote_standalone_attempts": "5 passed",
+    "local_standalone_attempts": "5 passed",
+    "local_cohort": "verified 5",
+    "closeout_focused": "8 passed",
+    "closeout_full_bootstrap": "174 passed with fresh basetemp after Windows denied cleanup of the shared default basetemp"
   },
   "live_runpod_inventory": {
     "active_pods": 0,
+    "queried_at_utc": "2026-08-31T14:19:07Z",
     "retained_network_volumes": [
       {
         "id": "9luykg5yc3",
@@ -73,10 +80,18 @@
     "maximum_compute_cost_usd": 22.26,
     "temporary_storage_allowance_usd": 0.30,
     "maximum_run_cost_usd": 22.56,
-    "new_network_volume": false
+    "final_pod_cost_usd": 14.128548262524419,
+    "final_gpu_cost_usd": 14.05869872123003,
+    "final_temporary_pod_disk_cost_usd": 0.06984954129438847,
+    "new_network_volume": false,
+    "guard_mechanism": "RunPod MCP lacks terminateAfter and no browser/CLI credential was available; the controller owns the recorded UTC deadlines, checks them during bounded monitoring, and deletes each Pod immediately after local acceptance"
   },
   "transfer_and_teardown": {
-    "source": "clean launch commit in a self-contained Git bundle",
+    "source": "history-free tracked snapshot with exact working-tree line endings for the matched Run 013 verification evidence",
+    "source_commit": "78b69539bf633f16b17b40877f8fe3dffa328d15",
+    "source_archive_bytes": 64559616,
+    "source_archive_sha256": "6cc350aa11ce16466c913293719235fd805c525cb8773ec29cf859974da88c9e",
+    "deterministic_remote_commit": "06b1eba3e40b26b56aa660315d278b53bc783881",
     "cache": "immutable train and validation caches, byte- and SHA-256-verified per worker",
     "results": "one safe single-root archive per attempt plus internal transfer inventory",
     "local_acceptance": "archive SHA-256, safe extraction, internal hash reconciliation, standalone verifier",
@@ -98,7 +113,82 @@
     ]
   },
   "resources": {
-    "preflight_pod": null,
-    "scientific_pods": []
+    "preflight_attempts": [
+      {
+        "pod_id": "2jjtpqwtm32md2",
+        "created_at_utc": "2026-08-31T10:58:16.976Z",
+        "status": "empty_pod_deleted_for_source-transfer-approval_pause"
+      },
+      {
+        "pod_id": "3jss5krew4urjt",
+        "created_at_utc": "2026-08-31T11:01:34.803Z",
+        "status": "passed_retrieved_and_deleted",
+        "result_sha256": "906bc86b75bec5eca29d7f3762c68c4519fd09757fcd7706fa06a341f732e0d0",
+        "peak_memory_reserved_bytes": 67851255808
+      }
+    ],
+    "scientific_pods": [
+      {
+        "condition": "a7-ol1-kappa-0",
+        "pod_id": "woj2n6vvtncpxv",
+        "data_center": "US-KS-2",
+        "created_at_utc": "2026-08-31T11:37:17.377Z",
+        "hard_deadline_utc": "2026-08-31T14:07:17.377Z",
+        "status": "infrastructure_only_deleted_before_science",
+        "reason": "torch installation remained in one package-install phase for more than 27 minutes",
+        "no_scientific_attempt_verified": true,
+        "replacement_pod_id": "6yo210ydme7k8u"
+      },
+      {
+        "condition": "a7-ol1-kappa-0p01",
+        "pod_id": "54wrm4n59210nd",
+        "data_center": "EUR-IS-1",
+        "created_at_utc": "2026-08-31T11:37:21.313Z",
+        "hard_deadline_utc": "2026-08-31T14:07:21.313Z",
+        "status": "retrieved_verified_and_deleted"
+      },
+      {
+        "condition": "a7-ol1-kappa-0p05",
+        "pod_id": "icdmj2he8r2grp",
+        "data_center": "US-MO-1",
+        "created_at_utc": "2026-08-31T11:37:24.711Z",
+        "hard_deadline_utc": "2026-08-31T14:07:24.711Z",
+        "status": "retrieved_verified_and_deleted"
+      },
+      {
+        "condition": "a7-ol1-kappa-0p1",
+        "pod_id": "jgo4jlh862v3th",
+        "data_center": "US-MO-1",
+        "created_at_utc": "2026-08-31T11:37:29.133Z",
+        "hard_deadline_utc": "2026-08-31T14:07:29.133Z",
+        "status": "retrieved_verified_and_deleted"
+      },
+      {
+        "condition": "a7-ol1-kappa-0p5",
+        "pod_id": "wk10spozaxtq77",
+        "data_center": "EUR-IS-1",
+        "created_at_utc": "2026-08-31T11:37:32.279Z",
+        "hard_deadline_utc": "2026-08-31T14:07:32.279Z",
+        "status": "retrieved_verified_and_deleted"
+      },
+      {
+        "condition": "a7-ol1-kappa-0",
+        "pod_id": "6yo210ydme7k8u",
+        "data_center": "unreported_by_RunPod_API",
+        "created_at_utc": "2026-08-31T12:12:03.654Z",
+        "hard_deadline_utc": "2026-08-31T14:42:03.654Z",
+        "status": "retrieved_verified_and_deleted",
+        "infrastructure_attempt": 2
+      }
+    ]
+  },
+  "final_closeout": {
+    "record": "prelaunch/scientific-transfer-closeout.json",
+    "cohort_verification": "artifacts/verification.json",
+    "observation": "observations/O001-paper-scale-a7-ol1-versus-a7.md",
+    "all_attempts_local": true,
+    "all_attempts_verified": true,
+    "all_pods_deleted": true,
+    "retained_pre_existing_volume_unchanged": true
   }
 }
