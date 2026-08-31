@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "status": "approved_for_launch",
+  "recorded_at_utc": "2026-08-31T10:52:01.8057325Z",
+  "authorization": {
+    "user_preapproved_end_to_end": true,
+    "design_approved": true,
+    "launch_approved": true,
+    "approved_on": "2026-08-31",
+    "scope": [
+      "implementation",
+      "tests",
+      "billable_preflight",
+      "five_condition_parallel_scientific_launch",
+      "monitoring",
+      "artifact_retrieval_and_hash_verification",
+      "pod_teardown",
+      "billing_and_resource_closeout"
+    ]
+  },
+  "scientific_identity": {
+    "config_sha256": "2a4a04d10b0104f1766b38dfd9a3a6e18c112c2c29c85c40fcda867e78dbe84a",
+    "run_code_sha256": "8ab62fe4183b6fad6f99511b6df4c926f4eb338c92f66300829bea8653e3c4de",
+    "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "training_schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+    "run013_code_sha256": "518199e6f845fd88281525f5cdc1e7c323168504d4bf4393593d9c7ddc8d7453",
+    "pressure_capture_tensor_count": 42,
+    "conditions": [
+      "a7-ol1-kappa-0",
+      "a7-ol1-kappa-0p01",
+      "a7-ol1-kappa-0p05",
+      "a7-ol1-kappa-0p1",
+      "a7-ol1-kappa-0p5"
+    ]
+  },
+  "verification": {
+    "focused": "8 passed",
+    "affected_runs": "33 passed",
+    "full_bootstrap": "174 passed",
+    "python_compile": "passed",
+    "local_bash_parse": "unavailable because Bash is not installed on the Windows controller; the script remains exercised on the Linux preflight Pod"
+  },
+  "live_runpod_inventory": {
+    "active_pods": 0,
+    "retained_network_volumes": [
+      {
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "data_center": "EUR-IS-1",
+        "size_gb": 100,
+        "type": "STANDARD",
+        "intent": "pre-existing and intentionally retained; do not modify or delete"
+      }
+    ],
+    "gpu": {
+      "id": "NVIDIA A100-SXM4-80GB",
+      "cloud": "SECURE",
+      "cuda": "12.8",
+      "stock": "LOW",
+      "price_per_gpu_hour_usd": 1.59
+    }
+  },
+  "resource_definition": {
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "preflight_pod_count": 1,
+    "preflight_guard_hours": 1.5,
+    "scientific_pod_count": 5,
+    "scientific_guard_hours_each": 2.5,
+    "container_disk_gb_each": 30,
+    "pod_volume_gb_each": 25,
+    "volume_mount_path": "/workspace",
+    "parallelism": "one independent condition per one-GPU Pod",
+    "maximum_compute_cost_usd": 22.26,
+    "temporary_storage_allowance_usd": 0.30,
+    "maximum_run_cost_usd": 22.56,
+    "new_network_volume": false
+  },
+  "transfer_and_teardown": {
+    "source": "clean launch commit in a self-contained Git bundle",
+    "cache": "immutable train and validation caches, byte- and SHA-256-verified per worker",
+    "results": "one safe single-root archive per attempt plus internal transfer inventory",
+    "local_acceptance": "archive SHA-256, safe extraction, internal hash reconciliation, standalone verifier",
+    "pod_deletion": "delete each exact Pod only after local acceptance",
+    "final_audit": "zero Pods and unchanged pre-existing volume"
+  },
+  "monitoring": {
+    "normal_interval_minutes": 5,
+    "stale_event_minutes": 10,
+    "warnings": [
+      "missing scientific process",
+      "nonfinite or skipped optimizer boundary",
+      "42-tensor pressure capture mismatch",
+      "OL1 final ratio above 1",
+      "memory beyond measured preflight envelope",
+      "less than 5 GB free disk",
+      "incomplete complete-validation coverage",
+      "projected termination-deadline overrun"
+    ]
+  },
+  "resources": {
+    "preflight_pod": null,
+    "scientific_pods": []
+  }
+}
