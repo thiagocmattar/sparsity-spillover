@@ -12,8 +12,10 @@ points for `+0.126466` loss. The zero-threshold row regresses, so the effect is
 threshold-dependent rather than uniform. All attempts, diagnostics, and final
 checkpoints are local and verified; all Pods are deleted. Analysis 008 now
 includes the endpoints in its count-reconciled full-pass frontier and
-interleaved all-site table. The comparison remains descriptive and has not
-been promoted to a finding.
+interleaved all-site table. Status Report Number 1 now includes that table and
+the corrected single-panel Analysis 008 frontier; A7-OL1 is marked completed at
+the report cutoff. The comparison remains descriptive and has not been promoted
+to a finding.
 Finding F001 tentatively consolidates the one-seed Pythia-14M A4/A4-OL1
 comparison. At matched `kappa <= 0.1`, A4-OL1 lowers loss and increases
 `R_model` relative to A4; the lowest A4-OL1 loss is 5.195590 at `kappa=0.05`,
@@ -62,6 +64,11 @@ Next run number: `015`. Next analysis number: `009`. Next finding number: `F003`
 
 ## Where we stopped
 
+- 2026-08-31: Status Report Number 1 was updated through Run 014: A7-OL1 is
+  complete at the cutoff, the report contains the interleaved all-site
+  A7/A7-OL1 table, Run 014 compute/cost, and Analysis 008's corrected
+  single-panel frontier with plain OL1 labels. No A7/A7-OL1 finding was
+  promoted.
 - 2026-08-31: Analysis 008 added Run 014 A7-OL1 to its full-pass trained and
   post-hoc frontier, widened the plotted logical-opportunity range, and updated
   its machine-readable reduction, interleaved A7/A7-OL1 table, and observation.

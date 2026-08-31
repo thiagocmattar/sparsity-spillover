@@ -103,9 +103,11 @@ Do not automatically promote a successful run into a paper conclusion.
   one-pass scope, adding symmetric post-RoPE Q/K/V gates to A4 is near-null at
   `kappa=0`, improves both matched axes at `kappa=0.01`, and exchanges
   increasing validation-loss cost for increasing `R_model` at larger doses.
-- Analysis 008 owns the count-reconciled A7 zero-mass table, expanded frontier,
-  observation, and source hashes. Runs 011 and 013 own the immutable A4 and A7
-  evidence.
+- Analysis 008 owns the count-reconciled interleaved A7/A7-OL1 zero-mass table,
+  single-panel expanded frontier, observation, and source hashes. Runs 011,
+  013, and 014 own the immutable A4, A7, and A7-OL1 evidence. Status Report
+  Number 1 includes the Analysis 008 table and figure as requested; the
+  A7/A7-OL1 comparison remains descriptive and is not part of Finding F002.
 - `manuscript/introduction.tex` states these limited empirical scopes;
   `manuscript/methodology.tex` names the executed `z`, post-RoPE Q/K/V, A4-Z,
   and A7-Z-POST definitions. Logical opportunity remains distinct from runtime

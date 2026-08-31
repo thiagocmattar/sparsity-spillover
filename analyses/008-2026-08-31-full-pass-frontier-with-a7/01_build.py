@@ -58,7 +58,7 @@ TRAINED_STYLES = {
         "linestyle": "-.",
     },
     "a4z_ol1": {
-        "label": "A4-OL1 (trained)",
+        "label": "A4-OL1",
         "color": "#6F4C9B",
         "marker": "h",
         "linestyle": "--",
@@ -70,7 +70,7 @@ TRAINED_STYLES = {
         "linestyle": "-",
     },
     "a7z_post_mixed_threshold_ol1": {
-        "label": "A7-OL1 (trained)",
+        "label": "A7-OL1",
         "color": "#56B4E9",
         "marker": "p",
         "linestyle": "--",
@@ -734,55 +734,6 @@ def plot(data: Mapping[str, Any]) -> Path:
 
     _annotate(axis, controls["gelu_control"], "GeLU ctrl.", (7, -12), "#666666")
     _annotate(axis, controls["relu_control"], "ReLU ctrl.", (-28, 15), "#222222")
-
-    detail = axis.inset_axes([0.64, 0.075, 0.345, 0.31])
-    detail_offsets = {
-        ("a7z_post_mixed_threshold", 0.0): (13, -14),
-        ("a7z_post_mixed_threshold", 0.01): (8, -14),
-        ("a7z_post_mixed_threshold", 0.05): (-45, -13),
-        ("a7z_post_mixed_threshold", 0.1): (-43, -13),
-        ("a7z_post_mixed_threshold_ol1", 0.0): (-5, 14),
-        ("a7z_post_mixed_threshold_ol1", 0.01): (8, 14),
-        ("a7z_post_mixed_threshold_ol1", 0.05): (8, 14),
-        ("a7z_post_mixed_threshold_ol1", 0.1): (-43, 14),
-    }
-    for series_id in (
-        "a7z_post_mixed_threshold",
-        "a7z_post_mixed_threshold_ol1",
-    ):
-        rows = [row for row in series_rows[series_id] if float(row["dose"]) <= 0.1]
-        style = TRAINED_STYLES[series_id]
-        detail.plot(
-            [100.0 * float(row["R_model"]) for row in rows],
-            [float(row["final_validation_loss"]) for row in rows],
-            color=style["color"],
-            marker=style["marker"],
-            linestyle=style["linestyle"],
-            linewidth=1.8,
-            markersize=6.2,
-            markeredgecolor="white",
-            markeredgewidth=0.7,
-            zorder=5,
-        )
-        for row in rows:
-            dose = float(row["dose"])
-            _annotate(
-                detail,
-                row,
-                rf"$\kappa={dose:g}$",
-                detail_offsets[(series_id, dose)],
-                style["color"],
-                fontsize=6.8,
-                arrow=dose == 0.0,
-            )
-    detail.set_xlim(6.75, 12.1)
-    detail.set_ylim(5.415, 5.495)
-    detail.set_title(r"A7/A7-OL1 detail ($\kappa \leq 0.1$)", fontsize=8.2, pad=3.0)
-    detail.set_xlabel(r"$R_{\mathrm{model}}$ (%)", fontsize=7.2, labelpad=1.0)
-    detail.set_ylabel("Val. loss", fontsize=7.2, labelpad=1.0)
-    detail.tick_params(labelsize=6.9, length=2.6)
-    detail.set_facecolor("white")
-    _style_axis(detail)
 
     axis.set_xlim(-0.5, 29.25)
     axis.set_ylim(Y_MIN, Y_MAX)

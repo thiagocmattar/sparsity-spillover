@@ -36,7 +36,12 @@ variant.
 - `experiment-control/README.md` records the paper-intent, execution, analysis,
   and finding status of the intervention ladder. Its A4 and A4-OL1 Pythia-14M
   cells are backed by Runs 011/012, Analysis 007, and Finding F001; its A7 cell
-  is backed by Run 013, Analysis 008, and Finding F002.
+  is backed by Run 013, Analysis 008, and Finding F002; its completed A7-OL1
+  cell is backed by Run 014 and reported descriptively through Analysis 008.
+- `reports/01-2026-08-30-status-update/` contains the user-requested TeX source,
+  PDF, and report-local provenance notes for Status Report Number 1. This
+  numbered report is an explicit tracked exception to the directory-wide
+  ignore rule; LaTeX auxiliary files remain untracked.
 - `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
   intervention-neutral, paper-ready map of one shared Pythia block; the
   adjacent Markdown file records its notation, scope, caption, and caveats.
@@ -128,9 +133,8 @@ actually needs it.
   `reports/01-2026-08-30-status-update/status-update.tex`. The report references
   Analysis 005 Observations O001 and O002, includes the analysis-owned combined
   trained/post-hoc PDF, and retains the one-seed, intervention-semantics, and
-  logical-opportunity caveats. No centralized finding was promoted. The
-  `manuscript/reports/` directory remains intentionally Git-ignored; the tracked
-  analysis observations and figures are the evidence record.
+  logical-opportunity caveats. No centralized finding was promoted. Analysis
+  005's tracked observations and figures remain the numerical evidence record.
 - On 30 August 2026, the user approved updating Status Report Number 1 with
   Analysis 007's paper-scale A4-OL1 result as a very strong descriptive result.
   The report replaces the prior combined trained/post-hoc plot with Analysis
@@ -139,5 +143,12 @@ actually needs it.
   retains the one-seed, joint-intervention, logical-opportunity, and
   no-runtime-speedup caveats. The report update preceded the later approval of
   tentative Finding F001; the finding and this tracked crosswalk now carry the
-  consolidated status. The report directory remains intentionally Git-ignored,
-  while Analysis 007 retains the numerical provenance.
+  consolidated status. Analysis 007 retains the numerical provenance.
+- On 31 August 2026, the user approved updating Status Report Number 1 with
+  Run 014's completed A7-OL1 cohort. The report now contains the ten-row matched
+  A7/A7-OL1 count-pooled table and embeds Analysis 008's corrected single-panel
+  frontier with plain OL1 labels. A7-OL1 is marked complete at the report
+  cutoff, and Run 014's settled cost is included. The A7/A7-OL1 comparison
+  remains descriptive and is not added to Finding F002. The report's README,
+  TeX source, and compiled PDF are explicitly tracked for this requested
+  update even though `manuscript/reports/` stays ignored by default.

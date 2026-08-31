@@ -17,8 +17,8 @@ integer counts.
 - `01_build.py`: validates sources and generates the figure, data, and table.
 - `figure_data.json`: plotted values, integer reductions, hashes, and coverage.
 - `tables.md`: the interleaved A7/A7-OL1 results table.
-- `figures/01-full-pass-frontier-with-a7.pdf`: Analysis 007 frontier plus A7
-  and A7-OL1.
+- `figures/01-full-pass-frontier-with-a7.pdf`: single-panel Analysis 007
+  frontier plus A7 and A7-OL1.
 - `observations/O001-full-pass-frontier-with-a7.md`: caption, result, and caveats.
 - `observations/INDEX.md`: observation index.
 - `test_build.py`: focused source-reduction and output-contract tests.

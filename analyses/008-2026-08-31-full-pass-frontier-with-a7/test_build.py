@@ -115,3 +115,10 @@ def test_committed_outputs_match_the_source_reduction() -> None:
     pdf = ANALYSIS_DIR / "figures" / "01-full-pass-frontier-with-a7.pdf"
     assert pdf.read_bytes().startswith(b"%PDF-")
     assert pdf.stat().st_size > 20_000
+
+
+def test_figure_uses_one_panel_and_plain_ol1_labels() -> None:
+    source = (ANALYSIS_DIR / "01_build.py").read_text(encoding="utf-8")
+    assert "inset_axes" not in source
+    assert MODULE.TRAINED_STYLES["a4z_ol1"]["label"] == "A4-OL1"
+    assert MODULE.TRAINED_STYLES["a7z_post_mixed_threshold_ol1"]["label"] == "A7-OL1"

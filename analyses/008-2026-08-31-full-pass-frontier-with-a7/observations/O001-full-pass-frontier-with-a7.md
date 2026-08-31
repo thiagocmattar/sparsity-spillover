@@ -33,9 +33,9 @@ and no pressure objective. Sky-blue pentagons are matched Run 014 A7-OL1
 endpoints, adding orthogonal L1 at all seven active sites with `lambda=1` and
 trust budget `1`. Purple hexagons are A4-OL1, green diamonds are A4, and the
 remaining trained and post-hoc series are inherited unchanged from Analysis
-007. The inset expands the matched A7/A7-OL1 rows at `kappa<=0.1`; the full
-panel retains the complete range through the A7-OL1 `kappa=0.5` endpoint.
-Lines connect dose or clipping-target order only.
+007. The single panel retains the complete range through the A7-OL1
+`kappa=0.5` endpoint; the interleaved table supplies every matched `kappa` and
+site value. Lines connect dose or clipping-target order only.
 
 ## Result
 
