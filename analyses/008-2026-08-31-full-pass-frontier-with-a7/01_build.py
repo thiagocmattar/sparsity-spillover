@@ -1,4 +1,4 @@
-"""Add verified Run 013 A7 endpoints to Analysis 007's full-pass frontier."""
+"""Add verified Run 013 A7 and Run 014 A7-OL1 endpoints to the frontier."""
 
 from __future__ import annotations
 
@@ -18,6 +18,8 @@ SOURCE_007 = (
 )
 RUN_013 = REPO_ROOT / "runs" / "013-2026-08-30-pythia14m-full-pass-a7"
 RUN_013_VERIFICATION = RUN_013 / "artifacts" / "verification.json"
+RUN_014 = REPO_ROOT / "runs" / "014-2026-08-31-pythia14m-full-pass-a7-ol1"
+RUN_014_VERIFICATION = RUN_014 / "artifacts" / "verification.json"
 FIGURE_DATA = ANALYSIS_DIR / "figure_data.json"
 TABLES = ANALYSIS_DIR / "tables.md"
 OUTPUT = ANALYSIS_DIR / "figures" / "01-full-pass-frontier-with-a7.pdf"
@@ -34,6 +36,7 @@ PLOTTED_SERIES = (
     "a4z_threshold",
     "a4z_ol1",
     "a7z_post_mixed_threshold",
+    "a7z_post_mixed_threshold_ol1",
 )
 TRAINED_STYLES = {
     "a1h_naive_l1": {
@@ -65,6 +68,12 @@ TRAINED_STYLES = {
         "color": "#E69F00",
         "marker": "*",
         "linestyle": "-",
+    },
+    "a7z_post_mixed_threshold_ol1": {
+        "label": "A7-OL1 (trained)",
+        "color": "#56B4E9",
+        "marker": "p",
+        "linestyle": "--",
     },
 }
 POSTHOC_STYLES = {
@@ -165,7 +174,7 @@ def _logical_counts(
         key for key, expected in expected_coverage.items() if coverage.get(key) != expected
     ]
     if mismatches:
-        raise ValueError("Run 013 logical-product coverage mismatch: " + ", ".join(mismatches))
+        raise ValueError("Logical-product coverage mismatch: " + ", ".join(mismatches))
 
     measured = payload["measured"]
     operation_zero_count = sum(
@@ -175,12 +184,12 @@ def _logical_counts(
     block_zero_count = int(measured["block_zero_product_count"])
     model_product_count = int(measured["model_product_count"])
     if operation_zero_count != block_zero_count:
-        raise ValueError("Run 013 logical-product operation counts do not reconcile.")
+        raise ValueError("Logical-product operation counts do not reconcile.")
     r_model = block_zero_count / model_product_count
     _close(r_model, float(measured["R_model"]), tolerance=1e-16)
     _close(r_model, expected_r_model, tolerance=1e-16)
     if abs(float(coverage["loss"]) - expected_loss) > 5e-5:
-        raise ValueError("Run 013 logical-product loss does not reproduce validation loss.")
+        raise ValueError("Logical-product loss does not reproduce validation loss.")
     return {
         "zero_product_count": block_zero_count,
         "model_product_count": model_product_count,
@@ -197,13 +206,13 @@ def _site_counts(
     for site in ALL_SITES:
         row = pooled.get(site)
         if row is None:
-            raise ValueError(f"Run 013 activation statistics omit site {site!r}.")
+            raise ValueError(f"Activation statistics omit site {site!r}.")
         zero_count = int(row["exact_zero_count"])
         total_count = int(row["total"])
         if int(row["finite"]) != total_count or int(row["nonfinite"]) != 0:
-            raise ValueError(f"Run 013 site {site!r} contains non-finite activations.")
+            raise ValueError(f"Site {site!r} contains non-finite activations.")
         if not 0 <= zero_count <= total_count or total_count <= 0:
-            raise ValueError(f"Run 013 site {site!r} has invalid integer counts.")
+            raise ValueError(f"Site {site!r} has invalid integer counts.")
         fraction = zero_count / total_count
         _close(fraction, float(row["exact_zero_fraction"]))
         if site in expected_fractions:
@@ -216,8 +225,17 @@ def _site_counts(
     return result
 
 
-def _build_a7(
+def _build_a7_family(
     verification: Mapping[str, Any],
+    *,
+    run_dir: Path,
+    run_id: str,
+    series_id: str,
+    series_label: str,
+    pressure_method: str,
+    pressure_sites: tuple[str, ...],
+    pressure_weight: float,
+    step_budget: float | None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     if (
         verification.get("schema_version") != 1
@@ -228,11 +246,11 @@ def _build_a7(
         or verification.get("complete_validation_passes") != 20
         or verification.get("training_input_tokens") != 7_465_861_120
     ):
-        raise ValueError("Run 013 verification is not complete five-condition evidence.")
+        raise ValueError(f"{run_id} verification is not complete five-condition evidence.")
     expected_kappas = [0.0, 0.01, 0.05, 0.1, 0.5]
     conditions = sorted(verification["conditions"], key=lambda row: row["condition"]["order"])
     if [float(row["condition"]["gate_threshold"]) for row in conditions] != expected_kappas:
-        raise ValueError("Run 013 kappa grid changed unexpectedly.")
+        raise ValueError(f"{run_id} kappa grid changed unexpectedly.")
 
     sources: dict[str, Any] = {}
     endpoints: list[dict[str, Any]] = []
@@ -243,14 +261,27 @@ def _build_a7(
             or tuple(condition["active_sites"]) != ACTIVE_SITES
             or tuple(condition["one_sided_sites"]) != ONE_SIDED_SITES
             or tuple(condition["symmetric_sites"]) != SYMMETRIC_SITES
-            or condition["pressure_method"] != "none"
-            or tuple(condition["pressure_sites"]) != ()
-            or float(condition["pressure_weight"]) != 0.0
+            or condition["pressure_method"] != pressure_method
+            or tuple(condition["pressure_sites"]) != pressure_sites
+            or float(condition["pressure_weight"]) != pressure_weight
+            or (
+                step_budget is not None
+                and float(condition.get("step_budget", float("nan"))) != step_budget
+            )
             or int(row["completed_steps"]) != 712
         ):
-            raise ValueError(f"Run 013 condition {condition['id']} violates the A7 design.")
+            raise ValueError(f"{run_id} condition {condition['id']} violates the A7 design.")
 
-        attempt_dir = RUN_013 / "artifacts" / "attempts" / row["attempt_id"]
+        if pressure_method == "orthogonal_l1":
+            ol1 = row.get("ol1", {})
+            if (
+                int(ol1.get("boundary_count", -1)) != 712
+                or int(ol1.get("pressure_capture_tensor_count", -1)) != 42
+                or float(ol1.get("maximum_final_ratio", float("inf"))) > 1.0 + 1e-12
+            ):
+                raise ValueError(f"{run_id} condition {condition['id']} has invalid OL1 evidence.")
+
+        attempt_dir = run_dir / "artifacts" / "attempts" / row["attempt_id"]
         manifest_path = attempt_dir / "manifest.json"
         activation_path = attempt_dir / "diagnostics" / "activation_statistics.json"
         logical_path = attempt_dir / "diagnostics" / "logical_products.json"
@@ -266,7 +297,7 @@ def _build_a7(
             key for key, expected in expected_coverage.items() if validation.get(key) != expected
         ]
         if mismatches:
-            raise ValueError("Run 013 manifest coverage mismatch: " + ", ".join(mismatches))
+            raise ValueError(f"{run_id} manifest coverage mismatch: " + ", ".join(mismatches))
         loss = float(row["final_validation_loss"])
         _close(float(validation["loss"]), loss)
         r_model = float(row["R_model"])
@@ -276,9 +307,9 @@ def _build_a7(
             row["selected_site_exact_zero_fractions"],
         )
         endpoint = {
-            "series_id": "a7z_post_mixed_threshold",
-            "series_label": "A7-Z-POST mixed threshold",
-            "run": "run013",
+            "series_id": series_id,
+            "series_label": series_label,
+            "run": run_id,
             "condition_id": condition["id"],
             "attempt_id": row["attempt_id"],
             "dose_name": "kappa",
@@ -287,6 +318,9 @@ def _build_a7(
             "one_sided_sites": list(ONE_SIDED_SITES),
             "symmetric_sites": list(SYMMETRIC_SITES),
             "pressure_method": condition["pressure_method"],
+            "pressure_sites": list(pressure_sites),
+            "pressure_weight": pressure_weight,
+            "step_budget": step_budget,
             "final_validation_loss": loss,
             "R_block": float(row["R_block"]),
             "R_model": r_model,
@@ -314,18 +348,55 @@ def _build_a7(
     return endpoints, sources
 
 
+def _build_a7(
+    verification: Mapping[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    return _build_a7_family(
+        verification,
+        run_dir=RUN_013,
+        run_id="run013",
+        series_id="a7z_post_mixed_threshold",
+        series_label="A7-Z-POST mixed threshold",
+        pressure_method="none",
+        pressure_sites=(),
+        pressure_weight=0.0,
+        step_budget=None,
+    )
+
+
+def _build_a7_ol1(
+    verification: Mapping[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    return _build_a7_family(
+        verification,
+        run_dir=RUN_014,
+        run_id="run014",
+        series_id="a7z_post_mixed_threshold_ol1",
+        series_label="A7-Z-POST mixed threshold plus seven-site OL1",
+        pressure_method="orthogonal_l1",
+        pressure_sites=ACTIVE_SITES,
+        pressure_weight=1.0,
+        step_budget=1.0,
+    )
+
+
 def build_figure_data() -> dict[str, Any]:
     base = json.loads(SOURCE_007.read_text(encoding="utf-8"))
-    verification = json.loads(RUN_013_VERIFICATION.read_text(encoding="utf-8"))
+    verification_013 = json.loads(RUN_013_VERIFICATION.read_text(encoding="utf-8"))
+    verification_014 = json.loads(RUN_014_VERIFICATION.read_text(encoding="utf-8"))
     _validate_base(base)
-    a7, attempt_sources = _build_a7(verification)
-    comparisons = verification["comparison"]["matched_pairs"]
-    if len(comparisons) != 5:
+    a7, run_013_attempt_sources = _build_a7(verification_013)
+    a7_ol1, run_014_attempt_sources = _build_a7_ol1(verification_014)
+    a7_a4_comparisons = verification_013["comparison"]["matched_pairs"]
+    a7_ol1_a7_comparisons = verification_014["comparison"]["matched_conditions"]
+    if len(a7_a4_comparisons) != 5:
         raise ValueError("Run 013 matched A4 comparison is incomplete.")
+    if len(a7_ol1_a7_comparisons) != 5:
+        raise ValueError("Run 014 matched A7 comparison is incomplete.")
     return {
         "schema_version": 1,
         "status": "complete_verified_figure_data",
-        "question": "Where do the five full-pass A7 endpoints lie relative to the trained and post-hoc frontier in Analysis 007?",
+        "question": "Where do the five full-pass A7 and five A7-OL1 endpoints lie relative to the trained and post-hoc frontier in Analysis 007?",
         "display": dict(base["display"]),
         "sources": {
             "analysis_007_figure_data": {
@@ -336,17 +407,24 @@ def build_figure_data() -> dict[str, Any]:
                 "path": _repo_path(RUN_013_VERIFICATION),
                 "sha256": _sha256(RUN_013_VERIFICATION),
             },
-            "run_013_attempts": attempt_sources,
+            "run_013_attempts": run_013_attempt_sources,
+            "run_014_verification": {
+                "path": _repo_path(RUN_014_VERIFICATION),
+                "sha256": _sha256(RUN_014_VERIFICATION),
+            },
+            "run_014_attempts": run_014_attempt_sources,
         },
         "coverage": dict(base["coverage"]),
-        "trained_endpoints": [dict(row) for row in base["trained_endpoints"]] + a7,
+        "trained_endpoints": [dict(row) for row in base["trained_endpoints"]] + a7 + a7_ol1,
         "posthoc_control_curves": base["posthoc_control_curves"],
-        "a7_matched_a4_comparison": comparisons,
+        "a7_matched_a4_comparison": a7_a4_comparisons,
+        "a7_ol1_matched_a7_comparison": a7_ol1_a7_comparisons,
         "interpretation": {
             "logical_products": "Exact-zero logical-product opportunities, not removed FLOPs or measured speedup.",
             "site_reduction": "Pool integer exact-zero counts and totals over all layers and validation batches before dividing.",
             "scope": "One seed, one Pythia-14M scale, one MiniPile training pass, and all 338 complete validation blocks.",
             "a7_operator": "One-sided gates at a,m,h,z and symmetric gates at post-RoPE q,k and v, with one common kappa and no pressure.",
+            "a7_ol1_operator": "The same mixed A7 gates plus orthogonal L1 pressure at all seven active sites with lambda=1 and trust budget=1.",
         },
     }
 
@@ -356,19 +434,26 @@ def _percent(value: float) -> str:
 
 
 def table_markdown(data: Mapping[str, Any]) -> str:
+    series_ids = {
+        "a7z_post_mixed_threshold": "A7",
+        "a7z_post_mixed_threshold_ol1": "A7-OL1",
+    }
     rows = sorted(
         (
             row
             for row in data["trained_endpoints"]
-            if row["series_id"] == "a7z_post_mixed_threshold"
+            if row["series_id"] in series_ids
         ),
-        key=lambda row: float(row["dose"]),
+        key=lambda row: (
+            float(row["dose"]),
+            0 if row["series_id"] == "a7z_post_mixed_threshold" else 1,
+        ),
     )
     lines = [
-        "# A7 full-validation results",
+        "# A7 and A7-OL1 full-validation results",
         "",
-        "| kappa | Validation loss | R_model (%) | a zero (%) | m zero (%) | h zero (%) | q_post zero (%) | k_post zero (%) | v zero (%) | z zero (%) | attention_output zero (%) |",
-        "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| kappa | Variant | Validation loss | R_model (%) | a zero (%) | m zero (%) | h zero (%) | q_post zero (%) | k_post zero (%) | v zero (%) | z zero (%) | attention_output zero (%) |",
+        "|---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in rows:
         site = row["site_exact_zero_fraction"]
@@ -377,6 +462,7 @@ def table_markdown(data: Mapping[str, Any]) -> str:
             + " | ".join(
                 [
                     f"{float(row['dose']):g}",
+                    series_ids[row["series_id"]],
                     f"{float(row['final_validation_loss']):.6f}",
                     _percent(float(row["R_model"])),
                     *[_percent(float(site[name])) for name in ALL_SITES],
@@ -390,7 +476,7 @@ def table_markdown(data: Mapping[str, Any]) -> str:
             "All percentages use pooled integer counts over all six layers and the complete 338-block validation pass (692,224 input tokens; 1,444-token excluded tail).",
             "Per-site zero mass is exact-zero activation mass. `attention_output` is the post-`W_o` diagnostic and is not a gated A7 site.",
             "`R_model` is measured exact-zero logical-product opportunity including the dense LM-head denominator, not runtime speedup.",
-            "The five rows share seed 1234, 712 optimizer steps, A7-Z-POST topology, mixed one-sided/symmetric gates, and no pressure objective.",
+            "The ten rows share seed 1234, 712 optimizer steps, and A7-Z-POST mixed one-sided/symmetric gates. A7 has no pressure; A7-OL1 applies seven-site orthogonal L1 with lambda 1 and trust budget 1.",
             "",
         ]
     )
@@ -470,7 +556,7 @@ def plot(data: Mapping[str, Any]) -> Path:
             "pdf.fonttype": 42,
         }
     )
-    figure, axis = plt.subplots(figsize=(12.6, 6.5))
+    figure, axis = plt.subplots(figsize=(14.5, 6.7))
     trained = data["trained_endpoints"]
     series_rows = {
         series_id: _series_rows(trained, series_id)
@@ -479,7 +565,10 @@ def plot(data: Mapping[str, Any]) -> Path:
     for series_id in PLOTTED_SERIES:
         rows = series_rows[series_id]
         style = TRAINED_STYLES[series_id]
-        highlight = series_id == "a7z_post_mixed_threshold"
+        highlight = series_id in {
+            "a7z_post_mixed_threshold",
+            "a7z_post_mixed_threshold_ol1",
+        }
         axis.plot(
             [100.0 * float(row["R_model"]) for row in rows],
             [float(row["final_validation_loss"]) for row in rows],
@@ -570,22 +659,32 @@ def plot(data: Mapping[str, Any]) -> Path:
             TRAINED_STYLES["a4z_ol1"]["color"],
         )
 
-    a7_offsets = {
-        0.0: (15, 24),
-        0.01: (12, -18),
-        0.05: (10, 17),
-        0.1: (10, -15),
-        0.5: (-61, -15),
-    }
+    a7_offsets = {0.5: (-61, -15)}
     for row in series_rows["a7z_post_mixed_threshold"]:
         dose = float(row["dose"])
+        if dose != 0.5:
+            continue
         _annotate(
             axis,
             row,
             rf"$\kappa={dose:g}$",
             a7_offsets[dose],
             TRAINED_STYLES["a7z_post_mixed_threshold"]["color"],
-            arrow=dose == 0.0,
+            fontsize=8.0,
+        )
+
+    a7_ol1_offsets = {0.5: (-60, 12)}
+    for row in series_rows["a7z_post_mixed_threshold_ol1"]:
+        dose = float(row["dose"])
+        if dose != 0.5:
+            continue
+        _annotate(
+            axis,
+            row,
+            rf"$\kappa={dose:g}$",
+            a7_ol1_offsets[dose],
+            TRAINED_STYLES["a7z_post_mixed_threshold_ol1"]["color"],
+            arrow=True,
             fontsize=8.0,
         )
 
@@ -636,7 +735,56 @@ def plot(data: Mapping[str, Any]) -> Path:
     _annotate(axis, controls["gelu_control"], "GeLU ctrl.", (7, -12), "#666666")
     _annotate(axis, controls["relu_control"], "ReLU ctrl.", (-28, 15), "#222222")
 
-    axis.set_xlim(-0.25, 16.15)
+    detail = axis.inset_axes([0.64, 0.075, 0.345, 0.31])
+    detail_offsets = {
+        ("a7z_post_mixed_threshold", 0.0): (13, -14),
+        ("a7z_post_mixed_threshold", 0.01): (8, -14),
+        ("a7z_post_mixed_threshold", 0.05): (-45, -13),
+        ("a7z_post_mixed_threshold", 0.1): (-43, -13),
+        ("a7z_post_mixed_threshold_ol1", 0.0): (-5, 14),
+        ("a7z_post_mixed_threshold_ol1", 0.01): (8, 14),
+        ("a7z_post_mixed_threshold_ol1", 0.05): (8, 14),
+        ("a7z_post_mixed_threshold_ol1", 0.1): (-43, 14),
+    }
+    for series_id in (
+        "a7z_post_mixed_threshold",
+        "a7z_post_mixed_threshold_ol1",
+    ):
+        rows = [row for row in series_rows[series_id] if float(row["dose"]) <= 0.1]
+        style = TRAINED_STYLES[series_id]
+        detail.plot(
+            [100.0 * float(row["R_model"]) for row in rows],
+            [float(row["final_validation_loss"]) for row in rows],
+            color=style["color"],
+            marker=style["marker"],
+            linestyle=style["linestyle"],
+            linewidth=1.8,
+            markersize=6.2,
+            markeredgecolor="white",
+            markeredgewidth=0.7,
+            zorder=5,
+        )
+        for row in rows:
+            dose = float(row["dose"])
+            _annotate(
+                detail,
+                row,
+                rf"$\kappa={dose:g}$",
+                detail_offsets[(series_id, dose)],
+                style["color"],
+                fontsize=6.8,
+                arrow=dose == 0.0,
+            )
+    detail.set_xlim(6.75, 12.1)
+    detail.set_ylim(5.415, 5.495)
+    detail.set_title(r"A7/A7-OL1 detail ($\kappa \leq 0.1$)", fontsize=8.2, pad=3.0)
+    detail.set_xlabel(r"$R_{\mathrm{model}}$ (%)", fontsize=7.2, labelpad=1.0)
+    detail.set_ylabel("Val. loss", fontsize=7.2, labelpad=1.0)
+    detail.tick_params(labelsize=6.9, length=2.6)
+    detail.set_facecolor("white")
+    _style_axis(detail)
+
+    axis.set_xlim(-0.5, 29.25)
     axis.set_ylim(Y_MIN, Y_MAX)
     axis.set_xlabel(r"Measured $R_{\mathrm{model}}$ (%)")
     axis.set_ylabel("Final validation loss (lower is better)")
@@ -649,8 +797,18 @@ def plot(data: Mapping[str, Any]) -> Path:
             color=TRAINED_STYLES[series_id]["color"],
             marker=TRAINED_STYLES[series_id]["marker"],
             linestyle=TRAINED_STYLES[series_id]["linestyle"],
-            linewidth=2.5 if series_id == "a7z_post_mixed_threshold" else 1.9,
-            markersize=8.5 if series_id == "a7z_post_mixed_threshold" else 6.5,
+            linewidth=(
+                2.5
+                if series_id
+                in {"a7z_post_mixed_threshold", "a7z_post_mixed_threshold_ol1"}
+                else 1.9
+            ),
+            markersize=(
+                8.5
+                if series_id
+                in {"a7z_post_mixed_threshold", "a7z_post_mixed_threshold_ol1"}
+                else 6.5
+            ),
             markeredgecolor="white",
             markeredgewidth=0.8,
             label=TRAINED_STYLES[series_id]["label"],
@@ -683,7 +841,7 @@ def plot(data: Mapping[str, Any]) -> Path:
     figure.text(
         0.5,
         0.94,
-        "A7 adds symmetric post-RoPE Q/K/V gates to A4; displayed validation loss is capped at 6",
+        "A7 adds symmetric post-RoPE Q/K/V gates to A4; A7-OL1 adds seven-site conflict-aware pressure; loss is capped at 6",
         ha="center",
         va="center",
         fontsize=9.4,
@@ -719,7 +877,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         format="pdf",
         bbox_inches="tight",
         metadata={
-            "Title": "Pythia-14M trained frontiers with A7 and post-hoc controls",
+            "Title": "Pythia-14M trained frontiers with A7, A7-OL1, and post-hoc controls",
             "Author": "sparsity-spillover analysis 008",
             "Subject": "Measured R_model versus final validation loss capped at 6",
             "CreationDate": None,

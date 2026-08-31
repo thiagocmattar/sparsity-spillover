@@ -1,4 +1,4 @@
-"""Focused tests for Analysis 008's immutable-source reduction."""
+"""Focused tests for Analysis 008's A7/A7-OL1 immutable-source reduction."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
 
-def test_reduction_has_complete_coverage_and_expected_a7_grid() -> None:
+def test_reduction_has_complete_coverage_and_expected_a7_grids() -> None:
     data = MODULE.build_figure_data()
     assert data["status"] == "complete_verified_figure_data"
     assert data["coverage"] == {
@@ -25,14 +25,22 @@ def test_reduction_has_complete_coverage_and_expected_a7_grid() -> None:
         "excluded_tail_tokens": 1_444,
         "seed_count": 1,
     }
-    rows = [
+    a7_rows = [
         row
         for row in data["trained_endpoints"]
         if row["series_id"] == "a7z_post_mixed_threshold"
     ]
-    assert [row["dose"] for row in rows] == [0.0, 0.01, 0.05, 0.1, 0.5]
-    assert len(data["trained_endpoints"]) == 25
+    a7_ol1_rows = [
+        row
+        for row in data["trained_endpoints"]
+        if row["series_id"] == "a7z_post_mixed_threshold_ol1"
+    ]
+    expected_kappas = [0.0, 0.01, 0.05, 0.1, 0.5]
+    assert [row["dose"] for row in a7_rows] == expected_kappas
+    assert [row["dose"] for row in a7_ol1_rows] == expected_kappas
+    assert len(data["trained_endpoints"]) == 30
     assert len(data["a7_matched_a4_comparison"]) == 5
+    assert len(data["a7_ol1_matched_a7_comparison"]) == 5
 
 
 def test_site_and_logical_fractions_are_derived_from_integer_counts() -> None:
@@ -40,7 +48,8 @@ def test_site_and_logical_fractions_are_derived_from_integer_counts() -> None:
     rows = [
         row
         for row in data["trained_endpoints"]
-        if row["series_id"] == "a7z_post_mixed_threshold"
+        if row["series_id"]
+        in {"a7z_post_mixed_threshold", "a7z_post_mixed_threshold_ol1"}
     ]
     for row in rows:
         logical = row["logical_product_counts"]
@@ -65,12 +74,21 @@ def test_site_and_logical_fractions_are_derived_from_integer_counts() -> None:
     }
     assert rows[0]["site_exact_zero"]["attention_output"]["exact_zero_count"] == 129
     assert rows[0]["site_exact_zero"]["h"]["total_count"] == 2_126_512_128
+    assert rows[5]["site_exact_zero"]["a"] == {
+        "exact_zero_count": 258_278_995,
+        "total_count": 531_628_032,
+        "exact_zero_fraction": 0.4858265167627579,
+    }
+    assert rows[5]["site_exact_zero"]["attention_output"]["exact_zero_count"] == 126
+    assert rows[5]["pressure_sites"] == list(MODULE.ACTIVE_SITES)
+    assert rows[5]["step_budget"] == 1.0
 
 
 def test_table_is_single_and_contains_every_requested_column() -> None:
     text = MODULE.table_markdown(MODULE.build_figure_data())
     assert text.count("| kappa |") == 1
     for name in (
+        "Variant",
         "Validation loss",
         "R_model (%)",
         "a zero (%)",
@@ -83,7 +101,10 @@ def test_table_is_single_and_contains_every_requested_column() -> None:
         "attention_output zero (%)",
     ):
         assert name in text
-    assert sum(line.startswith("| 0") for line in text.splitlines()) == 5
+    data_rows = [line for line in text.splitlines() if line.startswith("| 0")]
+    assert len(data_rows) == 10
+    assert "| 0 | A7 |" in data_rows[0]
+    assert "| 0 | A7-OL1 |" in data_rows[1]
 
 
 def test_committed_outputs_match_the_source_reduction() -> None:

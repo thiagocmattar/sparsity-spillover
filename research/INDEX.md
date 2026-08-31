@@ -10,8 +10,10 @@ evidence. At matched `kappa=0.1`, OL1 adds 1.3717 percentage points of
 `R_model` for `+0.000816` validation loss; at `kappa=0.5`, it adds 12.0959
 points for `+0.126466` loss. The zero-threshold row regresses, so the effect is
 threshold-dependent rather than uniform. All attempts, diagnostics, and final
-checkpoints are local and verified; all Pods are deleted. The run-local
-observation is descriptive and has not been promoted to a finding.
+checkpoints are local and verified; all Pods are deleted. Analysis 008 now
+includes the endpoints in its count-reconciled full-pass frontier and
+interleaved all-site table. The comparison remains descriptive and has not
+been promoted to a finding.
 Finding F001 tentatively consolidates the one-seed Pythia-14M A4/A4-OL1
 comparison. At matched `kappa <= 0.1`, A4-OL1 lowers loss and increases
 `R_model` relative to A4; the lowest A4-OL1 loss is 5.195590 at `kappa=0.05`,
@@ -22,9 +24,10 @@ comparison. A7 is a near-null topology expansion at `kappa=0`; at
 `kappa=0.01`, it improves loss by 0.007678 and `R_model` by 0.2039 percentage
 points. Larger thresholds add 0.9210--5.1713 percentage points of logical
 opportunity with increasing validation-loss cost. Analysis 008 owns the
-count-reconciled A7 zero-mass table, expanded full-pass frontier figure,
-observation, and machine-readable evidence; Runs 011 and 013 own the matched
-endpoints. All Run 013 artifacts are local and verified, all Pods are deleted,
+count-reconciled A7/A7-OL1 zero-mass table, expanded full-pass frontier figure,
+observation, and machine-readable evidence. Finding F002 remains scoped to the
+matched Runs 011/013 A4/A7 endpoints; Run 014's A7-OL1 extension has no promoted
+finding. All Run 013 artifacts are local and verified, all Pods are deleted,
 and the pre-existing volume remains intentionally retained.
 Run 012 completed its five-condition paper-scale A4-OL1 cohort with valid
 evidence. All 3,560 optimizer steps and 20 complete validation passes reconcile;
@@ -59,6 +62,10 @@ Next run number: `015`. Next analysis number: `009`. Next finding number: `F003`
 
 ## Where we stopped
 
+- 2026-08-31: Analysis 008 added Run 014 A7-OL1 to its full-pass trained and
+  post-hoc frontier, widened the plotted logical-opportunity range, and updated
+  its machine-readable reduction, interleaved A7/A7-OL1 table, and observation.
+  The A7/A7-OL1 result remains descriptive; Finding F002 is unchanged.
 - 2026-08-31: Run 014 completed and verified the five paper-scale A7-OL1
   conditions against matched Run 013 A7 endpoints. It adds nondominated
   `kappa=0.1` and `0.5` points, while `kappa=0` regresses. All eight Run 014
@@ -182,7 +189,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 005 | How does uniform TEAL-style post-hoc clipping change the Run 004 GeLU/ReLU control frontiers? | completed; descriptive; reported in Status Report Number 1; no finding promoted | `analyses/005-2026-08-30-run004-controls-teal-posthoc/` |
 | 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
 | 007 | Where do the full-pass A4-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F001 | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
-| 008 | Where do the full-pass A7 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
+| 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
 
 ## Key documents
 

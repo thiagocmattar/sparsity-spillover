@@ -83,8 +83,8 @@ support a measured-speedup or cross-scale claim.
 Runs 013 and 014 share the full-pass seed, initialization, realized data order,
 optimizer schedule, validation cache, topology, gates, and diagnostic
 implementation. Run 014 adds seven-site post-gate OL1 with `lambda=1` and
-trust budget `1`. Its run-local observation is descriptive; no finding or
-paper-facing numbered analysis has been approved.
+trust budget `1`. Analysis 008 now includes its endpoints in the numbered
+count-reconciled full-pass frontier; no A7/A7-OL1 finding has been promoted.
 
 | `kappa` | A7 loss | A7 `R_model` | A7-OL1 loss | A7-OL1 `R_model` | OL1 loss delta | OL1 `R_model` delta |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -275,8 +275,9 @@ updated explicitly.
 - Pilot identity: seed 0, global batch 64, 581 updates, BF16.
 - Paper-scale identity: seed 1234, global batch 1,024, 712 updates, dynamic
   FP16; five condition-parallel Secure A100 workers completed in Run 013.
-- Analysis: Analysis 008 provides the numbered count-reconciled A7 table and
-  expanded full-pass frontier and supports tentative Finding F002.
+- Analysis: Analysis 008 provides the numbered count-reconciled A7/A7-OL1
+  table and expanded full-pass frontier. Its A4/A7 comparison supports
+  tentative Finding F002; the A7/A7-OL1 comparison remains descriptive.
 
 #### `A7-OL1` - mixed A7 plus OL1 at all seven sites
 
@@ -288,8 +289,9 @@ updated explicitly.
 - Paper-scale identity: seed 1234, global batch 1,024, 712 updates, dynamic
   FP16; five condition-parallel Secure A100 workers completed in Run 014.
 - Analysis: `analyses/001-2026-08-30-run008-vs-run010-all-site-ol1/`
-  remains pilot precedent. Run 014 has a verified run-local matched table; a
-  numbered paper-scale analysis and finding decision have not started.
+  remains pilot precedent. Analysis 008 now provides the numbered paper-scale
+  A7/A7-OL1 frontier and interleaved count-reconciled table; no finding has
+  been promoted for that comparison.
 
 ### Pythia-70M
 
@@ -429,13 +431,13 @@ not matched comparisons.
 | P05 | `A4(0) -> A4(kappa>0)` | What is the threshold-strength effect at fixed A4 topology? | Within-run kappa contrast; zero row is mandatory. | 14M full-pass evidence complete in Run 011 and Analyses 004/007. |
 | P06 | `A4(kappa) -> A4-OL1(kappa)` | Does all-active-site OL1 change A4 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs complete in Analysis 007; tentative Finding F001 approved. |
 | P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | Five 14M full-pass pairs are complete in Analysis 008; tentative Finding F002 approved. |
-| P08 | `A7(kappa) -> A7-OL1(kappa)` | Does all-seven-site OL1 change A7 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs available from Runs 013/014; run-local verification complete, numbered paper analysis not started. |
+| P08 | `A7(kappa) -> A7-OL1(kappa)` | Does all-seven-site OL1 change A7 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs are count-reconciled in Analysis 008; no finding promoted. |
 | P09 | `A4-OL1(kappa) -> A7-OL1(kappa)` | Does attention-site expansion matter when OL1 is present? | Match kappa, lambda, and trust budget. | Nominal full-pass endpoints exist in Runs 012/014, but Run 012 captured only `h` pressure despite declaring four sites; analysis is limited pending audit or rerun. |
 | P10 | `(A7-OL1 - A7) - (A4-OL1 - A4)` | Does the OL1 effect interact with topology expansion? | Four-condition difference-in-differences at each matched kappa. | Nominal full-pass quartets exist in Runs 011--014, but the Run 012 pressure-capture discrepancy prevents the declared four-site interpretation. |
 | P11 | within `A1-H-L1` and within `A1-H-OL1` | What are the lambda dose-response and saturation patterns? | Compare the four lambdas to one shared A1-H control; do not treat lambda as equally spaced. | 14M full-pass Analysis 003 complete. |
-| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | All four 14M cells are full-pass; A4/A4-OL1 Analysis 007 supports F001, A7 Analysis 008 supports F002, and A7-OL1 paper analysis is not started. |
+| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | All four 14M cells are full-pass; Analysis 007 covers A4/A4-OL1 and Analysis 008 covers A7/A7-OL1. F001/F002 retain their narrower approved scopes. |
 | P13 | same step/parameters across 14M, 70M, 410M | Which intervention effects persist with scale? | Match the complete condition identity; use size-specific recipe LR and report architecture separately. | Not started. |
-| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Analysis 008 plots A1-H, A4, A4-OL1, and A7; Run 014 adds verified A7-OL1 endpoints that are not yet in a numbered frontier analysis. |
+| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Analysis 008 plots A1-H, A4, A4-OL1, A7, and A7-OL1 with inherited post-hoc controls. |
 | P15 | `A1-H` versus L1/OL1 at `h` | Does targeted `h` pressure produce sparsity spillover at untargeted attention sites? | Sitewise count-first exact/near-zero and RMS changes at matched lambda/control. | Run 004 observations and full-pass Analysis 003 complete; finding selection remains open. |
 | P16 | OL1 across A1-H, A4, and A7 | How do conflict, projection, trust saturation, and correction ratios change with pressure topology? | Use training-time OL1 boundary metrics; checkpoint-only reconstruction is invalid. | Full-pass A1-H and A7-OL1 metrics exist; Run 012's realized `h`-only capture does not support the declared four-site A4-OL1 topology without audit or rerun. |
 | P17 | measured `R_model` versus analytic `R_model_max` across scales | How much of topology-conditioned reach is realized, and how does the ceiling scale? | Preserve integer counts and architecture/workload identity; `U_arch` needs its numerator caveat. | 14M partial evidence; 70M/410M not started. |
@@ -456,9 +458,8 @@ Interpretation cautions:
 
 ## Open decisions before selecting the paper subset
 
-- Whether Run 014's threshold-dependent A7-OL1 result should receive a
-  numbered paper-scale analysis or tentative finding; execution alone does not
-  promote it.
+- Whether Run 014's threshold-dependent A7-OL1 result, now included in Analysis
+  008, should receive a tentative finding; analysis alone does not promote it.
 - Whether Run 012 should be audited or rerun before P09/P10/P16 are interpreted
   as declared four-site A4-OL1 comparisons.
 - Whether all four A1-H lambda rows are needed at 70M/410M or a preregistered
