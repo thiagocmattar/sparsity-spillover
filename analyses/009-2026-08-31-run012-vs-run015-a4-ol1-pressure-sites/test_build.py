@@ -26,18 +26,22 @@ def test_reduction_has_matched_complete_grids_and_realized_pressure_sites() -> N
         "seed_count": 1,
     }
     h_only = [row for row in data["series"] if row["series_id"] == "run012_h_only"]
+    baseline = [row for row in data["series"] if row["series_id"] == "run011_a4"]
     four_site = [
         row for row in data["series"] if row["series_id"] == "run015_four_site"
     ]
     expected = [0.0, 0.01, 0.05, 0.1, 0.5]
+    assert [row["kappa"] for row in baseline] == expected
     assert [row["kappa"] for row in h_only] == expected
     assert [row["kappa"] for row in four_site] == expected
+    assert all(row["realized_pressure_sites"] == [] for row in baseline)
     assert all(row["realized_pressure_sites"] == ["h"] for row in h_only)
     assert all(
         row["realized_pressure_sites"] == ["a", "m", "h", "z"]
         for row in four_site
     )
     assert len(data["matched_comparison"]) == 5
+    assert len(data["series"]) == 15
 
 
 def test_matched_manifest_contracts_and_count_first_fractions_reconcile() -> None:
@@ -47,12 +51,23 @@ def test_matched_manifest_contracts_and_count_first_fractions_reconcile() -> Non
             (row for row in data["series"] if row["series_id"] == series_id),
             key=lambda row: row["kappa"],
         )
-        for series_id in ("run012_h_only", "run015_four_site")
+        for series_id in ("run011_a4", "run012_h_only", "run015_four_site")
     }
     for historical, corrected in zip(
         by_series["run012_h_only"], by_series["run015_four_site"], strict=True
     ):
         assert historical["matched_contract_sha256"] == corrected["matched_contract_sha256"]
+    for baseline, historical, corrected in zip(
+        by_series["run011_a4"],
+        by_series["run012_h_only"],
+        by_series["run015_four_site"],
+        strict=True,
+    ):
+        assert (
+            baseline["matched_gate_contract_sha256"]
+            == historical["matched_gate_contract_sha256"]
+            == corrected["matched_gate_contract_sha256"]
+        )
     for row in data["series"]:
         logical = row["logical_product_counts"]
         assert math.isclose(
@@ -89,6 +104,11 @@ def test_matched_manifest_contracts_and_count_first_fractions_reconcile() -> Non
 def test_realization_audit_guards_the_h_only_bug_and_four_site_fix() -> None:
     data = MODULE.build_figure_data()
     audit = data["realization_audit"]
+    assert audit["run011_a4"] == {
+        "declared_pressure_sites": [],
+        "realized_pressure_sites": [],
+        "pressure_method": "none",
+    }
     assert audit["run012_h_only"]["realized_pressure_sites"] == ["h"]
     assert 'ActivationCapture(model, ["h"]' in audit["run012_h_only"]["capture_expression"]
     assert audit["run015_four_site"]["realized_pressure_sites"] == ["a", "m", "h", "z"]
@@ -112,3 +132,4 @@ def test_committed_outputs_match_sources_and_pdf_contract() -> None:
     assert pdf.stat().st_size > 15_000
     source = (ANALYSIS_DIR / "01_build.py").read_text(encoding="utf-8")
     assert "inset_axes" not in source
+    assert MODULE.SERIES["run011_a4"]["label"] == "A4 without OL1 (Run 011)"

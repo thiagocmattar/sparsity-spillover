@@ -9,8 +9,9 @@ Analysis 009 directly compares historical Run 012 A4-Z + OL1@h with corrected
 Run 015 four-site A4-OL1 at all five matched thresholds. Four-site pressure
 raises validation loss by 0.242--0.320 at every `kappa`; its `R_model` is lower
 at `kappa=0`, effectively tied at `0.01`, and 1.42--2.49 percentage points
-higher at `0.05`--`0.5`. The analysis owns the two-series PDF, all-eight-site
-count-pooled exact-zero table, and machine-readable reduction. The result is
+higher at `0.05`--`0.5`. Its PDF also includes matched Run 011 A4 without OL1
+as the common baseline. The analysis owns the all-eight-site count-pooled
+exact-zero table and machine-readable reduction. The result is
 descriptive; discarded F001 is not restored and no manuscript claim changes.
 
 Run 015 completed and verified the corrective paper-scale Pythia-14M A4-OL1
@@ -79,8 +80,8 @@ Next run number: `016`. Next analysis number: `010`. Next finding number: `F003`
 ## Where we stopped
 
 - 2026-08-31: Analysis 009 completed the matched Run 012/015 pressure-target
-  comparison. Its PDF plots measured `R_model` against terminal validation loss
-  for historical `h`-only and corrected four-site OL1; its observation contains
+  comparison. Its PDF plots matched A4 without OL1, historical `h`-only OL1,
+  and corrected four-site OL1; its observation contains
   the count-pooled exact-zero table for all eight recorded diagnostics. The
   result remains descriptive and does not restore F001.
 - 2026-08-31: Run 015 completed and verified the corrected five-condition

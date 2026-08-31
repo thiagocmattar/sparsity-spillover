@@ -1,4 +1,4 @@
-"""Compare historical h-only and corrected four-site A4-OL1 endpoints."""
+"""Compare A4, historical h-only, and corrected four-site A4-OL1 endpoints."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from typing import Any, Mapping, Sequence
 
 ANALYSIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = ANALYSIS_DIR.parent.parent
+RUN_011 = REPO_ROOT / "runs" / "011-2026-08-30-pythia14m-full-pass-a4z"
 RUN_012 = REPO_ROOT / "runs" / "012-2026-08-30-pythia14m-full-pass-a4-ol1"
 RUN_015 = REPO_ROOT / "runs" / "015-2026-08-31-pythia14m-corrected-a4-ol1"
 RUN_004_TRAINING = (
@@ -44,6 +45,7 @@ MATCHED_MANIFEST_FIELDS = (
     "condition",
     "activation_pressure",
 )
+MATCHED_GATE_FIELDS = ("model", "data", "recipe", "seeds", "topology")
 EXPECTED_COVERAGE = {
     "documents": 500,
     "sequences": 338,
@@ -52,6 +54,14 @@ EXPECTED_COVERAGE = {
     "seed_count": 1,
 }
 SERIES = {
+    "run011_a4": {
+        "label": "A4 without OL1 (Run 011)",
+        "short_label": "No OL1",
+        "color": "#009E73",
+        "marker": "D",
+        "linestyle": "-.",
+        "realized_pressure_sites": (),
+    },
     "run012_h_only": {
         "label": "A4 gates + OL1@h (Run 012)",
         "short_label": "OL1@h",
@@ -258,6 +268,7 @@ def _reduce_run(
     *,
     series_id: str,
     verification: Mapping[str, Any],
+    pressure_expected: bool,
 ) -> list[dict[str, Any]]:
     style = SERIES[series_id]
     conditions = sorted(
@@ -276,14 +287,24 @@ def _reduce_run(
             raise ValueError("Expected A4 active gate sites.")
         if condition.get("gate_operator") != "one_sided_threshold":
             raise ValueError("Expected the one-sided A4 gate.")
-        if condition.get("pressure_method") != "orthogonal_l1":
-            raise ValueError("Expected orthogonal_l1 pressure.")
-        if tuple(condition.get("pressure_sites", ())) != ACTIVE_SITES:
-            raise ValueError("The historical declared pressure contract changed.")
-        if float(condition.get("pressure_weight", -1.0)) != 1.0:
-            raise ValueError("Expected lambda=1.")
-        if float(condition.get("step_budget", -1.0)) != 1.0:
-            raise ValueError("Expected OL1 trust budget 1.")
+        if pressure_expected:
+            if condition.get("pressure_method") != "orthogonal_l1":
+                raise ValueError("Expected orthogonal_l1 pressure.")
+            if tuple(condition.get("pressure_sites", ())) != ACTIVE_SITES:
+                raise ValueError("The historical declared pressure contract changed.")
+            if float(condition.get("pressure_weight", -1.0)) != 1.0:
+                raise ValueError("Expected lambda=1.")
+            if float(condition.get("step_budget", -1.0)) != 1.0:
+                raise ValueError("Expected OL1 trust budget 1.")
+        else:
+            if condition.get("pressure_method") != "none":
+                raise ValueError("Expected the A4 baseline to have no pressure method.")
+            if tuple(condition.get("pressure_sites", ())) != ():
+                raise ValueError("Expected the A4 baseline to have no pressure sites.")
+            if float(condition.get("pressure_weight", -1.0)) != 0.0:
+                raise ValueError("Expected the A4 baseline pressure weight to be zero.")
+            if condition.get("step_budget") is not None:
+                raise ValueError("Expected no OL1 trust budget for the A4 baseline.")
         if int(summary["completed_steps"]) != 712:
             raise ValueError("Condition did not complete 712 optimizer boundaries.")
         if int(summary["input_tokens"]) != 1_493_172_224:
@@ -323,6 +344,7 @@ def _reduce_run(
         )
         sites = _site_counts(activation_path)
         matched_contract = {key: manifest[key] for key in MATCHED_MANIFEST_FIELDS}
+        gate_contract = {key: manifest[key] for key in MATCHED_GATE_FIELDS}
         rows.append(
             {
                 "series_id": series_id,
@@ -332,11 +354,14 @@ def _reduce_run(
                 "kappa": float(condition["gate_threshold"]),
                 "final_validation_loss": loss,
                 "R_model": r_model,
-                "declared_pressure_sites": list(ACTIVE_SITES),
+                "declared_pressure_sites": (
+                    list(ACTIVE_SITES) if pressure_expected else []
+                ),
                 "realized_pressure_sites": list(style["realized_pressure_sites"]),
                 "logical_product_counts": logical,
                 "site_exact_zero": sites,
                 "matched_contract_sha256": _canonical_sha256(matched_contract),
+                "matched_gate_contract_sha256": _canonical_sha256(gate_contract),
                 "source_files": {
                     "manifest": _repo_path(manifest_path),
                     "manifest_sha256": _sha256(manifest_path),
@@ -352,48 +377,89 @@ def _reduce_run(
 
 def build_figure_data() -> dict[str, Any]:
     verification_paths = {
+        "run011_a4": RUN_011 / "artifacts" / "verification.json",
         "run012_h_only": RUN_012 / "artifacts" / "verification.json",
         "run015_four_site": RUN_015 / "artifacts" / "verification.json",
     }
+    run011_verification = _read_json(verification_paths["run011_a4"])
     run012_verification = _read_json(verification_paths["run012_h_only"])
     run015_verification = _read_json(verification_paths["run015_four_site"])
+    _validate_verification(run011_verification, run_name="Run 011")
     _validate_verification(run012_verification, run_name="Run 012")
     _validate_verification(run015_verification, run_name="Run 015")
-    if (
-        run012_verification["initial_parameter_sha256"]
-        != run015_verification["initial_parameter_sha256"]
-    ):
+    initializations = {
+        run011_verification["initial_parameter_sha256"],
+        run012_verification["initial_parameter_sha256"],
+        run015_verification["initial_parameter_sha256"],
+    }
+    if len(initializations) != 1:
         raise ValueError("The compared runs do not share initialization.")
-    if (
-        run012_verification["training_schedule_sha256"]
-        != run015_verification["training_schedule_sha256"]
-    ):
+    schedules = {
+        run011_verification["training_schedule_sha256"],
+        run012_verification["training_schedule_sha256"],
+        run015_verification["training_schedule_sha256"],
+    }
+    if len(schedules) != 1:
         raise ValueError("The compared runs do not share the training schedule.")
 
     realization = {
+        "run011_a4": {
+            "declared_pressure_sites": [],
+            "realized_pressure_sites": [],
+            "pressure_method": "none",
+        },
         "run012_h_only": _validate_run012_realization(),
         "run015_four_site": _validate_run015_realization(run015_verification),
     }
+    run011_rows = _reduce_run(
+        RUN_011,
+        series_id="run011_a4",
+        verification=run011_verification,
+        pressure_expected=False,
+    )
     run012_rows = _reduce_run(
         RUN_012,
         series_id="run012_h_only",
         verification=run012_verification,
+        pressure_expected=True,
     )
     run015_rows = _reduce_run(
         RUN_015,
         series_id="run015_four_site",
         verification=run015_verification,
+        pressure_expected=True,
     )
 
     comparisons = []
-    for historical, corrected in zip(run012_rows, run015_rows, strict=True):
-        if historical["kappa"] != corrected["kappa"]:
+    for baseline, historical, corrected in zip(
+        run011_rows, run012_rows, run015_rows, strict=True
+    ):
+        if not baseline["kappa"] == historical["kappa"] == corrected["kappa"]:
             raise ValueError("Matched rows have different kappa values.")
+        gate_contracts = {
+            baseline["matched_gate_contract_sha256"],
+            historical["matched_gate_contract_sha256"],
+            corrected["matched_gate_contract_sha256"],
+        }
+        if len(gate_contracts) != 1:
+            raise ValueError("Matched A4 gate contracts differ.")
         if historical["matched_contract_sha256"] != corrected["matched_contract_sha256"]:
             raise ValueError("Matched manifest contracts differ beyond realized capture.")
         comparisons.append(
             {
                 "kappa": historical["kappa"],
+                "h_only_minus_a4_validation_loss": (
+                    historical["final_validation_loss"]
+                    - baseline["final_validation_loss"]
+                ),
+                "h_only_minus_a4_R_model_percentage_points": 100.0
+                * (historical["R_model"] - baseline["R_model"]),
+                "four_site_minus_a4_validation_loss": (
+                    corrected["final_validation_loss"]
+                    - baseline["final_validation_loss"]
+                ),
+                "four_site_minus_a4_R_model_percentage_points": 100.0
+                * (corrected["R_model"] - baseline["R_model"]),
                 "corrected_minus_h_only_validation_loss": (
                     corrected["final_validation_loss"]
                     - historical["final_validation_loss"]
@@ -407,8 +473,8 @@ def build_figure_data() -> dict[str, Any]:
         "schema_version": 1,
         "status": "complete_verified_analysis",
         "question": (
-            "How does corrected four-site A4-OL1 compare with the historical "
-            "h-only pressure realization at matched kappa?"
+            "Where do A4 without OL1, corrected four-site A4-OL1, and the "
+            "historical h-only pressure realization lie at matched kappa?"
         ),
         "coverage": dict(EXPECTED_COVERAGE),
         "matched_identity": {
@@ -424,13 +490,14 @@ def build_figure_data() -> dict[str, Any]:
             "gate_topology": "A4-Z",
             "gate_sites": list(ACTIVE_SITES),
             "gate_operator": "one_sided_threshold",
-            "pressure_method": "orthogonal_l1",
+            "baseline_pressure_method": "none",
+            "pressure_variant_method": "orthogonal_l1",
             "pressure_weight": 1.0,
             "step_budget": 1.0,
             "matched_manifest_fields": list(MATCHED_MANIFEST_FIELDS),
         },
         "realization_audit": realization,
-        "series": run012_rows + run015_rows,
+        "series": run011_rows + run012_rows + run015_rows,
         "matched_comparison": comparisons,
         "source_verification": {
             series_id: {
@@ -458,8 +525,13 @@ def _series_rows(data: Mapping[str, Any], series_id: str) -> list[Mapping[str, A
 
 
 def table_markdown(data: Mapping[str, Any]) -> str:
+    pressure_rows = (
+        row
+        for row in data["series"]
+        if row["series_id"] in {"run012_h_only", "run015_four_site"}
+    )
     rows = sorted(
-        data["series"],
+        pressure_rows,
         key=lambda row: (
             float(row["kappa"]),
             0 if row["series_id"] == "run012_h_only" else 1,
@@ -529,6 +601,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         }
     )
     figure, axis = plt.subplots(figsize=(10.6, 6.6))
+    baseline = _series_rows(data, "run011_a4")
     historical = _series_rows(data, "run012_h_only")
     corrected = _series_rows(data, "run015_four_site")
 
@@ -563,6 +636,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         )
 
     for series_id, rows in (
+        ("run011_a4", baseline),
         ("run012_h_only", historical),
         ("run015_four_site", corrected),
     ):
@@ -578,10 +652,10 @@ def plot(data: Mapping[str, Any]) -> Path:
             markeredgecolor="white",
             markeredgewidth=0.95,
             label=style["label"],
-            zorder=5,
+            zorder=4 if series_id == "run011_a4" else 5,
         )
 
-    axis.set_xlim(7.45, 13.10)
+    axis.set_xlim(6.85, 13.10)
     axis.set_ylim(5.10, 6.12)
     axis.set_xlabel(r"Measured $R_{\mathrm{model}}$ (%)")
     axis.set_ylabel("Final validation loss (lower is better)")
@@ -600,7 +674,7 @@ def plot(data: Mapping[str, Any]) -> Path:
             markeredgewidth=0.9,
             label=SERIES[series_id]["label"],
         )
-        for series_id in ("run012_h_only", "run015_four_site")
+        for series_id in ("run011_a4", "run012_h_only", "run015_four_site")
     ]
     legend_handles.append(
         Line2D(
@@ -613,7 +687,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         )
     )
     figure.suptitle(
-        "Pythia-14M A4 gates: realized OL1 pressure target",
+        "Pythia-14M A4 gates: no OL1 and realized OL1 pressure targets",
         x=0.5,
         y=0.975,
         fontsize=14.0,
@@ -622,7 +696,7 @@ def plot(data: Mapping[str, Any]) -> Path:
     figure.text(
         0.5,
         0.935,
-        "Historical h-only capture versus corrected four-site capture; lambda=1 and matched gate threshold",
+        "A4 without pressure, historical h-only capture, and corrected four-site capture at matched gate threshold",
         ha="center",
         va="center",
         fontsize=9.5,
@@ -632,7 +706,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         handles=legend_handles,
         loc="upper center",
         bbox_to_anchor=(0.5, 0.90),
-        ncol=3,
+        ncol=4,
         frameon=False,
         handlelength=2.5,
         columnspacing=1.15,
@@ -658,7 +732,7 @@ def plot(data: Mapping[str, Any]) -> Path:
         format="pdf",
         bbox_inches="tight",
         metadata={
-            "Title": "Pythia-14M A4 OL1 pressure-target comparison",
+            "Title": "Pythia-14M A4 and OL1 pressure-target comparison",
             "Author": "sparsity-spillover analysis 009",
             "Subject": "Measured R_model versus final validation loss",
             "CreationDate": None,

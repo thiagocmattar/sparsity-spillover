@@ -8,13 +8,14 @@ applied OL1 pressure only at `h`?
 
 ## Method and reduction
 
-The comparison contains the five verified Run 012 endpoints and the five
-verified Run 015 endpoints at `kappa in {0, 0.01, 0.05, 0.1, 0.5}`. Both
-cohorts use one-sided A4-Z gates at `a,m,h,z`, operational `orthogonal_l1` with
-`lambda=1` and trust budget 1, the same random initialization, data order,
-optimizer schedule, 712-boundary budget, and complete validation workload.
-Their paired manifests match exactly for model, data, recipe, seeds, topology,
-declared condition, and declared activation-pressure fields.
+The figure contains the five verified Run 011 A4 endpoints, five verified Run
+012 endpoints, and five verified Run 015 endpoints at
+`kappa in {0, 0.01, 0.05, 0.1, 0.5}`. All cohorts use one-sided A4-Z gates at
+`a,m,h,z`, the same random initialization, data order, optimizer schedule,
+712-boundary budget, and complete validation workload. Run 011 has no pressure.
+Runs 012 and 015 use operational `orthogonal_l1` with `lambda=1` and trust
+budget 1; their paired manifests match exactly for model, data, recipe, seeds,
+topology, declared condition, and declared activation-pressure fields.
 
 The declared pressure metadata is not sufficient to identify Run 012. The
 analysis audits its frozen training chain and requires the inherited
@@ -42,13 +43,14 @@ scale.
 
 ## Figure caption and legend
 
-Final validation loss is plotted against measured `R_model` in percent. Blue
-circles show historical Run 012 with A4 gates and realized `h`-only OL1
-pressure. Vermilion squares show corrected Run 015 with the same A4 gates and
-four-site OL1 pressure. Colored lines connect increasing `kappa` order only;
-gray dotted segments join matched `kappa` pairs and are labeled at their
-midpoints. Lower validation loss is better. `R_model` is logical exact-zero
-product opportunity, not measured runtime speedup.
+Final validation loss is plotted against measured `R_model` in percent. Green
+diamonds show Run 011 A4 gates without OL1. Blue circles show historical Run
+012 with the same gates and realized `h`-only OL1 pressure. Vermilion squares
+show corrected Run 015 with four-site OL1 pressure. Colored lines connect
+increasing `kappa` order only; gray dotted segments join the matched Run
+012/015 pressure pairs and are labeled at their midpoints. Lower validation
+loss is better. `R_model` is logical exact-zero product opportunity, not
+measured runtime speedup.
 
 ## Result
 
@@ -65,6 +67,14 @@ two are effectively tied (+0.0009 points for four-site pressure). At
 costs above. Thus, relative to the historical `h`-only realization, the
 corrected intervention does not improve both plotted outcomes at any matched
 threshold.
+
+The no-OL1 A4 curve supplies the common baseline. Historical `h`-only pressure
+improves both validation loss and `R_model` relative to A4 through
+`kappa=0.1`, then is effectively tied in `R_model` and worse in loss at
+`kappa=0.5`. Corrected four-site pressure improves both outcomes relative to A4
+only at `kappa=0` and `0.01`; at `0.05`, `0.1`, and `0.5` it extends
+`R_model` by 2.2506--2.4979 percentage points with increasing validation-loss
+cost.
 
 The site table helps locate the redistribution. At `kappa <= 0.1`, `h`-only
 pressure produces more exact zeros at `h` than four-site pressure, while the
@@ -117,6 +127,8 @@ Percentages are computed from pooled integer exact-zero counts over all six laye
   `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/figures/01-rmodel-vs-validation-loss.pdf`
 - Historical cohort:
   `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/verification.json`
+- A4 baseline cohort:
+  `runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/verification.json`
 - Corrected cohort:
   `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/verification.json`
 - Per-attempt count sources:
