@@ -1,7 +1,10 @@
 # Run 015 - Corrected paper-scale Pythia-14M A4-OL1
 
-Status: designed and implemented; awaiting explicit launch confirmation. No
-scientific attempt or billable resource has been started.
+Status: completed and verified. Five condition-parallel scientific attempts
+completed, were verified remotely, transferred with matching archive hashes,
+safely extracted, and independently verified locally. The cohort verifier
+accepts all 3,560 optimizer boundaries and 20 complete validation passes. All
+RunPod Pods were deleted; the pre-existing network volume is unchanged.
 
 ## Question and decision rule
 
@@ -15,6 +18,30 @@ Refutation includes no paired improvement or a quality cost throughout the
 grid. Either outcome remains limited to one seed, one 14M scale, and one full
 MiniPile pass. The joint four-site pressure cannot identify a single-site
 effect, and logical-product opportunity is not measured runtime speedup.
+
+## Verified result
+
+| `kappa` | corrected A4-OL1 loss | corrected `R_model` | A4 loss | A4 `R_model` | OL1 loss delta | OL1 `R_model` delta |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.458170 | 7.8100% | 5.470497 | 7.2120% | -0.012327 | +0.5980 pp |
+| 0.01 | 5.458277 | 8.5867% | 5.466500 | 7.4137% | -0.008222 | +1.1730 pp |
+| 0.05 | 5.489803 | 10.4564% | 5.434110 | 8.2059% | +0.055693 | +2.2506 pp |
+| 0.1 | 5.548323 | 11.3943% | 5.419642 | 8.9530% | +0.128681 | +2.4413 pp |
+| 0.5 | 6.037987 | 12.7134% | 5.659680 | 10.2155% | +0.378307 | +2.4979 pp |
+
+The scoped hypothesis is supported in a threshold-dependent form. Corrected
+four-site OL1 improves both measured outcomes at `kappa=0` and `0.01`. At
+`0.05`, `0.1`, and `0.5`, it buys additional logical opportunity with an
+increasing validation-loss cost. Among the ten matched Run 011/015 endpoints,
+the corrected `kappa=0.05`, `0.1`, and `0.5` rows extend the nondominated
+frontier; the Run 011 `kappa=0.1` row remains its lowest-loss point.
+
+Every condition realized all 24 pressure tensors on all 712 boundaries, had
+zero overflows or skipped updates, and kept the final pressure/task correction
+ratio at or below the trust budget. The run-local candidate observation is in
+`observations/O001-corrected-a4-ol1-versus-a4.md`. This does not restore
+discarded Finding F001 or alter result-bearing TeX: a new numbered cross-run
+analysis and explicit user approval are still required.
 
 ## Why this is a new run
 
@@ -174,3 +201,34 @@ Historical matched/A7 runs put complete condition time between roughly 70 and
 per condition after setup, executed in parallel, with the 2.5-hour worker guard.
 Preflight timing supersedes this estimate. Monitoring is read-only every five
 minutes with the warning conditions in `DEPLOYMENT_PLAYBOOK.md`.
+
+## Actual RunPod closeout
+
+The exact non-evidence preflight passed on Secure A100 SXM 80 GB at the target
+MB32/GAS32 boundary. Its maximum reserved memory was 67,125,641,216 of
+85,093,777,408 bytes (78.9%), leaving 21.1% headroom. Both endpoint probes
+completed five finite boundaries, used Flash SDPA, and realized the exact
+24-tensor pressure identity.
+
+Four infrastructure-only allocations were deleted without creating scientific
+evidence: two preflight/control-plane attempts and two cross-region cache
+transfers that were too slow for the approved window. Their immutable notes
+are under `prelaunch/infrastructure-attempts/`. The successful preflight Pod
+and all five accepted scientific Pods ran in `US-MD-1`; the scientific workers
+completed in 5,628--6,078 seconds, with median throughput of
+338,968--342,386 tokens/s.
+
+The accepted transfer archives were 1,014,835,200 bytes for `kappa=0` and
+`0.01`, and 1,014,845,440 bytes for the other three conditions. Every remote
+and local SHA-256 matched; all archive paths were confined to the expected
+single attempt directory; remote and local standalone verification passed;
+and `artifacts/verification.json` then verified the complete five-condition
+cohort. `prelaunch/scientific-transfer-closeout.json` records the per-Pod,
+archive, readiness, log, billing, and teardown provenance.
+
+The final resource audit found zero Pods and the one unchanged pre-existing
+100 GB Standard volume `9luykg5yc3` in `EUR-IS-1`. There is no continuing Pod
+compute charge; the retained volume continues its independent charge. Final
+resource teardown is authoritative; the latest posted Pod billing and its
+still-lagging final hourly bucket are recorded separately in the closeout JSON.
+The approved `$22.50` incremental cap was not approached.

@@ -41,7 +41,8 @@ Run 012 applied OL1 only at `h` despite declaring four pressure sites. Finding
 F002 still supports the scoped, tentative Pythia-14M A4/A7 statement. Neither
 supports scale-independent or runtime-speedup language. The F001-backed
 introduction text is now a known stale claim pending explicit user-approved TeX
-revision or corrected Run 015 evidence.
+revision. Corrected Run 015 evidence exists, but it is not yet reconciled in a
+new numbered analysis or approved as a finding.
 
 ## Acknowledged starting differences
 
@@ -100,8 +101,10 @@ Do not automatically promote a successful run into a paper conclusion.
 - Finding F001 is discarded because Run 012's declared four-site pressure was
   actually realized only at `h`. Analysis 007 remains a historical reduction
   of Run 011 A4 versus Run 012 A4-Z + OL1@h and does not support A4-OL1.
-- Run 015 is the designed correction and must complete, be reconciled in a new
-  analysis, and receive user approval before a four-site claim is restored.
+- Run 015 completed the corrected five-condition four-site objective with a
+  verified 24-tensor capture identity. It must still be reconciled in a new
+  numbered analysis and receive user approval before any four-site claim is
+  restored or replaced.
 - Finding F002 tentatively establishes that, for the same one-seed and
   one-pass scope, adding symmetric post-RoPE Q/K/V gates to A4 is near-null at
   `kappa=0`, improves both matched axes at `kappa=0.01`, and exchanges

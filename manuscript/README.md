@@ -35,8 +35,9 @@ variant.
   draft architecture ceiling `R_model_max`.
 - `experiment-control/README.md` records the paper-intent, execution, analysis,
   and finding status of the intervention ladder. Its A4-OL1 Pythia-14M cell is
-  reopened under corrective Run 015 because Run 012 actually applied OL1 only
-  at `h`; Finding F001 is discarded. Its A7 cell is backed by Run 013,
+  completed by corrective Run 015 because Run 012 actually applied OL1 only at
+  `h`; Finding F001 remains discarded and Run 015 is not yet finding-backed.
+  Its A7 cell is backed by Run 013,
   Analysis 008, and Finding F002; its completed A7-OL1
   cell is backed by Run 014 and reported descriptively through Analysis 008.
 - `reports/01-2026-08-30-status-update/` contains the user-requested TeX source,
@@ -124,10 +125,14 @@ actually needs it.
 - On 31 August 2026, Finding F001 was discarded after implementation audit.
   Run 012 declared four-site pressure but reused a training capture fixed to
   `h`; its endpoints are A4-Z + OL1@h, not A4-OL1. Analysis 007 remains a
-  historical reduction of those endpoints. Corrective Run 015 is implemented
-  and awaiting launch confirmation. Existing F001-backed result prose in
-  `introduction.tex` is known stale and is not evidence until explicitly
-  revised or replaced after corrected evidence and user approval.
+  historical reduction of those endpoints. Corrective Run 015 subsequently
+  completed all five matched four-site conditions with a verified 24-tensor
+  pressure identity. Its run-local observation finds paired loss/`R_model`
+  improvement at `kappa=0` and `0.01`, followed by increasing logical
+  opportunity at increasing loss for larger thresholds. Existing F001-backed
+  result prose in `introduction.tex` remains known stale: Run 015 does not
+  restore F001 or authorize TeX changes without a new analysis and explicit
+  user approval.
 - On 30 August 2026, the user approved reporting Analysis 005's uniform
   TEAL-style post-hoc GeLU/ReLU controls as a strong descriptive result in
   `reports/01-2026-08-30-status-update/status-update.tex`. The report references

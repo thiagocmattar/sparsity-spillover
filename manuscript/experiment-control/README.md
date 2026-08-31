@@ -31,8 +31,10 @@ verification, complete validation coverage, and artifact inventory.
 ## Scope dashboard
 
 Cells remain paper candidates until explicitly selected or dropped. The
-Pythia-14M A4-OL1 cell is designed in corrective Run 015 but is not complete;
-Finding F001 is discarded because Run 012 actually applied OL1 only at `h`.
+Pythia-14M A4-OL1 cell is complete with corrected evidence from Run 015;
+Finding F001 remains discarded because it was based on Run 012, which actually
+applied OL1 only at `h`. Run 015 has a run-local candidate observation but no
+promoted finding or manuscript claim.
 The A7 cell is finding-backed by tentative Finding F002. A7-OL1 is a
 completed, descriptively reported candidate with no promoted finding. Their
 paper intent remains `candidate` pending explicit subset selection; this does
@@ -50,17 +52,17 @@ an instruction to execute the full matrix.
 | `A1-H-L1` | 4 | 4/4 full pass complete: Run 004 | 0/4 | 0/4 |
 | `A1-H-OL1` | 4 | 4/4 full pass complete: Run 009 | 0/4 | 0/4 |
 | `A4` | 5 | 5/5 full pass: Run 011; F002 source | 0/5 | 0/5 |
-| `A4-OL1` | 5 | 0/5; corrected Run 015 designed, awaiting launch | 0/5 | 0/5 |
+| `A4-OL1` | 5 | 5/5 full pass: corrected Run 015 | 0/5 | 0/5 |
 | `A7` | 5 | 5/5 full pass: Run 013; F002 source | 0/5 | 0/5 |
 | `A7-OL1` | 5 | 5/5 full pass: Run 014; pilot: Run 010 | 0/5 | 0/5 |
-| **Total** | **30** | **25/30 intended full passes complete** | **0/30** | **0/30** |
+| **Total** | **30** | **30/30 intended full passes complete** | **0/30** | **0/30** |
 
 Runs 006 and 007 remain pilot precedents for A4 and A4-OL1. Run 007 completed
 `kappa` values `0`, `0.01`, `0.05`, and `0.1`; its `kappa=0.5` pilot failed
 twice from local OOM. Run 011 supersedes the A4 pilot. Run 012 does not complete
 the A4-OL1 cell: it realized A4-Z gates plus OL1@h. Run 015 is the separately
-numbered four-site correction. Run 013 supersedes Run 008 for A7, and Run 014
-supersedes Run 010 for A7-OL1.
+numbered four-site correction and now completes all five full-pass conditions.
+Run 013 supersedes Run 008 for A7, and Run 014 supersedes Run 010 for A7-OL1.
 
 ### Historical Run 011 versus Run 012 digest (not four-site A4-OL1)
 
@@ -79,7 +81,29 @@ Finding F001 is discarded and this table is retained only as historical data.
 | 0.5 | 5.659680 | 10.2155% | 5.722666 | 10.2274% | +0.062986 | +0.0119 pp |
 
 Every endpoint covers all 338 complete validation blocks, but none supports a
-four-site A4-OL1 effect. Corrected evidence remains pending Run 015.
+four-site A4-OL1 effect. Corrected evidence is provided separately by Run 015.
+
+### Current corrected Pythia-14M A4-OL1 result digest
+
+Runs 011 and 015 share the full-pass seed, initialization, realized data order,
+optimizer schedule, validation cache, topology, gates, and diagnostic
+implementation. Run 015 proves that the differentiated pressure objective
+contains all 24 `{a,m,h,z}.layer_{0..5}` tensors on every boundary. It has a
+run-local candidate observation; a new numbered frontier analysis and any
+finding or manuscript decision remain pending.
+
+| `kappa` | A4 loss | A4 `R_model` | corrected A4-OL1 loss | corrected `R_model` | OL1 loss delta | OL1 `R_model` delta |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.470497 | 7.2120% | 5.458170 | 7.8100% | -0.012327 | +0.5980 pp |
+| 0.01 | 5.466500 | 7.4137% | 5.458277 | 8.5867% | -0.008222 | +1.1730 pp |
+| 0.05 | 5.434110 | 8.2059% | 5.489803 | 10.4564% | +0.055693 | +2.2506 pp |
+| 0.1 | 5.419642 | 8.9530% | 5.548323 | 11.3943% | +0.128681 | +2.4413 pp |
+| 0.5 | 5.659680 | 10.2155% | 6.037987 | 12.7134% | +0.378307 | +2.4979 pp |
+
+The effect is threshold-dependent: corrected OL1 improves both matched
+outcomes at `kappa=0` and `0.01`; larger thresholds add more logical
+opportunity at increasing validation-loss cost. This is descriptive Run 015
+evidence, not a restoration of discarded Finding F001.
 
 ### Current Pythia-14M A7-OL1 result digest
 
@@ -114,7 +138,7 @@ are deliberately not global parameters.
 
 | Model | Model ID for architecture config | `(L, d, heads, d_head, V)` | Peak LR | Minimum LR | Status |
 | --- | --- | --- | ---: | ---: | --- |
-| Pythia-14M | `EleutherAI/pythia-14m-deduped` | `(6, 128, 4, 32, 50,304)` | `1.0e-3` | `1.0e-4` | executed in Runs 004/009/011/012/013/014 |
+| Pythia-14M | `EleutherAI/pythia-14m-deduped` | `(6, 128, 4, 32, 50,304)` | `1.0e-3` | `1.0e-4` | executed in Runs 004/009/011/012/013/014/015 |
 | Pythia-70M | `EleutherAI/pythia-70m-deduped` | `(6, 512, 8, 64, 50,304)` | `1.0e-3` | `1.0e-4` | proposed; exact revision must be pinned |
 | Pythia-410M | `EleutherAI/pythia-410m-deduped` | `(24, 1,024, 16, 64, 50,304)` | `3.0e-4` | `3.0e-5` | proposed; exact revision must be pinned |
 
@@ -135,6 +159,7 @@ Sources:
 - `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/config.yaml`
 - `runs/013-2026-08-30-pythia14m-full-pass-a7/config.yaml`
 - `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/config.yaml`
+- `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/config.yaml`
 
 ### Shared scientific settings
 
@@ -204,7 +229,7 @@ Parameter provenance:
 - A1-H OL1 lambdas: Run 009; same four-lambda grid and reused Run 004 controls.
 - A4 kappas: Run 006 pilot and Run 011 full pass.
 - A7 kappas: Run 008.
-- A4-OL1 fixed OL1 settings: Run 007 pilot and corrected Run 015 design
+- A4-OL1 fixed OL1 settings: Run 007 pilot and completed corrected Run 015
   (`lambda=1.0`, `step_budget=1.0`). Historical Run 012 declared those settings
   but actually captured only `h`; it is not an A4-OL1 full pass. Run 010
   independently executed the same fixed settings for the A7-OL1 pilot.
@@ -263,14 +288,16 @@ cited` unless updated explicitly.
 
 #### `A4-OL1` - A4 plus OL1 at `a,m,h,z`
 
-- [ ] `kappa=0`, `lambda=1.0`, `step_budget=1.0` - corrected Run 015 designed; awaiting launch.
-- [ ] `kappa=0.01`, `lambda=1.0`, `step_budget=1.0` - corrected Run 015 designed; awaiting launch.
-- [ ] `kappa=0.05`, `lambda=1.0`, `step_budget=1.0` - corrected Run 015 designed; awaiting launch.
-- [ ] `kappa=0.1`, `lambda=1.0`, `step_budget=1.0` - corrected Run 015 designed; awaiting launch.
-- [ ] `kappa=0.5`, `lambda=1.0`, `step_budget=1.0` - corrected Run 015 designed; awaiting launch.
+- [x] `kappa=0`, `lambda=1.0`, `step_budget=1.0` - corrected paper-scale full pass completed and verified in Run 015.
+- [x] `kappa=0.01`, `lambda=1.0`, `step_budget=1.0` - corrected paper-scale full pass completed and verified in Run 015.
+- [x] `kappa=0.05`, `lambda=1.0`, `step_budget=1.0` - corrected paper-scale full pass completed and verified in Run 015.
+- [x] `kappa=0.1`, `lambda=1.0`, `step_budget=1.0` - corrected paper-scale full pass completed and verified in Run 015.
+- [x] `kappa=0.5`, `lambda=1.0`, `step_budget=1.0` - corrected paper-scale full pass completed and verified in Run 015.
 - Historical note: Run 012 completed five A4-Z + OL1@h conditions, not this
   four-site cell. Analysis 007 retains that historical comparison; F001 is
-  discarded. Analysis 002 remains the separate pilot comparison.
+  discarded. Run 015 has a verified run-local observation; a new numbered
+  corrected frontier analysis is pending. Analysis 002 remains the separate
+  pilot comparison.
 
 #### `A7` - mixed threshold at seven sites
 
@@ -436,17 +463,17 @@ not matched comparisons.
 | P03 | `A1-H-L1(lambda) -> A1-H-OL1(lambda)` | What changes when naive pressure is replaced by orthogonal pressure? | Match lambda exactly; reuse the same A1-H control for context. | 14M full-pass Analysis 003 complete from Runs 004/009. |
 | P04 | `A1-H -> A4(kappa=0)` | What changes when ReLU-equivalent one-sided gates expand from `h` to `a,m,h,z`? | Use A4 at zero threshold. | Matched 14M full-pass endpoints available from Runs 004/011; Analysis 004 places them on the common frontier. |
 | P05 | `A4(0) -> A4(kappa>0)` | What is the threshold-strength effect at fixed A4 topology? | Within-run kappa contrast; zero row is mandatory. | 14M full-pass evidence complete in Run 011 and Analyses 004/007. |
-| P06 | `A4(kappa) -> A4-OL1(kappa)` | Does all-active-site OL1 change A4 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Run 015 corrected pairs designed and awaiting launch; Run 012/Analysis 007 do not answer the four-site question; F001 discarded. |
+| P06 | `A4(kappa) -> A4-OL1(kappa)` | Does all-active-site OL1 change A4 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five corrected Run 011/015 pairs are verified in the Run 015 observation; a numbered frontier analysis is pending. Run 012/Analysis 007 do not answer the four-site question; F001 remains discarded. |
 | P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | Five 14M full-pass pairs are complete in Analysis 008; tentative Finding F002 approved. |
 | P08 | `A7(kappa) -> A7-OL1(kappa)` | Does all-seven-site OL1 change A7 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs are count-reconciled in Analysis 008 and reported descriptively in Status Report Number 1; no finding promoted. |
-| P09 | `A4-OL1(kappa) -> A7-OL1(kappa)` | Does attention-site expansion matter when OL1 is present? | Match kappa, lambda, and trust budget. | Run 014 is complete; corrected Run 015 is awaiting launch. Historical Run 012 is A4-Z + OL1@h and is ineligible. |
-| P10 | `(A7-OL1 - A7) - (A4-OL1 - A4)` | Does the OL1 effect interact with topology expansion? | Four-condition difference-in-differences at each matched kappa. | Runs 011/013/014 are complete; the corrected Run 015 A4-OL1 leg is awaiting launch. |
+| P09 | `A4-OL1(kappa) -> A7-OL1(kappa)` | Does attention-site expansion matter when OL1 is present? | Match kappa, lambda, and trust budget. | Corrected Run 015 and Run 014 are complete; a matched numbered analysis is pending. Historical Run 012 is A4-Z + OL1@h and is ineligible. |
+| P10 | `(A7-OL1 - A7) - (A4-OL1 - A4)` | Does the OL1 effect interact with topology expansion? | Four-condition difference-in-differences at each matched kappa. | All four 14M legs in Runs 011/013/014/015 are complete; the difference-in-differences analysis is pending. |
 | P11 | within `A1-H-L1` and within `A1-H-OL1` | What are the lambda dose-response and saturation patterns? | Compare the four lambdas to one shared A1-H control; do not treat lambda as equally spaced. | 14M full-pass Analysis 003 complete. |
-| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4, A7, and A7-OL1 are complete. Corrected A4-OL1 Run 015 is awaiting launch; Analysis 007 is historical A4-Z + OL1@h. |
+| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4, corrected A4-OL1, A7, and A7-OL1 are complete; a numbered analysis incorporating Run 015 is pending. Analysis 007 remains historical A4-Z + OL1@h. |
 | P13 | same step/parameters across 14M, 70M, 410M | Which intervention effects persist with scale? | Match the complete condition identity; use size-specific recipe LR and report architecture separately. | Not started. |
-| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Analysis 008's Run 012 points must be labeled A4-Z + OL1@h; a corrected A4-OL1 frontier awaits Run 015 and a new analysis. |
+| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | Run 015's corrected A4-OL1 endpoints are verified; a new numbered frontier analysis is pending. Analysis 008's Run 012 points must remain labeled A4-Z + OL1@h. |
 | P15 | `A1-H` versus L1/OL1 at `h` | Does targeted `h` pressure produce sparsity spillover at untargeted attention sites? | Sitewise count-first exact/near-zero and RMS changes at matched lambda/control. | Run 004 observations and full-pass Analysis 003 complete; finding selection remains open. |
-| P16 | OL1 across A1-H, A4, and A7 | How do conflict, projection, trust saturation, and correction ratios change with pressure topology? | Use training-time OL1 boundary metrics; checkpoint-only reconstruction is invalid. | Full-pass A1-H and A7-OL1 metrics exist; corrected four-site A4 metrics are designed in Run 015 and awaiting launch. |
+| P16 | OL1 across A1-H, A4, and A7 | How do conflict, projection, trust saturation, and correction ratios change with pressure topology? | Use training-time OL1 boundary metrics; checkpoint-only reconstruction is invalid. | Full-pass A1-H, corrected four-site A4, and A7-OL1 metrics exist; cross-topology analysis is pending. |
 | P17 | measured `R_model` versus analytic `R_model_max` across scales | How much of topology-conditioned reach is realized, and how does the ceiling scale? | Preserve integer counts and architecture/workload identity; `U_arch` needs its numerator caveat. | 14M partial evidence; 70M/410M not started. |
 | P18 | intervention effect by model size | Does scale modify nonlinearity, pressure, or threshold effects? | Analyze paired deltas within each size before comparing deltas across sizes. | Not started. |
 
@@ -467,7 +494,7 @@ Interpretation cautions:
 
 - Whether Run 014's threshold-dependent A7-OL1 result, now included in Analysis
   008, should receive a tentative finding; analysis alone does not promote it.
-- Whether corrected Run 015 results, after launch and a new analysis, warrant a
+- Whether corrected Run 015 results, after a new numbered analysis, warrant a
   new A4-OL1 finding or manuscript revision. Run 012 is settled as A4-Z + OL1@h.
 - Whether all four A1-H lambda rows are needed at 70M/410M or a preregistered
   subset should be selected from 14M evidence.
@@ -497,7 +524,7 @@ Interpretation cautions:
 - Full-pass A4 source: `runs/011-2026-08-30-pythia14m-full-pass-a4z/`.
 - Historical A4-Z + OL1@h source:
   `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/`.
-- Corrected full-pass A4-OL1 design (not yet launched):
+- Corrected full-pass A4-OL1 source:
   `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/`.
 - Full-pass A7 source:
   `runs/013-2026-08-30-pythia14m-full-pass-a7/`.

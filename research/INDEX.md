@@ -5,17 +5,16 @@
 
 ## Current status
 
-Run 015 is implemented and awaiting launch confirmation as the corrective
-paper-scale Pythia-14M A4-OL1 run. It matches Run 011 across the five kappas and
-requires realized OL1 capture at all 24 `{a,m,h,z}.layer_{0..5}` tensors on
-every microbatch. The bug being corrected is now explicit: Run 012 declared
-four-site pressure but reused Run 004's hard-coded `ActivationCapture(model,
-["h"])`, so its actual intervention was A4-Z gates plus OL1@h. Run 012's raw
-evidence remains valid for that realized intervention, but not for A4-OL1.
-Finding F001 is discarded, Analysis 007 is historical rather than support for a
-four-site claim, and the corrected comparison remains pending Run 015 execution
-and a new approved analysis. No Run 015 training or billable resource has been
-started.
+Run 015 completed and verified the corrective paper-scale Pythia-14M A4-OL1
+cohort. Every one of 3,560 boundaries realized all 24
+`{a,m,h,z}.layer_{0..5}` pressure tensors, and all five conditions completed
+full validation and local artifact reconciliation. Against matched Run 011,
+corrected OL1 improves both validation loss and `R_model` at `kappa=0` and
+`0.01`; at larger thresholds it adds 2.25--2.50 percentage points of logical
+opportunity with increasing validation-loss cost. All Pods are deleted and the
+pre-existing volume is unchanged. The run-local result is descriptive pending
+a new numbered analysis; discarded F001 is not restored, and Analysis 007
+remains historical A4-Z + OL1@h evidence from Run 012.
 
 Run 014 completed the five-condition paper-scale A7-OL1 cohort with valid
 evidence. At matched `kappa=0.1`, OL1 adds 1.3717 percentage points of
@@ -71,11 +70,12 @@ Next run number: `016`. Next analysis number: `009`. Next finding number: `F003`
 
 ## Where we stopped
 
-- 2026-08-31: Run 015 was opened and implemented to correct Run 012's h-only
-  pressure-capture bug. It now fails closed unless every microbatch realizes all
-  24 A4 pressure tensors and carries that identity through preflight, events,
-  and terminal verification. Launch is not approved. Run 012 is reclassified
-  as A4-Z + OL1@h, and F001 is discarded pending corrected evidence.
+- 2026-08-31: Run 015 completed and verified the corrected five-condition
+  four-site A4-OL1 full pass. All 3,560 boundaries proved the 24-tensor pressure
+  identity; complete validation, diagnostics, checkpoints, archive hashes, and
+  local verification reconcile. All RunPod Pods are deleted. The candidate
+  observation is not a promoted finding; F001 remains discarded pending a new
+  analysis and explicit approval.
 - 2026-08-31: Status Report Number 1 was updated through Run 014: A7-OL1 is
   complete at the cutoff, the report contains the interleaved all-site
   A7/A7-OL1 table, Run 014 compute/cost, and Analysis 008's corrected
@@ -195,7 +195,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 012 | What happened under A4-Z gates plus the realized `h`-only OL1 pressure? | completed (valid only as A4-Z + OL1@h; declared four-site identity invalid) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
 | 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 and F002 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
 | 014 | Does seven-site OL1 improve the paper-scale A7 quality--logical-opportunity frontier? | completed (valid; run-local observation, no finding promoted) | `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/` |
-| 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | designed and implemented; awaiting launch confirmation | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
+| 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | completed (valid; run-local observation, new analysis pending) | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
 
 ## Analyses
 
