@@ -10,6 +10,14 @@ comparison. At matched `kappa <= 0.1`, A4-OL1 lowers loss and increases
 `R_model` relative to A4; the lowest A4-OL1 loss is 5.195590 at `kappa=0.05`,
 while `kappa=0.5` reverses the loss advantage. Analysis 007 owns the
 count-reconciled figure, table, observation, and machine-readable evidence.
+Run 013 completed its five-condition paper-scale A7-Z-POST cohort with valid
+evidence. Relative to matched A4, `kappa=0.01` improved validation loss by
+0.007678 and `R_model` by 0.2039 percentage points; larger thresholds gained
+more logical opportunity with increasing quality cost. All 3,560 steps, 20
+complete validation passes, checkpoints, and diagnostics are local and
+verified. All Run 013 Pods are deleted; no volume was created, and the
+pre-existing volume remains intentionally retained. This is a candidate run
+observation, not a promoted finding.
 Run 012 completed its five-condition paper-scale A4-OL1 cohort with valid
 evidence. All 3,560 optimizer steps and 20 complete validation passes reconcile;
 all five checkpoints and agreed diagnostics are local and verified. All Pods
@@ -39,18 +47,15 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Run 013 is launch-approved for the five-condition paper-scale Pythia-14M A7
-cohort; implementation and the full 166-test bootstrap suite are complete, and
-the guarded RunPod preflight is next.
-
 Next run number: `014`. Next analysis number: `008`. Next finding number: `F002`.
 
 ## Where we stopped
 
-- 2026-08-30: Run 013 locked the five paper-scale mixed A7-Z-POST conditions,
-  matched them to Run 011, passed 7 focused, 68 affected, and all 166 repository
-  tests, and received combined design/launch authorization. No scientific
-  attempt has started; the exact guarded A100 preflight is next.
+- 2026-08-31: Run 013 completed and verified valid: five condition-parallel
+  A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, retained recovery checkpoints, and
+  all approved diagnostics reconcile. All Run 013 Pods were deleted, and the
+  run-local candidate observation records the matched A7/A4 result.
 - 2026-08-30: Finding F001 tentatively consolidated Analysis 007's matched
   full-pass A4/A4-OL1 result and linked it into the manuscript evidence
   crosswalk with its one-seed, one-scale, and logical-opportunity limits.
@@ -141,7 +146,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
 | 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; source for F001) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
 | 012 | Does four-site OL1 improve the paper-scale A4-Z threshold quality--logical-opportunity frontier? | completed (valid; Analysis 007 and F001 complete) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
-| 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | launch approved; preflight pending | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
+| 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; candidate observation complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
 
 ## Analyses
 

@@ -1,0 +1,244 @@
+name: pythia-14m-full-minipile-pass-a7-z-post-mixed-threshold
+model:
+  architecture: EleutherAI/pythia-14m-deduped
+  revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  initialization: random
+  initialization_method: small_init
+  output_layer_initialization_method: wang_init
+  attention_implementation: sdpa_flash
+  execution_engine: transformers_recipe_mapping
+  topology_id: A7-Z-POST
+  site_gate: null
+  site_gates:
+    a:
+      operator: one_sided_threshold
+      kappa: 0.01
+    m:
+      operator: one_sided_threshold
+      kappa: 0.01
+    h:
+      operator: one_sided_threshold
+      kappa: 0.01
+    q_post:
+      operator: symmetric_threshold
+      kappa: 0.01
+    k_post:
+      operator: symmetric_threshold
+      kappa: 0.01
+    v:
+      operator: symmetric_threshold
+      kappa: 0.01
+    z:
+      operator: one_sided_threshold
+      kappa: 0.01
+recipe:
+  source: https://github.com/EleutherAI/pythia/blob/main/models/14M/pythia-14m.yml
+  original_engine: GPT-NeoX-v1.0-DeepSpeed
+  mapped_engine: Transformers-5.12-PyTorch-2.11
+  exact_framework_reproduction: false
+  optimizer_mapping: pytorch_fused_adamw
+  weight_decay_exclusions:
+  - bias
+  - layer_norm
+  lr_schedule_semantics: gpt_neox_v1_pre_step
+runtime:
+  python: '3.12'
+  torch: 2.11.0
+  transformers: 5.12.1
+  cuda_runtime: '12.8'
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  append_eos: true
+  sequence_length: 2048
+  training_metadata: data/tokenized/minipile-pythia-14m-full/train/metadata.json
+  validation_metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+seeds:
+  model: 1234
+  data_order: 1234
+conditions:
+  active_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  one_sided_sites:
+  - a
+  - m
+  - h
+  - z
+  symmetric_sites:
+  - q_post
+  - k_post
+  - v
+  gate_thresholds:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  pressure_method: none
+comparison:
+  source_run: runs/011-2026-08-30-pythia14m-full-pass-a4z
+  verification: runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/verification.json
+  matched_condition_ids:
+  - a4z-one-sided-kappa-0
+  - a4z-one-sided-kappa-0p01
+  - a4z-one-sided-kappa-0p05
+  - a4z-one-sided-kappa-0p1
+  - a4z-one-sided-kappa-0p5
+  initial_parameter_sha256: ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57
+  training_schedule_sha256: f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa
+  run011_code_sha256: c253d6cba5511e7e43f3599a5776b846b4a8b8048a32c23fcfc66317d8b1bf09
+training:
+  max_steps: 712
+  peak_learning_rate: 0.001
+  minimum_learning_rate: 0.0001
+  global_batch_size: 1024
+  micro_batch_size: 32
+  gradient_accumulation_steps: 32
+  optimizer: adamw
+  adamw_betas:
+  - 0.9
+  - 0.95
+  adamw_eps: 1.0e-08
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  warmup_fraction: 0.01
+  precision: float16_dynamic
+  parameter_dtype: float32
+  initial_loss_scale_power: 12
+  loss_scale_window: 1000
+  loss_scale_hysteresis: 2
+  minimum_loss_scale: 1.0
+  hidden_dropout: 0.0
+  attention_dropout: 0.0
+  activation_checkpointing: false
+  device: cuda
+  log_every_steps: 1
+validation:
+  documents: 500
+  complete_sequences: 338
+  input_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 32
+  at_step_one: true
+  at_final_step: true
+diagnostics:
+  activation_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  - attention_output
+  near_zero_thresholds:
+  - 0.0
+  - 0.001
+  - 0.01
+  activation_statistics: true
+  weight_statistics: true
+  weight_statistics_include_bias_and_norm: true
+  gradient_interaction: false
+  logical_products: true
+  logical_product_batch_size: 1
+  clipping_frontier: null
+checkpoints:
+  model_steps:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 32
+  - 64
+  - 128
+  - 256
+  - 512
+  - 712
+  optimizer_steps:
+  - 256
+  - 512
+  - 712
+  retain_final: true
+runpod:
+  cloud_type: SECURE
+  pod_count: 5
+  parallelism: one_condition_per_gpu
+  image: runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35
+  image_tag_reference: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 30
+  pod_volume_gb: 25
+  volume_mount_path: /workspace
+  preflight_terminate_after_hours: 1.5
+  scientific_terminate_after_hours: 2.5
+  preflight_max_minutes: 45
+  monitoring_interval_minutes: 5
+  stale_event_minutes: 10
+  secure_fallback: false
+  retained_network_volume_id: 9luykg5yc3
+  retained_network_volume_data_center: EUR-IS-1
+  cache_strategy: retained_network_volume_if_verified_else_hash_checked_worker_copies
+  worker_assignments:
+    a7-z-post-mixed-kappa-0:
+    - a7-z-post-mixed-kappa-0
+    a7-z-post-mixed-kappa-0p01:
+    - a7-z-post-mixed-kappa-0p01
+    a7-z-post-mixed-kappa-0p05:
+    - a7-z-post-mixed-kappa-0p05
+    a7-z-post-mixed-kappa-0p1:
+    - a7-z-post-mixed-kappa-0p1
+    a7-z-post-mixed-kappa-0p5:
+    - a7-z-post-mixed-kappa-0p5
+  gpu_type_by_worker:
+    a7-z-post-mixed-kappa-0: NVIDIA A100-SXM4-80GB
+    a7-z-post-mixed-kappa-0p01: NVIDIA A100-SXM4-80GB
+    a7-z-post-mixed-kappa-0p05: NVIDIA A100-SXM4-80GB
+    a7-z-post-mixed-kappa-0p1: NVIDIA A100-SXM4-80GB
+    a7-z-post-mixed-kappa-0p5: NVIDIA A100-SXM4-80GB
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer_at_declared_steps: true
+  retain_predictions: false
+condition:
+  id: a7-z-post-mixed-kappa-0p01
+  order: 2
+  topology_id: A7-Z-POST
+  active_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  one_sided_sites:
+  - a
+  - m
+  - h
+  - z
+  symmetric_sites:
+  - q_post
+  - k_post
+  - v
+  gate_threshold: 0.01
+  pressure_method: none
+  pressure_sites: []
+  pressure_weight: 0.0
+  step_budget: null
+  label: kappa=0.01
+  is_control: false
+activation_pressure:
+  method: none
+  sites: []
+  weight: 0.0
+  step_budget: null
+  eps: 1.0e-12

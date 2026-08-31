@@ -2,9 +2,12 @@
 
 ## Status
 
-Design and execution were pre-approved by the user on 2026-08-30. The run-local
-implementation is in progress; scientific execution has not yet started. This
-record will be updated append-only once the first scientific attempt exists.
+Completed with valid evidence on 2026-08-31. The guarded preflight and all five
+condition-parallel A100 workers passed; every packet was hash-matched, retrieved,
+and verified locally before its Pod was deleted. RunPod now reports zero Pods.
+The pre-existing 100 GB shared volume remains intentionally retained, and no
+new volume was created. The result is a candidate observation, not a promoted
+finding or manuscript claim.
 
 ## Maintained execution checklist
 
@@ -13,15 +16,15 @@ record will be updated append-only once the first scientific attempt exists.
 - [x] 2. Record the complete design and the user's combined design/launch
   authorization.
 - [x] 3. Implement and pass focused, affected-run, and full-repository tests.
-- [ ] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at `kappa=0`
+- [x] 4. Run one guarded Secure A100 SXM 80 GB endpoint preflight at `kappa=0`
   and `kappa=0.5`, including cache, initialization, schedule, runtime, flash,
   memory, and finite-boundary checks.
-- [ ] 5. Lock the measured launch packet: live price/capacity, ETC, maximum
+- [x] 5. Lock the measured launch packet: live price/capacity, ETC, maximum
   duration/cost, cache path, transfer inventory, monitoring, and teardown.
-- [ ] 6. Start five concurrent one-condition workers.
-- [ ] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
+- [x] 6. Start five concurrent one-condition workers.
+- [x] 7. Monitor, retrieve, hash-check, and verify all five attempts and the
   cohort.
-- [ ] 8. Delete every Run 013 Pod, audit all billable resources, and update the
+- [x] 8. Delete every Run 013 Pod, audit all billable resources, and update the
   paper-control execution state without promoting a finding.
 
 ## Question and hypothesis
@@ -178,6 +181,68 @@ Pod is deleted. The cohort verifier runs only after all five accepted attempts
 are local. Closeout then re-lists Pods and volumes and records posted billing;
 provider billing lag is reported separately from the authoritative zero-Pod
 teardown state.
+
+## Scientific execution and closeout
+
+The preflight used one Secure A100 SXM 80 GB Pod in `EUR-IS-1`, attached the
+pre-existing shared volume, and passed the exact cache, initialization,
+schedule, code, flash-attention, finite-boundary, and memory checks at both
+threshold endpoints. Steady boundary medians were about 4.87 seconds at
+`kappa=0` and 4.99 seconds at `kappa=0.5`; peak reserved memory was 57.23 GiB,
+leaving 27.8% physical-memory headroom. Its packet was retrieved and verified
+before the Pod was deleted.
+
+Five fresh Secure A100 SXM workers in `US-MD-1` then received independent,
+hash-matched copies of the exact train and validation caches. Their scientific
+processes launched between 00:57:44 and 00:57:47 UTC and completed between
+02:19:16 and 02:26:49 UTC. Every worker held dynamic loss scale 4,096, recorded
+no overflow or skipped optimizer boundary, and completed all 712 steps.
+
+The locally verified endpoint summary is:
+
+| `kappa` | Final train loss | Final validation loss | `R_block` | `R_model` |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 5.546727 | 5.468401 | 24.0971% | 7.2177% |
+| 0.01 | 5.540280 | 5.458822 | 25.4325% | 7.6176% |
+| 0.05 | 5.513442 | 5.437888 | 30.4715% | 9.1269% |
+| 0.1 | 5.502831 | 5.428681 | 34.8053% | 10.4250% |
+| 0.5 | 5.786563 | 5.702923 | 51.3709% | 15.3868% |
+
+Against Run 011 A4 at matched `kappa`, the A7-minus-A4 result is:
+
+| `kappa` | Validation-loss delta | `R_model` delta |
+| ---: | ---: | ---: |
+| 0 | -0.002096 | +0.0056 pp |
+| 0.01 | -0.007678 | +0.2039 pp |
+| 0.05 | +0.003778 | +0.9210 pp |
+| 0.1 | +0.009038 | +1.4720 pp |
+| 0.5 | +0.043244 | +5.1713 pp |
+
+The near-null `kappa=0` pair supports execution matching. At `kappa=0.01`, A7
+improves both complete-validation loss and logical opportunity relative to A4.
+At `kappa >= 0.05`, adding the three symmetric attention-operand gates buys
+progressively more `R_model` with a progressively larger quality cost. Within
+A7, the lowest final validation loss is 5.428681 at `kappa=0.1`, while the
+largest measured `R_model` is 15.3868% at `kappa=0.5`, or 51.37% of the declared
+A7 analytic reach ceiling. These are one-seed, one-scale descriptive outcomes;
+no measured sparse-kernel speedup is implied.
+
+Every 1.014 GB archive matched its cloud SHA-256 and passed the local standalone
+verifier before teardown. The cohort verifier accepted five conditions, 3,560
+optimizer steps, 20 complete validation passes, 7,465,861,120 training tokens,
+common initialization/schedule/code identities, exact checkpoint inventories,
+and all agreed activation, weight, and logical-product diagnostics. Full
+archive, readiness, log, Pod, and teardown provenance is recorded in
+`prelaunch/scientific-transfer-closeout.json`; accepted endpoint data is in
+`artifacts/verification.json`.
+
+All six Run 013 Pods (one preflight and five scientific) are deleted and the
+live Pod inventory is empty. No network volume was created or changed. The
+pre-existing volume `9luykg5yc3` remains intentionally retained at its
+independent `$0.01/hour` charge. Closed-hour Pod billing had posted `$8.113020`
+at the 02:33 UTC audit while the final partial hour was still pending. The
+account-balance reduction across the run was `$15.832319`, including the
+retained volume's baseline charge, below the approved `$22.65` all-in ceiling.
 
 ## Support, refutation, and interpretation limits
 

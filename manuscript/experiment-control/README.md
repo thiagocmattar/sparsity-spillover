@@ -1,6 +1,6 @@
 # Manuscript experiment control
 
-Last updated: 2026-08-30
+Last updated: 2026-08-31
 
 This is the paper-facing control surface for experiments that may contribute to
 the manuscript. Inclusion here is not design approval, launch approval, or a
@@ -242,14 +242,16 @@ step remains `not cited` unless updated explicitly.
 
 #### `A7` - mixed threshold at seven sites
 
-- [ ] `kappa=0` - pilot completed in Run 008; Run 013 full pass launch approved.
-- [ ] `kappa=0.01` - pilot completed in Run 008; Run 013 full pass launch approved.
-- [ ] `kappa=0.05` - pilot completed in Run 008; Run 013 full pass launch approved.
-- [ ] `kappa=0.1` - pilot completed in Run 008; Run 013 full pass launch approved.
-- [ ] `kappa=0.5` - pilot completed in Run 008; Run 013 full pass launch approved.
+- [x] `kappa=0` - paper-scale full pass completed and verified in Run 013.
+- [x] `kappa=0.01` - paper-scale full pass completed and verified in Run 013.
+- [x] `kappa=0.05` - paper-scale full pass completed and verified in Run 013.
+- [x] `kappa=0.1` - paper-scale full pass completed and verified in Run 013.
+- [x] `kappa=0.5` - paper-scale full pass completed and verified in Run 013.
 - Pilot identity: seed 0, global batch 64, 581 updates, BF16.
 - Paper-scale identity: seed 1234, global batch 1,024, 712 updates, dynamic
-  FP16; five condition-parallel Secure A100 workers in Run 013.
+  FP16; five condition-parallel Secure A100 workers completed in Run 013.
+- Analysis: Run 013's candidate observation records the matched A7/A4 endpoint
+  deltas; a paper-facing numbered synthesis has not been selected.
 
 #### `A7-OL1` - mixed A7 plus OL1 at all seven sites
 
@@ -398,14 +400,14 @@ not matched comparisons.
 | P04 | `A1-H -> A4(kappa=0)` | What changes when ReLU-equivalent one-sided gates expand from `h` to `a,m,h,z`? | Use A4 at zero threshold. | Matched 14M full-pass endpoints available from Runs 004/011; Analysis 004 places them on the common frontier. |
 | P05 | `A4(0) -> A4(kappa>0)` | What is the threshold-strength effect at fixed A4 topology? | Within-run kappa contrast; zero row is mandatory. | 14M full-pass evidence complete in Run 011 and Analyses 004/007. |
 | P06 | `A4(kappa) -> A4-OL1(kappa)` | Does all-active-site OL1 change A4 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Five 14M full-pass pairs complete in Analysis 007; tentative Finding F001 approved. |
-| P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | 14M pilot evidence pairable; analysis not started. |
+| P07 | `A4(kappa) -> A7(kappa)` | What changes when symmetric post-RoPE `q,k,v` gates are added? | Match kappa. At `kappa=0`, symmetric gates are identity, providing a null/equivalence check. | Five 14M full-pass pairs are verified in Run 013; candidate run observation complete, paper analysis not selected. |
 | P08 | `A7(kappa) -> A7-OL1(kappa)` | Does all-seven-site OL1 change A7 at fixed threshold? | Match kappa; `lambda=1`, `step_budget=1`. | Pilot analysis 001 completed for all five pairs. |
 | P09 | `A4-OL1(kappa) -> A7-OL1(kappa)` | Does attention-site expansion matter when OL1 is present? | Match kappa, lambda, and trust budget. | Four 14M pilot pairs available; analysis not started. |
 | P10 | `(A7-OL1 - A7) - (A4-OL1 - A4)` | Does the OL1 effect interact with topology expansion? | Four-condition difference-in-differences at each matched kappa. | Four complete pilot quartets available; `kappa=0.5` incomplete because of Run 007. |
 | P11 | within `A1-H-L1` and within `A1-H-OL1` | What are the lambda dose-response and saturation patterns? | Compare the four lambdas to one shared A1-H control; do not treat lambda as equally spaced. | 14M full-pass Analysis 003 complete. |
-| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4/A4-OL1 full-pass Analysis 007 complete; A7/A7-OL1 remain pilot-scale. |
+| P12 | within A4/A7, with and without OL1 | What are the kappa dose-response and quality-logical-opportunity frontiers? | Always include the family's own `kappa=0` row. | A4/A4-OL1 full-pass Analysis 007 complete; A7 full pass complete in Run 013, while A7-OL1 remains pilot-scale. |
 | P13 | same step/parameters across 14M, 70M, 410M | Which intervention effects persist with scale? | Match the complete condition identity; use size-specific recipe LR and report architecture separately. | Not started. |
-| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | 14M full-pass A1-H and A4 evidence are combined in Analysis 007; A7 remains pilot-scale. |
+| P14 | all selected steps within one size | Which rows are nondominated in validation loss versus `R_model`? | Same evaluation workload and metric implementation; report logical opportunity, not speedup. | 14M full-pass A1-H, A4, A4-OL1, and A7 evidence now exists; Analysis 007 predates A7 and has not been expanded. |
 | P15 | `A1-H` versus L1/OL1 at `h` | Does targeted `h` pressure produce sparsity spillover at untargeted attention sites? | Sitewise count-first exact/near-zero and RMS changes at matched lambda/control. | Run 004 observations and full-pass Analysis 003 complete; finding selection remains open. |
 | P16 | OL1 across A1-H, A4, and A7 | How do conflict, projection, trust saturation, and correction ratios change with pressure topology? | Use training-time OL1 boundary metrics; checkpoint-only reconstruction is invalid. | Full-pass A1-H and A4-OL1 metrics exist; A7-OL1 remains pilot-scale, so a matched three-topology paper-scale analysis is unavailable. |
 | P17 | measured `R_model` versus analytic `R_model_max` across scales | How much of topology-conditioned reach is realized, and how does the ceiling scale? | Preserve integer counts and architecture/workload identity; `U_arch` needs its numerator caveat. | 14M partial evidence; 70M/410M not started. |
@@ -426,9 +428,8 @@ Interpretation cautions:
 
 ## Open decisions before selecting the paper subset
 
-- Which A7-OL1 kappa rows, if any, merit paper-scale full passes. All five A7
-  rows were selected and launch-approved in Run 013; A4 and A4-OL1 are complete
-  at all five planned Pythia-14M thresholds.
+- Which A7-OL1 kappa rows, if any, merit paper-scale full passes. A4, A4-OL1,
+  and A7 are complete at all five planned Pythia-14M thresholds.
 - Whether all four A1-H lambda rows are needed at 70M/410M or a preregistered
   subset should be selected from 14M evidence.
 - Whether one seed (`1234`) is sufficient for the paper claim or selected
@@ -456,7 +457,7 @@ Interpretation cautions:
 - A7-OL1 pilot: `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/`.
 - Full-pass A4 source: `runs/011-2026-08-30-pythia14m-full-pass-a4z/`.
 - Full-pass A4-OL1 source: `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/`.
-- Full-pass A7 source in progress:
+- Full-pass A7 source:
   `runs/013-2026-08-30-pythia14m-full-pass-a7/`.
 - Full-pass A4/A4-OL1 synthesis:
   `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` and
