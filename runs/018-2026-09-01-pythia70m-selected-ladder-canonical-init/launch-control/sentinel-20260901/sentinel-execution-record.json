@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "wave": "scientific_sentinel",
+  "status": "complete_verified_torn_down",
+  "source_commit": "7f26226b18a3191446ddb37785d4faaa5814c010",
+  "source_bundle_sha256": "a65adbcf81f05e7652ba80c25abae0d63607602e61ed713a899b76af63f86813",
+  "config_sha256": "3ad4fbecce243837acef189743f78bb158e9775940b81b50909ba92508c2ebaf",
+  "run_code_sha256": "a57a322cd02c4405cd032f84024680b083a719d9c101e9ac2f66e28fc323eb89",
+  "training_schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+  "initial_parameter_sha256": "e8b8d8e48880f8ff25e421ed29b04a81eb417300f2b4a01a8c4d56f2591a1062",
+  "runtime": {
+    "cloud": "SECURE",
+    "gpu": "NVIDIA H200",
+    "unit_price_usd_per_gpu_hour": 4.59,
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "data_center": "US-NC-1",
+    "container_disk_gb": 30,
+    "pod_volume_gb": 25,
+    "network_volume_attached": false
+  },
+  "conditions": [
+    {
+      "condition_id": "a0-gelu",
+      "attempt_id": "001-20260901-133016-4e43b254",
+      "pod_id": "h5r2c30mm7apht",
+      "validation_loss": 4.099767337889361,
+      "R_model": 0.0000045409213981255505,
+      "R_model_max": 0.0,
+      "median_tokens_per_second": 465812.0681029365,
+      "archive_bytes": 846254080,
+      "archive_sha256": "a452bd3d5d80b84412baee4a2d9cce8c1489ff0bcde2f4e22da6af3535b5d96d",
+      "inventoried_file_count": 33,
+      "teal": "complete_verified_with_observed_bound_repair"
+    },
+    {
+      "condition_id": "a1h-relu",
+      "attempt_id": "002-20260901-132416-647ee429",
+      "pod_id": "uksudys8zc1p1r",
+      "validation_loss": 4.222744515661657,
+      "R_model": 0.1006575817198192,
+      "R_model_max": 0.1235446703263558,
+      "median_tokens_per_second": 464156.1244238489,
+      "archive_bytes": 846243840,
+      "archive_sha256": "dc53d21f56e17a7008817dc39c7f3365c7a91242da3d995dd092b73e48d4a408",
+      "inventoried_file_count": 28,
+      "teal": "complete_verified"
+    },
+    {
+      "condition_id": "a4-ol1-kappa-0",
+      "attempt_id": "003-20260901-131727-14b4dea9",
+      "pod_id": "98ttg1vczp7bzi",
+      "validation_loss": 4.805288591328457,
+      "R_model": 0.25672509475572236,
+      "R_model_max": 0.3706340109790674,
+      "median_tokens_per_second": 277487.13288438477,
+      "archive_bytes": 846878720,
+      "archive_sha256": "924066a44cf79f5dff302b571fe2ab8ccbbce155c5da8013e31415ba559a78d8",
+      "inventoried_file_count": 25,
+      "teal": "not_applicable"
+    },
+    {
+      "condition_id": "a7-ol1-kappa-0",
+      "attempt_id": "008-20260901-131158-54a0039f",
+      "pod_id": "895lohhbsfvdo3",
+      "validation_loss": 4.941204175441222,
+      "R_model": 0.23562417494680196,
+      "R_model_max": 0.49423900585148095,
+      "median_tokens_per_second": 255830.72184185032,
+      "archive_bytes": 846909440,
+      "archive_sha256": "4a09ffd1a587734f43d50e40f7749ee48d0e724f18fa8365428cd6f7294ee951",
+      "inventoried_file_count": 25,
+      "teal": "not_applicable"
+    }
+  ],
+  "validation": {
+    "documents": 500,
+    "complete_sequences": 338,
+    "input_tokens": 692224,
+    "excluded_tail_tokens": 1444,
+    "all_conditions_complete": true
+  },
+  "verification": {
+    "gradient_overflow_steps": 0,
+    "optimizer_step_skips": 0,
+    "archive_hash_failures": 0,
+    "inventoried_file_hash_failures": 0,
+    "focused_repair_tests": "5 passed",
+    "run018_tests": "22 passed",
+    "bootstrap_tests": "183 passed",
+    "all_four_corrected_attempt_verifiers": "passed"
+  },
+  "verifier_defect": {
+    "affected_condition": "a0-gelu",
+    "legacy_failure": "observed R_model incorrectly compared with analytic gate-reach R_model_max",
+    "resolution": "append-only observed fraction bound [0,1]; original analytic ceiling identity checks retained",
+    "training_attempt_modified": false
+  },
+  "billing": {
+    "sentinel_guard_cap_usd": 39.083,
+    "sentinel_amount_visible_in_lagging_daily_ledger_usd": 19.167761233635247,
+    "lifecycle_based_estimate_usd": 31.8,
+    "invoice_final": false,
+    "ledger_warning": "All four Pods reported the same five-minute partial-hour charge despite different teardown times; later usage had not posted.",
+    "maximum_possible_remaining_balance_deduction_usd": 39.083,
+    "balance_at_sentinel_launch_usd": 199.1531134489,
+    "minimum_balance_after_full_guard_cap_usd": 160.0701134489
+  },
+  "teardown": {
+    "live_pod_count": 0,
+    "retained_network_volume_id": "9luykg5yc3",
+    "retained_network_volume_size_gb": 100,
+    "retained_network_volume_data_center": "EUR-IS-1",
+    "retained_network_volume_unchanged": true
+  },
+  "remainder_wave": {
+    "condition_count": 8,
+    "status": "not_launched",
+    "requires_post_sentinel_explicit_decision": true
+  }
+}
