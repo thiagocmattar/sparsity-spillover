@@ -41,12 +41,15 @@ initial opportunity gains at low loss cost followed by a steeper loss rise.
 
 `figures/01-pythia14m-vs-70m-selected-ladder.pdf` is one absolute-coordinate
 frontier: complete-validation loss against measured `R_model`. It overlays the
-trained A4 and A7 ladders with the complete A0 and A1-H post-hoc TEAL
-trajectories for both scales. The enlarged black-edged target-0 control points
-are the final un-clipped checkpoints; their exact `R_model` and validation loss
-appear in the figure callout. Color identifies the path, dashed circles identify
-14M, and solid squares identify 70M. Lines guide dose order and are not fitted
-response curves.
+trained A4 and A7 ladders with the visible A0 and A1-H post-hoc TEAL
+trajectories for both scales. The display follows Analysis 008: magenta `X`
+markers identify A0 clipping, black downward triangles identify A1-H clipping,
+purple hexagons identify A4-OL1, and sky-blue pentagons identify A7-OL1. Filled
+markers identify 14M and open markers identify 70M. The target-0 A0/A1-H
+controls use the Analysis 008 control markers and are directly labeled. The
+vertical display ends at loss 6; points above that limit are omitted from view
+but remain in `figure_data.json` and `tables.md`. Lines guide dose order and are
+not fitted response curves.
 
 ## Caveats
 

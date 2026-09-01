@@ -90,7 +90,10 @@ def test_committed_outputs_match_source_reduction() -> None:
 def test_figure_contract_is_pdf_only_single_absolute_frontier() -> None:
     source = (ANALYSIS_DIR / "01_build.py").read_text(encoding="utf-8")
     assert "plt.subplots(1, 2" not in source
-    assert 'ax.set_xlabel("Measured R_model (%)")' in source
-    assert "Final control checkpoints" in source
+    assert 'axis.set_ylim(4.05, y_max)' in source
+    assert "y_max = 6.0" in source
+    assert "Final control checkpoints" not in source
     assert "Delta R_model from target 0" not in source
+    for color in ("#CC79A7", "#222222", "#6F4C9B", "#56B4E9"):
+        assert color in source
     assert ".png" not in source.lower()

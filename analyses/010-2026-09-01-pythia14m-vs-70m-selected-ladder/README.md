@@ -22,6 +22,7 @@ It establishes neither a scaling law nor causal mediation.
 - `figure_data.json`: verified machine-readable reduction with source hashes.
 - `tables.md`: complete trained ladder and selected TEAL points.
 - `figures/01-pythia14m-vs-70m-selected-ladder.pdf`: single absolute
-  `R_model` versus validation-loss frontier across both model sizes.
+  `R_model` versus validation-loss frontier across both model sizes, using the
+  Analysis 008 visual grammar and a loss-6 display cap.
 - `observations/O001-pythia14m-vs-70m-selected-ladder.md`: interpretation and
   evidence provenance.

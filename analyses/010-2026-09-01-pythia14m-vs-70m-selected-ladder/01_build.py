@@ -372,6 +372,43 @@ def table_markdown(data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _annotate_frontier(
+    axis: Any,
+    row: dict[str, Any],
+    label: str,
+    offset: tuple[float, float],
+    color: str,
+) -> None:
+    axis.annotate(
+        label,
+        xy=(100.0 * row["R_model"], row["validation_loss"]),
+        xytext=offset,
+        textcoords="offset points",
+        fontsize=7.7,
+        fontweight="bold",
+        color=color,
+        ha="left",
+        va="center",
+        bbox={
+            "boxstyle": "round,pad=0.11",
+            "facecolor": "white",
+            "edgecolor": "none",
+            "alpha": 0.86,
+        },
+        zorder=10,
+    )
+
+
+def _style_frontier_axis(axis: Any) -> None:
+    axis.grid(True, color="#D8D8D8", linewidth=0.65, alpha=0.72)
+    axis.set_axisbelow(True)
+    axis.tick_params(direction="out", length=3.5, width=0.8)
+    axis.spines["top"].set_visible(False)
+    axis.spines["right"].set_visible(False)
+    axis.spines["left"].set_color("#555555")
+    axis.spines["bottom"].set_color("#555555")
+
+
 def render_figure(data: dict[str, Any]) -> None:
     import matplotlib as mpl
 
@@ -382,158 +419,296 @@ def render_figure(data: dict[str, Any]) -> None:
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 9,
-            "axes.titlesize": 11,
-            "axes.labelsize": 10,
-            "legend.fontsize": 8,
+            "font.size": 9.2,
+            "axes.labelsize": 10.3,
+            "legend.fontsize": 8.4,
+            "xtick.labelsize": 9.0,
+            "ytick.labelsize": 9.0,
+            "pdf.fonttype": 42,
             "pdf.compression": 9,
         }
     )
-    colors = {"A4-OL1": "#6F4C9B", "A7-OL1": "#0072B2", "A0": "#777777", "A1-H": "#D55E00"}
-    scale_style = {"14M": ("--", "o"), "70M": ("-", "s")}
-    label_offsets = {
-        ("14M", "A4-OL1", 0.0): (4, -12),
-        ("14M", "A7-OL1", 0.0): (-5, 9),
-        ("14M", "A4-OL1", 0.1): (4, 4),
-        ("14M", "A7-OL1", 0.1): (4, -12),
-        ("70M", "A4-OL1", 0.1): (4, -12),
-        ("70M", "A7-OL1", 0.1): (4, 5),
+    trained_styles = {
+        "A4-OL1": {
+            "label": "A4-OL1 trained ladder",
+            "color": "#6F4C9B",
+            "marker": "h",
+            "linestyle": "--",
+        },
+        "A7-OL1": {
+            "label": "A7-OL1 trained ladder",
+            "color": "#56B4E9",
+            "marker": "p",
+            "linestyle": "--",
+        },
     }
-    fig, ax = plt.subplots(figsize=(10.8, 6.2), constrained_layout=True)
+    posthoc_styles = {
+        "A0": {
+            "label": "Post-hoc clipping on A0",
+            "color": "#CC79A7",
+            "marker": "X",
+            "linestyle": ":",
+        },
+        "A1-H": {
+            "label": "Post-hoc clipping on A1-H",
+            "color": "#222222",
+            "marker": "v",
+            "linestyle": (0, (4.0, 1.5, 1.0, 1.5)),
+        },
+    }
+    control_styles = {
+        "A0": {"marker": "P", "color": "#777777"},
+        "A1-H": {"marker": "^", "color": "#222222"},
+    }
+    scale_styles = {
+        "14M": {"markerfacecolor": "series", "markeredgecolor": "white", "markeredgewidth": 0.9},
+        "70M": {"markerfacecolor": "white", "markeredgecolor": "series", "markeredgewidth": 1.35},
+    }
+    y_max = 6.0
+    figure, axis = plt.subplots(figsize=(14.5, 6.7))
 
-    control_endpoints: list[dict[str, Any]] = []
+    trained_visible: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for scale in ("14M", "70M"):
+        for family in ("A4-OL1", "A7-OL1"):
+            rows = [
+                row
+                for row in data["trained_endpoints"]
+                if row["scale"] == scale
+                and row["family"] == family
+                and row["validation_loss"] <= y_max
+            ]
+            trained_visible[(scale, family)] = rows
+            style = trained_styles[family]
+            scale_style = scale_styles[scale]
+            facecolor = style["color"] if scale_style["markerfacecolor"] == "series" else "white"
+            edgecolor = style["color"] if scale_style["markeredgecolor"] == "series" else "white"
+            axis.plot(
+                [100.0 * row["R_model"] for row in rows],
+                [row["validation_loss"] for row in rows],
+                color=style["color"],
+                marker=style["marker"],
+                linestyle=style["linestyle"],
+                linewidth=2.25,
+                markersize=8.4,
+                markerfacecolor=facecolor,
+                markeredgecolor=edgecolor,
+                markeredgewidth=scale_style["markeredgewidth"],
+                alpha=0.96,
+                zorder=7,
+            )
+
+    posthoc_visible: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    control_endpoints: dict[tuple[str, str], dict[str, Any]] = {}
     for scale in ("14M", "70M"):
         for control in ("A0", "A1-H"):
-            rows = [
+            all_rows = [
                 row
                 for row in data["teal_points"]
                 if row["scale"] == scale and row["control"] == control
             ]
-            linestyle, marker = scale_style[scale]
-            ax.plot(
-                [100 * row["R_model"] for row in rows],
+            rows = [row for row in all_rows if row["validation_loss"] <= y_max]
+            posthoc_visible[(scale, control)] = rows
+            style = posthoc_styles[control]
+            scale_style = scale_styles[scale]
+            facecolor = style["color"] if scale_style["markerfacecolor"] == "series" else "white"
+            edgecolor = style["color"] if scale_style["markeredgecolor"] == "series" else "white"
+            axis.plot(
+                [100.0 * row["R_model"] for row in rows],
                 [row["validation_loss"] for row in rows],
-                color=colors[control],
-                linestyle=linestyle,
-                marker=marker,
-                linewidth=1.55,
-                markersize=4.5,
-                alpha=0.95,
-                zorder=2,
-            )
-            endpoint = rows[0]
-            control_endpoints.append(endpoint)
-            ax.scatter(
-                [100 * endpoint["R_model"]],
-                [endpoint["validation_loss"]],
-                color=colors[control],
-                marker=marker,
-                s=58,
-                edgecolor="black",
-                linewidth=0.8,
+                color=style["color"],
+                linestyle=style["linestyle"],
+                linewidth=2.2,
                 zorder=5,
             )
-
-    for scale in ("14M", "70M"):
-        for family in ("A4-OL1", "A7-OL1"):
-            rows = [row for row in data["trained_endpoints"] if row["scale"] == scale and row["family"] == family]
-            linestyle, marker = scale_style[scale]
-            ax.plot(
-                [100 * row["R_model"] for row in rows],
-                [row["validation_loss"] for row in rows],
-                color=colors[family],
-                linestyle=linestyle,
-                marker=marker,
-                linewidth=1.7,
-                markersize=5.2,
-                zorder=3,
+            nonzero = rows[1:]
+            axis.scatter(
+                [100.0 * row["R_model"] for row in nonzero],
+                [row["validation_loss"] for row in nonzero],
+                facecolor=facecolor,
+                edgecolor=edgecolor,
+                marker=style["marker"],
+                s=54,
+                linewidth=scale_style["markeredgewidth"],
+                zorder=7,
             )
-            for row in rows:
-                if row["kappa"] in {0.0, 0.1, 0.5}:
-                    offset = label_offsets.get((scale, family, row["kappa"]), (3, 3))
-                    ax.annotate(
-                        f"k={row['kappa']:g}",
-                        (100 * row["R_model"], row["validation_loss"]),
-                        xytext=offset,
-                        textcoords="offset points",
-                        fontsize=7.2,
-                        color=colors[family],
-                        horizontalalignment="right" if offset[0] < 0 else "left",
-                    )
+            endpoint = all_rows[0]
+            control_endpoints[(scale, control)] = endpoint
+            endpoint_style = control_styles[control]
+            endpoint_facecolor = (
+                endpoint_style["color"]
+                if scale_style["markerfacecolor"] == "series"
+                else "white"
+            )
+            endpoint_edgecolor = (
+                endpoint_style["color"]
+                if scale_style["markeredgecolor"] == "series"
+                else "white"
+            )
+            axis.scatter(
+                [100.0 * endpoint["R_model"]],
+                [endpoint["validation_loss"]],
+                facecolor=endpoint_facecolor,
+                edgecolor=endpoint_edgecolor,
+                marker=endpoint_style["marker"],
+                s=73,
+                linewidth=scale_style["markeredgewidth"],
+                zorder=9,
+            )
 
-    path_handles = [
-        Line2D([0], [0], color=colors[name], linewidth=2, label=label)
-        for name, label in (
-            ("A0", "A0 + post-hoc TEAL"),
-            ("A1-H", "A1-H + post-hoc TEAL"),
-            ("A4-OL1", "A4-OL1 trained ladder"),
-            ("A7-OL1", "A7-OL1 trained ladder"),
+    control_offsets = {
+        ("14M", "A0"): (8, -12),
+        ("14M", "A1-H"): (8, 11),
+        ("70M", "A0"): (8, -12),
+        ("70M", "A1-H"): (-58, 11),
+    }
+    for key, endpoint in control_endpoints.items():
+        scale, control = key
+        _annotate_frontier(
+            axis,
+            endpoint,
+            f"{control}, {scale}",
+            control_offsets[key],
+            control_styles[control]["color"],
         )
-    ]
-    path_legend = ax.legend(
-        handles=path_handles,
-        title="Path",
+
+    posthoc_offsets = {
+        ("14M", "A0"): (-5, 12),
+        ("14M", "A1-H"): (7, -13),
+        ("70M", "A0"): (7, -13),
+        ("70M", "A1-H"): (7, 12),
+    }
+    for key, rows in posthoc_visible.items():
+        scale, control = key
+        row = rows[-1]
+        _annotate_frontier(
+            axis,
+            row,
+            rf"$p={row['target_sparsity']:.1f}$",
+            posthoc_offsets[key],
+            posthoc_styles[control]["color"],
+        )
+
+    trained_offsets = {
+        ("14M", "A4-OL1"): (-42, 12),
+        ("14M", "A7-OL1"): (-58, -13),
+        ("70M", "A4-OL1"): (-58, 12),
+        ("70M", "A7-OL1"): (-58, -13),
+    }
+    for key, rows in trained_visible.items():
+        scale, family = key
+        row = rows[-1]
+        _annotate_frontier(
+            axis,
+            row,
+            rf"$\kappa={row['kappa']:g}$",
+            trained_offsets[key],
+            trained_styles[family]["color"],
+        )
+
+    axis.set_xlim(-0.75, 42.0)
+    axis.set_ylim(4.05, y_max)
+    axis.set_xlabel(r"Measured $R_{\mathrm{model}}$ (%)")
+    axis.set_ylabel("Final validation loss (lower is better)")
+    _style_frontier_axis(axis)
+
+    handles = []
+    for control in ("A0", "A1-H"):
+        style = posthoc_styles[control]
+        handles.append(
+            Line2D(
+                [0],
+                [0],
+                color=style["color"],
+                marker=style["marker"],
+                linestyle=style["linestyle"],
+                linewidth=2.2,
+                markersize=6.5,
+                markeredgecolor="white",
+                markeredgewidth=0.8,
+                label=style["label"],
+            )
+        )
+    for family in ("A4-OL1", "A7-OL1"):
+        style = trained_styles[family]
+        handles.append(
+            Line2D(
+                [0],
+                [0],
+                color=style["color"],
+                marker=style["marker"],
+                linestyle=style["linestyle"],
+                linewidth=2.25,
+                markersize=7.0,
+                markeredgecolor="white",
+                markeredgewidth=0.8,
+                label=style["label"],
+            )
+        )
+    handles.extend(
+        [
+            Line2D(
+                [0],
+                [0],
+                color="#555555",
+                marker="o",
+                linestyle="none",
+                markerfacecolor="#555555" if scale == "14M" else "white",
+                markeredgecolor="white" if scale == "14M" else "#555555",
+                markeredgewidth=1.1,
+                markersize=6.5,
+                label=f"{scale} ({'filled' if scale == '14M' else 'open'})",
+            )
+            for scale in ("14M", "70M")
+        ]
+    )
+
+    figure.suptitle(
+        "Pythia-14M and 70M: trained frontiers and post-hoc clipping controls",
+        x=0.5,
+        y=0.979,
+        fontsize=14.0,
+        fontweight="bold",
+    )
+    figure.text(
+        0.5,
+        0.94,
+        "A0/A1-H curves use post-hoc TEAL clipping; A4-OL1 and A7-OL1 are trained ladders",
+        ha="center",
+        va="center",
+        fontsize=9.4,
+        color="#444444",
+    )
+    figure.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.908),
+        ncol=4,
         frameon=False,
-        loc="upper left",
-        bbox_to_anchor=(1.01, 1.0),
+        handlelength=2.5,
+        columnspacing=1.05,
+        labelspacing=0.72,
     )
-    ax.add_artist(path_legend)
-    scale_handles = [
-        Line2D(
-            [0],
-            [0],
-            color="#333333",
-            linestyle=scale_style[scale][0],
-            marker=scale_style[scale][1],
-            linewidth=1.6,
-            markersize=5,
-            label=scale,
-        )
-        for scale in ("14M", "70M")
-    ]
-    ax.legend(
-        handles=scale_handles,
-        title="Model size",
-        frameon=False,
-        loc="upper left",
-        bbox_to_anchor=(1.01, 0.72),
+    figure.text(
+        0.5,
+        0.022,
+        "Points above loss 6 are omitted from view; all values remain in the accompanying table.\n"
+        r"Lines connect dose/target order only. $R_{\mathrm{model}}$ is exact-zero logical-product opportunity, not measured speedup; one seed per scale.",
+        ha="center",
+        va="bottom",
+        fontsize=7.9,
+        color="#444444",
+        linespacing=1.32,
     )
+    figure.subplots_adjust(left=0.075, right=0.988, top=0.75, bottom=0.155)
 
-    endpoint_lines = ["Final control checkpoints", "(TEAL target 0; black edge)"]
-    for endpoint in control_endpoints:
-        r_percent = 100 * endpoint["R_model"]
-        r_text = f"{r_percent:.6f}" if r_percent < 0.001 else f"{r_percent:.4f}"
-        endpoint_lines.append(
-            f"{endpoint['scale']} {endpoint['control']}: "
-            f"R={r_text}%, loss={endpoint['validation_loss']:.4f}"
-        )
-    endpoint_lines.extend(["", "TEAL markers: targets 0.0 to 0.9", "OL1 labels: selected kappa values"])
-    ax.text(
-        1.02,
-        0.48,
-        "\n".join(endpoint_lines),
-        transform=ax.transAxes,
-        va="top",
-        ha="left",
-        fontsize=7.8,
-        linespacing=1.35,
-        bbox={"boxstyle": "round,pad=0.45", "facecolor": "#F6F6F6", "edgecolor": "#BBBBBB"},
-    )
-
-    ax.set_title("Pythia-14M and 70M: validation loss vs. measured R_model")
-    ax.set_xlabel("Measured R_model (%)")
-    ax.set_ylabel("Complete-validation loss")
-    ax.set_xlim(-1.0, 42.0)
-    ax.set_ylim(4.0, 9.35)
-    ax.grid(alpha=0.22, linewidth=0.6)
     FIGURE.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(
+    figure.savefig(
         FIGURE,
         format="pdf",
         bbox_inches="tight",
         metadata={"Creator": "Analysis 010", "CreationDate": None, "ModDate": None},
     )
-    plt.close(fig)
+    plt.close(figure)
 
 
 def main() -> None:
