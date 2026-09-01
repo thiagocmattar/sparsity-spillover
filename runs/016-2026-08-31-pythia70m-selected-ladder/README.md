@@ -251,3 +251,27 @@ See `DEPLOYMENT_PLAYBOOK.md` for the exact staged control flow.
 - 2026-08-31: user explicitly approved one exact, non-evidence A40 preflight.
   It passed, its retrieved artifacts were hash-verified, and its Pod was deleted.
 - No scientific launch approval has been given.
+
+## 2026-09-01 substitute-GPU compatibility outcome
+
+The user subsequently approved the four-condition science sentinel, a higher
+budget, and faster substitute GPUs if A40 was unavailable. Immediate live stock
+showed no schedulable A40. One H200 and then one A100 SXM were provisioned only
+long enough to reproduce the pinned environment and compute the initial
+parameter identity. The H200 realized
+`03e5ac1348abae985bf8e4615ab8af9c3fe0bdcce4d2ba746f00db539df4ba0d`;
+the A100 realized
+`116d802682494301a612a86ca5d344ea08962002016f4afc939610607a900e44`.
+Neither matched Run 016's pinned A40 hash. Both Pods were deleted before cache
+transfer, attempt creation, or any optimizer boundary. A direct A40 creation in
+the only advertised low-stock data center was then rejected for lack of an
+instance.
+
+Run 016 therefore remains unchanged and has no scientific attempts. Editing its
+initialization identity in place would violate the append-only run record. The
+approved scientific design is carried forward to Run 017 with an explicit
+CPU-realized initialization followed by CUDA transfer. Full Pod, hash, balance,
+and terminal resource details are in
+`sentinel-control/compatibility-record.json`. The two compatibility probes
+posted a combined account-balance delta of `$0.75253`; the final resource check
+showed zero Pods and only the pre-existing network volume.
