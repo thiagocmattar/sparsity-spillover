@@ -17,6 +17,7 @@ SPEC.loader.exec_module(MODULE)
 
 def test_reduction_has_complete_grids_and_coverage() -> None:
     data = MODULE.build_figure_data()
+    assert data["schema_version"] == 2
     assert data["status"] == "complete_verified_analysis"
     assert len(data["trained_endpoints"]) == 20
     assert len(data["teal_points"]) == 40
@@ -64,6 +65,14 @@ def test_integer_counts_and_boundary_metrics_reconcile() -> None:
             rel_tol=0.0,
             abs_tol=1e-16,
         )
+        assert set(row["site_exact_zero"]) == {"a", "m", "h", "z"}
+        for counts in row["site_exact_zero"].values():
+            assert math.isclose(
+                counts["exact_zero_count"] / counts["total_count"],
+                counts["exact_zero_fraction"],
+                rel_tol=0.0,
+                abs_tol=1e-15,
+            )
 
 
 def test_persistence_checks_capture_the_matched_crossover() -> None:
@@ -85,6 +94,21 @@ def test_committed_outputs_match_source_reduction() -> None:
     pdf = ANALYSIS_DIR / "figures" / "01-pythia14m-vs-70m-selected-ladder.pdf"
     assert pdf.read_bytes().startswith(b"%PDF-")
     assert pdf.stat().st_size > 15_000
+
+
+def test_markdown_contains_complete_paper_style_tables() -> None:
+    markdown = MODULE.table_markdown(MODULE.build_figure_data())
+    for heading in (
+        "## Trained A4-OL1 endpoints",
+        "## Trained A7-OL1 endpoints",
+        "## A0 post-hoc TEAL frontier",
+        "## A1-H post-hoc TEAL frontier",
+        "## Endpoint-span summaries",
+    ):
+        assert heading in markdown
+    assert "h zero (%) | m zero (%) | a zero (%) | z zero (%) | q zero (%) | k zero (%) | v zero (%)" in markdown
+    assert markdown.count("| n.m. | n.m. | n.m. |") == 40
+    assert "TEAL did not record `q_post`, `k_post`, or `v` site mass" in markdown
 
 
 def test_figure_contract_is_pdf_only_single_absolute_frontier() -> None:

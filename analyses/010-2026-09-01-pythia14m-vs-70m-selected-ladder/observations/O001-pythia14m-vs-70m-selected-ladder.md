@@ -18,8 +18,10 @@ and 1,493,172,224 training tokens per condition.
 
 All plotted fractions are recomputed from pooled integer logical counts. The
 reduction also reconciles per-site exact-zero counts and retains OL1
-gradient-conflict and projection-step counts. Source-file hashes are embedded
-in `figure_data.json`.
+gradient-conflict and projection-step counts. The trained diagnostics cover all
+requested sites; the post-hoc TEAL artifacts cover `a,m,h,z` only, so their
+unrecorded post-RoPE Q/K and V table cells are marked `n.m.`. Source-file hashes
+are embedded in `figure_data.json`.
 
 ## Result
 

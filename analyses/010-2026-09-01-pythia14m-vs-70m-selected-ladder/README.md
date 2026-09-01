@@ -20,7 +20,10 @@ It establishes neither a scaling law nor causal mediation.
 ## Outputs
 
 - `figure_data.json`: verified machine-readable reduction with source hashes.
-- `tables.md`: complete trained ladder and selected TEAL points.
+- `tables.md`: paper-style complete trained A4-OL1/A7-OL1 and ten-point
+  A0/A1-H TEAL tables, including loss, paired TEAL loss deltas, `R_model`, and
+  every recorded count-pooled exact-zero site mass. Unmeasured TEAL Q/K/V
+  fields are explicitly marked `n.m.`.
 - `figures/01-pythia14m-vs-70m-selected-ladder.pdf`: single absolute
   `R_model` versus validation-loss frontier across both model sizes, using the
   Analysis 008 visual grammar and a loss-6 display cap.

@@ -203,6 +203,27 @@ def _teal_rows(path: Path, scale: str) -> list[dict[str, Any]]:
         product_count = int(logical["model_product_count"])
         r_model = float(logical["R_model"])
         _close(zero_count / product_count, r_model, tolerance=1e-16)
+        pooled = {
+            row.get("site", row.get("name")): row
+            for row in point["activations_by_site"]
+        }
+        if set(pooled) != {"a", "m", "h", "z"}:
+            raise ValueError(
+                f"Post-hoc site rows do not match recorded coverage: "
+                f"{scale}/{condition_id}/{point['target_sparsity']}"
+            )
+        site_exact_zero = {}
+        for site in ("a", "m", "h", "z"):
+            site_row = pooled[site]
+            count = int(site_row["exact_zero_count"])
+            total = int(site_row["total"])
+            fraction = float(site_row["exact_zero_fraction"])
+            _close(count / total, fraction, tolerance=1e-15)
+            site_exact_zero[site] = {
+                "exact_zero_count": count,
+                "total_count": total,
+                "exact_zero_fraction": fraction,
+            }
         rows.append(
             {
                 "scale": scale,
@@ -215,6 +236,7 @@ def _teal_rows(path: Path, scale: str) -> list[dict[str, Any]]:
                     "zero_product_count": zero_count,
                     "model_product_count": product_count,
                 },
+                "site_exact_zero": site_exact_zero,
             }
         )
     rows.sort(key=lambda row: (row["control"], row["target_sparsity"]))
@@ -285,7 +307,7 @@ def build_figure_data() -> dict[str, Any]:
         }
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "complete_verified_analysis",
         "question": "Does the selected R_model versus validation-loss tradeoff persist from Pythia-14M to 70M?",
         "coverage": {"documents": 500, **COVERAGE, "seed_count": 1},
@@ -312,24 +334,87 @@ def build_figure_data() -> dict[str, Any]:
 
 
 def table_markdown(data: dict[str, Any]) -> str:
+    def percentage(fraction: float, digits: int = 3) -> str:
+        value = 100.0 * fraction
+        if value == 0:
+            return f"{value:.{digits}f}"
+        if value < 0.001:
+            return "<0.001"
+        return f"{value:.{digits}f}"
+
+    def trained_table(family: str) -> list[str]:
+        rows = [row for row in data["trained_endpoints"] if row["family"] == family]
+        rows.sort(key=lambda row: (row["kappa"], row["scale"]))
+        output = [
+            f"## Trained {family} endpoints",
+            "",
+            "| kappa | Scale | Loss | R_model (%) | h zero (%) | m zero (%) | a zero (%) | z zero (%) | q zero (%) | k zero (%) | v zero (%) | Conflicts | Projections |",
+            "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+        for row in rows:
+            zeros = row["site_exact_zero"]
+            output.append(
+                f"| {row['kappa']:g} | {row['scale']} | {row['validation_loss']:.6f} | "
+                f"{percentage(row['R_model'], 4)} | {percentage(zeros['h']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['m']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['a']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['z']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['q_post']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['k_post']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['v']['exact_zero_fraction'])} | "
+                f"{row['conflict_steps']} | {row['projection_steps']} |"
+            )
+        return output
+
+    def teal_table(control: str) -> list[str]:
+        rows = [row for row in data["teal_points"] if row["control"] == control]
+        rows.sort(key=lambda row: (row["target_sparsity"], row["scale"]))
+        baseline_loss = {
+            scale: next(
+                row["validation_loss"]
+                for row in rows
+                if row["scale"] == scale and row["target_sparsity"] == 0.0
+            )
+            for scale in ("14M", "70M")
+        }
+        output = [
+            f"## {control} post-hoc TEAL frontier",
+            "",
+            "| p | Scale | Loss | Delta loss | R_model (%) | h zero (%) | m zero (%) | a zero (%) | z zero (%) | q zero (%) | k zero (%) | v zero (%) |",
+            "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+        for row in rows:
+            zeros = row["site_exact_zero"]
+            output.append(
+                f"| {row['target_sparsity']:.1f} | {row['scale']} | "
+                f"{row['validation_loss']:.6f} | "
+                f"{row['validation_loss'] - baseline_loss[row['scale']]:+.6f} | "
+                f"{percentage(row['R_model'], 4)} | "
+                f"{percentage(zeros['h']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['m']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['a']['exact_zero_fraction'])} | "
+                f"{percentage(zeros['z']['exact_zero_fraction'])} | n.m. | n.m. | n.m. |"
+            )
+        return output
+
     lines = [
         "# Pythia-14M versus 70M selected ladder",
         "",
-        "## Trained OL1 endpoints",
+        "Complete numeric tables supporting Analysis 010. All percentages use count-first pooling over the complete validation workload.",
         "",
-        "| Scale | Family | kappa | Validation loss | R_model (%) | a zero (%) | m zero (%) | h zero (%) | q_post zero (%) | k_post zero (%) | v zero (%) | z zero (%) | Conflicts | Projections |",
-        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "## Metric and coverage conventions",
+        "",
+        "| Item | Reporting contract |",
+        "|---|---|",
+        "| Validation | All 500 documents; 338 complete 2,048-token blocks; 692,224 input tokens; 1,444-token tail excluded and recorded |",
+        "| Site mass | Exact-zero percentage: pooled `count(x == 0) / count(x)` over all six layers and complete validation blocks |",
+        "| q and k | Post-RoPE tensors (`q_post`, `k_post`), the actual QK operands |",
+        "| R_model | Count-pooled zero-operand logical-product opportunity over the model denominator; not measured speedup |",
+        "| TEAL | Evaluation-only uniform clipping at `a,m,h,z`; `p` is the common target sparsity and Delta loss is paired to the same scale/control at `p=0` |",
+        "| n.m. | Not measured in the source artifact; TEAL did not record `q_post`, `k_post`, or `v` site mass |",
     ]
-    for row in data["trained_endpoints"]:
-        zeros = row["site_exact_zero"]
-        lines.append(
-            f"| {row['scale']} | {row['family']} | {row['kappa']:g} | {row['validation_loss']:.6f} | "
-            f"{100 * row['R_model']:.4f} | {100 * zeros['a']['exact_zero_fraction']:.4f} | "
-            f"{100 * zeros['m']['exact_zero_fraction']:.4f} | {100 * zeros['h']['exact_zero_fraction']:.4f} | "
-            f"{100 * zeros['q_post']['exact_zero_fraction']:.4f} | "
-            f"{100 * zeros['k_post']['exact_zero_fraction']:.4f} | {100 * zeros['v']['exact_zero_fraction']:.4f} | "
-            f"{100 * zeros['z']['exact_zero_fraction']:.4f} | {row['conflict_steps']} | {row['projection_steps']} |"
-        )
+    lines.extend([""] + trained_table("A4-OL1"))
+    lines.extend([""] + trained_table("A7-OL1"))
     lines.extend(
         [
             "",
@@ -349,23 +434,14 @@ def table_markdown(data: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## Selected post-hoc TEAL points",
-            "",
-            "| Scale | Control | Target sparsity | Validation loss | R_model (%) |",
-            "|---|---|---:|---:|---:|",
         ]
     )
-    for row in data["teal_points"]:
-        if row["target_sparsity"] in {0.0, 0.1, 0.3, 0.5}:
-            lines.append(
-                f"| {row['scale']} | {row['control']} | {row['target_sparsity']:.1f} | "
-                f"{row['validation_loss']:.6f} | {100 * row['R_model']:.4f} |"
-            )
+    lines.extend([""] + teal_table("A0"))
+    lines.extend([""] + teal_table("A1-H"))
     lines.extend(
         [
             "",
-            "All fractions are recomputed from pooled integer counts over the complete validation workload.",
-            "R_model is a logical-product opportunity, not measured speedup.",
+            "The trained tables report every requested site. The TEAL tables preserve all 40 evaluated points and explicitly mark unrecorded downstream site masses rather than inferring them from `R_model`.",
             "",
         ]
     )
