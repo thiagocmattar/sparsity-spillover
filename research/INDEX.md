@@ -5,6 +5,15 @@
 
 ## Current status
 
+Run 019 implements the approved one-seed Pythia-410M promotion of A0, A1-H,
+A4-OL1, and A7-OL1 with the same 12-condition ladder and A0/A1-H TEAL
+frontiers. Its locally generated initialization, post-initialization RNG state,
+and metadata are byte-hash pinned; two independent strict loads reproduce one
+parameter hash, and every GPU path rechecks that hash before and after transfer
+to CUDA. The exact non-evidence calibration is ready but unlaunched. GPU SKU,
+cloud tier, calibration/science deletion guards, and billable envelopes remain
+unset pending live cost--ETC calibration and explicit launch approval.
+
 Run 018 completed and verified the selected one-seed Pythia-70M promotion of
 A0, A1-H, A4-OL1, and A7-OL1: 12/12 conditions completed 712 optimizer
 boundaries, full 338-block validation, retained diagnostics/checkpoints, and
@@ -90,10 +99,15 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `019`. Next analysis number: `011`. Next finding number: `F003`.
+Next run number: `020`. Next analysis number: `011`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-09-01: Run 019 was implemented and locally verified for the 410M
+  selected-ladder promotion. The canonical seed-1234 initialization and RNG
+  artifacts are pinned, and the exact A0/A4-OL1/A7-OL1 calibration will compare
+  at least two GPU SKUs before any scientific launch. No Run 019 cloud resource
+  or scientific attempt has been created.
 - 2026-09-01: Status Report Number 2 was compiled and adversarially reviewed.
   It retains Report 1's architecture/intervention diagram and 14M evidence,
   updates the scope and current RunPod costs, adds cross-scale A4-OL1/A7-OL1
@@ -251,6 +265,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 016 | Does the selected ladder persist at 70M under a GPU-realized initialization identity? | superseded before science; GPU-specific initialization hash | `runs/016-2026-08-31-pythia70m-selected-ladder/` |
 | 017 | Can CPU-before-CUDA initialization make the selected 70M promotion portable? | stopped before science; remote identity mismatch | `runs/017-2026-09-01-pythia70m-selected-ladder-portable-init/` |
 | 018 | Does the selected A0/A1-H/A4-OL1/A7-OL1 ladder persist at Pythia-70M with a canonical initialization artifact? | completed (valid; Analysis 010 and Status Report 2 complete) | `runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/` |
+| 019 | Does the selected ladder and its A0/A1-H TEAL frontier persist at Pythia-410M? | implemented and locally verified; exact GPU calibration awaiting launch approval | `runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/` |
 
 ## Analyses
 
