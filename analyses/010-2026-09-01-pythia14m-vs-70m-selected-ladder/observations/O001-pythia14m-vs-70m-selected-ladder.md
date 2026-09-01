@@ -47,9 +47,10 @@ markers identify A0 clipping, black downward triangles identify A1-H clipping,
 purple hexagons identify A4-OL1, and sky-blue pentagons identify A7-OL1. Filled
 markers identify 14M and open markers identify 70M. The target-0 A0/A1-H
 controls use the Analysis 008 control markers and are directly labeled. The
-vertical display ends at loss 6; points above that limit are omitted from view
-but remain in `figure_data.json` and `tables.md`. Lines guide dose order and are
-not fitted response curves.
+vertical display ends at loss 6, but every point remains in its plotted series:
+over-limit segments visibly exit through the top boundary and continue
+off-scale. All coordinates remain in `figure_data.json` and `tables.md`. Lines
+guide dose order and are not fitted response curves.
 
 ## Caveats
 

@@ -409,6 +409,22 @@ def _style_frontier_axis(axis: Any) -> None:
     axis.spines["bottom"].set_color("#555555")
 
 
+def _axis_exit_point(
+    last_visible: dict[str, Any],
+    first_offscale: dict[str, Any],
+    y_max: float,
+) -> dict[str, float]:
+    loss_span = first_offscale["validation_loss"] - last_visible["validation_loss"]
+    if loss_span <= 0:
+        raise ValueError("Off-scale frontier point does not cross the upper axis limit.")
+    fraction = (y_max - last_visible["validation_loss"]) / loss_span
+    return {
+        "R_model": last_visible["R_model"]
+        + fraction * (first_offscale["R_model"] - last_visible["R_model"]),
+        "validation_loss": y_max,
+    }
+
+
 def render_figure(data: dict[str, Any]) -> None:
     import matplotlib as mpl
 
@@ -470,21 +486,23 @@ def render_figure(data: dict[str, Any]) -> None:
     trained_visible: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for scale in ("14M", "70M"):
         for family in ("A4-OL1", "A7-OL1"):
-            rows = [
+            all_rows = [
                 row
                 for row in data["trained_endpoints"]
                 if row["scale"] == scale
                 and row["family"] == family
-                and row["validation_loss"] <= y_max
             ]
-            trained_visible[(scale, family)] = rows
+            trained_visible[(scale, family)] = [
+                row for row in all_rows if row["validation_loss"] <= y_max
+            ]
+            plot_rows = all_rows
             style = trained_styles[family]
             scale_style = scale_styles[scale]
             facecolor = style["color"] if scale_style["markerfacecolor"] == "series" else "white"
             edgecolor = style["color"] if scale_style["markeredgecolor"] == "series" else "white"
             axis.plot(
-                [100.0 * row["R_model"] for row in rows],
-                [row["validation_loss"] for row in rows],
+                [100.0 * row["R_model"] for row in plot_rows],
+                [row["validation_loss"] for row in plot_rows],
                 color=style["color"],
                 marker=style["marker"],
                 linestyle=style["linestyle"],
@@ -494,6 +512,7 @@ def render_figure(data: dict[str, Any]) -> None:
                 markeredgecolor=edgecolor,
                 markeredgewidth=scale_style["markeredgewidth"],
                 alpha=0.96,
+                clip_on=True,
                 zorder=7,
             )
 
@@ -506,21 +525,24 @@ def render_figure(data: dict[str, Any]) -> None:
                 for row in data["teal_points"]
                 if row["scale"] == scale and row["control"] == control
             ]
-            rows = [row for row in all_rows if row["validation_loss"] <= y_max]
-            posthoc_visible[(scale, control)] = rows
+            posthoc_visible[(scale, control)] = [
+                row for row in all_rows if row["validation_loss"] <= y_max
+            ]
+            plot_rows = all_rows
             style = posthoc_styles[control]
             scale_style = scale_styles[scale]
             facecolor = style["color"] if scale_style["markerfacecolor"] == "series" else "white"
             edgecolor = style["color"] if scale_style["markeredgecolor"] == "series" else "white"
             axis.plot(
-                [100.0 * row["R_model"] for row in rows],
-                [row["validation_loss"] for row in rows],
+                [100.0 * row["R_model"] for row in plot_rows],
+                [row["validation_loss"] for row in plot_rows],
                 color=style["color"],
                 linestyle=style["linestyle"],
                 linewidth=2.2,
+                clip_on=True,
                 zorder=5,
             )
-            nonzero = rows[1:]
+            nonzero = plot_rows[1:]
             axis.scatter(
                 [100.0 * row["R_model"] for row in nonzero],
                 [row["validation_loss"] for row in nonzero],
@@ -529,6 +551,7 @@ def render_figure(data: dict[str, Any]) -> None:
                 marker=style["marker"],
                 s=54,
                 linewidth=scale_style["markeredgewidth"],
+                clip_on=True,
                 zorder=7,
             )
             endpoint = all_rows[0]
@@ -572,35 +595,52 @@ def render_figure(data: dict[str, Any]) -> None:
         )
 
     posthoc_offsets = {
-        ("14M", "A0"): (-5, 12),
-        ("14M", "A1-H"): (7, -13),
-        ("70M", "A0"): (7, -13),
-        ("70M", "A1-H"): (7, 12),
+        ("14M", "A0"): (-47, -15),
+        ("14M", "A1-H"): (7, -15),
+        ("70M", "A0"): (-47, -15),
+        ("70M", "A1-H"): (7, -15),
     }
     for key, rows in posthoc_visible.items():
         scale, control = key
-        row = rows[-1]
+        all_rows = [
+            row
+            for row in data["teal_points"]
+            if row["scale"] == scale and row["control"] == control
+        ]
+        first_offscale = all_rows[len(rows)]
+        row = _axis_exit_point(rows[-1], first_offscale, y_max)
         _annotate_frontier(
             axis,
             row,
-            rf"$p={row['target_sparsity']:.1f}$",
+            rf"$p={first_offscale['target_sparsity']:.1f}$",
             posthoc_offsets[key],
             posthoc_styles[control]["color"],
         )
 
     trained_offsets = {
-        ("14M", "A4-OL1"): (-42, 12),
+        ("14M", "A4-OL1"): (-39, -15),
         ("14M", "A7-OL1"): (-58, -13),
         ("70M", "A4-OL1"): (-58, 12),
         ("70M", "A7-OL1"): (-58, -13),
     }
     for key, rows in trained_visible.items():
         scale, family = key
-        row = rows[-1]
+        all_rows = [
+            row
+            for row in data["trained_endpoints"]
+            if row["scale"] == scale and row["family"] == family
+        ]
+        if len(rows) < len(all_rows):
+            first_offscale = all_rows[len(rows)]
+            row = _axis_exit_point(rows[-1], first_offscale, y_max)
+            kappa = first_offscale["kappa"]
+        else:
+            row = rows[-1]
+            kappa = row["kappa"]
         _annotate_frontier(
             axis,
             row,
-            rf"$\kappa={row['kappa']:g}$",
+            rf"$\kappa={kappa:g}$",
             trained_offsets[key],
             trained_styles[family]["color"],
         )
@@ -691,7 +731,7 @@ def render_figure(data: dict[str, Any]) -> None:
     figure.text(
         0.5,
         0.022,
-        "Points above loss 6 are omitted from view; all values remain in the accompanying table.\n"
+        "Points above loss 6 are retained and clipped by the axis limit; trajectories exiting the panel continue off-scale.\n"
         r"Lines connect dose/target order only. $R_{\mathrm{model}}$ is exact-zero logical-product opportunity, not measured speedup; one seed per scale.",
         ha="center",
         va="bottom",
