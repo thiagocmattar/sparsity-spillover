@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "kind": "run018_prelaunch_proposal",
+  "status": "awaiting_explicit_launch_approval",
+  "audited_at_utc": "2026-09-01T11:19:41.1676357+00:00",
+  "scope": {
+    "wave": "sentinel",
+    "conditions": [
+      "a0-gelu",
+      "a1h-relu",
+      "a4-ol1-kappa-0",
+      "a7-ol1-kappa-0"
+    ],
+    "scientific_attempts_created": 0
+  },
+  "source": {
+    "config_sha256": "1bee5a9a9a7a667180fe4782bbfab5a14504f49bdac11d94617ee3be2c827c00",
+    "run_code_sha256": "a79689e8ba78d8cf57ec5c4107101b39061cf8e41a80bed6cb8eb548b1efdb83",
+    "schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+    "git_commit": null,
+    "bundle": "generated_and_hash_verified_after_launch_approval"
+  },
+  "live_resources": {
+    "pod_count": 0,
+    "retained_network_volume": {
+      "id": "9luykg5yc3",
+      "name": "sparsity-spillover-shared",
+      "data_center": "EUR-IS-1",
+      "size_gb": 100,
+      "type": "STANDARD",
+      "attach_to_run018": false,
+      "continuing_spend_per_hour_usd": 0.01
+    },
+    "unintended_billable_resources": 0
+  },
+  "candidate": {
+    "gpu_type": "NVIDIA H200",
+    "cloud_type": "SECURE",
+    "memory_gb": 141,
+    "availability": "LOW",
+    "secure_price_per_gpu_hour_usd": 4.59,
+    "pinned_candidate_data_centers_with_live_stock": [
+      "EUR-IS-5",
+      "US-CA-2",
+      "US-GA-2",
+      "US-NC-1"
+    ],
+    "parallel_pods": 4,
+    "parallelism": "one_condition_per_gpu_no_ddp"
+  },
+  "guarded_envelope": {
+    "maximum_hours_per_pod": 6.5,
+    "maximum_gpu_hours": 26.0,
+    "combined_compute_per_hour_usd": 18.36,
+    "maximum_compute_usd": 119.34,
+    "estimated_maximum_pod_disk_usd": 0.21,
+    "maximum_new_resource_usd": 119.55,
+    "retained_volume_baseline_over_guard_usd": 0.065,
+    "maximum_account_outflow_usd": 119.615,
+    "live_account_balance_usd": 120.8396659212,
+    "guard_headroom_usd": 1.2246659212,
+    "margin_warning": "The guarded sentinel fits, but the maximum envelope leaves narrow balance headroom."
+  },
+  "transfer": {
+    "per_pod_inputs": [
+      {
+        "path": "data/tokenized/minipile-pythia-14m-full/train/tokens.int32.bin",
+        "bytes": 5966845664,
+        "sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c"
+      },
+      {
+        "path": "data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin",
+        "bytes": 2774672,
+        "sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+      },
+      {
+        "path": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/prelaunch/initialization/pythia70m-seed1234.safetensors",
+        "bytes": 281715344,
+        "sha256": "024e01975e1a52ead00340afd7a5c3f0b7c2fa0542d9dd5998e648ec14f73501"
+      },
+      {
+        "path": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/prelaunch/initialization/pythia70m-seed1234-rng.pt",
+        "bytes": 14823,
+        "sha256": "ff839f490cbbbec528181113451802f52c734fb45ae693fc800991bc2be36762"
+      }
+    ],
+    "per_pod_pinned_input_bytes": 6251350503,
+    "four_pod_pinned_input_bytes": 25005402012,
+    "source_bundle": "additional; exact bytes and SHA-256 recorded after commit",
+    "expected_final_checkpoint_bytes_per_condition": "approximately 850000000",
+    "retrieve_before_teardown": [
+      "complete attempt and manifest",
+      "final model and optimizer/loss-scaler/RNG recovery checkpoint",
+      "activation, weight, OL1-boundary, and logical-product diagnostics",
+      "A0/A1-H TEAL outputs",
+      "logs, package freeze, source/cache/config/code identities",
+      "transfer inventories"
+    ]
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "stale_event_minutes": 10,
+    "each_update": [
+      "step",
+      "current loss",
+      "throughput",
+      "elapsed time",
+      "refreshed ETC"
+    ],
+    "warnings": [
+      "non-finite metric",
+      "overflow or skipped boundary",
+      "capture identity mismatch",
+      "artifact, schedule, runtime, cache, config, or code drift",
+      "VRAM over 90 percent",
+      "disk risk",
+      "ETC beyond deletion guard"
+    ]
+  },
+  "teardown": {
+    "independent_external_deletion_guard_per_pod": true,
+    "delete_only_after_local_hash_verification": true,
+    "terminal_check": "zero Pods and only retained network volume 9luykg5yc3",
+    "remainder_wave_requires_new_approval": true
+  }
+}
