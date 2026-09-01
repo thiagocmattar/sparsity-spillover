@@ -2,10 +2,20 @@
 
 ## Status
 
-Implemented and locally verified; not launched. This run carries forward the
-approved Run 016 scientific design after live H200 and A100 checks proved that
-Run 016's CUDA-realized initialization hash was GPU-specific while A40 stock was
-unavailable. Run 016 remains unchanged and has no scientific attempts.
+Stopped at the non-evidence remote preflight on 2026-09-01; no scientific
+attempt was created and no training boundary ran. Four approved Secure H200
+Pods were provisioned, but the first A7 preflight model realized initialization
+SHA-256 `10a47983e13f9a6590bd853abf38690e2e1508a1c7e0715859f7aafa5e7725b4`
+under the pinned Linux CUDA wheel instead of the locally pinned CPU-wheel hash
+`e8b8d8e48880f8ff25e421ed29b04a81eb417300f2b4a01a8c4d56f2591a1062`.
+The failure occurred after cache and schedule verification and before the first
+boundary. All four Pods were deleted after the failure records were retrieved;
+the complete operational record is in `prelaunch/execution-record.json`.
+
+This run carries forward the approved Run 016 scientific design after live H200
+and A100 checks proved that Run 016's CUDA-realized initialization hash was
+GPU-specific while A40 stock was unavailable. Run 016 remains unchanged and
+has no scientific attempts.
 
 ## Question and matched design
 
