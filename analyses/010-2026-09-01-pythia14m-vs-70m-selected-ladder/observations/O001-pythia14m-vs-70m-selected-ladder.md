@@ -39,13 +39,14 @@ initial opportunity gains at low loss cost followed by a steeper loss rise.
 
 ## Figure caption and legend
 
-`figures/01-pythia14m-vs-70m-selected-ladder.pdf` has two panels. Panel (a)
-shows complete-validation loss against measured `R_model` for the trained A4
-and A7 ladders; labels give kappa. Panel (b) shows each TEAL point as the paired
-change from that control's target-0 point; labels give selected target
-sparsities. Color identifies intervention, solid circles identify 14M, and
-dashed squares identify 70M. Lines guide dose order and are not fitted response
-curves.
+`figures/01-pythia14m-vs-70m-selected-ladder.pdf` is one absolute-coordinate
+frontier: complete-validation loss against measured `R_model`. It overlays the
+trained A4 and A7 ladders with the complete A0 and A1-H post-hoc TEAL
+trajectories for both scales. The enlarged black-edged target-0 control points
+are the final un-clipped checkpoints; their exact `R_model` and validation loss
+appear in the figure callout. Color identifies the path, dashed circles identify
+14M, and solid squares identify 70M. Lines guide dose order and are not fitted
+response curves.
 
 ## Caveats
 

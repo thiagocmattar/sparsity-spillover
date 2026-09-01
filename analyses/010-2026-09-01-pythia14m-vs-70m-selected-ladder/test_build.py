@@ -87,7 +87,10 @@ def test_committed_outputs_match_source_reduction() -> None:
     assert pdf.stat().st_size > 15_000
 
 
-def test_figure_contract_is_pdf_only_and_two_panel() -> None:
+def test_figure_contract_is_pdf_only_single_absolute_frontier() -> None:
     source = (ANALYSIS_DIR / "01_build.py").read_text(encoding="utf-8")
-    assert "plt.subplots(1, 2" in source
+    assert "plt.subplots(1, 2" not in source
+    assert 'ax.set_xlabel("Measured R_model (%)")' in source
+    assert "Final control checkpoints" in source
+    assert "Delta R_model from target 0" not in source
     assert ".png" not in source.lower()

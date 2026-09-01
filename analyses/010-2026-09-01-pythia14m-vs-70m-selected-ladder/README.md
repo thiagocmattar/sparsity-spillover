@@ -7,7 +7,7 @@ It reduces the matched A4-OL1 and A7-OL1 five-point trained ladders from Runs
 Analysis 005 and Run 018.
 
 Run `01_build.py` from the repository environment to regenerate
-`figure_data.json`, `tables.md`, and the two-panel publication PDF. The builder
+`figure_data.json`, `tables.md`, and the unified-frontier publication PDF. The builder
 fails closed on source hashes, complete validation coverage, pooled integer
 logical counts, exact-zero site counts, training coverage, and OL1 boundary
 records. `test_build.py` checks the complete grids, integer reconciliation,
@@ -21,6 +21,7 @@ It establishes neither a scaling law nor causal mediation.
 
 - `figure_data.json`: verified machine-readable reduction with source hashes.
 - `tables.md`: complete trained ladder and selected TEAL points.
-- `figures/01-pythia14m-vs-70m-selected-ladder.pdf`: two-panel comparison.
+- `figures/01-pythia14m-vs-70m-selected-ladder.pdf`: single absolute
+  `R_model` versus validation-loss frontier across both model sizes.
 - `observations/O001-pythia14m-vs-70m-selected-ladder.md`: interpretation and
   evidence provenance.

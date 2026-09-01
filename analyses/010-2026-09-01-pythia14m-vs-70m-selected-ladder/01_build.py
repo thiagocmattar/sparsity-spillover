@@ -377,85 +377,155 @@ def render_figure(data: dict[str, Any]) -> None:
 
     mpl.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
 
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
             "font.size": 9,
-            "axes.titlesize": 10,
-            "axes.labelsize": 9,
+            "axes.titlesize": 11,
+            "axes.labelsize": 10,
             "legend.fontsize": 8,
             "pdf.compression": 9,
         }
     )
     colors = {"A4-OL1": "#6F4C9B", "A7-OL1": "#0072B2", "A0": "#777777", "A1-H": "#D55E00"}
     scale_style = {"14M": ("--", "o"), "70M": ("-", "s")}
-    fig, axes = plt.subplots(1, 2, figsize=(11.6, 4.5), constrained_layout=True)
+    label_offsets = {
+        ("14M", "A4-OL1", 0.0): (4, -12),
+        ("14M", "A7-OL1", 0.0): (-5, 9),
+        ("14M", "A4-OL1", 0.1): (4, 4),
+        ("14M", "A7-OL1", 0.1): (4, -12),
+        ("70M", "A4-OL1", 0.1): (4, -12),
+        ("70M", "A7-OL1", 0.1): (4, 5),
+    }
+    fig, ax = plt.subplots(figsize=(10.8, 6.2), constrained_layout=True)
+
+    control_endpoints: list[dict[str, Any]] = []
+    for scale in ("14M", "70M"):
+        for control in ("A0", "A1-H"):
+            rows = [
+                row
+                for row in data["teal_points"]
+                if row["scale"] == scale and row["control"] == control
+            ]
+            linestyle, marker = scale_style[scale]
+            ax.plot(
+                [100 * row["R_model"] for row in rows],
+                [row["validation_loss"] for row in rows],
+                color=colors[control],
+                linestyle=linestyle,
+                marker=marker,
+                linewidth=1.55,
+                markersize=4.5,
+                alpha=0.95,
+                zorder=2,
+            )
+            endpoint = rows[0]
+            control_endpoints.append(endpoint)
+            ax.scatter(
+                [100 * endpoint["R_model"]],
+                [endpoint["validation_loss"]],
+                color=colors[control],
+                marker=marker,
+                s=58,
+                edgecolor="black",
+                linewidth=0.8,
+                zorder=5,
+            )
 
     for scale in ("14M", "70M"):
         for family in ("A4-OL1", "A7-OL1"):
             rows = [row for row in data["trained_endpoints"] if row["scale"] == scale and row["family"] == family]
             linestyle, marker = scale_style[scale]
-            axes[0].plot(
+            ax.plot(
                 [100 * row["R_model"] for row in rows],
                 [row["validation_loss"] for row in rows],
                 color=colors[family],
                 linestyle=linestyle,
                 marker=marker,
-                linewidth=1.6,
-                markersize=5,
-                label=f"{family}, {scale}",
+                linewidth=1.7,
+                markersize=5.2,
+                zorder=3,
             )
             for row in rows:
                 if row["kappa"] in {0.0, 0.1, 0.5}:
-                    axes[0].annotate(
-                        f"{row['kappa']:g}",
+                    offset = label_offsets.get((scale, family, row["kappa"]), (3, 3))
+                    ax.annotate(
+                        f"k={row['kappa']:g}",
                         (100 * row["R_model"], row["validation_loss"]),
-                        xytext=(3, 3),
+                        xytext=offset,
                         textcoords="offset points",
-                        fontsize=6.8,
+                        fontsize=7.2,
                         color=colors[family],
+                        horizontalalignment="right" if offset[0] < 0 else "left",
                     )
-    axes[0].set_title("(a) Trained OL1 ladder")
-    axes[0].set_xlabel("Measured R_model (%)")
-    axes[0].set_ylabel("Complete-validation loss")
-    axes[0].grid(alpha=0.22, linewidth=0.6)
-    axes[0].legend(frameon=False, loc="upper left")
 
-    for scale in ("14M", "70M"):
-        for control in ("A0", "A1-H"):
-            rows = [row for row in data["teal_points"] if row["scale"] == scale and row["control"] == control]
-            base = rows[0]
-            linestyle, marker = scale_style[scale]
-            axes[1].plot(
-                [100 * (row["R_model"] - base["R_model"]) for row in rows],
-                [row["validation_loss"] - base["validation_loss"] for row in rows],
-                color=colors[control],
-                linestyle=linestyle,
-                marker=marker,
-                linewidth=1.5,
-                markersize=4.5,
-                label=f"{control}, {scale}",
-            )
-            for row in rows:
-                if row["target_sparsity"] in {0.1, 0.3, 0.5}:
-                    axes[1].annotate(
-                        f"{row['target_sparsity']:.1f}",
-                        (
-                            100 * (row["R_model"] - base["R_model"]),
-                            row["validation_loss"] - base["validation_loss"],
-                        ),
-                        xytext=(3, 3),
-                        textcoords="offset points",
-                        fontsize=6.8,
-                        color=colors[control],
-                    )
-    axes[1].set_title("(b) Post-hoc TEAL paired change")
-    axes[1].set_xlabel("Delta R_model from target 0 (pp)")
-    axes[1].set_ylabel("Delta validation loss from target 0")
-    axes[1].grid(alpha=0.22, linewidth=0.6)
-    axes[1].legend(frameon=False, loc="upper left")
-    fig.suptitle("Selected sparsity tradeoffs persist from Pythia-14M to Pythia-70M", fontsize=11)
+    path_handles = [
+        Line2D([0], [0], color=colors[name], linewidth=2, label=label)
+        for name, label in (
+            ("A0", "A0 + post-hoc TEAL"),
+            ("A1-H", "A1-H + post-hoc TEAL"),
+            ("A4-OL1", "A4-OL1 trained ladder"),
+            ("A7-OL1", "A7-OL1 trained ladder"),
+        )
+    ]
+    path_legend = ax.legend(
+        handles=path_handles,
+        title="Path",
+        frameon=False,
+        loc="upper left",
+        bbox_to_anchor=(1.01, 1.0),
+    )
+    ax.add_artist(path_legend)
+    scale_handles = [
+        Line2D(
+            [0],
+            [0],
+            color="#333333",
+            linestyle=scale_style[scale][0],
+            marker=scale_style[scale][1],
+            linewidth=1.6,
+            markersize=5,
+            label=scale,
+        )
+        for scale in ("14M", "70M")
+    ]
+    ax.legend(
+        handles=scale_handles,
+        title="Model size",
+        frameon=False,
+        loc="upper left",
+        bbox_to_anchor=(1.01, 0.72),
+    )
+
+    endpoint_lines = ["Final control checkpoints", "(TEAL target 0; black edge)"]
+    for endpoint in control_endpoints:
+        r_percent = 100 * endpoint["R_model"]
+        r_text = f"{r_percent:.6f}" if r_percent < 0.001 else f"{r_percent:.4f}"
+        endpoint_lines.append(
+            f"{endpoint['scale']} {endpoint['control']}: "
+            f"R={r_text}%, loss={endpoint['validation_loss']:.4f}"
+        )
+    endpoint_lines.extend(["", "TEAL markers: targets 0.0 to 0.9", "OL1 labels: selected kappa values"])
+    ax.text(
+        1.02,
+        0.48,
+        "\n".join(endpoint_lines),
+        transform=ax.transAxes,
+        va="top",
+        ha="left",
+        fontsize=7.8,
+        linespacing=1.35,
+        bbox={"boxstyle": "round,pad=0.45", "facecolor": "#F6F6F6", "edgecolor": "#BBBBBB"},
+    )
+
+    ax.set_title("Pythia-14M and 70M: validation loss vs. measured R_model")
+    ax.set_xlabel("Measured R_model (%)")
+    ax.set_ylabel("Complete-validation loss")
+    ax.set_xlim(-1.0, 42.0)
+    ax.set_ylim(4.0, 9.35)
+    ax.grid(alpha=0.22, linewidth=0.6)
     FIGURE.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(
         FIGURE,
