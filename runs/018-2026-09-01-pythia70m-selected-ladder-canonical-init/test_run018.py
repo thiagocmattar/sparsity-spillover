@@ -102,6 +102,16 @@ def test_artifact_contract_is_fail_closed():
         run_config.validate_config(changed)
 
 
+def test_science_guard_is_unset_until_timing_preflight():
+    config = run_config.load_config()
+    assert config["runpod"]["preflight_terminate_after_hours"] == 1.5
+    assert config["runpod"]["scientific_terminate_after_hours"] is None
+    changed = deepcopy(config)
+    changed["runpod"]["scientific_terminate_after_hours"] = 6.5
+    with pytest.raises(ValueError, match="timing-only preflight"):
+        run_config.validate_config(changed)
+
+
 def test_generated_files_match_config_and_tracked_metadata():
     config = run_config.load_config()
     artifact = config["initialization_artifact"]

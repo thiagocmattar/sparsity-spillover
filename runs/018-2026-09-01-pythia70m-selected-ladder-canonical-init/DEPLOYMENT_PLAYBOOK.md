@@ -1,8 +1,8 @@
 # Run 018 deployment playbook
 
-This checklist is not launch authorization. It becomes actionable only after
-the implementation handoff states the refreshed live billable envelope and the
-user explicitly approves launch.
+The timing-preflight section is authorized. Scientific sections are not launch
+authorization and become actionable only after the measured ETC, refreshed live
+billable envelope, and explicit scientific launch approval are recorded.
 
 ## Immutable transfer inventory
 
@@ -19,12 +19,33 @@ Verify byte counts and SHA-256 on the controller before transfer and again on
 every Pod. The tracked `metadata.json` must agree. A missing or mismatched file
 is a hard stop; remote regeneration is forbidden.
 
-## Provisioning and non-evidence gate
+## Approved timing-only gate
 
-Refresh RunPod balance, all resources, live GPU price, and data-center stock.
-Prefer four independent Secure H200 Pods, one condition per GPU, with the
+Refresh RunPod balance, all resources, live H200 price, and candidate-data-center
+stock. Create one independent Secure H200 Pod for the A7 preflight, using the
+pinned image digest, 30 GB container disk, 25 GB Pod volume at `/workspace`, SSH
+key injection, and an independent external 1.5-hour deletion guard. Do not attach
+or modify the retained network volume.
+
+Transfer the committed repository and all immutable inputs, run
+`01_setup_remote.sh`, and then run `06_remote_preflight.py` detached with its PID,
+log, JSON, package freeze, and transfer records under
+`/workspace/run018-control`. It creates no attempt. Retrieve and hash-verify all
+records, then delete the Pod whether the preflight passes or fails.
+
+A pass must strictly load parameter SHA-256 `e8b8...`, complete five exact A0
+and five exact A7 boundaries, full validation, activation/logical diagnostics,
+checkpoint serialization, and retain at least 10% VRAM headroom. Use its
+per-condition projection to calculate the scientific guard as 1.5 times the
+projected workload plus measured provision/setup/transfer time. Do not start a
+scientific worker in the timing Pod.
+
+## Future scientific provisioning
+
+After separate approval, refresh RunPod balance, all resources, live GPU price,
+and data-center stock. Prefer four independent Secure H200 Pods, one condition per GPU, with the
 pinned image digest, 30 GB container disk, 25 GB Pod volume at `/workspace`,
-SSH key injection, and an independent deletion guard. If H200 is unavailable,
+SSH key injection, and the measured deletion guard. If H200 is unavailable,
 select the fastest available GPU that passes the memory and exact preflight;
 report its price and revise the maximum cost before creation. Do not attach or
 delete the pre-existing retained network volume.
@@ -35,14 +56,8 @@ then transfer the 5.97 GB cache in projected slowest-condition order (A7, A4,
 A1, A0). Verify clean scoped source, commit/bundle identity, runtime/package
 pins, caches, schedule, artifact files, strict parameter hash, and CUDA seed.
 
-On the A7 Pod, run `06_remote_preflight.py` detached with PID, log, JSON, package
-freeze, and transfer records under `/workspace/run018-control`. It creates no
-attempt and must pass before any scientific worker starts. The exact gate
-constructs on CPU, strictly loads the canonical artifact, reproduces parameter
-SHA-256 `e8b8…`, moves to CUDA, completes five A0 and A7 boundaries, full
-validation, diagnostics, checkpoint serialization, and at least 10% VRAM
-headroom. If it fails, retrieve and verify the records, delete all newly created
-Pods, and leave Run 018 unchanged.
+The retrieved timing preflight must still match the committed code/config/cache
+identities before scientific workers start.
 
 ## Scientific sentinel
 

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "kind": "run018_timing_preflight_launch_plan",
+  "status": "approved",
+  "approved_scope": "one non-evidence Secure H200 timing preflight; no scientific attempt",
+  "approved_at_utc": "2026-09-01",
+  "source": {
+    "config_sha256": "3ad4fbecce243837acef189743f78bb158e9775940b81b50909ba92508c2ebaf",
+    "run_code_sha256": "a57a322cd02c4405cd032f84024680b083a719d9c101e9ac2f66e28fc323eb89",
+    "schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+    "git_commit": null,
+    "bundle": "generated and hash-verified after commit"
+  },
+  "resource": {
+    "pod_count": 1,
+    "gpu_type": "NVIDIA H200",
+    "gpu_count": 1,
+    "cloud_type": "SECURE",
+    "container_disk_gb": 30,
+    "pod_volume_gb": 25,
+    "volume_mount_path": "/workspace",
+    "retained_network_volume_attached": false,
+    "external_delete_guard_hours": 1.5
+  },
+  "cost_cap": {
+    "gpu_price_per_hour_usd_at_approval": 4.59,
+    "maximum_compute_usd": 6.885,
+    "estimated_maximum_pod_disk_usd": 0.02,
+    "maximum_new_resource_usd": 6.91,
+    "continuing_retained_volume_spend_per_hour_usd": 0.01
+  },
+  "required_measurements": [
+    "five exact A0 end-to-end optimizer boundaries",
+    "five exact A7 end-to-end OL1 optimizer boundaries",
+    "full 338-block validation",
+    "activation diagnostics",
+    "logical-product diagnostics including R_model",
+    "final checkpoint serialization",
+    "peak allocated and reserved VRAM",
+    "per-condition and per-wave projected duration"
+  ],
+  "scientific_guard": {
+    "status": "unset_pending_preflight",
+    "policy": "measured_projection_x1p5_plus_measured_provision_setup_transfer",
+    "scientific_launch_requires_new_approval": true
+  },
+  "teardown": {
+    "retrieve_and_hash_records_before_delete": true,
+    "delete_on_pass_or_failure": true,
+    "terminal_resource_state": "zero Pods; retained volume unchanged"
+  }
+}

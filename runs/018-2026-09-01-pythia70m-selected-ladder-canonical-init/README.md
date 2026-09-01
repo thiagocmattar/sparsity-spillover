@@ -2,8 +2,9 @@
 
 ## Status
 
-Implemented and locally verified on 2026-09-01; awaiting explicit launch
-approval. No Run 018 cloud resource or scientific attempt has been created.
+Implemented and locally verified on 2026-09-01. A one-H200, non-evidence timing
+preflight with a 1.5-hour hard guard is approved; no Run 018 cloud resource or
+scientific attempt had been created when this envelope was recorded.
 
 Run 017 stopped before its first training boundary because identical source
 initialization code produced different parameter bytes under the local CPU and
@@ -104,11 +105,11 @@ The focused suite checks the 12-condition partition, inherited schedule and
 strict model loading, post-initialization CPU RNG restoration, CPU-before-CUDA
 worker wiring, OL1 capture dimensions, and TEAL semantics. The full bootstrap
 suite is also required before launch. On 2026-09-01 the focused suite passed
-16/16 and the full bootstrap suite passed 183/183. The implemented config
+17/17 and the full bootstrap suite passed 183/183. The implemented config
 SHA-256 is
-`1bee5a9a9a7a667180fe4782bbfab5a14504f49bdac11d94617ee3be2c827c00`;
+`3ad4fbecce243837acef189743f78bb158e9775940b81b50909ba92508c2ebaf`;
 the run-code content SHA-256 is
-`a79689e8ba78d8cf57ec5c4107101b39061cf8e41a80bed6cb8eb548b1efdb83`.
+`a57a322cd02c4405cd032f84024680b083a719d9c101e9ac2f66e28fc323eb89`.
 
 The local CPU environment can verify construction and exact artifact loading
 but cannot execute the CUDA transfer or representative training. The proposed
@@ -118,7 +119,21 @@ probe before any scientific attempt. See `DEPLOYMENT_PLAYBOOK.md`. Live price,
 stock, balance, maximum cost, and storage will be refreshed for the launch
 approval; this README is not launch authorization.
 
-## Live sentinel proposal
+## Approved timing preflight
+
+The first remote action is one Secure H200 Pod, not the four-Pod sentinel. It
+has a 1.5-hour external deletion guard: at `$4.59/GPU-hour`, the maximum is
+`$6.885` compute plus approximately `$0.02` Pod disk, or `$6.91`. It creates no
+scientific attempt. It measures five exact A0 and five exact A7 updates, full
+validation, activation and logical diagnostics, final-checkpoint serialization,
+and peak VRAM. The resulting projection covers every condition and both waves.
+
+The scientific guard is deliberately unset. After the preflight, it will be
+defined from 1.5 times the measured per-condition projection plus measured
+provision/setup/transfer time. A scientific launch still requires a new live
+price/balance audit and explicit approval.
+
+## Superseded unmeasured sentinel envelope
 
 The read-only 2026-09-01 11:19 UTC audit found zero Pods and only the intended
 pre-existing 100 GB Standard network volume in `EUR-IS-1`, continuing at the
@@ -128,13 +143,12 @@ one sentinel condition each, for `$18.36/hour` combined. Each has 30 GB containe
 disk, 25 GB Pod volume, no network-volume attachment, and an independent
 6.5-hour deletion guard.
 
-The hard new-resource envelope is 26 GPU-hours: `$119.34` compute plus about
+The earlier provisional envelope was 26 GPU-hours: `$119.34` compute plus about
 `$0.21` Pod disk, or `$119.55`. Including up to `$0.065` of the unrelated retained
 volume during the same window gives a `$119.62` maximum account outflow. The
-live balance was `$120.84`, leaving only about `$1.22` guard headroom. Actual
-completion is expected before the guard, but the exact ETC is intentionally
-deferred to the five-boundary/full-validation preflight because no valid 70M
-boundary timing exists yet.
+live balance was `$120.84`, leaving only about `$1.22` guard headroom. This
+envelope is superseded and must not be launched: no valid 70M timing established
+that 6.5 hours was sufficient.
 
 Each Pod receives 6,251,350,503 bytes (5.822 GiB) of hash-pinned cache and
 initialization files, plus the committed source bundle. The expected final

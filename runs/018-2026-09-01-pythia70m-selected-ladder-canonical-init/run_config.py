@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import hashlib
 from pathlib import Path
 from typing import Any, Mapping
@@ -69,7 +70,12 @@ def load_config(path: str | Path = DEFAULT_CONFIG) -> dict[str, Any]:
 def validate_science_config(config: Mapping[str, Any]) -> None:
     """Validate the unchanged Run 017 scientific and execution contract."""
 
-    _FROZEN.validate_config(config)
+    frozen_config = deepcopy(config)
+    frozen_runpod = mapping(frozen_config, "runpod")
+    frozen_runpod["preflight_terminate_after_hours"] = 1.0
+    frozen_runpod["scientific_terminate_after_hours"] = 6.5
+    frozen_runpod.pop("scientific_guard_policy", None)
+    _FROZEN.validate_config(frozen_config)
     model = mapping(config, "model")
     if (
         model.get("initialization_realization") != "hash_pinned_generated_artifact"
@@ -80,6 +86,14 @@ def validate_science_config(config: Mapping[str, Any]) -> None:
 
 def validate_config(config: Mapping[str, Any]) -> None:
     validate_science_config(config)
+    runpod = mapping(config, "runpod")
+    if (
+        float(runpod.get("preflight_terminate_after_hours", 0.0)) != 1.5
+        or runpod.get("scientific_terminate_after_hours") is not None
+        or runpod.get("scientific_guard_policy")
+        != "measured_projection_x1p5_plus_measured_provision_setup_transfer"
+    ):
+        raise ValueError("Run 018 requires a timing-only preflight before setting a science guard.")
     artifact = mapping(config, "initialization_artifact")
     expected = {
         "source_run": "017-2026-09-01-pythia70m-selected-ladder-portable-init",
