@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "kind": "run018_measured_scientific_launch_plan",
+  "status": "awaiting_explicit_launch_approval",
+  "source_preflight": {
+    "pod_id": "cnekba7p07zplh",
+    "result": "../launch-control/timing-preflight-cnekba7p07zplh/attempt-002-passed/remote-preflight.json",
+    "result_sha256": "8df80426c3a8e1c0646a87429f879b2c1d37eedbb6a51fd0ae6e7df4e45570f9",
+    "git_commit": "b5d5a3e98fb9c64b8bf56720c0fd0f9a1666229e"
+  },
+  "execution": {
+    "gpu_type": "NVIDIA H200",
+    "cloud_type": "SECURE",
+    "live_price_per_gpu_hour_usd_at_preflight": 4.59,
+    "observed_incremental_pod_storage_per_hour_usd": 0.008,
+    "live_availability_at_preflight": "LOW",
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "waves": {
+      "sentinel": [
+        "a0-gelu",
+        "a1h-relu",
+        "a4-ol1-kappa-0",
+        "a7-ol1-kappa-0"
+      ],
+      "remainder": [
+        "a4-ol1-kappa-0p01",
+        "a4-ol1-kappa-0p05",
+        "a4-ol1-kappa-0p1",
+        "a4-ol1-kappa-0p5",
+        "a7-ol1-kappa-0p01",
+        "a7-ol1-kappa-0p05",
+        "a7-ol1-kappa-0p1",
+        "a7-ol1-kappa-0p5"
+      ]
+    },
+    "maximum_parallel_pods": 8,
+    "transfer_manifest_addition": [
+      "data/tokenized/minipile-pythia-14m-full/train/metadata.json",
+      "data/tokenized/minipile-pythia-14m-full/validation/metadata.json"
+    ]
+  },
+  "measured_projection": {
+    "control_condition_seconds": 3319.3805437416304,
+    "ol1_condition_seconds": 5565.997909605037,
+    "parallel_wave_seconds_after_worker_start": 5565.997909605037,
+    "all_conditions_gpu_hours_before_provisioning": 17.30520560653712,
+    "projected_gpu_cost_before_provisioning_usd": 79.43089373400538,
+    "worst_observed_create_to_passed_attempt_seconds": 939.665,
+    "projected_gpu_cost_with_worst_observed_overhead_on_all_workers_usd": 93.8077682340054
+  },
+  "guards": {
+    "policy": "1.5 * measured condition projection + worst observed create-to-passed-attempt overhead, rounded upward",
+    "deadline_origin": "pod_created_at",
+    "control_hours_each": 1.65,
+    "ol1_hours_each": 2.6,
+    "transfer_warning_minutes_without_worker_start": 45,
+    "stale_event_warning_minutes": 10
+  },
+  "cost_caps": {
+    "sentinel_wave_incremental_usd": 39.083,
+    "remainder_wave_incremental_usd": 95.6384,
+    "both_waves_incremental_usd": 134.7214,
+    "balance_at_preflight_close_usd": 119.4732607026,
+    "balance_shortfall_against_both_wave_caps_usd": 15.2481392974,
+    "note": "The projected cost fits the current balance, but the full guard envelope does not; refresh price, balance, and stock before each wave."
+  },
+  "monitoring": {
+    "interval_minutes": 5,
+    "report": [
+      "progress",
+      "current finite loss",
+      "input tokens per second",
+      "refreshed ETC",
+      "GPU memory and utilization",
+      "disk and stale-event warnings"
+    ]
+  },
+  "retrieval_and_teardown": {
+    "retain_final_checkpoint": true,
+    "retrieve_all_approved_diagnostics": true,
+    "verify_remote_and_local_byte_count_and_sha256": true,
+    "delete_each_pod_after_its_local_verifier_passes": true,
+    "terminal_state": "zero Pods; retained network volume unchanged"
+  },
+  "approval": {
+    "scientific_launch_approved": false,
+    "recommended_next_approval_scope": "four-Pod sentinel wave only",
+    "remainder_requires_post_sentinel_verification_and_explicit_approval": true
+  }
+}
