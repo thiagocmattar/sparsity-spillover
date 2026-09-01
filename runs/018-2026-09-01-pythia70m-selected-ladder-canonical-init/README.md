@@ -201,3 +201,13 @@ remainder, and retry Pods (`$119.241234` total). Teardown confirmation found
 zero Pods. The pre-existing 100 GB Standard network volume `9luykg5yc3` remains
 intentionally retained in `EUR-IS-1`; it is the only continuing billable
 resource. Detailed execution records are under `launch-control/`.
+
+## 2026-09-01 billing refresh
+
+A later Status Report Number 2 RunPod REST v2 audit reconciled the same 15 Run
+018 Pod IDs to `$131.5075856484` GPU plus `$0.2270254766` temporary Pod-disk
+spend, `$131.7346111251` total. This current Pod-ID total supersedes the
+`$119.241234` closeout snapshot above because additional hourly buckets posted
+after teardown. The refreshed resource audit again found zero Pods and the one
+intentionally retained 100 GB Standard network volume; its independent
+`$0.01/hour` charge is excluded from the run total.

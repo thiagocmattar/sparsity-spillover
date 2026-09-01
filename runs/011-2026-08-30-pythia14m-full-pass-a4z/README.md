@@ -320,3 +320,14 @@ claim without a separate user-approved finding.
   Run 011 A4 and Run 012 A4-OL1 pairs. Analysis 007 owns the count-reconciled
   synthesis; this run remains the immutable A4 evidence source. This later
   approval supersedes the no-finding status recorded at run closeout above.
+
+- 2026-08-31: implementation audit superseded that interpretation. Run 012
+  realized A4-Z + OL1@h, not four-site A4-OL1; F001 is discarded. Corrected
+  Run 015 and Analysis 009 now provide the eligible four-site comparison.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the six Run 011 Pod
+IDs to `$16.0076928766` GPU plus `$0.0985532458` temporary Pod-disk spend,
+`$16.1062461223` total. This current Pod-ID total supersedes the lagging posted
+snapshot above and excludes the separately retained network volume.

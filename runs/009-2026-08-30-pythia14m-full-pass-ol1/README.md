@@ -255,3 +255,11 @@ not be promoted to a manuscript claim without a separate user-approved finding.
   five-minute capacity retries, and a $3.40 maximum incremental envelope.
 - 2026-08-30: user approved the four-worker scientific launch under the measured
   $15.50 maximum incremental compute-plus-storage envelope.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the six Run 009 Pod
+IDs to `$14.5039982460` GPU plus `$0.0766782453` temporary Pod-disk spend,
+`$14.5806764914` total. This current Pod-ID total supersedes the provisional
+closeout snapshot above, whose final hourly bucket had not posted. It excludes
+the separately retained network volume.

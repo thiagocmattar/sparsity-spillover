@@ -5,6 +5,19 @@
 
 ## Current status
 
+Run 018 completed and verified the selected one-seed Pythia-70M promotion of
+A0, A1-H, A4-OL1, and A7-OL1: 12/12 conditions completed 712 optimizer
+boundaries, full 338-block validation, retained diagnostics/checkpoints, and
+the two complete ten-target post-hoc TEAL frontiers. Analysis 010 owns the
+cross-scale reduction, complete Markdown tables, and one publication PDF. The
+14M crossover persists descriptively at 70M: A4-OL1 has higher `R_model` at
+`kappa=0`, while A7-OL1 is higher at `kappa=0.5`. This is two-size descriptive
+evidence, not a scaling law; Pythia-410M remains unobserved. Status Report
+Number 2 reports the result and the current Pod-ID-reconciled billing audit.
+Run 016 was superseded after GPU-dependent initialization hashes, and Run 017
+stopped before science when its proposed portable initialization failed the
+remote identity check.
+
 Analysis 009 directly compares historical Run 012 A4-Z + OL1@h with corrected
 Run 015 four-site A4-OL1 at all five matched thresholds. Status Report Number 1
 now uses Run 015 only in its main A4-OL1 result and corrected Analysis 008
@@ -77,9 +90,27 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `016`. Next analysis number: `010`. Next finding number: `F003`.
+Next run number: `019`. Next analysis number: `011`. Next finding number: `F003`.
 
 ## Where we stopped
+
+- 2026-09-01: Status Report Number 2 was compiled and adversarially reviewed.
+  It retains Report 1's architecture/intervention diagram and 14M evidence,
+  updates the scope and current RunPod costs, adds cross-scale A4-OL1/A7-OL1
+  exact-zero tables, shows all ten 70M TEAL targets, and embeds Analysis 010's
+  single loss--`R_model` frontier. No finding or scaling-law claim was promoted.
+- 2026-09-01: Analysis 010 completed the 14M/70M selected-ladder synthesis with
+  all 20 trained endpoints and all 40 post-hoc TEAL points. Its PDF retains
+  off-scale trajectories above validation loss 6 and its Markdown tables carry
+  all requested sitewise exact-zero masses.
+- 2026-09-01: Run 018 completed and verified all 12 canonical Pythia-70M
+  conditions, including A0/A1-H TEAL, diagnostics, final checkpoints, archive
+  hashes, and complete validation. All Pods were deleted; the one pre-existing
+  100 GB volume remains intentionally retained.
+- 2026-09-01: Runs 016 and 017 stopped before scientific execution after two
+  distinct initialization-portability failures. Their preflight and
+  compatibility records are retained; Run 018 replaced initialization with a
+  canonical, hash-verified model artifact.
 
 - 2026-08-31: Status Report Number 1 now uses corrected Run 015 as its only
   main-text A4-OL1 evidence, updates Analysis 008's full-pass frontier to the
@@ -217,6 +248,9 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 and F002 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
 | 014 | Does seven-site OL1 improve the paper-scale A7 quality--logical-opportunity frontier? | completed (valid; run-local observation, no finding promoted) | `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/` |
 | 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | completed (valid; Analysis 009 complete) | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
+| 016 | Does the selected ladder persist at 70M under a GPU-realized initialization identity? | superseded before science; GPU-specific initialization hash | `runs/016-2026-08-31-pythia70m-selected-ladder/` |
+| 017 | Can CPU-before-CUDA initialization make the selected 70M promotion portable? | stopped before science; remote identity mismatch | `runs/017-2026-09-01-pythia70m-selected-ladder-portable-init/` |
+| 018 | Does the selected A0/A1-H/A4-OL1/A7-OL1 ladder persist at Pythia-70M with a canonical initialization artifact? | completed (valid; Analysis 010 and Status Report 2 complete) | `runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/` |
 
 ## Analyses
 
@@ -231,6 +265,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 007 | Where do the historical Run 012 A4-Z + OL1@h endpoints lie relative to the trained and post-hoc frontiers? | completed as historical reduction; does not support four-site A4-OL1 or F001 | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
 | 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
 | 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
+| 010 | Does the selected A0/A1-H/A4-OL1/A7-OL1 loss--`R_model` structure persist from Pythia-14M to 70M? | completed; descriptive two-size synthesis, no finding promoted | `analyses/010-2026-09-01-pythia14m-vs-70m-selected-ladder/` |
 
 ## Key documents
 

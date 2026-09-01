@@ -257,3 +257,11 @@ bootstrap suite 174/174. The first full-suite invocation encountered seven
 Windows fixture-setup errors because the shared `.pytest_tmp/default` directory
 could not be cleaned; it had no assertion failures. Repeating the same 174
 tests with a fresh run-specific `--basetemp` passed completely.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the eight Run 014
+Pod IDs to `$19.3236626610` GPU plus `$0.0956597279` temporary Pod-disk spend,
+`$19.4193223889` total. This current Pod-ID total supersedes the earlier value
+described as settled, because additional hourly buckets posted afterward. It
+excludes the separately retained network volume.

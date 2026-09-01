@@ -263,3 +263,11 @@ assumed bitwise. Logical opportunity is not a hardware-speed result.
   A7 design above, the required preflight, the live guarded cloud envelope once
   measured, retries that do not change scientific inputs, artifact transfer,
   and termination.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the six Run 013 Pod
+IDs to `$15.7277473900` GPU plus `$0.0754050968` temporary Pod-disk spend,
+`$15.8031524868` total. This Pod-specific total replaces the lagging closeout
+snapshot for cost reporting; it does not use account-balance deltas and excludes
+the separately retained network volume.

@@ -40,10 +40,16 @@ variant.
   Its A7 cell is backed by Run 013,
   Analysis 008, and Finding F002; its completed A7-OL1
   cell is backed by Run 014 and reported descriptively through Analysis 008.
+  Its selected Pythia-70M A0, A1-H, A4-OL1, and A7-OL1 cells are complete in
+  Run 018 and compared with 14M in Analysis 010; 410M remains unobserved.
 - `reports/01-2026-08-30-status-update/` contains the user-requested TeX source,
   PDF, and report-local provenance notes for Status Report Number 1. This
   numbered report is an explicit tracked exception to the directory-wide
   ignore rule; LaTeX auxiliary files remain untracked.
+- `reports/02-2026-09-01-status-update/` contains Status Report Number 2's
+  generated TeX, compiled PDF, focused verifier, current Pod-ID-reconciled
+  billing provenance, and report-local notes. It carries the verified selected
+  70M promotion through Analysis 010 without promoting a finding.
 - `artifacts/pythia-architecture-map.tex` and its compiled PDF provide the
   intervention-neutral, paper-ready map of one shared Pythia block; the
   adjacent Markdown file records its notation, scope, caption, and caveats.
@@ -112,6 +118,15 @@ bibliography, build command, or generated-fragment directory only when the paper
 actually needs it.
 
 ## Result evidence crosswalk
+
+- On 1 September 2026, the user requested Status Report Number 2 after Run 018
+  and Analysis 010 completed. The report retains Report 1's architecture
+  diagram and 14M result structure, updates the execution scope and RunPod
+  billing, adds matched 14M/70M A4-OL1 and A7-OL1 tables with count-pooled
+  exact-zero masses, reports all ten 70M A0/A1-H post-hoc TEAL targets, and
+  embeds Analysis 010's single validation-loss--`R_model` frontier. The result
+  is descriptive one-seed evidence across two sizes; no scale-independent
+  claim, runtime-speedup claim, or finding is promoted, and 410M is unobserved.
 
 - On 31 August 2026, the user approved tentative Finding F002 from the five
   matched Pythia-14M A4/A7 full-pass pairs. Adding symmetric post-RoPE Q/K/V

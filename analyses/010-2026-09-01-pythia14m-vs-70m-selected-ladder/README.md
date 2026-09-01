@@ -29,3 +29,6 @@ It establishes neither a scaling law nor causal mediation.
   Analysis 008 visual grammar and a loss-6 display cap.
 - `observations/O001-pythia14m-vs-70m-selected-ladder.md`: interpretation and
   evidence provenance.
+- `manuscript/reports/02-2026-09-01-status-update/`: downstream report using
+  this reduction for its matched scale tables, complete 70M TEAL table, and
+  single trained/post-hoc frontier; no finding is promoted.

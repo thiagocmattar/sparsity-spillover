@@ -43,7 +43,10 @@ supports scale-independent or runtime-speedup language. The F001-backed
 introduction text is now a known stale claim pending explicit user-approved TeX
 revision. Analysis 009 reconciles corrected Run 015 against Run 011 and the
 historical Run 012 realization; the result remains descriptive and has not been
-approved as a finding.
+approved as a finding. Run 018 and Analysis 010 add descriptive Pythia-70M
+evidence for the selected A0/A1-H/A4-OL1/A7-OL1 subset. They support reporting
+whether the observed loss--`R_model` shape persists across 14M and 70M, but do
+not support a scaling law, a 410M statement, or a runtime-speedup claim.
 
 ## Acknowledged starting differences
 
@@ -98,6 +101,13 @@ After the user approves a finding or requests manuscript work:
 Do not automatically promote a successful run into a paper conclusion.
 
 ## Approved evidence integration
+
+- Run 018 completed the selected one-seed Pythia-70M promotion of A0, A1-H,
+  A4-OL1, and A7-OL1 with complete validation, sitewise diagnostics, logical
+  counters, retained checkpoints, and complete A0/A1-H post-hoc TEAL sweeps.
+  Analysis 010 owns the matched 14M/70M reduction and publication PDF. Status
+  Report Number 2 reports these results descriptively, including all ten 70M
+  TEAL targets; no finding is promoted and Pythia-410M remains unobserved.
 
 - Finding F001 is discarded because Run 012's declared four-site pressure was
   actually realized only at `h`. Analysis 007 remains a historical reduction

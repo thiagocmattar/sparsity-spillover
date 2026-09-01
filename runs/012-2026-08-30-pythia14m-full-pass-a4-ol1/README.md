@@ -262,3 +262,10 @@ Exact retrieval, resource, and billing records are in
   and is valid only as A4-Z gates plus OL1@h; F001 is discarded. Run 015 is the
   corrected four-site experiment, and Analysis 009 owns their direct matched
   comparison and all-site exact-zero table.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the five Run 012 Pod
+IDs to `$14.7758081267` GPU plus `$0.0735532452` temporary Pod-disk spend,
+`$14.8493613718` total. This current Pod-ID total supersedes the incomplete
+closeout subtotal above and excludes the separately retained network volume.

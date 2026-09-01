@@ -232,3 +232,10 @@ compute charge; the retained volume continues its independent charge. Final
 resource teardown is authoritative; the latest posted Pod billing and its
 still-lagging final hourly bucket are recorded separately in the closeout JSON.
 The approved `$22.50` incremental cap was not approached.
+
+## 2026-09-01 billing refresh
+
+The Status Report Number 2 RunPod REST v2 audit reconciled the ten Run 015 Pod
+IDs to `$18.3562909383` GPU plus `$0.0923611165` temporary Pod-disk spend,
+`$18.4486520549` total. This current Pod-ID total supersedes the lagging
+closeout snapshot above and excludes the separately retained network volume.
