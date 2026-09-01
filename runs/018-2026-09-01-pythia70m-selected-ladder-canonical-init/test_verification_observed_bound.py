@@ -50,3 +50,29 @@ def test_repair_preserves_unrelated_verifier_failures(monkeypatch, tmp_path):
     monkeypatch.setattr(repair, "_ORIGINAL_REQUIRE_DIAGNOSTICS", fail)
     with pytest.raises(ValueError, match="activation counts do not reconcile"):
         repair._require_diagnostics_with_observed_bound(tmp_path, {}, {}, {})
+
+
+def test_cohort_repair_is_scoped_and_restores_frozen_verifier(monkeypatch):
+    original_diagnostics = repair._FROZEN._require_diagnostics
+    original_attempt = repair._FROZEN.verify_attempt
+
+    monkeypatch.setattr(
+        repair,
+        "_require_line_ending_only_run_code_variation",
+        lambda: {"difference": "test-only"},
+    )
+    monkeypatch.setattr(repair._FROZEN, "write_json", lambda *_args: None)
+
+    def fake_verify_run():
+        assert repair._FROZEN._require_diagnostics is repair._require_diagnostics_with_observed_bound
+        assert repair._FROZEN.verify_attempt is not original_attempt
+        return {"status": "verified", "condition_count": 12}
+
+    monkeypatch.setattr(repair._FROZEN, "verify_run", fake_verify_run)
+    assert repair.verify_run() == {
+        "status": "verified",
+        "condition_count": 12,
+        "run_code_identity_normalization": {"difference": "test-only"},
+    }
+    assert repair._FROZEN._require_diagnostics is original_diagnostics
+    assert repair._FROZEN.verify_attempt is original_attempt

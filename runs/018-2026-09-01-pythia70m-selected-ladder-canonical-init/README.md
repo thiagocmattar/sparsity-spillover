@@ -162,3 +162,42 @@ low, and twelve Pods would cost `$55.08/hour` while duplicating roughly 70 GiB
 of input transfer. After a successful sentinel, the eight remaining conditions
 can run independently on eight GPUs in parallel (`$36.72/hour` at the current
 H200 price), subject to a fresh price, stock, balance, and launch decision.
+
+## Completed execution and result
+
+The approved 70M promotion completed on 2026-09-01. All 12 canonical
+conditions finished 712 optimizer boundaries with no overflow or skipped
+update, reloaded their final recovery checkpoints, evaluated the complete
+validation workload, and retained the agreed diagnostics. A0 and A1-H also
+completed all ten post-hoc TEAL targets. The repaired cohort verifier passed all
+12 attempts; `artifacts/verification.json` is the canonical cohort record.
+
+The selected ladder preserves the qualitative 14M crossover. A4 dominates A7
+at kappa 0, whereas A7 dominates A4 at kappa 0.5. At 70M, A7 kappa 0.1 gains
+5.131 percentage points of measured `R_model` over A7 kappa 0 for 0.00890
+additional validation loss. Full endpoint values and caveats are in
+`observations/full-ladder-result.md`; Analysis 010 contains the cross-scale
+reduction and PDF figure.
+
+One original A7 kappa-0.1 Pod was replaced before scientific execution because
+SCP was unavailable. A second unchanged attempt in EUR-IS-4 was classified as
+an infrastructure retry after severe regional contention and its partial files
+were retained as non-evidence. The final non-EUR replacement completed. The
+remainder smokes used the kappa-0 topology equivalents because `02_smoke.py`
+accepts only sentinel condition identifiers; exact threshold construction was
+covered by focused tests and the full completed attempts.
+
+The sentinel and remainder recorded different run-code content hashes solely
+because `prelaunch/initialization/metadata.json` had LF versus CRLF line
+endings. Every other inventory entry was identical, and the parsed metadata was
+identical. The cohort repair accepts only the two observed hashes, proves this
+exact normalization, preserves each recorded identity, and rejects any other
+divergence.
+
+All retrieved archives matched their remote SHA-256 and per-file inventories
+before Pod deletion. RunPod REST v2 billing attributes `$119.036257` of GPU and
+`$0.204977` of Pod-disk spend to the 15 identified preflight, sentinel,
+remainder, and retry Pods (`$119.241234` total). Teardown confirmation found
+zero Pods. The pre-existing 100 GB Standard network volume `9luykg5yc3` remains
+intentionally retained in `EUR-IS-1`; it is the only continuing billable
+resource. Detailed execution records are under `launch-control/`.
