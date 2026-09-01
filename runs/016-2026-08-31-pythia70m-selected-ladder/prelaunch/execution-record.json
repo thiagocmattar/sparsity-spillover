@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "status": "passed_non_evidence_preflight",
+  "science_launch_authorized": false,
+  "pod": {
+    "id": "h6pq0yytzdbn30",
+    "name": "run016-a40-preflight-20260831",
+    "cloud_type": "SECURE",
+    "data_center_id": "EU-SE-1",
+    "gpu_type": "NVIDIA A40",
+    "gpu_count": 1,
+    "catalog_memory_gb": 48,
+    "pytorch_visible_memory_bytes": 47708110848,
+    "cuda_version": "12.8",
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "container_disk_gb": 30,
+    "volume_disk_gb": 25,
+    "created_at": "2026-08-31T23:43:48.547Z",
+    "teardown_verified_at": "2026-09-01T00:32:23.8706699Z",
+    "price_usd_per_gpu_hour": 0.44
+  },
+  "guard": {
+    "deadline_utc": "2026-09-01T01:13:48.547Z",
+    "maximum_hours": 1.5,
+    "maximum_total_cost_usd": 0.672,
+    "implementation": "independent hidden local deletion process because runpodctl 2.12.0 removed --terminate-after",
+    "stopped_after_verified_teardown": true
+  },
+  "identity": {
+    "source_git_commit": "6a1cd556c44769968058c9003638fb70ce587307",
+    "executed_run_code_sha256": "10e1b5d29fe24b0cab6fcefd30f51c0a7ab5e5c4dd4867f76cd74835278ae82a",
+    "current_post_preflight_run_code_sha256": "5e3c59736eca99d442a48c105c64916b781890ac26d3d2001fba39b4ee75ec6b",
+    "post_preflight_delta": "fail-before-boundary initialization guards plus the measured 9-hour infrastructure cap; no numerical training-path change",
+    "training_schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+    "a40_initial_parameter_sha256": "8d68ccfafbbc68f63731b673f16652db6b96804a40ad9ea629e4049df9d50111",
+    "provisional_local_blackwell_parameter_sha256": "724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17",
+    "train_cache_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+    "validation_cache_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  },
+  "transfer": {
+    "repository_bundle": {
+      "bytes": 15136457,
+      "sha256": "3a46b6bd123971df7b70ec3b2cd7977f1ffaaf793cf1c3a7ff152611864203a9",
+      "upload_wall_seconds": 7.9748235
+    },
+    "train_cache": {
+      "bytes": 5966845664,
+      "upload_wall_seconds": 686.7421245
+    },
+    "validation_cache": {
+      "bytes": 2774672,
+      "upload_wall_seconds": 6.6348666
+    },
+    "metadata_uploads_ran_concurrently": true,
+    "train_metadata_upload_wall_seconds": 4.7325869,
+    "validation_metadata_upload_wall_seconds": 4.7255808,
+    "retrieval_wall_seconds": null,
+    "retrieval_timing_note": "The multi-source SCP completed successfully, but its wrapper timing line was not captured."
+  },
+  "runtime": {
+    "python": "3.12",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1",
+    "matplotlib": "3.11.0",
+    "pip_check": "passed"
+  },
+  "preflight": {
+    "kind": "non_evidence_exact_a40_preflight",
+    "status": "passed",
+    "completed_at": "2026-09-01T00:30:04.532752Z",
+    "boundaries_per_condition": 5,
+    "scientific_evidence": false,
+    "a0_gelu": {
+      "median_end_to_end_step_seconds": 21.20395479723811,
+      "min_end_to_end_step_seconds": 21.076770558953285,
+      "max_end_to_end_step_seconds": 21.671569254249334,
+      "median_tokens_per_second": 98903.81393725482,
+      "peak_memory_allocated_bytes": 8012937728,
+      "peak_memory_reserved_bytes": 8881438720
+    },
+    "a7_ol1_kappa_0": {
+      "median_end_to_end_step_seconds": 35.62199064344168,
+      "min_end_to_end_step_seconds": 35.57003338634968,
+      "max_end_to_end_step_seconds": 36.71982381120324,
+      "median_tokens_per_second": 58753.8634093022,
+      "peak_memory_allocated_bytes": 9540007936,
+      "peak_memory_reserved_bytes": 10936647680
+    },
+    "full_validation": {
+      "wall_seconds": 3.1102741472423077,
+      "complete_blocks": 338,
+      "input_tokens": 692224,
+      "excluded_tail_tokens": 1444,
+      "loss_after_five_a7_probe_boundaries": 8.551255265636557
+    },
+    "activation_diagnostic_wall_seconds": 12.07505240291357,
+    "logical_diagnostic_wall_seconds": 18.387192606925964,
+    "checkpoint_serialization": {
+      "bytes": 845210963,
+      "wall_seconds": 0.8452894799411297
+    },
+    "checks": {
+      "finite_nonoverflowing_boundaries": true,
+      "fits_with_10pct_vram_headroom": true,
+      "same_pinned_initial_parameter_hash": true
+    }
+  },
+  "projection": {
+    "a0_and_a1h_hours_per_condition": 4.257735721968735,
+    "a4_and_a7_conservative_hours_per_condition": 7.05606361589498,
+    "a4_and_a7_max_observed_step_hours_per_condition": 7.272789621211381,
+    "aggregate_gpu_hours_excluding_provision_setup_transfer": 79.07610760288727,
+    "compute_usd_excluding_provision_setup_transfer_at_0p44": 34.7934873452704,
+    "sentinel_wave_hours_excluding_provision_setup_transfer": 7.05606361589498,
+    "remainder_wave_hours_excluding_provision_setup_transfer": 7.05606361589498,
+    "a4_caveat": "A4 uses the measured A7 OL1 step as a conservative reference.",
+    "teal_caveat": "TEAL uses the full logical-diagnostic duration as a conservative per-point proxy until one real point completes."
+  },
+  "corrective_actions": [
+    {
+      "stage": "setup",
+      "symptom": "pip check reported the repository requirement matplotlib was missing",
+      "action": "pin matplotlib==3.11.0 in 00_setup_remote.sh",
+      "scientific_behavior_changed": false
+    },
+    {
+      "stage": "hardware_guard",
+      "symptom": "the genuine nominal-48-GB A40 exposed 44.431640625 GiB to PyTorch and failed the provisional 47-GiB-visible threshold",
+      "action": "retain exact NVIDIA A40 name validation and require at least 44 GiB visible to PyTorch",
+      "scientific_behavior_changed": false
+    },
+    {
+      "stage": "initialization_identity",
+      "symptom": "the A40/Ampere seeded CUDA initialization hash differed from the provisional RTX 5070/Blackwell hash",
+      "action": "pin the A40 hash and require both preflight conditions and every later A40 science condition to reproduce it",
+      "scientific_behavior_changed": false
+    },
+    {
+      "stage": "science_readiness",
+      "symptom": "the inherited worker recorded the initial hash but did not reject a mismatch before training",
+      "action": "add a fail-before-boundary A40 initialization identity gate and extend the proposed Pod guard from 8 to 9 hours using measured ETC",
+      "scientific_behavior_changed": false
+    }
+  ],
+  "retrieved_artifacts": [
+    {
+      "path": "remote-preflight.json",
+      "bytes": 45666,
+      "sha256": "6bb29148353bb3cf8f78313ffcd284c2ecc54359f62486d69e6561c5c0791931"
+    },
+    {
+      "path": "preflight.log",
+      "bytes": 49319,
+      "sha256": "868d9af1d7666a73cc30c0768239c9691c9f45a0c9caef0a17162891a540deb7"
+    },
+    {
+      "path": "preflight-attempt1.log",
+      "bytes": 503,
+      "sha256": "0e4ba4b8c12d472fced877e8db6518dcc7a66eb0870e58e4c778159f847129ef"
+    },
+    {
+      "path": "preflight-attempt2.log",
+      "bytes": 652,
+      "sha256": "96ba07b78f1082020f841aa57fa57cce77f5ace88ad4864504db132258e86ae9"
+    },
+    {
+      "path": "setup.log",
+      "bytes": 17188,
+      "sha256": "cd6ac5b764d9b531185af706ebbef9d698069ecb583bf4d73ae15da879ed1fac"
+    },
+    {
+      "path": "setup-attempt1.log",
+      "bytes": 27734,
+      "sha256": "3cabf3c5e8adad90859ac3c96ea482e768e83b6e94312cf880480f4cbb1a7d90"
+    },
+    {
+      "path": "runpod-pip-freeze.txt",
+      "bytes": 1665,
+      "sha256": "04e2355febc962e39cda27b20c0b27eaa14217925fdfa84409f1ab9faeab5838"
+    }
+  ],
+  "post_preflight_verification": {
+    "focused_run016_tests": "16 passed",
+    "full_bootstrap_tests": "183 passed",
+    "python_compile": "passed",
+    "setup_shell_execution": "passed on the exact remote runtime",
+    "json_validation": "passed"
+  },
+  "cost": {
+    "balance_before_usd": 28.9145818136,
+    "balance_after_usd": 28.5514755061,
+    "posted_balance_delta_usd": 0.3631063075,
+    "within_approved_total_cap": true
+  },
+  "teardown": {
+    "delete_status": 204,
+    "pods_after": 0,
+    "new_network_volumes_after": 0,
+    "retained_preexisting_volume_id": "9luykg5yc3",
+    "current_account_spend_usd_per_hour_after": 0.01
+  }
+}

@@ -13,6 +13,7 @@ python3.12 -m venv "$environment"
   torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
 "$environment/bin/python" -m pip install --no-cache-dir \
   datasets==5.0.0 \
+  matplotlib==3.11.0 \
   numpy==2.5.0 \
   pyyaml==6.0.3 \
   safetensors==0.8.0 \

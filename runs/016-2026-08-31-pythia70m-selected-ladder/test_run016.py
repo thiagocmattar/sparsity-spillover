@@ -123,6 +123,22 @@ def test_70m_initializer_accepts_only_70m_contract():
         initialization.apply_pythia_70m_initialization(TinyModel(hidden_size=128), torch=torch)
 
 
+def test_training_rejects_initialization_mismatch_before_boundary(monkeypatch):
+    monkeypatch.setattr(
+        training,
+        "_SOURCE_PARAMETER_SHA256",
+        lambda model: run_config.EXPECTED_INITIAL_PARAMETER_SHA256,
+    )
+    assert (
+        training._verified_initial_parameter_sha256(object())
+        == run_config.EXPECTED_INITIAL_PARAMETER_SHA256
+    )
+
+    monkeypatch.setattr(training, "_SOURCE_PARAMETER_SHA256", lambda model: "0" * 64)
+    with pytest.raises(RuntimeError, match="before training"):
+        training._verified_initial_parameter_sha256(object())
+
+
 def test_exact_70m_a7_graph_constructs_initializes_and_runs_forward():
     from transformers import AutoModelForCausalLM
     from sparsity_research.pythia import topology_metadata

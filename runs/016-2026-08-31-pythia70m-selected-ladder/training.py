@@ -10,10 +10,23 @@ from _reuse_run004 import load_run004_module
 from initialization import apply_pythia_70m_initialization
 from model_factory import build_pinned_run016_model
 from run016_capture import ConditionPressureCapture
-from run_config import write_json
+from run_config import EXPECTED_INITIAL_PARAMETER_SHA256, write_json
 
 
 _BASE = load_run004_module("_run016_frozen_run004_training", "training.py")
+_SOURCE_PARAMETER_SHA256 = _BASE.parameter_sha256
+
+
+def _verified_initial_parameter_sha256(model: Any) -> str:
+    """Reject a host-specific initialization mismatch before the first boundary."""
+
+    realized = str(_SOURCE_PARAMETER_SHA256(model))
+    if realized != EXPECTED_INITIAL_PARAMETER_SHA256:
+        raise RuntimeError(
+            "Pinned A40 initialization mismatch before training: "
+            f"realized={realized}, expected={EXPECTED_INITIAL_PARAMETER_SHA256}"
+        )
+    return realized
 
 
 def _build_random_pythia(model_config: dict[str, Any], **kwargs: Any) -> Any:
@@ -98,6 +111,7 @@ _BASE.apply_pythia_14m_initialization = apply_pythia_70m_initialization
 _BASE.ActivationCapture = ConditionPressureCapture
 _BASE.microbatches_for_step = _microbatches_for_step
 _BASE._save_checkpoint = _save_checkpoint
+_BASE.parameter_sha256 = _verified_initial_parameter_sha256
 
 run_worker = _BASE.run_worker
 run_condition = _BASE.run_condition

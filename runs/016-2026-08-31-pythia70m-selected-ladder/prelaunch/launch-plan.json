@@ -1,11 +1,17 @@
 {
   "schema_version": 1,
-  "status": "awaiting_preflight_launch_approval",
-  "generated_at": "2026-08-31T22:45:18.5666674Z",
+  "status": "preflight_passed_awaiting_scientific_sentinel_launch_approval",
+  "generated_at": "2026-09-01T00:32:23.8706699Z",
   "authorized_scientific_design": "Run 016 Pythia-70M selected ladder, 12 matched conditions",
   "next_requested_action": {
-    "kind": "non_evidence_exact_gpu_preflight",
-    "pod_count": 1,
+    "kind": "four_condition_scientific_sentinel",
+    "pod_count": 4,
+    "condition_ids": [
+      "a0-gelu",
+      "a1h-relu",
+      "a4-ol1-kappa-0",
+      "a7-ol1-kappa-0"
+    ],
     "gpu_type": "NVIDIA A40",
     "gpu_count_per_pod": 1,
     "cloud_type": "SECURE",
@@ -13,25 +19,27 @@
       "EU-SE-1",
       "CA-MTL-1"
     ],
-    "maximum_hours": 1.5,
-    "maximum_compute_cost_usd": 0.66,
-    "maximum_prorated_pod_storage_cost_usd": 0.012,
-    "maximum_total_cost_usd": 0.672,
-    "creates_scientific_attempt": false,
-    "science_launch_requires_later_approval": true
+    "maximum_hours_per_pod": 9.0,
+    "maximum_compute_cost_usd": 15.84,
+    "maximum_prorated_pod_storage_cost_usd": 0.28,
+    "maximum_total_cost_usd": 16.12,
+    "creates_scientific_attempt": true,
+    "explicit_launch_approval_required": true,
+    "launch_authorized": false
   },
   "live_runpod_snapshot": {
     "active_pods": 0,
     "a40": {
       "memory_gb": 48,
       "secure_price_usd_per_gpu_hour": 0.44,
-      "availability": "LOW",
+      "availability": "MEDIUM",
+      "cuda_12_8_capacity_probe": "LOW",
       "secure_max_count": 10,
       "cuda_12_8_available": true,
       "data_centers": [
         {
           "id": "EU-SE-1",
-          "availability": "LOW"
+          "availability": "MEDIUM"
         },
         {
           "id": "CA-MTL-1",
@@ -87,11 +95,23 @@
   ],
   "preflight_pass_conditions": {
     "finite_nonoverflowing_boundaries": true,
-    "pinned_initial_parameter_sha256": "724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17",
+    "pinned_initial_parameter_sha256": "8d68ccfafbbc68f63731b673f16652db6b96804a40ad9ea629e4049df9d50111",
     "pinned_training_schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
     "maximum_reserved_memory_fraction": 0.9,
     "complete_validation_coverage": true,
     "all_diagnostics_reconcile": true
+  },
+  "preflight_result": {
+    "status": "passed",
+    "scientific_evidence": false,
+    "execution_record": "prelaunch/execution-record.json",
+    "artifact": "prelaunch/remote-preflight.json",
+    "a0_median_boundary_seconds": 21.20395479723811,
+    "a7_median_boundary_seconds": 35.62199064344168,
+    "a0_peak_reserved_bytes": 8881438720,
+    "a7_peak_reserved_bytes": 10936647680,
+    "posted_balance_delta_usd": 0.3631063075,
+    "pod_deleted_and_empty_listing_verified": true
   },
   "scientific_execution_if_later_approved": {
     "parallelism": "one condition per GPU, no DDP",
@@ -99,13 +119,15 @@
     "remainder_condition_count": 8,
     "maximum_concurrent_pods": 8,
     "twelve_concurrent_a40s_feasible_at_snapshot": false,
-    "fallback_if_eight_a40s_unavailable": "split remainder into two four-Pod waves",
-    "maximum_hours_per_pod": 8.0,
-    "maximum_aggregate_gpu_hours": 96.0,
-    "maximum_compute_cost_usd_at_snapshot": 42.24,
-    "maximum_prorated_pod_storage_cost_usd": 0.73,
-    "maximum_total_cost_usd": 42.97,
-    "etc_status": "requires exact preflight"
+    "recommended_remainder_shape": "two four-Pod waves unless launch-time CUDA-12.8 capacity supports eight",
+    "maximum_hours_per_pod": 9.0,
+    "maximum_aggregate_gpu_hours": 108.0,
+    "maximum_compute_cost_usd_at_snapshot": 47.52,
+    "maximum_prorated_pod_storage_cost_usd": 0.83,
+    "maximum_total_cost_usd": 48.35,
+    "projected_model_work_gpu_hours": 79.07610760288727,
+    "projected_model_work_compute_cost_usd": 34.7934873452704,
+    "etc_status": "measured by passed exact A40 preflight"
   },
   "monitoring": {
     "interval_minutes": 5,
@@ -130,7 +152,7 @@
     "refresh posted billing"
   ],
   "verification": {
-    "focused_run016_tests": "15 passed",
+    "focused_run016_tests": "16 passed",
     "full_bootstrap_tests": "183 passed",
     "cache_hash_and_schedule_check": "passed",
     "python_compile": "passed",

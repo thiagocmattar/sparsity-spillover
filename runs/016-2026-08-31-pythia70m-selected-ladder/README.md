@@ -67,9 +67,13 @@ blocks. The 1,464-token training tail is excluded.
 
 The locally verified schedule SHA-256 is
 `d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e`.
-The pinned Torch 2.11/CUDA 12.8 seed-1234 FP32 initialization SHA-256 is
-`724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17`;
-the A40 preflight must reproduce it.
+The pinned Torch 2.11/CUDA 12.8 seed-1234 FP32 initialization SHA-256 on the
+target A40/Ampere runtime is
+`8d68ccfafbbc68f63731b673f16652db6b96804a40ad9ea629e4049df9d50111`.
+The preflight discovered that the provisional local RTX 5070/Blackwell hash
+`724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17`
+was not bitwise portable across CUDA GPU architectures. Every scientific A40
+condition must reproduce the A40 hash.
 
 ## Validation and diagnostics
 
@@ -153,13 +157,12 @@ The installed Torch 2.11/CUDA 12.8 runtime reports no Flash Attention kernel on
 this GPU, so the smoke correctly stopped before constructing an unrepresentative
 math-attention boundary. The separate exact CPU graph test remained finite.
 
-RunPod currently lists Secure A40 48 GB at `$0.44/GPU-hour`, CUDA 12.8
-available, global availability `LOW`, and a Secure maximum count of 10. Its
-only listed locations are `EU-SE-1` and `CA-MTL-1`, both `LOW`. Therefore 12
-A40s concurrently are unavailable even before account quota and transient stock
-are considered. Run 016 uses condition-level parallelism but stages four
-sentinels followed by up to eight remaining conditions; the eight may be split
-into two groups of four if stock does not support one wave.
+RunPod lists Secure A40 48 GB at `$0.44/GPU-hour` with a Secure maximum count
+of 10. The post-preflight catalog showed `EU-SE-1` at `MEDIUM` and `CA-MTL-1`
+at `LOW`, while the CUDA-12.8-specific capacity probe remained `LOW`. Therefore
+12 A40s concurrently are unavailable and even an eight-Pod wave is not a robust
+assumption. Run 016 stages four sentinels, then defaults to two remainder waves
+of four unless the immediate launch-time capacity check supports eight.
 
 The retained 100 GB Standard network volume `9luykg5yc3` is in `EUR-IS-1`, where
 the A40 is not currently offered, so it is explicitly not part of this launch.
@@ -173,21 +176,54 @@ and staging, a full validation pass, activation diagnostics, eager logical
 diagnostics, checkpoint serialization, memory, and throughput. It then produces
 the science ETC and uncertainty basis.
 
-Cost guards at the current price are:
+The preflight's posted balance delta was `$0.3631`, within its `$0.672` cap.
+The science guard is revised from 8 to 9 hours per Pod because the conservative
+A4/A7 projection is 7.27 hours before provision, environment setup, cache
+transfer, and retrieval. Cost guards at the current price are therefore:
 
 - one 1.5-hour A40 preflight: `$0.66` compute plus at most about `$0.012`
   prorated 55 GB Pod storage, maximum about `$0.672`;
-- later 12-condition science cohort, only if separately approved: 96 guarded
-  GPU-hours = `$42.24` compute plus about `$0.73` prorated Pod storage,
-  maximum about `$42.97` before any unrelated retained-volume charge.
+- next four-condition sentinel, only if separately approved: 36 guarded
+  GPU-hours = `$15.84` compute plus about `$0.28` prorated Pod storage,
+  maximum about `$16.12` before any unrelated retained-volume charge;
+- all 12 conditions across the staged program: 108 guarded GPU-hours = `$47.52`
+  compute plus about `$0.83` prorated Pod storage, maximum about `$48.35`.
+
+The expected model-work total is 79.08 GPU-hours and about `$34.79` compute at
+the current rate, excluding provision/setup/transfer. The current post-preflight
+balance is `$28.55`, enough for the guarded sentinel but not the full guarded
+program; balance and price must be revisited after sentinel review.
 
 Prices and stock must be refreshed immediately before creation. RunPod documents
 per-second Pod compute/storage billing and no ingress/egress fee; the provider
 billing record remains provisional until refreshed after teardown.
 
+## Measured exact-A40 preflight
+
+The non-evidence preflight passed on Pod `h6pq0yytzdbn30` in `EU-SE-1`. It used
+one Secure A40, the pinned image/runtime, the complete hash-verified caches, and
+the final executed code identity
+`10e1b5d29fe24b0cab6fcefd30f51c0a7ab5e5c4dd4867f76cd74835278ae82a`.
+
+- A0: 21.20 s median per complete boundary, 98.9k tokens/s, 8.88 GB peak
+  reserved memory.
+- A7 kappa 0: 35.62 s median, 58.8k tokens/s, 10.94 GB peak reserved memory.
+- Complete 338-block validation: 3.11 s; activation diagnostics: 12.08 s;
+  logical diagnostics: 18.39 s; 845 MB checkpoint serialization: 0.85 s.
+- Projected A0/A1-H total: 4.26 hours each, including conservative TEAL time.
+  Projected A4/A7 total: 7.06 hours each, with a 7.27-hour conservative
+  max-observed-step bound. A4 uses A7 as the conservative OL1 reference.
+
+The nominal-48-GB A40 exposed 44.43 GiB to PyTorch. A7 peak reserved memory was
+22.9% of that total, so the 10% headroom check passed easily. The preflight also
+found that the provisional local RTX 5070/Blackwell initialization hash was not
+bitwise portable to A40/Ampere; both exact A40 reconstructions matched the now
+pinned A40 hash. `prelaunch/execution-record.json` is the consolidated execution,
+cost, correction, artifact-hash, and teardown record.
+
 ## Preflight and launch gates
 
-The preflight passes only if both exact A0 and A7 dimensions complete five
+The preflight passed: both exact A0 and A7 dimensions completed five
 finite, non-overflowing boundaries; all initial hashes match; full coverage and
 diagnostics reconcile; and peak reserved VRAM stays at or below 90% of the
 actual A40 total. It creates no scientific attempt.
@@ -212,4 +248,6 @@ See `DEPLOYMENT_PLAYBOOK.md` for the exact staged control flow.
   including the selected steps, one-seed matched promotion, complete validation,
   OL1 diagnostics, A0/A1 TEAL protocol, final recovery retention, and staged
   A40 preflight/condition-parallel plan.
-- No preflight or scientific launch approval has been given.
+- 2026-08-31: user explicitly approved one exact, non-evidence A40 preflight.
+  It passed, its retrieved artifacts were hash-verified, and its Pod was deleted.
+- No scientific launch approval has been given.

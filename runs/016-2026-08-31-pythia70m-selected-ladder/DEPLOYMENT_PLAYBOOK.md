@@ -61,6 +61,13 @@ Create four independent one-GPU Pods for:
 3. `a4-ol1-kappa-0`;
 4. `a7-ol1-kappa-0`.
 
+Use a 9-hour deletion guard per Pod. At the post-preflight `$0.44/GPU-hour`
+price, the four-Pod sentinel envelope is `$15.84` compute plus about `$0.28`
+prorated Pod storage, maximum `$16.12`. Refresh price, CUDA-12.8 stock, account
+balance, and existing resources immediately before creation. Training now
+checks the pinned A40 initialization hash before the first optimizer boundary;
+any mismatch stops that Pod rather than creating hours of invalid work.
+
 Each Pod uses its condition ID as the `--worker` argument. It is condition-level
 parallelism, not DDP. Start one detached authoritative process per Pod and keep
 the log/PID in `/workspace/run016-control/<condition>/`.

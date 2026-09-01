@@ -45,6 +45,7 @@ from training import _microbatches_for_step, _save_checkpoint, timed_validation
 
 PROBE_CONDITIONS = ("a0-gelu", "a7-ol1-kappa-0")
 BOUNDARIES = 5
+MINIMUM_VISIBLE_A40_MEMORY_BYTES = 44 * 1024**3
 
 
 def main() -> None:
@@ -67,8 +68,14 @@ def main() -> None:
     device = torch.device("cuda")
     device_properties = torch.cuda.get_device_properties(0)
     target = mapping(config, "runpod")
-    if "A40" not in torch.cuda.get_device_name(0) or int(device_properties.total_memory) < 47 * 1024**3:
-        raise RuntimeError("The approved exact preflight must run on an NVIDIA A40 with nominal 48 GB VRAM.")
+    if (
+        "A40" not in torch.cuda.get_device_name(0)
+        or int(device_properties.total_memory) < MINIMUM_VISIBLE_A40_MEMORY_BYTES
+    ):
+        raise RuntimeError(
+            "The approved exact preflight must run on an NVIDIA A40 with nominal 48 GB VRAM "
+            "and at least 44 GiB visible to PyTorch."
+        )
 
     cache_started = perf_counter()
     train, validation, train_metadata, validation_metadata, verification_seconds = load_verified_caches(
@@ -114,6 +121,11 @@ def main() -> None:
         initialization = apply_pythia_70m_initialization(model, torch=torch)
         recipe = verify_recipe_model(model)
         initial_hash = parameter_sha256(model)
+        if initial_hash != EXPECTED_INITIAL_PARAMETER_SHA256:
+            raise RuntimeError(
+                "Pinned A40 initialization mismatch before the first preflight boundary: "
+                f"realized={initial_hash}, expected={EXPECTED_INITIAL_PARAMETER_SHA256}"
+            )
         initial_hashes.add(initial_hash)
         optimizer, optimizer_mapping = build_recipe_adamw(
             model, dict(mapping(config, "training")), torch=torch

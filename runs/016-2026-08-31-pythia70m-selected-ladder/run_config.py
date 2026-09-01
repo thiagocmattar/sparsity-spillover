@@ -52,7 +52,7 @@ EXPECTED_REMAINDER = tuple(
     condition_id for condition_id in EXPECTED_CONDITION_IDS if condition_id not in EXPECTED_SENTINEL
 )
 EXPECTED_SCHEDULE_SHA256 = "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e"
-EXPECTED_INITIAL_PARAMETER_SHA256 = "724ad04e7233a747e3383e040077a2fc202e34293bf5e36e041a3efd2c5aac17"
+EXPECTED_INITIAL_PARAMETER_SHA256 = "8d68ccfafbbc68f63731b673f16652db6b96804a40ad9ea629e4049df9d50111"
 EXPECTED_CEILINGS = {
     "A0": (0, 104_293_466_112),
     "A1-H": (12_884_901_888, 104_293_466_112),
@@ -395,9 +395,9 @@ def validate_config(config: Mapping[str, Any]) -> None:
         or runpod.get("storage_strategy") != "per_pod_volume_seeded_from_hash_verified_cache"
         or runpod.get("retained_network_volume_used") is not False
         or float(runpod.get("preflight_terminate_after_hours", 0.0)) != 1.5
-        or float(runpod.get("scientific_terminate_after_hours", 0.0)) != 8.0
+        or float(runpod.get("scientific_terminate_after_hours", 0.0)) != 9.0
     ):
-        raise ValueError("The provisional A40 execution envelope changed.")
+        raise ValueError("The measured A40 execution envelope changed.")
     if runpod.get("image") != "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35":
         raise ValueError("The pinned RunPod image digest changed.")
 
