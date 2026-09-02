@@ -5,7 +5,7 @@ repo=/workspace/sparsity-spillover
 control=/workspace/run019-control
 run_dir="$repo/runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init"
 python=/workspace/run019-venv/bin/python
-slug=h200-secure-attempt02
+slug=h200-secure-attempt03
 output="$control/calibration-$slug.json"
 
 test "$(cat "$control/setup-exit-code.txt")" = 0

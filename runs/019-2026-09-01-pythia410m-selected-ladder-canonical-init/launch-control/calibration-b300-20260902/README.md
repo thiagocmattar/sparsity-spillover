@@ -36,3 +36,16 @@ log, execution context, and post-failure GPU inventory are retained under
 `wf9jk1mg5v206u/attempt01/`. The later user-approved fastest-GPU expansion adds
 `NVIDIA H200` to the exact non-evidence calibration candidates. Attempt 02 uses
 a distinct artifact slug and may start only from the committed, tested repair.
+
+The first retry preflight incorrectly masked a missing remote pytest dependency;
+the next fail-closed preflight correctly reported 21 passes and two temp-path
+setup errors. Preflight 04 created the configured `.pytest_tmp` parent, passed
+all 23 focused tests in 149.62 seconds, and reproduced the canonical parameter
+hash after two strict loads. These records are retained under `preflight02/`,
+`preflight03/`, and `preflight04/`.
+
+Calibration attempt 02 then stopped before model allocation because the H200
+catalog type had not been added to the independent visible-device-name token
+mapping. Its GPU inventory remained at zero MiB allocated. Attempt 03 adds the
+explicit `NVIDIA H200 -> H200` mapping and a direct regression assertion; its
+controller uses another distinct artifact slug.

@@ -64,6 +64,7 @@ DEVICE_TOKENS = {
     "NVIDIA L40S": ("L40S",),
     "NVIDIA A100 80GB PCIe": ("A100", "80GB"),
     "NVIDIA A100-SXM4-80GB": ("A100", "SXM4", "80GB"),
+    "NVIDIA H200": ("H200",),
 }
 
 

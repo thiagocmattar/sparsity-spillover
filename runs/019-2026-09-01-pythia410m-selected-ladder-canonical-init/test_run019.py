@@ -36,6 +36,7 @@ def test_condition_matrix_launch_wave_and_calibration_are_exact():
         "a7-ol1-kappa-0p5",
     )
     assert tuple(config["calibration"]["candidate_gpu_type_ids"])[-1] == "NVIDIA H200"
+    assert calibration.DEVICE_TOKENS["NVIDIA H200"] == ("H200",)
 
 
 @pytest.mark.parametrize(
