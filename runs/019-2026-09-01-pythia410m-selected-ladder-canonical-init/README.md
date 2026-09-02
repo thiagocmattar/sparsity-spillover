@@ -4,13 +4,16 @@
 
 Implemented and locally verified on 2026-09-01. The canonical initialization
 was generated and independently strict-loaded twice locally. The approved
-non-evidence calibration completed on 2026-09-02: Secure A40 and Secure A100
-SXM 80 GB both passed the exact workload and remote strict-initialization gate.
-Their retrieved archives and internal file inventories verified locally; both
-Pods were deleted, both guards were stopped, and the final audit found zero
-Pods and zero serverless workers. No scientific attempt has launched. GPU
-selection and scientific launch fields remain null pending the human cost/ETC
-choice and a separate launch approval. See `prelaunch/calibration/RESULTS.md`.
+non-evidence calibration completed on 2026-09-02: Secure A40, Secure A100 SXM
+80 GB, and Secure H200 all passed the exact workload and remote
+strict-initialization gate. The A40 and A100 archives and inventories verified
+locally before both Pods and guards were deleted. The H200 calibration archive
+also verified locally; its Pod is temporarily retained as the hash-verified
+payload seed and is protected by both platform and independent deletion guards.
+The human selected H200, twelve-way concurrency, and the fastest launch, with
+Community preferred and same-SKU Secure fallback. No scientific attempt has
+launched; the remaining launch gate is sufficient funded balance for the live
+capacity mix and runtime margin. See `prelaunch/calibration/RESULTS.md`.
 
 ## Question and matched design
 
@@ -127,10 +130,12 @@ of inputs, and result download are measured separately and added to the launch
 envelope. A candidate fails if an exact boundary overflows/skips, a required
 diagnostic is incomplete, or peak reserved VRAM exceeds 90% of visible memory.
 The comparison script reports the cost/time Pareto set but never selects a GPU.
-Both measured candidates passed. Twelve-way A40 projects to 47.91 hours and
-$216.76 of compute; twelve-way A100 SXM projects to 19.46 hours and $323.56.
-These figures exclude provisioning, package installation, payload delivery,
-and retrieval. The human selection remains null.
+All three measured candidates passed. Twelve-way A40 projects to 47.91 hours
+and $216.76 of compute; twelve-way A100 SXM projects to 19.46 hours and
+$323.56; twelve-way H200 projects to 12.19 hours and 128.27 aggregate GPU-hours,
+or $460.49 at Community price and $588.76 at Secure price. These figures exclude
+provisioning, package installation, payload delivery, and retrieval. The human
+selected H200 with Community preferred and same-SKU Secure fallback.
 
 ## Interpretation
 
@@ -148,8 +153,11 @@ consolidation.
 
 ## Launch boundary
 
-See `DEPLOYMENT_PLAYBOOK.md`. Calibration is complete and all calibration GPU
-resources are deleted. Scientific execution still requires the human GPU and
-concurrency decision, a config amendment, refreshed live price/stock, exact Pod
-definitions, condition-specific maximum durations/costs, transfer plan,
-ten-minute monitoring, teardown, and a separate explicit launch approval.
+See `DEPLOYMENT_PLAYBOOK.md` and
+`launch-control/scientific-20260902/README.md`. H200 and twelve-way concurrency
+are selected, the scientific launch is explicitly approved, and the execution
+definition uses condition guards of 10.8 hours for A0/A1-H, 20.0 hours for A4,
+and 21.9 hours for A7. Live balance and capacity are rechecked immediately
+before creation. Each Pod is preflighted independently, monitored every ten
+minutes, and deleted only after its retained checkpoint and evidence archive
+have been retrieved and hash-verified.

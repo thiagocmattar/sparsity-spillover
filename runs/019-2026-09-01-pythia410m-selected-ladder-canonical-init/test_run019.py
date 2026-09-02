@@ -113,17 +113,19 @@ def test_artifact_and_science_contracts_fail_closed():
         run_config.validate_config(changed)
 
 
-def test_hardware_and_guards_remain_unselected_until_calibration():
+def test_h200_hardware_and_measured_guard_are_selected_after_calibration():
     config = run_config.load_config()
     runpod = config["runpod"]
-    assert runpod["selected_gpu_type"] is None
-    assert runpod["calibration_terminate_after_hours"] is None
-    assert runpod["scientific_terminate_after_hours"] is None
+    assert runpod["selected_gpu_type"] == "NVIDIA H200"
+    assert runpod["selected_gpu_memory_gb"] == 141
+    assert runpod["selected_cloud_type"] == "COMMUNITY_PREFERRED_SECURE_FALLBACK"
+    assert runpod["calibration_terminate_after_hours"] == 4.0
+    assert runpod["scientific_terminate_after_hours"] == 21.9
     assert runpod["monitoring_interval_minutes"] == 10
     assert runpod["maximum_parallel_pods"] == 12
     changed = deepcopy(config)
     changed["runpod"]["scientific_terminate_after_hours"] = 6.5
-    with pytest.raises(ValueError, match="pre-calibration"):
+    with pytest.raises(ValueError, match="selected H200"):
         run_config.validate_config(changed)
 
 

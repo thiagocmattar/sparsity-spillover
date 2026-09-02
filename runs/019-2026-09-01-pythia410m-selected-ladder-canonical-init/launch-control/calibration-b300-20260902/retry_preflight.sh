@@ -5,9 +5,9 @@ repo=/workspace/sparsity-spillover
 control=/workspace/run019-control
 run_dir="$repo/runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init"
 python=/workspace/run019-venv/bin/python
-commit=71f9c4709c4ca091215b9e1baf219557666145ed
+commit=fc6ca777c408782e39dd5c13a1a2303bf5fe94c1
 
-slug=retry-preflight-attempt04
+slug=retry-preflight-attempt05
 status=0
 date -u +%FT%TZ > "$control/$slug-started-utc.txt"
 {
@@ -28,7 +28,7 @@ date -u +%FT%TZ > "$control/$slug-started-utc.txt"
   fi
   if (( status == 0 )); then
     "$python" "$run_dir/08_verify_initialization.py" \
-      --output "$control/initialization-verification-attempt04.json" || status=$?
+      --output "$control/initialization-verification-attempt05.json" || status=$?
   fi
 } > "$control/$slug.log" 2>&1
 printf '%s\n' "$status" > "$control/$slug-exit-code.txt"

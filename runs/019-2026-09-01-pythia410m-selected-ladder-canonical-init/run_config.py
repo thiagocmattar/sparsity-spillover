@@ -400,21 +400,21 @@ def validate_science_config(config: Mapping[str, Any]) -> None:
     if tuple(waves.get("all_conditions", ())) != EXPECTED_CONDITION_IDS:
         raise ValueError("The planned all-condition launch wave changed.")
     if (
-        runpod.get("selected_gpu_type") is not None
-        or runpod.get("selected_gpu_memory_gb") is not None
-        or runpod.get("selected_cloud_type") is not None
+        runpod.get("selected_gpu_type") != "NVIDIA H200"
+        or int(runpod.get("selected_gpu_memory_gb", 0)) != 141
+        or runpod.get("selected_cloud_type") != "COMMUNITY_PREFERRED_SECURE_FALLBACK"
         or runpod.get("parallelism") != "one_condition_per_gpu"
         or runpod.get("storage_strategy")
         != "per_pod_volume_seeded_from_one_hash_verified_payload"
         or runpod.get("retained_network_volume_used") is not False
-        or runpod.get("calibration_terminate_after_hours") is not None
-        or runpod.get("scientific_terminate_after_hours") is not None
+        or float(runpod.get("calibration_terminate_after_hours", 0.0)) != 4.0
+        or float(runpod.get("scientific_terminate_after_hours", 0.0)) != 21.9
         or runpod.get("guard_policy")
         != "measured_projection_x1p75_plus_measured_provision_setup_transfer"
         or int(runpod.get("monitoring_interval_minutes", 0)) != 10
         or int(runpod.get("stale_event_minutes", 0)) != 20
     ):
-        raise ValueError("The pre-calibration RunPod execution envelope changed.")
+        raise ValueError("The selected H200 RunPod execution envelope changed.")
     if runpod.get("image") != "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35":
         raise ValueError("The pinned RunPod image digest changed.")
 
