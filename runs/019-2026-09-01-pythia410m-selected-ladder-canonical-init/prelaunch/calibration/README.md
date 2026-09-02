@@ -1,8 +1,10 @@
 # GPU calibration records
 
-No calibration has been launched. Retrieved non-evidence calibration JSON files
-will be placed in this directory only after their remote bytes and SHA-256 have
-been verified locally.
+Calibration completed on 2026-09-02. The two retrieved non-evidence calibration
+JSON files were copied here only after their remote archives and every listed
+internal SHA-256 verified locally. `comparison.json` is the identity-checked
+machine-readable comparison; `RESULTS.md` records the human-facing cost/ETC
+options. No GPU is selected by these artifacts.
 
 Each candidate runs the identical exact workload: five complete optimizer
 boundaries for A0, A4-OL1 at `kappa=0.5`, and A7-OL1 at `kappa=0.5`; boundary

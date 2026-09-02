@@ -3,10 +3,14 @@
 ## Status
 
 Implemented and locally verified on 2026-09-01. The canonical initialization
-has been generated and independently strict-loaded twice. No calibration Pod,
-scientific attempt, or other Run 019 cloud resource has been created. GPU type,
-cloud tier, calibration deletion guard, scientific deletion guard, and maximum
-cost remain intentionally unset pending a separate calibration-launch approval.
+was generated and independently strict-loaded twice locally. The approved
+non-evidence calibration completed on 2026-09-02: Secure A40 and Secure A100
+SXM 80 GB both passed the exact workload and remote strict-initialization gate.
+Their retrieved archives and internal file inventories verified locally; both
+Pods were deleted, both guards were stopped, and the final audit found zero
+Pods and zero serverless workers. No scientific attempt has launched. GPU
+selection and scientific launch fields remain null pending the human cost/ETC
+choice and a separate launch approval. See `prelaunch/calibration/RESULTS.md`.
 
 ## Question and matched design
 
@@ -101,13 +105,12 @@ The model denominator is 827,099,971,584 products per complete sequence.
 These are topology-conditioned analytic reach ceilings, not observed sparsity
 or runtime speedup.
 
-## Calibration gate
+## Calibration gate and result
 
-Before scientific launch, at least two candidate GPUs will run the same
-non-evidence calibration. The preferred cost--speed comparison is RTX A6000
-against A100 SXM 80 GB, with A40, L40S, or A100 PCIe available if live stock
-changes. Each candidate
-measures exact A0, A4 `kappa=0.5`, and A7 `kappa=0.5` training boundaries. The
+The approved calibration first attempted the preferred RTX A6000 comparator,
+but no capacity was available. It therefore used the approved Secure A40
+fallback against Secure A100 SXM 80 GB. Each candidate measured exact A0, A4
+`kappa=0.5`, and A7 `kappa=0.5` training boundaries. The
 first of five boundaries is excluded as warm-up; the remaining four include
 batch construction, CPU-to-GPU staging, forward/backward work, gradient
 processing, and optimizer update. Complete validation, both eager diagnostics,
@@ -116,13 +119,18 @@ calibration, and a complete TEAL point are timed independently. The ETC
 projection includes the repeated checkpoint inventories performed by training
 closeout and TEAL source verification.
 
-The comparison reports projected GPU-hours, total GPU cost, per-condition ETC,
+The completed comparison reports projected GPU-hours, total GPU cost,
+per-condition ETC,
 twelve-way makespan, hourly fleet burn, peak reserved VRAM, and remaining
 headroom. Provisioning, package installation, 7,591,009,171 bytes (7.070 GiB)
 of inputs, and result download are measured separately and added to the launch
 envelope. A candidate fails if an exact boundary overflows/skips, a required
 diagnostic is incomplete, or peak reserved VRAM exceeds 90% of visible memory.
 The comparison script reports the cost/time Pareto set but never selects a GPU.
+Both measured candidates passed. Twelve-way A40 projects to 47.91 hours and
+$216.76 of compute; twelve-way A100 SXM projects to 19.46 hours and $323.56.
+These figures exclude provisioning, package installation, payload delivery,
+and retrieval. The human selection remains null.
 
 ## Interpretation
 
@@ -140,8 +148,8 @@ consolidation.
 
 ## Launch boundary
 
-See `DEPLOYMENT_PLAYBOOK.md`. Calibration is billable and still requires an
-explicit launch approval containing refreshed live price/stock, exact Pod
-definitions, maximum duration/cost, transfer plan, ten-minute monitoring, and
-teardown. Scientific execution requires another decision after calibration,
-GPU selection, config amendment, and refreshed launch approval.
+See `DEPLOYMENT_PLAYBOOK.md`. Calibration is complete and all calibration GPU
+resources are deleted. Scientific execution still requires the human GPU and
+concurrency decision, a config amendment, refreshed live price/stock, exact Pod
+definitions, condition-specific maximum durations/costs, transfer plan,
+ten-minute monitoring, teardown, and a separate explicit launch approval.

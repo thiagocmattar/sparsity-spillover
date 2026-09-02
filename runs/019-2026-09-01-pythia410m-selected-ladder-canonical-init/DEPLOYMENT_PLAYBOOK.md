@@ -2,7 +2,7 @@
 
 This file describes the prepared workflow; it is not launch authorization.
 
-## 1. Calibration launch gate
+## 1. Calibration launch gate (completed 2026-09-02)
 
 Immediately before proposing billable calibration:
 
@@ -16,15 +16,20 @@ Immediately before proposing billable calibration:
 5. propose one Pod per candidate, exact per-Pod deletion deadlines, maximum
    compute/storage cost, and cleanup behavior for explicit approval.
 
-The current retained network volume is not attached because it constrains data
-center choice. Calibration Pods use 35 GB container disk and a 60 GB Pod volume
-mounted at `/workspace`; both disappear with the Pod after verified retrieval.
+The retained network volume was not attached because it constrained data-center
+choice. Calibration Pods used 35 GB container disk and a 60 GB Pod volume
+mounted at `/workspace`; both disappeared with the Pod after verified
+retrieval. The final audit found no Pods or serverless workers. See
+`prelaunch/calibration/RESULTS.md` and
+`launch-control/calibration-20260901/README.md`.
 
 ## 2. One source and input identity
 
-After the implementation commit, build one `git archive` tar from that exact
-commit and record its byte count and SHA-256 in the launch record. Transfer the
-same tar to every calibration Pod. Transfer the seven files in
+After the implementation commit, build one complete Git bundle from that exact
+commit and record its byte count and SHA-256 in the launch record. A plain
+`git archive` is insufficient because `01_setup_remote.sh` requires a real
+`.git` checkout. Transfer the same bundle to every worker and explicitly check
+out its verified ref. Transfer the seven files in
 `prelaunch/input-manifest.json` and verify their sizes and SHA-256 before setup.
 Do not regenerate initialization on a Pod.
 
@@ -53,7 +58,7 @@ setsid /workspace/run019-venv/bin/python \
   > /workspace/run019-control/calibration-a40-secure.log 2>&1 </dev/null &
 ```
 
-The controller records the PID, command, Pod/catalog identity, source archive
+The controller records the PID, command, Pod/catalog identity, source bundle
 hash, input-manifest hash, setup start/finish, calibration start/finish, and
 external deletion deadline. An exit code of zero plus a JSON `status` of
 `passed` is required; a running Pod is not success.
@@ -82,9 +87,10 @@ billing refresh.
 
 ## 6. Human GPU selection and scientific launch
 
-Run `09_compare_calibrations.py` on at least two verified candidate records.
-Present its cost/makespan Pareto set together with live capacity. The human
-selects one GPU SKU for all twelve final conditions. Then update the null GPU
+`09_compare_calibrations.py` has verified the A40 and A100 SXM records. Its
+cost/makespan Pareto set is in `prelaunch/calibration/comparison.json`; human
+options are in `prelaunch/calibration/RESULTS.md`. The human selects one GPU SKU
+and concurrency for all twelve final conditions. Then update the null GPU
 fields and both deletion guards in `config.yaml`, rerun focused and full tests,
 commit the calibrated launch definition, refresh prices/balance, and request a
 new explicit scientific-launch approval.
