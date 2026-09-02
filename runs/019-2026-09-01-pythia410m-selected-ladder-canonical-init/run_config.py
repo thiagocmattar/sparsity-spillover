@@ -399,22 +399,31 @@ def validate_science_config(config: Mapping[str, Any]) -> None:
         raise ValueError("Run 019 requires one independently assigned condition per GPU.")
     if tuple(waves.get("all_conditions", ())) != EXPECTED_CONDITION_IDS:
         raise ValueError("The planned all-condition launch wave changed.")
+    selected_priority = (
+        "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "NVIDIA A100-SXM4-80GB",
+        "NVIDIA H100 80GB HBM3",
+        "NVIDIA H200",
+    )
     if (
-        runpod.get("selected_gpu_type") != "NVIDIA H200"
-        or int(runpod.get("selected_gpu_memory_gb", 0)) != 141
-        or runpod.get("selected_cloud_type") != "COMMUNITY_PREFERRED_SECURE_FALLBACK"
+        runpod.get("selected_gpu_strategy") != "ORDERED_MIXED_SKU_FALLBACK"
+        or tuple(runpod.get("selected_gpu_type_priority", ())) != selected_priority
+        or int(runpod.get("minimum_selected_gpu_memory_gb", 0)) != 80
+        or runpod.get("selected_cloud_type")
+        != "COMMUNITY_PREFERRED_SECURE_FALLBACK_PER_SKU"
+        or runpod.get("mixed_gpu_execution_approved") is not True
         or runpod.get("parallelism") != "one_condition_per_gpu"
         or runpod.get("storage_strategy")
         != "per_pod_volume_seeded_from_one_hash_verified_payload"
         or runpod.get("retained_network_volume_used") is not False
         or float(runpod.get("calibration_terminate_after_hours", 0.0)) != 4.0
-        or float(runpod.get("scientific_terminate_after_hours", 0.0)) != 21.9
+        or float(runpod.get("scientific_terminate_after_hours", 0.0)) != 35.0
         or runpod.get("guard_policy")
         != "measured_projection_x1p75_plus_measured_provision_setup_transfer"
         or int(runpod.get("monitoring_interval_minutes", 0)) != 10
         or int(runpod.get("stale_event_minutes", 0)) != 20
     ):
-        raise ValueError("The selected H200 RunPod execution envelope changed.")
+        raise ValueError("The selected mixed-GPU RunPod execution envelope changed.")
     if runpod.get("image") != "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35":
         raise ValueError("The pinned RunPod image digest changed.")
 
@@ -425,6 +434,8 @@ def validate_science_config(config: Mapping[str, Any]) -> None:
         "NVIDIA L40S",
         "NVIDIA A100 80GB PCIe",
         "NVIDIA A100-SXM4-80GB",
+        "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "NVIDIA H100 80GB HBM3",
         "NVIDIA H200",
     )
     if (

@@ -1,25 +1,31 @@
-# Run 019 H200 scientific launch record
+# Run 019 mixed-GPU scientific launch record
 
-The approved fastest matched-SKU execution uses one `NVIDIA H200` Pod per
-condition, preferring Community capacity at $3.59/GPU-hour and falling back to
-Secure capacity at $4.59/GPU-hour without changing the GPU SKU. The live H200
-calibration passed all required checks and projects:
+The final approved capacity-first execution uses one Pod per condition and tries
+GPU SKUs in this order: `NVIDIA RTX PRO 6000 Blackwell Server Edition`, `NVIDIA
+A100-SXM4-80GB`, `NVIDIA H100 80GB HBM3`, and `NVIDIA H200`. For each SKU it
+prefers Community and then Secure capacity. The scientific conditions remain
+matched; the realized hardware is recorded as execution provenance and creates
+a numerical-reproducibility limitation because kernels may differ by device.
 
-| Conditions | Count | ETC each | Community cost each | Secure cost each | Guard |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| A0, A1-H plus TEAL | 2 | 5.861 h | $21.04 | $26.90 | 10.8 h |
-| A4-OL1, all `kappa` | 5 | 11.117 h | $39.91 | $51.03 | 20.0 h |
-| A7-OL1, all `kappa` | 5 | 12.192 h | $43.78 | $55.96 | 21.9 h |
+Direct calibration supplies initial ETCs for A100 and H200. RTX PRO 6000 and
+H100 start with the conservative A100 projection and are recalibrated from live
+complete optimizer boundaries:
 
-The twelve-way central projection is 12.192 hours and 128.269 aggregate
-GPU-hours: $460.49 if all capacity is Community or $588.76 if all is Secure.
-The account balance observed immediately after calibration was $401.53, so
-scientific Pods must not be launched until the balance covers the selected
-capacity mix plus runtime margin.
+| Conditions | Count | Initial A100 ETC each | Measured H200 ETC each |
+| --- | ---: | ---: | ---: |
+| A0, A1-H plus TEAL | 2 | 9.24 h | 5.861 h |
+| A4-OL1, all `kappa` | 5 | 17.54 h | 11.117 h |
+| A7-OL1, all `kappa` | 5 | 19.46 h | 12.192 h |
+
+At the approval refresh the balance was $399.99. All-A100 expected compute is
+$282.86--$323.56, while all-H200 is $460.49--$588.76. Mixed realized cost is
+updated from the assigned SKU, tier, and live ETC. A balance warning is raised
+before projected remaining cost consumes the available balance; the human has
+stated that additional balance can be added if required.
 
 Each Pod gets an isolated 60 GB volume, the pinned image digest, an explicit
-SSH port, a platform termination deadline where supported, and an independent
-local deletion guard. The source bundle and input payload are SHA-verified
+SSH port, a 35-hour platform termination deadline where supported, and an
+independent local deletion guard. The source bundle and input payload are SHA-verified
 before extraction. Worker setup then rechecks all seven scientific inputs and
 strict-loads the canonical initialization twice. Training again checks the CPU
 parameter hash and its CUDA round trip before optimizer construction.

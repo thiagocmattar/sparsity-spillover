@@ -23,7 +23,7 @@ test -x /workspace/run019-venv/bin/python
 /workspace/run019-venv/bin/python -c \
   'import torch, transformers; assert torch.__version__.split("+", 1)[0] == "2.11.0"; assert torch.version.cuda == "12.8"; assert transformers.__version__ == "5.12.1"'
 /workspace/run019-venv/bin/python -c \
-  'import torch; assert torch.cuda.is_available(); assert "H200" in torch.cuda.get_device_name(0); assert torch.backends.cuda.is_flash_attention_available()'
+  'import torch; assert torch.cuda.is_available(); name=torch.cuda.get_device_name(0); allowed=("RTX PRO 6000", "A100", "H100", "H200"); assert any(token in name for token in allowed), name; assert torch.cuda.get_device_properties(0).total_memory >= 75 * 1024**3; assert torch.backends.cuda.is_flash_attention_available()'
 /workspace/run019-venv/bin/python "$repo/$run_rel/08_verify_initialization.py" \
   --output "$control/initialization-verification-$condition.json"
 nvidia-smi --query-gpu=name,uuid,memory.total,driver_version --format=csv,noheader \

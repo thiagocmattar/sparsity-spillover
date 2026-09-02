@@ -64,6 +64,8 @@ DEVICE_TOKENS = {
     "NVIDIA L40S": ("L40S",),
     "NVIDIA A100 80GB PCIe": ("A100", "80GB"),
     "NVIDIA A100-SXM4-80GB": ("A100", "SXM4", "80GB"),
+    "NVIDIA RTX PRO 6000 Blackwell Server Edition": ("RTX", "PRO", "6000"),
+    "NVIDIA H100 80GB HBM3": ("H100",),
     "NVIDIA H200": ("H200",),
 }
 

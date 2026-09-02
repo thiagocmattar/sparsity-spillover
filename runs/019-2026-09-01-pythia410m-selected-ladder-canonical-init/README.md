@@ -8,12 +8,13 @@ non-evidence calibration completed on 2026-09-02: Secure A40, Secure A100 SXM
 80 GB, and Secure H200 all passed the exact workload and remote
 strict-initialization gate. The A40 and A100 archives and inventories verified
 locally before both Pods and guards were deleted. The H200 calibration archive
-also verified locally; its Pod is temporarily retained as the hash-verified
-payload seed and is protected by both platform and independent deletion guards.
-The human selected H200, twelve-way concurrency, and the fastest launch, with
-Community preferred and same-SKU Secure fallback. No scientific attempt has
-launched; the remaining launch gate is sufficient funded balance for the live
-capacity mix and runtime margin. See `prelaunch/calibration/RESULTS.md`.
+also verified locally, after which its Pod was deleted and the resource audit
+confirmed zero GPU Pods. The human subsequently approved a capacity-first
+mixed-SKU launch: RTX PRO 6000 Blackwell, then A100 SXM, H100 SXM, and H200,
+with Community preferred and Secure fallback for each SKU. The realized device
+is recorded per condition and on-the-fly throughput updates replace the
+conservative A100-based initial ETC. No scientific attempt had launched at this
+amendment boundary. See `prelaunch/calibration/RESULTS.md`.
 
 ## Question and matched design
 
@@ -135,7 +136,10 @@ and $216.76 of compute; twelve-way A100 SXM projects to 19.46 hours and
 $323.56; twelve-way H200 projects to 12.19 hours and 128.27 aggregate GPU-hours,
 or $460.49 at Community price and $588.76 at Secure price. These figures exclude
 provisioning, package installation, payload delivery, and retrieval. The human
-selected H200 with Community preferred and same-SKU Secure fallback.
+later prioritized obtaining twelve GPUs over matched hardware and approved the
+ordered mixed-SKU fallback recorded in the launch-control folder. Hardware is
+therefore an execution provenance field and a numerical-reproducibility caveat,
+not an experimental factor.
 
 ## Interpretation
 
@@ -154,10 +158,10 @@ consolidation.
 ## Launch boundary
 
 See `DEPLOYMENT_PLAYBOOK.md` and
-`launch-control/scientific-20260902/README.md`. H200 and twelve-way concurrency
-are selected, the scientific launch is explicitly approved, and the execution
-definition uses condition guards of 10.8 hours for A0/A1-H, 20.0 hours for A4,
-and 21.9 hours for A7. Live balance and capacity are rechecked immediately
-before creation. Each Pod is preflighted independently, monitored every ten
-minutes, and deleted only after its retained checkpoint and evidence archive
-have been retrieved and hash-verified.
+`launch-control/scientific-20260902/README.md`. Twelve-way concurrency and the
+ordered mixed-SKU fallback are explicitly approved. A conservative 35-hour
+platform/local guard covers the slowest calibrated A100 condition while ETC is
+recalibrated from each live worker. Live balance and capacity are rechecked
+immediately before creation. Each Pod is preflighted independently, monitored
+every ten minutes, and deleted only after its retained checkpoint and evidence
+archive have been retrieved and hash-verified.

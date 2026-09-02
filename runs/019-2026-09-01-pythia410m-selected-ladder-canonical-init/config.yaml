@@ -151,12 +151,16 @@ calibration:
     - NVIDIA L40S
     - NVIDIA A100 80GB PCIe
     - NVIDIA A100-SXM4-80GB
+    - NVIDIA RTX PRO 6000 Blackwell Server Edition
+    - NVIDIA H100 80GB HBM3
     - NVIDIA H200
 
 runpod:
-  selected_gpu_type: NVIDIA H200
-  selected_gpu_memory_gb: 141
-  selected_cloud_type: COMMUNITY_PREFERRED_SECURE_FALLBACK
+  selected_gpu_strategy: ORDERED_MIXED_SKU_FALLBACK
+  selected_gpu_type_priority: [NVIDIA RTX PRO 6000 Blackwell Server Edition, NVIDIA A100-SXM4-80GB, NVIDIA H100 80GB HBM3, NVIDIA H200]
+  minimum_selected_gpu_memory_gb: 80
+  selected_cloud_type: COMMUNITY_PREFERRED_SECURE_FALLBACK_PER_SKU
+  mixed_gpu_execution_approved: true
   maximum_parallel_pods: 12
   parallelism: one_condition_per_gpu
   image: runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35
@@ -165,7 +169,7 @@ runpod:
   pod_volume_gb: 60
   volume_mount_path: /workspace
   calibration_terminate_after_hours: 4.0
-  scientific_terminate_after_hours: 21.9
+  scientific_terminate_after_hours: 35.0
   guard_policy: measured_projection_x1p75_plus_measured_provision_setup_transfer
   monitoring_interval_minutes: 10
   stale_event_minutes: 20

@@ -121,6 +121,9 @@ so the twelve retained final checkpoints alone total about 54.36 GiB. Retrieve
 and hash-verify each condition as it finishes, then delete that Pod rather than
 waiting for the slowest condition.
 
-The H200 SKU, twelve-way concurrency, and launch are human-approved. Source and
-execution configuration are being amended and tested; the remaining external
-gate is adequate funded balance for the live Community/Secure capacity mix.
+After reviewing the refreshed balance and catalog, the human superseded the
+same-SKU preference with a capacity-first ordered fallback: RTX PRO 6000
+Blackwell, A100 SXM, H100 SXM, then H200, using Community before Secure within
+each SKU. Mixed hardware is explicitly approved and must be recorded per
+condition. Uncalibrated devices use the conservative A100 projection initially;
+live complete-boundary throughput updates ETC and the remaining-cost warning.

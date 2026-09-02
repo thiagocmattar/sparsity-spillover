@@ -37,6 +37,12 @@ def test_condition_matrix_launch_wave_and_calibration_are_exact():
     )
     assert tuple(config["calibration"]["candidate_gpu_type_ids"])[-1] == "NVIDIA H200"
     assert calibration.DEVICE_TOKENS["NVIDIA H200"] == ("H200",)
+    assert calibration.DEVICE_TOKENS["NVIDIA H100 80GB HBM3"] == ("H100",)
+    assert calibration.DEVICE_TOKENS["NVIDIA RTX PRO 6000 Blackwell Server Edition"] == (
+        "RTX",
+        "PRO",
+        "6000",
+    )
 
 
 @pytest.mark.parametrize(
@@ -113,19 +119,26 @@ def test_artifact_and_science_contracts_fail_closed():
         run_config.validate_config(changed)
 
 
-def test_h200_hardware_and_measured_guard_are_selected_after_calibration():
+def test_approved_mixed_gpu_priority_and_conservative_guard_are_selected():
     config = run_config.load_config()
     runpod = config["runpod"]
-    assert runpod["selected_gpu_type"] == "NVIDIA H200"
-    assert runpod["selected_gpu_memory_gb"] == 141
-    assert runpod["selected_cloud_type"] == "COMMUNITY_PREFERRED_SECURE_FALLBACK"
+    assert runpod["selected_gpu_strategy"] == "ORDERED_MIXED_SKU_FALLBACK"
+    assert runpod["selected_gpu_type_priority"] == [
+        "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "NVIDIA A100-SXM4-80GB",
+        "NVIDIA H100 80GB HBM3",
+        "NVIDIA H200",
+    ]
+    assert runpod["minimum_selected_gpu_memory_gb"] == 80
+    assert runpod["selected_cloud_type"] == "COMMUNITY_PREFERRED_SECURE_FALLBACK_PER_SKU"
+    assert runpod["mixed_gpu_execution_approved"] is True
     assert runpod["calibration_terminate_after_hours"] == 4.0
-    assert runpod["scientific_terminate_after_hours"] == 21.9
+    assert runpod["scientific_terminate_after_hours"] == 35.0
     assert runpod["monitoring_interval_minutes"] == 10
     assert runpod["maximum_parallel_pods"] == 12
     changed = deepcopy(config)
     changed["runpod"]["scientific_terminate_after_hours"] = 6.5
-    with pytest.raises(ValueError, match="selected H200"):
+    with pytest.raises(ValueError, match="selected mixed-GPU"):
         run_config.validate_config(changed)
 
 
