@@ -425,6 +425,7 @@ def validate_science_config(config: Mapping[str, Any]) -> None:
         "NVIDIA L40S",
         "NVIDIA A100 80GB PCIe",
         "NVIDIA A100-SXM4-80GB",
+        "NVIDIA H200",
     )
     if (
         calibration.get("evidence_use") != "none"
