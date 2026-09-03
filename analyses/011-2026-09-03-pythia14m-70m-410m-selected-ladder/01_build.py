@@ -1146,11 +1146,11 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         summary = summaries[scale]
         loss_axis.text(
             0.965,
-            0.075,
+            0.945,
             f"final loss {summary['final_task_loss']:.3f}",
             transform=loss_axis.transAxes,
             ha="right",
-            va="bottom",
+            va="top",
             fontsize=8.0,
             color="#333333",
             bbox={
