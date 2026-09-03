@@ -166,6 +166,11 @@ def test_real_run_worker_dispatch_forwards_concrete_condition_lr(
 
     monkeypatch.setattr(training, "_ORIGINAL_RUN_CONDITION", fake_condition)
     monkeypatch.setattr(training._BASE, "require_cuda", lambda _torch: None)
+    # The dispatch contract is independent of the immutable attempt-slot guard.
+    # Isolate it so this regression remains runnable after terminal artifacts exist.
+    monkeypatch.setattr(
+        training._BASE, "_require_attempt_slots_available", lambda _conditions: None
+    )
     monkeypatch.setattr(
         training._BASE,
         "load_verified_caches",

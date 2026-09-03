@@ -12,8 +12,15 @@ concrete peak/minimum learning rates into that same inherited loop. A regression
 test invokes the actual `run_worker` dispatch for both worker IDs and captures
 the config received at the inherited boundary. The remote preflight repeats the
 same contract check before launch. No other scientific field differs from the
-approved screen. Implementation and verification are complete; Run 021 has not
-been launched and requires a new explicit launch approval.
+approved screen.
+
+Run 021 is complete and valid. Both new arms completed all 712 optimizer
+boundaries from the same pinned initialization and schedule, passed complete
+validation and terminal verification, and were retrieved with matching archive
+and file-level hashes. The predeclared training-only selector retained the Run
+019 `3e-4` baseline. Both RunPod GPU Pods were deleted after retrieval; no new
+TEAL evaluation was run because the selected baseline already has a complete,
+verified ten-point Run 019 frontier. See [RESULTS.md](RESULTS.md).
 
 ## Question
 
