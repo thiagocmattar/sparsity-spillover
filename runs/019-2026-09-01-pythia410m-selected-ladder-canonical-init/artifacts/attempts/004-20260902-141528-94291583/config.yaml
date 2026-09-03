@@ -1,0 +1,319 @@
+name: pythia-410m-selected-ladder-canonical-init
+model:
+  architecture: EleutherAI/pythia-410m-deduped
+  revision: b5e8535141902c0e985cea61fd02afe7fe86af32
+  initialization: random
+  initialization_device: cpu
+  training_device: cuda
+  initialization_method: small_init
+  output_layer_initialization_method: wang_init
+  initialization_realization: hash_pinned_generated_artifact
+  released_weights_loaded: false
+  attention_implementation: sdpa_flash
+  execution_engine: transformers_recipe_mapping
+  topology_id: A4-Z
+  site_gate: null
+  site_gates:
+    a:
+      operator: one_sided_threshold
+      kappa: 0.01
+    m:
+      operator: one_sided_threshold
+      kappa: 0.01
+    h:
+      operator: one_sided_threshold
+      kappa: 0.01
+    z:
+      operator: one_sided_threshold
+      kappa: 0.01
+  pressure_sites:
+  - a
+  - m
+  - h
+  - z
+initialization_artifact:
+  format: safetensors
+  model_path: prelaunch/initialization/pythia410m-seed1234.safetensors
+  model_bytes: 1621370392
+  model_sha256: edba25fa7535bef6469228afe7d60db741a1a4ecd6c0c4362989e0b45a8cac51
+  rng_path: prelaunch/initialization/pythia410m-seed1234-rng.pt
+  rng_bytes: 14830
+  rng_sha256: 38c9f36a2e259018c183039771c5732d8aa5a5f63b4363d9e6403e6683a9ef43
+  metadata_path: prelaunch/initialization/metadata.json
+  metadata_bytes: 2320
+  metadata_sha256: b909c5c578ee264127097b7c2f226cabf982de45b9033dc2d9f8e413ae174523
+  parameter_sha256: 76217bf2ef13de2377c7750515a559cb71f574c274476e08408a5f7749ea9cff
+  tensor_count: 292
+  tensor_bytes: 1621336064
+  rng_restore:
+  - python
+  - numpy
+  - torch_cpu
+  cuda_rng_policy: seed_1234_on_worker_before_artifact_load
+  locally_generated_random_pretraining_initialization: true
+recipe:
+  source: https://github.com/EleutherAI/pythia/blob/main/models/410M/pythia-410m-deduped.yml
+  original_engine: GPT-NeoX-v1.0-DeepSpeed
+  mapped_engine: Transformers-5.12-PyTorch-2.11
+  exact_framework_reproduction: false
+  optimizer_mapping: pytorch_fused_adamw
+  weight_decay_exclusions:
+  - bias
+  - layer_norm
+  lr_schedule_semantics: gpt_neox_v1_pre_step
+runtime:
+  python: '3.12'
+  torch: 2.11.0
+  transformers: 5.12.1
+  cuda_runtime: '12.8'
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  tokenizer_reuse_note: Pythia-14M, 70M, and 410M use the same 50,304-token vocabulary;
+    reuse is hash-verified.
+  append_eos: true
+  sequence_length: 2048
+  training_metadata: data/tokenized/minipile-pythia-14m-full/train/metadata.json
+  validation_metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+seeds:
+  model: 1234
+  data_order: 1234
+conditions:
+  selected_steps:
+  - A0
+  - A1-H
+  - A4-OL1
+  - A7-OL1
+  gate_thresholds:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  pressure_method: orthogonal_l1
+  pressure_weight: 1.0
+  step_budget: 1.0
+training:
+  max_steps: 712
+  peak_learning_rate: 0.0003
+  minimum_learning_rate: 3.0e-05
+  global_batch_size: 1024
+  micro_batch_size: 4
+  gradient_accumulation_steps: 256
+  optimizer: adamw
+  adamw_betas:
+  - 0.9
+  - 0.95
+  adamw_eps: 1.0e-08
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  warmup_fraction: 0.01
+  precision: float16_dynamic
+  parameter_dtype: float32
+  initial_loss_scale_power: 12
+  loss_scale_window: 1000
+  loss_scale_hysteresis: 2
+  minimum_loss_scale: 1.0
+  fp16_ol1_overflow_policy: skip_entire_boundary
+  hidden_dropout: 0.0
+  attention_dropout: 0.0
+  activation_checkpointing: false
+  device: cuda
+  log_every_steps: 1
+validation:
+  documents: 500
+  complete_sequences: 338
+  input_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 4
+  at_step_one: true
+  at_final_step: true
+  canonical_endpoint_loss: logical_product_diagnostic_eager
+diagnostics:
+  activation_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  - attention_output
+  near_zero_thresholds:
+  - 0.0
+  - 0.001
+  - 0.01
+  activation_statistics: true
+  activation_attention_implementation: eager
+  weight_statistics: true
+  weight_statistics_include_bias_and_norm: true
+  gradient_interaction: true
+  ol1_adaptive_directions: true
+  logical_products: true
+  logical_product_batch_size: 1
+teal_posthoc:
+  condition_ids:
+  - a0-gelu
+  - a1h-relu
+  clipping_sites:
+  - a
+  - m
+  - h
+  - z
+  diagnostic_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  - attention_output
+  target_sparsities:
+  - 0.0
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  calibration_split: train
+  calibration_blocks: 10
+  calibration_selection: first_complete_source_order_blocks
+  evaluation_batch_size: 1
+  zero_threshold_loss_tolerance: 0.0005
+checkpoints:
+  model_steps:
+  - 712
+  optimizer_steps:
+  - 712
+  retain_final: true
+  retain_initial_weights: false
+calibration:
+  evidence_use: none
+  condition_ids:
+  - a0-gelu
+  - a4-ol1-kappa-0p5
+  - a7-ol1-kappa-0p5
+  boundaries_per_condition: 5
+  warmup_boundaries_excluded_from_timing: 1
+  minimum_vram_headroom_fraction: 0.1
+  require_full_validation: true
+  require_activation_diagnostic: true
+  require_logical_diagnostic: true
+  require_weight_diagnostic: true
+  require_checkpoint_serialization: true
+  require_teal_calibration_and_one_point: true
+  candidate_gpu_type_ids:
+  - NVIDIA RTX A6000
+  - NVIDIA A40
+  - NVIDIA L40S
+  - NVIDIA A100 80GB PCIe
+  - NVIDIA A100-SXM4-80GB
+  - NVIDIA RTX PRO 6000 Blackwell Server Edition
+  - NVIDIA H100 80GB HBM3
+  - NVIDIA H200
+runpod:
+  selected_gpu_strategy: ORDERED_MIXED_SKU_FALLBACK
+  selected_gpu_type_priority:
+  - NVIDIA RTX PRO 6000 Blackwell Server Edition
+  - NVIDIA A100-SXM4-80GB
+  - NVIDIA H100 80GB HBM3
+  - NVIDIA H200
+  minimum_selected_gpu_memory_gb: 80
+  selected_cloud_type: COMMUNITY_PREFERRED_SECURE_FALLBACK_PER_SKU
+  mixed_gpu_execution_approved: true
+  maximum_parallel_pods: 12
+  parallelism: one_condition_per_gpu
+  image: runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35
+  image_tag_reference: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 35
+  pod_volume_gb: 60
+  volume_mount_path: /workspace
+  calibration_terminate_after_hours: 4.0
+  scientific_terminate_after_hours: 35.0
+  guard_policy: measured_projection_x1p75_plus_measured_provision_setup_transfer
+  monitoring_interval_minutes: 10
+  stale_event_minutes: 20
+  storage_strategy: per_pod_volume_seeded_from_one_hash_verified_payload
+  retained_network_volume_used: false
+  launch_waves:
+    all_conditions:
+    - a0-gelu
+    - a1h-relu
+    - a4-ol1-kappa-0
+    - a4-ol1-kappa-0p01
+    - a4-ol1-kappa-0p05
+    - a4-ol1-kappa-0p1
+    - a4-ol1-kappa-0p5
+    - a7-ol1-kappa-0
+    - a7-ol1-kappa-0p01
+    - a7-ol1-kappa-0p05
+    - a7-ol1-kappa-0p1
+    - a7-ol1-kappa-0p5
+  worker_assignments:
+    a0-gelu:
+    - a0-gelu
+    a1h-relu:
+    - a1h-relu
+    a4-ol1-kappa-0:
+    - a4-ol1-kappa-0
+    a4-ol1-kappa-0p01:
+    - a4-ol1-kappa-0p01
+    a4-ol1-kappa-0p05:
+    - a4-ol1-kappa-0p05
+    a4-ol1-kappa-0p1:
+    - a4-ol1-kappa-0p1
+    a4-ol1-kappa-0p5:
+    - a4-ol1-kappa-0p5
+    a7-ol1-kappa-0:
+    - a7-ol1-kappa-0
+    a7-ol1-kappa-0p01:
+    - a7-ol1-kappa-0p01
+    a7-ol1-kappa-0p05:
+    - a7-ol1-kappa-0p05
+    a7-ol1-kappa-0p1:
+    - a7-ol1-kappa-0p1
+    a7-ol1-kappa-0p5:
+    - a7-ol1-kappa-0p5
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer_at_declared_steps: true
+  retain_predictions: false
+  transfer_final_checkpoint_only: true
+condition:
+  id: a4-ol1-kappa-0p01
+  order: 4
+  step: A4-OL1
+  topology_id: A4-Z
+  active_sites:
+  - a
+  - m
+  - h
+  - z
+  gate_threshold: 0.01
+  pressure_method: orthogonal_l1
+  pressure_sites:
+  - a
+  - m
+  - h
+  - z
+  pressure_weight: 1.0
+  step_budget: 1.0
+  label: kappa=0.01, lambda=1
+  is_control: false
+activation_pressure:
+  method: orthogonal_l1
+  sites:
+  - a
+  - m
+  - h
+  - z
+  weight: 1.0
+  step_budget: 1.0
+  eps: 1.0e-12

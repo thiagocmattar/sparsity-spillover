@@ -2,19 +2,22 @@
 
 ## Status
 
-Implemented and locally verified on 2026-09-01. The canonical initialization
-was generated and independently strict-loaded twice locally. The approved
-non-evidence calibration completed on 2026-09-02: Secure A40, Secure A100 SXM
-80 GB, and Secure H200 all passed the exact workload and remote
-strict-initialization gate. The A40 and A100 archives and inventories verified
-locally before both Pods and guards were deleted. The H200 calibration archive
-also verified locally, after which its Pod was deleted and the resource audit
-confirmed zero GPU Pods. The human subsequently approved a capacity-first
-mixed-SKU launch: RTX PRO 6000 Blackwell, then A100 SXM, H100 SXM, and H200,
-with Community preferred and Secure fallback for each SKU. The realized device
-is recorded per condition and on-the-fly throughput updates replace the
-conservative A100-based initial ETC. No scientific attempt had launched at this
-amendment boundary. See `prelaunch/calibration/RESULTS.md`.
+Complete and terminally verified on 2026-09-03. All twelve approved conditions
+finished 712 optimizer boundaries without overflow or skipped updates. A0 and
+A1-H also completed all ten post-hoc TEAL targets. The retrieved archives
+matched their remote SHA-256 values before each Pod was deleted; the merged
+local cohort passed the terminal verifier, including canonical initialization,
+schedule, code identity, complete validation coverage, diagnostics, OL1
+boundaries, checkpoint inventories, and pooled logical counts. The final
+RunPod audit found zero GPU Pods and zero endpoints. See `RESULTS.md` and the
+fleet `WORKFLOW_STATUS.md` for outcomes, exact billed Pod costs, and teardown
+evidence.
+
+The approved non-evidence calibration completed on 2026-09-02: Secure A40,
+Secure A100 SXM 80 GB, and Secure H200 all passed the exact workload and remote
+strict-initialization gate. The human subsequently approved the realized
+capacity-first mixed-SKU fleet. See `prelaunch/calibration/RESULTS.md` for that
+decision boundary.
 
 ## Question and matched design
 
