@@ -124,11 +124,13 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
             raise ValueError(f"Non-contiguous A0 boundary history for {scale}")
 
         clipped_count = 0
+        task_loss_values = []
         pre_values = []
         post_values = []
         for event in training:
             step = int(event["step"])
             tokens = int(event["input_tokens_seen"])
+            task_loss = float(event["task_loss"])
             pre = float(event["adamw_gradient_norm_pre_clip"])
             post = float(event["adamw_gradient_norm_post_clip"])
             threshold = float(event["adamw_gradient_clip_norm"])
@@ -137,8 +139,11 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 raise ValueError(f"A0 condition identity mismatch for {scale}")
             if tokens != step * TOKENS_PER_BOUNDARY:
                 raise ValueError(f"A0 token coordinate mismatch for {scale}/step {step}")
-            if not all(math.isfinite(value) and value > 0.0 for value in (pre, post)):
-                raise ValueError(f"Invalid A0 gradient norm for {scale}/step {step}")
+            if not all(
+                math.isfinite(value) and value > 0.0
+                for value in (task_loss, pre, post)
+            ):
+                raise ValueError(f"Invalid A0 training metric for {scale}/step {step}")
             if threshold != 1.0 or event.get("adamw_gradient_clipping_enabled") is not True:
                 raise ValueError(f"A0 clipping contract mismatch for {scale}/step {step}")
             if event.get("gradient_overflow") or event.get("optimizer_step_skipped"):
@@ -150,6 +155,7 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 clipped_count += 1
             else:
                 _close(post, pre, tolerance=1e-5)
+            task_loss_values.append(task_loss)
             pre_values.append(pre)
             post_values.append(post)
             rows.append(
@@ -158,6 +164,7 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                     "condition_id": A0_CONDITION_IDS[scale],
                     "step": step,
                     "input_tokens_seen": tokens,
+                    "task_loss": task_loss,
                     "gradient_norm_pre_clip": pre,
                     "gradient_norm_post_clip": post,
                     "clip_threshold": threshold,
@@ -170,6 +177,10 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 "boundaries": len(training),
                 "clipped_boundaries": clipped_count,
                 "clipped_fraction": clipped_count / len(training),
+                "initial_task_loss": task_loss_values[0],
+                "final_task_loss": task_loss_values[-1],
+                "minimum_task_loss": min(task_loss_values),
+                "maximum_task_loss": max(task_loss_values),
                 "minimum_pre_clip_norm": min(pre_values),
                 "maximum_pre_clip_norm": max(pre_values),
                 "minimum_post_clip_norm": min(post_values),
@@ -473,7 +484,7 @@ def build_figure_data() -> dict[str, Any]:
         *(A0_EVENT_PATHS[scale] for scale in SCALES),
     )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "status": "complete_verified_analysis",
         "question": (
             "How does the selected R_model versus validation-loss structure at "
@@ -506,9 +517,10 @@ def build_figure_data() -> dict[str, Any]:
             "comparison": "descriptive one-seed scale persistence, not a scaling law",
             "lines": "dose-order guides, not fitted response curves",
             "teal": "evaluation-only clipping, not trained intervention endpoints",
-            "gradient_norms": (
-                "global full-model task-gradient L2 norms at each optimizer boundary; "
-                "not normalized by parameter count"
+            "training_trajectory": (
+                "mean causal-language-model task loss and global full-model "
+                "task-gradient L2 norms at each optimizer boundary; gradient norms "
+                "are not normalized by parameter count"
             ),
         },
     }
@@ -659,16 +671,18 @@ def table_markdown(data: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## A0 global task-gradient clipping summary",
+            "## A0 training and global task-gradient clipping summary",
             "",
-            "| Scale | Optimizer boundaries | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |",
-            "|---|---:|---:|---:|---:|---:|---:|",
+            "| Scale | Optimizer boundaries | Initial task loss | Final task loss | Minimum task loss | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for row in data["a0_gradient_summaries"]:
         lines.append(
             f"| {row['scale']} | {row['boundaries']} | "
-            f"{row['clipped_boundaries']} | {100.0 * row['clipped_fraction']:.1f} | "
+            f"{row['initial_task_loss']:.6f} | {row['final_task_loss']:.6f} | "
+            f"{row['minimum_task_loss']:.6f} | {row['clipped_boundaries']} | "
+            f"{100.0 * row['clipped_fraction']:.1f} | "
             f"{row['minimum_pre_clip_norm']:.6f} | "
             f"{row['maximum_pre_clip_norm']:.6f} | "
             f"{row['maximum_post_clip_norm']:.6f} |"
@@ -1077,16 +1091,34 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             "pdf.compression": 9,
         }
     )
+    loss_color = "#333333"
     before_color = "#CC79A7"
     after_color = "#56B4E9"
     threshold_color = "#555555"
-    figure, axes = plt.subplots(1, 3, figsize=(14.5, 5.8), sharex=True, sharey=True)
+    figure, axes = plt.subplots(
+        2,
+        3,
+        figsize=(14.5, 8.2),
+        sharex=True,
+        sharey="row",
+        gridspec_kw={"height_ratios": (1.0, 1.0)},
+    )
     summaries = {row["scale"]: row for row in data["a0_gradient_summaries"]}
 
-    for axis, scale in zip(axes, SCALES, strict=True):
+    for column, scale in enumerate(SCALES):
         rows = [row for row in data["a0_gradient_norms"] if row["scale"] == scale]
         tokens_billions = [row["input_tokens_seen"] / 1e9 for row in rows]
-        axis.plot(
+        loss_axis = axes[0, column]
+        gradient_axis = axes[1, column]
+        loss_axis.plot(
+            tokens_billions,
+            [row["task_loss"] for row in rows],
+            color=loss_color,
+            linewidth=1.15,
+            alpha=0.94,
+            zorder=5,
+        )
+        gradient_axis.plot(
             tokens_billions,
             [row["gradient_norm_pre_clip"] for row in rows],
             color=before_color,
@@ -1094,7 +1126,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             alpha=0.86,
             zorder=5,
         )
-        axis.plot(
+        gradient_axis.plot(
             tokens_billions,
             [row["gradient_norm_post_clip"] for row in rows],
             color=after_color,
@@ -1103,7 +1135,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             alpha=0.98,
             zorder=6,
         )
-        axis.axhline(
+        gradient_axis.axhline(
             1.0,
             color=threshold_color,
             linestyle=(0, (2.0, 2.0)),
@@ -1112,12 +1144,30 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             zorder=3,
         )
         summary = summaries[scale]
-        axis.text(
+        loss_axis.text(
+            0.965,
+            0.075,
+            f"final loss {summary['final_task_loss']:.3f}",
+            transform=loss_axis.transAxes,
+            ha="right",
+            va="bottom",
+            fontsize=8.0,
+            color="#333333",
+            bbox={
+                "boxstyle": "round,pad=0.18",
+                "facecolor": "white",
+                "edgecolor": "#D0D0D0",
+                "linewidth": 0.6,
+                "alpha": 0.92,
+            },
+            zorder=10,
+        )
+        gradient_axis.text(
             0.965,
             0.945,
             f"clipped {summary['clipped_boundaries']}/712 "
             f"({100.0 * summary['clipped_fraction']:.1f}%)",
-            transform=axis.transAxes,
+            transform=gradient_axis.transAxes,
             ha="right",
             va="top",
             fontsize=8.0,
@@ -1131,19 +1181,33 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             },
             zorder=10,
         )
-        axis.set_title(f"Pythia-{scale}", fontsize=10.7, fontweight="bold", pad=8)
-        axis.set_yscale("log")
-        axis.set_xlim(0.0, 1.52)
-        axis.set_ylim(0.16, 32.0)
-        axis.xaxis.set_major_locator(MultipleLocator(0.5))
-        axis.yaxis.set_major_locator(FixedLocator([0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0]))
-        axis.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{value:g}"))
-        _style_axis(axis)
-        axis.grid(True, which="major", color="#D8D8D8", linewidth=0.65, alpha=0.72)
+        loss_axis.set_title(
+            f"Pythia-{scale}", fontsize=10.7, fontweight="bold", pad=8
+        )
+        loss_axis.set_xlim(0.0, 1.52)
+        loss_axis.set_ylim(3.7, 11.3)
+        loss_axis.xaxis.set_major_locator(MultipleLocator(0.5))
+        loss_axis.yaxis.set_major_locator(MultipleLocator(1.0))
+        gradient_axis.set_yscale("log")
+        gradient_axis.set_ylim(0.16, 32.0)
+        gradient_axis.xaxis.set_major_locator(MultipleLocator(0.5))
+        gradient_axis.yaxis.set_major_locator(
+            FixedLocator([0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0])
+        )
+        gradient_axis.yaxis.set_major_formatter(
+            FuncFormatter(lambda value, _: f"{value:g}")
+        )
+        for axis in (loss_axis, gradient_axis):
+            _style_axis(axis)
+            axis.grid(
+                True, which="major", color="#D8D8D8", linewidth=0.65, alpha=0.72
+            )
 
-    axes[0].set_ylabel(r"Global task-gradient $L_2$ norm (log scale)")
-    axes[1].set_xlabel("Training tokens seen (billions)")
+    axes[0, 0].set_ylabel("Training task loss")
+    axes[1, 0].set_ylabel(r"Global task-gradient $L_2$ norm (log scale)")
+    axes[1, 1].set_xlabel("Training tokens seen (billions)")
     handles = [
+        Line2D([0], [0], color=loss_color, linewidth=2.0, label="Training task loss"),
         Line2D([0], [0], color=before_color, linewidth=2.0, label="Before clipping"),
         Line2D(
             [0],
@@ -1163,7 +1227,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         ),
     ]
     figure.suptitle(
-        "A0 task-gradient norms through one MiniPile pass",
+        "A0 optimization trajectories through one MiniPile pass",
         x=0.5,
         y=0.975,
         fontsize=14.0,
@@ -1172,7 +1236,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
     figure.text(
         0.5,
         0.925,
-        "Global full-model L2 norm at every optimizer boundary; shared axes across model sizes",
+        "Training task loss and global full-model L2 gradient norm at every optimizer boundary",
         ha="center",
         va="center",
         fontsize=9.4,
@@ -1181,15 +1245,15 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
     figure.legend(
         handles=handles,
         loc="upper center",
-        bbox_to_anchor=(0.5, 0.885),
-        ncol=3,
+        bbox_to_anchor=(0.5, 0.895),
+        ncol=4,
         frameon=False,
         handlelength=2.7,
         columnspacing=1.5,
     )
     figure.text(
         0.5,
-        0.025,
+        0.018,
         "Raw boundary values; no smoothing. Each boundary contains 2,097,152 tokens. "
         "All 712 updates completed without overflow or skipping.\n"
         "The norm is not parameter-count normalized; identical global clipping at 1.0 therefore need not have identical effects across scales.",
@@ -1199,7 +1263,9 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         color="#444444",
         linespacing=1.32,
     )
-    figure.subplots_adjust(left=0.073, right=0.988, top=0.78, bottom=0.18, wspace=0.08)
+    figure.subplots_adjust(
+        left=0.073, right=0.988, top=0.82, bottom=0.125, wspace=0.08, hspace=0.12
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(
         output,

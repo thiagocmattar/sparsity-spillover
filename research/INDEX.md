@@ -108,8 +108,8 @@ Next run number: `020`. Next analysis number: `012`. Next finding number: `F003`
 - 2026-09-03: Analysis 011 completed the selected-ladder synthesis through
   Pythia-410M. It records 30 trained endpoints and all 60 A0/A1-H TEAL points,
   pairs trained loss and `R_model` within the same eager logical pass, and owns
-  separate 410M-only and three-scale frontier PDFs, an A0 cross-scale
-  gradient-norm PDF, and complete sitewise tables. The result is descriptive;
+  separate 410M-only and three-scale frontier PDFs, an A0 cross-scale training
+  loss and gradient-norm PDF, and complete sitewise tables. The result is descriptive;
   no finding or manuscript claim was promoted.
 - 2026-09-03: Run 019 completed and terminally verified all 12 Pythia-410M
   conditions and both ten-target TEAL frontiers. All result archives and
@@ -294,7 +294,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
 | 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
 | 010 | Does the selected A0/A1-H/A4-OL1/A7-OL1 loss--`R_model` structure persist from Pythia-14M to 70M? | completed; descriptive two-size synthesis, no finding promoted | `analyses/010-2026-09-01-pythia14m-vs-70m-selected-ladder/` |
-| 011 | How do the selected trained and post-hoc loss--`R_model` frontiers and A0 clipping mechanics compare through 410M? | completed; descriptive three-size synthesis and A0 gradient diagnostic, no finding promoted | `analyses/011-2026-09-03-pythia14m-70m-410m-selected-ladder/` |
+| 011 | How do the selected trained and post-hoc loss--`R_model` frontiers and A0 optimization trajectories compare through 410M? | completed; descriptive three-size synthesis and A0 loss/gradient diagnostic, no finding promoted | `analyses/011-2026-09-03-pythia14m-70m-410m-selected-ladder/` |
 
 ## Key documents
 

@@ -147,12 +147,12 @@ Complete numeric tables supporting Analysis 011. Percentages use count-first poo
 | 0.9 | 70M | 9.133301 | +4.910551 | 33.8912 | 90.096 | 91.049 | 91.002 | 99.710 | n.m. | n.m. | n.m. |
 | 0.9 | 410M | 9.029800 | +4.378505 | 69.1629 | 85.846 | 95.583 | 95.555 | 97.536 | <0.001 | <0.001 | <0.001 |
 
-## A0 global task-gradient clipping summary
+## A0 training and global task-gradient clipping summary
 
-| Scale | Optimizer boundaries | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |
-|---|---:|---:|---:|---:|---:|---:|
-| 14M | 712 | 5 | 0.7 | 0.203430 | 2.001892 | 1.000000 |
-| 70M | 712 | 8 | 1.1 | 0.185034 | 3.513156 | 1.000000 |
-| 410M | 712 | 56 | 7.9 | 0.279641 | 26.961548 | 1.000000 |
+| Scale | Optimizer boundaries | Initial task loss | Final task loss | Minimum task loss | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 14M | 712 | 11.037468 | 5.243930 | 5.195582 | 5 | 0.7 | 0.203430 | 2.001892 | 1.000000 |
+| 70M | 712 | 11.023096 | 3.983013 | 3.928526 | 8 | 1.1 | 0.185034 | 3.513156 | 1.000000 |
+| 410M | 712 | 11.011998 | 4.448348 | 4.421371 | 56 | 7.9 | 0.279641 | 26.961548 | 1.000000 |
 
 Run 019 records all eight diagnostic sites for TEAL. Earlier 14M/70M TEAL artifacts record only the four clipping sites, so downstream q/k/v cells remain `n.m.` rather than being reconstructed.

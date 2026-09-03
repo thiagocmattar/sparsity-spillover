@@ -96,11 +96,15 @@ def test_a0_gradient_history_is_complete_and_clip_reconciled() -> None:
     assert abs(summaries["14M"]["maximum_pre_clip_norm"] - 2.001891851425171) < 1e-12
     assert abs(summaries["70M"]["maximum_pre_clip_norm"] - 3.513155698776245) < 1e-12
     assert abs(summaries["410M"]["maximum_pre_clip_norm"] - 26.9615478515625) < 1e-12
+    assert abs(summaries["14M"]["final_task_loss"] - 5.243930354714394) < 1e-12
+    assert abs(summaries["70M"]["final_task_loss"] - 3.9830125523731112) < 1e-12
+    assert abs(summaries["410M"]["final_task_loss"] - 4.448348488658667) < 1e-12
     for scale in BUILD.SCALES:
         rows = [row for row in data["a0_gradient_norms"] if row["scale"] == scale]
         assert [row["step"] for row in rows] == list(range(1, BUILD.TRAINING_STEPS + 1))
         assert rows[-1]["input_tokens_seen"] == BUILD.TRAINING_TOKENS
         for row in rows:
+            assert row["task_loss"] > 0.0
             assert row["clip_threshold"] == 1.0
             assert row["clipped"] is (row["gradient_norm_pre_clip"] > 1.0)
             assert row["gradient_norm_post_clip"] <= 1.0 + 1e-6
@@ -115,5 +119,5 @@ def test_markdown_contains_complete_410m_and_teal_tables() -> None:
     assert text.count("## A0 post-hoc TEAL frontier") == 1
     assert text.count("## A1-H post-hoc TEAL frontier") == 1
     assert "| 0.9 | 410M |" in text
-    assert "## A0 global task-gradient clipping summary" in text
-    assert "| 410M | 712 | 56 | 7.9 |" in text
+    assert "## A0 training and global task-gradient clipping summary" in text
+    assert "| 410M | 712 | 11.011998 | 4.448348 | 4.421371 | 56 | 7.9 |" in text
