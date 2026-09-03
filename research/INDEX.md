@@ -5,24 +5,26 @@
 
 ## Current status
 
-Run 019 implements the approved one-seed Pythia-410M promotion of A0, A1-H,
-A4-OL1, and A7-OL1 with the same 12-condition ladder and A0/A1-H TEAL
-frontiers. Its locally generated initialization, post-initialization RNG state,
-and metadata are byte-hash pinned; two independent strict loads reproduce one
-parameter hash, and every GPU path rechecks that hash before and after transfer
-to CUDA. The exact non-evidence calibration is ready but unlaunched. GPU SKU,
-cloud tier, calibration/science deletion guards, and billable envelopes remain
-unset pending live cost--ETC calibration and explicit launch approval.
+Run 019 completed and terminally verified the approved one-seed Pythia-410M
+promotion of A0, A1-H, A4-OL1, and A7-OL1. All 12 conditions completed 712
+optimizer boundaries, full 338-block validation, retained diagnostics and
+checkpoints, and the two complete ten-target post-hoc TEAL frontiers. Analysis
+011 owns the paired-loss reduction, complete Markdown tables, and separate
+410M-only and 14M/70M/410M publication PDFs. At `kappa=0.5`, A7-OL1 reaches
+80.6155% `R_model` at loss 5.120692 versus A4-OL1's 71.5914% at 5.190966.
+The A7-over-A4 high-dose ordering persists across all three sizes, while the
+zero-threshold ordering reverses at 410M. This remains one-seed descriptive
+evidence, not a scaling law or measured-speedup result; no finding or
+manuscript claim was promoted. All Run 019 Pods and endpoints are deleted.
 
 Run 018 completed and verified the selected one-seed Pythia-70M promotion of
 A0, A1-H, A4-OL1, and A7-OL1: 12/12 conditions completed 712 optimizer
 boundaries, full 338-block validation, retained diagnostics/checkpoints, and
 the two complete ten-target post-hoc TEAL frontiers. Analysis 010 owns the
-cross-scale reduction, complete Markdown tables, and one publication PDF. The
-14M crossover persists descriptively at 70M: A4-OL1 has higher `R_model` at
-`kappa=0`, while A7-OL1 is higher at `kappa=0.5`. This is two-size descriptive
-evidence, not a scaling law; Pythia-410M remains unobserved. Status Report
-Number 2 reports the result and the current Pod-ID-reconciled billing audit.
+original two-scale reduction, complete Markdown tables, and publication PDF.
+The 14M crossover persists descriptively at 70M: A4-OL1 has higher `R_model`
+at `kappa=0`, while A7-OL1 is higher at `kappa=0.5`. Status Report Number 2
+reports that result and its Pod-ID-reconciled billing audit.
 Run 016 was superseded after GPU-dependent initialization hashes, and Run 017
 stopped before science when its proposed portable initialization failed the
 remote identity check.
@@ -99,10 +101,20 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `020`. Next analysis number: `011`. Next finding number: `F003`.
+Next run number: `020`. Next analysis number: `012`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-09-03: Analysis 011 completed the selected-ladder synthesis through
+  Pythia-410M. It records 30 trained endpoints and all 60 A0/A1-H TEAL points,
+  pairs trained loss and `R_model` within the same eager logical pass, and owns
+  separate 410M-only and three-scale PDFs plus complete sitewise tables. The
+  result is descriptive; no finding or manuscript claim was promoted.
+- 2026-09-03: Run 019 completed and terminally verified all 12 Pythia-410M
+  conditions and both ten-target TEAL frontiers. All result archives and
+  checkpoints are local and hash-reconciled. The final control-plane audit
+  found zero GPU Pods and zero endpoints; the pre-existing unattached network
+  volume remains intentionally retained.
 - 2026-09-01: Run 019 was implemented and locally verified for the 410M
   selected-ladder promotion. The canonical seed-1234 initialization and RNG
   artifacts are pinned, and the exact A0/A4-OL1/A7-OL1 calibration will compare
@@ -265,7 +277,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 016 | Does the selected ladder persist at 70M under a GPU-realized initialization identity? | superseded before science; GPU-specific initialization hash | `runs/016-2026-08-31-pythia70m-selected-ladder/` |
 | 017 | Can CPU-before-CUDA initialization make the selected 70M promotion portable? | stopped before science; remote identity mismatch | `runs/017-2026-09-01-pythia70m-selected-ladder-portable-init/` |
 | 018 | Does the selected A0/A1-H/A4-OL1/A7-OL1 ladder persist at Pythia-70M with a canonical initialization artifact? | completed (valid; Analysis 010 and Status Report 2 complete) | `runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/` |
-| 019 | Does the selected ladder and its A0/A1-H TEAL frontier persist at Pythia-410M? | implemented and locally verified; exact GPU calibration awaiting launch approval | `runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/` |
+| 019 | Does the selected ladder and its A0/A1-H TEAL frontier persist at Pythia-410M? | completed (valid; Analysis 011 complete) | `runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/` |
 
 ## Analyses
 
@@ -281,6 +293,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
 | 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
 | 010 | Does the selected A0/A1-H/A4-OL1/A7-OL1 loss--`R_model` structure persist from Pythia-14M to 70M? | completed; descriptive two-size synthesis, no finding promoted | `analyses/010-2026-09-01-pythia14m-vs-70m-selected-ladder/` |
+| 011 | How do the selected trained and post-hoc loss--`R_model` frontiers compare at 410M and across 14M/70M/410M? | completed; descriptive three-size synthesis, no finding promoted | `analyses/011-2026-09-03-pythia14m-70m-410m-selected-ladder/` |
 
 ## Key documents
 
