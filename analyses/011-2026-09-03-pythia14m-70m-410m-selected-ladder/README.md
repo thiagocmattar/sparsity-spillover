@@ -31,9 +31,10 @@ loss ceiling at 6, and explicit off-scale exits. Figure 1 isolates 410M. Figure
 family color and shape.
 
 Figure 3 reads all 712 optimizer-boundary records from the A0 event stream at
-each scale. Its 2-by-3 grid plots unsmoothed training task loss in the top row
-and the global task-gradient L2 norm before and after clipping on shared
-logarithmic axes in the bottom row. Every boundary covers 2,097,152 tokens; all
+each scale. Its 3-by-3 grid plots unsmoothed training task loss in the top row,
+the global task-gradient L2 norm before and after clipping on shared logarithmic
+axes in the middle row, and the recorded learning-rate schedule on a shared
+absolute scale in the bottom row. Every boundary covers 2,097,152 tokens; all
 three streams end at 1,493,172,224 tokens. The clip threshold is 1.0
 throughout, and no A0 boundary overflowed or skipped its optimizer update.
 
@@ -49,6 +50,8 @@ and sitewise exact-zero masses are in `tables.md`.
 The A0 histories contain 5 clipped boundaries at 14M, 8 at 70M, and 56 at
 410M. Their maximum pre-clip norms are 2.0019, 3.5132, and 26.9615,
 respectively. Final boundary task losses are 5.2439, 3.9830, and 4.4483.
+The 14M and 70M schedules peak at `1e-3` and finish at `1e-4`; the 410M
+schedule peaks at `3e-4` and finishes at `3e-5`. All three peak at boundary 9.
 
 ## Limits
 

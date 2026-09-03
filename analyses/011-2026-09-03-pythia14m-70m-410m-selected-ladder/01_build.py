@@ -131,6 +131,7 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
             step = int(event["step"])
             tokens = int(event["input_tokens_seen"])
             task_loss = float(event["task_loss"])
+            learning_rate = float(event["learning_rate"])
             pre = float(event["adamw_gradient_norm_pre_clip"])
             post = float(event["adamw_gradient_norm_post_clip"])
             threshold = float(event["adamw_gradient_clip_norm"])
@@ -144,6 +145,8 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 for value in (task_loss, pre, post)
             ):
                 raise ValueError(f"Invalid A0 training metric for {scale}/step {step}")
+            if not math.isfinite(learning_rate) or learning_rate < 0.0:
+                raise ValueError(f"Invalid A0 learning rate for {scale}/step {step}")
             if threshold != 1.0 or event.get("adamw_gradient_clipping_enabled") is not True:
                 raise ValueError(f"A0 clipping contract mismatch for {scale}/step {step}")
             if event.get("gradient_overflow") or event.get("optimizer_step_skipped"):
@@ -165,6 +168,7 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                     "step": step,
                     "input_tokens_seen": tokens,
                     "task_loss": task_loss,
+                    "learning_rate": learning_rate,
                     "gradient_norm_pre_clip": pre,
                     "gradient_norm_post_clip": post,
                     "clip_threshold": threshold,
@@ -181,6 +185,16 @@ def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
                 "final_task_loss": task_loss_values[-1],
                 "minimum_task_loss": min(task_loss_values),
                 "maximum_task_loss": max(task_loss_values),
+                "initial_learning_rate": float(training[0]["learning_rate"]),
+                "peak_learning_rate": max(
+                    float(event["learning_rate"]) for event in training
+                ),
+                "peak_learning_rate_step": 1
+                + max(
+                    range(len(training)),
+                    key=lambda index: float(training[index]["learning_rate"]),
+                ),
+                "final_learning_rate": float(training[-1]["learning_rate"]),
                 "minimum_pre_clip_norm": min(pre_values),
                 "maximum_pre_clip_norm": max(pre_values),
                 "minimum_post_clip_norm": min(post_values),
@@ -484,7 +498,7 @@ def build_figure_data() -> dict[str, Any]:
         *(A0_EVENT_PATHS[scale] for scale in SCALES),
     )
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "status": "complete_verified_analysis",
         "question": (
             "How does the selected R_model versus validation-loss structure at "
@@ -519,8 +533,9 @@ def build_figure_data() -> dict[str, Any]:
             "teal": "evaluation-only clipping, not trained intervention endpoints",
             "training_trajectory": (
                 "mean causal-language-model task loss and global full-model "
-                "task-gradient L2 norms at each optimizer boundary; gradient norms "
-                "are not normalized by parameter count"
+                "task-gradient L2 norms plus the recorded learning rate at each "
+                "optimizer boundary; gradient norms are not normalized by parameter "
+                "count"
             ),
         },
     }
@@ -673,15 +688,17 @@ def table_markdown(data: dict[str, Any]) -> str:
             "",
             "## A0 training and global task-gradient clipping summary",
             "",
-            "| Scale | Optimizer boundaries | Initial task loss | Final task loss | Minimum task loss | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+            "| Scale | Optimizer boundaries | Initial task loss | Final task loss | Minimum task loss | Peak LR | Peak LR step | Final LR | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for row in data["a0_gradient_summaries"]:
         lines.append(
             f"| {row['scale']} | {row['boundaries']} | "
             f"{row['initial_task_loss']:.6f} | {row['final_task_loss']:.6f} | "
-            f"{row['minimum_task_loss']:.6f} | {row['clipped_boundaries']} | "
+            f"{row['minimum_task_loss']:.6f} | {row['peak_learning_rate']:.7f} | "
+            f"{row['peak_learning_rate_step']} | {row['final_learning_rate']:.7f} | "
+            f"{row['clipped_boundaries']} | "
             f"{100.0 * row['clipped_fraction']:.1f} | "
             f"{row['minimum_pre_clip_norm']:.6f} | "
             f"{row['maximum_pre_clip_norm']:.6f} | "
@@ -1092,16 +1109,17 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         }
     )
     loss_color = "#333333"
+    learning_rate_color = "#009E73"
     before_color = "#CC79A7"
     after_color = "#56B4E9"
     threshold_color = "#555555"
     figure, axes = plt.subplots(
-        2,
         3,
-        figsize=(14.5, 8.2),
+        3,
+        figsize=(14.5, 10.4),
         sharex=True,
         sharey="row",
-        gridspec_kw={"height_ratios": (1.0, 1.0)},
+        gridspec_kw={"height_ratios": (1.0, 1.0, 0.78)},
     )
     summaries = {row["scale"]: row for row in data["a0_gradient_summaries"]}
 
@@ -1110,6 +1128,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         tokens_billions = [row["input_tokens_seen"] / 1e9 for row in rows]
         loss_axis = axes[0, column]
         gradient_axis = axes[1, column]
+        learning_rate_axis = axes[2, column]
         loss_axis.plot(
             tokens_billions,
             [row["task_loss"] for row in rows],
@@ -1142,6 +1161,14 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             linewidth=1.0,
             alpha=0.82,
             zorder=3,
+        )
+        learning_rate_axis.plot(
+            tokens_billions,
+            [1000.0 * row["learning_rate"] for row in rows],
+            color=learning_rate_color,
+            linewidth=1.45,
+            alpha=0.96,
+            zorder=5,
         )
         summary = summaries[scale]
         loss_axis.text(
@@ -1181,6 +1208,25 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
             },
             zorder=10,
         )
+        learning_rate_axis.text(
+            0.965,
+            0.945,
+            f"peak {summary['peak_learning_rate']:.1e}; "
+            f"final {summary['final_learning_rate']:.1e}",
+            transform=learning_rate_axis.transAxes,
+            ha="right",
+            va="top",
+            fontsize=8.0,
+            color="#333333",
+            bbox={
+                "boxstyle": "round,pad=0.18",
+                "facecolor": "white",
+                "edgecolor": "#D0D0D0",
+                "linewidth": 0.6,
+                "alpha": 0.92,
+            },
+            zorder=10,
+        )
         loss_axis.set_title(
             f"Pythia-{scale}", fontsize=10.7, fontweight="bold", pad=8
         )
@@ -1197,7 +1243,9 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         gradient_axis.yaxis.set_major_formatter(
             FuncFormatter(lambda value, _: f"{value:g}")
         )
-        for axis in (loss_axis, gradient_axis):
+        learning_rate_axis.set_ylim(0.0, 1.06)
+        learning_rate_axis.yaxis.set_major_locator(MultipleLocator(0.25))
+        for axis in (loss_axis, gradient_axis, learning_rate_axis):
             _style_axis(axis)
             axis.grid(
                 True, which="major", color="#D8D8D8", linewidth=0.65, alpha=0.72
@@ -1205,9 +1253,17 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
 
     axes[0, 0].set_ylabel("Training task loss")
     axes[1, 0].set_ylabel(r"Global task-gradient $L_2$ norm (log scale)")
-    axes[1, 1].set_xlabel("Training tokens seen (billions)")
+    axes[2, 0].set_ylabel(r"Learning rate ($\times 10^{-3}$)")
+    axes[2, 1].set_xlabel("Training tokens seen (billions)")
     handles = [
         Line2D([0], [0], color=loss_color, linewidth=2.0, label="Training task loss"),
+        Line2D(
+            [0],
+            [0],
+            color=learning_rate_color,
+            linewidth=2.0,
+            label="Learning rate",
+        ),
         Line2D([0], [0], color=before_color, linewidth=2.0, label="Before clipping"),
         Line2D(
             [0],
@@ -1236,7 +1292,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
     figure.text(
         0.5,
         0.925,
-        "Training task loss and global full-model L2 gradient norm at every optimizer boundary",
+        "Training task loss, global full-model L2 gradient norm, and learning rate at every optimizer boundary",
         ha="center",
         va="center",
         fontsize=9.4,
@@ -1246,7 +1302,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         handles=handles,
         loc="upper center",
         bbox_to_anchor=(0.5, 0.895),
-        ncol=4,
+        ncol=5,
         frameon=False,
         handlelength=2.7,
         columnspacing=1.5,
@@ -1256,7 +1312,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         0.018,
         "Raw boundary values; no smoothing. Each boundary contains 2,097,152 tokens. "
         "All 712 updates completed without overflow or skipping.\n"
-        "The norm is not parameter-count normalized; identical global clipping at 1.0 therefore need not have identical effects across scales.",
+        "Learning rates use a shared absolute scale. The gradient norm is not parameter-count normalized.",
         ha="center",
         va="bottom",
         fontsize=7.9,
@@ -1264,7 +1320,7 @@ def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
         linespacing=1.32,
     )
     figure.subplots_adjust(
-        left=0.073, right=0.988, top=0.82, bottom=0.125, wspace=0.08, hspace=0.12
+        left=0.073, right=0.988, top=0.84, bottom=0.105, wspace=0.08, hspace=0.14
     )
     output.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(
