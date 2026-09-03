@@ -84,6 +84,28 @@ def test_count_reconciliation_and_expected_persistence_change() -> None:
     assert all(checks[scale]["A7_dominates_A4_at_kappa_0p5"] for scale in BUILD.SCALES)
 
 
+def test_a0_gradient_history_is_complete_and_clip_reconciled() -> None:
+    data = BUILD.build_figure_data()
+    assert len(data["a0_gradient_norms"]) == 3 * BUILD.TRAINING_STEPS
+    summaries = {row["scale"]: row for row in data["a0_gradient_summaries"]}
+    assert {scale: row["clipped_boundaries"] for scale, row in summaries.items()} == {
+        "14M": 5,
+        "70M": 8,
+        "410M": 56,
+    }
+    assert abs(summaries["14M"]["maximum_pre_clip_norm"] - 2.001891851425171) < 1e-12
+    assert abs(summaries["70M"]["maximum_pre_clip_norm"] - 3.513155698776245) < 1e-12
+    assert abs(summaries["410M"]["maximum_pre_clip_norm"] - 26.9615478515625) < 1e-12
+    for scale in BUILD.SCALES:
+        rows = [row for row in data["a0_gradient_norms"] if row["scale"] == scale]
+        assert [row["step"] for row in rows] == list(range(1, BUILD.TRAINING_STEPS + 1))
+        assert rows[-1]["input_tokens_seen"] == BUILD.TRAINING_TOKENS
+        for row in rows:
+            assert row["clip_threshold"] == 1.0
+            assert row["clipped"] is (row["gradient_norm_pre_clip"] > 1.0)
+            assert row["gradient_norm_post_clip"] <= 1.0 + 1e-6
+
+
 def test_markdown_contains_complete_410m_and_teal_tables() -> None:
     data = BUILD.build_figure_data()
     text = BUILD.table_markdown(data)
@@ -93,3 +115,5 @@ def test_markdown_contains_complete_410m_and_teal_tables() -> None:
     assert text.count("## A0 post-hoc TEAL frontier") == 1
     assert text.count("## A1-H post-hoc TEAL frontier") == 1
     assert "| 0.9 | 410M |" in text
+    assert "## A0 global task-gradient clipping summary" in text
+    assert "| 410M | 712 | 56 | 7.9 |" in text

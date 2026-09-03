@@ -1,4 +1,4 @@
-"""Build the Pythia-410M and three-scale selected-ladder frontiers."""
+"""Build the selected-ladder frontiers and A0 gradient diagnostic."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from typing import Any, Iterable
 
 ANALYSIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = ANALYSIS_DIR.parent.parent
+RUN_004 = REPO_ROOT / "runs" / "004-2026-08-29-pythia14m-full-pass-l1n"
 RUN_014 = REPO_ROOT / "runs" / "014-2026-08-31-pythia14m-full-pass-a7-ol1"
 RUN_015 = REPO_ROOT / "runs" / "015-2026-08-31-pythia14m-corrected-a4-ol1"
 RUN_018 = REPO_ROOT / "runs" / "018-2026-09-01-pythia70m-selected-ladder-canonical-init"
@@ -28,6 +29,7 @@ FIGURE_DATA = ANALYSIS_DIR / "figure_data.json"
 TABLES = ANALYSIS_DIR / "tables.md"
 FIGURE_410 = ANALYSIS_DIR / "figures" / "01-pythia410m-selected-ladder.pdf"
 FIGURE_ALL = ANALYSIS_DIR / "figures" / "02-pythia14m-70m-410m-selected-ladder.pdf"
+FIGURE_A0_GRADIENT = ANALYSIS_DIR / "figures" / "03-a0-gradient-norm-vs-tokens.pdf"
 
 SCALES = ("14M", "70M", "410M")
 FAMILIES = ("A4-OL1", "A7-OL1")
@@ -43,6 +45,25 @@ COVERAGE = {
 }
 TRAINING_STEPS = 712
 TRAINING_TOKENS = 1_493_172_224
+TOKENS_PER_BOUNDARY = 2_097_152
+A0_EVENT_PATHS = {
+    "14M": RUN_004
+    / "artifacts"
+    / "attempts"
+    / "001-20260829-221007-bb5288c8"
+    / "events.jsonl",
+    "70M": RUN_018
+    / "artifacts"
+    / "attempts"
+    / "001-20260901-133016-4e43b254"
+    / "events.jsonl",
+    "410M": RUN_019
+    / "artifacts"
+    / "attempts"
+    / "001-20260902-141527-bcb97fb1"
+    / "events.jsonl",
+}
+A0_CONDITION_IDS = {"14M": "gelu-control", "70M": "a0-gelu", "410M": "a0-gelu"}
 
 
 def _read_json(path: Path) -> Any:
@@ -85,6 +106,77 @@ def _event_rows(path: Path) -> list[dict[str, Any]]:
         for line in path.read_text(encoding="utf-8").splitlines()
         if line
     ]
+
+
+def _a0_gradient_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    rows: list[dict[str, Any]] = []
+    summaries: list[dict[str, Any]] = []
+    for scale in SCALES:
+        events_path = A0_EVENT_PATHS[scale]
+        training = [
+            row for row in _event_rows(events_path) if row.get("event") == "train"
+        ]
+        if len(training) != TRAINING_STEPS:
+            raise ValueError(f"Incomplete A0 boundary history for {scale}")
+        if [int(row["step"]) for row in training] != list(
+            range(1, TRAINING_STEPS + 1)
+        ):
+            raise ValueError(f"Non-contiguous A0 boundary history for {scale}")
+
+        clipped_count = 0
+        pre_values = []
+        post_values = []
+        for event in training:
+            step = int(event["step"])
+            tokens = int(event["input_tokens_seen"])
+            pre = float(event["adamw_gradient_norm_pre_clip"])
+            post = float(event["adamw_gradient_norm_post_clip"])
+            threshold = float(event["adamw_gradient_clip_norm"])
+            clipped = bool(event["adamw_gradient_was_clipped"])
+            if event.get("condition_id") != A0_CONDITION_IDS[scale]:
+                raise ValueError(f"A0 condition identity mismatch for {scale}")
+            if tokens != step * TOKENS_PER_BOUNDARY:
+                raise ValueError(f"A0 token coordinate mismatch for {scale}/step {step}")
+            if not all(math.isfinite(value) and value > 0.0 for value in (pre, post)):
+                raise ValueError(f"Invalid A0 gradient norm for {scale}/step {step}")
+            if threshold != 1.0 or event.get("adamw_gradient_clipping_enabled") is not True:
+                raise ValueError(f"A0 clipping contract mismatch for {scale}/step {step}")
+            if event.get("gradient_overflow") or event.get("optimizer_step_skipped"):
+                raise ValueError(f"A0 overflow or skipped update for {scale}/step {step}")
+            if clipped != (pre > threshold):
+                raise ValueError(f"A0 clipping flag mismatch for {scale}/step {step}")
+            if clipped:
+                _close(post, threshold, tolerance=1e-5)
+                clipped_count += 1
+            else:
+                _close(post, pre, tolerance=1e-5)
+            pre_values.append(pre)
+            post_values.append(post)
+            rows.append(
+                {
+                    "scale": scale,
+                    "condition_id": A0_CONDITION_IDS[scale],
+                    "step": step,
+                    "input_tokens_seen": tokens,
+                    "gradient_norm_pre_clip": pre,
+                    "gradient_norm_post_clip": post,
+                    "clip_threshold": threshold,
+                    "clipped": clipped,
+                }
+            )
+        summaries.append(
+            {
+                "scale": scale,
+                "boundaries": len(training),
+                "clipped_boundaries": clipped_count,
+                "clipped_fraction": clipped_count / len(training),
+                "minimum_pre_clip_norm": min(pre_values),
+                "maximum_pre_clip_norm": max(pre_values),
+                "minimum_post_clip_norm": min(post_values),
+                "maximum_post_clip_norm": max(post_values),
+            }
+        )
+    return rows, summaries
 
 
 def _matches_family(condition_id: str, scale: str, family: str) -> bool:
@@ -322,6 +414,7 @@ def _verify_run019_controls(teal: list[dict[str, Any]]) -> None:
 
 
 def build_figure_data() -> dict[str, Any]:
+    a0_gradient_norms, a0_gradient_summaries = _a0_gradient_rows()
     series = []
     for run_dir, scale, family in (
         (RUN_015, "14M", "A4-OL1"),
@@ -377,13 +470,15 @@ def build_figure_data() -> dict[str, Any]:
         TEAL_14,
         TEAL_70,
         TEAL_410,
+        *(A0_EVENT_PATHS[scale] for scale in SCALES),
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "complete_verified_analysis",
         "question": (
             "How does the selected R_model versus validation-loss structure at "
-            "Pythia-410M compare with Pythia-14M and 70M?"
+            "Pythia-410M compare with Pythia-14M and 70M, and how do the A0 "
+            "global task-gradient norms evolve before and after clipping?"
         ),
         "coverage": {"documents": 500, **COVERAGE, "seed_count_per_scale": 1},
         "endpoint_pairing": (
@@ -401,6 +496,8 @@ def build_figure_data() -> dict[str, Any]:
                 row["target_sparsity"],
             ),
         ),
+        "a0_gradient_norms": a0_gradient_norms,
+        "a0_gradient_summaries": a0_gradient_summaries,
         "series_summaries": summaries,
         "persistence_checks": persistence,
         "sources": {_repo_path(path): _sha256(path) for path in source_paths},
@@ -409,6 +506,10 @@ def build_figure_data() -> dict[str, Any]:
             "comparison": "descriptive one-seed scale persistence, not a scaling law",
             "lines": "dose-order guides, not fitted response curves",
             "teal": "evaluation-only clipping, not trained intervention endpoints",
+            "gradient_norms": (
+                "global full-model task-gradient L2 norms at each optimizer boundary; "
+                "not normalized by parameter count"
+            ),
         },
     }
 
@@ -554,6 +655,24 @@ def table_markdown(data: dict[str, Any]) -> str:
                     f"{_site_percentage(row, 'q_post')} | {_site_percentage(row, 'k_post')} | "
                     f"{_site_percentage(row, 'v')} |"
                 )
+
+    lines.extend(
+        [
+            "",
+            "## A0 global task-gradient clipping summary",
+            "",
+            "| Scale | Optimizer boundaries | Clipped boundaries | Clipped (%) | Minimum pre-clip L2 | Maximum pre-clip L2 | Maximum post-clip L2 |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for row in data["a0_gradient_summaries"]:
+        lines.append(
+            f"| {row['scale']} | {row['boundaries']} | "
+            f"{row['clipped_boundaries']} | {100.0 * row['clipped_fraction']:.1f} | "
+            f"{row['minimum_pre_clip_norm']:.6f} | "
+            f"{row['maximum_pre_clip_norm']:.6f} | "
+            f"{row['maximum_post_clip_norm']:.6f} |"
+        )
 
     lines.extend(
         [
@@ -938,6 +1057,159 @@ def render_figure(
     plt.close(figure)
 
 
+def render_a0_gradient_figure(data: dict[str, Any], output: Path) -> None:
+    import matplotlib as mpl
+
+    mpl.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    from matplotlib.ticker import FixedLocator, FuncFormatter, MultipleLocator
+
+    mpl.rcParams.update(
+        {
+            "font.family": "DejaVu Sans",
+            "font.size": 9.2,
+            "axes.labelsize": 10.3,
+            "legend.fontsize": 8.7,
+            "xtick.labelsize": 8.8,
+            "ytick.labelsize": 8.8,
+            "pdf.fonttype": 42,
+            "pdf.compression": 9,
+        }
+    )
+    before_color = "#CC79A7"
+    after_color = "#56B4E9"
+    threshold_color = "#555555"
+    figure, axes = plt.subplots(1, 3, figsize=(14.5, 5.8), sharex=True, sharey=True)
+    summaries = {row["scale"]: row for row in data["a0_gradient_summaries"]}
+
+    for axis, scale in zip(axes, SCALES, strict=True):
+        rows = [row for row in data["a0_gradient_norms"] if row["scale"] == scale]
+        tokens_billions = [row["input_tokens_seen"] / 1e9 for row in rows]
+        axis.plot(
+            tokens_billions,
+            [row["gradient_norm_pre_clip"] for row in rows],
+            color=before_color,
+            linewidth=1.05,
+            alpha=0.86,
+            zorder=5,
+        )
+        axis.plot(
+            tokens_billions,
+            [row["gradient_norm_post_clip"] for row in rows],
+            color=after_color,
+            linestyle="--",
+            linewidth=1.15,
+            alpha=0.98,
+            zorder=6,
+        )
+        axis.axhline(
+            1.0,
+            color=threshold_color,
+            linestyle=(0, (2.0, 2.0)),
+            linewidth=1.0,
+            alpha=0.82,
+            zorder=3,
+        )
+        summary = summaries[scale]
+        axis.text(
+            0.965,
+            0.945,
+            f"clipped {summary['clipped_boundaries']}/712 "
+            f"({100.0 * summary['clipped_fraction']:.1f}%)",
+            transform=axis.transAxes,
+            ha="right",
+            va="top",
+            fontsize=8.0,
+            color="#333333",
+            bbox={
+                "boxstyle": "round,pad=0.18",
+                "facecolor": "white",
+                "edgecolor": "#D0D0D0",
+                "linewidth": 0.6,
+                "alpha": 0.92,
+            },
+            zorder=10,
+        )
+        axis.set_title(f"Pythia-{scale}", fontsize=10.7, fontweight="bold", pad=8)
+        axis.set_yscale("log")
+        axis.set_xlim(0.0, 1.52)
+        axis.set_ylim(0.16, 32.0)
+        axis.xaxis.set_major_locator(MultipleLocator(0.5))
+        axis.yaxis.set_major_locator(FixedLocator([0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0]))
+        axis.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{value:g}"))
+        _style_axis(axis)
+        axis.grid(True, which="major", color="#D8D8D8", linewidth=0.65, alpha=0.72)
+
+    axes[0].set_ylabel(r"Global task-gradient $L_2$ norm (log scale)")
+    axes[1].set_xlabel("Training tokens seen (billions)")
+    handles = [
+        Line2D([0], [0], color=before_color, linewidth=2.0, label="Before clipping"),
+        Line2D(
+            [0],
+            [0],
+            color=after_color,
+            linestyle="--",
+            linewidth=2.0,
+            label="After clipping",
+        ),
+        Line2D(
+            [0],
+            [0],
+            color=threshold_color,
+            linestyle=(0, (2.0, 2.0)),
+            linewidth=1.3,
+            label="Global clip threshold = 1",
+        ),
+    ]
+    figure.suptitle(
+        "A0 task-gradient norms through one MiniPile pass",
+        x=0.5,
+        y=0.975,
+        fontsize=14.0,
+        fontweight="bold",
+    )
+    figure.text(
+        0.5,
+        0.925,
+        "Global full-model L2 norm at every optimizer boundary; shared axes across model sizes",
+        ha="center",
+        va="center",
+        fontsize=9.4,
+        color="#444444",
+    )
+    figure.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.885),
+        ncol=3,
+        frameon=False,
+        handlelength=2.7,
+        columnspacing=1.5,
+    )
+    figure.text(
+        0.5,
+        0.025,
+        "Raw boundary values; no smoothing. Each boundary contains 2,097,152 tokens. "
+        "All 712 updates completed without overflow or skipping.\n"
+        "The norm is not parameter-count normalized; identical global clipping at 1.0 therefore need not have identical effects across scales.",
+        ha="center",
+        va="bottom",
+        fontsize=7.9,
+        color="#444444",
+        linespacing=1.32,
+    )
+    figure.subplots_adjust(left=0.073, right=0.988, top=0.78, bottom=0.18, wspace=0.08)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(
+        output,
+        format="pdf",
+        bbox_inches="tight",
+        metadata={"Creator": "Analysis 011", "CreationDate": None, "ModDate": None},
+    )
+    plt.close(figure)
+
+
 def main() -> None:
     data = build_figure_data()
     _write_json(FIGURE_DATA, data)
@@ -954,9 +1226,11 @@ def main() -> None:
         FIGURE_ALL,
         "Pythia-14M, 70M, and 410M: trained and post-hoc frontiers",
     )
+    render_a0_gradient_figure(data, FIGURE_A0_GRADIENT)
     print(
         f"wrote {len(data['trained_endpoints'])} trained endpoints, "
-        f"{len(data['teal_points'])} TEAL points, and 2 figures"
+        f"{len(data['teal_points'])} TEAL points, "
+        f"{len(data['a0_gradient_norms'])} A0 gradient rows, and 3 figures"
     )
 
 
