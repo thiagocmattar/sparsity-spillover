@@ -1,0 +1,195 @@
+name: pythia-410m-a0-learning-rate-screen
+
+model:
+  architecture: EleutherAI/pythia-410m-deduped
+  revision: b5e8535141902c0e985cea61fd02afe7fe86af32
+  initialization: random
+  initialization_device: cpu
+  training_device: cuda
+  initialization_method: small_init
+  output_layer_initialization_method: wang_init
+  initialization_realization: hash_pinned_generated_artifact
+  released_weights_loaded: false
+  attention_implementation: sdpa_flash
+  execution_engine: transformers_recipe_mapping
+
+initialization_artifact:
+  provenance_run: runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init
+  format: safetensors
+  model_path: ../019-2026-09-01-pythia410m-selected-ladder-canonical-init/prelaunch/initialization/pythia410m-seed1234.safetensors
+  model_bytes: 1621370392
+  model_sha256: edba25fa7535bef6469228afe7d60db741a1a4ecd6c0c4362989e0b45a8cac51
+  rng_path: ../019-2026-09-01-pythia410m-selected-ladder-canonical-init/prelaunch/initialization/pythia410m-seed1234-rng.pt
+  rng_bytes: 14830
+  rng_sha256: 38c9f36a2e259018c183039771c5732d8aa5a5f63b4363d9e6403e6683a9ef43
+  metadata_path: ../019-2026-09-01-pythia410m-selected-ladder-canonical-init/prelaunch/initialization/metadata.json
+  metadata_bytes: 2320
+  metadata_sha256: b909c5c578ee264127097b7c2f226cabf982de45b9033dc2d9f8e413ae174523
+  parameter_sha256: 76217bf2ef13de2377c7750515a559cb71f574c274476e08408a5f7749ea9cff
+  tensor_count: 292
+  tensor_bytes: 1621336064
+  rng_restore: [python, numpy, torch_cpu]
+  cuda_rng_policy: seed_1234_on_worker_before_artifact_load
+  locally_generated_random_pretraining_initialization: true
+
+baseline:
+  source_run: runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init
+  condition_id: a0-gelu
+  attempt_id: 001-20260902-141527-bcb97fb1
+  peak_learning_rate: 3.0e-4
+  minimum_learning_rate: 3.0e-5
+  manifest_sha256: 320aeac7ecc90970ee92be508bf172f64b1e06b60b87e2e8eb5c6537ae3d3758
+  metrics_sha256: 164b5fde0314d79e6d27ae0fec9fa2edab25e2be74bcb3ddb92dba4411921ba6
+  events_sha256: 1f59fe88f6b2c051f85fbe74c26078c5c616dcc0dfabf6fe5a207113043891bd
+  transfer_inventory_sha256: 8935e23cc163eb55232ab3aafbb75ae34adb4aa5a1ff6d1fdbd85bc33d0bab64
+  config_sha256: 55914254e6e65082fb9efbee01c254590065f214efcbca7034c0335c54df35e3
+  run_code_sha256: 9fb300223fb57058c42e4030dced0570ce5aadd206db42eebdbeec1d59c4d652
+  final_checkpoint_content_sha256: 740263f4169a66c94d2117fab7cf9bfd8dd4e102a84d329660766c08eccf8b97
+
+recipe:
+  source: https://github.com/EleutherAI/pythia/blob/main/models/410M/pythia-410m-deduped.yml
+  original_engine: GPT-NeoX-v1.0-DeepSpeed
+  mapped_engine: Transformers-5.12-PyTorch-2.11
+  exact_framework_reproduction: false
+  optimizer_mapping: pytorch_fused_adamw
+  weight_decay_exclusions: [bias, layer_norm]
+  lr_schedule_semantics: gpt_neox_v1_pre_step
+
+runtime:
+  python: "3.12"
+  torch: "2.11.0"
+  transformers: "5.12.1"
+  cuda_runtime: "12.8"
+
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  append_eos: true
+  sequence_length: 2048
+  training_metadata: data/tokenized/minipile-pythia-14m-full/train/metadata.json
+  validation_metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+
+seeds:
+  model: 1234
+  data_order: 1234
+
+conditions:
+  selected_step: A0
+  required_peak_learning_rates: [6.0e-4, 1.0e-3]
+  minimum_learning_rate_ratio: 0.1
+
+training:
+  max_steps: 712
+  peak_learning_rate: null
+  minimum_learning_rate: null
+  global_batch_size: 1024
+  micro_batch_size: 4
+  gradient_accumulation_steps: 256
+  optimizer: adamw
+  adamw_betas: [0.9, 0.95]
+  adamw_eps: 1.0e-8
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  warmup_fraction: 0.01
+  precision: float16_dynamic
+  parameter_dtype: float32
+  initial_loss_scale_power: 12
+  loss_scale_window: 1000
+  loss_scale_hysteresis: 2
+  minimum_loss_scale: 1.0
+  fp16_ol1_overflow_policy: skip_entire_boundary
+  hidden_dropout: 0.0
+  attention_dropout: 0.0
+  activation_checkpointing: false
+  device: cuda
+  log_every_steps: 1
+
+selection:
+  metric: mean_task_loss_final_64_optimizer_boundaries
+  use_validation_for_selection: false
+  require_finite_all_boundaries: true
+  require_no_skipped_or_overflow_boundaries: true
+  if_1e3_is_stable_best: defer_and_propose_fresh_a0_1p5e3_full_pass
+  otherwise: select_stable_lowest_metric
+
+validation:
+  documents: 500
+  complete_sequences: 338
+  input_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 4
+  at_step_one: true
+  at_final_step: true
+  canonical_endpoint_loss: logical_product_diagnostic_eager
+
+diagnostics:
+  activation_sites: [a, m, h, q_post, k_post, v, z, attention_output]
+  near_zero_thresholds: [0.0, 0.001, 0.01]
+  activation_statistics: true
+  activation_attention_implementation: eager
+  weight_statistics: true
+  weight_statistics_include_bias_and_norm: true
+  gradient_interaction: true
+  ol1_adaptive_directions: true
+  logical_products: true
+  logical_product_batch_size: 1
+
+teal_posthoc:
+  eligibility: selected_new_condition_only
+  condition_ids: [a0-lr-6e-4, a0-lr-1e-3]
+  clipping_sites: [a, m, h, z]
+  diagnostic_sites: [a, m, h, q_post, k_post, v, z, attention_output]
+  target_sparsities: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  calibration_split: train
+  calibration_blocks: 10
+  calibration_selection: first_complete_source_order_blocks
+  evaluation_batch_size: 1
+  zero_threshold_loss_tolerance: 5.0e-4
+
+checkpoints:
+  model_steps: [712]
+  optimizer_steps: [712]
+  retain_final: true
+  retain_initial_weights: false
+
+calibration_reuse:
+  source: runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/prelaunch/calibration/RESULTS.md
+  scientific_workload_reference: a0-gelu
+  exact_architecture_data_batch_and_diagnostics_match: true
+  new_calibration_required: false
+
+runpod:
+  selected_gpu_strategy: RTX_PRO_6000_PREFERRED_WITH_APPROVED_FALLBACKS
+  selected_gpu_type_priority: [NVIDIA RTX PRO 6000 Blackwell Server Edition, NVIDIA A100-SXM4-80GB, NVIDIA H100 80GB HBM3, NVIDIA H200]
+  minimum_selected_gpu_memory_gb: 80
+  selected_cloud_type: COMMUNITY_PREFERRED_SECURE_FALLBACK_PER_SKU
+  mixed_gpu_execution_approved: true
+  maximum_parallel_pods: 2
+  parallelism: one_condition_per_gpu
+  image: runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35
+  image_tag_reference: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 35
+  pod_volume_gb: 60
+  volume_mount_path: /workspace
+  terminate_after_hours_by_gpu:
+    NVIDIA RTX PRO 6000 Blackwell Server Edition: 10.0
+    NVIDIA A100-SXM4-80GB: 12.0
+    NVIDIA H100 80GB HBM3: 10.0
+    NVIDIA H200: 8.0
+  monitoring_interval_minutes: 30
+  stale_event_minutes: 60
+  storage_strategy: per_pod_volume_seeded_from_one_hash_verified_payload
+  retained_network_volume_used: false
+  launch_waves:
+    primary: [a0-lr-6e-4, a0-lr-1e-3]
+  worker_assignments:
+    a0-lr-6e-4: [a0-lr-6e-4]
+    a0-lr-1e-3: [a0-lr-1e-3]
+
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer_at_declared_steps: true
+  retain_predictions: false
+  transfer_final_checkpoint_only: true
