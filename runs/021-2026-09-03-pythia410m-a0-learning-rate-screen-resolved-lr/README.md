@@ -1,21 +1,19 @@
-# Run 020 - Pythia-410M A0 learning-rate screen
+# Run 021 - Pythia-410M A0 learning-rate screen with resolved worker LR
 
 ## Status
 
-Run 020 is terminally failed and must not be resumed. Launch was approved and
-two RTX PRO 6000 workers were provisioned on 2026-09-03. All cache,
-initialization, CUDA, and exact-dimension smoke gates passed, including an
-identical initial loss and parameter hash on both workers. The real worker
-entrypoint then failed before optimizer boundary 1 because the reused Run 004
-loop read the intentionally null top-level learning rate instead of the
-condition-resolved learning rate. No training evidence or checkpoint was
-produced. Both failed-attempt records were retrieved and both Pods were deleted;
-the post-cleanup inventory contained zero GPU Pods and endpoints.
+The scientific design is the already-approved Run 020 design. Run 021 exists
+only because Run 020 failed before optimizer boundary 1: its inherited loop
+read the intentionally null top-level learning rate instead of the
+condition-resolved value. Run 020 remains unchanged and terminally failed.
 
-The approximately USD 1.73 launch cost is infrastructure loss. Per the
-append-only run rule, the scientific code in this folder is not patched. The
-identical approved design, with the entrypoint resolution corrected and covered
-by a real-dispatch regression test, moves to Run 021.
+Run 021 forwards a copied execution config containing the selected condition's
+concrete peak/minimum learning rates into that same inherited loop. A regression
+test invokes the actual `run_worker` dispatch for both worker IDs and captures
+the config received at the inherited boundary. The remote preflight repeats the
+same contract check before launch. No other scientific field differs from the
+approved screen. Implementation and verification are complete; Run 021 has not
+been launched and requires a new explicit launch approval.
 
 ## Question
 
@@ -23,7 +21,7 @@ Was Run 019's unexpectedly weak Pythia-410M A0 endpoint materially caused by
 using the canonical 410M peak learning rate (`3e-4`) inside this unusually short
 one-MiniPile-pass budget?
 
-Run 020 compares the verified Run 019 `3e-4` A0 result with two new, independent
+Run 021 compares the verified Run 019 `3e-4` A0 result with two new, independent
 from-scratch A0 runs at peak learning rates `6e-4` and `1e-3`. The minimum LR is
 always ten percent of peak. This is a small recipe-selection experiment, not a
 model-scale or intervention ablation.
@@ -33,8 +31,8 @@ model-scale or intervention ablation.
 | Arm | Peak LR | Minimum LR | Execution |
 | --- | ---: | ---: | --- |
 | Run 019 baseline | `3e-4` | `3e-5` | Reuse pinned completed evidence |
-| Run 020 arm 1 | `6e-4` | `6e-5` | New full pass from scratch |
-| Run 020 arm 2 | `1e-3` | `1e-4` | New full pass from scratch |
+| Run 021 arm 1 | `6e-4` | `6e-5` | New full pass from scratch |
+| Run 021 arm 2 | `1e-3` | `1e-4` | New full pass from scratch |
 
 The two new arms otherwise exactly match Run 019 A0:
 
@@ -105,7 +103,7 @@ commensurate validation improvement indicates optimization/generalization
 tension. Little improvement while the curve remains descending points toward
 the one-pass token budget rather than LR alone.
 
-The other eleven 410M intervention runs are not part of Run 020 and will not be
+The other eleven 410M intervention runs are not part of Run 021 and will not be
 launched until the A0 result is reviewed and the user approves the final recipe.
 
 ## Manuscript connection and limits
@@ -121,7 +119,7 @@ selection on the operational MiniPile contract.
 Run 019 measured the exact A0 workload at 5.78 hours for training and complete
 endpoint work on an RTX PRO 6000. Its full Secure Pod lifecycle, including
 setup, TEAL, retrieval, and teardown, was 8.85 billable hours and $18.4931.
-Run 020 proposes two isolated RTX PRO 6000 Pods in parallel, Community first
+Run 021 proposes two isolated RTX PRO 6000 Pods in parallel, Community first
 and Secure fallback, with A100 SXM, H100, and H200 allowed only as the approved
 availability fallbacks. Automatic termination is 10 hours for RTX PRO, 12 for
 A100, 10 for H100, and 8 for H200, matching the measured SKU-specific ETCs.
@@ -130,7 +128,8 @@ At the 2026-09-03 catalog snapshot, RTX PRO 6000 was $1.69/GPU-hour Community
 and $2.09/GPU-hour Secure. Expected two-Pod cost is approximately $30--$37;
 the 10-hour RTX operational guard is $33.80--$41.80. The largest currently
 possible fallback envelope is two Secure H200s for eight hours, or $73.44,
-plus small Pod disk charges. The same refresh showed an $83.09 account balance,
+plus small Pod disk charges. The final prelaunch refresh showed an $81.21 account
+balance,
 $0.01/hour current spend from the already-retained network volume, and no GPU
 Pods or Serverless endpoints. Prices, capacity, and balance must be refreshed
 immediately before launch.
@@ -182,21 +181,3 @@ zero unintended GPU Pods or endpoints.
 9. Confirm zero GPU Pods/endpoints and consolidate the A0 result before
    proposing any of the other eleven
    interventions.
-
-## Terminal launch observation
-
-The two generated attempts were
-`001-20260903-141928-658cae0b` (`a0-lr-6e-4`) and
-`002-20260903-141929-ef293cf6` (`a0-lr-1e-3`). Both manifests are failed with
-zero train events. The common exception was:
-
-```text
-TypeError: float() argument must be a string or a real number, not 'NoneType'
-```
-
-It occurred at the first LR schedule lookup in the inherited Run 004
-`run_condition`: the function correctly built `resolved`, but later assigned
-`training = mapping(config, "training")` rather than reading the resolved
-mapping. This discrepancy was not exercised by the prior smoke because the
-smoke calls the optimizer boundary directly with a resolved condition. Run 021
-must test the actual `run_worker` dispatch path before another launch.
