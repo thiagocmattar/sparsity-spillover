@@ -5,6 +5,23 @@
 
 ## Current status
 
+Run 023 is implemented but not launched. It pins a Sakana-derived exact-ELL
+patch and the twelve completed Pythia-70M Run-018 checkpoints, with a
+six-condition A0/A1-H/A4-OL1/A7-OL1 endpoint sentinel. The full-model path
+replaces only declared downstream linears; A7 attention is a separate
+Q-only/V-only per-head break-even benchmark. Complete validation, canonical
+`R_model`, full-model linear `R_covered`, separately extended A7 attention
+coverage, occupancy, correctness, paired timing, transfer, and teardown
+contracts are implemented. Live price/capacity and zero-active-compute state
+were audited; an independently visible balance and separate launch
+confirmation remain required.
+
+Run 022 reproduced the official SparseLM0.5B H100 control at 1.3001x, then
+stopped correctly when the raw Pythia-14M `M=256,K=512,N=128` ELL operation
+had relative-L2 error 0.69055. Its bounded post-mortem found correct behavior
+at N=256/512/2048 and isolated divergent full-warp shuffle participation below
+N=256. Evidence was retrieved and the Pod was terminated.
+
 Run 019 completed and terminally verified the approved one-seed Pythia-410M
 promotion of A0, A1-H, A4-OL1, and A7-OL1. All 12 conditions completed 712
 optimizer boundaries, full 338-block validation, retained diagnostics and
@@ -101,10 +118,20 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `020`. Next analysis number: `012`. Next finding number: `F003`.
+Next run number: `024`. Next analysis number: `012`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-09-04: Run 023 implemented the confirmed Pythia-70M sparse-kernel
+  sentinel without launching compute. Its run-owned patch fixes Run 022's
+  narrow-output warp participation, adds signed exact CUDA packing and reusable
+  workspaces, and keeps official and derived source checkouts separate. The
+  six-condition sentinel passes 15 focused and 207 full-suite tests. Its
+  63-file credential-free input archive is hash-verified; the live audit found
+  zero Pods/endpoints, and launch remains separately gated.
+- 2026-09-04: Run 022 stopped at its declared Pythia correctness gate after the
+  official SparseLM positive control passed. The N=128 failure and width audit
+  are retained; all GPU compute was terminated.
 - 2026-09-03: Analysis 011 completed the selected-ladder synthesis through
   Pythia-410M. It records 30 trained endpoints and all 60 A0/A1-H TEAL points,
   pairs trained loss and `R_model` within the same eager logical pass, and owns

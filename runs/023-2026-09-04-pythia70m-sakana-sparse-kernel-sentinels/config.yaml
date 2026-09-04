@@ -1,0 +1,306 @@
+name: pythia70m-sakana-sparse-kernel-sentinels
+status: implemented_not_launched
+
+question: >-
+  Can a clearly labeled Sakana-derived exact-ELL path execute the retained
+  Pythia-70M ladder faithfully, and does measured speedup track canonical
+  R_model or the narrower opportunity actually covered by these kernels?
+
+source_run:
+  id: 018-2026-09-01-pythia70m-selected-ladder-canonical-init
+  root: runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts
+  checkpoint_step: step_000712
+  seed: 1234
+  optimizer_steps: 712
+  training_tokens: 1493172224
+  initialization: random_hash_pinned
+  released_weights_loaded: false
+  shared_checkpoint_files:
+    checkpoint_metadata.json:
+      bytes: 395
+      sha256: 982127cf322995879967ebc08eec9ad684f93bb5158166e63a9e6b14f5608352
+    generation_config.json:
+      bytes: 196
+      sha256: 1617c33279dc958985ad56d33cf727b5ffe50b326cf73d766d33476ec8d23c13
+
+model:
+  family: pythia
+  size: 70m
+  parameter_count: 70426624
+  architecture:
+    hidden_size: 512
+    intermediate_size: 2048
+    layers: 6
+    attention_heads: 8
+    head_size: 64
+    sequence_length: 2048
+    vocab_size: 50304
+    attention_bias: true
+    mlp_bias: true
+
+condition_partition:
+  sentinel:
+    - a0-gelu
+    - a1h-relu
+    - a4-ol1-kappa-0
+    - a4-ol1-kappa-0p5
+    - a7-ol1-kappa-0
+    - a7-ol1-kappa-0p5
+  remainder:
+    - a4-ol1-kappa-0p01
+    - a4-ol1-kappa-0p05
+    - a4-ol1-kappa-0p1
+    - a7-ol1-kappa-0p01
+    - a7-ol1-kappa-0p05
+    - a7-ol1-kappa-0p1
+
+conditions:
+  - id: a0-gelu
+    attempt_id: 001-20260901-133016-4e43b254
+    step: A0
+    topology_id: A0
+    active_sites: []
+    gate_threshold: null
+    archived_validation_loss: 4.099767337889361
+    canonical_r_model: 0.0000045409213981255505
+    linear_operations: [mlp_w2]
+    attention_microbenchmark: false
+    config_file: {bytes: 1667, sha256: f9916a9b52a6f3f0704d853aa2e687aa0df6cc06e8dfe095cf5d6208652d701c}
+    model_file: {bytes: 281715176, sha256: 0f3e880938ee983f322ea40e4be5ab651ffff5c22168cbed5ba952252d859d38}
+    logical_products: {bytes: 2338, sha256: 78e4a2b8c502eb5ee9cb537d8e6b0e4f9c0ed5c0ccfc350d22b98872a86bbe8a}
+  - id: a1h-relu
+    attempt_id: 002-20260901-132416-647ee429
+    step: A1-H
+    topology_id: A1-H
+    active_sites: [h]
+    gate_threshold: null
+    archived_validation_loss: 4.222744515661657
+    canonical_r_model: 0.1006575817198192
+    linear_operations: [mlp_w2]
+    attention_microbenchmark: false
+    config_file: {bytes: 1693, sha256: 7acc746ee37144d596a3ab34ac54c99baba8a5d561ddc8fc775fe0a875c4b88e}
+    model_file: {bytes: 281715176, sha256: 57ac6856ff7cb69a5eb2b2a2489e509123b11b7ae5155e8e5606e71fefc7b8fd}
+    logical_products: {bytes: 2413, sha256: 5a5ac4d7fe7648a7537c1b528179cd43280383152607624c93ee8de2d5326153}
+  - id: a4-ol1-kappa-0
+    attempt_id: 003-20260901-131727-14b4dea9
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.0
+    archived_validation_loss: 4.805288591328457
+    canonical_r_model: 0.25672509475572236
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2041, sha256: c2a2adcc5103a4e8a6c205c3d544b6307ea2d9c5c2f4fe208b6973d3ee699098}
+    model_file: {bytes: 281715176, sha256: a35d07fc2e6442e629e01dff3b5027ce8fd415f393561539265e4f6af5269d94}
+    logical_products: {bytes: 2585, sha256: 49aad915d3bf3a2f3a440bb1e1d303c3d81812579c48221aa6c0a921dd5b47ec}
+  - id: a4-ol1-kappa-0p01
+    attempt_id: 004-20260901-160446-a489068c
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.01
+    archived_validation_loss: 4.822732194640933
+    canonical_r_model: 0.2622424792437898
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2045, sha256: 3dadc9cc4e0636355770ab835ee5cb0b0296d0d6d97a02a0904795b1fabb4bd7}
+    model_file: {bytes: 281715176, sha256: ddad0547e64c7d9a0d8316cef6f2eda50f1574907df93a29f2cc4fac566c5de2}
+    logical_products: {bytes: 2583, sha256: a62c8ef5f951dd51a16e188c6ab9c6054e1e1980081fcc511616a1f36b9b6e85}
+  - id: a4-ol1-kappa-0p05
+    attempt_id: 005-20260901-161549-02c4d451
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.05
+    archived_validation_loss: 4.8739320512354025
+    canonical_r_model: 0.28489957631865137
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2045, sha256: 8537975379f09f40cf8b3dff87109f441963c698fe8539ae02e8b24095a4fb38}
+    model_file: {bytes: 281715176, sha256: 418590c138186ab7b897a786da8d9aeb3932525f4fe3005ccb45f906d91d7b79}
+    logical_products: {bytes: 2585, sha256: 9bd67b8e1b5d332f5f96a7e107691898f91fb1bca4715dba92c4e83e5d42bf2a}
+  - id: a4-ol1-kappa-0p1
+    attempt_id: 006-20260901-161058-0c9a31ac
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.1
+    archived_validation_loss: 4.943728870188696
+    canonical_r_model: 0.30574257817401346
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2041, sha256: ec19e2358a35d2321997f009af0b9732949fbcfc3bccab1f44ca045e412d451e}
+    model_file: {bytes: 281715176, sha256: d637895baa66cb435f5f438c0904838a70e375b69583a2a52c798d05120af247}
+    logical_products: {bytes: 2586, sha256: 8ced596fa00428794e3f7665bba8a5358699956e6986153e87c2da23653f336f}
+  - id: a4-ol1-kappa-0p5
+    attempt_id: 007-20260901-155848-8b7ee7e3
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.5
+    archived_validation_loss: 5.389543036737385
+    canonical_r_model: 0.3559621916980309
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2041, sha256: b1a03126dc292f2866cc78a8367a7c3a621f4e4e6f74a046e2f0da6933c7e0e0}
+    model_file: {bytes: 281715176, sha256: fb2f9056c3e7bdf218dfc5c972f85db6c65366740ebc59be414788a7a646325f}
+    logical_products: {bytes: 2585, sha256: d01f3c688450b79e48d982a79ab69728aee1fc4c96c4786c60030fda1cda1b00}
+  - id: a7-ol1-kappa-0
+    attempt_id: 008-20260901-131158-54a0039f
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.0
+    archived_validation_loss: 4.941204175441222
+    canonical_r_model: 0.23562417494680196
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2327, sha256: f8ba04082041c2f1aa1e0a8714e97b0ce5729f13a9a438a37adbeae4b9bd695c}
+    model_file: {bytes: 281715176, sha256: f91a9346c13959d1487233ace87dd4144acde7cfe08497d81bd7d365cef34ed3}
+    logical_products: {bytes: 2676, sha256: 8b65815d6b976a716193603007e8a6b7e9c9cd0ae43215cb382713e33a380eff}
+  - id: a7-ol1-kappa-0p01
+    attempt_id: 009-20260901-155845-6d49e30d
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.01
+    archived_validation_loss: 4.936382454527906
+    canonical_r_model: 0.24226276136279815
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2334, sha256: 32b569357afa76f0396a485af52a47b156351ae469cc8687f653e8d4a8c6727f}
+    model_file: {bytes: 281715176, sha256: 1b3169748150fa47529888bc2a1973df838dbdf521160ea80a4ca95ce1d1de29}
+    logical_products: {bytes: 2682, sha256: 9db538d46be4b5f2d499ea05bf714de1550e10245b83ccb5549c67a2af1da20f}
+  - id: a7-ol1-kappa-0p05
+    attempt_id: 010-20260901-161732-c071ca13
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.05
+    archived_validation_loss: 4.963642168327196
+    canonical_r_model: 0.265239409240229
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2334, sha256: 40cefa4524b0ae883203858dec8fe0888ad6f54689a464f8af3e15e4673988fc}
+    model_file: {bytes: 281715176, sha256: e179fcf459ed7036506c2bebebcf1cccc6ddb9c6aacf30ce833daa0bc57b8a94}
+    logical_products: {bytes: 2680, sha256: 179c0514305bcc2f81e9f78cf026c5eb8b59fe84ff62990a791cb0b66433f8a7}
+  - id: a7-ol1-kappa-0p1
+    attempt_id: 011-20260901-165652-95bb8381
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.1
+    archived_validation_loss: 4.9501030600282565
+    canonical_r_model: 0.2869378509087325
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2327, sha256: b23dd25a496bb35ffccb7cc2597e28ebaf09374d96f42b0801820a0b69cab65f}
+    model_file: {bytes: 281715176, sha256: dd9dbb3bad4947919839474ce40541433fee9bb939cf2427aedec9d3107c05bc}
+    logical_products: {bytes: 2682, sha256: 8553015b68cd6bc527baab2c7d710772d5c1f0c7ae14ff8674b00a9112491cbf}
+  - id: a7-ol1-kappa-0p5
+    attempt_id: 012-20260901-155715-b6ac963f
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.5
+    archived_validation_loss: 5.215976195927908
+    canonical_r_model: 0.4060187215635989
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2327, sha256: f764a1a2349f08de0c53b9ba54fce8944a1511d766c0021b80bf5dfe19d1960f}
+    model_file: {bytes: 281715176, sha256: f4c90e2312b89dda911b2a1eccf25b2f19e45ad8d36ea00a15bdea26748cfe74}
+    logical_products: {bytes: 2685, sha256: e583f5a76c11cdb1707ce1fe23bae13c664d21bc3e4d125604288877e3f6cc5c}
+
+upstream:
+  repository: https://github.com/SakanaAI/sparser-faster-llms.git
+  commit: 661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5
+  blob_ids:
+    custom_models/hybrid_modules/custom_op.cpp: c2052281af5f968238f210b4573f14a73b7feca4
+    custom_models/hybrid_modules/hybrid_sp.cu: da550001818435a18ae3216c233afe30e7b7bb90
+    custom_models/hybrid_modules/hybrid_sp.h: 8b7955d0358672596b0f7872d242456577882293
+    custom_models/hybrid_modules/sparse_ops_loader.py: 7a8785879677dc896d4fdbfbd388978fd2b17207
+  derivative_label: Sakana-derived
+  patch: runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/sakana-pythia70.patch
+  patch_sha256: daf769f811f3f2e2d51aee8807a3b260d05922b440530a721b0896e270d0cdb9
+  positive_control:
+    model: SakanaAI/SparseLM0.5B
+    revision: 7c2a0473ec982facd5b21af81fe39c1783f3407e
+    batch_size: 64
+    sequence_length: 2048
+    dtype: bfloat16
+    warmups: 5
+    repetitions: 50
+    require_twell_faster_than_torch: true
+
+runtime:
+  python: "3.12"
+  cuda_minimum: "12.8"
+  compute_capability: [9, 0]
+  pythia_torch: "2.11.0"
+  pythia_transformers: "5.12.1"
+  pythia_numpy: "2.5.0"
+  upstream_torch: "2.9.1"
+  upstream_transformers: "4.56.2"
+  upstream_flash_attention: "2.7.4+cu128torch2.9"
+
+validation:
+  metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+  tokens: data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin
+  metadata_sha256: 70a2e1d487405ab1c9ba38e299a52d07066157e21ec1b8cb965706899274f451
+  tokens_sha256: 51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451
+  documents: 500
+  source_tokens: 693668
+  complete_blocks: 338
+  evaluated_tokens: 692224
+  excluded_tail_tokens: 1444
+  source_reproduction_batch_size: 4
+  runtime_equivalence_batch_size: 32
+  logical_opportunity_batch_size: 1
+  source_loss_absolute_tolerance: 0.0002
+  sparse_vs_dense_loss_absolute_tolerance: 0.001
+
+measurement:
+  runtime_dtype: bfloat16
+  source_parameter_dtype: float32
+  source_autocast_dtype: float16
+  attention_implementation: sdpa_flash
+  exact_zero_threshold: 0.0
+  near_zero_thresholds: [0.001, 0.01]
+  tile_width: 256
+  tile_payload_capacity: {factor_8: 31, factor_4: 63, factor_2: 127}
+  primitive_rows: 2048
+  primitive_warmups: 20
+  primitive_blocks: 7
+  primitive_target_seconds_per_block: 0.35
+  full_model_batches: [1, 32]
+  full_model_warmups: 5
+  full_model_blocks: 7
+  full_model_target_seconds_per_block: 1.0
+  correctness_relative_l2_tolerance: 0.02
+  signed_pack_exact: true
+  no_pruning_or_capacity_truncation: true
+  full_sequence_prefill_only: true
+  use_cache: false
+  torch_compile: false
+  cuda_graphs: false
+  attention:
+    batch_size: 1
+    qk_pack_side: q_only
+    pv_transform: "(V^T @ P^T)^T"
+    pv_pack_side: v_only
+    include_pack_dispatch_transpose_mask_scale_softmax: true
+    non_break_even_stop_rule: true
+
+runpod:
+  proposed_gpu: NVIDIA H100 80GB HBM3
+  fallbacks: [NVIDIA H100 NVL, NVIDIA H200]
+  exact_final_gpu_policy: one_exact_hopper_sku_for_all_reported_runtime_results
+  image: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 60
+  volume_disk_gb: 20
+  network_volume: none
+  monitoring_interval_minutes: 10
+  provisional_maximum_duration_hours: 4
+  teardown: retrieve_hash_verify_then_terminate
+  first_launch_phase: sentinel

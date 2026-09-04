@@ -1,0 +1,285 @@
+diff --git a/custom_models/hybrid_modules/custom_op.cpp b/custom_models/hybrid_modules/custom_op.cpp
+index c205228..5e3f0b5 100644
+--- a/custom_models/hybrid_modules/custom_op.cpp
++++ b/custom_models/hybrid_modules/custom_op.cpp
+@@ -311,12 +311,18 @@ TORCH_LIBRARY(sparse_ops, m) {
+     m.def("ff_forward_gated(Tensor X, Tensor G, Tensor K, Tensor V) -> (Tensor, Tensor, Tensor,  __torch__.torch.classes.sparse_ops.HybridSp, __torch__.torch.classes.sparse_ops.HybridSp, __torch__.torch.classes.sparse_ops.HybridSp)");
+     m.def("ff_backward_gated(Tensor X, Tensor G, Tensor K, Tensor V, __torch__.torch.classes.sparse_ops.HybridSp P, __torch__.torch.classes.sparse_ops.HybridSp R, __torch__.torch.classes.sparse_ops.HybridSp T, Tensor gR, Tensor gl0, Tensor gl1) -> (Tensor, Tensor, Tensor, Tensor)");
+     m.def("ell_spmm_raw(Tensor ell_vals, Tensor ell_cols, Tensor row_counts, Tensor B, int M, int K, int N, int ell_stride, int overflow_threshold) -> Tensor");
++    m.def("ell_spmm_raw_out(Tensor ell_vals, Tensor ell_cols, Tensor row_counts, Tensor B, int M, int K, int N, int ell_stride, int overflow_threshold, Tensor(a!) out) -> ()");
++    m.def("dense_to_ell_exact(Tensor dense) -> (Tensor, Tensor, Tensor)");
++    m.def("dense_to_ell_exact_out(Tensor dense, Tensor(a!) values, Tensor(b!) columns, Tensor(c!) row_counts) -> ()");
+ }
+ 
+ TORCH_LIBRARY_IMPL(sparse_ops, CUDA, m) {
+     m.impl("ff_forward_gated", &ff_forward_cuda_gated);
+     m.impl("ff_backward_gated", &ff_backward_cuda_gated);
+     m.impl("ell_spmm_raw", &ell_spmm_raw);
++    m.impl("ell_spmm_raw_out", &ell_spmm_raw_out);
++    m.impl("dense_to_ell_exact", &dense_to_ell_exact);
++    m.impl("dense_to_ell_exact_out", &dense_to_ell_exact_out);
+ }
+ 
+ TORCH_LIBRARY(sparse_ops_config, m) {
+diff --git a/custom_models/hybrid_modules/hybrid_sp.cu b/custom_models/hybrid_modules/hybrid_sp.cu
+index da55000..92f9e08 100644
+--- a/custom_models/hybrid_modules/hybrid_sp.cu
++++ b/custom_models/hybrid_modules/hybrid_sp.cu
+@@ -349,7 +349,12 @@ __global__ void ell_spmm_warp_per_row(
+     const uint16_t*      A_row_idxs = A_idxs + (size_t)row * ell_stride;
+     __nv_bfloat16*       C_row      = C      + (size_t)row * N_cols;
+ 
+-    for (int n_out = lane * VEC_SIZE; n_out < N_cols; n_out += WARP_SIZE_WPR * VEC_SIZE) {
++    // Every lane must execute every full-mask shuffle.  The upstream loop put
++    // n_out in the loop condition, so only half the warp participated when
++    // N_cols == 128.  Keep the warp converged and predicate only memory/math.
++    for (int n_base = 0; n_base < N_cols; n_base += WARP_SIZE_WPR * VEC_SIZE) {
++        const int n_out = n_base + lane * VEC_SIZE;
++        const bool output_active = n_out < N_cols;
+         float2 acc[4] = {};
+ 
+         for (int k_base = 0; k_base < nnz; k_base += WARP_SIZE_WPR) {
+@@ -364,33 +369,71 @@ __global__ void ell_spmm_warp_per_row(
+                 const uint16_t col_idx = __shfl_sync(0xffffffff, batch_col, j);
+                 const float    a_val   = __shfl_sync(0xffffffff, batch_val,  j);
+ 
+-                const __nv_bfloat16* B_row_ptr = B + (size_t)col_idx * N_cols + n_out;
+-                int4 b_raw = *reinterpret_cast<const int4*>(B_row_ptr);
+-                __nv_bfloat162* b_pairs = reinterpret_cast<__nv_bfloat162*>(&b_raw);
+-
+-                float2 b_f32;
+-                b_f32 = __bfloat1622float2(b_pairs[0]);
+-                acc[0].x = fmaf(a_val, b_f32.x, acc[0].x);
+-                acc[0].y = fmaf(a_val, b_f32.y, acc[0].y);
+-                b_f32 = __bfloat1622float2(b_pairs[1]);
+-                acc[1].x = fmaf(a_val, b_f32.x, acc[1].x);
+-                acc[1].y = fmaf(a_val, b_f32.y, acc[1].y);
+-                b_f32 = __bfloat1622float2(b_pairs[2]);
+-                acc[2].x = fmaf(a_val, b_f32.x, acc[2].x);
+-                acc[2].y = fmaf(a_val, b_f32.y, acc[2].y);
+-                b_f32 = __bfloat1622float2(b_pairs[3]);
+-                acc[3].x = fmaf(a_val, b_f32.x, acc[3].x);
+-                acc[3].y = fmaf(a_val, b_f32.y, acc[3].y);
++                if (output_active) {
++                    const __nv_bfloat16* B_row_ptr = B + (size_t)col_idx * N_cols + n_out;
++                    int4 b_raw = *reinterpret_cast<const int4*>(B_row_ptr);
++                    __nv_bfloat162* b_pairs = reinterpret_cast<__nv_bfloat162*>(&b_raw);
++
++                    float2 b_f32;
++                    b_f32 = __bfloat1622float2(b_pairs[0]);
++                    acc[0].x = fmaf(a_val, b_f32.x, acc[0].x);
++                    acc[0].y = fmaf(a_val, b_f32.y, acc[0].y);
++                    b_f32 = __bfloat1622float2(b_pairs[1]);
++                    acc[1].x = fmaf(a_val, b_f32.x, acc[1].x);
++                    acc[1].y = fmaf(a_val, b_f32.y, acc[1].y);
++                    b_f32 = __bfloat1622float2(b_pairs[2]);
++                    acc[2].x = fmaf(a_val, b_f32.x, acc[2].x);
++                    acc[2].y = fmaf(a_val, b_f32.y, acc[2].y);
++                    b_f32 = __bfloat1622float2(b_pairs[3]);
++                    acc[3].x = fmaf(a_val, b_f32.x, acc[3].x);
++                    acc[3].y = fmaf(a_val, b_f32.y, acc[3].y);
++                }
+             }
+         }
+ 
+-        OutputPack out;
+-        out.bf[0] = __float2bfloat16(acc[0].x); out.bf[1] = __float2bfloat16(acc[0].y);
+-        out.bf[2] = __float2bfloat16(acc[1].x); out.bf[3] = __float2bfloat16(acc[1].y);
+-        out.bf[4] = __float2bfloat16(acc[2].x); out.bf[5] = __float2bfloat16(acc[2].y);
+-        out.bf[6] = __float2bfloat16(acc[3].x); out.bf[7] = __float2bfloat16(acc[3].y);
+-        *reinterpret_cast<int4*>(C_row + n_out) = out.vec;
++        if (output_active) {
++            OutputPack out;
++            out.bf[0] = __float2bfloat16(acc[0].x); out.bf[1] = __float2bfloat16(acc[0].y);
++            out.bf[2] = __float2bfloat16(acc[1].x); out.bf[3] = __float2bfloat16(acc[1].y);
++            out.bf[4] = __float2bfloat16(acc[2].x); out.bf[5] = __float2bfloat16(acc[2].y);
++            out.bf[6] = __float2bfloat16(acc[3].x); out.bf[7] = __float2bfloat16(acc[3].y);
++            *reinterpret_cast<int4*>(C_row + n_out) = out.vec;
++        }
++    }
++}
++
++// Exact signed dense-to-ELL packer used by the Pythia inference adapter.
++// One warp owns one row and ballot-prefix compaction preserves column order.
++__global__ void dense_to_ell_exact_kernel(
++    const __nv_bfloat16* __restrict__ dense,
++    __nv_bfloat16*       __restrict__ values,
++    uint16_t*            __restrict__ columns,
++    int*                 __restrict__ row_counts,
++    int M_rows,
++    int K_cols
++) {
++    const int warp_id = threadIdx.x / WARP_SIZE_WPR;
++    const int lane = threadIdx.x % WARP_SIZE_WPR;
++    const int row = blockIdx.x * WARPS_PER_BLOCK_WPR + warp_id;
++    if (row >= M_rows) return;
++
++    const __nv_bfloat16* dense_row = dense + (size_t)row * K_cols;
++    __nv_bfloat16* value_row = values + (size_t)row * K_cols;
++    uint16_t* column_row = columns + (size_t)row * K_cols;
++    int packed = 0;
++    for (int base = 0; base < K_cols; base += WARP_SIZE_WPR) {
++        const int column = base + lane;
++        const __nv_bfloat16 value = column < K_cols ? dense_row[column] : __float2bfloat16(0.0f);
++        const bool nonzero = column < K_cols && __bfloat162float(value) != 0.0f;
++        const unsigned mask = __ballot_sync(0xffffffffu, nonzero);
++        const int offset = __popc(mask & ((1u << lane) - 1u));
++        if (nonzero) {
++            value_row[packed + offset] = value;
++            column_row[packed + offset] = static_cast<uint16_t>(column);
++        }
++        packed += __popc(mask);
+     }
++    if (lane == 0) row_counts[row] = packed;
+ }
+ // Persistent grid: each block work-steals rows via atomicAdd on work_counter
+ // to amortise wave-scheduling overhead at large N.
+@@ -1396,18 +1439,42 @@ void sparse_dense_gemm_hybrid_dense(at::Tensor& out, hybrid_sp_t* A, const at::T
+ }
+ 
+ 
+-at::Tensor ell_spmm_raw(
++void ell_spmm_raw_out(
+     at::Tensor ell_vals,
+     at::Tensor ell_cols,
+     at::Tensor row_counts,
+     at::Tensor B,
+     int64_t M, int64_t K, int64_t N,
+     int64_t ell_stride,
+-    int64_t overflow_threshold
++    int64_t overflow_threshold,
++    at::Tensor out
+ ) {
+-    auto stream = at::cuda::getCurrentCUDAStream();
+-    at::Tensor out = torch::empty({M, N},
+-        torch::TensorOptions().dtype(torch::kBFloat16).device(B.device()));
++    TORCH_CHECK(ell_vals.is_cuda() && ell_cols.is_cuda() && row_counts.is_cuda() && B.is_cuda() && out.is_cuda(),
++                "ell_spmm_raw expects CUDA tensors");
++    TORCH_CHECK(ell_vals.scalar_type() == at::kBFloat16 && B.scalar_type() == at::kBFloat16 &&
++                out.scalar_type() == at::kBFloat16,
++                "ell_spmm_raw expects BF16 values and RHS");
++    TORCH_CHECK(ell_cols.scalar_type() == at::kUInt16 && row_counts.scalar_type() == at::kInt,
++                "ell_spmm_raw expects uint16 columns and int32 row counts");
++    TORCH_CHECK(ell_vals.is_contiguous() && ell_cols.is_contiguous() &&
++                row_counts.is_contiguous() && B.is_contiguous() && out.is_contiguous(),
++                "ell_spmm_raw expects contiguous tensors");
++    TORCH_CHECK(M > 0 && K > 0 && N > 0 && N % VEC_SIZE == 0,
++                "ell_spmm_raw requires positive dimensions and N divisible by 8");
++    TORCH_CHECK(K <= 65535 && ell_stride > 0 && ell_stride <= K &&
++                overflow_threshold == ell_stride,
++                "ell_spmm_raw received an invalid ELL capacity");
++    TORCH_CHECK(ell_vals.numel() >= M * ell_stride && ell_cols.numel() >= M * ell_stride &&
++                row_counts.numel() >= M,
++                "ell_spmm_raw ELL buffers are smaller than the declared shape");
++    TORCH_CHECK(B.dim() == 2 && B.size(0) == K && B.size(1) == N,
++                "ell_spmm_raw RHS shape does not match K,N");
++    TORCH_CHECK(out.dim() == 2 && out.size(0) == M && out.size(1) == N,
++                "ell_spmm_raw output shape does not match M,N");
++    TORCH_CHECK(ell_vals.get_device() == B.get_device() && ell_cols.get_device() == B.get_device() &&
++                row_counts.get_device() == B.get_device() && out.get_device() == B.get_device(),
++                "ell_spmm_raw tensors must share one CUDA device");
++    auto stream = at::cuda::getCurrentCUDAStream(B.get_device());
+ 
+     // Empty rows aren't visited by any of the spmm variants, so zero them up front.
+     {
+@@ -1470,9 +1537,77 @@ at::Tensor ell_spmm_raw(
+             (int)overflow_threshold
+         );
+     }
++    cudaError_t launch_error = cudaGetLastError();
++    TORCH_CHECK(launch_error == cudaSuccess, "ell_spmm_raw launch failed: ", cudaGetErrorString(launch_error));
++}
++
++at::Tensor ell_spmm_raw(
++    at::Tensor ell_vals,
++    at::Tensor ell_cols,
++    at::Tensor row_counts,
++    at::Tensor B,
++    int64_t M, int64_t K, int64_t N,
++    int64_t ell_stride,
++    int64_t overflow_threshold
++) {
++    at::Tensor out = torch::empty({M, N},
++        torch::TensorOptions().dtype(torch::kBFloat16).device(B.device()));
++    ell_spmm_raw_out(
++        ell_vals, ell_cols, row_counts, B,
++        M, K, N, ell_stride, overflow_threshold, out
++    );
+     return out;
+ }
+ 
++void dense_to_ell_exact_out(
++    at::Tensor dense,
++    at::Tensor values,
++    at::Tensor columns,
++    at::Tensor row_counts
++) {
++    TORCH_CHECK(dense.is_cuda(), "dense_to_ell_exact expects a CUDA tensor");
++    TORCH_CHECK(dense.scalar_type() == at::kBFloat16, "dense_to_ell_exact expects BF16 input");
++    TORCH_CHECK(dense.dim() == 2 && dense.is_contiguous(),
++                "dense_to_ell_exact expects a contiguous rank-2 tensor");
++    const int64_t M = dense.size(0);
++    const int64_t K = dense.size(1);
++    TORCH_CHECK(M > 0 && K > 0 && K <= 65535,
++                "dense_to_ell_exact requires positive dimensions and K <= 65535");
++    TORCH_CHECK(values.is_cuda() && columns.is_cuda() && row_counts.is_cuda(),
++                "dense_to_ell_exact workspaces must be CUDA tensors");
++    TORCH_CHECK(values.scalar_type() == at::kBFloat16 && columns.scalar_type() == at::kUInt16 &&
++                row_counts.scalar_type() == at::kInt,
++                "dense_to_ell_exact workspace dtypes must be BF16, uint16, int32");
++    TORCH_CHECK(values.is_contiguous() && columns.is_contiguous() && row_counts.is_contiguous(),
++                "dense_to_ell_exact workspaces must be contiguous");
++    TORCH_CHECK(values.sizes() == dense.sizes() && columns.sizes() == dense.sizes() &&
++                row_counts.dim() == 1 && row_counts.size(0) == M,
++                "dense_to_ell_exact workspace shapes do not match the input");
++    TORCH_CHECK(values.get_device() == dense.get_device() && columns.get_device() == dense.get_device() &&
++                row_counts.get_device() == dense.get_device(),
++                "dense_to_ell_exact tensors must share one CUDA device");
++    auto stream = at::cuda::getCurrentCUDAStream(dense.get_device());
++    const int grid = ((int)M + WARPS_PER_BLOCK_WPR - 1) / WARPS_PER_BLOCK_WPR;
++    dense_to_ell_exact_kernel<<<grid, WARPS_PER_BLOCK_WPR * WARP_SIZE_WPR, 0, stream>>>(
++        static_cast<const __nv_bfloat16*>(dense.data_ptr()),
++        static_cast<__nv_bfloat16*>(values.data_ptr()),
++        static_cast<uint16_t*>(columns.data_ptr()),
++        static_cast<int*>(row_counts.data_ptr()),
++        (int)M,
++        (int)K
++    );
++    cudaError_t launch_error = cudaGetLastError();
++    TORCH_CHECK(launch_error == cudaSuccess, "dense_to_ell_exact launch failed: ", cudaGetErrorString(launch_error));
++}
++
++std::tuple<at::Tensor, at::Tensor, at::Tensor> dense_to_ell_exact(at::Tensor dense) {
++    auto values = at::empty(dense.sizes(), dense.options());
++    auto columns = at::empty(dense.sizes(), dense.options().dtype(at::kUInt16));
++    auto row_counts = at::empty({dense.size(0)}, dense.options().dtype(at::kInt));
++    dense_to_ell_exact_out(dense, values, columns, row_counts);
++    return {values, columns, row_counts};
++}
++
+ __forceinline__ __device__ bool int4_all_zero(const int4& v) {
+     return (v.x | v.y | v.z | v.w) == 0;
+ }
+diff --git a/custom_models/hybrid_modules/hybrid_sp.h b/custom_models/hybrid_modules/hybrid_sp.h
+index 8b7955d..3068460 100644
+--- a/custom_models/hybrid_modules/hybrid_sp.h
++++ b/custom_models/hybrid_modules/hybrid_sp.h
+@@ -23,6 +23,7 @@
+ 
+ #pragma once
+ 
++#include <tuple>
+ #include <torch/all.h>
+ #include <cuda_runtime.h>
+ 
+@@ -74,6 +75,9 @@ extern int g_tail_rows_regular;
+ extern int g_tail_rows_transpose;
+ extern int g_discard_overflow;
+ at::Tensor ell_spmm_raw(at::Tensor ell_vals, at::Tensor ell_cols, at::Tensor row_counts, at::Tensor B, int64_t M, int64_t K, int64_t N, int64_t ell_stride, int64_t overflow_threshold);
++void ell_spmm_raw_out(at::Tensor ell_vals, at::Tensor ell_cols, at::Tensor row_counts, at::Tensor B, int64_t M, int64_t K, int64_t N, int64_t ell_stride, int64_t overflow_threshold, at::Tensor out);
++std::tuple<at::Tensor, at::Tensor, at::Tensor> dense_to_ell_exact(at::Tensor dense);
++void dense_to_ell_exact_out(at::Tensor dense, at::Tensor values, at::Tensor columns, at::Tensor row_counts);
+ void set_ell_width_regular(int v);
+ void set_ell_width_transpose(int v);
+ void set_tail_rows_regular(int v);
+

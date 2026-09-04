@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "checked_utc": "2026-09-04T16:01:45Z",
+  "source": {
+    "infrastructure_and_capacity": "RunPod official MCP, REST v2",
+    "storage_price": "https://docs.runpod.io/pods/storage/types"
+  },
+  "resources": {
+    "active_pods": 0,
+    "endpoints": 0,
+    "current_gpu_spend_per_hour_usd": 0.0,
+    "network_volumes": [
+      {
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "data_center": "EUR-IS-1",
+        "size_gb": 100,
+        "type": "STANDARD",
+        "estimated_hourly_usd": 0.0097222222,
+        "attached_to_run_023": false
+      }
+    ]
+  },
+  "account_balance": {
+    "usd": null,
+    "status": "unavailable",
+    "reason": "The connected REST-v2 tool exposes billing but not balance; the isolated browser session is logged out. No balance was guessed from prior debits."
+  },
+  "capacity_cuda_12_8": [
+    {
+      "priority": 1,
+      "gpu_id": "NVIDIA H100 80GB HBM3",
+      "display_name": "H100 SXM",
+      "community_stock": "LOW",
+      "community_gpu_hourly_usd": 2.69,
+      "secure_stock": "LOW",
+      "secure_gpu_hourly_usd": 3.49
+    },
+    {
+      "priority": 2,
+      "gpu_id": "NVIDIA H100 NVL",
+      "display_name": "H100 NVL",
+      "community_stock": "LOW",
+      "community_gpu_hourly_usd": 2.59,
+      "secure_stock": "OUT",
+      "secure_gpu_hourly_usd": 3.19
+    },
+    {
+      "priority": 3,
+      "gpu_id": "NVIDIA H200",
+      "display_name": "H200 SXM",
+      "community_stock": "LOW",
+      "community_gpu_hourly_usd": 3.59,
+      "secure_stock": "LOW",
+      "secure_gpu_hourly_usd": 4.59
+    }
+  ],
+  "proposed_pod": {
+    "image": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404",
+    "gpu_count": 1,
+    "container_disk_gb": 60,
+    "volume_disk_gb": 20,
+    "network_volume": null,
+    "pod_disk_hourly_usd": 0.0111111111,
+    "maximum_duration_hours": 4.0,
+    "monitoring_interval_minutes": 10
+  },
+  "provisional_etc_hours": {
+    "low": 1.5,
+    "high": 2.5,
+    "basis": "Run-022 observed fresh setup/control behavior plus an engineering estimate for six Pythia-70M sentinels; recalibrate from live stages."
+  },
+  "community_cost_usd": {
+    "h100_sxm": {
+      "estimated_incremental_low": 4.0516666667,
+      "estimated_incremental_high": 6.7527777778,
+      "four_hour_incremental_ceiling": 10.8044444444,
+      "four_hour_total_account_outflow_including_existing_volume": 10.8433333332
+    },
+    "h100_nvl": {
+      "estimated_incremental_low": 3.9016666667,
+      "estimated_incremental_high": 6.5027777778,
+      "four_hour_incremental_ceiling": 10.4044444444,
+      "four_hour_total_account_outflow_including_existing_volume": 10.4433333332
+    },
+    "h200_sxm": {
+      "estimated_incremental_low": 5.4016666667,
+      "estimated_incremental_high": 9.0027777778,
+      "four_hour_incremental_ceiling": 14.4044444444,
+      "four_hour_total_account_outflow_including_existing_volume": 14.4433333332
+    }
+  },
+  "secure_cost_usd": {
+    "h100_sxm": {
+      "four_hour_total_account_outflow_including_existing_volume": 14.0433333332
+    },
+    "h200_sxm": {
+      "four_hour_total_account_outflow_including_existing_volume": 18.4433333332
+    }
+  }
+}
