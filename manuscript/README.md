@@ -26,7 +26,24 @@ substantive discrepancy is surfaced during experiment design only when it would
 materially change the experiment or the user requests a manuscript-specific
 variant.
 
-## Current files
+## Active submission draft (4 September 2026 rewrite)
+
+The current complete paper is `draft/main.tex` and `draft/main.pdf`, with
+`draft/rewrite-review.md` providing a concise author-review guide. The user
+authorized a full rewrite from current evidence and adversarial-review-v3.
+The contribution is now a matched gate-location/activation-pressure study:
+detailed 14M contrasts, selected 70M recipes, operation-level explanations,
+complete fixed-budget 410M appendix, and completed negative 70M execution
+results. R_model supports the comparison. No new training or checkpoint
+evaluation was launched for the rewrite.
+
+[Analysis 013](../analyses/013-2026-09-04-matched-intervention-manuscript/README.md)
+owns its five figures, generated tables, verified reduction, and observations.
+The draft remains under the existing local-only ignore rule. The older TeX
+and report files below preserve earlier proposals and evidence cutoffs; their
+410M-unobserved descriptions predate the completed cohorts.
+
+## Historical sources and artifacts
 
 - `introduction.tex` states the paper motivation, sparsity-spillover question,
   proposed contribution structure, and architecture-wide research direction.
@@ -67,7 +84,7 @@ separately distilled from `orthogonal-sparsity-pressure` commit
 `a5171e2c13d279ec97bdf7b7ef77139fa776e149`. Preserve both identities when a
 definition is reconciled.
 
-## Current research direction
+## Earlier research direction
 
 1. Establish whether pressure at targeted FFN/branch sites produces a
    systematic opposing response at untargeted attention sites: *sparsity
@@ -118,6 +135,17 @@ bibliography, build command, or generated-fragment directory only when the paper
 actually needs it.
 
 ## Result evidence crosswalk
+
+- On 4 September 2026, the user requested the full manuscript rewrite using
+  current evidence and adversarial-review-v3. Analysis 013 reconstructs the
+  full 35-condition 14M study, 12 selected conditions each at 70M and 410M,
+  all 60 clipping points, Run 021's learning-rate screen, and six completed
+  Run 023 execution sentinels. The draft reports dose-dependent paired
+  effects, common-loss operating points, architectural denominator effects,
+  and the runtime limitation. The pressured A4/A7 comparison remains a
+  combined gate-and-pressure intervention. The 410M results remain visible
+  in the appendix with a main-text disclosure. This is authorized descriptive
+  integration; the finding registry and immutable runs remain unchanged.
 
 - On 1 September 2026, the user requested Status Report Number 2 after Run 018
   and Analysis 010 completed. The report retains Report 1's architecture
