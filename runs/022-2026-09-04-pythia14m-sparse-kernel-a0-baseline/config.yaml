@@ -1,0 +1,118 @@
+name: pythia14m-sparse-kernel-a0-baseline
+status: implemented_not_launched
+
+upstream:
+  repository: https://github.com/SakanaAI/sparser-faster-llms.git
+  commit: 661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5
+  positive_control_model: SakanaAI/SparseLM0.5B
+  positive_control_revision: 7c2a0473ec982facd5b21af81fe39c1783f3407e
+  benchmark_script: benchmark_inference.py
+  source_sha256:
+    benchmark_inference.py: 703c476470138f7e6059ab94e0d1b5669e58c6e6b08fa89d46451f69b6b2b031
+    custom_models/sparse_testing_utils.py: 499e10784908350219e8ab007c4128170c2e3449999c094cc6a6e888a959f9fe
+    custom_models/twell_modules/twell.py: 7a8b6d47bfdcb07e2a579761c3f08a7e52aba611e385552512847c7573994926
+    custom_models/twell_modules/matmul_t2d.cu: c01fda6953daabf1243ab5c2a2e6da8d0f4400c6cf490595884548dc44389be6
+    custom_models/hybrid_modules/sparse_ops_loader.py: 05ccbc11db17d647420e7e8f49cbcbe8b338e25cd500b623bfb7d68aaf9a9f98
+    custom_models/hybrid_modules/hybrid_sp.cu: aa450d5d351abc4eb3229c9136292fabf7533b39cfb24b177a603127b1875ff4
+    custom_models/hybrid_modules/custom_op.cpp: bbc6a1ad7155d44fd35e8f0b26abaedcb8e4417856d4ad2f387eefe02963ca35
+    custom_models/hybrid_modules/wgmma_gemm.cu: 39f1137f710da20580ac47cb5dba72cb51f41a8599e9abdf0130f36df6db71c7
+  reference_workload:
+    batch_size: 64
+    sequence_length: 2048
+    dtype: bfloat16
+    repetitions: 50
+    warmups: 5
+    seed: 0
+
+runtime:
+  python: "3.12"
+  cuda_runtime: "12.8"
+  pythia_torch: "2.11.0"
+  pythia_transformers: "5.12.1"
+  pythia_numpy: "2.5.0"
+  upstream_torch: "2.9.1"
+  upstream_transformers: "4.56.2"
+  upstream_flash_attention: "2.7.4+cu128torch2.9"
+  required_compute_capability: [9, 0]
+
+model:
+  family: pythia
+  size: 14m
+  condition_id: gelu-control
+  topology_id: A0
+  gate: gelu
+  seed: 1234
+  optimizer_steps: 712
+  training_tokens: 1493172224
+  checkpoint: runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8/checkpoints/step_000712
+  files:
+    checkpoint_metadata.json:
+      bytes: 308
+      sha256: 1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9
+    config.json:
+      bytes: 1099
+      sha256: aefeff9ed485879d43a2ba399b1c3373c1134e0a661d90ae7faab498175c54dc
+    generation_config.json:
+      bytes: 195
+      sha256: ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e
+    model.safetensors:
+      bytes: 56279344
+      sha256: f30df61a307b9f0b7d47bd98cbee7fcc5b078a9e15ce48570420b83982016469
+  architecture:
+    hidden_size: 128
+    intermediate_size: 512
+    layers: 6
+    attention_heads: 4
+    sequence_length: 2048
+    vocab_size: 50304
+    attention_bias: true
+    mlp_bias: true
+  archived_validation:
+    loss: 5.208582500028893
+    parameter_dtype: float32
+    autocast_dtype: float16
+    attention_implementation: sdpa_flash
+    tolerance: 0.0002
+
+validation:
+  metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+  tokens: data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin
+  metadata_sha256: 70a2e1d487405ab1c9ba38e299a52d07066157e21ec1b8cb965706899274f451
+  tokens_sha256: 51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451
+  documents: 500
+  source_tokens: 693668
+  complete_blocks: 338
+  evaluated_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 32
+
+measurement:
+  capture_site: h
+  exact_zero_threshold: 0.0
+  near_zero_thresholds: [0.001, 0.01]
+  tile_width: 256
+  tile_payload_capacity:
+    factor_8: 31
+    factor_4: 63
+    factor_2: 127
+  full_model_batches: [1, 32]
+  full_model_warmups: 10
+  full_model_blocks: 5
+  full_model_target_seconds_per_block: 2.0
+  raw_ell_rows: [256, 2048]
+  raw_ell_alignment: 8
+  raw_ell_warmups: 50
+  raw_ell_blocks: 5
+  raw_ell_target_seconds_per_block: 0.5
+  correctness_relative_l2_tolerance: 0.02
+
+runpod:
+  proposed_gpu: NVIDIA H100 80GB HBM3
+  acceptable_engineering_fallback: [NVIDIA H100 NVL, NVIDIA H200]
+  exact_final_gpu_policy: one_hopper_sku_for_all_reported_runtime_results
+  image: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 60
+  volume_disk_gb: 20
+  monitoring_interval_minutes: 10
+  maximum_duration_hours: 3
+  teardown: retrieve_hash_verify_then_terminate
