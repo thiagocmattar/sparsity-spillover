@@ -1,6 +1,6 @@
 # Run 022 — Pythia-14M A0 sparse-kernel baseline
 
-**Status:** design approved; implemented locally; not launched.
+**Status:** executed 2026-09-04; stopped at the raw-ELL correctness gate; evidence retrieved; RunPod GPU terminated.
 
 ## Question
 
@@ -62,3 +62,27 @@ No gradient-interaction diagnostic is collected because this is forward-only inf
 - `DEPLOYMENT_PLAYBOOK.md`: proposed launch/retrieval/teardown sequence.
 
 Pre-launch generated inventories live under `prelaunch/`. Remote results will live under `artifacts/attempts/<attempt-id>/`; no result directory is fabricated before launch.
+
+## Execution outcome
+
+The official SparseLM0.5B positive control passed on an H100 NVL: TwELL took
+`476.9542 ms` versus `620.0687 ms` for Torch (`1.3001x`). The exact Pythia-14M
+raw operation did not pass correctness. At `M=256, K=512, N=128`, the released
+`ell_spmm_raw` operator had relative-L2 error `0.69055`, above the declared
+`0.02` limit. The run stopped before Pythia validation, occupancy collection,
+or A0 timing, as required by the stop rule.
+
+A bounded post-mortem isolated the incompatibility to the small output width:
+the unchanged operator was correct at `N=256`, `512`, and `2048` (relative-L2
+approximately `0.00165`). Padding `N=128` to `256` and slicing was also correct,
+but is not the exact 14M operation and doubles the output work. See
+`observations/001-a0-14m-raw-ell-compatibility.md` and
+`POSTMORTEM_AND_REVISED_PLAN.md` for evidence, interpretation, costs, and the
+proposed next gate.
+
+RunPod Pod `n3ovkit8h3y2wh` ran for approximately 34 minutes at `$2.59/hour`.
+The observed account debit was `$1.47576`, including transient storage and the
+pre-existing storage draw. The evidence archive was hash-verified locally
+before termination, and RunPod reported zero active Pods after teardown. The
+immutable `config.yaml` retains its pre-launch status string as provenance;
+this README records the actual terminal state.
