@@ -1,0 +1,32 @@
+--- a/runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -758,18 +758,20 @@ def run_condition(
+         condition_index=condition_index,
+     )
+     update_progress(progress_path, "linear_primitive_timing", condition_id=condition["id"])
+-    linear_primitives = benchmark_linear_primitives(
+-        dense_model, samples, condition, config, condition_index=condition_index
+-    )
++    with torch.inference_mode():
++        linear_primitives = benchmark_linear_primitives(
++            dense_model, samples, condition, config, condition_index=condition_index
++        )
+     attention = None
+     if condition["attention_microbenchmark"]:
+         update_progress(progress_path, "attention_composition_timing", condition_id=condition["id"])
+-        attention = benchmark_attention(
+-            samples,
+-            config,
+-            condition_id=condition["id"],
+-            condition_index=condition_index,
+-        )
++        with torch.inference_mode():
++            attention = benchmark_attention(
++                samples,
++                config,
++                condition_id=condition["id"],
++                condition_index=condition_index,
++            )
+     full_model_coverage = covered_opportunity(
+         logical,
+         condition["linear_operations"],

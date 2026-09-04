@@ -1,0 +1,44 @@
+--- a/runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -687,19 +687,29 @@ def run_condition(
+         raise RuntimeError(f"{condition['id']}: archived validation loss not reproduced: {source_validation}")
+     attention_opportunity_validation = None
+     if source_attention is not None:
+-        attention_opportunity_validation = evaluate(
+-            dense_model,
+-            tokens,
+-            config=config,
+-            condition=condition,
+-            progress_path=progress_path,
+-            stage="source_attention_opportunity",
+-            autocast_dtype=torch.float16,
+-            batch_size=config["validation"]["logical_opportunity_batch_size"],
+-            capture_sites=["q_post", "v"],
+-            attention_opportunities=source_attention,
+-        )
++        runtime_attention_implementation = dense_model.config._attn_implementation
++        dense_model.config._attn_implementation = "eager"
++        try:
++            attention_opportunity_validation = evaluate(
++                dense_model,
++                tokens,
++                config=config,
++                condition=condition,
++                progress_path=progress_path,
++                stage="source_attention_opportunity",
++                autocast_dtype=torch.float16,
++                batch_size=config["validation"]["logical_opportunity_batch_size"],
++                capture_sites=["q_post", "v"],
++                attention_opportunities=source_attention,
++            )
++        finally:
++            dense_model.config._attn_implementation = runtime_attention_implementation
++        attention_opportunity_validation["attention_implementation"] = "eager"
++        attention_opportunity_validation["matched_canonical_run018_protocol"] = True
+     attention_opportunity = combine_attention_opportunities(source_attention) if source_attention else None
++    if attention_opportunity is not None:
++        attention_opportunity["attention_implementation"] = "eager"
++        attention_opportunity["matched_canonical_run018_protocol"] = True
+ 
+     dense_model.to(dtype=torch.bfloat16)
+     accumulators = make_accumulators(condition, config)

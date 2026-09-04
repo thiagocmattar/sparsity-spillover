@@ -1,0 +1,25 @@
+diff --git a/04_verify.py b/04_verify.py
+--- a/04_verify.py
++++ b/04_verify.py
+@@ -18,4 +18,8 @@ def finite_positive(value: object) -> bool:
+     return isinstance(value, (int, float)) and math.isfinite(float(value)) and float(value) > 0
+ 
+ 
++def finite_nonnegative(value: object) -> bool:
++    return isinstance(value, (int, float)) and math.isfinite(float(value)) and float(value) >= 0
++
++
+ def verify_upstream(path: Path, config: dict) -> dict[str, Any]:
+@@ -126,6 +130,11 @@ def verify_condition(path: Path, condition: dict, config: dict) -> dict[str, Any
+         require(record["elements"] == expected_rows * expected_width, f"{name}: element denominator mismatch.")
+         require(record["integer_pooling"] is True, f"{name}: occupancy is not integer pooled.")
+         require(0 <= record["exact_zero_count"] <= record["elements"], f"{name}: invalid zeros.")
+-        require(finite_positive(record["rms"]), f"{name}: invalid RMS.")
++        require(finite_nonnegative(record["rms"]), f"{name}: invalid RMS.")
++        require(
++            (float(record["rms"]) == 0.0)
++            == (record["exact_zero_count"] == record["elements"]),
++            f"{name}: RMS/zero-count inconsistency.",
++        )
+ 
+     measurement = config["measurement"]

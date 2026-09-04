@@ -1,6 +1,7 @@
 # Run 023 — Pythia-70M Sakana-derived sparse-kernel sentinels
 
-**Status:** implemented locally, not launched.
+**Status:** six-condition sentinel phase executed and verified; remainder not
+launched; no active RunPod compute.
 
 ## Question
 
@@ -176,3 +177,42 @@ The local RTX 5070 Ti Laptop GPU is not Hopper and no local `nvcc` is
 available, so compilation and all CUDA behavior remain deliberately gated by
 `02_remote_preflight.py` before any checkpoint benchmark. No cloud resource
 was created during implementation.
+
+## Sentinel execution outcome — 2026-09-04
+
+The approved sentinel phase ran on one community H100 NVL at `$2.59/GPU-hour`.
+The official unmodified SparseLM0.5B control passed at `1.2876x`, all seven
+Pythia shape gates passed, all six source losses reproduced exactly, and every
+sparse/dense BF16 loss difference was below `0.001`. The final benchmark
+covered 108 linear primitives, 12 A7 layer-level attention compositions, and
+all 338 complete validation blocks per condition.
+
+No tested sparse path broke even. The best full-model result was A4-OL1 at
+`kappa=0.5`, with paired speedup `0.9835x` at batch one and `0.7066x` at batch
+32. None of the 108 pack-plus-kernel linear measurements exceeded `1x`, and
+none of the 12 attention compositions exceeded `1x`; the best attention result
+was `0.3612x`. The configured attention stop rule therefore fired. The six
+interior A4/A7 thresholds remain unlaunched and require a new explicit decision
+if their value as a negative association curve is judged worth measuring.
+
+Attempt 005 completed every benchmark but its original verifier incorrectly
+required strictly positive RMS for an all-zero activation record. A4-OL1 at
+`kappa=0.5`, `z.layer_3` contained exactly 354,418,688 zeros out of
+354,418,688 pooled elements, so RMS zero was correct. Verification-only
+Recovery 007 accepted finite nonnegative RMS while requiring RMS zero if and
+only if the integer-pooled record is entirely zero. It passed without changing
+or rerunning any benchmark.
+
+The measured benchmark body took 860.41 seconds. Pod lifetime through confirmed
+termination was bounded by 1.0558–1.0605 hours; estimated experiment-incremental
+cost was `$2.75–$2.76`, including transient Pod storage. The billing endpoint
+was still delayed at teardown, so this is a rate-times-duration estimate rather
+than a settled invoice. After hash-verified retrieval and independent local
+verification, the Pod was terminated. RunPod reported zero Pods and zero
+endpoints; the pre-existing unattached 100 GB standard network volume was left
+unchanged.
+
+See `observations/001-pythia70m-sentinel-sparse-kernel-feasibility.md` for the
+scientific interpretation, `results/sentinel-summary.csv` for the calibration
+table, and `launch-control/runpod-closeout-20260904.json` for execution and
+teardown provenance.
