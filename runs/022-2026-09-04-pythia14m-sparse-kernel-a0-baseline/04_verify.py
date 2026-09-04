@@ -35,6 +35,8 @@ def verify_upstream(path: Path, config: dict) -> dict:
         require(int(row["warmup_reps"]) == expected["warmups"], "Upstream warmup mismatch.")
         require(finite_positive(float(row["avg_total_ms"])), "Invalid upstream latency.")
     latencies = {row["implementation"]: float(row["avg_total_ms"]) for row in rows}
+    if expected["require_twell_faster_than_torch"]:
+        require(latencies["twell"] < latencies["torch"], "The upstream TwELL positive control did not beat Torch.")
     return {"rows": 2, "latency_ms": latencies, "twell_speedup": latencies["torch"] / latencies["twell"]}
 
 

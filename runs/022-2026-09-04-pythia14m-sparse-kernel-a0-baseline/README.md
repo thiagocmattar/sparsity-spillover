@@ -39,7 +39,7 @@ The run-local `R_covered` diagnostic is only the canonical integer numerator att
 
 ## Stop rule and interpretation
 
-The stage succeeds when the unmodified upstream positive control runs, the Pythia checkpoint and validation identity pass, and the raw ELL operation is numerically faithful with zero skipped rows. The raw ELL path may be—and for dense A0 is expected to be—slower than dense GEMM.
+The stage succeeds when the unmodified upstream positive control runs and TwELL beats its Torch baseline, the Pythia checkpoint and validation identity pass, and the raw ELL operation is numerically faithful with zero skipped rows. The raw ELL path may be—and for dense A0 is expected to be—slower than dense GEMM.
 
 Any upstream-control failure, checkpoint/loss mismatch, non-Hopper execution, source-hash mismatch, dropped ELL value, overflowed row, or relative-L2 error above 0.02 stops promotion. Results are reported before creating the future A1-H run.
 
