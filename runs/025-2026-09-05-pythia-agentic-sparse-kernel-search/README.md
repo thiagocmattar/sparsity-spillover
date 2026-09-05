@@ -1,7 +1,10 @@
 # Run 025: agentic sparse-kernel specialization for Pythia
 
-Status: **design confirmed; calibration implementation verified on CPU;
-launch approval pending; no GPU launched**.
+Status: **pilot concluded with a P0 full-model correctness blocker; no GPUs
+remaining; optimization search not started**.
+Execution source baseline: `afad780`. See the append-only
+[calibration observation](observations/001-calibration-gates.md) and
+[cost/ETC closeout](CALIBRATION_CLOSEOUT.md).
 Created 2026-09-05 at the user's explicit request to reserve a new run folder
 and write a plan. This documentation-only reservation does not bypass design
 confirmation for implementation or the repository's launch review.
@@ -82,8 +85,12 @@ See [launch review and exact test scope](LAUNCH_REVIEW.md),
 P0 covers the four linear sites; QK/PV attention remains dense. Sparse
 attention, the stronger compiled/graph dense selection, search scoring, and
 the frozen all-36 final evaluator remain subsequent approved-design work.
-No optimized winner or measured speedup is claimed. The proposed next paid
-step is the sequential **$5 calibration gate**, starting with one RTX 5090.
+No optimized winner is claimed. The approved sequential **$5 calibration gate**
+concluded at approximately **$1.38 all-in** (billing provisional). Both GPUs
+passed 48 primitive cases under compute-sanitizer. A0-14M passed full validation;
+A1-H-14M failed its fixed elementwise logit gate, stopping the eight-model loop.
+The separate H100 upstream backbone control measured 1.1654x. These unmatched
+workloads do not establish an architecture/hardware effect or validate P0.
 
 ## Documents
 
@@ -105,14 +112,15 @@ step is the sequential **$5 calibration gate**, starting with one RTX 5090.
 - [x] Implement calibration evaluator, P0 linear adapter, and bounded trial records.
 - [x] Pin checkpoint/cache identities, proposed runtime and budget; record controller defaults and attribution limits.
 - [x] Pass focused tests and the complete bootstrap suite; present calibration launch definition.
-- [ ] Obtain explicit calibration launch approval and verify live lease/guard readiness.
-- [ ] Calibrate memory, compilation, correctness, timing, transfer, and GPU cost/ETC.
-- [ ] Report calibration decision: proceed, revise with the human, or stop.
+- [x] Obtain explicit calibration launch approval and verify live lease/guard readiness.
+- [x] Execute bounded calibration; record partial coverage and correctness failure.
+- [x] Report calibration decision: repair/qualify P0 before optimization; larger-size ETC remains unmeasured.
 - [ ] Seal CUDA-verified P0, strongest dense configuration, search evaluator and controller provenance before K001.
 - [ ] Execute one Sakana-derived closed loop, at most 40 candidates / 20 GPU-hours.
 - [ ] Freeze winner; verify all 36 checkpoints, component effects, and H100 transfer.
-- [ ] Retrieve and hash-verify artifacts; terminate Pods; reconcile billable resources.
-- [ ] Write observations and PDF figures; report failures as well as improvements.
+- [x] Retrieve/hash-verify pilot artifacts; terminate both Pods; confirm zero Pods/endpoints.
+- [x] Write pilot observation and cost/ETC closeout, including failed attempts.
+- [ ] Execute final-study retrieval and publication figures if the full study proceeds.
 
 ## Evidence boundary
 
