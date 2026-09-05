@@ -26,16 +26,18 @@ substantive discrepancy is surfaced during experiment design only when it would
 materially change the experiment or the user requests a manuscript-specific
 variant.
 
-## Active submission draft (4 September 2026 rewrite)
+## V2 workspace
 
-The current complete paper is `draft/main.tex` and `draft/main.pdf`, with
-`draft/rewrite-review.md` providing a concise author-review guide. The user
-authorized a full rewrite from current evidence and adversarial-review-v3.
-The contribution is now a matched gate-location/activation-pressure study:
+The user requested a clean start for V2 on 2026-09-05. `draft/` now contains
+only its new README and `archive/`; the next manuscript is pending. Its proposed
+framing concerns the interaction between pressure allocation and gate
+nonlinearity in the quality-sparsity trade-off.
+
+The 4 September matched-intervention paper is preserved in
+[v0_2026-09-05](draft/archive/v0_2026-09-05/README.md), including its PDF,
+sources, review notes, and complete former working directory. That paper covers
 detailed 14M contrasts, selected 70M recipes, operation-level explanations,
-complete fixed-budget 410M appendix, and completed negative 70M execution
-results. R_model supports the comparison. No new training or checkpoint
-evaluation was launched for the rewrite.
+fixed-budget 410M appendix results, and negative 70M execution evidence.
 
 [Analysis 013](../analyses/013-2026-09-04-matched-intervention-manuscript/README.md)
 owns its five figures, generated tables, verified reduction, and observations.
@@ -47,7 +49,7 @@ and report files below preserve earlier proposals and evidence cutoffs; their
 
 The local [archive index](draft/archive/README.md) lists snapshots named
 `vN_YYYY-MM-DD`, starting at v0 and incrementing for each archive. The date is
-the archive date; the working draft remains in `draft/`.
+the archive date; `draft/` is the clean workspace for the next manuscript.
 
 | Version | Main argument / framing |
 | --- | --- |
@@ -57,6 +59,9 @@ Each snapshot preserves the PDF, manuscript sources, bundled figures/tables,
 style files, review notes, and a SHA-256 inventory. The archive retains the
 draft's existing local-only Git policy. This tracked index records its location
 and framing. v0 precedes the proposed pressure-allocation-by-nonlinearity study.
+Its `working-folder/` preserves all 102 files moved out of `draft/`, including
+earlier revisions, QA renders, and build outputs, with verified hashes recorded
+in `working-folder-manifest.json`.
 
 ## Historical sources and artifacts
 
