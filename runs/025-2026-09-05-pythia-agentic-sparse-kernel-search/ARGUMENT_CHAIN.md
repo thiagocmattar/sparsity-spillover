@@ -14,14 +14,21 @@ the historical measurement. The kernel study should remain a bounded results
 subsection/appendix unless its evidence justifies a separate systems paper.
 Describe agent involvement and human interventions transparently.
 
+The user's revised total ceiling is $40. Preserve correctness, fair baselines,
+untuned checkpoints, and reproducibility; narrow the inference about the agent
+rather than presenting a cheaper experiment as the original replicated study.
+The minimum paper evidence is specified in the experiment plan. Publication
+quality refers to measurement and transparent scope, not a guaranteed positive
+outcome or a guarantee of acceptance.
+
 ## 1. Speedup depends on hardware and model shape
 
 **Testable wording:** under matched precision, checkpoint, workload, and timing
 protocol, the sparse/dense speedup and best dispatch configuration can change
 between the three Pythia shapes and two GPU architectures.
 
-Evidence: measure the same portable implementation/configuration on RTX PRO
-Blackwell and H100 Hopper, then separately measure hardware-retuned versions.
+Evidence: measure the same portable implementation/configuration on RTX 5090
+Blackwell and H100 Hopper. There is no funded H100-retuning search.
 Evaluate generic versus size-specialized dispatch across all three sizes.
 Report latency, packing cost, memory, and executed sparse coverage, not just
 different best-case points on different GPUs.
@@ -42,8 +49,9 @@ integration and possibly specialization beyond the upstream demonstrated path.
 Sakana's upstream optimized path and our current exact raw-ELL adapter are
 distinct baselines. Run 023 calls `dense_to_ell_exact_out` followed by
 `ell_spmm_raw_out`; it does not establish the performance of every TwELL
-configuration. Audit the optimized upstream path before calling the existing
-adapter the best available Sakana implementation. Record unsupported shapes,
+configuration. Begin from pinned official Sakana source and preserve a minimal
+Pythia-adaptation baseline before search. Audit the optimized upstream path
+before calling the existing adapter the best available Sakana implementation. Record unsupported shapes,
 precision, signs, gate behavior, and attention semantics explicitly.
 
 TEAL's reported acceleration targets single-batch decoding; its reference
@@ -69,8 +77,9 @@ comparison with all upstream deployment modes; the latter is out of scope.
 **Testable wording:** packing, indexing, dispatch, and fragmented execution can
 outweigh skipped products; specialized kernels may move that break-even point.
 
-Compare corrected raw-ELL, strongest matched dense, generic optimized sparse,
-and size/GPU-specialized sparse. Include a dense-only sibling with the same
+Compare minimally adapted official Sakana, strongest matched dense, and the
+agent-specialized Sakana descendant. Historical raw-ELL is an additional
+diagnostic, not the sole starting point. Include a dense-only sibling with the same
 non-sparse fusions so that generic compiler improvements are not credited to
 sparsity. Time packing and metadata updates inside the full-model boundary.
 
@@ -85,20 +94,24 @@ gain is plausible but unproven, especially for 14M and attention.
 
 ## 4. A feedback-driven coding agent can improve this kernel family
 
-**Testable wording:** a pinned agent with profiling/correctness feedback finds
-better correct implementations than the same agent without intermediate
-performance feedback, under this bounded search budget.
+**Testable wording:** in this reproducible case study, an agent used measured
+feedback to specialize a Sakana-derived implementation and obtained verified
+improvements on the stated workload, if the final results support that claim.
 
-Run three paired replicates with the same initial code, allowed edits, agent
-model/settings, candidate ceiling, token ceiling, and GPU-time ceiling. The
-no-performance-feedback arm receives the same correctness feedback but seals
-its performance-oriented proposals before receiving timing results. Final
-selection may use their measured development scores in both arms.
+Use one preregistered trajectory with at most 40 attempts / 20 RTX-5090 GPU-hours.
+Retain the full history, including failures and human assistance. Rebuild the
+starting and final versions, repeat timings in fresh processes, ablate winning
+changes, and freeze before testing interior thresholds. Do not choose the
+nicest trajectory from unreported attempts.
 
-Support: consistent improvement across paired replicates and improvement on
-untuned checkpoints after freezing. Report candidate failures, total time,
-tokens, and best-so-far curves, including an unsuccessful search. A single
-hand-picked successful trajectory only supports a case study.
+Support: gains over the minimal Sakana adaptation and strong dense references
+survive correctness, repeated measurements, and untuned-checkpoint tests.
+Weakening/refutation: gains are timer artifacts, generic dense optimizations,
+correctness repairs alone, or confined to tuning inputs.
+
+The revised budget removes independent search replicates and the no-feedback
+comparator. It therefore does not isolate the causal benefit of the feedback
+loop, prove reliable search success, or compare agents with alternative methods.
 
 This does **not** test "new agentic models are extremely good" in general, or
 superiority to expert CUDA engineers, earlier coding models, or all autotuners.
@@ -111,7 +124,7 @@ pattern from [Karpathy's autoresearch](https://github.com/karpathy/autoresearch)
 That project optimizes training; this plan adapts the pattern to kernel
 engineering and does not run its training experiment or indefinite loop.
 
-Feasibility: moderate for the bounded comparison; no success guarantee. Pinning
+Feasibility: moderate for the bounded case study; no success guarantee. Pinning
 the agent execution route and accounting is an implementation prerequisite.
 
 ## 5. A good kernel can make training-induced opportunity useful
@@ -120,7 +133,8 @@ the agent execution route and accounting is an implementation prerequisite.
 some intervention-generated sparsity patterns may yield greater full-model
 speedup, with a positive association between `R_model` and speedup.
 
-Freeze kernels before the interior-kappa evaluation. Show all 36 realizations,
+Freeze kernels before the interior-kappa evaluation. Show all 36 realizations
+on the development GPU and all 18 prespecified H100 sentinels,
 including A0 and failures, with loss, canonical `R_model`, executed-kernel
 coverage, sparsity distribution, and latency. Analyze A4-OL1 and A7-OL1
 threshold series separately within size/GPU/batch before presenting pooled

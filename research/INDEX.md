@@ -5,11 +5,12 @@
 
 ## Current status
 
-Run 025 is a planning-only proposal for bounded agentic sparse-kernel
-specialization across Pythia 14M/70M/410M, with an RTX PRO development loop
-and H100 transfer check. Its run folder records the hypotheses, controls,
-calibration gate, and cost ceilings; implementation/design confirmation is
-pending and no GPU was launched for this planning task.
+Run 025 is a planning-only, $40-total proposal starting from official Sakana
+kernels for Pythia 14M/70M/410M. It proposes one RTX-5090 agentic development
+trajectory, 36 primary checkpoint tests, and an H100 sentinel transfer check.
+The reduced scope supports a reproducible systems case study, not a replicated
+agent-method comparison; implementation/design confirmation is pending and
+no GPU was launched for this planning task.
 
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official

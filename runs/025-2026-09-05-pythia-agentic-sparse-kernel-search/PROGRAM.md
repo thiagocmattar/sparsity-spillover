@@ -4,6 +4,11 @@ This is a design document, not an instruction to start a search now. It is
 inspired by a fixed-evaluator autoresearch pattern, not an imported training
 program. The goal is correct full-model acceleration, not a favorable plot.
 
+Current design: one trajectory under a $40 total cash ceiling. Start from
+official Sakana U0, seal the minimal correct Pythia adaptation P0, then record
+optimization descendants K001 onward. The larger replicated comparison is
+superseded and is not part of this program.
+
 ## Responsibilities and mutable surface
 
 Use a small run-local evaluator and candidate directory, not a generalized
@@ -51,7 +56,8 @@ charged inside the same full-model timer.
 7. Stop at the first time/candidate/token/cost limit. Retain the best verified
    candidate, even if it is the starting baseline or all-dense fallback.
 
-Starting candidate limits are 30 attempts and 6 GPU-hours per trajectory,
+Starting limits are 40 attempts and 20 RTX-5090 GPU-hours in one trajectory
+(at most 8 search hours under the shorter RTX-PRO fallback),
 including model-response waits while the GPU is rented, compilation, failed
 trials, and evaluation. Proposed worker limits: 12 minutes per build and
 20 minutes per whole candidate; calibration must verify these against the
@@ -65,44 +71,36 @@ from the same approach require a new hypothesis before another attempt.
 Resource exhaustion is recorded with memory/shape and a tested fallback,
 not silently solved by dropping the largest model or batch.
 
-## Matched no-performance-feedback arm
+## Evidence without a separate agent comparator
 
-Use the same agent, code starting point, tools, correctness checks, and upper
-budgets. Generate and seal the performance-change proposals before exposing
-intermediate candidate timing/profile results to the agent; the initial
-baseline/profile summary is identical in both arms. Only correctness/build feedback is
-available for repair. Repairs consume attempts/time/tokens. The evaluator
-benchmarks valid proposals and selects the highest development score after
-the arm finishes. Keep the arm's budget and data accounting visible.
+Use trajectory ID 2501. Publish its complete history rather than a selected
+success story. Rebuild P0 and the final candidate, repeat paired timings in
+fresh processes, and run frozen component/change ablations. Search trials are
+not independent training seeds or replicated agent experiments.
 
-Alternate/randomize arm order within each pair on the same GPU, with no
-concurrent benchmarks. Record actual resource use: equal upper budgets do
-not guarantee equal token usage or number of valid trials. Compare best-so-far
-scores at common elapsed GPU-cost points and report unused budget.
-
-The paired IDs are 2501/2502/2503; use isolated fresh contexts/checkouts and
-sealed results between pairs. Their stochasticity concerns the search, not
-independent model-training seeds. Three pairs support descriptive evidence,
-not a strong population-level statistical claim.
+No no-feedback arm, agent-model comparison, or H100 retuning is funded.
+State the case-study limitation prominently. Repeated timing validates the
+artifact's performance; it does not establish the probability that an agent
+will independently rediscover it.
 
 ## Agent execution prerequisite
 
 Before launch, pin the actual coding model/version and reasoning setting,
 prompt/context policy, tool visibility, model-call and input/output-token caps,
-and accounting route. Prefer the existing authorized agent environment; do
-not silently provision a separately billed external API. If a reproducible
-continuous proposer cannot be run in that environment, resolve the execution
-route and priced cap before renting a long-lived GPU.
+and accounting route. Use the existing authorized agent environment with no
+new paid API provisioning. Do not assume its incremental charge is zero:
+confirm accounting before launch. Any metered charges must reduce the GPU
+allocation inside the same $40 total, not be billed as excluded extras.
 
 The existing interactive session can prototype a propose/test iteration, but
-is not by itself evidence that six isolated, uninterrupted research trajectories
-are operational. Smoke-test the controller's stop/resume and log persistence
+is not by itself evidence that a persistent search worker survives disconnection.
+Smoke-test the controller's stop/resume and log persistence
 without paid GPU time. Do not use an unbounded "never stop" prompt or rely on
 a live SSH terminal to keep a trial alive.
 
 ## Required trial record
 
-Retain candidate/parent hashes, arm/replicate, timestamp, agent configuration,
+Retain candidate/parent hashes, trajectory ID, timestamp, agent configuration,
 prompt/response/tool provenance with secrets excluded, token counts, build
 environment and logs, tests and errors, measured shapes/inputs, paired latency
 samples, full-model score, quality deltas, profile summary, sparse coverage,

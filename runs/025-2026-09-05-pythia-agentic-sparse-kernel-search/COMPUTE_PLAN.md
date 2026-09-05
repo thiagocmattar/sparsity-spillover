@@ -1,191 +1,186 @@
-# GPU choice, bounded costs, and execution playbook
+# GPU choice, $40 total ceiling, and execution playbook
 
-## Live planning snapshot and recommendation
+Revised 2026-09-05. The user's $40 total cash budget supersedes the earlier
+larger proposal. No GPU or external model API has been launched by this plan.
 
-The RunPod MCP catalog was queried on 2026-09-05 at 13:11:22 UTC. Its response
-is preserved in [gpu-market-snapshot.json](planning/gpu-market-snapshot.json).
-Catalog availability is not a reservation; placement/cloud tier must be
-re-queried immediately before rental.
+## Live GPU recommendation
 
-| GPU | VRAM | Community quote / h | Secure quote / h | Global stock | Role |
+Quotes were refreshed through RunPod MCP at 13:32:58 UTC on 2026-09-05; see
+[the budget-revision snapshot](planning/gpu-market-snapshot-budget40.json).
+The [earlier snapshot](planning/gpu-market-snapshot.json) is historical.
+Capacity and actual Pod prices must be checked again before rental.
+
+| GPU | VRAM | Community / h | Secure / h | Global stock | Role |
 | --- | ---: | ---: | ---: | --- | --- |
-| RTX PRO 6000 Blackwell Server Edition | 96 GB | $1.69 | $2.09 | High | Recommended development device |
-| H100 SXM | 80 GB | $2.69 | $3.49 | High | Hopper compatibility and transfer |
-| H100 NVL | 94 GB | $2.59 | $3.19 | Low | H100 alternative; distinct SKU, re-baseline |
-| RTX 5090 | 32 GB | $0.69 | $0.99 | Medium | Cheaper conditional option, memory uncalibrated |
+| RTX 5090 | 32 GB | $0.69 | $0.99 | Medium | Recommended budget development GPU |
+| RTX PRO 6000 Blackwell Server Edition | 96 GB | $1.69 | $2.09 | High | Shorter-search fallback |
+| H100 SXM | 80 GB | $2.69 | $3.49 | High | Upstream positive control and frozen transfer |
 
-RTX PRO provides workspace headroom for batch-32 410M and fast compile/test
-turnaround without H100's hourly premium. This is an engineering preference,
-not a measured efficiency result. RTX 5090 is 2.45 times cheaper per hour:
-if both fit, RTX PRO must complete more than 2.45 times as many valid trials
-per hour to be cheaper in GPU dollars. Reduced OOM/rebuild risk and a usable
-full-model memory envelope may still justify RTX PRO, but must be measured.
+The $40 revision makes batch-1 prefill the required workload. Loading one
+410M model at a time in BF16 should leave substantial room on 32 GB for
+logits and sparse workspaces, but measure the actual peak before searching.
+Batch 32 is optional, not a reason to rent 96 GB by default. No precision or
+model-size reduction is permitted to make a candidate fit.
 
-Current placement hints: RTX PRO has medium availability in US-NC-2 and
-EUR-IS-2, but low in the existing volume's EUR-IS-1. Do not force that volume's
-placement or create a new volume before finding a suitable GPU. H100's high
-global stock coexists with low per-data-center indications; allow placement
-flexibility and do not promise immediate acquisition.
+RTX PRO costs 2.45 times as much per hour. It must deliver more than 2.45
+times as many valid candidate evaluations per hour to beat RTX 5090 in GPU
+dollars when both fit. Faster iteration or memory headroom could justify it,
+but this has not been calibrated. We choose RTX 5090 provisionally to buy
+more search time while retaining the two-hardware comparison.
 
-Use one GPU per Pod and no spot interruptions or multi-tenant benchmark jobs.
-Normally rent only the development Pod; rent the H100 only for its bounded
-stages. There is no need for 12 concurrent training GPUs: this is inference
-engineering and one candidate is evaluated at a time.
+RTX 5090 currently has low per-data-center availability in EUR-IS-1 and
+EU-RO-1 despite medium global stock. RTX PRO has medium indications in
+EUR-IS-2 and US-NC-2. H100 has high global but low per-location indications.
+These are not reservations or guarantees of a particular cloud-tier price.
 
-## Hours, ETC, and money
+Use one GPU per Pod, no spot interruptions, and no concurrent benchmarks.
+Do not create a new network volume or constrain placement to the old volume
+before discovering a suitable GPU. An unavailable cheaper GPU is not reason
+to incur unbounded retries.
 
-At the quoted community prices:
+## Budget allocation
 
-| Recommended allocation | RTX PRO hours | H100 hours | Compute USD |
+| Phase, including its build/transfer overhead | RTX 5090 hours | H100 hours | Compute USD |
 | --- | ---: | ---: | ---: |
-| Baseline/calibration gate | 4 | 2 | 12.14 |
-| Three closed-loop trajectories, up to 6 h each | 18 | 0 | 30.42 |
-| Three matched no-performance-feedback trajectories | 18 | 0 | 30.42 |
-| Frozen final matrix, contribution modes, verification/transfer | 6 | 0 | 10.14 |
-| H100 portable transfer/configuration retune | 0 | 4 | 10.76 |
-| H100 final confirmation, verification/transfer | 0 | 2 | 5.38 |
-| Unallocated RTX PRO contingency | 2 | 0 | 3.38 |
-| Maximum allocated total | 48 | 8 | 102.64 |
+| Calibration and upstream positive control | 2 | 1 | 4.07 |
+| One feedback-driven search, at most 40 attempts | 20 | 0 | 13.80 |
+| Frozen 36-checkpoint matrix, repeats, component ablations | 8 | 0 | 5.52 |
+| Frozen H100 transfer on all 18 endpoint sentinels | 0 | 3 | 8.07 |
+| Retrieval/rebuild/infrastructure allowance | 2 | 0 | 1.38 |
+| Maximum planned compute | 32 | 4 | **32.84** |
+| Storage, billing uncertainty, and cash reserve | - | - | **7.16** |
+| Hard total ceiling | - | - | **40.00** |
 
-The calibration gate has a $15 all-in RunPod cap and is **included** in the
-recommended full-study $115 cap. Expected compute use is 36-48 RTX PRO hours
-and 6-8 H100 hours ($76.98-$102.64); reserve storage/operational margin to give
-a planning range of $85-$115. Final confirmation takes priority over spending
-the last trial hour. Stop candidate generation early if the measured final
-matrix needs that time. Never omit checkpoints to fit an optimistic forecast.
+The pilot is capped at $5 total and is included in $40, not additional.
+Unused time is not an obligation to spend. All billed startup, compilation,
+agent-response waits, failed attempts, transfers, restarts, and cleanup count
+toward the per-GPU hours and global cash cap. Reserve final evaluation and
+teardown before authorizing another candidate.
 
-At secure-cloud quotes, 48 RTX PRO hours plus 8 H100 hours would cost $128.24
-in compute alone. Therefore secure placement does not fit the same $115 scope;
-revise hours or the explicitly stated ceiling before using it. H100 NVL changes
-both price and hardware identity; record and re-baseline that choice.
+Expected use is 24-32 RTX-5090 hours plus 3-4 H100 hours, or $24.63-$32.84
+compute; allow approximately $28-$40 total. A rough calendar ETC is 1-3 days
+after local preparation, availability, and agent-session continuity. Initial
+local preparation is estimated at 6-12 working hours, with no rented idle GPU.
+These are uncalibrated engineering estimates. The time cap bounds search,
+not the time needed to discover a successful kernel.
 
-These are search caps, not calibrated completion estimates. A result can be
-"no correct kernel beat dense within budget." No finite time allowance can
-guarantee a successful kernel discovery. Approximately 2-4 calendar days is a
-working estimate after implementation, dependent on provisioning, model-call
-latency, compile times, and transfers. Allow 6-12 working hours initially for
-local implementation; an attention compatibility problem can change this.
+No independently paid agent API is planned. Use the existing authorized
+agent session; confirm its incremental accounting before launch and retain
+model/configuration and token-use records where available. If there are
+additional model charges, allocate them INSIDE $40 by reducing search time
+before execution. Do not launch a paid API with unspecified charges or treat
+it as an excluded cost. Existing subscription fees are not a new purchase;
+metered usage is not assumed free.
 
-The smaller alternative (18-24 RTX PRO hours + 4 H100 hours; roughly $45-$60
-including margin) is a single exploratory case study without the replicated
-feedback comparator. It cannot support the stronger agent-workflow argument.
+### RTX PRO fallback, not another experiment
 
-Agent-model charges are **excluded** from these GPU estimates. Before launch,
-record the exact route/model, call and input/output-token caps, and its priced
-maximum if separately billed. GPU idle time awaiting model responses is
-already billable and included in trajectory wall time. Do not describe $115
-as the total project cost if an additional paid model endpoint is introduced.
+If RTX 5090 is unavailable or the exact required workload fails the memory
+gate, a fresh-start alternative is at most 16 RTX-PRO hours and 3 H100 hours:
+$35.11 compute at the quoted community rates. Suggested RTX-PRO split:
+2 hours calibration, 8 search, 5 final evidence, 1 transfer/cleanup.
 
-## Calibration decision and refreshed ETC
+This is NOT an extra $40 envelope. Subtract every earlier attempt's charges
+and storage commitments before recomputing affordable fallback hours. If the
+final evidence cannot fit, stop and return the partial result. Do not drop
+models or quality coverage silently. At secure-cloud quotes the primary
+32+4-hour allocation costs $45.64 in compute alone and is not permitted.
 
-Measure the exact three shapes, two batches, BF16 path, gates, and diagnostics.
-Collect at least three repeated candidate-equivalent timing suites after
-warmup and complete validation timings for each size; report their range.
-Include failed-build rate and occupancy/packing cost. Separate setup from
-recurring work and include both in the financial forecast.
+## Calibration and go/no-go gate
 
-The forecast is transparent arithmetic, not the CUDA kernel time alone:
+Use pinned official Sakana source, prepare the minimal Pythia integration
+locally, and carry the known shape-correctness tests. Reproduce the upstream
+control on H100 within its one-hour pilot allocation. On RTX 5090, start
+with A0 14M correctness, then A1-H 14M, followed by the declared 70M/410M
+shapes and representative A7 sparsity. Measure actual memory, transfer,
+build times, complete-validation time, and at least three candidate-equivalent
+timing suites after warmup. Confirm actual input rotation.
 
-```text
-remaining_seconds = build/setup still required
-                  + remaining candidate equivalents * measured trial wall time
-                  + remaining quality evaluations * measured full-validation time
-                  + remaining timing suites * measured suite time
-                  + measured/provisioned transfer and verification allowance
-remaining_cost = sum(per-Pod hourly rate * remaining billable hours)
-               + storage through verified teardown + explicit reserve
-```
+Before search, project the exact mandatory matrix: dense/P0/final on all
+36 primary batch-1 checkpoints, 18-sentinel contribution ablations, repeated
+timings, and dense/P0/final H100 transfer on 18 sentinels. Protect this cost.
+If it needs more than its allocation, shorten the search before commencing.
+If $40 cannot cover the mandatory evidence even without search, stop at the
+pilot and explain the missing evidence; do not declare the study complete.
 
-For a time-capped search, also report the fixed upper bound and the projected
-number of valid candidates within it. The ETC to reach the budget limit is
-not an ETC to discover a winning kernel. Reconcile the final matrix separately
-from the search budget before phase C starts.
+Forecast:
+- remaining time = unfinished setup + candidate count times measured trial
+  wall time + complete quality/timing suites + transfer/hash verification;
+- remaining cost = each Pod's actual rate times remaining billable hours
+  + storage through teardown + model charges if any + explicit reserve;
+- affordable search time = remaining cash after protecting the final matrix,
+  storage, and teardown, divided by the actual development-Pod hourly rate.
 
-Use live account balance before launch and each monitoring report. Required
-additional balance is `max(0, remaining forecast + reserve - available balance)`,
-including other retained-resource charges. Account balance was not checked in
-this planning turn. Do not infer it from the historical funding messages.
+Track both the fixed search deadline and the projected valid-candidate count.
+An ETC to the budget limit is not an ETC to a winning kernel. Query actual
+account balance before launch and during monitoring. Spendable funds are the
+lesser of the unused $40 allowance and available balance after other resource
+commitments. Prior funding messages do not establish the current balance.
 
-If compilation/validation is too slow, input rotation fails, numerical tests
-fail, VRAM headroom is inadequate, or attention cannot compete with fused SDPA,
-stop at the calibration gate and present the measured limitation. Candidate
-selection within the confirmed search space is autonomous; expanding that
-space, changing precision/workload, or exceeding the envelope is not.
+If Blackwell needs a materially different algorithm rather than a compatible
+build of the Sakana starting point, document the issue at the pilot; do not
+consume the search budget on an undisclosed from-scratch replacement.
 
-## Provisioning and transfer inventory
+## Provisioning and artifact inventory
 
-After implementation/tests and the launch review:
+After implementation, focused tests, the full bootstrap suite, and launch review:
 
-1. Re-list Pods/endpoints/volumes; check balance and current GPU price/capacity.
-   Prefer a reusable owned compatible Pod only if it is not doing other work.
-2. Pin a CUDA devel/PyTorch image digest and toolchain compatible with the
-   selected GPU. Resolve the actual Blackwell/Hopper build targets and upstream
-   dependencies locally where possible; catalog CUDA support is not proof that
-   the old extension builds. Verify the SSH public key before creation.
-3. Propose a single-GPU `run025-kernel-dev` Pod, with 80 GB container disk and
-   150 GB Pod volume at `/workspace`. Use a corresponding short-lived transfer
-   Pod for H100. Record actual data center, cloud tier, SKU, UUID, rate, start
-   time, maximum duration, and guard deadline in each attempt directory.
-4. Upload a hash-checked allowlist: source commit/patch/tests, model-only final
-   checkpoints, architecture/gate metadata, canonical count records, pinned
-   tokenizer/cache identities, selected development blocks, and complete
-   validation cache. Include the separately identified official positive-control
-   assets if needed. Do not upload optimizer states, secrets, or the entire
-   working tree. Estimate 25-35 GiB including weights and supporting assets;
-   compute actual bytes and transfer ETC before launch. Load one model at a
-   time and avoid duplicating weights across candidate directories.
-5. Test detached logging, worker timeout, process isolation, and GPU-budget
-   guard with a short smoke. Store all logs/candidates under `/workspace` and
-   synchronize small result artifacts locally after each completed candidate.
-6. Keep model source checkpoints locally. No new trained model is produced;
-   retrieve candidate source/patches, agent logs with credentials removed,
-   package/toolchain manifests, tests, raw paired samples, full validation and
-   count records, profiler summaries/traces, dispatch tables, memory records,
-   event/cost logs, and the final SHA-256 inventory.
+1. Re-list resources, verify balance, current quote, cloud tier, and placement.
+   Register/inject the SSH public key before creating the Pod.
+2. Pin a CUDA-devel/PyTorch image digest compatible with the exact GPU and
+   Sakana source. Prepare dependencies/build files locally; catalog CUDA
+   availability is not evidence that the extension compiles.
+3. Use a single-GPU run025 development Pod, with 80 GB container disk and
+   150 GB Pod volume at /workspace. Record actual SKU, UUID, data center,
+   software, rate, deadline, worker PID, and log paths per attempt.
+4. Transfer a SHA-256 allowlist: U0/P0 source/patches/tests, model-only weights,
+   configs/gate metadata, logical counts, tokenizer/cache identities, selected
+   training development blocks, and complete validation tokens. Include
+   official positive-control assets separately. Estimate 25-35 GiB for the
+   complete supporting input inventory; calculate actual bytes and transfer
+   ETC before launch. No credentials, optimizer states, or whole-worktree upload.
+5. Keep model weights single-copy and load one checkpoint at a time. Store
+   candidates/logs persistently and sync small completed-trial artifacts locally.
+6. Retrieve all candidate sources, provenance, build/test failures, raw paired
+   timings, quality/count records, profiles, dispatch tables, memory records,
+   and cost/event logs. Verify hashes locally before Pod deletion.
 
-The estimated Pod-disk charge for 80+150 GB over 56 aggregate Pod-hours is
-about $1.77 at $0.10/GB-month using 730 hours/month; actual billing may differ.
-Stopped Pod volume storage is charged at a higher rate and must be included
-if a Pod waits for retrieval. RunPod documents no ingress/egress transfer fee,
-but rental time during transfers is billable. See
+Budget about $1.13 for 230 GB of running Pod disks across 36 aggregate hours
+at $0.10/GB-month (730 hours/month). Stopped Pod volume retention costs more;
+include it if the H100 waits between pilot and final transfer. The existing
+100 GB network volume costs roughly $7/month; reserve its prorated charge
+during execution as well, since it drains the same balance. Two days is
+approximately $0.46. No new volume purchase is planned.
+
+RunPod documents no ingress/egress fee, but GPU rental during transfer is
+billable. Storage rates and rounding must be reconciled against actual billing:
 [RunPod Pod pricing](https://docs.runpod.io/pods/pricing).
 
-At the planning check, there were zero Pods/endpoints and one pre-existing
-100 GB standard network volume, `sparsity-spillover-shared`, in EUR-IS-1.
-Leave it unchanged. Its roughly $7/month baseline storage is not a new Run-025
-GPU expense and continues unless the user separately chooses to remove it.
+## Monitoring, stop conditions, and teardown
 
-## Monitoring, warning conditions, and teardown
+Use detached workers and durable events. Monitor at 30-minute intervals with
+asynchronous PowerShell Start-Sleep; check sooner for a projected phase finish
+or declared warning. Do not busy-poll or block the agent's tool for 30 minutes.
 
-Use persistent logs/events and detached workers. During an active search,
-monitor at 30-minute intervals using an asynchronous PowerShell `Start-Sleep`
-on the local controller; do not busy-poll unchanged state. Check earlier at
-the projected phase completion or a declared warning. The controller must
-remain able to report while waiting; do not block the agent tool for 30 minutes.
+Report per Pod and in aggregate: phase/candidate, valid/failed attempts,
+incumbent full-model score, latest validation loss/delta, trials per hour,
+GPU memory/utilization, billed hours, accrued charges, remaining cost/ETC,
+balance, unused $40 allowance, protected final-test reserve, and next todo.
+This is inference; do not report fictitious training-loss progress.
 
-Each update reports per Pod and in aggregate: phase/trajectory/candidate,
-completed/valid trials, incumbent full-model score, latest quality delta,
-candidate throughput, GPU memory/utilization, elapsed billed hours/cost,
-refreshed ETC, remaining cost, balance shortfall, and next todo. There is no
-training loss curve in an inference study; report validation loss/delta rather
-than inventing training progress.
+Warnings: forecast exceeds remaining cash; stale worker events or timeouts;
+numerical failures; insufficient disk/VRAM headroom; thermal/clock drift;
+approaching budget deadline; or >20 minutes of unexplained GPU idle time.
+For host-side development pauses, retrieve state and stop GPU billing.
 
-Warnings: projected balance below remaining cost plus reserve; no new worker
-event beyond its declared timeout; disk/VRAM headroom below the measured safe
-margin; numerical failure; sustained clock/thermal deviation; impending
-deadline; and GPU idle for >20 minutes without a scheduled validation/build.
-For host-side development waits, retrieve state and stop GPU billing instead
-of keeping an unused accelerator running. Restart/reconnect details belong
-in a new infrastructure attempt directory, with unchanged scientific inputs.
+Stop proposing candidates when the next trial would consume protected final
+evidence or cleanup funds. A provider/controller backstop must act before
+the cash ceiling, allowing billing lag and storage. Test stop-and-preserve
+behavior for a retrieval failure; do not delete the sole copy of required
+artifacts. Every restart/retry retains the same scientific inputs and counts
+toward the same global budget.
 
-Reserve time for retrieval before each deadline. The backstop must stop GPU
-billing without deleting the sole copy of unverified artifacts: use a tested
-stop-and-preserve action if retrieval failed, then retrieve from retained
-storage and delete the Pod. Report any storage that continues billing. Normal
-completion remains: terminal status -> inventory -> copy -> local SHA-256
-verification -> terminate Pod -> re-list resources. Do not delete a Pod while
-required artifacts exist only on its volume.
-
-At closeout, report final per-Pod and total cost, no unintended active GPU or
-endpoint, and the existing volume's continuing charge. Provider billing may
-lag: distinguish the teardown estimate from subsequently posted charges.
+Normal closeout: verify terminal state -> inventory -> copy -> local hashes
+-> terminate Pod -> re-list Pods/endpoints/volumes. Confirm no unintended GPU
+spending, report retained storage, and distinguish estimated from posted cost.
+At this planning refresh, there are zero Pods and zero endpoints. The existing
+network volume is unchanged; planning incurred no GPU rental charge.

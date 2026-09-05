@@ -7,35 +7,63 @@ confirmation for implementation or the repository's launch review.
 
 ## Decision in brief
 
-Use one RTX PRO 6000 Blackwell Server Edition 96 GB for development, followed
-by a short H100 SXM 80 GB transfer test. The choice is provisional until a
-small calibration measures valid candidate evaluations per dollar. Optimize
-exact inference on retained checkpoints, not training or the sparsity gates.
+Revised 2026-09-05 following the user's **$40 total budget** and explicit
+instruction to **start from Sakana's kernel**. This revision replaces the
+earlier larger-budget proposal; that proposal remains in Git history only.
+
+Start from the official Sakana repository at pinned commit
+`661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5`, not a new kernel written from
+scratch and not solely the historical raw-ELL adapter. Preserve separate
+upstream, minimal Pythia-adaptation, and agent-optimized source identities.
+Audit/use the optimized TwELL path wherever the exact Pythia contract permits;
+document necessary correctness adaptations before measuring search gains.
+
+Recommend one RTX 5090 32 GB for development, with a short H100 SXM 80 GB
+check. At this budget, its lower hourly rate buys more iteration time than
+RTX PRO. Batch-1 inference should fit with headroom when loading one model at
+a time, but calibration must verify actual workspaces. RTX PRO is a shorter
+search fallback if memory or availability prevents using RTX 5090.
 
 The proposed study covers all 36 selected trained checkpoints: 12 each at
 14M, 70M, and 410M. Develop on 18 endpoint sentinels; freeze the implementation
 before testing the 18 interior-kappa checkpoints. Primary workload is full
-sequence prefill at batch 1, length 2,048; batch 32 is secondary. Both FFN and
-attention are in scope, with explicit tests of their separate contributions.
+sequence prefill at batch 1, length 2,048. Batch 32 is an optional sentinel
+check only after the core evidence is secured, not a promised full matrix.
+Both FFN and attention remain in scope, with separate contribution tests.
 
-| Envelope | GPU allocation | Compute estimate | RunPod budget including reserve |
+| Envelope | GPU allocation | Compute estimate | Total cash ceiling |
 | --- | --- | ---: | ---: |
-| Calibration gate, included in full budget | Up to 4 RTX PRO hours + 2 H100 hours | $12.14 | $15 |
-| Recommended controlled study | 36-48 RTX PRO hours + 6-8 H100 hours | $76.98-$102.64 | $85-$115 |
-| Smaller exploratory alternative | 18-24 RTX PRO hours + 4 H100 hours | $41.18-$51.32 | $45-$60 |
+| Calibration gate, included below | Up to 2 RTX 5090 hours + 1 H100 hour | $4.07 | $5 |
+| Recommended complete case study | Up to 32 RTX 5090 hours + 4 H100 hours | $32.84 | **$40** |
+| Conditional RTX PRO fallback, not additional | Up to 16 RTX PRO hours + 3 H100 hours, less prior spend | $35.11 before prior spend/storage | **Same $40** |
 
-Prices are the 2026-09-05 live community-cloud catalog quotes: RTX PRO
-$1.69/hour and H100 SXM $2.69/hour, not booked prices. The smaller alternative
-omits the replicated, budget-matched agent-feedback comparison and cannot
-support that claim. It is an alternative, not an additional phase.
+Refreshed community quotes: RTX 5090 $0.69/hour, RTX PRO $1.69/hour, H100 SXM
+$2.69/hour. The recommended allocation leaves $7.16 for storage, billed
+transfer/retries, billing uncertainty, and any incremental agent charges.
+No separately billed agent API is planned: use the existing authorized agent
+session. If that route incurs incremental charges, they must fit inside $40
+by reducing search allocation before launch; they are not excluded extras.
 
 These are **bounded search budgets, not measured completion forecasts or a
-promise of speedup**. Allow approximately 2-4 calendar days for the recommended
-study after implementation and capacity availability. Initial implementation
-is estimated at 6-12 working hours, subject to the attention/harness audit.
-Agent-model/API charges are not included; its execution route and any separate
-token budget must be pinned before launch. No external paid agent API is
-provisioned by this plan.
+promise of speedup**. Allow approximately 1-3 calendar days after local
+implementation, availability, and agent-session continuity. Initial local
+preparation is estimated at 6-12 working hours. Calibration determines actual
+candidate throughput and final-evaluation ETC. Search stops early to protect
+validation, transfer, and teardown budgets.
+
+## Paper-level evidence under this ceiling
+
+Keep strong dense and minimally adapted Sakana baselines, one fully logged
+agentic trajectory, all 36 primary checkpoint results, untouched interior
+thresholds during tuning, component ablations, repeat timings, complete
+validation, and a fixed-kernel H100 check on 18 sentinels.
+
+Remove the three paired agent/no-feedback replicates and the H100 retuning
+search. The result can be a reproducible **agent-assisted systems case study**.
+It cannot establish general agent superiority or the causal advantage of
+feedback over another search strategy. A positive full-model gain and a
+positive relation to `R_model` remain hypotheses, not completion requirements
+that justify spending past the cap.
 
 ## Documents
 
@@ -43,7 +71,8 @@ provisioned by this plan.
 - [Scientific design and step-by-step experiment](EXPERIMENT_PLAN.md)
 - [Bounded agent-loop contract](PROGRAM.md)
 - [GPU, ETC, costs, transfer, and monitoring playbook](COMPUTE_PLAN.md)
-- [Live planning snapshot](planning/gpu-market-snapshot.json)
+- [Refreshed $40 planning snapshot](planning/gpu-market-snapshot-budget40.json)
+- [Original historical market snapshot](planning/gpu-market-snapshot.json)
 
 ## Workflow / progress
 
@@ -51,14 +80,15 @@ provisioned by this plan.
 - [x] Audit the previous benchmark and the scope of upstream kernel claims.
 - [x] Query live GPU catalog and existing resources without creating anything.
 - [x] Write the argument, proposed controls, search budget, and stop conditions.
+- [x] Revise for the user's $40 ceiling and explicit official-Sakana starting point.
 - [ ] Human confirms/refines the scientific design and diagnostic inventory.
 - [ ] Implement run-local evaluator, kernel adapter, and bounded trial logging.
 - [ ] Pin model/controller identity, environment, checkpoint/cache hashes, and budgets.
 - [ ] Pass focused tests and the complete bootstrap suite; present launch definition.
 - [ ] Calibrate memory, compilation, correctness, timing, transfer, and GPU cost/ETC.
 - [ ] Report calibration decision: proceed, revise with the human, or stop.
-- [ ] Execute three paired closed-loop/no-performance-feedback search replicates.
-- [ ] Freeze winner; verify all 36 checkpoints and test H100 transfer/retuning.
+- [ ] Execute one Sakana-derived closed loop, at most 40 candidates / 20 GPU-hours.
+- [ ] Freeze winner; verify all 36 checkpoints, component effects, and H100 transfer.
 - [ ] Retrieve and hash-verify artifacts; terminate Pods; reconcile billable resources.
 - [ ] Write observations and PDF figures; report failures as well as improvements.
 
@@ -76,7 +106,8 @@ the runtime results and elementwise-versus-executable-sparsity discussion in
 
 At the planning resource check, RunPod had zero Pods and zero endpoints. The
 existing 100 GB network volume was retained unchanged; no GPU is spending as
-a result of this task. Its ongoing storage charge is separate from this run.
+a result of this task. Reserve the existing volume's prorated charge during
+execution too; do not mistake the $40 allowance for GPU-only funds.
 
 ## Local evidence used for this plan
 
