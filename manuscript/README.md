@@ -43,6 +43,21 @@ The draft remains under the existing local-only ignore rule. The older TeX
 and report files below preserve earlier proposals and evidence cutoffs; their
 410M-unobserved descriptions predate the completed cohorts.
 
+## Draft archive
+
+The local [archive index](draft/archive/README.md) lists snapshots named
+`vN_YYYY-MM-DD`, starting at v0 and incrementing for each archive. The date is
+the archive date; the working draft remains in `draft/`.
+
+| Version | Main argument / framing |
+| --- | --- |
+| [v0_2026-09-05](draft/archive/v0_2026-09-05/README.md) | Matched gate-placement and activation-pressure interventions improve parts of the quality-sparsity frontier; broader pressure can increase the quality cost. |
+
+Each snapshot preserves the PDF, manuscript sources, bundled figures/tables,
+style files, review notes, and a SHA-256 inventory. The archive retains the
+draft's existing local-only Git policy. This tracked index records its location
+and framing. v0 precedes the proposed pressure-allocation-by-nonlinearity study.
+
 ## Historical sources and artifacts
 
 - `introduction.tex` states the paper motivation, sparsity-spillover question,
