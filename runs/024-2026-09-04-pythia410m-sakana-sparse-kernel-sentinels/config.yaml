@@ -1,0 +1,217 @@
+name: pythia410m-sakana-sparse-kernel-sentinels
+status: implemented_not_launched
+
+source_run:
+  id: 019-2026-09-01-pythia410m-selected-ladder-canonical-init
+  root: runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/artifacts/attempts
+  checkpoint_step: step_000712
+  seed: 1234
+  optimizer_steps: 712
+  training_tokens: 1493172224
+  initialization: random_hash_pinned
+  initial_parameter_sha256: 76217bf2ef13de2377c7750515a559cb71f574c274476e08408a5f7749ea9cff
+  released_weights_loaded: false
+  shared_checkpoint_files:
+    checkpoint_metadata.json: {bytes: 395, sha256: 982127cf322995879967ebc08eec9ad684f93bb5158166e63a9e6b14f5608352}
+    generation_config.json: {bytes: 196, sha256: 96501de01f744e56833741d26ffa4c1783a54c8d8c82725725a26118c84b5578}
+
+model:
+  family: pythia
+  size: 410m
+  parameter_count: 405334016
+  architecture:
+    hidden_size: 1024
+    intermediate_size: 4096
+    layers: 24
+    attention_heads: 16
+    head_size: 64
+    sequence_length: 2048
+    vocab_size: 50304
+    attention_bias: true
+    mlp_bias: true
+
+condition_partition:
+  sentinel:
+    - a0-gelu
+    - a1h-relu
+    - a4-ol1-kappa-0
+    - a4-ol1-kappa-0p5
+    - a7-ol1-kappa-0
+    - a7-ol1-kappa-0p5
+
+conditions:
+  - id: a0-gelu
+    attempt_id: 001-20260902-141527-bcb97fb1
+    step: A0
+    topology_id: A0
+    active_sites: []
+    gate_threshold: null
+    archived_validation_loss: 4.54745643766674
+    canonical_r_model: 0.000110479238031039
+    linear_operations: [mlp_w2]
+    attention_microbenchmark: false
+    config_file: {bytes: 1676, sha256: edce5c40042bbf017df7c92f9787044828d1d3dd649124e7ff3d4b18c23dbb7c}
+    model_file: {bytes: 1621370224, sha256: 4aca92639700d55b029cbc2d635159564451dc0791cddd41f2aa5ab843a6e7bc}
+    logical_products: {bytes: 2362, sha256: c47534f1976601b89d74501402dd907fe95309e0a9aa8dbee54c67a695c5b0cd}
+  - id: a1h-relu
+    attempt_id: 002-20260902-130258-2ffaeadc
+    step: A1-H
+    topology_id: A1-H
+    active_sites: [h]
+    gate_threshold: null
+    archived_validation_loss: 4.6512940582439
+    canonical_r_model: 0.210497252804411
+    linear_operations: [mlp_w2]
+    attention_microbenchmark: false
+    config_file: {bytes: 1702, sha256: cf4aeb4b9ba20eb66671d79a8dd06aa52e6a8c9cdc4e9dcef58ce73e91ab306d}
+    model_file: {bytes: 1621370224, sha256: 5f706b3bc636e0b3e6e680d7fbf107511cf72d290e4804635552de67e4b85856}
+    logical_products: {bytes: 2438, sha256: 7549e23a07a5b0fd6f675b15805ce85e0ff9fcec3a105b3f4c46df70a6c678b8}
+  - id: a4-ol1-kappa-0
+    attempt_id: 003-20260902-141528-830ca0f8
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.0
+    archived_validation_loss: 5.69207509876003
+    canonical_r_model: 0.383386733338568
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2050, sha256: 575d3f55523996501e8b4d1b0c2752b3edc94401ecde81f3b847f332cf1be207}
+    model_file: {bytes: 1621370224, sha256: 4e8f34953310f942d6ac13635057c69fddfa2de2a4d88c0f4bdd1892be74d008}
+    logical_products: {bytes: 2603, sha256: 5e90c211ddd20770546014a6371697e8b7e01ed50ca00dc2b7d6101e89c1da60}
+  - id: a4-ol1-kappa-0p5
+    attempt_id: 007-20260902-141528-4cabb868
+    step: A4-OL1
+    topology_id: A4-Z
+    active_sites: [a, m, h, z]
+    gate_threshold: 0.5
+    archived_validation_loss: 5.19096581858291
+    canonical_r_model: 0.715914446480748
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: false
+    config_file: {bytes: 2050, sha256: 792fb42cf8d24bae1c9f782d4ea9960e67cd268eece544eec797990275032371}
+    model_file: {bytes: 1621370224, sha256: 88c1fff24a71e404818728268f4c8da1f002af320a57fa33d87b2e3a8f3b6558}
+    logical_products: {bytes: 2607, sha256: 5311a28b80d187db5d9203fae3282594b74c7222d5302a9f250ecf1cd0983c47}
+  - id: a7-ol1-kappa-0
+    attempt_id: 008-20260902-141528-060f246f
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.0
+    archived_validation_loss: 5.42629606625032
+    canonical_r_model: 0.411214678786846
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2336, sha256: b1ba6789de5e923f62df691b9c9beb02bdf95ce52529f713d418fd7c205cd82a}
+    model_file: {bytes: 1621370224, sha256: cc6e763c3ed60b76deb219091edab9d5a719bf46affdd8134a6559e7d6ab3ce9}
+    logical_products: {bytes: 2700, sha256: 71111d00cdcbc02cd64df8521cb8fb9f181f61a7e5a2266f7948157263d9c057}
+  - id: a7-ol1-kappa-0p5
+    attempt_id: 012-20260902-142107-eaeeec6d
+    step: A7-OL1
+    topology_id: A7-Z-POST
+    active_sites: [a, m, h, q_post, k_post, v, z]
+    gate_threshold: 0.5
+    archived_validation_loss: 5.12069166870512
+    canonical_r_model: 0.806155139186339
+    linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+    attention_microbenchmark: true
+    config_file: {bytes: 2336, sha256: 9cf69140e91a0caa0b50652cbd16feebb700b81649a63b28440b025b028c1b19}
+    model_file: {bytes: 1621370224, sha256: d41dda03f1a8e0d5ffee4ea41517a2ab1d53745fae655379c3ea9837da8eadf7}
+    logical_products: {bytes: 2703, sha256: d35d068cf028ff28e5fb11128a17d89cee73df41d6b58e20569b48da7f03ddcf}
+
+upstream:
+  repository: https://github.com/SakanaAI/sparser-faster-llms.git
+  commit: 661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5
+  blob_ids:
+    custom_models/hybrid_modules/custom_op.cpp: c2052281af5f968238f210b4573f14a73b7feca4
+    custom_models/hybrid_modules/hybrid_sp.cu: da550001818435a18ae3216c233afe30e7b7bb90
+    custom_models/hybrid_modules/hybrid_sp.h: 8b7955d0358672596b0f7872d242456577882293
+    custom_models/hybrid_modules/sparse_ops_loader.py: 7a8785879677dc896d4fdbfbd388978fd2b17207
+  derivative_label: Sakana-derived
+  patch: runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/sakana-pythia70.patch
+  patch_sha256: daf769f811f3f2e2d51aee8807a3b260d05922b440530a721b0896e270d0cdb9
+  positive_control:
+    model: SakanaAI/SparseLM0.5B
+    revision: 7c2a0473ec982facd5b21af81fe39c1783f3407e
+    batch_size: 64
+    sequence_length: 2048
+    dtype: bfloat16
+    warmups: 5
+    repetitions: 50
+    require_twell_faster_than_torch: true
+
+runtime:
+  python: "3.12"
+  cuda_minimum: "12.8"
+  compute_capability: [9, 0]
+  pythia_torch: "2.11.0"
+  pythia_transformers: "5.12.1"
+  pythia_numpy: "2.5.0"
+  upstream_torch: "2.9.1"
+  upstream_transformers: "4.56.2"
+  upstream_flash_attention: "2.7.4+cu128torch2.9"
+
+validation:
+  metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+  tokens: data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin
+  metadata_sha256: 70a2e1d487405ab1c9ba38e299a52d07066157e21ec1b8cb965706899274f451
+  tokens_sha256: 51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451
+  documents: 500
+  source_tokens: 693668
+  complete_blocks: 338
+  evaluated_tokens: 692224
+  excluded_tail_tokens: 1444
+  source_reproduction_batch_size: 4
+  runtime_equivalence_batch_size: 1
+  logical_opportunity_batch_size: 1
+  source_loss_absolute_tolerance: 0.0002
+  sparse_vs_dense_loss_absolute_tolerance: 0.001
+
+measurement:
+  runtime_dtype: bfloat16
+  source_parameter_dtype: float32
+  source_autocast_dtype: float16
+  attention_implementation: sdpa_flash
+  exact_zero_threshold: 0.0
+  near_zero_thresholds: [0.001, 0.01]
+  tile_width: 256
+  tile_payload_capacity: {factor_8: 31, factor_4: 63, factor_2: 127}
+  primitive_rows: 2048
+  primitive_warmups: 20
+  primitive_blocks: 7
+  primitive_target_seconds_per_block: 0.35
+  full_model_batches: [1]
+  optional_full_model_batch: 32
+  minimum_optional_batch_headroom_fraction: 0.10
+  full_model_warmups: 5
+  full_model_blocks: 7
+  full_model_target_seconds_per_block: 1.0
+  correctness_relative_l2_tolerance: 0.02
+  signed_pack_exact: true
+  no_pruning_or_capacity_truncation: true
+  full_sequence_prefill_only: true
+  use_cache: false
+  torch_compile: false
+  cuda_graphs: false
+  attention:
+    batch_size: 1
+    qk_pack_side: q_only
+    pv_transform: "(V^T @ P^T)^T"
+    pv_pack_side: v_only
+    include_pack_dispatch_transpose_mask_scale_softmax: true
+    non_break_even_stop_rule: true
+
+runpod:
+  preferred_gpu: NVIDIA H100 NVL
+  fallbacks: [NVIDIA H200, NVIDIA H100 80GB HBM3]
+  exact_primary_comparator: run023_h100_nvl_batch_1
+  cross_sku_requires_same_device_70m_reference: true
+  image: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 60
+  volume_disk_gb: 40
+  network_volume: none
+  monitoring_interval_minutes: 10
+  stale_progress_minutes: 20
+  provisional_maximum_duration_hours: 6
+  teardown: retrieve_hash_verify_then_terminate
+

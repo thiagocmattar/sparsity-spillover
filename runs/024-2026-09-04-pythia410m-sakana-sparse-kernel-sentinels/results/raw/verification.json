@@ -1,0 +1,135 @@
+{
+  "attention_promotion": {
+    "all_layers_break_even": false,
+    "any_layer_break_even": false,
+    "custom_fused_causal_kernel_authorized": false,
+    "stop_if_not_break_even": true,
+    "tested": true
+  },
+  "batch_decision": {
+    "calibration_file": "batch-calibration.json",
+    "include_batch32": true,
+    "primary_batch": 1
+  },
+  "conditions": [
+    {
+      "R_covered": 0.00011043142439167056,
+      "R_covered_with_separate_attention": null,
+      "R_model": 0.000110479238031039,
+      "condition_id": "a0-gelu",
+      "dense_bf16_loss": 4.549697419948126,
+      "full_model_speedups": {
+        "1": 0.048527661874812174,
+        "32": 0.15461934478017925
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 4.5474416800504605,
+      "sparse_bf16_loss": 4.5498342849093785
+    },
+    {
+      "R_covered": 0.21047513637939066,
+      "R_covered_with_separate_attention": null,
+      "R_model": 0.210497252804411,
+      "condition_id": "a1h-relu",
+      "dense_bf16_loss": 4.654892204075876,
+      "full_model_speedups": {
+        "1": 0.32750238311360985,
+        "32": 0.4776290824028511
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 4.651271346052723,
+      "sparse_bf16_loss": 4.65485527564788
+    },
+    {
+      "R_covered": 0.3833867261992576,
+      "R_covered_with_separate_attention": null,
+      "R_model": 0.383386733338568,
+      "condition_id": "a4-ol1-kappa-0",
+      "dense_bf16_loss": 5.698532813399501,
+      "full_model_speedups": {
+        "1": 0.0744843695237148,
+        "32": 0.1107765909243972
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 5.692058805883283,
+      "sparse_bf16_loss": 5.698053812134195
+    },
+    {
+      "R_covered": 0.7158302825811338,
+      "R_covered_with_separate_attention": null,
+      "R_model": 0.715914446480748,
+      "condition_id": "a4-ol1-kappa-0p5",
+      "dense_bf16_loss": 5.195162158393296,
+      "full_model_speedups": {
+        "1": 0.2622976195261976,
+        "32": 0.49891103681412197
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 5.1911038336669195,
+      "sparse_bf16_loss": 5.194739886642208
+    },
+    {
+      "R_covered": 0.4112136406614464,
+      "R_covered_with_separate_attention": 0.4112136467587682,
+      "R_model": 0.411214678786846,
+      "condition_id": "a7-ol1-kappa-0",
+      "dense_bf16_loss": 5.430655353168059,
+      "full_model_speedups": {
+        "1": 0.08487438216171253,
+        "32": 0.11838858800060076
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 5.426288082754824,
+      "sparse_bf16_loss": 5.429994268530219
+    },
+    {
+      "R_covered": 0.6955162349121755,
+      "R_covered_with_separate_attention": null,
+      "R_model": 0.806155139186339,
+      "condition_id": "a7-ol1-kappa-0p5",
+      "dense_bf16_loss": 5.124495139841497,
+      "full_model_speedups": {
+        "1": 0.2805116958085585,
+        "32": 0.43174173786283737
+      },
+      "robust_break_even": {
+        "1": false,
+        "32": false
+      },
+      "source_loss": 5.120631906407825,
+      "sparse_bf16_loss": 5.124292784894006
+    }
+  ],
+  "passed": true,
+  "phase": "sentinel",
+  "remote_preflight": {
+    "compute_capability": [
+      9,
+      0
+    ],
+    "shape_checks": 7
+  },
+  "schema_version": 1,
+  "upstream_positive_control": {
+    "latency_ms": {
+      "torch": 604.6231697499752,
+      "twell": 474.60774689912796
+    },
+    "twell_speedup": 1.2739429006380725
+  }
+}

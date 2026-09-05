@@ -1,0 +1,135 @@
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -13,6 +13,7 @@
+ _original_combine_attention_opportunities = _impl.combine_attention_opportunities
+ _original_benchmark_linear_primitives = _impl.benchmark_linear_primitives
+ _original_benchmark_attention = _impl.benchmark_attention
++_original_covered_opportunity = _impl.covered_opportunity
+ 
+ 
+ def evaluate(*args: Any, **kwargs: Any) -> dict[str, Any]:
+@@ -40,6 +41,62 @@
+     result["matched_canonical_run019_protocol"] = True
+     return result
+ 
++
++def covered_opportunity(
++    logical_products: dict[str, Any],
++    linear_operations: list[str],
++    *,
++    attention: dict[str, Any] | None = None,
++) -> dict[str, Any]:
++    """Do not combine H100 attention counts with incompatible A100 unions."""
++    if attention is None:
++        return _original_covered_opportunity(logical_products, linear_operations)
++    try:
++        result = _original_covered_opportunity(
++            logical_products,
++            linear_operations,
++            attention=attention,
++        )
++    except ValueError as error:
++        measured = logical_products["measured"]
++        operations = measured["per_operation"]
++        q_only = int(attention["q_only_causal_zero_products"])
++        v_only = int(attention["v_only_causal_zero_products"])
++        canonical_qk = int(operations["qk_scores"]["zero_product_count"])
++        canonical_pv = int(operations["probability_value"]["zero_product_count"])
++        q_excess = q_only - canonical_qk
++        v_excess = v_only - canonical_pv
++        if q_excess <= 0 and v_excess <= 0:
++            raise
++        return {
++            "covered_zero_product_count": None,
++            "canonical_model_product_count": int(measured["model_product_count"]),
++            "R_covered": None,
++            "canonical_R_model": float(measured["R_model"]),
++            "linear_zero_products": {
++                operation: int(operations[operation]["zero_product_count"])
++                for operation in linear_operations
++            },
++            "q_only_causal_zero_products": q_only,
++            "v_only_causal_zero_products": v_only,
++            "attention_is_lower_bound": True,
++            "attention_is_lower_bound_on_runtime_device": True,
++            "comparable_to_canonical_R_model": False,
++            "canonical_attention_union_zero_products": {
++                "qk_scores": canonical_qk,
++                "probability_value": canonical_pv,
++            },
++            "cross_device_component_excess": {
++                "q_only_minus_canonical_qk_union": q_excess,
++                "v_only_minus_canonical_pv_union": v_excess,
++            },
++            "incomparability_reason": "H100 eager component count exceeds pinned A100 eager canonical union",
++            "original_invariant_error": str(error),
++            "not_runtime_speedup": True,
++        }
++    result["comparable_to_canonical_R_model"] = True
++    return result
++
+ 
+ def benchmark_linear_primitives(*args: Any, **kwargs: Any) -> list[dict[str, Any]]:
+     """Keep inference-tensor samples inside the accepted inference context."""
+@@ -55,6 +112,7 @@
+ 
+ _impl.evaluate = evaluate
+ _impl.combine_attention_opportunities = combine_attention_opportunities
++_impl.covered_opportunity = covered_opportunity
+ _impl.benchmark_linear_primitives = benchmark_linear_primitives
+ _impl.benchmark_attention = benchmark_attention
+ _base_load_config = _impl.load_config
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
+@@ -204,13 +204,44 @@
+             "A7 attention denominator does not match canonical products.",
+         )
+         require(extended is not None, "A7 extended coverage missing.")
+-        require(
+-            extended["covered_zero_product_count"]
+-            == coverage["covered_zero_product_count"]
+-            + opportunity["q_only_causal_zero_products"]
+-            + opportunity["v_only_causal_zero_products"],
+-            "A7 extended coverage does not match separate Q/V compositions.",
+-        )
++        if extended.get("comparable_to_canonical_R_model", True):
++            require(
++                extended["covered_zero_product_count"]
++                == coverage["covered_zero_product_count"]
++                + opportunity["q_only_causal_zero_products"]
++                + opportunity["v_only_causal_zero_products"],
++                "A7 extended coverage does not match separate Q/V compositions.",
++            )
++        else:
++            canonical_attention = extended["canonical_attention_union_zero_products"]
++            excess = extended["cross_device_component_excess"]
++            expected_q_excess = (
++                opportunity["q_only_causal_zero_products"]
++                - logical["per_operation"]["qk_scores"]["zero_product_count"]
++            )
++            expected_v_excess = (
++                opportunity["v_only_causal_zero_products"]
++                - logical["per_operation"]["probability_value"]["zero_product_count"]
++            )
++            require(
++                extended["covered_zero_product_count"] is None
++                and extended["R_covered"] is None
++                and extended["attention_is_lower_bound_on_runtime_device"] is True,
++                "Incomparable A7 extension must not report canonical coverage.",
++            )
++            require(
++                canonical_attention["qk_scores"]
++                == logical["per_operation"]["qk_scores"]["zero_product_count"]
++                and canonical_attention["probability_value"]
++                == logical["per_operation"]["probability_value"]["zero_product_count"],
++                "Incomparable A7 extension changed canonical unions.",
++            )
++            require(
++                excess["q_only_minus_canonical_qk_union"] == expected_q_excess
++                and excess["v_only_minus_canonical_pv_union"] == expected_v_excess
++                and (expected_q_excess > 0 or expected_v_excess > 0),
++                "Incomparable A7 extension lacks an exact positive cross-device excess.",
++            )
+         expected_shape = {"B": 1, "H": architecture["attention_heads"], "T": architecture["sequence_length"], "d": architecture["head_size"]}
+         for row in attention:
+             require(row["shape"] == expected_shape, "A7 attention composition shape changed.")

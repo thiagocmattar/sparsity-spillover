@@ -1,0 +1,72 @@
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/config.yaml
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/config.yaml
+@@ -55,5 +55,6 @@
+     gate_threshold: null
+     archived_validation_loss: 4.54745643766674
++    archived_sdpa_validation_loss: 4.5474631207934495
+     canonical_r_model: 0.000110479238031039
+     linear_operations: [mlp_w2]
+     attention_microbenchmark: false
+@@ -72,5 +73,6 @@
+     gate_threshold: null
+     archived_validation_loss: 4.6512940582439
++    archived_sdpa_validation_loss: 4.6512837494618795
+     canonical_r_model: 0.210497252804411
+     linear_operations: [mlp_w2]
+     attention_microbenchmark: false
+@@ -89,5 +91,6 @@
+     gate_threshold: 0.0
+     archived_validation_loss: 5.69207509876003
++    archived_sdpa_validation_loss: 5.692077746758094
+     canonical_r_model: 0.383386733338568
+     linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+     attention_microbenchmark: false
+@@ -106,5 +109,6 @@
+     gate_threshold: 0.5
+     archived_validation_loss: 5.19096581858291
++    archived_sdpa_validation_loss: 5.19106511392537
+     canonical_r_model: 0.715914446480748
+     linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+     attention_microbenchmark: false
+@@ -123,5 +127,6 @@
+     gate_threshold: 0.0
+     archived_validation_loss: 5.42629606625032
++    archived_sdpa_validation_loss: 5.426287050077901
+     canonical_r_model: 0.411214678786846
+     linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+     attention_microbenchmark: true
+@@ -140,5 +145,6 @@
+     gate_threshold: 0.5
+     archived_validation_loss: 5.12069166870512
++    archived_sdpa_validation_loss: 5.1209012291135165
+     canonical_r_model: 0.806155139186339
+     linear_operations: [qkv_projection, mlp_w1, mlp_w2, attention_output_projection]
+     attention_microbenchmark: true
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -50,6 +50,9 @@
+ 
+ def load_resolved_config() -> dict:
+     config = _base_load_config()
++    for condition in config["conditions"]:
++        condition["canonical_eager_validation_loss"] = condition["archived_validation_loss"]
++        condition["archived_validation_loss"] = condition["archived_sdpa_validation_loss"]
+     if INCLUDE_BATCH32:
+         config["measurement"]["full_model_batches"] = [1, 32]
+     return config
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
+@@ -75,5 +75,13 @@
+     source = validations["source_fp32_parameters_fp16_autocast"]
+     sparse = validations["sparse_linear_bf16"]
++    require(
++        source["archived_loss"] == condition["archived_sdpa_validation_loss"],
++        f"{condition['id']}: source validation was not compared to the archived SDPA estimand.",
++    )
++    require(
++        result["condition"]["canonical_eager_validation_loss"] == condition["archived_validation_loss"],
++        f"{condition['id']}: canonical eager endpoint loss was not retained.",
++    )
+     require(source["batch_size"] == expected_validation["source_reproduction_batch_size"], "Source batch changed.")
+     for name in ("native_dense_bf16", "sparse_linear_bf16"):
+         require(

@@ -1,0 +1,68 @@
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -10,5 +10,49 @@
+ 
+ _impl = load_run023_module("_run023_benchmark", "03_benchmark.py")
++_original_evaluate = _impl.evaluate
++_original_combine_attention_opportunities = _impl.combine_attention_opportunities
++_original_benchmark_linear_primitives = _impl.benchmark_linear_primitives
++_original_benchmark_attention = _impl.benchmark_attention
++
++
++def evaluate(*args: Any, **kwargs: Any) -> dict[str, Any]:
++    """Match the accepted Run-023 eager context for canonical q/v counts."""
++    if kwargs.get("stage") != "source_attention_opportunity":
++        return _original_evaluate(*args, **kwargs)
++    model = args[0] if args else kwargs["model"]
++    runtime_attention_implementation = model.config._attn_implementation
++    model.config._attn_implementation = "eager"
++    try:
++        result = _original_evaluate(*args, **kwargs)
++    finally:
++        model.config._attn_implementation = runtime_attention_implementation
++    result["attention_implementation"] = "eager"
++    result["matched_canonical_run019_protocol"] = True
++    return result
++
++
++def combine_attention_opportunities(accumulators: dict) -> dict[str, Any]:
++    result = _original_combine_attention_opportunities(accumulators)
++    result["attention_implementation"] = "eager"
++    result["matched_canonical_run019_protocol"] = True
++    return result
++
++
++def benchmark_linear_primitives(*args: Any, **kwargs: Any) -> list[dict[str, Any]]:
++    """Keep inference-tensor samples inside the accepted inference context."""
++    with _impl.torch.inference_mode():
++        return _original_benchmark_linear_primitives(*args, **kwargs)
++
++
++def benchmark_attention(*args: Any, **kwargs: Any) -> list[dict[str, Any]]:
++    with _impl.torch.inference_mode():
++        return _original_benchmark_attention(*args, **kwargs)
++
++
++_impl.evaluate = evaluate
++_impl.combine_attention_opportunities = combine_attention_opportunities
++_impl.benchmark_linear_primitives = benchmark_linear_primitives
++_impl.benchmark_attention = benchmark_attention
+ _base_load_config = _impl.load_config
+ INCLUDE_BATCH32 = "--include-batch32" in sys.argv
+ 
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
+@@ -175,6 +175,13 @@
+         require(opportunity_validation["batch_size"] == expected_validation["logical_opportunity_batch_size"], "A7 opportunity batch changed.")
+         require(opportunity_validation["input_tokens"] == expected_validation["evaluated_tokens"], "A7 opportunity tokens mismatch.")
+         require(opportunity["integer_pooling"] is True and opportunity["layers"] == architecture["layers"], "A7 integer/layer coverage missing.")
++        require(
++            opportunity_validation.get("attention_implementation") == "eager"
++            and opportunity_validation.get("matched_canonical_run019_protocol") is True
++            and opportunity.get("attention_implementation") == "eager"
++            and opportunity.get("matched_canonical_run019_protocol") is True,
++            "A7 logical opportunity did not match the canonical eager-attention protocol.",
++        )
+         require(
+             opportunity["causal_products_per_operation"]
+             == logical["per_operation"]["qk_scores"]["product_count"]

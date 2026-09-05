@@ -1,0 +1,58 @@
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/03_benchmark.py
+@@ -16,18 +16,22 @@
+ 
+ 
+ def evaluate(*args: Any, **kwargs: Any) -> dict[str, Any]:
+-    """Match the accepted Run-023 eager context for canonical q/v counts."""
+-    if kwargs.get("stage") != "source_attention_opportunity":
++    """Use the canonical eager context for source identity and q/v counts."""
++    stage = kwargs.get("stage")
++    if stage not in {"source_fp16_validation", "source_attention_opportunity"}:
+         return _original_evaluate(*args, **kwargs)
+     model = args[0] if args else kwargs["model"]
+     runtime_attention_implementation = model.config._attn_implementation
+-    model.config._attn_implementation = "eager"
++    model.set_attn_implementation("eager")
+     try:
+         result = _original_evaluate(*args, **kwargs)
+     finally:
+-        model.config._attn_implementation = runtime_attention_implementation
++        model.set_attn_implementation(runtime_attention_implementation)
+     result["attention_implementation"] = "eager"
+     result["matched_canonical_run019_protocol"] = True
++    result["runtime_attention_implementation_before_override"] = runtime_attention_implementation
++    if stage == "source_fp16_validation":
++        result["source_identity_reference"] = "canonical_eager"
+     return result
+ 
+ 
+@@ -97,7 +101,6 @@
+     config = _base_load_config()
+     for condition in config["conditions"]:
+         condition["canonical_eager_validation_loss"] = condition["archived_validation_loss"]
+-        condition["archived_validation_loss"] = condition["archived_sdpa_validation_loss"]
+     if INCLUDE_BATCH32:
+         config["measurement"]["full_model_batches"] = [1, 32]
+     return config
+--- a/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
++++ b/runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/04_verify.py
+@@ -73,9 +73,16 @@
+     source = validations["source_fp32_parameters_fp16_autocast"]
+     sparse = validations["sparse_linear_bf16"]
+     require(
+-        source["archived_loss"] == condition["archived_sdpa_validation_loss"],
+-        f"{condition['id']}: source validation was not compared to the archived SDPA estimand.",
++        source["archived_loss"] == condition["archived_validation_loss"],
++        f"{condition['id']}: source validation was not compared to the canonical eager estimand.",
+     )
++    require(
++        source.get("attention_implementation") == "eager"
++        and source.get("matched_canonical_run019_protocol") is True
++        and source.get("source_identity_reference") == "canonical_eager"
++        and source.get("runtime_attention_implementation_before_override") == "sdpa",
++        f"{condition['id']}: source identity did not use the declared eager-over-SDPA protocol.",
++    )
+     require(
+         result["condition"]["canonical_eager_validation_loss"] == condition["archived_validation_loss"],
+         f"{condition['id']}: canonical eager endpoint loss was not retained.",

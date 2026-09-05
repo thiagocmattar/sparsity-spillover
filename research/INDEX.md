@@ -5,16 +5,24 @@
 
 ## Current status
 
-Run 023 is implemented but not launched. It pins a Sakana-derived exact-ELL
-patch and the twelve completed Pythia-70M Run-018 checkpoints, with a
-six-condition A0/A1-H/A4-OL1/A7-OL1 endpoint sentinel. The full-model path
-replaces only declared downstream linears; A7 attention is a separate
-Q-only/V-only per-head break-even benchmark. Complete validation, canonical
-`R_model`, full-model linear `R_covered`, separately extended A7 attention
-coverage, occupancy, correctness, paired timing, transfer, and teardown
-contracts are implemented. Live price/capacity and zero-active-compute state
-were audited; an independently visible balance and separate launch
-confirmation remain required.
+Run 024 completed and independently verified the six Pythia-410M sparse-kernel
+sentinels on the exact physical H100 NVL used by Run 023. The official
+SparseLM0.5B control reached 1.2739x, but none of 432 linear primitives, 48 A7
+attention compositions, or 12 full-model condition × batch timings broke
+even. Best full-model speedup was 0.3275x at batch one and 0.4989x at batch 32.
+All six batch-one endpoints were worse than their matched 70M results; only
+high-threshold A7 improved slightly at batch 32 and remained a 2.32x slowdown.
+Analysis 014 owns the same-GPU reduction. This refutes the narrow hypothesis
+that increasing Pythia scale to 410M is enough to amortize the exact-ELL path;
+it does not turn `R_model` into a runtime estimand. Artifacts were hash-verified
+locally, the Pod was deleted, zero Pods/endpoints remain, and the pre-existing
+volume is unchanged.
+
+Run 023 completed and verified all six Pythia-70M sentinels. Its official
+positive control reached 1.2876x, while no linear, attention, or full-model
+Pythia timing broke even. The derived path is technically compatible through
+A7 attention, but the result is a systems limitation rather than a runtime
+validation of `R_model`.
 
 Run 022 reproduced the official SparseLM0.5B H100 control at 1.3001x, then
 stopped correctly when the raw Pythia-14M `M=256,K=512,N=128` ELL operation
@@ -118,17 +126,18 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `024`. Next analysis number: `012`. Next finding number: `F003`.
+Next run number: `025`. Next analysis number: `015`. Next finding number: `F003`.
 
 ## Where we stopped
 
-- 2026-09-04: Run 023 implemented the confirmed Pythia-70M sparse-kernel
-  sentinel without launching compute. Its run-owned patch fixes Run 022's
-  narrow-output warp participation, adds signed exact CUDA packing and reusable
-  workspaces, and keeps official and derived source checkouts separate. The
-  six-condition sentinel passes 15 focused and 207 full-suite tests. Its
-  63-file credential-free input archive is hash-verified; the live audit found
-  zero Pods/endpoints, and launch remains separately gated.
+- 2026-09-04: Run 024 completed the matched Pythia-410M sparse-kernel sentinel
+  on Run 023's physical H100 NVL. All six conditions and full validation pass;
+  no primitive, attention composition, or full model breaks even. Analysis 014
+  records the negative 70M→410M systems scaling result. The result archive and
+  internal hashes were independently verified; the Pod and guard are deleted.
+- 2026-09-04: Run 023 completed and verified the six Pythia-70M sparse-kernel
+  sentinels. The official control accelerates, but every derived Pythia path is
+  slower than native dense. Artifacts are local and no GPU resource remains.
 - 2026-09-04: Run 022 stopped at its declared Pythia correctness gate after the
   official SparseLM positive control passed. The N=128 failure and width audit
   are retained; all GPU compute was terminated.
@@ -307,6 +316,11 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 017 | Can CPU-before-CUDA initialization make the selected 70M promotion portable? | stopped before science; remote identity mismatch | `runs/017-2026-09-01-pythia70m-selected-ladder-portable-init/` |
 | 018 | Does the selected A0/A1-H/A4-OL1/A7-OL1 ladder persist at Pythia-70M with a canonical initialization artifact? | completed (valid; Analysis 010 and Status Report 2 complete) | `runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/` |
 | 019 | Does the selected ladder and its A0/A1-H TEAL frontier persist at Pythia-410M? | completed (valid; Analysis 011 complete) | `runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/` |
+| 020 | Can a two-arm higher-LR screen repair the weak one-pass Pythia-410M A0 endpoint? | terminally failed before science; replaced by Run 021 | `runs/020-2026-09-03-pythia410m-a0-learning-rate-screen/` |
+| 021 | Does the corrected higher-LR A0 screen outperform the Run-019 3e-4 baseline? | completed (valid; baseline retained) | `runs/021-2026-09-03-pythia410m-a0-learning-rate-screen-resolved-lr/` |
+| 022 | Can the official sparse kernel execute an exact Pythia-14M A0 W2 shape? | stopped at correctness gate; bounded N=128 defect isolated | `runs/022-2026-09-04-pythia14m-sparse-kernel-a0-baseline/` |
+| 023 | Do the Sakana-derived kernels accelerate selected Pythia-70M endpoints? | completed (valid negative systems result) | `runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/` |
+| 024 | Does scaling the same sparse-kernel sentinels to Pythia-410M reach break-even? | completed (valid negative systems result; Analysis 014 complete) | `runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/` |
 
 ## Analyses
 
@@ -323,6 +337,9 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
 | 010 | Does the selected A0/A1-H/A4-OL1/A7-OL1 loss--`R_model` structure persist from Pythia-14M to 70M? | completed; descriptive two-size synthesis, no finding promoted | `analyses/010-2026-09-01-pythia14m-vs-70m-selected-ladder/` |
 | 011 | How do the selected trained and post-hoc loss--`R_model` frontiers and A0 optimization trajectories compare through 410M? | completed; descriptive three-size synthesis and A0 loss/gradient/learning-rate diagnostic, no finding promoted | `analyses/011-2026-09-03-pythia14m-70m-410m-selected-ladder/` |
+| 012 | What is the evidence-preserving paper synthesis of the selected ladder through 410M? | completed; descriptive paper-facing reduction, no finding promoted | `analyses/012-2026-09-04-paper-synthesis/` |
+| 013 | What matched intervention evidence should support the manuscript rewrite? | completed; manuscript evidence refactor and verified draft assets | `analyses/013-2026-09-04-matched-intervention-manuscript/` |
+| 014 | Does moving the sparse-kernel sentinels from 70M to 410M improve realized speedup? | completed; same-GPU negative systems calibration, no finding promoted | `analyses/014-2026-09-04-pythia70m-vs-410m-sparse-kernel-sentinels/` |
 
 ## Key documents
 
