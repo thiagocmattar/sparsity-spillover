@@ -5,6 +5,12 @@
 
 ## Current status
 
+Run 025 is a planning-only proposal for bounded agentic sparse-kernel
+specialization across Pythia 14M/70M/410M, with an RTX PRO development loop
+and H100 transfer check. Its run folder records the hypotheses, controls,
+calibration gate, and cost ceilings; implementation/design confirmation is
+pending and no GPU was launched for this planning task.
+
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official
 SparseLM0.5B control reached 1.2739x, but none of 432 linear primitives, 48 A7
@@ -126,7 +132,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `025`. Next analysis number: `015`. Next finding number: `F003`.
+Next run number: `026`. Next analysis number: `015`. Next finding number: `F003`.
 
 ## Where we stopped
 
