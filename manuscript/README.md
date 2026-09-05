@@ -29,8 +29,9 @@ variant.
 ## V2 workspace
 
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
-argument-first introduction and related work. `draft/` now contains these two
-sections, a checked bibliography, and a lightweight reading wrapper. The
+argument-first introduction and related work, followed by a compact
+methodology. `draft/` now contains all three sections, a methods appendix,
+a checked bibliography, and a lightweight reading wrapper. The
 framing concerns how pressure, gate nonlinearity, and site placement interact
 in the quality--sparsity trade-off. The text develops a candidate explanation
 and asks how it transfers; it does not promote empirical findings or add a
@@ -41,7 +42,7 @@ length budget, and evidence boundaries, including the combined gate/pressure
 change in A4-OL1 versus A7-OL1, OL1's lack of a loss-convergence guarantee, and
 the separation between logical sparsity and measured execution. The earlier
 spillover claim is not reused as the paper's central argument. The existing
-architecture/ladder artifact is included as a setup reference. Manuscript
+architecture/ladder artifact is included as a setup reference. Draft
 sources and the reading copy retain the local-only ignore policy.
 
 The subsequent user-requested adversarial review used three independent
@@ -56,6 +57,25 @@ snapshots, scores, and the response to criticisms are indexed in
 [the review record](draft/reviews/2026-09-05-adversarial/README.md).
 The review strengthens positioning; the empirical insight and its transfer
 remain obligations for the later results stage.
+
+The methodology defines independent gate and pressure choices, exact-zero
+model-wide sparsity, and the all-zero selected-site reach ceiling, with most
+math inline. The paper now uses calligraphic S while preserving operational
+`R_*` fields and fractional units. Exact gates, OL1 mechanics, integer counters,
+architecture derivations, and validation coverage are in the appendix;
+[provenance notes](draft/methodology-notes.md) identify the implementation
+contracts and immutable architecture configurations. The setup artifact uses
+the same notation and larger lettering without changing its analytic values.
+
+The [methodology review record](draft/reviews/2026-09-05-methodology/README.md)
+retains three independent source audits, initial and revised scored reports,
+source/PDF snapshots, a final visual follow-up, and exact ceiling verification.
+Final editorial scores are 20/25 for writing, 23/25 for scientific rigor, and
+22/25 for literature/presentation; these assess the methods draft, not paper
+acceptance or empirical evidence. The reading copy builds cleanly, its eight
+pages were inspected, and all twelve analytic architecture/topology count
+pairs match the existing implementation. No scientific code or result was
+changed and no experiment was launched.
 
 The 4 September matched-intervention paper is preserved in
 [v0_2026-09-05](draft/archive/v0_2026-09-05/README.md), including its PDF,

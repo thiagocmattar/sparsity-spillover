@@ -61,3 +61,10 @@ diagnostic sites without redrawing the base graph.
 - Editable source: `pythia-architecture-map.tex`
 - Generated artifact: `pythia-architecture-map.pdf`
 - Scientific contracts: `../../research/METHODS.md` and `../methodology.tex`
+
+## Reading-width typography revision (5 September 2026)
+
+Node labels and semantic-key text were enlarged after review at the manuscript's
+5.5-inch text width. The graph, site names, connections, and scientific meaning
+are unchanged. The standalone and combined vector PDFs were rebuilt and the
+rendered manuscript checked for label and arrow collisions.
