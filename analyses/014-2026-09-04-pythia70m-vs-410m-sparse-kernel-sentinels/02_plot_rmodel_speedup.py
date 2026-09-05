@@ -96,6 +96,7 @@ def label_offset(point: dict) -> tuple[int, int]:
     condition, size, batch = point["condition_id"], point["model_size"], point["batch_size"]
     if size == "410M":
         return {
+            "a0-gelu": (8, -2) if batch == 1 else (8, 7),
             "a4-ol1-kappa-0": (-9, 20) if batch == 1 else (-9, -15),
             "a7-ol1-kappa-0": (9, 9),
             "a4-ol1-kappa-0p5": (-9, -14) if batch == 1 else (-9, 9),
@@ -107,7 +108,32 @@ def label_offset(point: dict) -> tuple[int, int]:
     }.get(condition, (8, 7))
 
 
-def render(points: list[dict]) -> Path:
+def fit_regressions(points: list[dict]) -> list[dict]:
+    """Equal-weight OLS with an intercept; one observation per checkpoint/batch."""
+    fits = []
+    for batch in (1, 32):
+        for size in RUNS:
+            group = [p for p in points if p["model_size"] == size and p["batch_size"] == batch]
+            x = [p["R_model"] for p in group]
+            y = [p["speedup_median"] for p in group]
+            slope, intercept = statistics.linear_regression(x, y)
+            residual_ss = math.fsum((yi - (intercept + slope * xi)) ** 2 for xi, yi in zip(x, y))
+            mean_y = statistics.fmean(y)
+            total_ss = math.fsum((yi - mean_y) ** 2 for yi in y)
+            if total_ss == 0:
+                raise ValueError(f"R-squared is undefined for constant speedup: {size}, B{batch}")
+            fits.append({
+                "model_size": size, "batch_size": batch, "n_checkpoints": len(group),
+                "intercept": intercept, "slope": slope,
+                "R_squared": 1 - residual_ss / total_ss,
+                "R_model_min": min(x), "R_model_max": max(x),
+                "residual_sum_squares": residual_ss, "total_sum_squares": total_ss,
+                "method": "unweighted OLS with intercept on checkpoint medians",
+            })
+    return fits
+
+
+def render(points: list[dict], fits: list[dict]) -> Path:
     mpl.rcParams.update({
         "font.family": "DejaVu Sans", "font.size": 9.2,
         "axes.labelsize": 10.3, "legend.fontsize": 9,
@@ -140,6 +166,22 @@ def render(points: list[dict]) -> Path:
         ax.axhline(1, color="#555555", linestyle=(0, (4, 3)), linewidth=1, zorder=2)
         ax.text(0.0, 1.031, "Break-even", fontsize=8.5, color="#555555")
         ax.set_xlabel(r"$R_{\mathrm{model}}$ (logical zero-product fraction)", labelpad=8)
+        fit_handles = []
+        for fit in fits:
+            if fit["batch_size"] != batch:
+                continue
+            size = fit["model_size"]
+            x_range = [fit["R_model_min"], fit["R_model_max"]]
+            line, = ax.plot(
+                x_range, [fit["intercept"] + fit["slope"] * x for x in x_range],
+                color=COLORS[size], linestyle="--" if size == "70M" else "-.",
+                linewidth=1.5, zorder=3,
+                label=rf"{size}: $R^2={fit['R_squared']:.3f}$",
+            )
+            fit_handles.append(line)
+        ax.legend(handles=fit_handles, title="Linear fits (n=6 each)", title_fontsize=8.5,
+                  loc="upper right", bbox_to_anchor=(0.99, 0.91), frameon=False,
+                  handlelength=2.7, fontsize=9)
         for point in points:
             if point["batch_size"] != batch:
                 continue
@@ -161,7 +203,7 @@ def render(points: list[dict]) -> Path:
             )
     axes[0].set_ylabel("Full-model speedup (dense / sparse)", labelpad=8)
     fig.text(0.073, 0.09,
-             "A4/A7 denote OL1. Points: paired medians; whiskers: 10th-90th percentiles (7 timing blocks).",
+             "A4/A7 denote OL1. Points: paired medians; whiskers: 10th-90th percentiles (7 blocks). Lines: descriptive OLS with intercept.",
              fontsize=8.3, color="#444444")
     fig.text(0.073, 0.05,
              "Sparse linears only; attention and LM head stay dense. 14M has no valid sparse timing (correctness gate failed).",
@@ -175,12 +217,19 @@ def render(points: list[dict]) -> Path:
 
 def main() -> None:
     points = collect_points()
+    fits = fit_regressions(points)
     with (HERE / "rmodel-speedup-points.csv").open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(points[0]))
         writer.writeheader()
         writer.writerows(points)
-    output = render(points)
+    with (HERE / "rmodel-speedup-regressions.csv").open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(fits[0]))
+        writer.writeheader()
+        writer.writerows(fits)
+    output = render(points, fits)
     print(f"PASS: {len(points)} points, {sum(p['timing_blocks'] for p in points)} paired blocks; {output}")
+    for fit in fits:
+        print(f"{fit['model_size']} B{fit['batch_size']}: n={fit['n_checkpoints']}, R2={fit['R_squared']:.6f}")
 
 
 if __name__ == "__main__":

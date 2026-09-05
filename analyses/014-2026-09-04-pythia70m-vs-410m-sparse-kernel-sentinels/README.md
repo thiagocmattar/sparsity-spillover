@@ -16,9 +16,11 @@ distributions.
   result and caveats.
 - `figures/01-rmodel-vs-speedup.pdf`: all 24 valid full-model measurements
   against canonical `R_model`, coloured by model size, with matched-scale
-  panels for batch sizes 1 and 32.
+  panels for batch sizes 1 and 32, plus per-size linear regressions and R-squared.
 - `rmodel-speedup-points.csv`: plotted coordinates, integer logical-product
   counts, all seven paired timing ratios per point, and raw-source hashes.
+- `rmodel-speedup-regressions.csv`: four equal-weight OLS fits with intercepts,
+  slopes, R-squared, residual sums of squares, and observed fit ranges.
 - `observations/002-rmodel-vs-speedup.md`: figure caption, coverage, exclusions,
   and interpretation limits.
 
@@ -33,3 +35,5 @@ The figure generator checks all 12 unique sentinels, both batches, source
 verification status, complete canonical coverage, count-derived `R_model`,
 and agreement between raw paired timing medians and the comparison table.
 The PDF was rendered and visually checked. No additional GPU work was needed.
+The five analysis tests pass, including a known-answer regression test and
+independent least-squares checks of all four exported regressions.
