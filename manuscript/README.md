@@ -30,12 +30,13 @@ variant.
 
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
 argument-first introduction and related work, followed by a compact
-methodology. `draft/` now contains all three sections, a methods appendix,
+methodology and a separate experimental-study opening. `draft/` now contains
+these four sections, general-method and experimental-detail appendices,
 a checked bibliography, and a lightweight reading wrapper. The
 framing concerns how pressure, gate nonlinearity, and site placement interact
 in the quality--sparsity trade-off. The text develops a candidate explanation
-and asks how it transfers; it does not promote empirical findings or add a
-results section. The user's `draft/supplementary.md` remains unchanged.
+and asks how it transfers. The experimental opening defines setup and
+comparison logic; empirical findings remain deferred. The user's `draft/supplementary.md` remains unchanged.
 
 [Draft positioning notes](draft/positioning.md) record the literature checks,
 length budget, and evidence boundaries, including the combined gate/pressure
@@ -72,10 +73,25 @@ retains three independent source audits, initial and revised scored reports,
 source/PDF snapshots, a final visual follow-up, and exact ceiling verification.
 Final editorial scores are 20/25 for writing, 23/25 for scientific rigor, and
 22/25 for literature/presentation; these assess the methods draft, not paper
-acceptance or empirical evidence. The reading copy builds cleanly, its eight
+acceptance or empirical evidence. That reading copy built cleanly, its eight
 pages were inspected, and all twelve analytic architecture/topology count
-pairs match the existing implementation. No scientific code or result was
+pairs matched the existing implementation. No scientific code or result was
 changed and no experiment was launched.
+
+The subsequent user-approved section split keeps Methodology focused on
+gate/pressure definitions, sparsity, and structural reach (about 380 words).
+The separate [Experimental Study](draft/experimental-study.tex) opening
+contains Pythia/MiniPile context, A* recipes, matched-comparison logic, selected
+larger-model scope, and the existing setup figure. Pythia-specific counts,
+configuration links, and validation coverage moved into an experimental
+appendix. The four numbered equations and the figure artwork are unchanged.
+
+The [split review](draft/reviews/2026-09-05-methods-experiments-split/README.md)
+includes an independent writing proposal, source audits, and two scored review
+rounds. Final scores are 20/25 for writing and 23/25 each for scientific rigor
+and literature/presentation; all substantive review issues were resolved.
+The nine-page reading copy builds cleanly, with no unresolved references or
+box warnings. No result or scientific code was changed and no run was launched.
 
 The 4 September matched-intervention paper is preserved in
 [v0_2026-09-05](draft/archive/v0_2026-09-05/README.md), including its PDF,

@@ -106,8 +106,9 @@ The displayed ceiling now uses calligraphic S to match the new draft.
 Its definition and numeric values are unchanged: the existing artifact field
 `R_model_max_fraction` is the fraction, and the figure reports its percentage.
 Observed sparsity can include natural zeros outside this selected-site reach.
-The source definitions and derivation are in `../draft/methodology-appendix.tex`;
-the historical `../methodology.tex` remains a preserved earlier source.
+General definitions are in `../draft/methodology-appendix.tex`; the
+Pythia-specific derivation is now in `../draft/experimental-appendix.tex`.
+The historical `../methodology.tex` remains a preserved earlier source.
 
 The same review also reduced the source table width from 20 to 14 cm, compacted
 fixed-width columns and row spacing, and placed the nonlinearity key on its
