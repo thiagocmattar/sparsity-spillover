@@ -1,6 +1,7 @@
 # Run 025: agentic sparse-kernel specialization for Pythia
 
-Status: **planning only; design pending; no experiment code or GPU launched**.
+Status: **design confirmed; calibration implementation verified on CPU;
+launch approval pending; no GPU launched**.
 Created 2026-09-05 at the user's explicit request to reserve a new run folder
 and write a plan. This documentation-only reservation does not bypass design
 confirmation for implementation or the repository's launch review.
@@ -65,6 +66,25 @@ feedback over another search strategy. A positive full-model gain and a
 positive relation to `R_model` remain hypotheses, not completion requirements
 that justify spending past the cap.
 
+## Implemented calibration package
+
+The confirmed design now has a run-local Sakana-derived P0 adapter, rotating
+full-model timer, fixed numerical/full-validation gates, input hashes for all
+36 checkpoints, phase-specific transfer bundles, and bounded worker/trial
+records. **242 bootstrap tests pass**, including 23 focused Run 025 tests.
+The retained 14M four-family CPU smoke also passes. None of this substitutes
+for compiling and testing the CUDA kernel on the deployment GPU.
+
+See [launch review and exact test scope](LAUNCH_REVIEW.md),
+[source/correctness audit](SOURCE_AUDIT.md), and
+[local smoke evidence](prelaunch/local-smoke.json).
+
+P0 covers the four linear sites; QK/PV attention remains dense. Sparse
+attention, the stronger compiled/graph dense selection, search scoring, and
+the frozen all-36 final evaluator remain subsequent approved-design work.
+No optimized winner or measured speedup is claimed. The proposed next paid
+step is the sequential **$5 calibration gate**, starting with one RTX 5090.
+
 ## Documents
 
 - [Argument chain and falsification criteria](ARGUMENT_CHAIN.md)
@@ -81,12 +101,14 @@ that justify spending past the cap.
 - [x] Query live GPU catalog and existing resources without creating anything.
 - [x] Write the argument, proposed controls, search budget, and stop conditions.
 - [x] Revise for the user's $40 ceiling and explicit official-Sakana starting point.
-- [ ] Human confirms/refines the scientific design and diagnostic inventory.
-- [ ] Implement run-local evaluator, kernel adapter, and bounded trial logging.
-- [ ] Pin model/controller identity, environment, checkpoint/cache hashes, and budgets.
-- [ ] Pass focused tests and the complete bootstrap suite; present launch definition.
+- [x] Human confirms/refines the scientific design and diagnostic inventory.
+- [x] Implement calibration evaluator, P0 linear adapter, and bounded trial records.
+- [x] Pin checkpoint/cache identities, proposed runtime and budget; record controller defaults and attribution limits.
+- [x] Pass focused tests and the complete bootstrap suite; present calibration launch definition.
+- [ ] Obtain explicit calibration launch approval and verify live lease/guard readiness.
 - [ ] Calibrate memory, compilation, correctness, timing, transfer, and GPU cost/ETC.
 - [ ] Report calibration decision: proceed, revise with the human, or stop.
+- [ ] Seal CUDA-verified P0, strongest dense configuration, search evaluator and controller provenance before K001.
 - [ ] Execute one Sakana-derived closed loop, at most 40 candidates / 20 GPU-hours.
 - [ ] Freeze winner; verify all 36 checkpoints, component effects, and H100 transfer.
 - [ ] Retrieve and hash-verify artifacts; terminate Pods; reconcile billable resources.

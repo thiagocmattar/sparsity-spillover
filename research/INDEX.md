@@ -5,12 +5,12 @@
 
 ## Current status
 
-Run 025 is a planning-only, $40-total proposal starting from official Sakana
-kernels for Pythia 14M/70M/410M. It proposes one RTX-5090 agentic development
-trajectory, 36 primary checkpoint tests, and an H100 sentinel transfer check.
-The reduced scope supports a reproducible systems case study, not a replicated
-agent-method comparison; implementation/design confirmation is pending and
-no GPU was launched for this planning task.
+Run 025's $40 Sakana-derived design is confirmed. The calibration package
+pins all 36 Pythia checkpoints and passes 242 bootstrap tests plus a retained
+14M CPU integration smoke. CUDA correctness/performance remain untested;
+the next launch review is a sequential $5 RTX-5090/H100 pilot, not the full
+search. No GPU was launched. The planned one-trajectory study supports an
+agent-assisted systems case study, not a replicated agent-method comparison.
 
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official
