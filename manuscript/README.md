@@ -28,10 +28,21 @@ variant.
 
 ## V2 workspace
 
-The user requested a clean start for V2 on 2026-09-05. `draft/` now contains
-only its new README and `archive/`; the next manuscript is pending. Its proposed
-framing concerns the interaction between pressure allocation and gate
-nonlinearity in the quality-sparsity trade-off.
+The user requested a clean start for V2 on 2026-09-05 and then authorized an
+argument-first introduction and related work. `draft/` now contains these two
+sections, a checked bibliography, and a lightweight reading wrapper. The
+framing concerns how pressure, gate nonlinearity, and site placement interact
+in the quality--sparsity trade-off. The text develops a candidate explanation
+and asks how it transfers; it does not promote empirical findings or add a
+results section. The user's `draft/supplementary.md` remains unchanged.
+
+[Draft positioning notes](draft/positioning.md) record the literature checks,
+length budget, and evidence boundaries, including the combined gate/pressure
+change in A4-OL1 versus A7-OL1, OL1's lack of a loss-convergence guarantee, and
+the separation between logical sparsity and measured execution. The earlier
+spillover claim is not reused as the paper's central argument. The existing
+architecture/ladder artifact is included as a setup reference. Manuscript
+sources and the reading copy retain the local-only ignore policy.
 
 The 4 September matched-intervention paper is preserved in
 [v0_2026-09-05](draft/archive/v0_2026-09-05/README.md), including its PDF,
