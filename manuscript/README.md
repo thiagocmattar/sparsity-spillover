@@ -44,6 +44,19 @@ spillover claim is not reused as the paper's central argument. The existing
 architecture/ladder artifact is included as a setup reference. Manuscript
 sources and the reading copy retain the local-only ignore policy.
 
+The subsequent user-requested adversarial review used three independent
+sub-agents with explicit five-criterion scoring rubrics for writing, scientific
+rigor, and literature/systems positioning. The revised introduction centers
+separately controllable interventions whose effects need not be separable,
+and states the reader's design decisions before introducing measurement.
+Related work now contains three paragraphs on sparsification interventions
+and two on inference speedup, with workload-specific execution reasoning and
+no dedicated gradient-surgery strand. Detailed reports, initial/final source
+snapshots, scores, and the response to criticisms are indexed in
+[the review record](draft/reviews/2026-09-05-adversarial/README.md).
+The review strengthens positioning; the empirical insight and its transfer
+remain obligations for the later results stage.
+
 The 4 September matched-intervention paper is preserved in
 [v0_2026-09-05](draft/archive/v0_2026-09-05/README.md), including its PDF,
 sources, review notes, and complete former working directory. That paper covers
