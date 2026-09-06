@@ -244,3 +244,120 @@ then gather per-site diagnostics and the repeated 35-variant final evidence.
 Do not treat K025 as completing the attention requirement, or plot unqualified
 2.3x timing as a valid achieved speedup. Latest CPU bootstrap/math rerun:
 245 passed in 7.30s. No manuscript or final-figure change has been made.
+
+## Native-dispatch audit and first qualified all-site candidate
+
+The preceding ordinary-forward dispatcher inference was incomplete. The
+`dispatch-001` CUDA trace shows that native BF16 B1 H4 T2048 D32 actually uses
+`flash_fwd_splitkv_kernel<32,64,256,4,...,Split=true>` and a two-split combine.
+At T129 it uses the ordinary 128x128 forward kernel. A CPU operator name alone
+did not reveal this distinction. No historical measurement is overwritten.
+
+K026 ports the ordinary forward schedule with exact-zero MMA-atom bypasses.
+Its first two attempts failed before execution (upstream header order, then a
+`forward` name collision); both source snapshots and logs are retained.
+Attempt003 compiles and passes sparse/no-skip bitwise equality in all36
+component cases, but differs from the native T2048 split schedule. Full338
+validation fails for both c25 and c30; c30's 2.319x timing is unqualified.
+
+K027 changes to the observed two-split 64x256 schedule, native split reduction
+and combine, and no fast-math compiler option. All28 synthetic/captured
+components are bitwise equal to native, with and without MMA skipping.
+The high-R c30 endpoint passes every full338-block gate. Its preliminary
+8-development-input x3-pass speedup is 2.274x versus previous1.816x; pooled
+loss difference is -2.823e-9 nat/token. c25 still fails the projection-related
+blocks74/118/119, as K025 did, despite 2.262x timing. These are not the final
+64-validation-input, three-process study estimates.
+
+K027's separate c30 attention-skip-disabled trial also passes, at 2.289x stock.
+This does not establish an attention-specific speed benefit: matched multi-mode
+attribution and further specialization are required. Sparse-MMA counters are
+issued 16x8x16 atoms, including padding; the dense two-split control issues
+147456 atoms per QK or PV operation (301989888 FMA-equivalent terms), not the
+268566528 causally valid scalar products of the R_model denominator.
+
+`projection-precision-001` captures native a/m operands on c25 validation
+blocks74/118/119 and c30 block0. It records238 differing output entries across
+48 layer/site cases. Native outputs are closer to the FP64 dot on192 entries,
+the sparse output on43, with3 ties. Separately rounding the BF16 matmul before
+bias does not match native. These are selected-case diagnostics, not general
+error-frequency estimates. K028 tests FP64 recomputation within8 FP32 ULPs of
+a BF16 rounding midpoint; c25 remains unqualified, c30 qualifies at2.257x.
+It has not improved the qualification coverage or demonstrated a speed gain.
+
+K029 is testing an exact-grid prefix shortcut for wholly zero64-query tiles,
+while retaining K027's sparse MMA fallback. It checks actual inputs, not the
+checkpoint label or threshold: K must be finite, and each V must be zero or
+have magnitude in[0.5,64]. Under this sufficient condition, each <=1024-term
+BF16 sum is an integer multiple of2^-8 within FP32's exact integer range.
+The shortcut retains the native split normalization and combine; it is not
+the earlier rounded/unnormalized prefix algorithm. Prefix work, safety tests,
+and extra launches are inside timing. Bypassed QK atoms, PV prefix reuse, and
+query-split rows are recorded separately from zero-operand MMA skipping.
+
+The dependency inventory pins Flash `e2743ab5b3803bb672b16437ba98a3b1d4576c50`
+and its nested CUTLASS `7127592069c2fe01b041e174ba4345ef9b279671`, with retained
+BSD licenses. Torch's separate CUTLASS pin is
+`0d2b201e8c1c4a03efa6e9c468161916e2334725`. K027's equality claim rests on the
+measured bitwise checks, not on claiming all dependency identities are equal.
+
+Returned and locally hash-verified evidence (archive SHA256):
+
+| Bundle | Files / bytes | SHA256 |
+|---|---:|---|
+| evidence-010 |340 /3081130|`0e4f84fbdcf670c486a2b3b455ae64ee13689acb47eabb34a9081b863f2fb229`|
+| evidence-011 |351 /3399186|`40155150b60fe95564d24b9f5edb778430f3a78457558a1b4b40184cf9b3b722`|
+| evidence-012 |365 /3914695|`b5836dc1f178709eff2bbe17ede6d748fefdec41cdf629923961a938cd4905fa`|
+| evidence-013 |426 /4670256|`e05baf0de81ce9e1e1dc3d78e220787ec5ab28e51086ae61a66d98dff0dd4f1e`|
+| evidence-014 |476 /5737191|`203d85c6e0d684cbe51597a5e2c038ecd01e83be1baf825788a89729b78609fe`|
+| evidence-015 |534 /6590044|`1f45311a47a52b4a726e71e01adf1a48f7e0434413292332cf87b04bc47934ed`|
+
+Latest local bootstrap/math test run:248 passed in7.20s. Native matching on
+components and one qualified endpoint do not complete the objective: measured
+attention-specific benefit, broader qualification, a frozen repeated35-variant
+study, all-site diagnostics and the final scientific PDF remain required.
+
+K029's30 components are bitwise equal to native in all three modes (dense,
+sparse+prefix, sparse without prefix); both QK and PV issued+skipped+bypassed
+atom counters reconcile to147456 in all90 cases. It passes c30's full338-block
+validation, with the same loss delta as K027 and maximum absolute logit
+difference0.25 (within the unchanged elementwise gate). Its preliminary2.237x
+timing does not improve K027. c25 remains unqualified. Evidence-016 contains
+585 files /7756457 bytes, locally verified; archive SHA256
+`38fd797d953ef784d149d48fdb051c2d59250583f03220cd48df85d32342ac03`.
+
+K030 moves the exact-grid shortcut inside the zero-query CTA, eliminating the
+global prefix buffer and its extra launch. It uses the same sufficient grid
+bound and split normalization. If the grid/finite check fails, every tentative
+partial output is overwritten by the normal attention computation. The
+successful-reuse counters do not count this failed-shortcut overhead; all such
+work remains included in timing. `36_attribution.py` pairs native, previous,
+sparse, attention-dense, no-prefix and all-skips-disabled modes on the same
+development inputs, followed by full validation of all six. K030 and these
+multi-mode results are still being evaluated, not frozen as a final policy.
+
+K030 completed: all30 components match native and the skip toggles bitwise.
+The six-mode c30 test passes all338 blocks, but sparse attention is 1.5% slower
+than its matched attention-dense control (2.266x versus 2.299x stock). c25
+continues to fail the same three projection-related blocks in all new modes.
+K031 changes only the exact-prefix memory mapping: lanes load contiguous
+features, warps own token slices, and shared memory combines exact-grid sums.
+Only causally needed K/V are checked. All30 components again match native
+and the skip toggles bitwise. Full338 qualification is unchanged: c30 passes,
+c25 fails. On32 development inputs x7 paired passes, c30 achieves2.2566x
+stock versus previous1.8294x; attention skipping gives only1.00274x over the
+same implementation with attention skips disabled, and prefix reuse gives
+0.99850x over sparse MMA alone. This is not an established attention benefit.
+All-skips-enabled versus all-skips-disabled is1.77962x on c30. These timings
+remain development evidence, not the final held-out three-process graph.
+
+Evidence-017 (636 files /9988953 bytes) and evidence-018 (687 files /12214868
+bytes) are locally archive- and per-file-SHA256 verified. Their archive hashes
+are `fc9e8bde722657f841e8166daac663fad9296460cc5a8ca08981c0eff1ea47e4`
+and `d2df39f5e7b70755b8bdc7b20749d76840936e9a316d17879b64e4398ac88b7f`,
+respectively. All K026--K031 processes and included logs are terminal. Latest
+local bootstrap/math suite:248 passed in7.23s. At18:25 UTC the existing Pod
+remains available for the approved search, about USD1.02 compute since creation
+at USD0.69/hour, under the USD20 total ceiling; posted billing is not final.
+The independent stop deadline remains20:57 UTC. Next work tests tensor-core
+projection arithmetic without changing checkpoints, gates, or tolerances.

@@ -1,0 +1,496 @@
+{"stage": "compile", "elapsed_seconds": 0.1592093149665743}
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k026_4bdb63cff71a -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026 -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --use_fast_math --expt-relaxed-constexpr --expt-extended-lambda -std=c++17 -c /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu -o kernel.cuda.o 
+FAILED: kernel.cuda.o 
+/usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k026_4bdb63cff71a -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026 -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --use_fast_math --expt-relaxed-constexpr --expt-extended-lambda -std=c++17 -c /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu -o kernel.cuda.o 
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(143): error: identifier "size" is undefined
+      static_assert(decltype(size<1>(tCrA) == size<1>(acc))::value);
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(146): error: identifier "Tensor" is undefined
+      Tensor tCrA_copy_view = smem_thr_copy_A.retile_D(tCrA);
+      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(146): error: expected a ";"
+      Tensor tCrA_copy_view = smem_thr_copy_A.retile_D(tCrA);
+             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(147): error: identifier "tCrA_copy_view" is undefined
+      static_assert(decltype(size<1>(tCsA) == size<1>(tCrA_copy_view))::value);
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(148): error: expected a ";"
+      Tensor tCrB_copy_view = smem_thr_copy_B.retile_D(tCrB);
+             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(149): error: identifier "tCrB_copy_view" is undefined
+      static_assert(decltype(size<1>(tCsB) == size<1>(tCrB_copy_view))::value);
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(150): error: identifier "_" is undefined
+      if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
+                                                           ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(150): error: identifier "_0" is undefined
+      if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
+                                                                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(150): error: expected a ")"
+      if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
+                                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(150): error: expected a ")"
+      if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, _0{}), tCrA_copy_view(_, _, _0{})); }
+                                                                                               ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(151): error: identifier "_" is undefined
+      if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
+                                                           ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(151): error: identifier "_0" is undefined
+      if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
+                                                                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(151): error: expected a ")"
+      if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
+                                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(151): error: expected a ")"
+      if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{})); }
+                                                                                               ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(155): error: identifier "_" is undefined
+              if (!A_in_regs) { cute::copy(smem_tiled_copy_A, tCsA(_, _, i + 1), tCrA_copy_view(_, _, i + 1)); }
+                                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(156): error: identifier "_" is undefined
+              if (!B_in_regs) { cute::copy(smem_tiled_copy_B, tCsB(_, _, i + 1), tCrB_copy_view(_, _, i + 1)); }
+                                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(158): error: identifier "_" is undefined
+          cute::gemm(tiled_mma, tCrA(_, _, i), tCrB(_, _, i), acc);
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(169): error: identifier "size" is undefined
+      static_assert(decltype(size<1>(tCrA) == size<1>(acc))::value);
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(172): error: identifier "Tensor" is undefined
+      Tensor tCrB_copy_view = smem_thr_copy_B.retile_D(tCrB);
+      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(172): error: expected a ";"
+      Tensor tCrB_copy_view = smem_thr_copy_B.retile_D(tCrB);
+             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(173): error: identifier "tCrB_copy_view" is undefined
+      static_assert(decltype(size<1>(tCsB) == size<1>(tCrB_copy_view))::value);
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(174): error: identifier "_" is undefined
+      cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
+                                         ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(174): error: identifier "_0" is undefined
+      cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
+                                               ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(174): error: expected a ")"
+      cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
+                                                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(174): error: expected a ")"
+      cute::copy(smem_tiled_copy_B, tCsB(_, _, _0{}), tCrB_copy_view(_, _, _0{}));
+                                                                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(189): error: identifier "size" is undefined
+      static_assert(decltype(size<0>(acc_layout))::value == 4);
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(191): error: identifier "Shape" is undefined
+      auto l = logical_divide(acc_layout, Shape<_2>{});
+                                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(191): error: identifier "_2" is undefined
+      auto l = logical_divide(acc_layout, Shape<_2>{});
+                                                ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(191): error: expected an expression
+      auto l = logical_divide(acc_layout, Shape<_2>{});
+                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(192): error: identifier "get" is undefined
+      return make_layout(make_layout(get<0, 1>(l), get<1>(l)), make_layout(get<0, 0>(l), get<2>(l)));
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(201): error: identifier "Underscore" is undefined
+      using X = Underscore;
+                ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(202): error: identifier "size" is undefined
+      static_assert(decltype(size<0>(acc_layout))::value == 4);
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(204): error: identifier "get" is undefined
+      constexpr int mma_shape_K = get<2>(typename MMA_traits::Shape_MNK{});
+                                  ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(209): error: identifier "Shape" is undefined
+          auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                              ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(209): error: type name is not allowed
+          auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(209): error: type name is not allowed
+          auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                       ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(209): error: identifier "_2" is undefined
+          auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(209): error: expected an expression
+          auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(219): error: identifier "Underscore" is undefined
+      using X = Underscore;
+                ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(220): error: identifier "size" is undefined
+      static_assert(decltype(size<0>(acc_layout))::value == 4);
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(222): error: identifier "Shape" is undefined
+      auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(222): error: type name is not allowed
+      auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(222): error: type name is not allowed
+      auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(222): error: identifier "_2" is undefined
+      auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(222): error: expected an expression
+      auto l = logical_divide(acc_layout, Shape<X, X, _2>{});
+                                                         ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(223): error: identifier "get" is undefined
+      return make_layout(make_layout(get<0>(l), get<2, 0>(l)), get<1>(l), get<2, 1>(l));
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: identifier "Tensor" is undefined
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                              ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: type name is not allowed
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: type name is not allowed
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: expected an expression
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: expected a ";"
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                                                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(247): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(309): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(312): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(378): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(383): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(397): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(405): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(11): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(24): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(26): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(28): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(30): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(51): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/sparse_gemm.h(67): warning #607-D: this pragma must immediately precede a statement
+  #pragma unroll
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/utils.h(229): error: An inline __device__/__constant__/__managed__ variable must have internal linkage when the program is compiled in whole program mode (-rdc=false)
+                            auto convert_type(Tensor<Engine, Layout> const &tensor) {
+                                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(36): error: MMA_Atom is not a template
+      using MMA_Atom_Arch = MMA_Atom<SM75_16x8x8_F32F16F16F32_TN>;
+                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(36): error: identifier "SM75_16x8x8_F32F16F16F32_TN" is undefined
+      using MMA_Atom_Arch = MMA_Atom<SM75_16x8x8_F32F16F16F32_TN>;
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(43): error: Copy_Atom is not a template
+      using SmemCopyAtom = Copy_Atom<DefaultCopy, elem_type>;
+                           ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(43): error: identifier "DefaultCopy" is undefined
+      using SmemCopyAtom = Copy_Atom<DefaultCopy, elem_type>;
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(44): error: Copy_Atom is not a template
+      using SmemCopyAtomTransposed = Copy_Atom<DefaultCopy, elem_type>;
+                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(74): error: TiledMMA is not a template
+      using TiledMma = TiledMMA<
+                       ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(76): error: identifier "Layout" is undefined
+          Layout<Shape<Int<kNWarps>,_1,_1>>,
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(76): error: identifier "Shape" is undefined
+          Layout<Shape<Int<kNWarps>,_1,_1>>,
+                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(76): error: identifier "Int" is undefined
+          Layout<Shape<Int<kNWarps>,_1,_1>>,
+                       ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(76): error: expected a ";"
+          Layout<Shape<Int<kNWarps>,_1,_1>>,
+                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(80): error: identifier "Swizzle" is undefined
+          composition(Swizzle<kSwizzle, 3, 3>{},
+                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(80): error: expected an expression
+          composition(Swizzle<kSwizzle, 3, 3>{},
+                                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(82): error: identifier "_8" is undefined
+                      Layout<Shape<_8, Int<kBlockKSmem>>,
+                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(82): error: expected an expression
+                      Layout<Shape<_8, Int<kBlockKSmem>>,
+                                                        ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(83): error: identifier "Stride" is undefined
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(83): error: expected an expression
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(83): error: identifier "_1" is undefined
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(83): error: expected an expression
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                                                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(80): error: identifier "composition" is undefined
+          composition(Swizzle<kSwizzle, 3, 3>{},
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(86): error: expected an expression
+          Shape<Int<kBlockM>, Int<kHeadDim>>{}));
+                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(86): error: expected an expression
+          Shape<Int<kBlockM>, Int<kHeadDim>>{}));
+                                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(84): error: identifier "tile_to_shape" is undefined
+      using SmemLayoutQ = decltype(tile_to_shape(
+                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(90): error: expected an expression
+          Shape<Int<kBlockN>, Int<kHeadDim>>{}));
+                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(90): error: expected an expression
+          Shape<Int<kBlockN>, Int<kHeadDim>>{}));
+                                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(94): error: expected an expression
+          composition(SmemLayoutKV{}, make_layout(Shape<Int<kHeadDim>, Int<kBlockN>>{}, GenRowMajor{})));
+                                                                     ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(94): error: expected an expression
+          composition(SmemLayoutKV{}, make_layout(Shape<Int<kHeadDim>, Int<kBlockN>>{}, GenRowMajor{})));
+                                                                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(94): error: identifier "GenRowMajor" is undefined
+          composition(SmemLayoutKV{}, make_layout(Shape<Int<kHeadDim>, Int<kBlockN>>{}, GenRowMajor{})));
+                                                                                        ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(94): error: expected a ")"
+          composition(SmemLayoutKV{}, make_layout(Shape<Int<kHeadDim>, Int<kBlockN>>{}, GenRowMajor{})));
+                                                                                                   ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(94): error: identifier "make_layout" is undefined
+          composition(SmemLayoutKV{}, make_layout(Shape<Int<kHeadDim>, Int<kBlockN>>{}, GenRowMajor{})));
+                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(95): error: identifier "get_nonswizzle_portion" is undefined
+      using SmemLayoutVtransposedNoSwizzle = decltype(get_nonswizzle_portion(SmemLayoutVtransposed{}));
+                                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(98): error: expected an expression
+          composition(Swizzle<kSwizzle, 3, 3>{},
+                                             ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(99): error: expected an expression
+                      Layout<Shape<Int<8>, Int<kBlockKSmem>>,
+                                         ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(99): error: expected an expression
+                      Layout<Shape<Int<8>, Int<kBlockKSmem>>,
+                                                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(100): error: expected an expression
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(100): error: expected an expression
+                             Stride<Int<kBlockKSmem>, _1>>{}));
+                                                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(103): error: expected an expression
+          Shape<Int<kBlockM>, Int<kHeadDim>>{}));
+                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(103): error: expected an expression
+          Shape<Int<kBlockM>, Int<kHeadDim>>{}));
+                                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(104): error: Copy_Atom is not a template
+      using SmemCopyAtomO = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, Element>;
+                            ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(104): error: identifier "AutoVectorizingCopyWithAssumedAlignment" is undefined
+      using SmemCopyAtomO = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, Element>;
+                                      ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(104): error: expected a ";"
+      using SmemCopyAtomO = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, Element>;
+                                                                                  ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(105): error: Copy_Atom is not a template
+      using SmemCopyAtomOaccum = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, ElementAccum>;
+                                 ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(105): error: expected a ";"
+      using SmemCopyAtomOaccum = Copy_Atom<AutoVectorizingCopyWithAssumedAlignment<128>, ElementAccum>;
+                                                                                       ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(107): error: identifier "size" is undefined
+      static constexpr int kSmemQSize = size(SmemLayoutQ{}) * sizeof(Element);
+                                        ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(120): error: expected a ";"
+      using GmemLayoutAtom = Layout<Shape <Int<kNThreads / kGmemThreadsPerRow>, Int<kGmemThreadsPerRow>>,
+                                                                              ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(127): error: SM80_CP_ASYNC_CACHEGLOBAL is not a template
+          SM80_CP_ASYNC_CACHEGLOBAL<cute::uint128_t>,
+          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(131): error: identifier "Copy_Atom" is undefined
+          make_tiled_copy(Copy_Atom<Gmem_copy_struct, Element>{},
+                          ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(131): error: type name is not allowed
+          make_tiled_copy(Copy_Atom<Gmem_copy_struct, Element>{},
+                                    ^
+
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src/kernel_traits.h(131): error: type name is not allowed
+          make_tiled_copy(Copy_Atom<Gmem_copy_struct, Element>{},
+                                                      ^
+
+Error limit reached.
+100 errors detected in the compilation of "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu".
+Compilation terminated.
+ninja: build stopped: subcommand failed.
+{"stage": "failed", "elapsed_seconds": 12.402936219936237, "error": "Error building extension 'run028_k026_4bdb63cff71a'"}
+Traceback (most recent call last):
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2774, in _run_ninja_build
+    subprocess.run(
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ninja', '-v', '-j', '2']' returned non-zero exit status 1.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/24_native_probe.py", line 90, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/24_native_probe.py", line 32, in main
+    emit('compile');candidate.extension()
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/candidate.py", line 20, in extension
+    return load(name='run028_k026_'+digest,sources=[str(folder/'kernel.cu')],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 1818, in load
+    return _jit_compile(
+           ^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2268, in _jit_compile
+    _write_ninja_file_and_build_library(
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2429, in _write_ninja_file_and_build_library
+    _run_ninja_build(
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2791, in _run_ninja_build
+    raise RuntimeError(message) from e
+RuntimeError: Error building extension 'run028_k026_4bdb63cff71a'

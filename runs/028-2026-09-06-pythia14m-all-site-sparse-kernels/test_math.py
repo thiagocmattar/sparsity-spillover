@@ -27,3 +27,35 @@ def test_zero_operand_union_does_not_drop_nonzeros():
     dense=q@k.T
     explicit=torch.tensor([sum(float(q[d]*row[d]) for d in range(4) if q[d]!=0 and row[d]!=0) for row in k],dtype=torch.float64)
     torch.testing.assert_close(dense,explicit)
+def test_native_mma_counter_unit_and_causal_padding():
+    # The ordinary D32 Flash path uses 128x128 tiles: 4 warps x2 row atoms x16 col atoms
+    # x2 reduction atoms; each MMA represents 16x8x16 scalar FMAs.
+    blocks=2048//128
+    mma_count=4*sum(range(1,blocks+1))*4*2*16*2
+    assert mma_count*2048==285212672
+    assert mma_count*2048>4*32*2048*2049//2  # padded tiles != R_model denominator
+
+
+def test_splitkv_padding_and_partition_count():
+    # Native B1 H4 T2048 D32 uses 64x256 tiles and 2 KV splits.
+    visits=sum((64*(m+1)+255)//256 for m in range(32))
+    split_visits=sum(max(0,min((64*(m+1)+255)//256,(s+1)*4)-s*4) for m in range(32) for s in range(2))
+    assert visits==split_visits==144
+    qk_mmas=4*visits*4*1*32*2
+    pv_mmas=4*visits*4*1*4*16
+    assert qk_mmas==pv_mmas==147456
+    assert qk_mmas*2048==301989888
+
+
+def test_safe_bf16_prefix_grid_is_exact_in_fp32():
+    # Bound applies to <=1024 terms. All BF16 values in this range are
+    # multiples of 1/256, and every partial sum has magnitude <=2^24 grid units.
+    assert 64*1024*256==2**24
+    gen=torch.Generator().manual_seed(2901)
+    x=(torch.randint(-16384,16385,(1024,),generator=gen).float()/256).bfloat16()
+    x=torch.where(x.abs()>=.5,x,0).float()
+    assert torch.equal(x*256,(x*256).round())
+    exact=x.double().cumsum(0)
+    assert torch.equal(x.cumsum(0).double(),exact)
+    assert x.sum().double()==exact[-1]
+    assert x.flip(0).sum().double()==exact[-1]

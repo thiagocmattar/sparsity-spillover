@@ -1,0 +1,45 @@
+{"stage": "compile", "elapsed_seconds": 0.200453051016666}
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k026_7e40705dc586 -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026 -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --use_fast_math --expt-relaxed-constexpr --expt-extended-lambda -std=c++17 -c /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu -o kernel.cuda.o 
+FAILED: kernel.cuda.o 
+/usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k026_7e40705dc586 -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026 -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --use_fast_math --expt-relaxed-constexpr --expt-extended-lambda -std=c++17 -c /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu -o kernel.cuda.o 
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu(57): error: no instance of function template "pybind11::module_::def" matches the argument list
+            argument types are: (const char [8], <unknown-type>)
+            object type is: pybind11::module_
+                                        {m.def("forward",&forward);}
+                                           ^
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/pybind11/pybind11.h(1436): note #3327-D: candidate function template "pybind11::module_::def" failed deduction
+      module_ &def(const char *name_, Func &&f, const Extra &...extra) {
+               ^
+
+1 error detected in the compilation of "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/kernel.cu".
+ninja: build stopped: subcommand failed.
+{"stage": "failed", "elapsed_seconds": 13.140244032954797, "error": "Error building extension 'run028_k026_7e40705dc586'"}
+Traceback (most recent call last):
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2774, in _run_ninja_build
+    subprocess.run(
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ninja', '-v', '-j', '2']' returned non-zero exit status 1.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/24_native_probe.py", line 90, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/24_native_probe.py", line 32, in main
+    emit('compile');candidate.extension()
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k026/candidate.py", line 20, in extension
+    return load(name='run028_k026_'+digest,sources=[str(folder/'kernel.cu')],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 1818, in load
+    return _jit_compile(
+           ^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2268, in _jit_compile
+    _write_ninja_file_and_build_library(
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2429, in _write_ninja_file_and_build_library
+    _run_ninja_build(
+  File "/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2791, in _run_ninja_build
+    raise RuntimeError(message) from e
+RuntimeError: Error building extension 'run028_k026_7e40705dc586'

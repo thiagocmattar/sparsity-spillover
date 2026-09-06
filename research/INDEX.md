@@ -6,10 +6,11 @@
 ## Current status
 
 Run 028 is implementing the user-approved USD20 all-site 14M kernel search.
-Sparse attention and all four projection sites are in CUDA development; the
-faster high-R prototypes still fail numerical gates. Matched attribution
-controls and a repeated 35-checkpoint R_model-speedup graph remain in scope.
-No qualified faster-kernel or positive-association result is claimed yet.
+K027 matches native split-KV attention and passes full338-block validation on
+the high-R A7+OL1 endpoint at a preliminary2.27x versus previous1.82x. Its
+attention-skip benefit is not established; exact-prefix specialization and
+projection-rounding repairs continue. Matched controls, broader qualification,
+all-site diagnostics and the repeated35-checkpoint final graph remain open.
 
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.

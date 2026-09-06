@@ -16,7 +16,7 @@ def main():
         return
     if not a.name or not a.name.replace('-','').isalnum():p.error('Unique simple bundle name required')
     paths=[f for f in RUN.glob('*') if f.is_file() and f.suffix in {'.py','.json','.md','.sh','.ps1'}]
-    paths += [f for f in (RUN/'candidates').rglob('*') if f.suffix in {'.py','.cu','.md','.json'}]
+    paths += [f for f in (RUN/'candidates').rglob('*') if f.is_file() and (f.suffix in {'.py','.cu','.h','.cuh','.md','.json'} or f.name.startswith('LICENSE'))]
     paths += [f for f in R27.glob('*') if f.is_file() and f.suffix in {'.py','.cu','.json'}]
     paths += [R27/'prelaunch/inputs.json']
     paths += [R25/name for name in ['run025_common.py','measurement.py','config.json','autoresearch/dense_probe/probe.py']]
