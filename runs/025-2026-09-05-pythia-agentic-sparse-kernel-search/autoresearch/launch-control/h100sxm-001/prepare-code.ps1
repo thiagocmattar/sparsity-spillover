@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $run025Run = (Resolve-Path "$PSScriptRoot/../../..").Path
 $run025Root = (Resolve-Path "$run025Run/../..").Path
-$run025Bundle = Join-Path $run025Run 'autoresearch/bundles/h100-code-001'
+$run025Bundle = Join-Path $run025Run 'autoresearch/bundles/h100-code-002'
 $run025Archive = Join-Path $run025Bundle 'run025-h100-code.tar.gz'
 $run025Record = Join-Path $run025Bundle 'archive.json'
 $run025Sums = Join-Path $run025Bundle 'SHA256SUMS'
@@ -54,12 +54,16 @@ $run025Code = [ordered]@{
     expected_sha256 = (Get-FileHash -LiteralPath $run025Archive -Algorithm SHA256).Hash.ToLowerInvariant()
 }
 $run025Items = @($run025Inputs) + @($run025Code)
+$run025TotalBytes = [long]0
+foreach ($run025Item in $run025Items) {
+    $run025TotalBytes += [long]$run025Item.expected_bytes
+}
 $run025Payload = [ordered]@{
     created_utc = [DateTimeOffset]::UtcNow.ToString('o')
     git_commit = $run025Commit
     extraction_order = @('payload.tar.gz', 'run025-70m-development.tar', 'run025-410m-development.tar', 'run025-h100-code.tar.gz')
     items = $run025Items
-    total_bytes = ($run025Items | Measure-Object -Property expected_bytes -Sum).Sum
+    total_bytes = $run025TotalBytes
 }
 $run025Payload | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $run025Record -Encoding UTF8
 $run025Items | ForEach-Object { "$($_.expected_sha256)  $($_.remote_name)" } | Set-Content -LiteralPath $run025Sums -Encoding ascii
