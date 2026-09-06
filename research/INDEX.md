@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run 026 is implementing/testing the user-authorized >1.6x Pythia-14M
+autoresearch continuation under a new $25 RunPod cap. K017 fuses trained gates
+with exact sparse projections; all variants retain latency, canonical count-
+derived R_model and speedup history. See its README for current live resources.
+
 Run 025 completed its Sakana-derived search through K016, the frozen
 36-checkpoint Blackwell matrix, three-process Blackwell replication, fixed-policy
 H100 endpoint transfer, component probes, and direct fixed-`R_model`
@@ -138,7 +143,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `026`. Next analysis number: `017`. Next finding number: `F003`.
+Next run number: `027`. Next analysis number: `017`. Next finding number: `F003`.
 
 ## Where we stopped
 
