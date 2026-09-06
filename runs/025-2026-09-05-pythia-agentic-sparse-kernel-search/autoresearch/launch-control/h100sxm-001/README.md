@@ -1,6 +1,13 @@
 # H100 SXM attempt 001: frozen transfer
 
-Status: **prepared, not yet launched**.
+Status: **allocation failed before Pod creation; no H100 SXM resource or charge
+was created. Superseded by the separate H100 NVL attempt.**
+
+The 2026-09-06 launch returned RunPod's "no longer any instances available"
+response despite the immediately preceding HIGH catalog indication. A
+follow-up control-plane listing contained only the pre-existing RTX PRO 4500
+Pod, proving that this attempt did not orphan a billable H100 resource. The
+scientific definition below remains the source for the unchanged fallback.
 
 This is a fixed-policy hardware-transfer confirmation, not a new search. It
 uses the six declared development endpoints for each of Pythia-14M, 70M, and
