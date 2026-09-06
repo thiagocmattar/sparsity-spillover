@@ -9,13 +9,15 @@ RUN = Path(__file__).resolve().parent
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--candidate', choices=['k037', 'k038', 'k039', 'k040', 'k041', 'k042', 'k043'], required=True)
+    parser.add_argument('--candidate', choices=['k037', 'k038', 'k039', 'k040', 'k041', 'k042', 'k043', 'k044', 'k045', 'k046', 'k047', 'k048'], required=True)
+    parser.add_argument('--attempt-index',choices=['001','002'],default='001')
     args = parser.parse_args()
-    component = 'components' if args.candidate in {'k037', 'k041'} else 'joint'
+    component = 'components' if args.candidate in {'k037', 'k041', 'k044', 'k046'} else 'joint'
     if args.candidate == 'k042':
         component = 'projection'
-    attempts = [f'{args.candidate}-{component}-001'] + [
-        f'{args.candidate}-{condition}-graph-001' for condition in ['c01', 'c11', 'c25', 'c30']]
+    attempts = [f'{args.candidate}-{component}-{args.attempt_index}'] + [
+        f'{args.candidate}-{condition}-graph-{args.attempt_index}' for condition in ['c01', 'c11', 'c25', 'c30']]
+    if args.candidate=='k047':attempts=attempts[1:]
     output = {'candidate': args.candidate, 'terminal': [], 'pending': [], 'current': None}
     for attempt in attempts:
         folder = RUN / 'artifacts' / attempt
@@ -30,6 +32,7 @@ def main():
                 references = ['native_graph', 'k036_graph', 'no_skip_graph', 'attention_dense_graph']
                 if 'k038_graph' in result['timing']:
                     references.append('k038_graph')
+                references += [name for name in ['k042_graph','k045_graph','previous_graph'] if name in result['timing']]
                 output['terminal'][-1]['ratios_to_selected'] = {
                     reference: result['timing'][reference]['selected_graph']['paired_geomean_speedup']
                     for reference in references}

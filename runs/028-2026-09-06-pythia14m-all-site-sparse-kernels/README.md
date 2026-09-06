@@ -835,3 +835,194 @@ unchanged). Code037 SHA256
 and211 overlay files /2212146 bytes are verified remotely. The51 original
 frozen sources still verify. Pod priceUSD0.69/h and guardPID32840 are checked;
 GPU was idle before launch. K043 launches at21:28 UTC under timeoutPID54098.
+
+K043 completes all39 primitives and all four full338/six-mode endpoints with
+zero numerical logit discrepancy. It nevertheless regresses strongly:
+K036/new ratios at c01/c11/c25/c30 are0.87793/0.84102/0.78711/0.79435.
+It is rejected as a speed improvement. Its exact short-row arithmetic and
+counter evidence are retained; no extra study is justified for this candidate.
+
+K044 is an attention-only branch-overhead probe atop K036 projections. The
+whole-operand zero predicate, MMA fragments, accumulator order, split-KV
+schedule, softmax, output combination and source checkpoints are unchanged.
+Instead of C++ branching around each MMA, a warp-uniform PTX predicate guards
+the same BF16 instruction. All lanes share the predicate because it comes
+from full-warp votes. NVIDIA documents instruction guards in
+[PTX predicated execution](https://docs.nvidia.com/cuda/parallel-thread-execution/#predicated-execution).
+The test must retain exactly the prior issued/skipped counts and native
+outputs; fewer branch instructions might improve time, but predicated-off
+instructions may still incur issue overhead, so no gain is presumed.
+
+Scripts89/90/91 reuse the30 synthetic/captured attention components and the
+four registered development checkpoints,32 training inputs x7 paired passes,
+six matched modes, and full338 validation. Original scientific inputs,
+precision/tolerances, no-prefix policy, data coverage and post-hoc retention
+remain fixed. The all-skips and attention-skips controls remain. Execution
+is proposed sequentially after K043 closes and its evidence is exported:
+expected four minutes /USD0.046,20-minute cap /USD0.23, sameUSD0.69/h Pod and
+22:57 UTC guard within theUSD20 total budget. This is not a new final policy.
+
+K043 evidence038 is locally verified:9851 files /350496214 bytes, archive
+SHA256 `eef6b3d071c09852c9c28c3eb637f6b9ace4bc52539b7625ddac731b5ac045a1`.
+K044 code038 SHA256
+`f3e6557b2e1246ccc96cd2793b618bb08640a48a6cbb6f4269a71dfb7b32799c`
+and219 files /2324012 bytes are verified remotely; the frozen51 sources remain
+unchanged. Prelaunch suite:264 passed in7.51s. Sequential K044 starts at21:33
+UTC under20-minute timeoutPID55324; compilation is underway.
+
+K045 is a separate, prepared revision of the rejected hybrid's execution
+geometry. Eight warps classify eight rows concurrently, each writing all128
+output features, instead of two warps serially classifying16 rows for half
+the output width. Four warps execute the fallback with M8 rows padded to M16;
+the other four finish after the shared classification barrier. Numerical
+arithmetic and the <=2 safe-row restriction are unchanged. This reduces
+duplicated/serial inspection but doubles worst-case padded MMA potential;
+it may therefore remain worse for dense inputs. Counters explicitly count
+that padding and separate SIMT products. K042 input projections and K035
+attention remain, independently of the ongoing K044 attention probe.
+
+Scripts92/93/94 retain the39 synthetic/range/gate cases, independent padded
+MMA and SIMT accounting, four registered endpoints,32 training timing inputs
+x7 passes, full338 numerical checks and six matched control modes. No
+scientific input, loss tolerance, model/gate/checkpoint, final-cohort timing,
+or post-hoc retention changes. CPU accounting tests cover the new padding.
+If local checks pass, it may launch only after K044 closes and evidence is
+exported, on the same guarded Pod: expected four minutes /USD0.046, capped
+at20min /USD0.23 withinUSD20. It is not yet GPU-tested or selected.
+
+During K044 full-model checks, source review found a composition error:
+its wrapper inherited K033, not K036, so its input projections differ from
+the intended comparator. The30 attention primitive checks still establish
+unchanged no-prefix numerical outputs and MMA counts, but K044 full-model
+timings do NOT isolate predication. All raw results are retained with this
+limitation; the earlier stated attention-only design was not what executed.
+No executed source is rewritten. K046 corrects the composition in a new
+candidate wrapper: K036 projections plus exactly the retained K044 attention.
+The explicit base path and skip-control forwarding will receive a local
+composition test before launch. It will use a separate attempt identity and
+the same30 primitives/four endpoints/full338/paired32x7 protocol. It may run
+sequentially after K045 under the same20-minute /USD0.23 per-probe cap and
+22:57 UTC guard. K044's full-model slowdown must not be attributed to attention.
+
+K044 completes all four full338/six-mode checks; its numerical qualification
+is valid, but its full-model timing remains a confounded composition probe.
+The K046 regression test verifies the K036 base and forwarding of all three
+skip-control configurations. Latest prelaunch suite:269 passed in7.47s.
+Code039 SHA256
+`3117e23c6fa7b3a0c5ec1edbcd0620959c5fec55271b37162ada7e2e67cf5916`
+and230 overlay files /2369855 bytes are verified remotely, and the frozen51
+sources remain unchanged. K044 evidence039 is downloaded and archive-hash
+verified; file-by-file extraction verification is in progress. K045 launches
+sequentially at21:37 UTC under20-minute timeoutPID56662. K046 is prepared and
+deployed but has not launched. All earlier trials are terminal.
+
+Evidence039 is fully locally verified:10123 files /356039377 bytes, SHA256
+`c18d257b9170d37b97d86955c6b8c680bb95e8a4575cc30d489e8bfa160b949e`.
+K045 attempt001 stops on the first dense component's counter check, before
+any full-model execution. Native/skip/count-toggle outputs agree numerically.
+The harness reduced axes(0,1,2), appropriate for the prior four-dimensional
+counter tensor but wrong for K045's three-dimensional tensor: it returned
+one total163840 instead of six fields[131072,0,32768,0,0,0]. This is an
+instrumentation reduction bug, not evidence of incorrect GPU count generation.
+
+Scripts98/99 prepare infrastructure attempt002 with the exact same K045
+kernel and scientific inputs. The sole measurement change is summing all
+axes except the six-field final axis; a regression test covers both tensor
+layouts and rejects a missing field axis. The failed attempt and its sources
+remain unchanged. Attempt002 will have separate component and model folders,
+and the same bounded20-minute envelope after K046 completes. K046 launches
+sequentially at21:39 UTC under timeoutPID56890 using verified code039, after
+K045 closes and its failed evidence is exported/downloaded.
+
+Failed K045 evidence040 is locally verified:10126 files /355975427 bytes,
+archive SHA256 `36f35a7255377c3cc719b3d94ae446b641981c1535e3df7ad6d01a59251ca269`.
+K046 completes30 components and all four full338 checks with unchanged
+outputs/counts. K036/new ratios are0.99624/0.99434/0.99873/0.99821 at
+c01/c11/c25/c30; no improvement is demonstrated, so predication is not
+selected. Corrected-harness CPU suite:272 passed in8.60s. Code040 SHA256
+`541a4d81a050d43e7b06e718ab2c388fa52c8bd59ff0815c2d74c21faae3c726`
+and233 files /2379670 bytes are remotely verified, with frozen51 sources
+unchanged. K045 attempt002 launches at21:43 UTC under timeoutPID58162.
+
+K047 prepares a composition of the two independently qualified tiling gains:
+K042 a/m plus K039 h/z, keeping K035 attention unchanged. There is no new
+arithmetic, gate, pruning, checkpoint choice or skip criterion. A composition
+unit test checks both concrete implementation paths and skip-control forwarding.
+Full-model qualification remains necessary: constituent qualification alone
+does not prove the combined forward. Script100 retains the four registered
+endpoints,32 training inputs x7 paired passes, and all338 validation blocks.
+Eight matched modes now include K042 and previous graph comparators as well
+as native eager/graph, K036, selected, no-skips and attention-dense. Invalid
+previous outputs at low R remain marked invalid, not performance wins.
+All prior input/budget/retention contracts remain. Script101 may launch after
+K045 closes and evidence is exported, expected three minutes /USD0.035,
+20-minute cap /USD0.23 on the same guarded Pod. No final selection is made.
+
+K046 evidence041 is locally verified:10407 files /361574934 bytes, SHA256
+`5e3d0820887691c6dd8a95fda0e9cd959a4b08dd36d7e8bb4fb5e84555a9e3e0`.
+K045 attempt002 completes all39 components and four full338 checks. Its
+K036/new ratios at c01/c11/c25/c30 are0.92904/0.92497/1.05175/1.05965;
+native/new at c30 is1.46558 and no-skips/new1.24875. The padded fallback
+increases dense control work, so this25% ablation is not itself proof of
+being faster than previous. Low-R regression and high-R improvements are
+both retained; the previous qualified high-R graph remains faster.
+K047 prelaunch suite:275 passed in8.76s. Code041 SHA256
+`a3aa3a065213edaa4e1429f2409c4b086dfa3811d776ed1cea9961f3eddf5cde`
+and237 overlay files /2390823 bytes are remotely verified, with frozen51
+sources unchanged. K047 starts sequentially at21:47 UTC under timeoutPID59337.
+
+K048 prepares a cheaper classifier within unchanged K045 M8 geometry. A
+warp ballot finds each32-feature chunk's nonzeros, and the warp returns
+complex as soon as it encounters a third nonzero. The former per-lane
+count/value bookkeeping and final reductions are removed. Safe <=2 rows
+retain the same scalar result; other rows retain the same padded native-order
+MMA fallback. The selected two terms may now be enumerated in feature order,
+but two exact FP32 products have the same rounded sum in either order.
+Classification, numerical outputs, MMA and executed SIMT counts must still
+agree with independent references; no new zeros or thresholds are introduced.
+
+Scripts102/103/104 retain39 primitives, full338 checks on four registered
+endpoints,32 training timing inputs x7 passes, and nine modes including a
+direct K045 graph comparator alongside K036/K042/previous and skip controls.
+CPU tests cover the ballot classification, nonzero positions, signed zero,
+unsafe magnitudes and dense early exits. All original scientific/retention
+contracts remain fixed. Proposed launch is sequential after K047 and evidence
+export, expected four minutes /USD0.046, capped20min /USD0.23 on the existing
+guarded Pod. This does not authorize interpreting development ratios as the
+new all35 publication study; that study would require a fresh frozen policy.
+
+K045 evidence042 is fully locally verified:10662 files /366083405 bytes,
+archive SHA256 `ce90adb9fe6525f9b30ea535b1c01a3d06d2efbca7da8c1ca4116399c953f22f`.
+K047 completes all four full338/eight-mode endpoints; selected and skip
+controls pass, while previous is invalid at c01/c11 and valid at c25/c30.
+Native/new ratios at c25/c30 are1.45262/1.45762 and previous/new ratios are
+0.91525/0.92008. The tiling composition therefore does not close the remaining
+previous-kernel gap. The low-R regressions are retained. K048 prelaunch CPU
+suite:277 passed in8.13s. Code042 SHA256
+`ec985e64ac92fb06859da8ed3447b696f4e91ac0ca998cf25f4438052ce508e9`
+and243 overlay files /2419257 bytes are verified remotely; frozen51 sources
+remain unchanged. K048 launches sequentially at21:51 UTC under timeoutPID60484.
+
+Script105 successfully extends the independent stop guard after verifying
+Pod identity andUSD0.69/h rate. ReplacementPID27360 is armed before owned
+PID32840 is stopped and awaited. The receipt is
+`launch-control/rtx5090-001/lease-extension-002.json`; old lease records remain.
+The new deadline is2026-09-07T00:57:06Z, eight total hours /USD5.52 maximum GPU
+charge plus existing storage, insideUSD20. This leaves bounded time for more
+development and a possible fresh105-process study. Stop earlier after verified
+retrieval; no new resource or network volume is created.
+
+Scripts106/107 prepare a short follow-up CUDA profile of c30 training block0
+for native, previous, K036/K039/K042/K045/K047/K048, ten warm graph replays
+with full logits. Each must already have passed full338 c30 qualification;
+K045 uses its corrected attempt002 record. Raw events now also retain start
+timestamps to distinguish the six sequential joint calls. This is diagnostic
+instrumentation, not a paired speedup estimate or selection from
+validation timing. It can run only after K048 closes successfully and evidence
+is exported, expected under one minute, capped10min /USD0.12 under the new
+00:57 UTC guard. All traces, prior failures and source snapshots are retained.
+
+K047 evidence043 is locally verified:10913 files /371601587 bytes, archive
+SHA256 `b90cb53e31bc082fcb1aacbdec56b10bf9913a353365e3845cf0b2a31d7751f9`.
+K048's39 primitive cases complete with matching native/skip/count outputs
+and independent work counts. Its full-model checks are still running.
