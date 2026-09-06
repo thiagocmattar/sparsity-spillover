@@ -49,7 +49,8 @@ def main():
     qualified=sum(r['modes']['sparse_graph']['qualified'] for r in rows)
     fig.text(.5,.975,'Pythia-14M | RTX 5090 | BF16 | batch 1 x 2,048 tokens | full logits',ha='center',va='top',fontsize=8)
     fig.text(.5,.932,f'35 variants; 3 processes x 64 inputs x 7 paired passes; {qualified}/35 new kernels qualified',ha='center',va='top',fontsize=7.3)
-    fig.text(.5,.023,'Bars: three-process min-max (not confidence intervals). Panel (b) uses an expanded vertical scale.',ha='center',fontsize=6.8)
+    fig.text(.5,.031,'Bars: three-process min-max (not confidence intervals). Panel (b): expanded vertical scale.',ha='center',fontsize=6.8)
+    fig.text(.5,.008,'Canonical R: source FP16 logical opportunity. Execution: BF16.',ha='center',fontsize=6.8)
     fig.subplots_adjust(left=.09,right=.985,bottom=.32,top=.845,wspace=.36)
     path=dest/'01-rmodel-speedup-and-skip-contribution.pdf'
     fig.savefig(path,metadata={'Title':'R_model, full-model acceleration and isolated skipping contribution',
@@ -66,11 +67,11 @@ def main():
     ax.bar(x-.19,[100*row['operations'][o]['zero_fraction_lower_bound'] for o in operations],.36,
            color='#999999',label='BF16 scalar zero products (lower bound)')
     ax.bar(x+.19,[100*row['operations'][o]['mma_skipped_fraction'] for o in operations],.36,
-           color='#0072B2',hatch='//',label='Skipped tensor-core MMA instructions')
+           color='#0072B2',hatch='//',label='Kernel-bypassed MMA atoms')
     ax.set(xticks=x,xticklabels=labels,ylim=(0,105),ylabel='Fraction within operation (%)',
            title='(d) Zero pattern versus skippable work',xlabel=r'A7+OL1@7, $\kappa=0.5$ (c30)')
     ax.tick_params(axis='x',labelsize=7);ax.grid(axis='y',color='#dddddd',lw=.45);ax.set_axisbelow(True)
-    ax.legend(loc='lower center',bbox_to_anchor=(.5,-.34),frameon=False,fontsize=6.5)
+    ax.legend(loc='lower center',bbox_to_anchor=(.5,-.42),frameon=False,fontsize=6.5)
     extra=Line2D([],[],color='#555555',marker='x',lw=0,label='Open + crossed: numerical gate failed')
     fig.legend(handles=handles+[extra],loc='lower center',bbox_to_anchor=(.5,.063),ncol=3,frameon=False,columnspacing=1.4)
     fig.text(.5,.982,'Controls and granularity | all 35 variants retained | complete 338-block numerical checks',ha='center',va='top',fontsize=8)
@@ -79,7 +80,8 @@ def main():
     path=dest/'02-controls-and-zero-granularity.pdf'
     fig.savefig(path,metadata={'Title':'Eager, previous-kernel and attention controls; zero granularity',
         'Creator':'Run028/66_figures.py','CreationDate':None,'ModDate':None});plt.close(fig);files.append(record(path))
-    write_json(RUN/'results/figure-provenance.json',{'figures':files,'source':record(RUN/'results/summary.json'),'script':record(__file__)})
+    write_json(RUN/'results/figure-provenance.json',{'figures':files,'source':record(RUN/'results/summary.json'),'script':record(__file__),
+        'matplotlib':matplotlib.__version__,'numpy':np.__version__})
     lines=['# All 35 variants: full-model speedup and sparse contribution','',
         'Ratios are paired geometric means across three fresh processes. Brackets are the minimum and maximum process geometric means, not confidence intervals. R_model is the canonical source FP16 logical opportunity; timing uses BF16. Each ratio compares the same checkpoint. Dose is lambda for A1-H pressure families and kappa for A4/A7. Historical A4+OL1@h is not four-site pressure. No numerical failure is excluded.','',
         '| ID | Variant | Dose | R_model (%) | Eager speedup | Graph speedup | Skip contribution | Attention contribution | New qualified | Previous qualified |',

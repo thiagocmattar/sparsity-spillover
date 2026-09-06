@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "run_id": "025-2026-09-05-pythia-agentic-sparse-kernel-search",
+  "upstream_commit": "661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5",
+  "upstream_t2d_sha256": "2f96866ee9227eefaf4707524a4df0f51a7a44ef7275d9a24a7e6a3ba6b302c4",
+  "historical_crlf_t2d_sha256": "c01fda6953daabf1243ab5c2a2e6da8d0f4400c6cf490595884548dc44389be6",
+  "runtime": {"python": "3.12", "torch": "2.11.0", "transformers": "5.12.1", "numpy": "2.5.0", "precision": "bfloat16"},
+  "inputs": {
+    "cache_root": "data/tokenized/minipile-pythia-14m-full",
+    "train_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+    "validation_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+    "sequence_length": 2048,
+    "validation_documents": 500,
+    "validation_blocks": 338,
+    "validation_tail": 1444,
+    "development_blocks": 64,
+    "development_seed": 2500,
+    "timing_seed": 2504
+  },
+  "calibration": {
+    "conditions": ["14m/a0", "14m/a1h", "70m/a0", "70m/a1h", "70m/a7-0p5", "410m/a0", "410m/a1h", "410m/a7-0p5"],
+    "batch_size": 1,
+    "timing_inputs": 16,
+    "timing_passes": 3,
+    "warmups": 2,
+    "max_worker_seconds": 6600,
+    "primitive_relative_l2": 0.02,
+    "primitive_atol": 0.125,
+    "primitive_rtol": 0.02,
+    "logit_relative_l2": 0.02,
+    "logit_atol": 0.25,
+    "logit_rtol": 0.02,
+    "validation_loss_atol": 0.001,
+    "activation_thresholds": [0.0, 0.001, 0.01]
+  },
+  "search": {"trajectory_id": 2501, "max_candidates": 40, "max_gpu_seconds": 72000, "promotion_ratio": 1.02},
+  "budget": {"total_usd": 40.0, "pilot_usd": 5.0, "protected_reserve_usd": 7.16, "new_api_usd": 0.0}
+}

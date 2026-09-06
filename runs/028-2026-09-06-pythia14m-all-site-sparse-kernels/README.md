@@ -624,3 +624,78 @@ with its own20-minute outer timeout /USD0.23 proposed inside the approved
 envelope. Neither K037 nor K038 is deployed/launched yet. The local suite is
 258 passed in7.27s, including exact output coverage for the new M32N16 mapping;
 this is not CUDA performance or numerical qualification.
+
+At20:28 UTC the same Pod price is reverified atUSD0.69/h and the independent
+stop deadline extends to22:57:06 UTC, six total hours /USD4.14 GPU maximum
+plus existing storage, within the approvedUSD20 envelope. New hidden guard
+PID32840 is armed before original PID21920 is stopped. The extension helper's
+immediate process-exit check races Windows asynchronous termination and throws
+before its receipt write; subsequent read-only CIM checks confirm old PID absent
+and new PID/command line/ARMED log correct. The explicit extension receipt
+retains this infrastructure outcome. No second guard or Pod is created.
+
+The frozen105-process K036 matrix completes in4309.38s with no infrastructure
+failure. All35 variants and all new eager/graph/skip-disabled controls are
+bitwise-native on all338 validation blocks in every process; previous K19+K18
+qualifies only6/35 variants. Evidence-030 is locally hash-verified:7911 files
+/305125906 bytes; archive SHA256
+`ff4154c069274a04d027ba803db592aae932df4e795bce5b5d381ddbc0ad7d9f`.
+The reducer audits all sources, pairings, gates, and pooled counts. Figures01/02
+and their observations now preserve the entire cohort and all negative controls.
+Both vector PDFs are rendered and visually inspected. At c30,R_model27.48268%,
+matched graph speedup is1.37988x, net skip contribution1.01912x, and isolated
+attention skipping0.98851x. The previous qualified graph remains faster.
+This is a complete characterization, not completion of the optimization goal.
+
+Code-032 SHA256
+`fe10844e173ef83ace8c029ac2d214ec44a492b41ca92e29d5e4eb34ae08bec1`
+and all179 overlay files /2004426 bytes are verified remotely after the fixed
+matrix ends; all51 frozen source hashes remain unchanged. K037 launches under
+20-minute timeout PID46319. Its detached parent-shell PID46318 initially keeps
+the SSH output channel open; stopping only that verified wrapper leaves the
+separate-session timeout/worker running under PID1. K037 completes30 component
+cases with bitwise-native outputs and unchanged counters, followed by all four
+development endpoints passing full338 checks in all six compared modes.
+K038 subsequently launches under its separate20-minute timeout PID47503 after
+K037 terminal evidence is archived/transferred; its outcomes are not yet known.
+Local suite before these launches:258 passed in7.14s. Neither probe changes the
+fixed K036 policy or its figures. Standard-library monitor74 is read-only.
+
+K037 is numerically qualified but rejected for performance: its matched
+K036/new ratios at c01/c11/c25/c30 are0.8520/0.8603/0.8553/0.8971. Early
+returns alone do not reduce actual latency here. Evidence-031 is locally
+verified:8188 files /307248427 bytes, archive SHA256
+`c03c503dc886a465a521797dbf4b3d6fd9cd1813beb16f18be40105b7a6449ea`.
+
+K038 passes all four full338 endpoints. Native/new graph speedups are
+0.99666/1.05402/1.42511/1.43126 at c01/c11/c25/c30; K036/new ratios are
+0.91113/0.91168/1.03396/1.03484. It helps sparse endpoints by3.4% but regresses
+low-sparsity endpoints. Its no-skips/new ratios at c25/c30 are1.16171/1.16797,
+while attention-only ratios remain0.98403/0.98953. These development results
+do not establish that it beats the previous qualified high-sparsity graph,
+and are not substituted for the complete K036 matrix or used to omit variants.
+
+The next bounded probes K039/K040 change only h/z output tiling: four/eight
+N8 MMA atoms per warp reuse the same gated A fragment, yielding M32N32 and
+M32N64 CTAs respectively. More reuse may help the sparse endpoints but can
+increase registers and reduce parallelism; numerical mismatch or a regression
+against K038 refutes a candidate. Every output retains forward K16 accumulation
+and the original BF16 linear/parallel-residual rounding. No gates, pruning,
+model/data/seed/checkpoint/optimizer provenance, numerical tolerance, or
+per-checkpoint dispatch rule changes. All six matmul paths remain present.
+Scripts75/76 add12 synthetic cases and seven-mode,32-training-input x7-pass
+timing with full338 validation at c01/c11/c25/c30, including both K036 and K038
+graph comparators. Script77 executes each candidate separately. Proposed
+existing-Pod envelope per candidate: expected three minutes /USD0.035,
+20-minute timeout maximum /USD0.23, within the22:57 UTC guard andUSD20 budget.
+All raw failures, timing, sources and quality are retained and transferred
+before teardown. These two probes are implemented but not yet launched.
+
+Evidence-032 is now locally verified:8435 files /311664200 bytes, archive
+SHA256 `9fae658ea3dedc5cb1fa15633b680635b3311665a2d389813297f568e1cd0115`.
+Code-033 SHA256
+`fbd7e9172fa0cb58ff47dc831078534d848306925edcd7514c430f4cdc5d762d`
+and all189 source-overlay files /2039774 bytes are verified remotely; the
+original51-file frozen policy still verifies unchanged. Latest local suite:
+260 passed in7.83s. K039 launches under20-minute timeout PID48726 after the
+K038 evidence is closed and copied; K040 still awaits sequential launch.
