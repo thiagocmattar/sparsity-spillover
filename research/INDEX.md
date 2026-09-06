@@ -5,14 +5,17 @@
 
 ## Current status
 
-Run 025 completed its Sakana-derived Blackwell search through K016 and the
-frozen 36-checkpoint Pythia matrix on one RTX PRO 4500. Thirty-two deployments
-pass complete validation. Analysis 015 reports heterogeneous qualified
-`R_model`--speed associations (`R2` 0.235/0.003/0.611 for 14M/70M/410M) and
-fixed-`R_model` implementation transitions. This is a partial systems case
-study: QK/PV stayed dense, and fresh-process, component, compiled-dense, and
-H100-transfer tests remain incomplete. Evidence is local and hash-verified;
-zero Pods/endpoints remain and the existing 100 GB volume is retained.
+Run 025 completed its Sakana-derived search through K016, the frozen
+36-checkpoint Blackwell matrix, three-process Blackwell replication, fixed-policy
+H100 endpoint transfer, component probes, and direct fixed-`R_model`
+confirmations. Analysis 015 owns the detailed reductions; Analysis 016 owns the
+focused `R_model`--speedup and autoresearch-progress figures. Fresh-process
+qualified `R2` is 0.347/0.0027/0.636 on RTX and 0.321/0.051/0.700 on H100 for
+14M/70M/410M, but all six H100 410M sentinels remain slower than native. The
+common high-sparsity endpoint score finishes at 1.0461x/1.0213x/1.0147x on RTX.
+QK/PV stayed dense and the strongest compiled-dense comparator remains absent.
+Evidence is local and hash-verified; zero Pods/endpoints remain and the existing
+100 GB volume is retained.
 
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official
@@ -135,16 +138,17 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `026`. Next analysis number: `016`. Next finding number: `F003`.
+Next run number: `026`. Next analysis number: `017`. Next finding number: `F003`.
 
 ## Where we stopped
 
-- 2026-09-06: Run 025's Blackwell trajectory and frozen 36-checkpoint matrix
-  completed. Analysis 015 owns the all-point speedup table, qualified
-  within-size regressions, fixed-`R_model` transition analysis, and two verified
-  PDFs. The result is partial against the planned paper minimum; no finding or
-  manuscript claim was promoted. The evidence archive matches its remote
-  post-package identity and no GPU resource remains.
+- 2026-09-06: Run 025's full achieved systems package completed. Analysis 015
+  owns the detailed checkpoint, hardware, component, and fixed-`R_model`
+  reductions; Analysis 016 distills the `R_model`--speedup relation and
+  correctness-constrained candidate progress into two verified PDFs. The
+  evidence is one adaptive systems case study, not a universal speed law or an
+  optimizer comparison; no finding or manuscript claim was promoted. No GPU
+  resource remains.
 - 2026-09-04: Run 024 completed the matched Pythia-410M sparse-kernel sentinel
   on Run 023's physical H100 NVL. All six conditions and full validation pass;
   no primitive, attention composition, or full model breaks even. Analysis 014
