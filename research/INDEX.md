@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run 028 is implementing the user-approved USD20 all-site 14M kernel search.
+The first sparse QK/PV prototype is in CUDA calibration; all four projection
+sites and a final repeated 35-checkpoint R_model-speedup graph remain in scope.
+No faster-kernel or positive-association result is claimed yet.
+
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.
 The best qualified A7+OL1 endpoint has a 1.2365x skip-toggle benefit, about
@@ -155,7 +160,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `028`. Next analysis number: `017`. Next finding number: `F003`.
+Next run number: `029`. Next analysis number: `017`. Next finding number: `F003`.
 
 ## Where we stopped
 
