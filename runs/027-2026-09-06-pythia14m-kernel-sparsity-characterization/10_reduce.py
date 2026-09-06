@@ -33,11 +33,33 @@ def interval(cube,draws=10000,seed=2706):
     return np.quantile(values,[.025,.975]).tolist()
 
 
+def audit_diagnostics(diagnostic):
+    sites={r['name']:r for r in diagnostic['per_site_layer']}
+    if set(sites)!={f'{s}.layer_{i}' for s in ['a','m','h','z'] for i in range(6)}:
+        raise ValueError('Missing captured site/layer')
+    histograms=diagnostic['active_features_per_row']
+    if set(histograms)!={f'{s}.layer_{i}' for s in ['h','z'] for i in range(6)}:
+        raise ValueError('Missing eligible occupancy')
+    zeros=0
+    for name,histogram in histograms.items():
+        width=512 if name.startswith('h.') else 128
+        row=sites[name]
+        if len(histogram)!=width+1 or sum(histogram)!=692224 or any(not isinstance(n,int) or n<0 for n in histogram):
+            raise ValueError('Invalid occupancy histogram')
+        if row['total']!=692224*width or sum(k*n for k,n in enumerate(histogram))+row['exact_zero_count']!=row['total']:
+            raise ValueError('Occupancy and exact-zero counts disagree')
+        zeros+=row['exact_zero_count']*128
+    if zeros!=diagnostic['eligible_zero_products'] or zeros/diagnostic['eligible_products']!=diagnostic['eligible_zero_fraction']:
+        raise ValueError('Eligible zero counts disagree')
+
+
 def main():
     cfg=read_json(RUN/'config.json'); manifest=read_json(RUN/'prelaunch/inputs.json')
     frozen=read_json(RUN/'prelaunch/frozen.json')
+    for source in list(manifest['inputs'].values())+[manifest['cohort_source']]:verify_record(source)
     rows=[];long_rows=[];sources=[]
     for condition in manifest['checkpoints']:
+        for source in condition['files']+condition['provenance']:verify_record(source)
         count=condition['canonical_logical_products']['measured']
         total=count['model_product_count'];zero=count['block_zero_product_count']
         if sum(r['zero_product_count'] for r in count['per_operation'].values())!=zero:raise ValueError('Unpooled numerator')
@@ -48,6 +70,9 @@ def main():
             result=read_json(dest/'result.json'); identity=read_json(dest/'manifest.json')
             if result['status']!='complete' or result['arguments']['smoke']:raise ValueError('Incomplete characterization')
             if result['condition']!=condition['id'] or result['validation_blocks']!=338:raise ValueError('Wrong cohort or coverage')
+            args=result['arguments']
+            if args!=identity['arguments'] or (args['condition'],args['replicate'],args['attempt'])!=(condition['id'],replicate,dest.name):raise ValueError('Process identity mismatch')
+            if identity['gpu']!='NVIDIA GeForce RTX 5090' or identity['capability']!=[12,0]:raise ValueError('GPU class changed')
             if identity['checkpoint']['files']!=condition['files']:raise ValueError('Checkpoint identity mismatch')
             if identity['inputs']!=manifest['inputs']:raise ValueError('Validation input identity mismatch')
             if result['canonical_logical_products']!=condition['canonical_logical_products']:raise ValueError('Logical provenance changed')
@@ -69,6 +94,7 @@ def main():
         if diagnostic['coverage']!={'documents':500,'blocks':338,'input_tokens':692224,'excluded_tail':1444}:raise ValueError('Incomplete activation coverage')
         sources.append(record(RUN/'artifacts'/f'{condition["id"]}-r1/diagnostics.json'))
         if diagnostic['eligible_products']!=338*2048*6*(512+128)*128:raise ValueError('Eligible denominator changed')
+        audit_diagnostics(diagnostic)
         row={'condition':condition['id'],'family':condition['family'],'dose':condition['dose'],
             'historical':condition['historical'],'R_model':zero/total,'R_model_percent':100*zero/total,
             'zero_products':zero,'model_products':total,

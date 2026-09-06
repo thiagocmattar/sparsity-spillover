@@ -5,11 +5,14 @@
 
 ## Current status
 
-Run 027 is executing the approved complete 35-checkpoint Pythia-14M
-characterization of K019+K018: stock eager, QKV-fusion-only, sparse, and
-same-fusion no-skip controls. All 32 CUDA primitive cases and both endpoint
-smokes pass; full 338-block qualification and three-process timing are running.
-Its run-local records preserve numerical failures; no final finding is claimed.
+Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
+Six variants pass all full-validation gates; their speedups are 1.490-1.808x.
+The best qualified A7+OL1 endpoint has a 1.2365x skip-toggle benefit, about
+29% of its net latency saving; R_model alone is not proportional to speedup.
+Both PDFs and all 105 processes are verified locally. The 29 logit-gate
+failures remain visible; zero Pods/endpoints remain, estimated new expense
+is $0.93/$5 (posted billing incomplete), and the existing volume is unchanged.
+No finding or manuscript change is promoted; see Run 027's observations.
 
 Run 026 completed the user-authorized Pythia-14M continuation: frozen K019+K018
 achieves 1.8149x over qualified stock eager SDPA, with bitwise-identical full

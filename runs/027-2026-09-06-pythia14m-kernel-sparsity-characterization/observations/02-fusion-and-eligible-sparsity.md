@@ -21,10 +21,14 @@ Eligible products = 338 x 2048 x 6 x (512 + 128) x 128. Pool these integer
 counts before dividing. This measures the sparse projections' native BF16
 operands and differs from canonical model-wide R_model in both eligible
 operations and numerical execution. It includes exact BF16 zeros without
-imposing an additional clipping threshold.
+imposing an additional clipping threshold. These are native-path operand
+counts, not instrumented counts of the CUDA kernel's executed skips. Candidate
+hidden states may differ, especially for numerically unqualified checkpoints;
+the skip-toggle timing comparison, rather than this proxy axis alone, measures
+the skipping benefit directly.
 
-The h/z projections account for 340241940480 of 6363055915008 model-wide
-logical products over this validation pass (about5.35%). This structural
+The h/z projections account for 340,241,940,480 of 6,363,055,915,008 model-wide
+logical products over this validation pass (about 5.35%). This structural
 fraction is not a bound on runtime savings: the operation mix, implementation
 overhead and throughput per operation are not uniform.
 
@@ -35,14 +39,39 @@ overhead and throughput per operation are not uniform.
 divided by the complete fused sparse implementation, versus canonical R_model.
 This ratio includes both joint projection/residual fusion and zero skipping;
 it is not a pure zero-sparsity effect. (b) The no-skip/sparse controlled latency
-ratio versus count-pooled exact-zero products in the h/z projection operands
-actually eligible for skipping in BF16. Markers, dose-connecting segments,
+ratio versus count-pooled exact-zero products in native BF16 h/z projection
+operands that are eligible for this kernel's skipping rule. Markers, dose-connecting segments,
 historical labels, numerical gates, and timing intervals follow Observation 01.
 The no-skip kernel is deliberately untuned and is not an optimized dense rival.
 
 ## Result
 
-Awaiting execution and reduction; no measured claim is made yet.
+Among the six qualified checkpoints, sparse execution is 1.1746-1.2532x faster
+than QKV fusion with stock dense projections, and 1.2177-1.5310x faster than
+the identical joint-fusion implementation with skipping disabled. These are
+different comparisons, not interchangeable attribution measures.
+
+For A7+OL1@7 kappa 0.5, no-skip/sparse is 1.236452x, 95% CI
+[1.222202, 1.260107]. The paired arithmetic mean latency difference is
+0.486188 ms, versus 1.668512 ms for native minus sparse: a 29.14% share of
+the net measured saving. The net non-skipping implementation difference is
+1.182324 ms. This is a control-specific decomposition, not a hardware FLOP
+decomposition or proof that the no-skip implementation is optimal.
+
+A1-H+OL1 lambda 0.1 qualifies at only 3.338579% canonical R_model and 62.4257%
+native BF16 h/z eligible zeros, yet its skip-toggle ratio is 1.531043x. The
+five qualified high-kappa gated models have roughly 99.86-99.95% eligible
+zeros and toggle ratios near 1.22-1.24x. Thus even eligible zero fraction alone
+does not determine the end-to-end ratio across different topologies: product
+location/distribution and the rest of the execution path also matter. The
+controlled toggle supports a real skipping benefit, without a universal
+monotone sparsity-to-speed law.
+
+The arithmetic attribution share for A1-H+OL1 lambda 0.1 is above 100%
+(108.27%) because its untuned no-skip fused implementation is slower than
+stock eager. This is not an impossible saving: skipping offsets a negative
+non-skipping implementation difference. Do not interpret these shares as
+bounded physical work fractions.
 
 ## Caveats
 

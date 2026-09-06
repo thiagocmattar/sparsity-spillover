@@ -15,7 +15,11 @@ clipping settings. Source logical counts use all 500 MiniPile validation
 documents / 338 complete 2048-token blocks; 1444 tail tokens are excluded.
 Counts are pooled before dividing. The model-wide denominator includes the
 dense language-model head. Canonical R_model is the source diagnostic value,
-not an estimate inferred from measured latency or this BF16 execution.
+not an estimate inferred from measured latency or this BF16 execution. The
+source logical passes use FP16 autocast (`Run004/diagnostics.py`, reused by
+Runs009/011/012/013/014/015). Thus the main x-axis is the canonical training-study
+diagnostic, not a newly counted BF16 R_model. Observation02 separately measures
+native BF16 operands eligible for this kernel.
 
 Four modes run in each of three fresh processes on one RTX 5090, BF16 B1 T2048,
 full vocabulary logits, eager causal SDPA, no KV cache or compilation.
@@ -46,19 +50,47 @@ cross-checkpoint speed changes are not claims of matched language-model quality.
 **Pythia-14M full-model performance versus model-wide logical sparsity.**
 Each point is one trained endpoint; colors and markers identify intervention
 families, and thin segments connect dose-ordered endpoints without asserting
-a fitted relationship. Open historical markers denote A4 gates with h-only
-OL1 pressure, not corrected four-site OL1. (a) Stock eager latency divided by
+a fitted relationship. Grey hexagonal markers identify historical A4 gates with
+h-only OL1 pressure, not corrected four-site OL1. Filled markers qualify in
+all three processes; open crossed markers fail the fixed numerical gate and
+are measured latency ratios, not qualified equivalent-model speedups.
+(a) Stock eager latency divided by
 the fixed fused sparse implementation's latency. (b) Latency of the identical
 joint-fusion implementation with zero skipping disabled, divided by its
-zero-skipping latency. The latter is a mechanistic control, not an optimized
+zero-skipping latency. The x-axis retains the source FP16-autocast logical
+diagnostic; timing is BF16. The latter ratio is a mechanistic control, not an optimized
 dense baseline. Values above one indicate faster sparse execution; the dashed
-line is parity. Error bars are paired 95% timing bootstrap intervals. Grey
-crosses, if present, indicate numerical gate failures. All complete validation
-blocks qualify numerical fidelity; timing uses the fixed 64-block subset.
+line is parity. Error bars are paired 95% timing bootstrap intervals; intervals
+smaller than the markers are not separately visible. Numerical fidelity is
+tested on all complete validation blocks; timing uses the fixed 64-block subset.
 
 ## Result
 
-Awaiting execution and reduction; no measured claim is made yet.
+All 35 checkpoints / 105 processes completed. Only six checkpoints qualify:
+A1-H+OL1 lambda 0.1, A4 kappa 0.5, A4+OL1@4 kappa 0.5, A7 kappa 0.5,
+A7+OL1@7 kappa 0.5, and historical A4+OL1@h kappa 0.5. The last five have
+bitwise-identical full-validation logits in all three processes. Their
+qualified overall speedups span 1.490-1.808x; every qualified interval lies
+above parity. All 35 QKV-fusion-only variants qualify.
+
+The 29 sparse rejections fail the elementwise logit criterion on 1-68 distinct
+blocks out of 338. All relative-L2 errors are below 0.00304 (bound 0.02), and
+all absolute pooled loss changes are below 0.000092 nat/token (bound 0.001).
+Small average errors do not override the fixed elementwise gate. Across all
+35, measured native/sparse ratios span 0.9697-1.8093x; the endpoints of this
+unfiltered range are not both qualified. A0 is a 0.9697x ratio and is unqualified.
+
+The largest qualified speedup is A7+OL1@7 kappa 0.5: 1.807615x, 95% CI
+[1.802063, 1.812120], at canonical R_model 27.482684%. Its median native/sparse
+latencies are 3.679201/2.033881 ms. Qualified A7 kappa 0.5 has R_model 15.386813%
+but almost the same speedup, 1.803428x [1.798824, 1.808976]. Their native BF16
+eligible zero fractions are 99.8838% and 99.8605%, respectively. The data show
+a topology-dependent plateau, not a proportional conversion of global logical
+opportunity into speedup. This is consistent with the kernel's restricted h/z
+reach, but does not isolate every CPU/GPU bottleneck.
+
+Values and uncertainty for every dose appear in `../results/per-variant.md`
+and `../results/summary.csv`. Near-identical points may overlap in the figure.
 
 ## Caveats and nonclaims
 
@@ -78,3 +110,5 @@ Source: `../01_benchmark.py`, `../03_matrix.py`, `../10_reduce.py`, `../11_plot.
 Raw evidence: `../artifacts/c??-r?/`; audited table: `../results/summary.csv`.
 Output: `../figures/01-speedup-vs-rmodel.pdf`.
 No manuscript section changed; paper-facing motivation is recorded in the run README.
+Both final PDFs were rendered with Poppler and inspected at 180 dpi; labels,
+markers, legends, uncertainty and the complete zero-inclusive ranges are intact.
