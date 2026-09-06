@@ -16,7 +16,7 @@ def main():
     p.add_argument('--conditions',nargs='+',default=['c25','c30'])
     p.add_argument('--inputs',type=int,default=2)
     p.add_argument('--synthetic-only',action='store_true')
-    p.add_argument('--candidate',default='k020',choices=['k020','k022'])
+    p.add_argument('--candidate',default='k020',choices=['k020','k022','k023','k024'])
     a=p.parse_args()
     if not a.attempt.replace('-','').isalnum() or not 1<=a.inputs<=64: p.error('Invalid identity/count')
     dest=RUN/'artifacts'/a.attempt
@@ -32,12 +32,14 @@ def main():
         runtime(torch)
         candidate=module('run028_attention_probe',RUN/f'candidates/{a.candidate}/candidate.py')
         functions={f'prefix{int(prefix)}-round{int(rnd)}':candidate.Attention(prefix,rnd)
-                   for prefix in [False,True] for rnd in [False,True]}
+                   for prefix in [False,True] for rnd in ([False] if a.candidate=='k024' else [False,True])}
         source_paths=[RUN/name for name in ['01_probe.py','common.py','config.json','candidates/k020/candidate.py','candidates/k020/kernel.cu']]
         if a.candidate!='k020':source_paths+=list((RUN/f'candidates/{a.candidate}').glob('*.py'))+list((RUN/f'candidates/{a.candidate}').glob('*.cu'))
         write_json(dest/'manifest.json',{'arguments':vars(a),'sources':[record(path) for path in source_paths],
             'torch':torch.__version__,'cuda':torch.version.cuda,'gpu':torch.cuda.get_device_name(),
-            'measurement':'development component only, not qualified full-model speedup'})
+            'measurement':'development component only, not qualified full-model speedup',
+            'counter_unit':('issued tensor-core FMA-equivalent terms including causal padding; only tile zeros are skipped' if a.candidate=='k024' else 'executed scalar QK/PV FMA terms; prefix-query work reported separately'),
+            'rounding':('BF16 unnormalized online; round0 label is harness compatibility, not FP32 probability' if a.candidate=='k024' else 'as defined in the candidate source')})
         emit('compile')
         candidate.extension()
         def case(identity,q,k,v):

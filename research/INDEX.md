@@ -6,9 +6,10 @@
 ## Current status
 
 Run 028 is implementing the user-approved USD20 all-site 14M kernel search.
-The first sparse QK/PV prototype is in CUDA calibration; all four projection
-sites and a final repeated 35-checkpoint R_model-speedup graph remain in scope.
-No faster-kernel or positive-association result is claimed yet.
+Sparse attention and all four projection sites are in CUDA development; the
+faster high-R prototypes still fail numerical gates. Matched attribution
+controls and a repeated 35-checkpoint R_model-speedup graph remain in scope.
+No qualified faster-kernel or positive-association result is claimed yet.
 
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.

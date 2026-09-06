@@ -160,7 +160,87 @@ the scientific objective is not guaranteed within that estimate or budget.
   source code was extracted over the current implementation. The terminal
   receipt is `launch-control/rtx5090-001/inputs-complete-001.json`.
 - `14_high_r.sh` is running sequential 8-development-block, 3-pass trials for
-  c25/c30 on K020/K021/K022, followed by real-operand component probes. Higher-R
-  trained-checkpoint speed/quality results, all-site diagnostics and the final
-  graph are still unproven. The full local bootstrap plus mathematical tests
+  c25/c30 on K020/K021/K022, followed by real-operand component probes. The
+  sequence completed; K022 c30 reaches 2.288x stock versus previous 1.822x,
+  but fails the elementwise logit gate on 6/8 development inputs. The loss
+  difference is +0.00007675 nat/token. K022 c25 is only 0.5237x stock and also
+  fails the elementwise gate. Neither is a qualified result. Real operands
+  confirm c25 has no entirely zero query rows in the two-input probe, while
+  c30 ranges from about25% (first layer) to 99.9-100% (last layer). Both kernel
+  schedules retain matching actual QK/PV term counts on these cases.
+  Archive `evidence-004`, SHA256
+  `4e055f5b84b4d0cc769bdd893479806b0415e69a8c989ab3c1e1b27c9ab987a9`,
+  has 143 files /1211469 bytes verified locally. The full local bootstrap plus mathematical tests
   were rerun after K022 implementation: 245 passed in 7.61s.
+- A precision diagnostic identifies native Flash Attention dispatch and
+  compares alternative backends and threshold crossings on the same captured
+  operands. K023 tests a different arithmetic schedule: round the unnormalized
+  exponential probabilities before sparse PV, then divide by the normalizer.
+  It retains the same sparse traversal, prefix shortcut and gate thresholds.
+  This is a new candidate, not a modification to executed K020/K021/K022.
+  All-site qualified speedups and the final scientific figure remain open.
+
+## Precision and attribution follow-up
+
+`k022-c30-precision-001` confirms that direct SDPA reproduces the captured
+reference attention output bitwise on all 12 layer/input cases. Unrounded K022
+changes the 0.5 z-gate decision for one element in input0/layer0 and two in
+input1/layer0. A one-BF16-step attention difference can therefore become a
+0.5 post-gate difference. No tolerance or trained threshold was changed.
+The normalized-BF16-P trial remains unqualified. Archive `evidence-005`
+SHA256 `c486b133fed666f4c0e79c22d771e884acf53a8227e3a6a7ef5a93483d6247f3`
+contains 155 files /1265928 bytes, verified locally.
+
+K023's unnormalized-BF16-P c30 trial passes four of eight development input
+logit gates, but fails the other four. Its 2.295x timing is therefore unqualified;
+loss delta is +0.00003101 nat/token. Archive `evidence-006`, SHA256
+`98daccc604c993297ebdb32185ef95f85e063548ac23a7e1e6eedbd3cf53e4a0`,
+contains 194 files /1682367 bytes, verified locally.
+
+K024 tests a reverse online-softmax tensor-core fallback with exact-zero
+query/K/V **tile** bypasses. It does not skip individual zeros within a mixed
+tile, and its counter unit is issued FMA-equivalent terms including padding,
+not the scalar traversal count of K020-23. Its development speedups are 0.738x
+(c01), 1.935x (c25) and 1.919x (c30); all fail the elementwise gate. This candidate
+is neither qualified nor evidence that all logical opportunities are realized.
+Archive `evidence-007`, SHA256
+`712d8895df49d71807ed5fba2a6362526d4cf429bbe7e442dd8b2a386fff3839`,
+contains 248 files /2040740 bytes, verified locally.
+
+K025 is explicitly an attribution control, not an all-site candidate. It uses
+the same direct attention wrapper with native SDPA, plus K021/K018 projections.
+The all-four-projection skip toggle isolates savings within that wrapper.
+Comparisons against this control are required before attributing a gain over
+the earlier K019/K018 implementation to sparse attention.
+
+Both K025 development endpoints pass all eight input gates with identical
+pooled loss to stock. Speedups are 2.086x (c25) and 2.140x (c30); disabling all
+four projection skips gives 1.248x and 1.223x, respectively, in separate paired
+development trials. These timings are not the final 64-input/three-process
+evaluation. Full-validation follow-up covers all 338 blocks: c30 passes all
+gates, loss delta -2.823e-9 nat/token; c25 fails on blocks74/118/119 despite
+loss delta -4.359e-6. Preserve this full-coverage failure rather than promote the
+passing eight-input result. The development timing in the c30 full-validation
+process is 2.132x stock against previous 1.810x. It still has dense attention.
+Archive `evidence-008`, SHA256
+`dc57e03430b7a4ec5802ad99344c4641bf54d1144e004492f7e49d1603b3cfca`,
+has 318 files /2505822 bytes verified locally. Archive `evidence-009`, SHA256
+`6141a28a9c8e2c42e16d620fc8054a7b55851266f12f45f4a2b0ca61d108767f`,
+has 330 files /2703470 bytes verified locally, including both full-validation
+trials and their closed logs. All current GPU jobs are terminal.
+
+For the next precision-matched specialization, the installed Torch source
+identity is `70d99e998b4955e0049d13a98d77ae1b14db1f45`; GitHub's immutable tree
+identifies Flash Attention submodule `e2743ab5b3803bb672b16437ba98a3b1d4576c50`.
+The [pinned D32 dispatcher](https://github.com/Dao-AILab/flash-attention/blob/e2743ab5b3803bb672b16437ba98a3b1d4576c50/csrc/flash_attn/src/flash_fwd_launch_template.h)
+uses a 128x128, four-warp forward tile. Matching its actual arithmetic schedule
+is a remaining implementation avenue; it has not been implemented or qualified
+in this run. Preserve upstream licenses if headers are reused.
+
+Next work remains the original all-six-operation objective: implement and
+qualify a precision-matched sparse attention specialization, compare it with
+the matched dense-attention control, diagnose projection rounding failures,
+then gather per-site diagnostics and the repeated 35-variant final evidence.
+Do not treat K025 as completing the attention requirement, or plot unqualified
+2.3x timing as a valid achieved speedup. Latest CPU bootstrap/math rerun:
+245 passed in 7.30s. No manuscript or final-figure change has been made.
