@@ -47,8 +47,8 @@ def main():
     panel(axes[1],'skip','(b) Sparsity-aware paths (detail)',r'Sparse paths disabled / enabled ($\times$)',detail=True)
     fig.legend(handles=handles,loc='lower center',bbox_to_anchor=(.5,.065),ncol=3,frameon=False,columnspacing=1.5)
     qualified=sum(r['modes']['sparse_graph']['qualified'] for r in rows)
-    fig.text(.5,.975,'Pythia-14M | RTX 5090 | BF16 | batch 1 x 2,048 tokens | full logits',ha='center',va='top',fontsize=8)
-    fig.text(.5,.932,f'35 variants; 3 processes x 64 inputs x 7 paired passes; {qualified}/35 new kernels qualified',ha='center',va='top',fontsize=7.3)
+    fig.text(.5,.975,'Pythia-14M | K050 | RTX 5090 | BF16 | batch 1 x 2,048 tokens | full logits',ha='center',va='top',fontsize=8)
+    fig.text(.5,.932,f'35 variants; 3 processes x 64 inputs x 7 paired passes; {qualified}/35 variants qualify',ha='center',va='top',fontsize=7.3)
     fig.text(.5,.031,'Bars: three-process min-max (not confidence intervals). Panel (b): expanded vertical scale.',ha='center',fontsize=6.8)
     fig.text(.5,.008,'FP16 logical R; BF16 execution. Both controls share norm fusion; h/z disabled-path MMA has row padding.',ha='center',fontsize=6.8)
     fig.subplots_adjust(left=.09,right=.985,bottom=.32,top=.845,wspace=.36)
@@ -84,14 +84,16 @@ def main():
         'matplotlib':matplotlib.__version__,'numpy':np.__version__})
     lines=['# All 35 variants: full-model speedup and sparse contribution','',
         'Ratios are paired geometric means across three fresh processes. Brackets are the minimum and maximum process geometric means, not confidence intervals. R_model is the canonical source FP16 logical opportunity; timing uses BF16. Each ratio compares the same checkpoint. Dose is lambda for A1-H pressure families and kappa for A4/A7. Historical A4+OL1@h is not four-site pressure. No numerical failure is excluded. Sparse-path controls share norm fusion; their h/z dense fallback has twofold row padding. Fusion compares unfused K049 against K050. MMA bypass includes SIMT substitution and does not mean every bypassed product had a zero operand.','',
-        '| ID | Variant | Dose | R_model (%) | Eager speedup | Graph speedup | Sparse-path ratio | Fusion ratio | Attention ratio | New qualified | Previous qualified |',
-        '|---|---|---:|---:|---:|---:|---:|---:|---:|:---:|:---:|']
+        'Native NLL is the arithmetic mean of three full338-block pooled validation losses (nat/token), each with the same prediction-token denominator. The speed comparison is matched within checkpoint, not an equal-quality frontier.','',
+        '| ID | Variant | Dose | R_model (%) | Native NLL | Eager speedup | Graph speedup | Sparse-path ratio | Fusion ratio | Attention ratio | New qualified | Previous qualified |',
+        '|---|---|---:|---:|---:|---:|---:|---:|---:|---:|:---:|:---:|']
     for r in rows:
         def fmt(label):
             c=r['comparisons'][label]
             return f"{c['ratio']:.3f} [{c['process_min']:.3f}, {c['process_max']:.3f}]"+(' FAILED' if not c['qualified'] else '')
         dose='N/A' if r['dose'] is None else f"{r['dose']:g}"
-        lines.append(f"| {r['condition']} | {r['family']} | {dose} | {r['R_model_percent']:.3f} | {fmt('eager')} | {fmt('graph')} | {fmt('skip')} | {fmt('fusion')} | {fmt('attention')} | {'yes' if r['modes']['sparse_graph']['qualified'] else 'FAILED'} | {'yes' if r['modes']['previous_graph']['qualified'] else 'FAILED'} |")
+        losses=r['modes']['native']['losses'];native_nll=sum(losses)/len(losses)
+        lines.append(f"| {r['condition']} | {r['family']} | {dose} | {r['R_model_percent']:.3f} | {native_nll:.4f} | {fmt('eager')} | {fmt('graph')} | {fmt('skip')} | {fmt('fusion')} | {fmt('attention')} | {'yes' if r['modes']['sparse_graph']['qualified'] else 'FAILED'} | {'yes' if r['modes']['previous_graph']['qualified'] else 'FAILED'} |")
     (RUN/'results/per-variant-002.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print({'figures':files})
 

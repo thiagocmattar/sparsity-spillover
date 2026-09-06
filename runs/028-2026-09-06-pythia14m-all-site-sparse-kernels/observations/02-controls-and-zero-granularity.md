@@ -96,3 +96,9 @@ remaining development attempts are separate from this frozen study. Both
 positive and negative evidence remain retained. No manuscript claim is
 approved or edited here. PDF rendered at150dpi and inspected; the bar legend
 was moved down to remove an initial near-overlap with its x-axis label.
+
+## Terminology clarification added during K050 closeout
+
+"Bitwise-native" above denotes zero observed numerical discrepancy in the
+stored comparisons, not an independent bit-pattern audit (signed zeros were
+not checked). The original results and numerical gates are unchanged.

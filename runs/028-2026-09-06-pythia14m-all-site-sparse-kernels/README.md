@@ -1215,3 +1215,63 @@ PID67235. The launch receipt is
 `launch-control/rtx5090-001/final-matrix-002.json`. Evidence049's complete
 local inventory is12350 files /417416427 bytes. No K036 result or figure is
 overwritten, and no K050 source modification is permitted during this study.
+
+Matrix002 completes its first35-process replicate in1801.94s. All35 new
+eager/graph, no-skip, attention-dense and unfused-K049 modes pass full338
+validation; all35 full338 instrumented diagnostic passes also complete.
+The second and third fresh-process replicates remain pending at this
+milestone. The local presentation script now labels the uniform K050 identity
+and adds native validation NLL to its eventual per-variant table, explicitly
+separating speed comparisons from an equal-quality frontier. No measured
+kernel, policy, input or frozen source changes accompany those labels.
+
+At3307.40s, matrix002 has completed70/105 processes and entered replicate3.
+All350 recorded qualifications across new eager/graph, no-skip,
+attention-dense and unfused-K049 modes are true. No infrastructure failure
+is recorded. This is a monitoring milestone, not a substitute for the final
+three-process reduction; no partial curve is selected or published.
+
+### Final K050 study and closeout
+
+Matrix002 completes all105 processes in4803.876s. All525 qualifications
+across new eager/graph and the three graph controls are true. All35 complete
+338-block diagnostics are retained. Evidence050 archive is116563430 bytes,
+SHA256 `c6ac55769cf9ba747f1e57d352eef6f071cc60f4249134545a4938ae4d9f4726`.
+The archive and complete19738-file /709108815-byte inventory verify locally.
+Script121 audits the full cohort, source snapshots, validation and timing
+coverage, numerical gates, and hybrid/attention counter conservation:
+35 complete,35 new qualified. Original248 input/provenance files, including
+all35 checkpoints, are reverified locally before deleting the Pod.
+
+K050 is not universally numerically identical to native: c33 and c34 have
+maximum logit differences0.25/0.125, maximum relativeL2 0.000209606/0.000159649,
+and pooled loss changes5.278823e-7/1.411450e-9nat/token. Both pass the fixed
+gate; all other new endpoints show zero observed discrepancy. The same
+exceptions occur in unfusedK049 and attention-dense, not no-skip. No tolerance
+or scientific source is changed. Observations03/04 document these exceptions;
+older observations receive an appended clarification that their "bitwise"
+language refers to numerical comparisons, not signed-zero bit-pattern audits.
+
+Final c30 R_model27.482684% gives native/new graph1.738990x,
+paths-disabled/enabled1.305115x, unfusedK049/new1.157045x and
+previous/new1.101296x. Attention-disabled/enabled is0.988432x, still negative.
+Eighteen of35 have positive sparse-path ratios; A0 retains a graph regression.
+These are matched policy ablations, not conversion of all logical opportunity,
+an equal-quality frontier, or a universal monotonic relationship. Hybrid h/z
+MMA bypass includes SIMT substitution and uses a twofold row-padded potential.
+The full table includes native validation NLL. No unfavorable variant is hidden.
+
+Script122 creates new vector PDFs03/04 and their hash provenance, without
+overwriting K036 PDFs01/02. The 150-dpi complete renders are visually checked:
+embedded fonts, legible control labels, no overlap/clipping. Detailed method,
+captions, coverage, results and limitations are in observations03/04 and INDEX.
+Latest full bootstrap and Run028 suite:291 passed in9.07s.
+
+At2026-09-06T23:51:35.8667756Z, owned Podr7ex2sb18ax2yp is confirmed deleted,
+guard27360 stopped, and the account's Pod inventory is empty. Its40GB container
+and40GB Pod volume are removed after verified retrieval; the pre-existing100GB
+network volume9luykg5yc3 is unchanged. No new billable resource remains.
+Elapsed time from controlled start is6.90827h atUSD0.69/h: estimated GPU cost
+USD4.76670 plus storage, not a final invoice, within theUSD20 approval.
+Public closeout receipt:launch-control/rtx5090-001/final-closeout-002.json.
+No manuscript TeX or upward finding promotion is changed.

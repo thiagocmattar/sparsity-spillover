@@ -114,3 +114,10 @@ estimands. No claim or TeX is promoted to the manuscript by this observation.
 
 The PDF is vector output with embedded fonts and has been rendered at150dpi
 and visually checked; no overlap or clipping remains.
+
+## Terminology clarification added during K050 closeout
+
+The earlier phrase "bitwise-identical" above should be read as **zero observed
+numerical discrepancy** in the recorded logit and loss checks. The harness
+did not independently compare output bit patterns, including signed zeros.
+This clarification changes no stored measurements or numerical qualification.

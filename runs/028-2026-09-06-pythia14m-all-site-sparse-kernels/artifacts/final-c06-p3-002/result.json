@@ -1,0 +1,642 @@
+{
+  "arguments": {
+    "attempt": "final-c06-p3-002",
+    "condition": "c06",
+    "policy": "final-policy-002.json",
+    "replicate": 3,
+    "smoke": false
+  },
+  "canonical_logical_products": {
+    "architecture_maximum": {
+      "R_model_max_fraction": 0.04277717436711505,
+      "R_model_max_percent": 4.277717436711505,
+      "active_sites": [
+        "h"
+      ],
+      "block_product_count": 5638717440,
+      "ffn_size": 512,
+      "hidden_size": 128,
+      "layers": 6,
+      "lm_head_product_count": 13186891776,
+      "model_product_count": 18825609216,
+      "per_block_operation_products": {
+        "attention_output_projection": 33554432,
+        "mlp_w1": 134217728,
+        "mlp_w2": 134217728,
+        "probability_value": 268566528,
+        "qk_scores": 268566528,
+        "qkv_projection": 100663296
+      },
+      "reachable_operations": [
+        "mlp_w2"
+      ],
+      "reachable_product_count": 805306368,
+      "sequence_length": 2048,
+      "topology_id": "A1-H",
+      "valid_causal_pairs_per_sequence": 2098176,
+      "vocabulary_size": 50304
+    },
+    "coverage": {
+      "batches": 338,
+      "complete_block_coverage": true,
+      "excluded_tail_tokens": 1444,
+      "input_tokens": 692224,
+      "loss": 5.1022753408674655,
+      "sequences": 338,
+      "source_tokens": 693668
+    },
+    "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+    "measured": {
+      "R_block": 0.13185378450195642,
+      "R_model": 0.03949334258831262,
+      "block_product_count": 1905886494720,
+      "block_zero_product_count": 251298347160,
+      "lm_head_product_count": 4457169420288,
+      "model_product_count": 6363055915008,
+      "per_operation": {
+        "attention_output_projection": {
+          "product_count": 68048388096,
+          "zero_product_count": 7808,
+          "zero_product_fraction": 1.1474188027767505e-07
+        },
+        "mlp_w1": {
+          "product_count": 272193552384,
+          "zero_product_count": 0,
+          "zero_product_fraction": 0.0
+        },
+        "mlp_w2": {
+          "product_count": 272193552384,
+          "zero_product_count": 251298304256,
+          "zero_product_fraction": 0.9232338608134193
+        },
+        "probability_value": {
+          "product_count": 544652918784,
+          "zero_product_count": 25926,
+          "zero_product_fraction": 4.760095669345308e-08
+        },
+        "qk_scores": {
+          "product_count": 544652918784,
+          "zero_product_count": 9170,
+          "zero_product_fraction": 1.6836410278444986e-08
+        },
+        "qkv_projection": {
+          "product_count": 204145164288,
+          "zero_product_count": 0,
+          "zero_product_fraction": 0.0
+        }
+      }
+    }
+  },
+  "condition": "c06",
+  "dose": 1.0,
+  "elapsed_seconds": 39.00624155101832,
+  "family": "A1-H+L1",
+  "historical": false,
+  "loss": {
+    "attention_dense_graph": 5.104028880446435,
+    "native": 5.104028880446435,
+    "native_graph": 5.104028880446435,
+    "no_skip_graph": 5.104028880446435,
+    "previous": 5.10399873716721,
+    "previous_graph": 5.10399873716721,
+    "sparse": 5.104028880446435,
+    "sparse_graph": 5.104028880446435,
+    "unfused_graph": 5.104028880446435
+  },
+  "loss_delta": {
+    "attention_dense_graph": 0.0,
+    "native": 0.0,
+    "native_graph": 0.0,
+    "no_skip_graph": 0.0,
+    "previous": -3.0143279225569586e-05,
+    "previous_graph": -3.0143279225569586e-05,
+    "sparse": 0.0,
+    "sparse_graph": 0.0,
+    "unfused_graph": 0.0
+  },
+  "peak_allocated_bytes": 4642669568,
+  "policy": {
+    "bytes": 270094,
+    "path": "runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/final-policy-002.json",
+    "sha256": "f4b390ecf76e63ba8b155738ee0748e8f46820e4e2df7e89dda4e07afc00bb40"
+  },
+  "qualified": {
+    "attention_dense_graph": true,
+    "native": true,
+    "native_graph": true,
+    "no_skip_graph": true,
+    "previous": false,
+    "previous_graph": false,
+    "sparse": true,
+    "sparse_graph": true,
+    "unfused_graph": true
+  },
+  "status": "complete",
+  "timing": {
+    "attention_dense_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.2442396172811852,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 0.9053408866503264,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 0.9395155925808446,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.36777196761661995,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 0.7549631446698736,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.4841895659297813,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 0.987876453721635,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 0.9330989800016548,
+        "samples": 448
+      }
+    },
+    "native": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 4.094339858257852,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 3.7067732775229354,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 3.8466961381584976,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 1.505783425762643,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 3.0910756947375524,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 1.9824366387388719,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 4.0447019395069095,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 3.8204243455205225,
+        "samples": 448
+      }
+    },
+    "native_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.104556322094215,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.2697764133738046,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 1.0377478874912645,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.40622485191996643,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 0.8338993143932382,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.5348146461397936,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 1.091165182406245,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 1.0306603775004912,
+        "samples": 448
+      }
+    },
+    "no_skip_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.0643782901495067,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.25996334622851786,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 0.9636251849353128,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.3914484980566977,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 0.8035663810496148,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.5153608622925725,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 1.0514742506911923,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 0.9931702968744102,
+        "samples": 448
+      }
+    },
+    "previous": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 2.7190761886518757,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.664106127674718,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 2.461690847503879,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 2.5546144766537315,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 2.0528023099815944,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 1.3165483195133558,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 2.6861113426443546,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 2.537167218177853,
+        "samples": 448
+      }
+    },
+    "previous_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.3245679700527302,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.3235119740685952,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 1.1991855404361615,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 1.2444522612976971,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.4871389685882446,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.6413419904643229,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 1.3085095089689558,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 1.2359530217990649,
+        "samples": 448
+      }
+    },
+    "sparse": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 2.0653067937961787,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.5044297408850104,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 1.869806683900375,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 1.9403879362346608,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.7595619432863933,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 1.559230511752417,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 2.0402679513025688,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 1.927135662681702,
+        "samples": 448
+      }
+    },
+    "sparse_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.0122723304444516,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.2472370065720863,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 0.9164515291761721,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 0.9510456383907115,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.37228538673141726,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 0.7642283018546446,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.4901317002806272,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 0.9445502790216159,
+        "samples": 448
+      }
+    },
+    "unfused_graph": {
+      "attention_dense_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5842974642291665,
+        "paired_geomean_speedup": 1.0716976670558858,
+        "samples": 448
+      },
+      "native": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 2.3884554975666106,
+        "paired_geomean_speedup": 0.26175102804286854,
+        "samples": 448
+      },
+      "native_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.645317486487329,
+        "paired_geomean_speedup": 0.9702517161134618,
+        "samples": 448
+      },
+      "no_skip_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6224620155990124,
+        "paired_geomean_speedup": 1.0068766687315192,
+        "samples": 448
+      },
+      "previous": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.5869239578023553,
+        "paired_geomean_speedup": 0.39414035970328426,
+        "samples": 448
+      },
+      "previous_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.774062005802989,
+        "paired_geomean_speedup": 0.8090922408558786,
+        "samples": 448
+      },
+      "sparse": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 1.2048499775119126,
+        "paired_geomean_speedup": 0.5189048282197486,
+        "samples": 448
+      },
+      "sparse_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.5916624795645475,
+        "paired_geomean_speedup": 1.0587048907929177,
+        "samples": 448
+      },
+      "unfused_graph": {
+        "input_tokens_per_second": null,
+        "median_host_ms": 0.6263675168156624,
+        "paired_geomean_speedup": 1.0,
+        "samples": 448
+      }
+    }
+  },
+  "validation_blocks": 338
+}
