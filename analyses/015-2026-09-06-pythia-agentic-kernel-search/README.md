@@ -1,7 +1,7 @@
 # Analysis 015: agentic sparse-kernel search through Pythia-410M
 
-Status: **complete, descriptive, and not promoted to a finding or manuscript
-claim**.
+Status: **complete descriptive systems case study, with a paper-planning note;
+not promoted to a research finding or result-bearing manuscript claim**.
 
 ## Question
 
@@ -40,8 +40,16 @@ the other.
 reported timing estimate before producing [the complete tables](tables.md),
 [`final-results.csv`](final-results.csv), [`regressions.csv`](regressions.csv),
 and [`same-rmodel-optimization.csv`](same-rmodel-optimization.csv).
-[`02_plot.py`](02_plot.py) creates the two PDFs using Analysis 010's typography
-and colour family.
+[`02_plot.py`](02_plot.py) creates the initial two PDFs using Analysis 010's
+typography and colour family.
+
+The independent-process extension is reduced by
+[`03_reduce_replications.py`](03_reduce_replications.py) and plotted by
+[`04_plot_replications.py`](04_plot_replications.py). The direct fixed-`R_model`
+confirmation is reduced by [`05_reduce_fixed_rmodel.py`](05_reduce_fixed_rmodel.py)
+and plotted by [`06_plot_fixed_rmodel.py`](06_plot_fixed_rmodel.py). Those
+reducers retain process-level observations and never substitute timing-input
+bootstrap intervals for between-process replication.
 
 ## Results
 
@@ -70,10 +78,63 @@ conditions fail the numerical gate. K010 improves all three recorded 410M
 development comparisons; its large A0 improvement is a dense native fallback,
 while the two sparse high-`kappa` gains are small.
 
+## Independent-process and hardware replication
+
+Three eager-only processes per checkpoint on RTX PRO 4500 and two primary
+eager-only processes per endpoint sentinel on H100 NVL strengthen and narrow
+the original estimates. Every primary process uses 80 paired timing samples
+and passes complete validation unless it reproduces one of the four known
+frozen-policy failures.
+
+| GPU | Size | Qualified / total | Slope per +10 pp `R_model` | OLS R2 | Spearman rho | Faster than native |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| RTX PRO 4500 | 14M | 11 / 12 | +0.0347x | 0.347 | +0.573 | 9 |
+| RTX PRO 4500 | 70M | 9 / 12 | +0.0036x | 0.0027 | +0.467 | 4 |
+| RTX PRO 4500 | 410M | 12 / 12 | +0.0105x | 0.636 | +0.867 | 2 |
+| H100 NVL | 14M | 6 / 6 | +0.0649x | 0.321 | +0.429 | 4 |
+| H100 NVL | 70M | 6 / 6 | +0.0100x | 0.051 | +0.429 | 2 |
+| H100 NVL | 410M | 6 / 6 | +0.0075x | 0.700 | +0.829 | 0 |
+
+Thus `R_model` has a strong positive descriptive association at 410M, a
+moderate association at 14M, and a weak/nonlinear association at 70M. The
+relation is not a hardware-independent conversion law. In particular, the
+high H100 410M R2 orders six implementations that are all slower than native.
+
+Matched fixed-policy transfer also changes relative value: mean H100-minus-RTX
+speedup is -0.0104x at 14M, +0.0133x at 70M, and -0.0593x at 410M. All six 410M
+sentinels lose relative value on H100. Component probes show 18/18 eligible
+attention-projection-only paths above break-even, versus 11/22 FFN-only paths;
+the components are not additive and QK/PV remain dense.
+
+## Direct fixed-R_model confirmation
+
+Attempt `rtxpro4500-004` compares implementations in independent processes at
+identical checkpoints, workloads, and canonical integer `R_model` counts. All
+48 processes pass complete validation. The 14M primary contrast is the
+adaptive direct P0-to-K001 confirmation triggered after the final robustness
+policy K013 proved slower than P0; the 70M and 410M contrasts are K009-to-K016
+and K004-to-K010.
+
+| Size | Qualified process pairs | Median optimized / baseline | Range | Wins |
+| --- | ---: | ---: | ---: | ---: |
+| 14M | 6 | 1.0152x | 0.9932--1.0287x | 5/6 |
+| 70M | 6 | 1.0113x | 0.9897--1.0869x | 5/6 |
+| 410M | 6 | 1.0064x | 1.0037--1.0113x | 6/6 |
+
+All architecture medians exceed one and 16/18 process pairs favor the
+optimized implementation. Conversely, K013/P0 is 0.9370x and 0.9477x at the
+two 14M endpoints. Together these results directly demonstrate that an
+implementation search can improve or harm measured throughput while trained
+weights and logical opportunity remain fixed.
+
 ## Figures
 
 - [Figure 1: `R_model` versus frozen full-model speedup](figures/01-rmodel-vs-full-model-speedup.pdf)
 - [Figure 2: fixed-`R_model` implementation transitions](figures/02-same-rmodel-kernel-search-transitions.pdf)
+- [Figure 3: fresh-process `R_model` association across GPUs](figures/03-fresh-process-rmodel-vs-speedup.pdf)
+- [Figure 4: matched frozen-policy hardware transfer](figures/04-matched-hardware-transfer.pdf)
+- [Figure 5: FFN and attention-projection contribution probes](figures/05-component-contributions.pdf)
+- [Figure 6: independent-process optimization at fixed `R_model`](figures/06-fixed-rmodel-kernel-optimization.pdf)
 
 The matching figure records are in [observations](observations/INDEX.md).
 
@@ -83,16 +144,18 @@ This supports a scoped systems statement: executable benefit is specific to
 GPU, shape, model scale, site/layer policy, and correctness constraints; a bad
 policy can add overhead even at high logical opportunity. It does not support a
 universal `R_model`-to-speed mapping or a claim that an agent outperforms human
-or non-agent optimizers. There is one search trajectory, one GPU, one training
-seed per checkpoint, and no matched fresh-process replication.
+or non-agent optimizers. There is one search trajectory and one training seed
+per checkpoint. Fresh-process replication measures systems variability, not
+training uncertainty.
 
 The intended attention result was not obtained. QK-score and probability-value
 matmuls remained dense SDPA for every final policy. Sparse attention projection
 linears were eligible where stated, but that is not a sparse QK/PV kernel.
-There is also no frozen-kernel H100 transfer matrix and no strongest compiled
-dense comparator. Final timing used fixed training-cache blocks rather than the
-pre-registered seed-2504 validation timing sample. Complete quality validation
-is unaffected, but this deviation narrows the timing claim.
+There is a frozen-policy H100 sentinel transfer, but no H100 retuning search and
+no strongest compiled-dense comparator. Final timing used fixed training-cache
+blocks rather than the pre-registered seed-2504 validation timing sample.
+Complete quality validation is unaffected, but this deviation narrows the
+timing claim.
 
 ## Evidence integrity
 
@@ -106,3 +169,12 @@ that bounded race explicitly.
 
 RunPod was closed before analysis: zero pods and zero endpoints remained. The
 pre-existing shared 100 GB volume was intentionally retained.
+
+The RTX three-process archive is 6,334,093 bytes with SHA-256
+`74783671c3db7c795de20f19482d4db583868b0f26d781be2358a82cef839cbf`.
+The H100 replication/component archive is 15,267,840 bytes with SHA-256
+`0a38a9f425eb8bfffa287682ca77acdbc7814200e9b99e8202fa55a49a8462b9`.
+The direct fixed-`R_model` archive is 731,849 bytes with SHA-256
+`0753655f73ccd2bd8586265c1558641949fc4b6b112684570b891f3b00a815d8`.
+Run-local verifiers reconcile the expected process counts, full-validation
+coverage, checkpoint hashes, and identical canonical counts within each pair.
