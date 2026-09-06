@@ -507,3 +507,62 @@ cap inside the existing20:57 UTC stop guard. The likely final policy disables
 prefix reuse uniformly, not by checkpoint; this is not yet frozen. The original
 35-checkpoint x3-process final study, all-site diagnostics and scientific PDF
 remain outstanding; no manuscript or finding is promoted.
+
+The final-study harness is implemented for preflight, not launched as final
+science yet. It uses K036/no-prefix uniformly, eight matched modes (stock,
+previous and new eager; the same three graphed; graph all-skips-disabled and
+graph attention-skips-disabled),64 validation timing identities x7 passes,
+three fresh processes per checkpoint, and full338 numerical coverage in every
+process. The eager-native anchor remains the numerical reference. All35
+checkpoints and failures remain in the matrix. `58_study_diagnostics.py` counts
+actual BF16 operands once per checkpoint: all seven activation sites, row
+occupancy, norms/near-zeros, native weights, operand-derived projection MMA
+counts and instrumented attention MMA counts. Its V-only PV scalar count is
+explicitly a lower bound, not a replacement for canonical FP16 R_model.
+
+`59_study.py` records all raw paired samples and flat source snapshots to avoid
+Windows path-length problems. `60_freeze_study.py` seals source provenance,
+not authorization. `62_study_smoke.sh` first tests two8-block/4-timing-input
+eight-mode cases including diagnostics under a separately named preflight
+policy. The final policy is not sealed before this harness smoke passes.
+CPU/bootstrap/math/study unit tests:253 passed in7.50s before final packaging;
+the latest source-map-only change is not a numerical change. Estimated smoke
+duration under30s, bounded by ten minutes /USD0.12 at the existing Pod rate.
+
+All ten registered K036 development conditions pass full338 validation with
+bitwise-identical logits in no-prefix mode. Evidence-027 is verified locally:
+1458 files /39589398 bytes, archive SHA256
+`36cb8e862a42b7c5bb35fe16f2185baa928912753772f33b8b75e82b2073cfde`.
+The first study preflight rejects the raw vendor inventory's SHA before model
+loading: local inventory is CRLF and remote inventory is LF. Normalizing only
+line endings makes the inventories identical; all900 file paths, sizes and
+hashes match. No GPU measurement occurred. The failed smoke wrapper also
+stops at this source check. Code-029/archive and preflight-policy-001 preserve
+that rejected identity. The retry seals the parsed dependency inventory and
+verifies each actual dependency file, rather than its platform-specific JSON
+formatting. `63_study_smoke_retry.sh` uses preflight-policy-002 and new smoke
+attempt002 identities; the final policy remains unsealed.
+
+Study smoke002 completes at both c01/c30: all eight modes pass the8-block
+smoke, all new modes are bitwise native, and every diagnostic denominator
+and attention counter conservation check passes. It is not full-validation
+evidence. Evidence-029 is verified locally:1574 files /41760298 bytes,
+archive SHA256 `19a29e6a5360c912e25642495f29f7c03ec77cb26efc2c7e5329e7bd76c946b0`.
+Evidence-028 retained the preflight001 failures:1453 files /39522825 bytes,
+archive SHA256 `a6b0123ab6f1f744536cd676f3d39b7df649a52342f6ebdefbbdd27065d1f6a2`.
+The final policy now seals K036/no-prefix uniformly. `64_final_matrix.py`
+executes35 variants x3 fresh processes in fixed seed2504 randomized order
+within each replicate. Every process times64 validation identities x7 passes
+and validates all338 blocks. Diagnostics cover all338 blocks in replicate1.
+Numerical failures remain in the matrix, not grounds for selective fallback.
+Each leaf has a600s timeout; the whole controller has a90-minute timeout,
+additionally bounded by the20:57 UTC independent Pod stop guard. At19:22 UTC,
+the existing RTX5090 Pod is running atUSD0.69/h, with40GB container and40GB
+Pod-volume storage. Expected duration70min /USD0.81 additional GPU cost;
+all new work remains within the user-approvedUSD20 envelope. Logs, raw timing,
+quality, counters, manifests, source snapshots and all failures will be
+copied and hash-verified before Pod termination. No new weights/data are
+created; all35 original checkpoints are already verified locally. Monitor
+read-only approximately every60s, with immediate attention to failures,
+missing progress, cost/deadline risk or inconsistent counters. Local suite:
+253 passed in7.38s. No manuscript or finding is promoted by this launch.
