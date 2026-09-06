@@ -699,3 +699,139 @@ and all189 source-overlay files /2039774 bytes are verified remotely; the
 original51-file frozen policy still verifies unchanged. Latest local suite:
 260 passed in7.83s. K039 launches under20-minute timeout PID48726 after the
 K038 evidence is closed and copied; K040 still awaits sequential launch.
+
+K039 completes all12 components and all four full338/seven-mode endpoints.
+Matched K038/new ratios at c01/c11/c25/c30 are1.00303/1.00357/1.00081/1.00205,
+too small to call a strong improvement from one development process. Its c30
+native/new ratio is1.43449 and no-skips/new1.16459. Evidence-033 is locally
+verified:8690 files /316672889 bytes, archive SHA256
+`7a08d6f5879ce2b39a381fd241abcf79e2fd2ec585cea1601c5ab93f7a6f39f5`.
+K040 launches sequentially under20-minute timeout PID49776 after K039 closes
+and its evidence transfers. Its outcomes are still pending.
+
+K041 is a separately prepared attention specialization. Instead of requiring
+an entirely zero Q or K operand fragment, it forms each fragment's16-bit
+inner-dimension support mask and skips QK MMA atoms when those supports do not
+overlap. This is necessary and sufficient for all scalar products in that
+finite-input MMA atom to be structurally zero. Nonzero products and their
+accumulation order remain unchanged. PV retains the original operand-empty
+predicate; all four projections are K036, isolating the attention change.
+It does not skip softmax merely because a score is zero, and does not add
+pruning, weight changes,2:4 restrictions, or checkpoint-dependent dispatch.
+
+The mapping is checked against the pinned CUTLASS BF16 traits and NVIDIA's
+[m16n8k16 fragment layout](https://docs.nvidia.com/cuda/parallel-thread-execution/#matrix-fragments-for-mma-m16n8k16-with-floating-point-type);
+the mask reduction uses the documented
+[warp OR intrinsic](https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-extensions.html#warp-reduce-functions).
+CPU tests cover all256 A singleton coordinates against all128 B singleton
+coordinates, signed zero,100 mixed patterns, and deliberately disjoint supports.
+Script78 adds a disjoint-support GPU case to the prior30 component cases,
+requiring bitwise-native output, unchanged PV counts, conserved total QK atoms,
+and non-decreasing skipped QK counts. Script79 uses the same four development
+checkpoints,32 training timing inputs x7 paired passes, six matched modes and
+full338 validation. All original data/model/seed/gate/precision/quality/post-hoc
+contracts remain fixed. Extra mask instructions or register pressure may
+outweigh additional skipped work; no performance gain is assumed.
+Script80 is prepared for sequential execution after K040, expected about
+three minutes /USD0.035, with20-minute outer cap /USD0.23 on the existing Pod,
+inside the22:57 UTC stop guard andUSD20 approved budget. All raw outcomes and
+sources will be retained. Latest local tests:262 passed in8.00s. K041 has not
+been deployed or GPU-tested, and no new final policy has been selected.
+
+K040 completes all four full338 checks, but its K038/new ratios at c25/c30
+are0.98779/0.98938; it is rejected as an improvement over the narrower output
+tile. Evidence-034 is locally verified:8945 files /321677225 bytes, archive
+SHA256 `3a7db6361128a9d88dab2d43643b02b4e03604514137eaa35616a0309f40fa0f`.
+Code-034 SHA256
+`b394d1a91398d4c350d38245fd3a5165c9514a99d646d9ccce80f77c6c63be5d`
+and all198 overlay files /2156069 bytes are verified remotely; all51 original
+frozen sources remain unchanged. K041 launches sequentially under20-minute
+timeout PID50979 after the K040 archive is closed and transferred. Its31
+component checks pass, including the disjoint-support counter assertion;
+full-model checks are still running.
+
+K042 is prepared as a separate a/m reuse probe: the CUTLASS CTA changes from
+32x32x64 to32x64x64 and the warp from16x16x64 to16x32x64. The same16x8x16
+instruction, K-order, bias epilogue, gates and zero-A criterion remain. It
+isolates input-projection tiling atop K036; it does not yet combine K039 or
+K041, or claim to eliminate additional logical zero products. Larger output
+tiles may reduce duplicated loads but increase register pressure and reduce
+parallelism. Scripts81/82 retain54 synthetic/captured training primitive
+checks and the four registered development endpoints with32 training timing
+inputs x7 passes, six matched modes and full338 numerical coverage. Script83
+will run only after the current GPU probe closes. All scientific input,
+validation, quality and post-hoc contracts are unchanged. Proposed existing-Pod
+envelope is expected three minutes /USD0.035, capped at20min /USD0.23, under
+the22:57 UTC guard andUSD20 budget. All raw results and failures will be
+retained and verified locally before teardown. K042 is not yet GPU-tested.
+
+K041 completes all four full338 endpoints but regresses against K036:
+K036/new ratios are0.98163/0.98245/0.98334/0.98216 at c01/c11/c25/c30.
+It is rejected as a speed improvement, while its extra zero-work recognition
+and unchanged outputs/counter invariants remain useful negative evidence.
+Evidence-035 is locally verified:9217 files /327248241 bytes, archive SHA256
+`d058ed8644701ef4a64665ac363d26be3f628aae5b0bd16c49908dc89c08b9ec`.
+Code-035 SHA256
+`239b2dcc933286fca06cee1649c569757da0be00d9628c8a547498569d1b8afb`
+and all203 overlay files /2175704 bytes are remotely verified, with the51-file
+original policy unchanged. K042 launches sequentially under20-minute timeout
+PID52276; all54 primitive cases and four full338 endpoints pass. Its K036/new
+ratios at c01/c11/c25/c30 are1.01963/1.01105/1.02023/1.01957; c30 native/new
+is1.41036. This is an input-tiling gain, not new logical opportunity capture.
+Latest prelaunch local suite:262 passed in8.14s. Guard PID32840 and theUSD0.69/h
+Pod rate are reverified after the original20:57 deadline; the new22:57 deadline
+is active. No final follow-up policy is selected yet.
+
+Scripts84/85 prepare a short CUDA-kernel profile of c30 training input0 for
+native, previous, K036/K038/K039/K041/K042, ten warm graph replays each with
+full logits and unchanged precision/shape. Every implementation must have
+already passed its full338 c30 check, and its source hashes are verified.
+CUPTI traces and per-kernel durations identify bottlenecks; they are explicitly
+not substitutes for the uninstrumented paired study or end-to-end speedups.
+No new weights, gates, sparse pattern or final-cohort selection is introduced.
+The profile will run after the current trial evidence is closed and transferred,
+expected under one minute /USD0.012, bounded by ten minutes /USD0.12 within
+the same22:57 stop guard andUSD20 budget. It has not yet been launched.
+
+Profile001 completed in6.94s and is included in locally verified evidence037:
+9591 files /345903485 bytes, archive SHA256
+`f3f782ea403d226bf01d1fbbe47578de6807afed3220de41c00256d4fb7ca381`.
+Across six layers the joint h/z kernels consume about37.6us for previous,
+88.4us for K036, and69.3us for K038/K039. K042 input projections consume49.0us,
+close to previous47.6us, versus61.4us for K036. These summed instrumented
+kernel times identify a bottleneck, not a replacement end-to-end benchmark.
+
+K043 tests a narrowly bounded hybrid output projection atop K042 inputs and
+K035 attention. Each h/z row with at most two nonzero values uses scalar
+products with coalesced transposed copies of the same weights; other rows
+retain the native-order BF16 MMA accumulation. The hybrid requires finite,
+normal-range activation/weight values; unsafe values take the MMA path.
+BF16 products fit FP32 exactly within the checked exponent range, and two
+summands avoid reassociation among three or more nonzero terms. Numerical
+qualification is still mandatory; this reasoning alone is not qualification.
+The M16N64 CTA masks simple rows from its fallback MMA, preserves separate
+linear/bias rounding and parallel-residual rounding, and exposes compiled-out
+work counters. Counters distinguish MMA bypass (including SIMT substitution)
+from the scalar products actually executed. This is not new pruning or a
+change to the model, gates, data, seeds, precision or tolerances.
+
+Scripts86/87/88 cover39 synthetic gate/range/mixed-density cases, independent
+MMA/SIMT count conservation, count-disabled and skip-disabled equality, then
+the four registered development endpoints using32 training inputs x7 paired
+passes and all338 validation blocks. Timing retains native, frozenK036,
+all-skips-disabled and attention-skips-disabled controls. No held-out timing
+or checkpoint-specific dispatch selects the candidate. All current post-hoc
+and checkpoint retention contracts remain. A useful result would improve
+high-R latency without numerical failures; extra scanning and fallback
+overhead could instead refute this implementation's usefulness. The expected
+existing-Pod duration is roughly four minutes /USD0.046, bounded by20min /
+USD0.23 inside the22:57 guard andUSD20 budget. GPU execution is not yet done.
+
+Prelaunch CPU suite:264 passed in7.27s, including the hybrid counter reference.
+One initial test expected16 times too many MMA atoms for32 rows; that test
+constant was corrected before launch (the accounting implementation was
+unchanged). Code037 SHA256
+`9d22b09dc4f37aa35071dda4f32fc1d79998b1ffe79d3d8cceb825359387d821`
+and211 overlay files /2212146 bytes are verified remotely. The51 original
+frozen sources still verify. Pod priceUSD0.69/h and guardPID32840 are checked;
+GPU was idle before launch. K043 launches at21:28 UTC under timeoutPID54098.

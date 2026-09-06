@@ -9,9 +9,11 @@ RUN = Path(__file__).resolve().parent
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--candidate', choices=['k037', 'k038', 'k039', 'k040'], required=True)
+    parser.add_argument('--candidate', choices=['k037', 'k038', 'k039', 'k040', 'k041', 'k042', 'k043'], required=True)
     args = parser.parse_args()
-    component = 'components' if args.candidate == 'k037' else 'joint'
+    component = 'components' if args.candidate in {'k037', 'k041'} else 'joint'
+    if args.candidate == 'k042':
+        component = 'projection'
     attempts = [f'{args.candidate}-{component}-001'] + [
         f'{args.candidate}-{condition}-graph-001' for condition in ['c01', 'c11', 'c25', 'c30']]
     output = {'candidate': args.candidate, 'terminal': [], 'pending': [], 'current': None}
