@@ -70,4 +70,3 @@ $run025SumLines = @($run025Items | ForEach-Object { "$($_.expected_sha256)  $($_
 $run025Ascii = [Text.Encoding]::ASCII
 [IO.File]::WriteAllText($run025Sums, ([string]::Join("`n", $run025SumLines) + "`n"), $run025Ascii)
 $run025Payload | ConvertTo-Json -Depth 5
-
