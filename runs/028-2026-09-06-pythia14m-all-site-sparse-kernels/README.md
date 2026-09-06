@@ -1026,3 +1026,132 @@ K047 evidence043 is locally verified:10913 files /371601587 bytes, archive
 SHA256 `b90cb53e31bc082fcb1aacbdec56b10bf9913a353365e3845cf0b2a31d7751f9`.
 K048's39 primitive cases complete with matching native/skip/count outputs
 and independent work counts. Its full-model checks are still running.
+
+K048 completes all four full338/nine-mode checks, with selected and skip
+controls numerically qualified. It is slightly slower than K045: K045/new
+ratios at c01/c11/c25/c30 are0.99777/0.99966/0.99189/0.99212. Previous/new
+at c30 is0.91953; it is not selected as an improvement. Evidence044 is locally
+verified:11185 files /377809541 bytes, archive SHA256
+`c53115e37860ee6880a69b968e74eb5f93e6fba471f5f0ebf6a73803f6a68983`.
+Code043 SHA256
+`fd206db8b1a925efa412d7ad5bf2ddbeb2b326f9bd88923f51ced1051ca309b5`
+and246 overlay files /2430630 bytes are remotely verified; frozen51 sources
+remain unchanged. Profile002 launches at21:56 UTC under timeoutPID61792 and
+completes in8.26s. Script108 reads its timestamped joint calls by layer.
+
+The c30 training-input0 profile gives joint totals37.57us previous,70.94us
+K047,80.16us K045 and82.25us K048. Per-layer K045 calls take11.28--16.92us,
+not just an isolated first-layer cost. K045/K048 compiled sparse uninstrumented
+entries each report54 registers, no stack/local memory, and5168 shared bytes;
+closed cuobjdump output is retained. These are diagnostic observations, not
+new end-to-end speedups. A plausible remaining cause is serial traversal of
+empty K16 steps by the fallback, even where most rows take the short-row path.
+
+K049 tests that hypothesis while keeping K045's M8 geometry, <=2-row SIMT
+condition, gates, values and accumulation order. The existing scan also builds
+a32-bit h /8-bit z nonzero-K16 support mask. Only complex rows contribute to
+the CTA mask; fallback warps traverse set bits in increasing order, avoiding
+loads and tests for empty steps. Simple rows still use the identical short
+linear result. An unsafe-weight fast-path disable retains the original
+zero-A test. Padding, issued/bypassed MMA and executed SIMT counts retain the
+same reference meaning as K045; this is a scheduling change, not new pruning.
+
+Scripts109/110/111 cover the39 synthetic gate/range/counter cases and the same
+four registered endpoints,32 training timing inputs x7 passes, full338 checks
+and nine control/comparator modes. CPU tests verify every K coordinate,
+ascending mask traversal and exclusion of simple rows. All prior scientific
+inputs, tolerances, retention and final-study requirements remain unchanged.
+Expected launch is four minutes /USD0.046, capped20min /USD0.23 on the existing
+Pod, sequentially after Profile002 closes and evidence is exported, under the
+00:57 UTC guard andUSD20 total budget. A slowdown or numerical/count failure
+will refute this implementation; no improvement is assumed before testing.
+
+K049 launches at22:03:34 UTC under timeoutPID62338 using code044 SHA256
+`3b7bf0055a3c3ce711cfbe4837187c0eb84f5b228ca6d6005d38bbaee34f9068`,
+253 verified overlay files /2461581 bytes, with frozen51 sources unchanged.
+All39 components and four full338/nine-mode checks complete. Selected and
+skip controls qualify. Native/new c01/c11/c25/c30 ratios are
+0.93990/1.02487/1.49399/1.51058; K045/new c25/c30 are1.03002/1.02943.
+The c30 previous/new ratio0.95424 still favors the previous kernel, while
+no-skips/new1.28241 includes both SIMT substitution and the padded fallback
+control caveat. Attention-dense/new0.98926 still favors dense attention.
+Evidence046 is downloaded and archive-hash verified, SHA256
+`1afc93a1758719cc8c49d99601f67f7843d4f18e830ba16ba988e510d2158755`;
+per-file verification follows. Profile002 evidence045 was previously fully
+verified locally:11262 files /393433069 bytes.
+
+K050 design: retain every K049 matmul path, add a fixed width128 inference
+kernel computing the parallel attention/MLP LayerNorm pair from their shared
+hidden input, with distinct unchanged affine parameters. Reuse one Welford
+reduction and fuse the existing a/m one-sided gates after BF16 rounding,
+including BF16 scalar-threshold conversion and equality-survives semantics.
+This is fusion/overhead work, not additional zero-product skipping. All three
+sparse-control modes receive identical fusion; the unfused K049 comparator
+separates this improvement from the sparsity-path ablation. The two module
+calls/hooks remain; the second returns only the pair computed from that same
+input during the immediately preceding first call. No cross-forward data
+cache, parameter change, new pruning, threshold change or gate removal is
+allowed. Only width128, BF16 CUDA inference, parallel residual and equal
+normalization epsilon are supported.
+
+Primitive tests compare both outputs and masks to native LayerNorm plus
+existing gates over random, constant, scaled and boundary cases; wrapper
+tests cover call order, repeated inputs, hooks, shape and unsupported gates.
+Then four registered development endpoints use32 training timing inputs x7
+paired passes and all338 validation blocks, with native eager/graph,
+previous, K036, K042, unfused K049, selected and two skip controls. All35
+checkpoints, seed1234, step712, model/data identities, losses, tolerances,
+full-logit workload and final-study requirements remain unchanged. No
+training/gradient diagnostics are claimed; input checkpoints, raw logs,
+source identities, numerical failures and work counters remain retained.
+A numerical or gate-mask discrepancy refutes exact equivalence; the full
+loss/logit bounds remain mandatory for any subsequent deployment. Performance
+without a positive matched sparse-path ablation will not support attribution
+to sparsity. Proposed sequential trial: four minutes /USD0.046 expected,
+20-minute cap /USD0.23, same Pod and00:57 UTC guard, insideUSD20. Monitor
+about once per minute for progress/loss/rate/ETC, errors or stalled output.
+No manuscript change or positive claim follows from this design alone.
+
+K050 prelaunch CPU suite:285 passed in8.84s. Code045 SHA256
+`06951bb22563c3329633177584ec43bc5f902c85c7feb872b2c916486efd8ce2`
+and260 overlay files /2492424 bytes are verified remotely; frozen51 sources
+remain unchanged. The GPU was idle before launch at22:13:52 UTC under
+20-minute timeoutPID63626. All28 primitive cases plus three graph-refresh
+cases pass with zero numerical discrepancy and identical zero masks.
+Evidence046 is now fully locally verified:11536 files /399687127 bytes.
+
+The prospective K050 study retains all35 endpoints and three fresh processes
+per endpoint,64 fixed validation timing identities x7 paired passes, full338
+numerical qualification and once-per-endpoint full338 diagnostics. It adds
+unfused K049 graph as a ninth mode to isolate paired-normalization fusion.
+Only after all ten registered development endpoints qualify may the new
+policy be frozen and smoke-tested. Existing K036 policy/study/figures remain
+unchanged. New artifacts use policy002/matrix002 and new PDF identities.
+Script115 replaces the old h/z fragment-only diagnostics with instrumented
+M8 hybrid counters, independently verified from actual operands, including
+executed SIMT products and explicit twofold padded MMA potential. This is
+required to avoid falsely equating every bypassed MMA with skipped zeros.
+The original scalar opportunity, activation/RMS/near-zero histograms, weight
+statistics and attention-counter diagnostics remain. Canonical FP16 R_model
+is still distinct from actual BF16 operand zeros and measured speedup.
+
+K050 completes all four full338/nine-mode endpoints. Selected, no-skip and
+attention-dense modes qualify at each. Native/new c01/c11/c25/c30 ratios are
+0.98749/1.14691/1.72420/1.74650. At c25/c30, previous/new is1.08815/1.10322,
+unfused K049/new is1.15302/1.15610, and no-skips/new is1.30667/1.32118.
+Attention-dense/new is0.97977/0.98481, so attention skipping is still a
+negative individual contribution. These are development results, not the
+all35 publication result. No low-R regressions or invalid previous outputs
+are removed. Evidence047 is fully locally verified:11812 files /405846498
+bytes, archive SHA256
+`4e72ee4c9472df1c84089d9a03e5187be44d757cfc70996e1e71af8f363098f1`.
+
+Code046 SHA256
+`4fb2719d2b42e62cd74368b1654fef58ac83f1f8a494250619a46e345db35d85`
+and267 files /2520138 bytes are verified remotely, frozen51 sources unchanged.
+The six-endpoint remainder starts at22:18 UTC under20-minute timeoutPID64936,
+with unchanged K050 code and113 harness, after the four-endpoint job closes.
+The same inputs, full validation, numerical bounds and timing controls apply.
+Expected completion is four minutes /USD0.046, capped20min /USD0.23. Latest
+local suite including independent hybrid accounting and reduction checks:
+289 passed in8.47s. No final policy has yet been frozen or launched.
