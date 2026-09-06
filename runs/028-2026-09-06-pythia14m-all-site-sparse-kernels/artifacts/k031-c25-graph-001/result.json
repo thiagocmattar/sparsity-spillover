@@ -1,0 +1,38 @@
+{
+  "arguments": {
+    "attempt": "k031-c25-graph-001",
+    "candidate": "k031",
+    "condition": "c25",
+    "execution": "graph",
+    "full_validation": true,
+    "inputs": 32,
+    "passes": 7
+  },
+  "elapsed_seconds": 2.493572385981679,
+  "error": "Only unmasked ordinary uncached causal inference",
+  "implementation_coverage": {
+    "sparse": {
+      "attention": "k031 split KV plus CTA-local exact-grid zero-query prefix",
+      "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+      "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+      "attention_skipping_enabled": true,
+      "dense_operations": [
+        "lm_head"
+      ],
+      "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+      "prefix_enabled": true,
+      "prefix_safety": "causally needed K finite; V zero or 0.5<=abs(V)<=64 through the query tile end within its split/head; entire 64-row query tile zero",
+      "projection_skipping_enabled": true,
+      "sparse_operations": [
+        "qkv_projection",
+        "mlp_w1",
+        "mlp_w2",
+        "attention_output_projection",
+        "qk_scores",
+        "probability_value"
+      ]
+    }
+  },
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/36_attribution.py\", line 62, in main\n    runners[mode].prepare()\n  File \"/workspace/sparsity-spillover/runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/autoresearch/dense_probe/probe.py\", line 56, in prepare\n    self.output = self.forward(self.static_input)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/36_attribution.py\", line 61, in <lambda>\n    runners[mode]=dense.DenseRunner(lambda ids,model=net:model(input_ids=ids,use_cache=False).logits,inputs[0].clone(),a.execution)\n                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 907, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py\", line 452, in forward\n    outputs: BaseModelOutputWithPast = self.gpt_neox(\n                                       ^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py\", line 1036, in wrapper\n    output = func(self, *args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py\", line 252, in wrapper\n    outputs = func(self, *args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py\", line 366, in forward\n    hidden_states = layer(\n                    ^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/transformers/modeling_layers.py\", line 93, in __call__\n    return super().__call__(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k018/candidate.py\", line 52, in layer_forward\n    z,_=self.attention(self.input_layernorm(hidden_states),attention_mask=attention_mask,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k020/candidate.py\", line 58, in attention_forward\n    raise ValueError('Only unmasked ordinary uncached causal inference')\nValueError: Only unmasked ordinary uncached causal inference\n"
+}

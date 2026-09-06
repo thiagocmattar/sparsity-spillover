@@ -6,11 +6,12 @@
 ## Current status
 
 Run 028 is implementing the user-approved USD20 all-site 14M kernel search.
-K027 matches native split-KV attention and passes full338-block validation on
-the high-R A7+OL1 endpoint at a preliminary2.27x versus previous1.82x. Its
-attention-skip benefit is not established; exact-prefix specialization and
-projection-rounding repairs continue. Matched controls, broader qualification,
-all-site diagnostics and the repeated35-checkpoint final graph remain open.
+K036's all-six-site path matches native logits on all338 validation blocks at
+four low/high-R endpoints. No-prefix graph speedups are1.096--1.386x; isolated
+net skipping gives1.8%/2.4% at the high endpoints but hurts low controls.
+Attention-specific gain remains absent, and the previous graph path is faster
+at high R but fails low controls. Remaining development qualification, all-site
+diagnostics and the frozen repeated35-checkpoint final graph remain open.
 
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.

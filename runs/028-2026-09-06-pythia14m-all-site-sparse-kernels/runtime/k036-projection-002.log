@@ -1,0 +1,12 @@
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF projection.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k036_3e199448cedd -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --expt-relaxed-constexpr -std=c++17 -c /workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k036/projection.cu -o projection.cuda.o 
+[2/2] c++ projection.cuda.o -shared -L/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run028_k036_3e199448cedd.so
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 10103.87it/s]
+/workspace/sparsity-spillover/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/venv/lib/python3.12/site-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+ninja: no work to do.
+{"stage": "block", "elapsed_seconds": 52.53176301403437, "condition": "c25", "validation_block": 74, "cases": 18}
+{"stage": "block", "elapsed_seconds": 52.54479641607031, "condition": "c25", "validation_block": 118, "cases": 30}
+{"stage": "block", "elapsed_seconds": 52.55828607606236, "condition": "c25", "validation_block": 119, "cases": 42}
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 9376.88it/s]
+{"stage": "block", "elapsed_seconds": 52.85057343507651, "condition": "c30", "validation_block": 0, "cases": 54}
+{"stage": "complete", "elapsed_seconds": 52.85275878699031, "cases": 54}

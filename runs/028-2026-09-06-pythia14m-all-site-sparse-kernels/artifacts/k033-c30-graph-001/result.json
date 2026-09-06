@@ -1,0 +1,272 @@
+{
+  "arguments": {
+    "attempt": "k033-c30-graph-001",
+    "candidate": "k033",
+    "condition": "c30",
+    "execution": "graph",
+    "full_validation": true,
+    "inputs": 32,
+    "passes": 7
+  },
+  "canonical_logical_products": {
+    "architecture_maximum": {
+      "R_model_max_fraction": 0.2995237697384911,
+      "R_model_max_percent": 29.95237697384911,
+      "active_sites": [
+        "a",
+        "m",
+        "h",
+        "q_post",
+        "k_post",
+        "v",
+        "z"
+      ],
+      "block_product_count": 5638717440,
+      "ffn_size": 512,
+      "hidden_size": 128,
+      "layers": 6,
+      "lm_head_product_count": 13186891776,
+      "model_product_count": 18825609216,
+      "per_block_operation_products": {
+        "attention_output_projection": 33554432,
+        "mlp_w1": 134217728,
+        "mlp_w2": 134217728,
+        "probability_value": 268566528,
+        "qk_scores": 268566528,
+        "qkv_projection": 100663296
+      },
+      "reachable_operations": [
+        "qkv_projection",
+        "qk_scores",
+        "probability_value",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2"
+      ],
+      "reachable_product_count": 5638717440,
+      "sequence_length": 2048,
+      "topology_id": "A7-Z-POST",
+      "valid_causal_pairs_per_sequence": 2098176,
+      "vocabulary_size": 50304
+    },
+    "coverage": {
+      "batches": 338,
+      "complete_block_coverage": true,
+      "excluded_tail_tokens": 1444,
+      "input_tokens": 692224,
+      "loss": 5.829406580981418,
+      "sequences": 338,
+      "source_tokens": 693668
+    },
+    "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+    "measured": {
+      "R_block": 0.9175460204810952,
+      "R_model": 0.27482684296304843,
+      "block_product_count": 1905886494720,
+      "block_zero_product_count": 1748738568719,
+      "lm_head_product_count": 4457169420288,
+      "model_product_count": 6363055915008,
+      "per_operation": {
+        "attention_output_projection": {
+          "product_count": 68048388096,
+          "zero_product_count": 67992747008,
+          "zero_product_fraction": 0.999182330550997
+        },
+        "mlp_w1": {
+          "product_count": 272193552384,
+          "zero_product_count": 186990871552,
+          "zero_product_fraction": 0.6869775933861968
+        },
+        "mlp_w2": {
+          "product_count": 272193552384,
+          "zero_product_count": 271857173376,
+          "zero_product_fraction": 0.9987641918588672
+        },
+        "probability_value": {
+          "product_count": 544652918784,
+          "zero_product_count": 537622783397,
+          "zero_product_fraction": 0.9870924488889262
+        },
+        "qk_scores": {
+          "product_count": 544652918784,
+          "zero_product_count": 529670733162,
+          "zero_product_fraction": 0.9724922329334993
+        },
+        "qkv_projection": {
+          "product_count": 204145164288,
+          "zero_product_count": 154604260224,
+          "zero_product_fraction": 0.7573251159938835
+        }
+      }
+    }
+  },
+  "development_quality_blocks": 0,
+  "elapsed_seconds": 28.27422924397979,
+  "implementation_coverage": {
+    "all_dense": {
+      "attention": "k031 split KV plus CTA-local exact-grid zero-query prefix",
+      "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+      "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+      "attention_skipping_enabled": false,
+      "dense_operations": [
+        "lm_head"
+      ],
+      "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+      "input_projections": "k032 BF16 MMA, K16 forward reduction order",
+      "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+      "output_projections": "k033 BF16 MMA, K16 forward order, BF16 linear and residual rounding",
+      "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+      "prefix_enabled": true,
+      "prefix_safety": "causally needed K finite; V zero or 0.5<=abs(V)<=64 through the query tile end within its split/head; entire 64-row query tile zero",
+      "projection_skipping_enabled": false,
+      "sparse_operations": []
+    },
+    "attention_dense": {
+      "attention": "k031 split KV plus CTA-local exact-grid zero-query prefix",
+      "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+      "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+      "attention_skipping_enabled": false,
+      "dense_operations": [
+        "lm_head"
+      ],
+      "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+      "input_projections": "k032 BF16 MMA, K16 forward reduction order",
+      "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+      "output_projections": "k033 BF16 MMA, K16 forward order, BF16 linear and residual rounding",
+      "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+      "prefix_enabled": true,
+      "prefix_safety": "causally needed K finite; V zero or 0.5<=abs(V)<=64 through the query tile end within its split/head; entire 64-row query tile zero",
+      "projection_skipping_enabled": true,
+      "sparse_operations": [
+        "qkv_projection",
+        "mlp_w1",
+        "mlp_w2",
+        "attention_output_projection"
+      ]
+    },
+    "no_prefix": {
+      "attention": "k031 split KV plus CTA-local exact-grid zero-query prefix",
+      "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+      "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+      "attention_skipping_enabled": true,
+      "dense_operations": [
+        "lm_head"
+      ],
+      "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+      "input_projections": "k032 BF16 MMA, K16 forward reduction order",
+      "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+      "output_projections": "k033 BF16 MMA, K16 forward order, BF16 linear and residual rounding",
+      "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+      "prefix_enabled": false,
+      "prefix_safety": "causally needed K finite; V zero or 0.5<=abs(V)<=64 through the query tile end within its split/head; entire 64-row query tile zero",
+      "projection_skipping_enabled": true,
+      "sparse_operations": [
+        "qkv_projection",
+        "mlp_w1",
+        "mlp_w2",
+        "attention_output_projection",
+        "qk_scores",
+        "probability_value"
+      ]
+    },
+    "sparse": {
+      "attention": "k031 split KV plus CTA-local exact-grid zero-query prefix",
+      "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+      "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+      "attention_skipping_enabled": true,
+      "dense_operations": [
+        "lm_head"
+      ],
+      "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+      "input_projections": "k032 BF16 MMA, K16 forward reduction order",
+      "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+      "output_projections": "k033 BF16 MMA, K16 forward order, BF16 linear and residual rounding",
+      "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+      "prefix_enabled": true,
+      "prefix_safety": "causally needed K finite; V zero or 0.5<=abs(V)<=64 through the query tile end within its split/head; entire 64-row query tile zero",
+      "projection_skipping_enabled": true,
+      "sparse_operations": [
+        "qkv_projection",
+        "mlp_w1",
+        "mlp_w2",
+        "attention_output_projection",
+        "qk_scores",
+        "probability_value"
+      ]
+    }
+  },
+  "loss": {
+    "all_dense": 5.83130066301001,
+    "attention_dense": 5.83130066301001,
+    "eager_stock": 5.83130066301001,
+    "native": 5.83130066301001,
+    "no_prefix": 5.83130066301001,
+    "previous": 5.83130066301001,
+    "sparse": 5.83130066301001
+  },
+  "loss_delta": {
+    "all_dense": 0.0,
+    "attention_dense": 0.0,
+    "eager_stock": 0.0,
+    "native": 0.0,
+    "no_prefix": 0.0,
+    "previous": 0.0,
+    "sparse": 0.0
+  },
+  "peak_allocated_bytes": 4385342464,
+  "qualified": {
+    "all_dense": true,
+    "attention_dense": true,
+    "eager_stock": true,
+    "native": true,
+    "no_prefix": true,
+    "previous": true,
+    "sparse": true
+  },
+  "status": "complete",
+  "timing": {
+    "all_dense": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.7076229667291045,
+      "paired_geomean_speedup": 1.16066111694956,
+      "samples": 224
+    },
+    "attention_dense": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.680272001773119,
+      "paired_geomean_speedup": 1.2071702660342443,
+      "samples": 224
+    },
+    "eager_stock": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 3.7718210369348526,
+      "paired_geomean_speedup": 0.217390551168824,
+      "samples": 224
+    },
+    "native": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.8214569534175098,
+      "paired_geomean_speedup": 1.0,
+      "samples": 224
+    },
+    "no_prefix": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.6864875322207808,
+      "paired_geomean_speedup": 1.1966683346041098,
+      "samples": 224
+    },
+    "previous": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.5188980139791965,
+      "paired_geomean_speedup": 1.5824773730057269,
+      "samples": 224
+    },
+    "sparse": {
+      "input_tokens_per_second": null,
+      "median_host_ms": 0.6960880127735436,
+      "paired_geomean_speedup": 1.1807178537200196,
+      "samples": 224
+    }
+  },
+  "validation_blocks": 338
+}

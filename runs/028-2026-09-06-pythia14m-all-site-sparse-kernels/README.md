@@ -361,3 +361,149 @@ remains available for the approved search, about USD1.02 compute since creation
 at USD0.69/hour, under the USD20 total ceiling; posted billing is not final.
 The independent stop deadline remains20:57 UTC. Next work tests tensor-core
 projection arithmetic without changing checkpoints, gates, or tolerances.
+
+K032 tests a/m projection accumulation using BF16 `mma.m16n8k16` in forward
+K16 order and one final BF16 bias rounding. It skips wholly zero16x16 input
+fragments, not individual scalar zeros, while retaining K031 attention and
+K018 h/z. `42_tensor_projection_probe.py` tests synthetic inputs and the same
+48 selected native-operand cases, and records native projection CUDA dispatch.
+`43_k032.sh` then runs both six-mode/full338 endpoint tests. This is not a
+policy selected by checkpoint identity. CPU/bootstrap suite248 passed in7.25s;
+expected existing-Pod runtime about two minutes, cost roughly USD0.03 or less,
+with a40-minute controller hard limit inside the existing four-hour Pod guard.
+Source, failed attempts, logs, full quality/timing results remain retained.
+
+An additional matched CUDA-graph control (`44_graph_controls.sh`) tests K031
+and K032 at c25/c30 with every comparator captured, including stock. It keeps
+resident-input full50304-logit work, all gates, full338 numerical coverage,
+and the same32 development timing identities x7 passes. Input staging is
+equally excluded; capture/setup is disclosed outside steady-state timing.
+This separates Python launch overhead from sparsity-dependent GPU savings;
+graph candidate versus eager stock will not be mislabeled as skip-only gain.
+Expected four-process duration about two minutes after compilation, under
+USD0.04, with a60-minute controller limit and the existing Pod guard.
+
+K032's six synthetic plus48 captured projection cases are bitwise native,
+including skip/no-skip equality. Both full338 endpoints pass, pooled loss
+identical to native, at2.2613x (c25) and2.2513x (c30) eager stock. Evidence-019
+contains743 files /13961538 bytes verified locally; archive SHA256
+`616bce212ee8a8865c13e1f40a380958cf71d56a5adf63a6f0c569be4dc718ff`.
+The projection profiler identifies native a/h/z WMMA kernels and an m16816
+tensor-op kernel; names alone are not performance estimates.
+
+The initial graph attempt fails before timing because Transformers5.12.1
+creates an explicit causal mask during capture, while the custom attention
+requires the ordinary unmasked causal path. `45_graph_forward.py` exposes the
+same fixed B1/T2048 uncached/unpadded forward to every graph comparator,
+including native, preserving implicit causal SDPA. An additional unmodified
+eager-stock runner anchors all338 validation blocks. No graph claim is valid
+unless that anchor passes. `46_graph_controls.sh` uses new attempt002 folders;
+the original failed attempt remains retained. K033 additionally prototypes
+tensor-core h/z with exactly the two rounded linear outputs and two rounded
+residual additions; it is not yet executed or qualified.
+
+K032's full-quality artifacts confirm maximum logit difference0 on every
+block at both c25 and c30, in all new modes. The initial graph failure and
+closed controller log are returned in evidence-020:756 files /14070423 bytes,
+archive SHA256 `002ba8fc49e82cf6121c9719a480e5d9c718fe45f7c8a50bd5ea8a37704df0af`.
+K033's next stage (`47_joint_tensor_probe.py`, `48_k033.sh`) covers12 synthetic
+gate/sparsity cases, then full338/seven-mode graph comparisons at c01, c11,
+c25 and c30. Gates, initialization, checkpoints and numerical bounds remain
+unchanged. Source-level test suite248 passed in7.43s; CUDA arithmetic is not
+claimed tested by that suite. Estimated existing-Pod duration three minutes
+after compilation, about USD0.04, with a70-minute hard controller timeout
+bounded additionally by the existing20:57 UTC Pod stop deadline.
+
+Completed graph002 controls retain the negative performance result: K032
+c25/c30 qualify, including the eager-stock anchor, but achieve only1.256x/
+1.278x against matched graph-native, versus previous1.583x/1.582x. c30 sparse
+latency0.643ms exceeds attention-dense0.628ms; Python overhead was not the only
+problem. Evidence-021 contains839 files /17966339 bytes verified locally;
+archive SHA256 `6e87aa15d60d5b3f6ccf967a4cdb393059e572214ac7dae519d68d13801c6d59`.
+
+K034 improves projection data reuse with32x64x64 shared-memory tiles and a
+bank-swizzled layout. It retains K16 MMA order, exact gates, four-projection
+zero-fragment skipping and the rounded joint residual epilogue. Shared weight
+loads still occur when a fragment is zero; the skip counter must not imply
+these memory transactions are eliminated. K031 attention remains unchanged.
+`49_shared_projection_probe.py` and `50_shared_joint_probe.py` precede the
+same four full338/seven-mode endpoint tests in `51_k034.sh`. CPU tests248 pass
+in7.01s. Expected duration three minutes plus first compilation, about USD0.05,
+with an80-minute controller limit and the existing independent Pod deadline.
+
+K034 qualifies at all four endpoints but is slower: c30 reaches0.948x graph
+native, sparse0.869ms versus all-skips-disabled0.722ms. Resource inspection
+finds no register spills (LOCAL0); shared reuse did not compensate for the
+fragment-test/control cost. It is not promoted. K035 therefore retains the
+faster qualified K033 projections, and tests a segmented coalesced attention
+prefix:128 CTAs compute local64-token prefix sums, and zero-query CTAs reuse
+them with an exact-grid sum of preceding segments. Safety checks are per
+causally needed segment. Prefix preparation stays inside timing; no threshold
+or checkpoint identity dispatch is introduced. `52_segmented_prefix_probe.py`
+and `53_k035.sh` cover30 components and both full338/seven-mode graph endpoints.
+CPU suite250 passes in7.36s, including tile-map and segmented-prefix tests.
+Expected runtime three minutes including compilation, about USD0.04; a
+55-minute controller timeout remains inside the existing Pod stop guard.
+
+K033 and K034 are bitwise identical to native on every full-validation block
+at c01, c11, c25 and c30 (not merely within tolerance). Their12 joint primitive
+cases are also bitwise native and skip-toggle equal. Evidence-022 has939
+files /21889819 bytes, archive SHA256
+`3b14ba90f5ae97e8ec398416fb3a3fff429ea260836b2494b149e987e1629363`;
+evidence-023 has1063 files /25961107 bytes, archive SHA256
+`a7b8fb2be8e90442365b5dca4fffcb08dad4ee3dcdb3cbc83e514db8c32cf9a5`.
+Both archives and their per-file inventories are verified locally.
+
+K035 qualifies at both endpoints but still loses to attention-dense: c30
+sparse0.698ms versus attention-dense0.681ms, graph-native speedup1.177x.
+It does not establish the desired attention benefit. K036 tests the pinned
+CUTLASS32x32x64 projection pipeline with a custom exact-zero MMA operator,
+bias broadcast and final BF16 rounding, retaining K033 h/z and K035 attention.
+The dense ablation uses the same pipeline with the ordinary MMA operator.
+`54_cutlass_projection_probe.py` precedes four full338/seven-mode graph
+endpoints in `55_k036.sh`. CPU suite250 passes in7.07s; first GPU compile and
+full checks are estimated at four minutes /USD0.05, with a75-minute controller
+cap inside the existing independent Pod stop deadline. This is still search,
+not a frozen final policy or a claimed positive sparsity trend.
+
+Evidence-024 contains1131 files /28666463 bytes verified locally, archive
+SHA256 `ab42b50c834995bfe9e0b14784ec6a6a3abac8ed9b10f08fafd10de6af36a439`.
+All30 K035 components are bitwise native and skip-toggle equal. In the selected
+c30 training input0, pooling six layers' counters gives380673 QK issued atoms
+and265922 PV issued atoms out of884736 each:57.0%/69.9% eliminated or replaced
+by exact-prefix reuse. This is a single BF16 development input, not the full
+FP16 canonical R_model estimand or the final all-site diagnostic.
+
+K036 attempt001 fails compilation: CUTLASS's eight-element epilogue access
+produces an invalid thread map for the16x16 warp tile. No timing exists.
+Attempt002 changes only epilogue access width to four elements, retaining the
+same scalar computation, bias, MMA order and input policy. The original
+source snapshot/error log remains retained; `56_k036_build_retry.sh` writes
+new attempt002 folders with the same bounded execution envelope.
+
+K036 attempt002 completes: all four full338 endpoints have maximum logit
+difference0 in the no-prefix mode. Its paired graph-native speedups are
+1.0961x/1.1573x/1.3812x/1.3860x at c01/c11/c25/c30. Matched all-skips-enabled
+versus all-skips-disabled ratios are0.96312x/0.97167x/1.01771x/1.02407x,
+respectively. Thus sparse overhead still hurts low-sparsity controls, while
+the high endpoints show a modest positive net skip benefit. Attention alone
+remains slower (c25 0.98745x, c30 0.99284x); these results do not establish
+an attention-specific speed win. Previous graph execution is still faster at
+c25/c30 (~1.583x graph-native), while it fails c01/c11's numerical gate.
+All limitations and failures must remain visible in the final evidence.
+
+Evidence-025 contains1137 files /28845172 bytes, archive SHA256
+`09e85badd01d21ab7fe658bbec14c60e1d386d8ffa71d722127424bbc6fb317f`;
+evidence-026 contains1277 files /33088620 bytes, archive SHA256
+`6b0e1378e1a71b52020c89b81bc3a7f8341600f53e03350b5a3d59e6dc128d79`.
+Both archives and all inventory entries are verified locally. Latest local
+CPU/bootstrap run:250 passed in7.11s. All included trials/logs are terminal.
+
+`57_k036_development.sh` extends identical seven-mode/full338 checks to the six
+remaining registered development conditions c08/c15/c21/c23/c26/c28. It retains
+32 training timing inputs x7 passes, not final validation timing. Expected
+duration about three minutes, approximately USD0.04, with a95-minute controller
+cap inside the existing20:57 UTC stop guard. The likely final policy disables
+prefix reuse uniformly, not by checkpoint; this is not yet frozen. The original
+35-checkpoint x3-process final study, all-site diagnostics and scientific PDF
+remain outstanding; no manuscript or finding is promoted.

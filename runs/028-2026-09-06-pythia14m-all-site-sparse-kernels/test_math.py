@@ -59,3 +59,29 @@ def test_safe_bf16_prefix_grid_is_exact_in_fp32():
     assert torch.equal(x.cumsum(0).double(),exact)
     assert x.sum().double()==exact[-1]
     assert x.flip(0).sum().double()==exact[-1]
+
+
+def test_k034_tile_output_coverage_and_shared_swizzle():
+    outputs=[]
+    for tid in range(128):
+        lane,warp=tid%32,tid//32
+        for nn in range(4):
+            for e in range(4):
+                outputs.append(((warp//2)*16+lane//4+(e//2)*8,
+                                (warp%2)*32+nn*8+(lane%4)*2+e%2))
+    assert len(outputs)==len(set(outputs))==32*64
+    assert set(outputs)=={(r,c) for r in range(32) for c in range(64)}
+    for row in range(64):
+        assert {row*32+(word^((row&7)*4)) for word in range(32)}==set(range(row*32,(row+1)*32))
+
+
+def test_segmented_safe_grid_prefix_matches_full_sum():
+    gen=torch.Generator().manual_seed(3501)
+    values=(torch.randint(-128,129,(1024,32),generator=gen).float()*.5).bfloat16().float()
+    local=values.reshape(16,64,32).cumsum(1)
+    reconstructed=[]
+    base=torch.zeros(32)
+    for segment in range(16):
+        reconstructed.append(local[segment]+base)
+        base=base+local[segment,-1]
+    assert torch.equal(torch.cat(reconstructed).double(),values.double().cumsum(0))
