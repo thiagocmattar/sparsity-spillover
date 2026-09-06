@@ -74,7 +74,7 @@ def main():
     extra=Line2D([],[],color='#555555',marker='x',lw=0,label='Open + crossed: numerical gate failed')
     fig.legend(handles=handles+[extra],loc='lower center',bbox_to_anchor=(.5,.063),ncol=3,frameon=False,columnspacing=1.4)
     fig.text(.5,.982,'Controls and granularity | all 35 variants retained | complete 338-block numerical checks',ha='center',va='top',fontsize=8)
-    fig.text(.5,.023,'Canonical R: source FP16. Timings and (d): BF16. MMA counts include causal padding; weight loads remain.',ha='center',fontsize=6.6)
+    fig.text(.5,.023,'Canonical R: source FP16. Timings and (d): BF16. MMA counts include causal padding; a/m weight loads remain.',ha='center',fontsize=6.5)
     fig.subplots_adjust(left=.09,right=.985,bottom=.265,top=.925,wspace=.37,hspace=.58)
     path=dest/'02-controls-and-zero-granularity.pdf'
     fig.savefig(path,metadata={'Title':'Eager, previous-kernel and attention controls; zero granularity',

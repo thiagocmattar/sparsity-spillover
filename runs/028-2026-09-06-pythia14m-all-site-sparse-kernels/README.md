@@ -566,3 +566,61 @@ created; all35 original checkpoints are already verified locally. Monitor
 read-only approximately every60s, with immediate attention to failures,
 missing progress, cost/deadline risk or inconsistent counters. Local suite:
 253 passed in7.38s. No manuscript or finding is promoted by this launch.
+
+The final controller launched asPID23896 under the90-minute timeout. Code-031
+archive SHA256 `51f1311e76468f8ffa7129d92412295d170920b36dc3b3ae68c00d04d6ad3099`
+and all161 source-overlay files /1854842 bytes were verified remotely before
+launch. Final policy SHA256 is
+`fa4415ad8fe8e6d0c852b60b7d095602a829b7d879c363219d7ff59860001441`;
+all51 source and900 dependency records passed remote verification. Commit
+`f536ad5` preserves the harness, frozen policy, ten-condition development
+evidence and both smoke attempts. The reducer and figure scripts are present
+but the final reduction/PDFs await all105 processes. Local suite256 passes
+in7.17s, including paired-process reduction and smoke counter audits.
+
+Source-audit clarification: the immutable diagnostic's compact phrase
+"weight loads remain" is overbroad. K036 a/m CUTLASS loads weights before
+the zero-fragment MMA test; K033 h/z loads weights inside the nonzero branch,
+so its skipped fragments can also avoid those weight loads. The recorded
+MMA counters themselves remain correct and are not memory-traffic counters.
+The figures/captions use this more precise interpretation without rewriting
+the frozen diagnostic or its source identity. Read-only monitor67 imports
+only the standard library to minimize monitoring overhead during timing.
+
+While that fixed matrix runs, K037 is prepared locally as a separate candidate,
+not a modification to the frozen51 files. It retains K036's four projections
+and K035's native two-split attention. Its only attention change returns from
+the MMA helper before checking B fragments when all A fragments are zero,
+and before the MMA loop when all B fragments are zero. The surviving MMA
+sequence, gates, precision and zero-work definition are unchanged. This tests
+whether redundant fragment checks explain part of the still-negative attention
+benefit; a timing regression or changed outputs/counters refutes this candidate.
+No new pruning or checkpoint-specific implementation selection is introduced.
+
+`68_k037_components.py` compares30 synthetic/captured development cases with
+native and K035, checking bitwise outputs and identical issued/skipped counts.
+`69_candidate_comparison.py` compares K036/K037 and dense/skip controls on32 training
+inputs x7 passes, with an eager-native anchor and full338 validation at the
+four registered development endpoints c01/c11/c25/c30. All gates, source
+checkpoints, data, seed, optimizer provenance and post-hoc scope remain fixed;
+there is no training. `70_k037_development.sh` refuses to run before the105-case
+matrix is terminally complete. Expected existing-Pod cost after the matrix is
+about five minutes /USD0.06, with a20-minute controller cap /USD0.23, within
+the approvedUSD20 envelope and subject to the existing stop deadline. It has
+not been deployed or launched. Final-study observations remain unmodified by
+this new development proposal, and all failures will be retained.
+
+K038 is also prepared locally, isolating output-projection tiling rather than
+attention: each warp reuses one gated h/z activation fragment for two adjacent
+N8 MMA atoms (M32N16 CTA,64 threads), instead of reloading and rechecking it in
+two separate output tiles. This halves that duplicated activation/check work
+but lowers resident warp parallelism; either a gain or regression is plausible.
+Every output accumulator keeps its original K16 order and BF16 rounding.
+`71_k038_joint_probe.py` covers12 synthetic joint cases, followed by the same
+four development endpoints and full338/six-mode comparison through
+`69_candidate_comparison.py`. `72_k038_development.sh` likewise refuses to run
+until the frozen matrix completes. Estimated additional five minutes /USD0.06,
+with its own20-minute outer timeout /USD0.23 proposed inside the approved
+envelope. Neither K037 nor K038 is deployed/launched yet. The local suite is
+258 passed in7.27s, including exact output coverage for the new M32N16 mapping;
+this is not CUDA performance or numerical qualification.
