@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "candidate_id": "k009",
+  "frozen_utc": "2026-09-06T00:04:06.3047415+00:00",
+  "policy": {
+    "architecture": "Pythia-70M",
+    "kernel": "K001 fused signed-exact warp compaction",
+    "site_selection": "A0=all linear sites; A1-H=h; A4/A7=topology-active linear sites",
+    "layer_indices": [4, 5],
+    "runtime_density_dispatch": false,
+    "checkpoint_identity_dispatch": false,
+    "additional_pruning": false
+  },
+  "selection_evidence": {
+    "used_for_tuning": [
+      "K008 fixed 12-mask search on 70m/a7-0p5 development inputs",
+      "K008 suffix2 16-input confirmation",
+      "K009 six-development-condition qualification"
+    ],
+    "development_evaluation": [
+      {"condition": "70m/a0", "R_model": 0.0000045409213981255505, "speedup": 0.32855894797684393},
+      {"condition": "70m/a1h", "R_model": 0.1006575817198192, "speedup": 0.9783019847888467},
+      {"condition": "70m/a4-0", "R_model": 0.25672509475572236, "speedup": 0.8944648728269631},
+      {"condition": "70m/a4-0p5", "R_model": 0.3559621916980309, "speedup": 1.0106714341826368},
+      {"condition": "70m/a7-0", "R_model": 0.23562417494680196, "speedup": 0.8722278161551661},
+      {"condition": "70m/a7-0p5", "R_model": 0.4060187215635989, "speedup": 0.9716853681615271}
+    ],
+    "development_linear_fit": {
+      "n": 6,
+      "slope": 1.2476400520031057,
+      "intercept": 0.5608946255771154,
+      "pearson_r": 0.7419944607486265,
+      "r_squared": 0.550555779781645
+    },
+    "high_resolution_confirmation": [
+      {"condition": "70m/a4-0p5", "samples": 160, "speedup": 1.019797597455099, "numerical_gate_pass": true},
+      {"condition": "70m/a7-0p5", "samples": 160, "speedup": 0.9309165793342042, "numerical_gate_pass": true}
+    ]
+  },
+  "heldout_boundary": {
+    "conditions": [
+      "70m/a4-0p01", "70m/a4-0p05", "70m/a4-0p1",
+      "70m/a7-0p01", "70m/a7-0p05", "70m/a7-0p1"
+    ],
+    "checkpoint_files_present_remote_at_freeze": 6,
+    "heldout_result_artifacts_present_remote_at_freeze": 0,
+    "staged_but_unevaluated_at_freeze": true,
+    "note": "The sealed transfer was extracted before this freeze; no held-out model result was evaluated or used for selection."
+  },
+  "sources": [
+    {"path": "autoresearch/candidates/k009/candidate.py", "bytes": 2414, "sha256": "2816a2c4b5e8163bf659750a3de4a07d284bff6babbac76b5526f7445251a5da"},
+    {"path": "autoresearch/candidates/k009/README.md", "bytes": 591, "sha256": "ec147dc6e413abc028e53b6885f5335f61f2ab75799d8bfb807c86ae5caef44b"},
+    {"path": "autoresearch/probe_k009_models.py", "bytes": 1473, "sha256": "145e94b4fa62a1f12e1f3314f7bdea2b712763906645065f17c07dde15741d9b"},
+    {"path": "autoresearch/candidates/k001/candidate.py", "bytes": 5081, "sha256": "ac335d05e5686eed57fbbf7929bc6731e1c38ea96cceed1b56d37877004d6ee9"},
+    {"path": "autoresearch/candidates/k001/kernel.cu", "bytes": 5371, "sha256": "a0977732cd87d26bec619f43f60872f5726c08ab97f6d5194952d4655aaf87f2"},
+    {"path": "measurement.py", "bytes": 4149, "sha256": "1bee7bf5579de65979d9e22330d218625a3f1415fe135613ac3e62db35d55329"},
+    {"path": "config.json", "bytes": 1661, "sha256": "1326eedf4e3b48c1919a427c4cfe50eb383e047f39c3788ee0b8877c970ce56d"}
+  ]
+}

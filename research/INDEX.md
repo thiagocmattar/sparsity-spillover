@@ -5,12 +5,14 @@
 
 ## Current status
 
-Run 025's $40 Sakana-derived design is confirmed. The calibration package
-pins all 36 Pythia checkpoints and passes 242 bootstrap tests plus a retained
-14M CPU integration smoke. CUDA correctness/performance remain untested;
-the next launch review is a sequential $5 RTX-5090/H100 pilot, not the full
-search. No GPU was launched. The planned one-trajectory study supports an
-agent-assisted systems case study, not a replicated agent-method comparison.
+Run 025 completed its Sakana-derived Blackwell search through K016 and the
+frozen 36-checkpoint Pythia matrix on one RTX PRO 4500. Thirty-two deployments
+pass complete validation. Analysis 015 reports heterogeneous qualified
+`R_model`--speed associations (`R2` 0.235/0.003/0.611 for 14M/70M/410M) and
+fixed-`R_model` implementation transitions. This is a partial systems case
+study: QK/PV stayed dense, and fresh-process, component, compiled-dense, and
+H100-transfer tests remain incomplete. Evidence is local and hash-verified;
+zero Pods/endpoints remain and the existing 100 GB volume is retained.
 
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official
@@ -133,10 +135,16 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `026`. Next analysis number: `015`. Next finding number: `F003`.
+Next run number: `026`. Next analysis number: `016`. Next finding number: `F003`.
 
 ## Where we stopped
 
+- 2026-09-06: Run 025's Blackwell trajectory and frozen 36-checkpoint matrix
+  completed. Analysis 015 owns the all-point speedup table, qualified
+  within-size regressions, fixed-`R_model` transition analysis, and two verified
+  PDFs. The result is partial against the planned paper minimum; no finding or
+  manuscript claim was promoted. The evidence archive matches its remote
+  post-package identity and no GPU resource remains.
 - 2026-09-04: Run 024 completed the matched Pythia-410M sparse-kernel sentinel
   on Run 023's physical H100 NVL. All six conditions and full validation pass;
   no primitive, attention composition, or full model breaks even. Analysis 014
@@ -328,6 +336,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 022 | Can the official sparse kernel execute an exact Pythia-14M A0 W2 shape? | stopped at correctness gate; bounded N=128 defect isolated | `runs/022-2026-09-04-pythia14m-sparse-kernel-a0-baseline/` |
 | 023 | Do the Sakana-derived kernels accelerate selected Pythia-70M endpoints? | completed (valid negative systems result) | `runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/` |
 | 024 | Does scaling the same sparse-kernel sentinels to Pythia-410M reach break-even? | completed (valid negative systems result; Analysis 014 complete) | `runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/` |
+| 025 | Can a bounded Sakana-derived agentic search convert Pythia logical opportunity into full-model speedup? | Blackwell matrix complete; partial against paper minimum; Analysis 015 complete | `runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/` |
 
 ## Analyses
 
@@ -347,6 +356,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | 012 | What is the evidence-preserving paper synthesis of the selected ladder through 410M? | completed; descriptive paper-facing reduction, no finding promoted | `analyses/012-2026-09-04-paper-synthesis/` |
 | 013 | What matched intervention evidence should support the manuscript rewrite? | completed; manuscript evidence refactor and verified draft assets | `analyses/013-2026-09-04-matched-intervention-manuscript/` |
 | 014 | Does moving the sparse-kernel sentinels from 70M to 410M improve realized speedup? | completed; same-GPU negative systems calibration, no finding promoted | `analyses/014-2026-09-04-pythia70m-vs-410m-sparse-kernel-sentinels/` |
+| 015 | After specialization, how do `R_model`, full-model speed, and fixed-`R_model` implementation changes relate through 410M? | completed Blackwell reduction; partial systems evidence, no finding promoted | `analyses/015-2026-09-06-pythia-agentic-kernel-search/` |
 
 ## Key documents
 

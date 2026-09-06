@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate_id": "k010",
+  "frozen_utc": "2026-09-05T22:39:47.3892641+00:00",
+  "policy": {
+    "architecture": "Pythia-410M",
+    "kernel": "K004 exact flagged zero-tile tensor-core bypass",
+    "site": "z",
+    "layer_indices": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "runtime_density_dispatch": false,
+    "checkpoint_identity_dispatch": false,
+    "additional_pruning": false
+  },
+  "selection_evidence": {
+    "used_for_tuning": [
+      "410m/a4-0p5 development occupancy and site-isolation timing",
+      "410m/a7-0p5 development occupancy and site-isolation timing"
+    ],
+    "development_evaluation": [
+      {"condition": "410m/a0", "R_model": 0.00011047923803103942, "speedup": 0.9430873597781461},
+      {"condition": "410m/a1h", "R_model": 0.21049725280441106, "speedup": 0.9431287238302859},
+      {"condition": "410m/a4-0", "R_model": 0.3833867333385676, "speedup": 0.9471561359060003},
+      {"condition": "410m/a7-0", "R_model": 0.4112146787868456, "speedup": 0.9444775334223512},
+      {"condition": "410m/a4-0p5", "R_model": 0.715914446480748, "speedup": 1.0205080638239985},
+      {"condition": "410m/a7-0p5", "R_model": 0.806155139186339, "speedup": 1.0160417805774404}
+    ],
+    "development_linear_fit": {
+      "n": 6,
+      "slope": 0.11067846386903384,
+      "intercept": 0.9224473782918681,
+      "pearson_r": 0.8778284332944297,
+      "r_squared": 0.7705827583001536
+    }
+  },
+  "heldout_boundary": {
+    "conditions": [
+      "410m/a4-0p01", "410m/a4-0p05", "410m/a4-0p1",
+      "410m/a7-0p01", "410m/a7-0p05", "410m/a7-0p1"
+    ],
+    "checkpoint_files_checked_remote": 6,
+    "checkpoint_files_present_remote_at_freeze": 0,
+    "all_absent_at_freeze": true
+  },
+  "sources": [
+    {"path": "autoresearch/candidates/k010/candidate.py", "bytes": 2449, "sha256": "881855e3e67f9ce0a790df8cf05cd72adf568ad284f2ee4c93784cedf7212eb4"},
+    {"path": "autoresearch/candidates/k010/README.md", "bytes": 602, "sha256": "1f50f81154031119cf7875bb7c0c2b191d3be73fe8bd37a20dcb2e62f8b650df"},
+    {"path": "autoresearch/probe_k010_models.py", "bytes": 1731, "sha256": "c2f435278550a0b1ff32e15e99d52de6825521f1a43eee4959a64bfb2705b75c"},
+    {"path": "autoresearch/candidates/k004/candidate.py", "bytes": 7392, "sha256": "1c273422c5e726bceaa2caa6b7e7cde9e6b5f50161706312489f739fb72ea0bd"},
+    {"path": "autoresearch/candidates/k004/kernels.py", "bytes": 3657, "sha256": "cf23f7c38dc0e783cc139c66e7d544466954898738d1ac6e1d0e7691d59b1ab0"},
+    {"path": "measurement.py", "bytes": 4149, "sha256": "1bee7bf5579de65979d9e22330d218625a3f1415fe135613ac3e62db35d55329"},
+    {"path": "config.json", "bytes": 1661, "sha256": "1326eedf4e3b48c1919a427c4cfe50eb383e047f39c3788ee0b8877c970ce56d"}
+  ]
+}

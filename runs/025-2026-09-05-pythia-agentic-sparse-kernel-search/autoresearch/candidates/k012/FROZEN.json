@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "candidate_id": "k012",
+  "frozen_utc": "2026-09-06T00:04:06.3047415+00:00",
+  "policy": {
+    "architecture": "Pythia-14M",
+    "kernel": "K001 fused signed-exact warp compaction",
+    "site_selection": "A0=all linear sites; A1-H=h; A4/A7=topology-active linear sites",
+    "layer_indices": [1, 2, 3, 4, 5],
+    "runtime_density_dispatch": false,
+    "checkpoint_identity_dispatch": false,
+    "additional_pruning": false
+  },
+  "selection_evidence": {
+    "used_for_tuning": [
+      "K011 fixed 12-mask screen on A7 kappa=0 plus A4/A7 kappa=0.5 development inputs",
+      "160-sample suffix4/suffix5 confirmation",
+      "K012 six-development-condition qualification"
+    ],
+    "screening_winner": {
+      "mask": "suffix5",
+      "screening_high_endpoint_geomean": 1.0792477449425175,
+      "confirmation_high_endpoint_geomean": 1.0986548773753049,
+      "runner_up": "suffix4",
+      "runner_up_confirmation_geomean": 1.0812284093083773
+    },
+    "development_evaluation": [
+      {"condition": "14m/a0", "R_model": 0.000000011415112639303073, "speedup": 0.9947880853316886},
+      {"condition": "14m/a1h", "R_model": 0.027141299328466276, "speedup": 0.9857912505502308},
+      {"condition": "14m/a4-0", "R_model": 0.0781004229286857, "speedup": 1.115913577683652},
+      {"condition": "14m/a4-0p5", "R_model": 0.12713448684742273, "speedup": 1.11988475487465},
+      {"condition": "14m/a7-0", "R_model": 0.0705422917861371, "speedup": 1.0870580386149837},
+      {"condition": "14m/a7-0p5", "R_model": 0.27482684296304843, "speedup": 1.0883144574198622}
+    ],
+    "development_linear_fit": {
+      "n": 6,
+      "slope": 0.3467281239945906,
+      "intercept": 1.0319049335493506,
+      "pearson_r": 0.5680242304408152,
+      "r_squared": 0.3226515263678803
+    }
+  },
+  "heldout_boundary": {
+    "conditions": [
+      "14m/a4-0p01", "14m/a4-0p05", "14m/a4-0p1",
+      "14m/a7-0p01", "14m/a7-0p05", "14m/a7-0p1"
+    ],
+    "checkpoint_files_present_remote_at_freeze": 6,
+    "heldout_result_artifacts_present_remote_at_freeze": 0,
+    "staged_but_unevaluated_at_freeze": true,
+    "note": "The sealed transfer was extracted before this freeze; no held-out model result was evaluated or used for selection."
+  },
+  "sources": [
+    {"path": "autoresearch/candidates/k012/candidate.py", "bytes": 2738, "sha256": "96e8e018a2f4f2d8f5be4f41dc8f7215dbf4d165a6052f3fa3c85f3614d73e73"},
+    {"path": "autoresearch/candidates/k012/README.md", "bytes": 852, "sha256": "7d46ea2d39f1a7cb051322be0dcb822bac1c5d2f544ad5abf400eb9d0d1da2e4"},
+    {"path": "autoresearch/probe_k012_models.py", "bytes": 1455, "sha256": "4bdea713ff1c79edd76ecfd7eeef740be05f38695f9dd810cc7e7b377dc85f4f"},
+    {"path": "autoresearch/candidates/k001/candidate.py", "bytes": 5081, "sha256": "ac335d05e5686eed57fbbf7929bc6731e1c38ea96cceed1b56d37877004d6ee9"},
+    {"path": "autoresearch/candidates/k001/kernel.cu", "bytes": 5371, "sha256": "a0977732cd87d26bec619f43f60872f5726c08ab97f6d5194952d4655aaf87f2"},
+    {"path": "measurement.py", "bytes": 4149, "sha256": "1bee7bf5579de65979d9e22330d218625a3f1415fe135613ac3e62db35d55329"},
+    {"path": "config.json", "bytes": 1661, "sha256": "1326eedf4e3b48c1919a427c4cfe50eb383e047f39c3788ee0b8877c970ce56d"}
+  ]
+}

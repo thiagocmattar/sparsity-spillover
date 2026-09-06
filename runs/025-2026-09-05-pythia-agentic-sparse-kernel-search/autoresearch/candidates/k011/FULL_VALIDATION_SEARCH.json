@@ -1,0 +1,48 @@
+{
+  "candidate_id": "k011",
+  "search_id": "14m-complete-validation-mask-search-001",
+  "architecture": "Pythia-14M",
+  "partition_boundary": {
+    "development_conditions": [
+      "14m/a0",
+      "14m/a1h",
+      "14m/a4-0",
+      "14m/a4-0p5",
+      "14m/a7-0",
+      "14m/a7-0p5"
+    ],
+    "heldout_conditions_forbidden_during_search": [
+      "14m/a4-0p01",
+      "14m/a4-0p05",
+      "14m/a4-0p1",
+      "14m/a7-0p01",
+      "14m/a7-0p05",
+      "14m/a7-0p1"
+    ]
+  },
+  "shortlist": [
+    "prefix1",
+    "suffix1",
+    "suffix2",
+    "suffix3",
+    "suffix4",
+    "odd"
+  ],
+  "shortlist_provenance": "These masks passed the already-completed 16-block A7-kappa-0 K011 gate. Prefix2-prefix5 and even failed that gate; suffix5 was subsequently rejected by complete validation as K012.",
+  "screen": {
+    "conditions": ["14m/a0", "14m/a4-0", "14m/a7-0"],
+    "requirement": "Every condition must pass the unchanged 16-block calibration gate and all 338 complete validation blocks.",
+    "timing": "16 fixed development inputs, 3 paired eager passes, 48 samples per mode"
+  },
+  "confirmation": {
+    "conditions": ["14m/a1h", "14m/a4-0p5", "14m/a7-0p5"],
+    "eligibility": "Only masks passing all three screen conditions are run.",
+    "requirement": "Every confirmation condition must pass the unchanged 16-block calibration gate and all 338 complete validation blocks."
+  },
+  "selection_rule": {
+    "primary": "Among masks passing all six development conditions, maximize the geometric mean paired speedup over the four sparse-family endpoints A4-kappa-0, A4-kappa-0.5, A7-kappa-0, and A7-kappa-0.5.",
+    "tie_break": "Within 0.005 geometric-mean speedup, choose the mask with fewer adapted layers, then lexical mask id.",
+    "failure_path": "If no mask qualifies, do not inspect held-out checkpoints; move to a separately recorded exact-tile or native-dispatch development candidate."
+  },
+  "scientific_scope": "Development-only kernel correctness and timing search. Validation loss and logits are qualification gates, not optimized outcomes."
+}

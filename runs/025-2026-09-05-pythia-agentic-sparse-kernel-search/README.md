@@ -1,13 +1,53 @@
 # Run 025: agentic sparse-kernel specialization for Pythia
 
-Status: **pilot concluded with a P0 full-model correctness blocker; no GPUs
-remaining; optimization search not started**.
+Status: **Blackwell search and the frozen 36-checkpoint matrix are complete;
+hardware transfer, fresh-process confirmation, component ablation, and sparse
+QK/PV attention remain incomplete. No GPU is running.**
 Execution source baseline: `afad780`. See the append-only
 [calibration observation](observations/001-calibration-gates.md) and
 [cost/ETC closeout](CALIBRATION_CLOSEOUT.md).
 Created 2026-09-05 at the user's explicit request to reserve a new run folder
 and write a plan. This documentation-only reservation does not bypass design
 confirmation for implementation or the repository's launch review.
+
+## Blackwell completion addendum (2026-09-06)
+
+The user subsequently approved the bounded continuation and all required
+launches within the same $40 ceiling. The continuation retained P0 and tried
+K001 through K016. It froze separate policies for each architecture: K013 for
+14M, K016 for 70M, and K010 for 410M. On one NVIDIA RTX PRO 4500 Blackwell it
+then evaluated all 36 checkpoints at batch 1 and sequence length 2,048 with 80
+paired timing samples each and complete 338-block numerical/quality validation.
+Thirty-two final deployments pass; four fail and remain part of the record.
+
+[Analysis 015](../../analyses/015-2026-09-06-pythia-agentic-kernel-search/README.md)
+owns the count-reconciled table, qualified regressions, fixed-`R_model`
+implementation comparisons, and two inspected publication PDFs. The qualified
+within-size OLS results are `R2=0.235` at 14M, `0.003` at 70M, and `0.611` at
+410M. Those heterogeneous results support implementation specificity, not a
+universal runtime mapping.
+
+The evidence archive was retrieved and matches its stable remote post-package
+SHA-256. The only self-inventory mismatch is a declared 46-byte controller-log
+race; all 4,100 stable files match. The final Pod was deleted, and a fresh
+control-plane check reports zero Pods and zero endpoints. The existing 100 GB
+standard volume remains intentionally retained in EUR-IS-1.
+
+The experiment is still **partial against its preregistered minimum paper
+package**. QK/PV matmuls remained dense SDPA; the strongest compiled-dense
+comparison, three fresh-process repetitions, contribution ablations, and fixed
+H100 transfer were not completed. Final timing also used the first 16 fixed
+seed-2500 training-cache blocks rather than the planned seed-2504 validation
+sample. Complete validation coverage is unaffected.
+
+At the post-teardown billing snapshot, the account window covering this work
+reports $7.1028 in Pod GPU charges, $0.0648 in Pod disk, and $0.2236 in standard
+storage ($7.3913 total). This is an account-window total and therefore a
+conservative Run 025 debit, not invented per-Pod attribution. The account
+balance was $34.8766 and ongoing spend was $0.01/hour from retained storage.
+Charging the whole window to Run 025 leaves $32.6087 of the $40 ceiling. Live
+community H100 quotes were $2.59/hour for NVL and $2.69/hour for SXM, but no
+H100 was launched by this addendum.
 
 ## Decision in brief
 
@@ -115,12 +155,18 @@ workloads do not establish an architecture/hardware effect or validate P0.
 - [x] Obtain explicit calibration launch approval and verify live lease/guard readiness.
 - [x] Execute bounded calibration; record partial coverage and correctness failure.
 - [x] Report calibration decision: repair/qualify P0 before optimization; larger-size ETC remains unmeasured.
-- [ ] Seal CUDA-verified P0, strongest dense configuration, search evaluator and controller provenance before K001.
-- [ ] Execute one Sakana-derived closed loop, at most 40 candidates / 20 GPU-hours.
-- [ ] Freeze winner; verify all 36 checkpoints, component effects, and H100 transfer.
+- [x] Seal CUDA-verified P0, the evaluator, and controller provenance before K001.
+- [ ] Seal the strongest compiled-dense comparator (native eager remained the final reference).
+- [x] Execute one Sakana-derived closed loop: P0 plus K001--K016, below 40 candidates and the $40 ceiling.
+- [x] Freeze one policy per size and evaluate all 36 checkpoints on Blackwell.
+- [ ] Repeat final timing in three fresh processes on the development GPU.
+- [ ] Complete the prespecified FFN/attention contribution tests; QK/PV remains dense.
+- [ ] Transfer the frozen policies to the 18 H100 endpoint sentinels without retuning.
 - [x] Retrieve/hash-verify pilot artifacts; terminate both Pods; confirm zero Pods/endpoints.
 - [x] Write pilot observation and cost/ETC closeout, including failed attempts.
-- [ ] Execute final-study retrieval and publication figures if the full study proceeds.
+- [x] Retrieve and hash-verify the Blackwell evidence; delete the Pod and recheck the control plane.
+- [x] Produce the Blackwell result table, fixed-`R_model` comparisons, and publication figures.
+- [ ] Complete the missing paper-minimum tests or retain the explicit partial-study label.
 
 ## Evidence boundary
 

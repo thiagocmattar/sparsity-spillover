@@ -1,0 +1,44 @@
+{
+  "candidate_id": "k014",
+  "search_id": "70m-complete-validation-topology-policy-001",
+  "architecture": "Pythia-70M",
+  "scientific_status": "exploratory because the six untuned 70M checkpoints were already inspected under K009",
+  "partition_boundary": {
+    "development_conditions": [
+      "70m/a1h",
+      "70m/a4-0",
+      "70m/a4-0p5",
+      "70m/a7-0",
+      "70m/a7-0p5"
+    ],
+    "untuned_conditions_forbidden_during_search": [
+      "70m/a4-0p01",
+      "70m/a4-0p05",
+      "70m/a4-0p1",
+      "70m/a7-0p01",
+      "70m/a7-0p05",
+      "70m/a7-0p1"
+    ]
+  },
+  "masks": ["suffix2", "suffix3", "suffix4", "suffix5", "all6", "odd"],
+  "mask_layers": {
+    "suffix2": [4, 5],
+    "suffix3": [3, 4, 5],
+    "suffix4": [2, 3, 4, 5],
+    "suffix5": [1, 2, 3, 4, 5],
+    "all6": [0, 1, 2, 3, 4, 5],
+    "odd": [1, 3, 5]
+  },
+  "kernel": "unchanged K001 fused signed-exact warp compaction",
+  "site_policy": "topology-active supported linear sites only: a, m, h, z",
+  "timing": "16 fixed development inputs, 3 paired eager passes, 48 samples per mode",
+  "qualification": "unchanged 16-block calibration gates plus every one of the 338 complete validation blocks; excluded tail 1,444 tokens",
+  "selection_rule": {
+    "A1-H": "maximize paired geometric-mean speedup on 70m/a1h among qualified masks",
+    "A4-OL1": "require both kappa=0 and kappa=0.5 development checkpoints to qualify, then maximize their geometric-mean speedup",
+    "A7-OL1": "require both kappa=0 and kappa=0.5 development checkpoints to qualify, then maximize their geometric-mean speedup",
+    "tie_break": "within 0.005 of the best score, choose fewer adapted layers, then lexical mask id",
+    "A0": "native fallback; no sparse kernel is labeled for the effectively dense control"
+  },
+  "interpretation": "One static layer mask is selected per topology and reused across kappas. No runtime-density or checkpoint-identity dispatch is permitted. Untuned results are not rerun or used as confirmation."
+}
