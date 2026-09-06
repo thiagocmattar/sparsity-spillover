@@ -1,8 +1,10 @@
 # Run 025: agentic sparse-kernel specialization for Pythia
 
-Status: **Blackwell search and the frozen 36-checkpoint matrix are complete;
-hardware transfer, fresh-process confirmation, component ablation, and sparse
-QK/PV attention remain incomplete. No GPU is running.**
+Status: **The bounded search, frozen Blackwell matrix, fresh-process
+replication, fixed-policy H100 transfer, component probes, and direct
+fixed-`R_model` confirmations are complete. Sparse QK/PV attention and the
+strongest compiled-dense comparator remain outside the achieved scope. No GPU
+is running.**
 Execution source baseline: `afad780`. See the append-only
 [calibration observation](observations/001-calibration-gates.md) and
 [cost/ETC closeout](CALIBRATION_CLOSEOUT.md).
@@ -10,7 +12,7 @@ Created 2026-09-05 at the user's explicit request to reserve a new run folder
 and write a plan. This documentation-only reservation does not bypass design
 confirmation for implementation or the repository's launch review.
 
-## Blackwell completion addendum (2026-09-06)
+## Interim Blackwell completion addendum (2026-09-06)
 
 The user subsequently approved the bounded continuation and all required
 launches within the same $40 ceiling. The continuation retained P0 and tried
@@ -33,12 +35,14 @@ race; all 4,100 stable files match. The final Pod was deleted, and a fresh
 control-plane check reports zero Pods and zero endpoints. The existing 100 GB
 standard volume remains intentionally retained in EUR-IS-1.
 
-The experiment is still **partial against its preregistered minimum paper
-package**. QK/PV matmuls remained dense SDPA; the strongest compiled-dense
-comparison, three fresh-process repetitions, contribution ablations, and fixed
-H100 transfer were not completed. Final timing also used the first 16 fixed
-seed-2500 training-cache blocks rather than the planned seed-2504 validation
-sample. Complete validation coverage is unaffected.
+At this interim point the experiment was still **partial against its
+preregistered minimum paper package**. QK/PV matmuls remained dense SDPA; the
+strongest compiled-dense comparison, three fresh-process repetitions,
+contribution ablations, and fixed H100 transfer had not yet been completed.
+The later addendum below records the completed replication and transfer work.
+Final timing continued to use the first 16 fixed seed-2500 training-cache
+blocks rather than the planned seed-2504 validation sample. Complete
+validation coverage is unaffected.
 
 At the post-teardown billing snapshot, the account window covering this work
 reports $7.1028 in Pod GPU charges, $0.0648 in Pod disk, and $0.2236 in standard
@@ -48,6 +52,59 @@ balance was $34.8766 and ongoing spend was $0.01/hour from retained storage.
 Charging the whole window to Run 025 leaves $32.6087 of the $40 ceiling. Live
 community H100 quotes were $2.59/hour for NVL and $2.69/hour for SXM, but no
 H100 was launched by this addendum.
+
+## Replication and hardware closeout addendum (2026-09-06)
+
+The approved continuation added three independent eager Python processes for
+each of the 36 Blackwell checkpoint deployments, the 18 preregistered endpoint
+sentinels on an H100 NVL without retuning, 40 component probes across the two
+GPUs, and a direct same-checkpoint/same-`R_model` experiment on the RTX PRO 4500.
+Every primary fresh process and every component probe ran complete 338-block
+validation. The four known frozen-policy numerical failures repeated in all
+three Blackwell processes and remain excluded from qualified fits.
+
+Fresh-process regressions remain conditional rather than universal. On RTX PRO
+4500, within-size qualified OLS `R2` is 0.347 for 14M, 0.0027 for 70M, and 0.636
+for 410M. On H100 NVL the corresponding six-sentinel values are 0.321, 0.051,
+and 0.700. The H100 410M slope orders six implementations that are all slower
+than native, so association and useful acceleration are separate outcomes.
+Every architecture nevertheless has at least one qualified native speedup on
+at least one GPU: 1.0725x for 14M and 1.0452x for 70M on H100, and 1.0192x for
+410M on RTX.
+
+Attempt `rtxpro4500-004` then held the trained checkpoint, workload, and
+canonical integer `R_model` counts fixed while changing only implementation
+policy. It ran 36 prespecified P0/K013, K009/K016, or K004/K010 processes and 12
+adaptive P0/K001 14M confirmation processes. All 48 passed the complete
+validation gate. The primary optimized-over-baseline medians across six fresh
+process pairs per architecture are 1.0152x at 14M, 1.0113x at 70M, and 1.0064x
+at 410M; 16 of 18 process pairs favor the optimized implementation. The final
+14M robustness policy K013 is a deliberate negative contrast: it is only
+0.9370x and 0.9477x as fast as P0 on the two tested endpoints. This supports
+implementation sensitivity and tuning risk at fixed logical opportunity.
+
+The component probes do not establish sparse QK/PV attention. They show that
+eligible attention-projection linears exceed native break-even in all 18
+probes (1.0034x--1.0254x), whereas FFN-only eligibility exceeds break-even in
+11 of 22 probes (0.8497x--1.0246x). The paths are non-additive, consistent with
+packing, dispatch, and fragmented-execution overhead, but direct low-level
+counters were not serialized.
+
+The complete attempt-004 archive is 731,849 bytes with SHA-256
+`0753655f73ccd2bd8586265c1558641949fc4b6b112684570b891f3b00a815d8`.
+Both phase verifiers pass locally after transfer. The Pod and its deletion
+guard were removed; authoritative control-plane queries report zero Pods and
+zero endpoints. The pre-existing 100 GB standard network volume remains
+intentionally retained. The final account-wide 2026-09-05--06 billing snapshot
+is recorded in
+[`billing-closeout.json`](autoresearch/launch-control/rtxpro4500-004/billing-closeout.json):
+$18.2096 total, including $17.7879 Pod GPU, $0.1301 Pod disk, and $0.2917
+standard storage. It is a conservative account-window debit, not fabricated
+per-Pod attribution, and leaves $21.7904 of the $40 ceiling before delayed
+charges and continuing retained-volume storage.
+
+Closeout verification passes 35 focused analysis/controller tests and the
+complete 242-test repository bootstrap suite.
 
 ## Decision in brief
 
@@ -109,7 +166,7 @@ feedback over another search strategy. A positive full-model gain and a
 positive relation to `R_model` remain hypotheses, not completion requirements
 that justify spending past the cap.
 
-## Implemented calibration package
+## Implemented calibration package (historical snapshot)
 
 The confirmed design now has a run-local Sakana-derived P0 adapter, rotating
 full-model timer, fixed numerical/full-validation gates, input hashes for all
@@ -122,10 +179,11 @@ See [launch review and exact test scope](LAUNCH_REVIEW.md),
 [source/correctness audit](SOURCE_AUDIT.md), and
 [local smoke evidence](prelaunch/local-smoke.json).
 
-P0 covers the four linear sites; QK/PV attention remains dense. Sparse
-attention, the stronger compiled/graph dense selection, search scoring, and
-the frozen all-36 final evaluator remain subsequent approved-design work.
-No optimized winner is claimed. The approved sequential **$5 calibration gate**
+P0 covers the four linear sites; QK/PV attention remains dense. At this
+calibration stage, sparse attention, the stronger compiled/graph dense
+selection, search scoring, and the frozen all-36 final evaluator remained
+subsequent approved-design work, and no optimized winner was yet claimed. The
+approved sequential **$5 calibration gate**
 concluded at approximately **$1.38 all-in** (billing provisional). Both GPUs
 passed 48 primitive cases under compute-sanitizer. A0-14M passed full validation;
 A1-H-14M failed its fixed elementwise logit gate, stopping the eight-model loop.
@@ -159,14 +217,14 @@ workloads do not establish an architecture/hardware effect or validate P0.
 - [ ] Seal the strongest compiled-dense comparator (native eager remained the final reference).
 - [x] Execute one Sakana-derived closed loop: P0 plus K001--K016, below 40 candidates and the $40 ceiling.
 - [x] Freeze one policy per size and evaluate all 36 checkpoints on Blackwell.
-- [ ] Repeat final timing in three fresh processes on the development GPU.
-- [ ] Complete the prespecified FFN/attention contribution tests; QK/PV remains dense.
-- [ ] Transfer the frozen policies to the 18 H100 endpoint sentinels without retuning.
+- [x] Repeat final timing in three fresh processes on the development GPU.
+- [x] Complete the prespecified FFN/attention-projection contribution tests; QK/PV remains dense.
+- [x] Transfer the frozen policies to the 18 H100 endpoint sentinels without retuning.
 - [x] Retrieve/hash-verify pilot artifacts; terminate both Pods; confirm zero Pods/endpoints.
 - [x] Write pilot observation and cost/ETC closeout, including failed attempts.
 - [x] Retrieve and hash-verify the Blackwell evidence; delete the Pod and recheck the control plane.
 - [x] Produce the Blackwell result table, fixed-`R_model` comparisons, and publication figures.
-- [ ] Complete the missing paper-minimum tests or retain the explicit partial-study label.
+- [x] Close the achieved paper package with an explicit partial-study label for dense QK/PV and the missing compiled-dense comparator.
 
 ## Evidence boundary
 
