@@ -1,10 +1,12 @@
 # Autonomous continuation of Run 025
 
-Status 2026-09-06: **Blackwell trajectory and 36-checkpoint frozen matrix
-complete; retrieved and verified; no Pod or endpoint remains. The study is
-partial because H100 transfer, fresh-process confirmation, component ablations,
-and sparse QK/PV attention were not completed.** See the run-level
-`README.md` and Analysis 015 for the reconciled result.
+Status 2026-09-06: **Blackwell trajectory, 36-checkpoint frozen matrix,
+fresh-process replication, component probes, fixed-policy H100 transfer, and
+direct fixed-`R_model` confirmation are complete, retrieved, and verified. No
+Pod or endpoint remains. The study retains an explicit partial label because
+the strongest compiled-dense comparator and a CUDA-qualified sparse QK/PV path
+were not completed.** See the run-level `README.md` and Analysis 015 for the
+reconciled result.
 
 2026-09-05: the user explicitly authorized the full closed-loop search, all
 GPU launches and transfers, within the **same $40 total RunPod budget**.
@@ -22,7 +24,9 @@ Unexposed model request IDs/token counters remain unknown, not reconstructed.
 Correct full-model speedups on retained Pythia 14M/70M/410M; test whether
 speedup associates with canonical R_model; compare optimized vs minimally
 adapted Sakana at the same checkpoint/R_model. FFN and actual QK/PV attention
-remain in scope. Keep B1,T2048, BF16, full LM logits, all original gates and
+were in scope; the retained K002 attention attempt passed CPU mathematics but
+did not qualify on CUDA, so all final QK/PV paths remain dense. Keep B1,T2048,
+BF16, full LM logits, all original gates and
 weights, 18 endpoint development checkpoints and 18 untouched interior tests.
 All complete validation uses 338 blocks/500 documents and the declared tail.
 The current manuscript calls R_model model-wide sparsity; no TeX edits here.
@@ -45,9 +49,9 @@ An optimization must improve the same function, not create additional sparsity.
 - [x] Iterate logged K001--K016 candidates on the endpoint development sets.
 - [ ] Implement a qualified sparse QK/PV attention path.
 - [x] Freeze architecture-specific winners and test all 36 checkpoints without feeding final scores back.
-- [ ] Repeat paired timing, component ablations and matched H100 transfer.
+- [x] Repeat paired timing, component ablations and matched H100 transfer.
 - [x] Plot R_model/speedup and fixed-R_model optimization gains with uncertainty.
-- [x] Verify all Blackwell evidence locally, reconcile the account-window budget, and terminate GPU compute.
+- [x] Verify all Blackwell/H100/fixed-`R_model` evidence locally, reconcile the account-window budget, and terminate GPU compute.
 
 ## Spend and execution rules
 
