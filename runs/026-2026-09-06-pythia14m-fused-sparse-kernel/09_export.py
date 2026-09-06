@@ -13,6 +13,7 @@ from run025_common import read_json,write_json,record,verify_record
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--name',required=True)
+    p.add_argument('--terminal',action='store_true', help='Caller has verified all GPU workers terminal')
     a=p.parse_args()
     if not a.name.replace('-','').isalnum(): p.error('Simple unique name required')
     paths=[]
@@ -21,7 +22,20 @@ def main():
         if not result.exists() or read_json(result)['status']=='running':
             continue
         paths.extend(f for f in attempt.rglob('*') if f.is_file())
-    paths += [f for f in (RUN/'runtime').glob('*') if f.is_file() and f.suffix in {'.json','.txt','.log'}]
+    # These preflight records are terminal before search starts. Active phase
+    # logs are deliberately excluded; collect them at their own closeout.
+    for name in ['primitive.json','primitive-joint.json','pip-freeze.txt',
+                 'nvcc-version.txt','calibration.log','calibration2.log']:
+        f=RUN/'runtime'/name
+        if f.is_file(): paths.append(f)
+    if a.terminal:
+        for name in ['primitive-rope.json','graph-first-divergence.json',
+                     'phase2.log','phase3.log','phase4.log','phase5.log',
+                     'final.log','diagnostics.log']:
+            f=RUN/'runtime'/name
+            if not f.is_file(): raise ValueError(f'Missing terminal evidence: {f}')
+            paths.append(f)
+        paths.extend(f for f in (RUN/'runtime/diagnostics').glob('*.json') if f.is_file())
     progress=RUN/'autoresearch/progress.csv'
     if progress.exists(): paths.append(progress)
     rows=[record(f) for f in paths]

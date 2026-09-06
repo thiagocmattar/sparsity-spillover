@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--idea', required=True)
-    parser.add_argument('--implementation', choices=['dense', 'k001', 'k017', 'k018'], default='k017')
+    parser.add_argument('--implementation', choices=['dense', 'k001', 'k017', 'k018', 'k019'], default='k017')
     parser.add_argument('--mode', choices=['native', 'graph'], default='graph')
     parser.add_argument('--sites', nargs='+', default=['h', 'z'])
     parser.add_argument('--elements', type=int, choices=[2, 4, 8], default=4)
@@ -29,6 +29,9 @@ def main():
     parser.add_argument('--full-validation', action='store_true')
     parser.add_argument('--final-timing', action='store_true')
     parser.add_argument('--profile', action='store_true')
+    parser.add_argument('--hoist-attention-import', action='store_true')
+    parser.add_argument('--emulate-precision-casts', action='store_true')
+    parser.add_argument('--joint-with-rope', action='store_true')
     args = parser.parse_args()
     if not args.attempt.replace('-', '').isalnum() or not 1 <= args.inputs <= 64:
         parser.error('Invalid attempt/input count')
@@ -65,6 +68,9 @@ def main():
         torch.manual_seed(2503)
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False
+        if args.emulate_precision_casts:
+            import torch._inductor.config as inductor_config
+            inductor_config.emulate_precision_casts = True
         development = np.memmap(verify_record(manifest['development']), dtype=np.int32, mode='r').reshape(64, 2048)
         validation = np.memmap(verify_record(manifest['validation']), dtype=np.int32, mode='r')
         if divmod(len(validation), 2048) != (338, 1444):
@@ -74,6 +80,15 @@ def main():
                     ROOT/checkpoint['checkpoint'], torch=torch).to('cuda', dtype=torch.bfloat16).eval()
         model.set_attn_implementation('sdpa')
         model.config.use_cache = False
+        if args.hoist_attention_import:
+            import dense_compatible
+            with torch.inference_mode():
+                before_hoist = model(input_ids=inputs[0], use_cache=False).logits.clone()
+                dense_compatible.install(model)
+                after_hoist = model(input_ids=inputs[0], use_cache=False).logits
+                if not torch.equal(before_hoist, after_hoist):
+                    raise ValueError('Import hoist changed eager logits')
+                del before_hoist, after_hoist
         sources = [record(p) for p in HERE.rglob('*') if p.is_file() and p.suffix in {'.py', '.cu'} and 'artifacts' not in p.parts]
         write_json(dest/'manifest.json', {'arguments': vars(args), 'checkpoint': checkpoint,
             'development': manifest['development'], 'validation': manifest['validation'],
@@ -81,13 +96,23 @@ def main():
             'python': platform.python_version(), 'torch': torch.__version__, 'transformers': transformers.__version__,
             'cuda': torch.version.cuda, 'gpu': torch.cuda.get_device_name(),
             'capability': list(torch.cuda.get_device_capability()), 'bounds': cfg['calibration'],
+            'cublas_workspace_config': os.environ.get('CUBLAS_WORKSPACE_CONFIG'),
             'timer': 'synchronized host full forward/full logits; resident rotating input; equal staging excluded'})
         runners, setup = {}, {}
         with torch.inference_mode():
             for mode in args.controls:
                 emit('preparing_dense', mode=mode)
                 try:
-                    runner = dense.DenseRunner(lambda ids: model(input_ids=ids, use_cache=False).logits,
+                    control_model = model
+                    if mode.startswith('compile_'):
+                        # Keep compiler instrumentation off the native control.
+                        control_model = load_checkpoint_pythia(transformers.AutoModelForCausalLM,
+                            ROOT/checkpoint['checkpoint'], torch=torch).to('cuda', dtype=torch.bfloat16).eval()
+                        control_model.set_attn_implementation('sdpa')
+                        control_model.config.use_cache = False
+                        if args.hoist_attention_import:
+                            dense_compatible.install(control_model)
+                    runner = dense.DenseRunner(lambda ids, net=control_model: net(input_ids=ids, use_cache=False).logits,
                                                inputs[0].clone(), mode)
                     runner.prepare()
                     runners[mode] = runner
@@ -105,7 +130,12 @@ def main():
                     ROOT/checkpoint['checkpoint'], torch=torch).to('cuda', dtype=torch.bfloat16).eval()
                 candidate_model.set_attn_implementation('sdpa')
                 candidate_model.config.use_cache = False
-                if args.implementation == 'k018':
+                if args.hoist_attention_import:
+                    dense_compatible.install(candidate_model)
+                if args.implementation == 'k019':
+                    candidate = module('run026_k019', HERE/'candidates/k019/candidate.py')
+                    adapter = candidate.Adapter(candidate_model, joint=args.joint_with_rope)
+                elif args.implementation == 'k018':
                     candidate = module('run026_k018', HERE/'candidates/k018/candidate.py')
                     adapter = candidate.Adapter(candidate_model)
                     adapter.install()
@@ -169,6 +199,11 @@ def main():
                     raise ValueError('Final timing requires complete validation')
                 indices = np.random.default_rng(2504).choice(338, 64, replace=False)
                 final_inputs = [torch.tensor(validation[i*2048:(i+1)*2048].copy(), device='cuda', dtype=torch.long)[None] for i in indices]
+                for runner in runners.values():
+                    for ids in final_inputs:
+                        runner.stage(ids)
+                        runner()
+                torch.cuda.synchronize()
                 final_samples = dense.paired_probe(runners, final_inputs, passes=7, seed=2504)
                 write_json(dest/'final-timing.json', {'indices': indices.tolist(), 'samples': final_samples,
                     'summary': timing_summary(final_samples), 'matched': timing_summary(final_samples, reference=baseline)})

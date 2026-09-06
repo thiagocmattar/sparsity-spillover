@@ -5,10 +5,13 @@
 
 ## Current status
 
-Run 026 is implementing/testing the user-authorized >1.6x Pythia-14M
-autoresearch continuation under a new $25 RunPod cap. K017 fuses trained gates
-with exact sparse projections; all variants retain latency, canonical count-
-derived R_model and speedup history. See its README for current live resources.
+Run 026 completed the user-authorized Pythia-14M continuation: frozen K019+K018
+achieves 1.8149x over qualified stock eager SDPA, with bitwise-identical full
+validation logits in three processes. Fusion and sparsity both contribute;
+this is not a >1.6x claim over custom fused-dense ablations. Its README links
+all variant latencies, canonical R_model and progress. Evidence is hash-verified
+locally; zero Pods/endpoints remain, estimated new study spend about $0.44/$25
+(posted billing pending), and the existing volume is unchanged.
 
 Run 025 completed its Sakana-derived search through K016, the frozen
 36-checkpoint Blackwell matrix, three-process Blackwell replication, fixed-policy

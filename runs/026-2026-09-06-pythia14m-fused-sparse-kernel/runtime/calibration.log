@@ -1,0 +1,29 @@
+Verified 41 files, 411555 bytes
+Traceback (most recent call last):
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/primitive.py", line 35, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/primitive.py", line 18, in main
+    fused(x)
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k017/candidate.py", line 42, in forward
+    (self.backend or extension().linear)(flat, self.weight_t,
+                     ^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k017/candidate.py", line 20, in extension
+    return load(name=f'run026_k017_{identity}', sources=[str(source)],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 1818, in load
+    return _jit_compile(
+           ^^^^^^^^^^^^^
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2268, in _jit_compile
+    _write_ninja_file_and_build_library(
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2382, in _write_ninja_file_and_build_library
+    verify_ninja_availability()
+  File "/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2448, in verify_ninja_availability
+    raise RuntimeError("Ninja is required to load C++ extensions (pip install ninja to get it)")
+RuntimeError: Ninja is required to load C++ extensions (pip install ninja to get it)

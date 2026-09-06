@@ -1,0 +1,378 @@
+{
+  "arguments": {
+    "attempt": "006-k018-eager",
+    "controls": [
+      "native",
+      "graph"
+    ],
+    "elements": 4,
+    "emulate_precision_casts": false,
+    "final_timing": false,
+    "full_validation": true,
+    "hoist_attention_import": true,
+    "idea": "Joint sparse W2 and Wo with rounded parallel residual epilogue",
+    "implementation": "k018",
+    "inputs": 16,
+    "mode": "native",
+    "passes": 5,
+    "profile": true,
+    "sites": [
+      "h",
+      "z"
+    ],
+    "warps": 4
+  },
+  "bounds": {
+    "activation_thresholds": [
+      0.0,
+      0.001,
+      0.01
+    ],
+    "batch_size": 1,
+    "conditions": [
+      "14m/a0",
+      "14m/a1h",
+      "70m/a0",
+      "70m/a1h",
+      "70m/a7-0p5",
+      "410m/a0",
+      "410m/a1h",
+      "410m/a7-0p5"
+    ],
+    "logit_atol": 0.25,
+    "logit_relative_l2": 0.02,
+    "logit_rtol": 0.02,
+    "max_worker_seconds": 6600,
+    "primitive_atol": 0.125,
+    "primitive_relative_l2": 0.02,
+    "primitive_rtol": 0.02,
+    "timing_inputs": 16,
+    "timing_passes": 3,
+    "validation_loss_atol": 0.001,
+    "warmups": 2
+  },
+  "capability": [
+    12,
+    0
+  ],
+  "checkpoint": {
+    "architecture": {
+      "hidden_size": 128,
+      "intermediate_size": 512,
+      "num_attention_heads": 4,
+      "num_hidden_layers": 6,
+      "vocab_size": 50304
+    },
+    "canonical_logical_products": {
+      "architecture_maximum": {
+        "R_model_max_fraction": 0.2995237697384911,
+        "R_model_max_percent": 29.95237697384911,
+        "active_sites": [
+          "a",
+          "m",
+          "h",
+          "q_post",
+          "k_post",
+          "v",
+          "z"
+        ],
+        "block_product_count": 5638717440,
+        "ffn_size": 512,
+        "hidden_size": 128,
+        "layers": 6,
+        "lm_head_product_count": 13186891776,
+        "model_product_count": 18825609216,
+        "per_block_operation_products": {
+          "attention_output_projection": 33554432,
+          "mlp_w1": 134217728,
+          "mlp_w2": 134217728,
+          "probability_value": 268566528,
+          "qk_scores": 268566528,
+          "qkv_projection": 100663296
+        },
+        "reachable_operations": [
+          "qkv_projection",
+          "qk_scores",
+          "probability_value",
+          "attention_output_projection",
+          "mlp_w1",
+          "mlp_w2"
+        ],
+        "reachable_product_count": 5638717440,
+        "sequence_length": 2048,
+        "topology_id": "A7-Z-POST",
+        "valid_causal_pairs_per_sequence": 2098176,
+        "vocabulary_size": 50304
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.829406580981418,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+      "measured": {
+        "R_block": 0.9175460204810952,
+        "R_model": 0.27482684296304843,
+        "block_product_count": 1905886494720,
+        "block_zero_product_count": 1748738568719,
+        "lm_head_product_count": 4457169420288,
+        "model_product_count": 6363055915008,
+        "per_operation": {
+          "attention_output_projection": {
+            "product_count": 68048388096,
+            "zero_product_count": 67992747008,
+            "zero_product_fraction": 0.999182330550997
+          },
+          "mlp_w1": {
+            "product_count": 272193552384,
+            "zero_product_count": 186990871552,
+            "zero_product_fraction": 0.6869775933861968
+          },
+          "mlp_w2": {
+            "product_count": 272193552384,
+            "zero_product_count": 271857173376,
+            "zero_product_fraction": 0.9987641918588672
+          },
+          "probability_value": {
+            "product_count": 544652918784,
+            "zero_product_count": 537622783397,
+            "zero_product_fraction": 0.9870924488889262
+          },
+          "qk_scores": {
+            "product_count": 544652918784,
+            "zero_product_count": 529670733162,
+            "zero_product_fraction": 0.9724922329334993
+          },
+          "qkv_projection": {
+            "product_count": 204145164288,
+            "zero_product_count": 154604260224,
+            "zero_product_fraction": 0.7573251159938835
+          }
+        }
+      }
+    },
+    "checkpoint": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/checkpoints/step_000712",
+    "family": "A7-OL1",
+    "files": [
+      {
+        "bytes": 1684,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/checkpoints/step_000712/config.json",
+        "sha256": "693394c38797123b7406e91206a6babea86148549e06d35e7e91e21c68c1fbb4"
+      },
+      {
+        "bytes": 56279344,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/checkpoints/step_000712/model.safetensors",
+        "sha256": "f83aef36ddbddbd94efb915d574c4645c687206bb68f51886ffc6e979985b425"
+      },
+      {
+        "bytes": 308,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/checkpoints/step_000712/checkpoint_metadata.json",
+        "sha256": "1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9"
+      },
+      {
+        "bytes": 195,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/checkpoints/step_000712/generation_config.json",
+        "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+      }
+    ],
+    "id": "14m/a7-0p5",
+    "kappa": 0.5,
+    "partition": "development",
+    "provenance": [
+      {
+        "bytes": 13737,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/manifest.json",
+        "sha256": "b2e733e58fff112b1dc2897a177b1aabcd94a5793cf6392b932571304d4d95e3"
+      },
+      {
+        "bytes": 5921,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/config.yaml",
+        "sha256": "227fee846d68b9fa2b7a815b6c00746b8697e4450383c9302befa53294b32b2a"
+      },
+      {
+        "bytes": 2657,
+        "path": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/diagnostics/logical_products.json",
+        "sha256": "dc07f4de982bdcf9bbb82ea08952934a3bf6731ef7ae6193e8c9c981184657a8"
+      }
+    ],
+    "size": "14m",
+    "source_condition": {
+      "active_sites": [
+        "a",
+        "m",
+        "h",
+        "q_post",
+        "k_post",
+        "v",
+        "z"
+      ],
+      "gate_threshold": 0.5,
+      "id": "a7-ol1-kappa-0p5",
+      "is_control": false,
+      "label": "kappa=0.5, lambda=1",
+      "one_sided_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "order": 5,
+      "pressure_method": "orthogonal_l1",
+      "pressure_sites": [
+        "a",
+        "m",
+        "h",
+        "q_post",
+        "k_post",
+        "v",
+        "z"
+      ],
+      "pressure_weight": 1.0,
+      "step_budget": 1.0,
+      "symmetric_sites": [
+        "q_post",
+        "k_post",
+        "v"
+      ],
+      "topology_id": "A7-Z-POST"
+    },
+    "topology_id": "A7-Z-POST"
+  },
+  "config": {
+    "bytes": 415,
+    "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/config.json",
+    "sha256": "e7cf1c318088a353bfc7170b47b117ff0b8e9b96960aee2bcd6420c8fe5a5253"
+  },
+  "cublas_workspace_config": ":4096:8",
+  "cuda": "12.8",
+  "development": {
+    "bytes": 524288,
+    "path": "runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/prelaunch/development.int32.bin",
+    "sha256": "4bd751109b82f203ed904946874d12f1d9bb576874689a7990654a39c2644378"
+  },
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "python": "3.12.3",
+  "sources": [
+    {
+      "bytes": 13515,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/benchmark.py",
+      "sha256": "9c5976673b32cad1aeca72db754b92ffd8eab8fb6acc9548da558eb1ee16bbc9"
+    },
+    {
+      "bytes": 1229,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/common.py",
+      "sha256": "499f0e98cdf1ddf692ae78e2016be96c3c04e2cc333185c2aff8d2057e8e3228"
+    },
+    {
+      "bytes": 1948,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/dense_compatible.py",
+      "sha256": "cb601517bf4dacb590790b4d278ad195563ed27a189d405f07f9d107176bf634"
+    },
+    {
+      "bytes": 1865,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/primitive.py",
+      "sha256": "bc0aff2b42c76aeb936500fab094c331f673e40791fe564ac35e289bd4a218a5"
+    },
+    {
+      "bytes": 2115,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/primitive_joint.py",
+      "sha256": "cf13c04c6f4b82bd50db8cd1fe7eb821633d8550ca435a3956ba769363d38f83"
+    },
+    {
+      "bytes": 1869,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/progress.py",
+      "sha256": "e9037656f1df3f704de68ed600471976c40f73c0823476c99a02b0c89009732e"
+    },
+    {
+      "bytes": 1247,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/test_dense.py",
+      "sha256": "b76d95b340cc1eae13459e9d2307d8ac99c3f839ef5523d4901f992a2f4e6ffe"
+    },
+    {
+      "bytes": 2830,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/test_fusion.py",
+      "sha256": "8e27b78c421c0c00d69dfeff8f8a551c04911b6e1f896b76b99be64931964d37"
+    },
+    {
+      "bytes": 1502,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/test_joint.py",
+      "sha256": "581ca45f37ea3d84e398c9d67382306c89b9b3fc7bc4f4ec4a21e0484f740055"
+    },
+    {
+      "bytes": 3294,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k017/candidate.py",
+      "sha256": "9a2c8fd7a96257afbb3d554d73767044f4b71b44b579caad5e8ecceb0d2e0af9"
+    },
+    {
+      "bytes": 3673,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k017/kernel.cu",
+      "sha256": "0c933b98600f5fe7cb47fbc53e1a3a97ca7aece94440451b660bcddbd6e4ea0c"
+    },
+    {
+      "bytes": 3331,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k018/candidate.py",
+      "sha256": "969718e6d3d95e197775d177d31da243ec9f4e7420ad0b8309d53000383a4735"
+    },
+    {
+      "bytes": 3615,
+      "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k018/kernel.cu",
+      "sha256": "10a3200437757712fc83b0c1069bea32ed47accad42cb99b53a1a6b969f73bfa"
+    }
+  ],
+  "timer": "synchronized host full forward/full logits; resident rotating input; equal staging excluded",
+  "topology": {
+    "active_sites": [
+      "a",
+      "m",
+      "h",
+      "q_post",
+      "k_post",
+      "v",
+      "z"
+    ],
+    "qk_placement": "post_rope",
+    "site_gate": null,
+    "site_gates": {
+      "a": {
+        "kappa": 0.5,
+        "operator": "one_sided_threshold"
+      },
+      "h": {
+        "kappa": 0.5,
+        "operator": "one_sided_threshold"
+      },
+      "k_post": {
+        "kappa": 0.5,
+        "operator": "symmetric_threshold"
+      },
+      "m": {
+        "kappa": 0.5,
+        "operator": "one_sided_threshold"
+      },
+      "q_post": {
+        "kappa": 0.5,
+        "operator": "symmetric_threshold"
+      },
+      "v": {
+        "kappa": 0.5,
+        "operator": "symmetric_threshold"
+      },
+      "z": {
+        "kappa": 0.5,
+        "operator": "one_sided_threshold"
+      }
+    },
+    "topology_id": "A7-Z-POST"
+  },
+  "torch": "2.11.0+cu128",
+  "transformers": "5.12.1",
+  "validation": {
+    "bytes": 2774672,
+    "path": "data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin",
+    "sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  }
+}

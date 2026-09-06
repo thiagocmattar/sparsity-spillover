@@ -1,0 +1,144 @@
+iteration,idea,implementation,mode,candidate_mode,timing_scope,supported,qualified_full_validation,latency_ms,speedup_eager,R_model,R_model_scope,zero_products,model_products,error
+001-dense-screen,Freeze the strongest correct dense execution control,dense,compile_max_autotune,graph,development,False,False,,,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,"Bad import result
+  Explanation: Import result is not a Python module.
+
+
+  Developer debug context: _LazyModule
+
+ For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0022.html
+
+from user code:
+   File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/benchmark.py"", line 90, in <lambda>
+    runner = dense.DenseRunner(lambda ids: model(input_ids=ids, use_cache=False).logits,
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py"", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 452, in forward
+    outputs: BaseModelOutputWithPast = self.gpt_neox(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py"", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py"", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 366, in forward
+    hidden_states = layer(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/modeling_layers.py"", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 268, in forward
+    attn_output, _ = self.attention(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/src/sparsity_research/pythia.py"", line 200, in _attention_forward
+    from transformers.models.gpt_neox import modeling_gpt_neox
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS=""+dynamo""
+"
+001-dense-screen,Freeze the strongest correct dense execution control,dense,compile_reduce_overhead,graph,development,False,False,,,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,"Bad import result
+  Explanation: Import result is not a Python module.
+
+
+  Developer debug context: _LazyModule
+
+ For more details about this graph break, please visit: https://meta-pytorch.github.io/compile-graph-break-site/gb/gb0022.html
+
+from user code:
+   File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/benchmark.py"", line 90, in <lambda>
+    runner = dense.DenseRunner(lambda ids: model(input_ids=ids, use_cache=False).logits,
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py"", line 907, in wrapper
+    output = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 452, in forward
+    outputs: BaseModelOutputWithPast = self.gpt_neox(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/generic.py"", line 1036, in wrapper
+    output = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/utils/output_capturing.py"", line 252, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 366, in forward
+    hidden_states = layer(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/modeling_layers.py"", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py"", line 268, in forward
+    attn_output, _ = self.attention(
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/runtime/venv/lib/python3.12/site-packages/torch/nn/modules/module.py"", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File ""/workspace/sparsity-spillover/src/sparsity_research/pythia.py"", line 200, in _attention_forward
+    from transformers.models.gpt_neox import modeling_gpt_neox
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS=""+dynamo""
+"
+001-dense-screen,Freeze the strongest correct dense execution control,dense,graph,graph,development,True,False,1.3958570780232549,2.057598218037846,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+001-dense-screen,Freeze the strongest correct dense execution control,dense,native,graph,development,True,True,2.8699515387415886,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+002-dense-hoisted,Hoisted attention import and deterministic cuBLAS workspace,dense,compile_max_autotune,graph,development,True,False,1.0086995316669345,4.142200452634765,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+002-dense-hoisted,Hoisted attention import and deterministic cuBLAS workspace,dense,compile_reduce_overhead,graph,development,True,False,1.0850089602172375,3.8638799157165624,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+002-dense-hoisted,Hoisted attention import and deterministic cuBLAS workspace,dense,graph,graph,development,True,False,1.3898529578000307,3.0111689514458835,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+002-dense-hoisted,Hoisted attention import and deterministic cuBLAS workspace,dense,native,graph,development,True,True,4.17909340467304,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+003-k017-eager,"Fuse h and z gates into exact sparse projections, 4 elements and 4 warps",k017,candidate,native,development,True,True,3.466921509243548,1.271296064398599,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+003-k017-eager,"Fuse h and z gates into exact sparse projections, 4 elements and 4 warps",k017,compile_max_autotune,native,development,True,False,1.0217789094895124,4.3117059673407345,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+003-k017-eager,"Fuse h and z gates into exact sparse projections, 4 elements and 4 warps",k017,compile_reduce_overhead,native,development,True,False,1.0662454878911376,4.131498000684471,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+003-k017-eager,"Fuse h and z gates into exact sparse projections, 4 elements and 4 warps",k017,graph,native,development,True,False,1.391901052556932,3.1643325414358427,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+003-k017-eager,"Fuse h and z gates into exact sparse projections, 4 elements and 4 warps",k017,native,native,development,True,True,4.404863575473428,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+004-k017-graph,Replay the same fused h/z kernel under CUDA graphs,k017,candidate,graph,development,True,False,1.3507949188351631,3.2227272101838444,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+004-k017-graph,Replay the same fused h/z kernel under CUDA graphs,k017,compile_max_autotune,graph,development,True,False,1.0144325206056237,4.293909566362796,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+004-k017-graph,Replay the same fused h/z kernel under CUDA graphs,k017,compile_reduce_overhead,graph,development,True,False,1.0560204973444343,4.109825910261839,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+004-k017-graph,Replay the same fused h/z kernel under CUDA graphs,k017,graph,graph,development,True,False,1.3915153685957193,3.1281914157398485,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+004-k017-graph,Replay the same fused h/z kernel under CUDA graphs,k017,native,graph,development,True,True,4.349460010416806,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+005-dense-casts,Preserve eager BF16 rounding in compiled dense with isolated models,dense,compile_max_autotune,graph,development,True,False,1.0256189852952957,4.202511203690753,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+005-dense-casts,Preserve eager BF16 rounding in compiled dense with isolated models,dense,compile_reduce_overhead,graph,development,True,False,1.0992460884153843,3.9252731573375432,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+005-dense-casts,Preserve eager BF16 rounding in compiled dense with isolated models,dense,graph,graph,development,True,False,1.3956819893792272,3.08732479933976,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+005-dense-casts,Preserve eager BF16 rounding in compiled dense with isolated models,dense,native,graph,development,True,True,4.304737551137805,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+006-k018-eager,Joint sparse W2 and Wo with rounded parallel residual epilogue,k018,candidate,native,development,True,True,3.0617511365562677,1.3411298599189487,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+006-k018-eager,Joint sparse W2 and Wo with rounded parallel residual epilogue,k018,graph,native,development,True,False,1.3904239749535918,2.9680743607315376,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+006-k018-eager,Joint sparse W2 and Wo with rounded parallel residual epilogue,k018,native,native,development,True,True,4.115402465686202,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+007-k018-graph,Replay joint sparse residual kernel under CUDA graphs,k018,candidate,graph,development,True,False,1.3229375472292304,3.1289404266757446,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+007-k018-graph,Replay joint sparse residual kernel under CUDA graphs,k018,graph,graph,development,True,False,1.3940994394943118,2.9680413403522086,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+007-k018-graph,Replay joint sparse residual kernel under CUDA graphs,k018,native,graph,development,True,True,4.137295996770263,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+008-k019-eager,"Fuse exact rounded RoPE, symmetric gates and QKV layout",k019,candidate,native,development,True,True,3.3739160280674696,1.2628153245715343,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+008-k019-eager,"Fuse exact rounded RoPE, symmetric gates and QKV layout",k019,graph,native,development,True,False,1.3949054991826415,3.0541481836949878,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+008-k019-eager,"Fuse exact rounded RoPE, symmetric gates and QKV layout",k019,native,native,development,True,True,4.26033150870353,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+009-k019-graph,Replay fused rounded RoPE and QKV gates,k019,candidate,graph,development,True,False,1.1607229243963957,3.7063370975831087,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+009-k019-graph,Replay fused rounded RoPE and QKV gates,k019,graph,graph,development,True,False,1.3946049148216844,3.0879799797637806,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+009-k019-graph,Replay fused rounded RoPE and QKV gates,k019,native,graph,development,True,True,4.2836255161091685,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+010-k019-joint-eager,Compose fused RoPE and QKV gates with joint sparse residual,k019,candidate,native,development,True,True,2.407985972240567,1.8482390457763278,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+010-k019-joint-eager,Compose fused RoPE and QKV gates with joint sparse residual,k019,graph,native,development,True,False,1.3950458960607648,3.1938236522723003,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+010-k019-joint-eager,Compose fused RoPE and QKV gates with joint sparse residual,k019,native,native,development,True,True,4.454783513210714,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+011-k019-joint-graph,Replay composed RoPE and joint sparse residual kernels,k019,candidate,graph,development,True,False,1.0881338967010379,4.019319826560504,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+011-k019-joint-graph,Replay composed RoPE and joint sparse residual kernels,k019,graph,graph,development,True,False,1.3949209824204445,3.1398214298208686,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+011-k019-joint-graph,Replay composed RoPE and joint sparse residual kernels,k019,native,graph,development,True,True,4.361668485216796,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+012-joint-canonical-workspace,Check composed kernel against the original canonical attention wrapper,k019,candidate,native,development,True,True,2.3428534623235464,1.8468377057036722,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+012-joint-canonical-workspace,Check composed kernel against the original canonical attention wrapper,k019,graph,native,development,True,False,1.390388933941722,3.110566588131513,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+012-joint-canonical-workspace,Check composed kernel against the original canonical attention wrapper,k019,native,native,development,True,True,4.330852534621954,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+013-joint-canonical-default,Check composed kernel against canonical dense with default workspace,k019,candidate,native,development,True,True,1.5078410506248474,1.8113958954167395,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+013-joint-canonical-default,Check composed kernel against canonical dense with default workspace,k019,graph,native,development,True,False,1.3940290082246065,1.9640164501743937,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+013-joint-canonical-default,Check composed kernel against canonical dense with default workspace,k019,native,native,development,True,True,2.7372620534151793,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+014-joint-hoisted-default,Isolate import hoisting from the workspace setting,k019,candidate,native,development,True,True,1.5565246576443315,1.8070991827015264,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+014-joint-hoisted-default,Isolate import hoisting from the workspace setting,k019,graph,native,development,True,False,1.3945050304755569,2.0198838621090034,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,Numerical gate failed or incomplete qualification
+014-joint-hoisted-default,Isolate import hoisting from the workspace setting,k019,native,native,development,True,True,2.8184340335428715,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+015-final-r1,Frozen canonical-reference replication 1,k019,candidate,native,development,True,True,1.4875894412398338,1.8101937417410507,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+015-final-r1,Frozen canonical-reference replication 1,k019,native,native,development,True,True,2.69678037147969,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+015-final-r1,Frozen canonical-reference replication 1,k019,candidate,native,final_validation_timing,True,True,1.498260535299778,1.81791864899795,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+015-final-r1,Frozen canonical-reference replication 1,k019,native,native,final_validation_timing,True,True,2.7231693966314197,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+016-final-r2,Frozen canonical-reference replication 2,k019,candidate,native,development,True,True,1.4977249084040523,1.806044448884621,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+016-final-r2,Frozen canonical-reference replication 2,k019,native,native,development,True,True,2.6999794645234942,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+016-final-r2,Frozen canonical-reference replication 2,k019,candidate,native,final_validation_timing,True,True,1.482522115111351,1.8094126592722874,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+016-final-r2,Frozen canonical-reference replication 2,k019,native,native,final_validation_timing,True,True,2.6822929503396153,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+017-final-r3,Frozen canonical-reference replication 3,k019,candidate,native,development,True,True,1.4769439585506916,1.8162573235692687,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+017-final-r3,Frozen canonical-reference replication 3,k019,native,native,development,True,True,2.6823084335774183,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+017-final-r3,Frozen canonical-reference replication 3,k019,candidate,native,final_validation_timing,True,True,1.471019582822919,1.8173899021936952,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+017-final-r3,Frozen canonical-reference replication 3,k019,native,native,final_validation_timing,True,True,2.6747274678200483,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+018-final-rope-ablation,Frozen QKV fusion alone with dense output projections,k019,candidate,native,development,True,True,1.9763705786317587,1.4573666120950768,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+018-final-rope-ablation,Frozen QKV fusion alone with dense output projections,k019,native,native,development,True,True,2.8783984016627073,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+018-final-rope-ablation,Frozen QKV fusion alone with dense output projections,k019,candidate,native,final_validation_timing,True,True,1.982871093787253,1.4573163033850423,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+018-final-rope-ablation,Frozen QKV fusion alone with dense output projections,k019,native,native,final_validation_timing,True,True,2.8883490012958646,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+019-final-joint-ablation,Frozen joint sparse residual alone with canonical QKV processing,k018,candidate,native,development,True,True,2.4217315949499607,1.177680566741579,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+019-final-joint-ablation,Frozen joint sparse residual alone with canonical QKV processing,k018,native,native,development,True,True,2.848639152944088,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+019-final-joint-ablation,Frozen joint sparse residual alone with canonical QKV processing,k018,candidate,native,final_validation_timing,True,True,2.40555708296597,1.1760117110668926,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,
+019-final-joint-ablation,Frozen joint sparse residual alone with canonical QKV processing,k018,native,native,final_validation_timing,True,True,2.8296554228290915,1.0,0.27482684296304843,"canonical source full validation, not recounted BF16",1748738568719,6363055915008,

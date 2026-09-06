@@ -1,0 +1,345 @@
+{
+  "canonical_logical_products": {
+    "architecture_maximum": {
+      "R_model_max_fraction": 0.2995237697384911,
+      "R_model_max_percent": 29.95237697384911,
+      "active_sites": [
+        "a",
+        "m",
+        "h",
+        "q_post",
+        "k_post",
+        "v",
+        "z"
+      ],
+      "block_product_count": 5638717440,
+      "ffn_size": 512,
+      "hidden_size": 128,
+      "layers": 6,
+      "lm_head_product_count": 13186891776,
+      "model_product_count": 18825609216,
+      "per_block_operation_products": {
+        "attention_output_projection": 33554432,
+        "mlp_w1": 134217728,
+        "mlp_w2": 134217728,
+        "probability_value": 268566528,
+        "qk_scores": 268566528,
+        "qkv_projection": 100663296
+      },
+      "reachable_operations": [
+        "qkv_projection",
+        "qk_scores",
+        "probability_value",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2"
+      ],
+      "reachable_product_count": 5638717440,
+      "sequence_length": 2048,
+      "topology_id": "A7-Z-POST",
+      "valid_causal_pairs_per_sequence": 2098176,
+      "vocabulary_size": 50304
+    },
+    "coverage": {
+      "batches": 338,
+      "complete_block_coverage": true,
+      "excluded_tail_tokens": 1444,
+      "input_tokens": 692224,
+      "loss": 5.829406580981418,
+      "sequences": 338,
+      "source_tokens": 693668
+    },
+    "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+    "measured": {
+      "R_block": 0.9175460204810952,
+      "R_model": 0.27482684296304843,
+      "block_product_count": 1905886494720,
+      "block_zero_product_count": 1748738568719,
+      "lm_head_product_count": 4457169420288,
+      "model_product_count": 6363055915008,
+      "per_operation": {
+        "attention_output_projection": {
+          "product_count": 68048388096,
+          "zero_product_count": 67992747008,
+          "zero_product_fraction": 0.999182330550997
+        },
+        "mlp_w1": {
+          "product_count": 272193552384,
+          "zero_product_count": 186990871552,
+          "zero_product_fraction": 0.6869775933861968
+        },
+        "mlp_w2": {
+          "product_count": 272193552384,
+          "zero_product_count": 271857173376,
+          "zero_product_fraction": 0.9987641918588672
+        },
+        "probability_value": {
+          "product_count": 544652918784,
+          "zero_product_count": 537622783397,
+          "zero_product_fraction": 0.9870924488889262
+        },
+        "qk_scores": {
+          "product_count": 544652918784,
+          "zero_product_count": 529670733162,
+          "zero_product_fraction": 0.9724922329334993
+        },
+        "qkv_projection": {
+          "product_count": 204145164288,
+          "zero_product_count": 154604260224,
+          "zero_product_fraction": 0.7573251159938835
+        }
+      }
+    }
+  },
+  "comparison_scope": "Canonical stock eager SDPA; fastest qualified screened stock mode. Not a >1.6x claim over the custom dense QKV-fusion ablation or every possible optimized dense implementation.",
+  "frozen": {
+    "bytes": 1752,
+    "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/frozen.json",
+    "sha256": "c493d32c3755c887dbe4fd04352c5e40af859c04f82a6d9082e24e14bb8a660a"
+  },
+  "joint_sparse_projections_only": {
+    "attempts": [
+      "019-final-joint-ablation"
+    ],
+    "ci_method": "10000 crossed process/input percentile-bootstrap draws, seed2606; seven repeats retained within each cell; descriptive uncertainty, only three processes for winner and one for ablations",
+    "input_tokens_per_second_at_median": {
+      "candidate": 851362.0460317183,
+      "native": 723763.0361199273
+    },
+    "inputs": 64,
+    "median_host_ms": {
+      "candidate": 2.40555708296597,
+      "native": 2.8296554228290915
+    },
+    "paired_geomean_speedup": 1.1760117110668926,
+    "pairs": 448,
+    "passes": 7,
+    "process_speedups": [
+      1.1760117110668926
+    ],
+    "processes": 1,
+    "quality": [
+      {
+        "attempt": "019-final-joint-ablation",
+        "loss": {
+          "candidate": 5.83130066301001,
+          "native": 5.83130066301001
+        },
+        "max_abs_logit_difference": 0.0,
+        "max_relative_l2": 0.0
+      }
+    ],
+    "sources": [
+      {
+        "bytes": 4466,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/019-final-joint-ablation/result.json",
+        "sha256": "e24dd02f44d31c1f9b75ad869a629031802194859c034ac5e2274b935ed8cd8d"
+      },
+      {
+        "bytes": 13078,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/019-final-joint-ablation/manifest.json",
+        "sha256": "f6934edd5fe82f002f3ad84c423218bc5506594762473e1c1c419fed07327acd"
+      },
+      {
+        "bytes": 59747,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/019-final-joint-ablation/full-validation.json",
+        "sha256": "a8679bc08baa5eba9bcdfb7f6b5ee4cb4ea18703426c0c106520a0210dc65a9d"
+      },
+      {
+        "bytes": 249472,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/019-final-joint-ablation/final-timing.json",
+        "sha256": "2a38f33ad78d76a5d7776dc784328cf0108e6a3ac709e59f792b91a7a79e4233"
+      }
+    ],
+    "speedup_ci95": [
+      1.1747891765771927,
+      1.1773715521993517
+    ]
+  },
+  "objective_met": true,
+  "reducer": {
+    "bytes": 8308,
+    "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/reduce_final.py",
+    "sha256": "ccb92f7aa2a4233508ad3248b0e70c763fe77b99ef46dc10a8ff464b83749ec0"
+  },
+  "rope_only_dense_projections": {
+    "attempts": [
+      "018-final-rope-ablation"
+    ],
+    "ci_method": "10000 crossed process/input percentile-bootstrap draws, seed2606; seven repeats retained within each cell; descriptive uncertainty, only three processes for winner and one for ablations",
+    "input_tokens_per_second_at_median": {
+      "candidate": 1032845.759069669,
+      "native": 709055.5881859014
+    },
+    "inputs": 64,
+    "median_host_ms": {
+      "candidate": 1.982871093787253,
+      "native": 2.8883490012958646
+    },
+    "paired_geomean_speedup": 1.457316303385042,
+    "pairs": 448,
+    "passes": 7,
+    "process_speedups": [
+      1.457316303385042
+    ],
+    "processes": 1,
+    "quality": [
+      {
+        "attempt": "018-final-rope-ablation",
+        "loss": {
+          "candidate": 5.83130066301001,
+          "native": 5.83130066301001
+        },
+        "max_abs_logit_difference": 0.0,
+        "max_relative_l2": 0.0
+      }
+    ],
+    "sources": [
+      {
+        "bytes": 4444,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/018-final-rope-ablation/result.json",
+        "sha256": "e5f5b1bc8e047039d7fce65826c6b786ef79cd0469274f94f63e25e9de76fd5f"
+      },
+      {
+        "bytes": 13066,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/018-final-rope-ablation/manifest.json",
+        "sha256": "4eceaf44759d81db5d97a94966f1ce8f9d72b3e79caab1d25bcbc36f3048fe5e"
+      },
+      {
+        "bytes": 59747,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/018-final-rope-ablation/full-validation.json",
+        "sha256": "a8679bc08baa5eba9bcdfb7f6b5ee4cb4ea18703426c0c106520a0210dc65a9d"
+      },
+      {
+        "bytes": 249698,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/018-final-rope-ablation/final-timing.json",
+        "sha256": "e9d1469d46e1bd9481f55d2beafc80e1ab3299cf7cbe6d745690246862a538d3"
+      }
+    ],
+    "speedup_ci95": [
+      1.4555201620467957,
+      1.4590982258354328
+    ]
+  },
+  "winner": {
+    "attempts": [
+      "015-final-r1",
+      "016-final-r2",
+      "017-final-r3"
+    ],
+    "ci_method": "10000 crossed process/input percentile-bootstrap draws, seed2606; seven repeats retained within each cell; descriptive uncertainty, only three processes for winner and one for ablations",
+    "input_tokens_per_second_at_median": {
+      "candidate": 1379453.8546840088,
+      "native": 760510.1764244771
+    },
+    "inputs": 64,
+    "median_host_ms": {
+      "candidate": 1.4846455305814743,
+      "native": 2.6929291198030114
+    },
+    "paired_geomean_speedup": 1.8149028947351182,
+    "pairs": 1344,
+    "passes": 7,
+    "process_speedups": [
+      1.8179186489979504,
+      1.8094126592722874,
+      1.817389902193695
+    ],
+    "processes": 3,
+    "quality": [
+      {
+        "attempt": "015-final-r1",
+        "loss": {
+          "candidate": 5.83130066301001,
+          "native": 5.83130066301001
+        },
+        "max_abs_logit_difference": 0.0,
+        "max_relative_l2": 0.0
+      },
+      {
+        "attempt": "016-final-r2",
+        "loss": {
+          "candidate": 5.83130066301001,
+          "native": 5.83130066301001
+        },
+        "max_abs_logit_difference": 0.0,
+        "max_relative_l2": 0.0
+      },
+      {
+        "attempt": "017-final-r3",
+        "loss": {
+          "candidate": 5.83130066301001,
+          "native": 5.83130066301001
+        },
+        "max_abs_logit_difference": 0.0,
+        "max_relative_l2": 0.0
+      }
+    ],
+    "sources": [
+      {
+        "bytes": 4393,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/015-final-r1/result.json",
+        "sha256": "8d0bbaca8f8b074533277781fd22a2dc6adba6ec2cf41a0e1467377413feb204"
+      },
+      {
+        "bytes": 13041,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/015-final-r1/manifest.json",
+        "sha256": "08b2ae080c325285fcd39374046f99d1f578de062c8d8b018b630de22df464c0"
+      },
+      {
+        "bytes": 59747,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/015-final-r1/full-validation.json",
+        "sha256": "a8679bc08baa5eba9bcdfb7f6b5ee4cb4ea18703426c0c106520a0210dc65a9d"
+      },
+      {
+        "bytes": 249699,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/015-final-r1/final-timing.json",
+        "sha256": "6ade22971706de94768a9aa8d31a38ec9f63bfcd76cb2cbd8ecfa51b543cd27d"
+      },
+      {
+        "bytes": 4392,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/016-final-r2/result.json",
+        "sha256": "5e493b716affaee5b2fa85ee3862df502de0a6966becbe23e7b736e60ef6946f"
+      },
+      {
+        "bytes": 13041,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/016-final-r2/manifest.json",
+        "sha256": "6826f1a8b062d8d074535121dd0f2a22fe336638f0ce165436085135f2ad1c2d"
+      },
+      {
+        "bytes": 59747,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/016-final-r2/full-validation.json",
+        "sha256": "a8679bc08baa5eba9bcdfb7f6b5ee4cb4ea18703426c0c106520a0210dc65a9d"
+      },
+      {
+        "bytes": 249672,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/016-final-r2/final-timing.json",
+        "sha256": "23dfc22cb4ddba33136ba978c83f08a8862048c6a0dfe534b1107e2d73586e3e"
+      },
+      {
+        "bytes": 4395,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/017-final-r3/result.json",
+        "sha256": "921baa238912a8c5aa09f9ebd3e7bcd3724e1fca13d54e7c2deef055f23ca8cc"
+      },
+      {
+        "bytes": 13041,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/017-final-r3/manifest.json",
+        "sha256": "4456b13231dcee3953f529554ceb9a1320b567592e6afbae42d86aa6b30a327d"
+      },
+      {
+        "bytes": 59747,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/017-final-r3/full-validation.json",
+        "sha256": "a8679bc08baa5eba9bcdfb7f6b5ee4cb4ea18703426c0c106520a0210dc65a9d"
+      },
+      {
+        "bytes": 249744,
+        "path": "runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/artifacts/017-final-r3/final-timing.json",
+        "sha256": "d08ebcc2020d3de76025ae30a422d36f3b7b578796aff2480911b8d89e7ec69b"
+      }
+    ],
+    "speedup_ci95": [
+      1.809801176551526,
+      1.8192157245091913
+    ]
+  }
+}
