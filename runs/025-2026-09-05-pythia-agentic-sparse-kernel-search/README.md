@@ -98,9 +98,9 @@ zero endpoints. The pre-existing 100 GB standard network volume remains
 intentionally retained. The final account-wide 2026-09-05--06 billing snapshot
 is recorded in
 [`billing-closeout.json`](autoresearch/launch-control/rtxpro4500-004/billing-closeout.json):
-$18.2096 total, including $17.7879 Pod GPU, $0.1301 Pod disk, and $0.2917
+$18.2629 total, including $17.8409 Pod GPU, $0.1303 Pod disk, and $0.2917
 standard storage. It is a conservative account-window debit, not fabricated
-per-Pod attribution, and leaves $21.7904 of the $40 ceiling before delayed
+per-Pod attribution, and leaves $21.7371 of the $40 ceiling before delayed
 charges and continuing retained-volume storage.
 
 Closeout verification passes 35 focused analysis/controller tests and the
