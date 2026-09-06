@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $run025Run = (Resolve-Path "$PSScriptRoot/../../..").Path
 $run025Root = (Resolve-Path "$run025Run/../..").Path
-$run025Bundle = Join-Path $run025Run 'autoresearch/bundles/h100-code-003'
+$run025Bundle = Join-Path $run025Run 'autoresearch/bundles/h100-code-004'
 $run025Archive = Join-Path $run025Bundle 'run025-h100-code.tar.gz'
 $run025Record = Join-Path $run025Bundle 'archive.json'
 $run025Sums = Join-Path $run025Bundle 'SHA256SUMS'
@@ -67,6 +67,6 @@ $run025Payload = [ordered]@{
 }
 $run025Payload | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $run025Record -Encoding UTF8
 $run025SumLines = @($run025Items | ForEach-Object { "$($_.expected_sha256)  $($_.remote_name)" })
-$run025Ascii = [Text.ASCIIEncoding]::new($false)
+$run025Ascii = [Text.Encoding]::ASCII
 [IO.File]::WriteAllText($run025Sums, ([string]::Join("`n", $run025SumLines) + "`n"), $run025Ascii)
 $run025Payload | ConvertTo-Json -Depth 5

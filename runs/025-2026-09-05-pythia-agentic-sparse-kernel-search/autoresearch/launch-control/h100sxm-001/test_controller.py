@@ -30,7 +30,7 @@ def test_launch_is_bounded_and_has_no_persistent_volume():
 
 def test_code_bundle_is_commit_derived_and_inputs_are_pinned():
     text = (HERE / "prepare-code.ps1").read_text(encoding="utf-8")
-    assert "h100-code-003" in text
+    assert "h100-code-004" in text
     assert "git -C $run025Root archive" in text
     assert "rev-parse HEAD" in text
     for digest in (
@@ -45,7 +45,7 @@ def test_code_bundle_is_commit_derived_and_inputs_are_pinned():
 
 def test_transfer_never_records_ephemeral_code():
     text = (HERE / "transfer-and-start.ps1").read_text(encoding="utf-8")
-    assert "h100-code-003" in text
+    assert "h100-code-004" in text
     assert "RunPod encrypted one-time-code relay" in text
     assert "sha256sum -c SHA256SUMS" in text
     result_section = text.lower().split("$run025start =", 1)[1]
