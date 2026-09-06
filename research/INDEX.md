@@ -5,6 +5,12 @@
 
 ## Current status
 
+Run 027 is executing the approved complete 35-checkpoint Pythia-14M
+characterization of K019+K018: stock eager, QKV-fusion-only, sparse, and
+same-fusion no-skip controls. All 32 CUDA primitive cases and both endpoint
+smokes pass; full 338-block qualification and three-process timing are running.
+Its run-local records preserve numerical failures; no final finding is claimed.
+
 Run 026 completed the user-authorized Pythia-14M continuation: frozen K019+K018
 achieves 1.8149x over qualified stock eager SDPA, with bitwise-identical full
 validation logits in three processes. Fusion and sparsity both contribute;
@@ -146,7 +152,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `027`. Next analysis number: `017`. Next finding number: `F003`.
+Next run number: `028`. Next analysis number: `017`. Next finding number: `F003`.
 
 ## Where we stopped
 
