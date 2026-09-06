@@ -37,3 +37,19 @@ def test_nine_modes_and_separate_fusion_comparison():
     assert len(reducer.MODES)==9 and len(set(reducer.MODES))==9
     assert reducer.COMPARISONS['fusion']==('unfused_graph','sparse_graph')
     assert reducer.COMPARISONS['skip']==('no_skip_graph','sparse_graph')
+
+
+@pytest.mark.parametrize('condition',['c01','c30'])
+def test_actual_hybrid_smoke_counter_and_numerical_coverage(condition):
+    folder=RUN/'artifacts'/f'hybrid-{condition}-smoke-001'
+    result=reducer.read_json(folder/'result.json')
+    quality=reducer.read_json(folder/'quality.json')
+    timing=reducer.read_json(folder/'timing.json')
+    assert result['status']=='complete' and quality['blocks']==8
+    assert set(quality['pass'])==set(reducer.MODES) and all(quality['pass'].values())
+    assert len(timing['samples'])==9*4*2
+    d=reducer.read_json(folder/'diagnostics.json')
+    ops=reducer.audit_diagnostics(d,result['canonical_logical_products']['architecture_maximum'],blocks=8)
+    assert len(ops)==6
+    if condition=='c30':
+        assert ops['mlp_w2']['simt_products']>0 and ops['attention_output_projection']['simt_products']>0

@@ -1155,3 +1155,63 @@ The same inputs, full validation, numerical bounds and timing controls apply.
 Expected completion is four minutes /USD0.046, capped20min /USD0.23. Latest
 local suite including independent hybrid accounting and reduction checks:
 289 passed in8.47s. No final policy has yet been frozen or launched.
+
+All ten registered K050 development endpoints subsequently complete, with
+selected/no-skip/attention-dense graph modes passing full338 checks. Script117
+verifies these records and source identities before freezing policy002 at
+22:22 UTC:270094 bytes, SHA256
+`f4b390ecf76e63ba8b155738ee0748e8f46820e4e2df7e89dda4e07afc00bb40`.
+The61 frozen sources and900 dependency files verify locally and remotely.
+This is uniform K050, not per-checkpoint selection. Evidence048 is exported
+and downloaded with verified archive SHA256
+`89b8f0793afb610632a835cd3f899c2e9088a213544c397f2a934f84ee196792`;
+local extraction verification is underway. Development and prepared study
+through the four-endpoint K050 evidence are committed as`a3b5e0d`.
+
+The nine-mode c01 smoke001 completes under timeoutPID66505 with all modes
+qualified on8 blocks and all hybrid/attention diagnostic checks passing.
+The c30 smoke001 follows separately; these are harness checks, not replacement
+for complete validation or new tuning evidence. The proposed final matrix002
+uses script120/119/116,105 fresh processes under a7200-second outer timeout
+and600-second per-process caps, persistent logs/results and the unchanged
+00:57 UTC stop guard. Expected duration is75--95 minutes /USD0.86--1.10;
+the two-hour outer cap isUSD1.38. The live Pod rate remainsUSD0.69/h, verified
+at22:23 UTC with running status,40GB container and40GB Pod volume, no attached
+network volume. GuardPID27360 remains active; its eight-hour maximum GPU
+charge isUSD5.52 plus storage, withinUSD20. Expected peak GPU memory remains
+under8GB against32GB available. No local GPU run or new billable resource is
+proposed. The existing pretraining checkpoints are unchanged and retained.
+
+The matrix transfer inventory includes all105 result/manifest/quality/timing
+and source-map/snapshot sets,35 complete diagnostics, controller/leaf logs,
+frozen policy, environment/source identities and terminal failures, plus
+the previously agreed checkpoint/data identities. Copy and verify archive
+and individual-file hashes before deleting the owned Pod, and check no new
+billable resources remain. Matrix monitoring is read-only at about60-second
+intervals: completion, current stage/loss/rate/ETC, numerical/infrastructure
+failures and stale progress. Warn on unexpected OOM, errors, missing results,
+loss-gate failures, or sustained lack of progress; preserve failures instead
+of silently rerunning or dropping variants. Final reduction and PDFs remain
+local and separate from the completed K036 outputs.
+
+The c30 smoke001 completes under timeoutPID66750 in6.49s. All nine modes
+qualify on8 blocks and both counter families pass independent checks.
+Both retrieved smoke diagnostics also pass the publication reducer's
+coverage, pooling and padded-MMA/SIMT audits; their72 paired timing samples
+per smoke cover all nine modes x4 inputs x2 passes. Latest complete local
+suite:291 passed in7.89s. Evidence048 is fully locally verified:12215 files
+/415091608 bytes. Evidence049 archive SHA256 is
+`16d6f36932db44c87b28481f575a4e10f7dddd72908075bc98bf7da607d3197e`;
+its new smoke files are retrieved and the complete inventory is verified.
+
+Final deployment code047 has SHA256
+`62fc68897bf1598208005925e0f5b1b6655c377303660bf3ec3378d27053503b`,
+272 remotely verified files /2819979 bytes. Policy002 and all61 frozen
+sources/900 dependencies remain unchanged. Only local smoke-reduction tests
+were added after that overlay, without changing any scientific source.
+
+Matrix002 starts at2026-09-06T22:28:30Z under detached7200-second timeout
+PID67235. The launch receipt is
+`launch-control/rtx5090-001/final-matrix-002.json`. Evidence049's complete
+local inventory is12350 files /417416427 bytes. No K036 result or figure is
+overwritten, and no K050 source modification is permitted during this study.
