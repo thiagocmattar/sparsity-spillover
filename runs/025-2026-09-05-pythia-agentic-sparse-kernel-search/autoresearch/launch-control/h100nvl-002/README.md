@@ -1,8 +1,9 @@
 # H100 NVL attempt 002: frozen-source transfer repair
 
-Status: **Pod `9djdgi71c2yt9a` launched at 04:31 UTC on one community
-H100 NVL at $2.59/hour. All remote hashes passed and the frozen phase started
-at 04:42 UTC.**
+Status: **complete and closed. Pod `9djdgi71c2yt9a` ran the full 92-process
+matrix, produced a phase exit of zero at 05:05 UTC, and was deleted after all
+1,088 inventoried files and 93 artifact directories verified locally. Zero
+pods and zero endpoints remained.**
 
 Attempt 001 transferred a Git archive produced under Windows
 `core.autocrlf=true`. `git archive` consequently exported the Markdown files
