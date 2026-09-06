@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--idea', required=True)
-    parser.add_argument('--implementation', choices=['dense', 'k001', 'k017'], default='k017')
+    parser.add_argument('--implementation', choices=['dense', 'k001', 'k017', 'k018'], default='k017')
     parser.add_argument('--mode', choices=['native', 'graph'], default='graph')
     parser.add_argument('--sites', nargs='+', default=['h', 'z'])
     parser.add_argument('--elements', type=int, choices=[2, 4, 8], default=4)
@@ -105,7 +105,11 @@ def main():
                     ROOT/checkpoint['checkpoint'], torch=torch).to('cuda', dtype=torch.bfloat16).eval()
                 candidate_model.set_attn_implementation('sdpa')
                 candidate_model.config.use_cache = False
-                if args.implementation == 'k017':
+                if args.implementation == 'k018':
+                    candidate = module('run026_k018', HERE/'candidates/k018/candidate.py')
+                    adapter = candidate.Adapter(candidate_model)
+                    adapter.install()
+                elif args.implementation == 'k017':
                     candidate = module('run026_k017', HERE/'candidates/k017/candidate.py')
                     adapter = candidate.Adapter(candidate_model, args.sites, args.elements, args.warps)
                     adapter.set_mode(True)

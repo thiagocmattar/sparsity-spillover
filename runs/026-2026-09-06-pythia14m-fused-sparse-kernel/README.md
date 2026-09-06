@@ -74,10 +74,13 @@ strongest-matched-dense comparator rather than adding another approval wait.
 - K017: fuse the existing one-sided gate into exact warp-compacted projection;
   specialize output elements per lane and row warps for narrow Pythia shapes.
   The gate consumes each new input inside the timer; equality survives.
+- K018: jointly execute exact sparse W2 and Wo, their biases, and the two
+  parallel-residual additions. Explicit BF16 rounding preserves both linear
+  outputs and the intermediate branch sum. GPU qualification is pending.
 
 ## Current execution
 
-Local: five focused tests and all 242 bootstrap tests pass. CUDA tests remain
+Local: six focused tests and all 242 bootstrap tests pass. CUDA tests remain
 remote-only: 120 primitive configuration/shape/input/replay cases, followed by
 dense eager/graph/compile screening and complete validation. Local GPU has
 about 9 GB free; the rented CUDA development environment is used under the
@@ -89,3 +92,20 @@ Independent stop guard PID 28976 is armed for 2026-09-06 15:52:47 UTC.
 Maximum first lease: four hours (~$2.80 including Pod disks); full study cap
 remains $25. Input archive is 53.4 MB. Exact lease, deadline and guard logs
 live in `launch-control/rtx5090-001/`. Verify/retrieve before deletion.
+
+Infrastructure chronology: the first SSH setup stopped before installation
+because CUDA's bin directory was absent from PATH. The corrected setup
+completed at the pinned Torch 2.11.0+cu128 / Transformers 5.12.1 runtime.
+The direct SCP upload was slow; RunPod's encrypted relay completed and its
+53,371,675-byte archive SHA-256 matched locally and remotely. All 46 input/code
+files (60,002,752 bytes) then passed remote verification. The first relay
+receiver used the requested code without the sender-emitted relay suffix;
+the second used the actual emitted code. No transfer key is in this record.
+
+The first CUDA preflight stopped at the extension loader because the venv's
+Ninja executable was not on PATH. No kernel compiled and no latency was
+measured. The unchanged K017 source is retried with the venv bin directory
+added. Preserve `runtime/calibration.log` (failure) and
+`runtime/calibration2.log` (retry). The retry timeout PID is 811; the first
+setup/calibration handles were verified terminal before retrying. These are
+infrastructure retries inside the same scientific run.

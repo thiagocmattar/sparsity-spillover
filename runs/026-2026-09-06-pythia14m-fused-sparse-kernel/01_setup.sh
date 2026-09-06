@@ -3,6 +3,8 @@ set -euo pipefail
 run026_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p "$run026_dir/runtime"
 export UV_CACHE_DIR="$run026_dir/runtime/uv-cache"
+export PATH="/usr/local/cuda/bin:$PATH"
+export CUDA_HOME=/usr/local/cuda
 command -v nvcc
 command -v g++
 python3 -c 'import sys; assert sys.version_info[:2] == (3,12)'
