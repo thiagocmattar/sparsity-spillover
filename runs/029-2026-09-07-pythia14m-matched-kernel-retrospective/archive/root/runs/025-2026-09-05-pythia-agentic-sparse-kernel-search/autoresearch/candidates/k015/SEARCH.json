@@ -1,0 +1,31 @@
+{
+  "candidate_id": "k015",
+  "search_id": "70m-a7-site-layer-isolation-001",
+  "architecture": "Pythia-70M",
+  "trigger": "Run only if K014 does not produce a qualified A7 topology policy with geometric-mean speedup above 1.0",
+  "scientific_status": "exploratory; no fresh 70M holdout remains after K009",
+  "partition_boundary": {
+    "development_conditions": ["70m/a7-0", "70m/a7-0p5"],
+    "untuned_conditions_forbidden_during_search": [
+      "70m/a7-0p01", "70m/a7-0p05", "70m/a7-0p1"
+    ]
+  },
+  "variants": {
+    "suffix3-hz": {"layers": [3, 4, 5], "sites": ["h", "z"]},
+    "suffix4-hz": {"layers": [2, 3, 4, 5], "sites": ["h", "z"]},
+    "suffix5-hz": {"layers": [1, 2, 3, 4, 5], "sites": ["h", "z"]},
+    "odd-hz": {"layers": [1, 3, 5], "sites": ["h", "z"]},
+    "all-h": {"layers": [0, 1, 2, 3, 4, 5], "sites": ["h"]},
+    "all-z": {"layers": [0, 1, 2, 3, 4, 5], "sites": ["z"]},
+    "all-hz": {"layers": [0, 1, 2, 3, 4, 5], "sites": ["h", "z"]},
+    "all-ahz": {"layers": [0, 1, 2, 3, 4, 5], "sites": ["a", "h", "z"]},
+    "all-mhz": {"layers": [0, 1, 2, 3, 4, 5], "sites": ["m", "h", "z"]}
+  },
+  "provenance": "70M A7 occupancy showed h/z near-total sparsity at kappa=0.5 while a/m were materially denser; K014 suffix3-active failed the fixed A7 high-sparsity numerical gate.",
+  "kernel": "unchanged K001 fused signed-exact warp compaction",
+  "timing": "16 fixed development inputs, 3 paired eager passes, 48 samples per mode",
+  "qualification": "both development checkpoints must pass the unchanged 16-block gates and all 338 complete validation blocks",
+  "selection_rule": "maximize geometric-mean speedup across A7 kappa=0 and kappa=0.5; within 0.005 choose fewer adapted linear modules, then lexical variant id",
+  "final_policy_rule": "Compare the qualified K015 winner with the qualified K014 A7 winner on their predeclared scores and use the same 0.005/fewer-modules/lexical rule. The selected static variant is reused across kappas.",
+  "interpretation": "K015 diagnoses whether moderate-sparsity a/m projections cause overhead or numerical failures. It does not modify activations and does not inspect untuned checkpoints."
+}

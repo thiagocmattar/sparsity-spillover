@@ -5,13 +5,17 @@
 
 ## Current status
 
-Run 028 is implementing the user-approved USD20 all-site 14M kernel search.
-K036's all-six-site path matches native logits on all338 validation blocks at
-four low/high-R endpoints. No-prefix graph speedups are1.096--1.386x; isolated
-net skipping gives1.8%/2.4% at the high endpoints but hurts low controls.
-Attention-specific gain remains absent, and the previous graph path is faster
-at high R but fails low controls. Remaining development qualification, all-site
-diagnostics and the frozen repeated35-checkpoint final graph remain open.
+Run 029 is executing the approved matched retrospective evaluation: frozen
+K001-K050 provenance, 42 eligible14M proposals, four retrospective checkpoints,
+and five final comparators across all35 checkpoints. One RTX5090, shared dense
+SDPA CUDA-graph baseline, full338-block qualification, USD20/16GPU-hour ceiling.
+Sakana-derived P0 is labeled separately from unchanged upstream SparseLM code.
+
+Run 028's frozen K050 final evaluation and diagnostics are complete. Qualified
+full-model graph speedups across35 checkpoints range0.979--1.739x; sparse-path
+and fusion ablations are retained. Figure07 and Analysis017 require their
+stated baseline boundaries; mixed historical phases are not one matched curve.
+See Run028's final observations; Run029 will measure a common-denominator history.
 
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.
