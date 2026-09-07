@@ -163,7 +163,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `029`. Next analysis number: `017`. Next finding number: `F003`.
+Next run number: `029`. Next analysis number: `018`. Next finding number: `F003`.
 
 ## Where we stopped
 

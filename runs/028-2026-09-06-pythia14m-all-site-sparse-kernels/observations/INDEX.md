@@ -7,6 +7,7 @@
 - [04: K050 controls and zero granularity](04-hybrid-controls-and-zero-granularity.md): fusion isolated, all six qualified previous endpoints improved, attention contribution remains negative, and hybrid MMA/SIMT counters distinguish bypass from scalar zeros.
 - [05: K050 acceleration with linear fit](05-hybrid-acceleration-linear-fit.md): standalone full-model panel, uniform markers, expanded linear y-axis, all 35 variants, and unweighted OLS R2 = 0.780; descriptive within-cohort association.
 - [06: Auto-research progress](06-autoresearch-kernel-progress.md): one full-model graph-speedup metric across K031-K050; 136 individual model points and a fixed-checkpoint best-so-far line ending at 1.739x, without bars, boxes, grid, or legend.
+- [07: Auto-research progress with grid](07-autoresearch-kernel-progress-grid.md): requested light-grid presentation of the same 136 points; Figure06 and its evidence stay unchanged.
 
 Observations 01/02 retain the frozen K036 study; 03/04 report the separately
 frozen K050 study; 05 replots its full-model result with a linear fit; 06

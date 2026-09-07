@@ -1329,3 +1329,24 @@ checked; TrueType fonts are embedded and labels are legible without
 overlap/clipping. Existing figures01-05 and frozen sources are unchanged.
 This request needs no new GPU work or spending, manuscript change, or
 finding promotion.
+
+### Requested grid and cross-run history (2026-09-07)
+
+Script127 adds Figure07, a light-major-grid version of Figure06. All 136
+point coordinates, numerical statuses, axes, and fixed-checkpoint progress
+values remain unchanged. The prior PDF/script/provenance are preserved.
+Observation07 and `results/search-progress-grid-001.json` own the caption
+and new source/script/PDF hashes; a focused test verifies coordinate and
+incumbent equality, grid visibility, and absence of bars or a legend.
+
+The additional user-requested K001-K050 history is owned by cross-run
+[Analysis017](../../analyses/017-2026-09-07-kernel-progress-all-iterations/README.md).
+It retains the 14M scope and visibly separates the RTX PRO 4500 eager,
+RTX5090 eager, and RTX5090 graph phases. Missing 14M full-model timing is
+left blank, never zero. No new GPU execution, manuscript text, or finding
+promotion accompanies either figure.
+
+Full bootstrap + Run028 + Analysis017 verification: 308 tests pass in 9.70s.
+Both final one-page PDFs have embedded TrueType fonts and complete visually
+checked renders. New provenance hashes verify; earlier figures and frozen
+sources are unchanged.
