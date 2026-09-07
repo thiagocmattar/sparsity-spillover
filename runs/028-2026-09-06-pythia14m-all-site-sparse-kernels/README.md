@@ -1296,3 +1296,36 @@ polyfit/correlation cross-check and cohort-completeness rejection checks.
 The vector PDF is rendered and visually inspected under the PDF skill.
 The full bootstrap plus Run028 suite passes297 tests in11.19s. Figure05
 provenance hashes verify and original PDFs03/04 remain byte-identical.
+
+### Requested single-metric auto-research progress (2026-09-07)
+
+Scripts125/126 add Figure06: a single plot of matched full-model
+native-graph/candidate-graph speedup against integer kernel iteration.
+K050 appears at50. All136 selected model-level graph points across
+K031-K050 remain at their exact integer x coordinates, without jitter,
+boxes, bars, quantiles, grid, or a variant legend. The single numerical
+failure is a cross, not a valid incumbent. A directly labeled step line
+tracks the cumulative best fully qualified result on fixed checkpointc30,
+from1.347607x atK031 to1.738990x atK050. Lower-performing candidates remain
+visible. The expanded linear y-axis includes the entire observed range.
+
+Only this graph metric is plotted: earlier eager-only measurements are not
+mixed in or imputed. The machine-readable inventory retains234 selected
+points across both execution modes,22 superseded points, and an audit of
+all123 result-bearing development/control attempts. Final K036/K050 cohorts
+supersede development endpoints; other retry selection uses coverage then
+retry number, never performance or qualification. Source/script/figure
+hashes and the complete selection policy are retained in the two new
+`results/search-progress*.json` files. Observation06 records the complete
+method, caption, cohort and timing differences, and interpretation limits.
+The progress line is not a causal claim about sparse products or autonomous
+search, and its monotonicity is by construction.
+
+The five focused tests pass, including an exact136-point single-axes check
+with no bars/grid/legend and tests of timing pairing and incumbent logic.
+The full bootstrap plus Run028 suite passes302 tests in10.64s. Under the
+PDF skill, the final one-page vector PDF is rendered at150dpi and visually
+checked; TrueType fonts are embedded and labels are legible without
+overlap/clipping. Existing figures01-05 and frozen sources are unchanged.
+This request needs no new GPU work or spending, manuscript change, or
+finding promotion.
