@@ -1275,3 +1275,24 @@ Elapsed time from controlled start is6.90827h atUSD0.69/h: estimated GPU cost
 USD4.76670 plus storage, not a final invoice, within theUSD20 approval.
 Public closeout receipt:launch-control/rtx5090-001/final-closeout-002.json.
 No manuscript TeX or upward finding promotion is changed.
+
+### Requested single-panel regression view (2026-09-07)
+
+Script124 adds Figure05, a standalone replot of Figure03(a) with uniform
+markers, no variant legend, and an explicitly expanded linear y-axis. All35
+variant-level native-graph/K050-graph ratios and their process-range bars are
+unchanged. Unweighted OLS with an estimated intercept gives
+S_hat =0.9412867254 +3.6934308890*R_model (fractional R), R2=0.7796037979.
+This is a strong positive descriptive association in the observed cohort,
+not a universal speed law, held-out prediction, or causal attribution of
+all acceleration to sparse products. Original PDFs03/04 and frozen sources
+remain unchanged. No GPU work or new spending is required.
+
+Observation05 records the complete caption, coverage, fit units, weighting,
+scientific limits and provenance. `results/acceleration-regression-001.json`
+retains all35 points, fitted values/residuals and source/script/figure hashes.
+The focused regression suite passes six tests, including an independent
+polyfit/correlation cross-check and cohort-completeness rejection checks.
+The vector PDF is rendered and visually inspected under the PDF skill.
+The full bootstrap plus Run028 suite passes297 tests in11.19s. Figure05
+provenance hashes verify and original PDFs03/04 remain byte-identical.
