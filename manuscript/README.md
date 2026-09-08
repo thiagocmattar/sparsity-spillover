@@ -216,6 +216,15 @@ actually needs it.
 
 ## Result evidence crosswalk
 
+- On 8 September 2026, the user requested an explicit attention-skipping
+  discussion in the new kernel subsection. It now reports the executed QK/PV
+  skips and their negative runtime contribution at T=2048. Longer sequences
+  are discussed only as an untested hypothesis: both attention work and
+  recurring skip overhead grow, and the current fixed-length kernel requires
+  adaptation and fresh qualification. Run029 Observation03 supplies the
+  unchanged counters/ablations; its manuscript revision-2 provenance retains
+  the updated source snapshots. No new benchmark or finding is added.
+
 - On 8 September 2026, the user requested an implementation/claim audit and
   conditional manuscript integration of Run029. The audit independently
   reconciles all 1,173 outcomes and 522,816 timing pairs and confirms the

@@ -16,6 +16,10 @@
   scoped paper-claim validation, a non-cohort threshold bug, and the approved
   manuscript systems subsection/implementation companion.
 
+Observation03 also records the approved attention discussion: actual QK/PV
+skips are not profitable at T=2048; longer-T profitability remains untested.
+Updated manuscript snapshots are in `provenance/manuscript-20260908-r02/`.
+
 The three original single-panel `*-r02.pdf` files remain available. The current
 combined paper asset is `04-kernel-autoresearch-and-rmodel.pdf`, a byte-identical
 copy of revision3 with single-line panel titles; Observation05 records the

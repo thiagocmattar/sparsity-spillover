@@ -120,3 +120,28 @@ their hashed raw-source records. All35 full diagnostic JSONs remain local.
 Figure hashes: `results/figures-002.json`. Revision1 is a superseded proof;
 revision2 keeps the complete fitted line in view and corrects tick formatting,
 without changing data, regression or exclusions.
+
+## Approved manuscript clarification: attention and sequence length
+
+On 8 September the user requested a brief discussion of whether longer T
+could make attention skipping profitable. The manuscript subsection now
+explicitly reports the executed MMA skips above and the negative attention
+skip contribution at T=2048. The positive net sparse-path contribution is
+projection-side; zero-product avoidance is not itself a latency result.
+
+The longer-T discussion is an untested hypothesis based on the declared
+full-sequence count equation: QK+PV work grows as `d*T*(T+1)` per block,
+whereas projection and LM-head work are linear in T at fixed architecture.
+This changes attention's share of logical work, not automatically its
+runtime speedup. Frozen K035 `sparse_gemm.h` repeats zero checks/warp votes
+within attention tiles; their cost can grow with attention work, and
+fragment sparsity may change. Its `candidate.py` explicitly requires
+`(1,4,2048,32)`, so longer sequences require kernel adaptation, a declared
+model/context/data protocol, new numerical checks, logical measurements
+and matched skip-on/off timings. No crossover or context-extension quality
+result is claimed and no experiment was launched.
+
+The draft remains local-only. Updated source snapshots are preserved in
+`provenance/manuscript-20260908-r02/`, with verification recorded by
+`21_verify_attention_discussion.py`. The existing figure and numerical
+results are unchanged.

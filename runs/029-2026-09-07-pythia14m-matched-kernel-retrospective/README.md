@@ -380,3 +380,15 @@ local resource links, test receipts and compiled manuscript; it writes
 `results/audit-publication-001.json`. All ten reading-copy pages were visually
 checked. The final-byte suite rerun passes 319 tests with one skip (23.95s).
 The figure and all frozen scientific inputs remain byte-identical.
+
+### Explicit attention-skipping discussion
+
+The subsequent user-approved manuscript revision makes the executed attention
+skips explicit: 57.9952% QK and 67.2084% PV MMA bypass at c30, despite lower
+latency with attention skipping disabled on every checkpoint. Longer uncached
+sequences are a hypothesis, not a measured gain or guaranteed crossover;
+the current fixed-T2048 implementation needs adaptation and qualification.
+Observation03 owns the numerical evidence and its appended interpretation
+note. New snapshots in `provenance/manuscript-20260908-r02/` and the receipt
+from `21_verify_attention_discussion.py` preserve this revision without
+overwriting the initial manuscript snapshots, figure or benchmark artifacts.
