@@ -41,24 +41,30 @@ Start with [RESULTS.md](RESULTS.md) for the argument and
 The [checklist](CHECKLIST.md) records completion; [verification](VERIFICATION.md)
 records the checks actually performed. Original runs and manuscript files are unchanged.
 
-## Suggested paper order
+## Selected paper figures and supporting material
+
+The user selected four training-results figures. The proposed manuscript order
+is overview, paired effects, distribution reshaping, then transfer across sizes.
+[MANUSCRIPT-PLAN.md](MANUSCRIPT-PLAN.md) specifies each goal, draft location,
+main-table recommendation and appendix coverage; [CAPTIONS.md](CAPTIONS.md)
+contains all four proposed captions. The working copy is in
+[the manuscript draft](../../manuscript/draft/results-plan.md).
 
 | Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 16 trained endpoints: A0/A1-H and OL1 variants, with a visible dashed A0 clipping path |
-| Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 29 matched comparisons, with all five A1-H→A4 thresholds |
-| Retained alternative | [02-v2 — intervention rows](figures/02-v2-blocked-intervention-effects.pdf) | Unselected vertical layout of the same 29 comparisons |
-| Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
-| Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | A4-OL1/A7-OL1 and A0 clipping; raw sparsity with rounded 30/50/90% axis limits above, common A7-reference utilization below |
-| Main case study, or appendix if space is tight | [05 — activation mass](figures/05-activation-mass-grid.pdf) | Site columns h,m,q,k,v and κ=0,.05,.5 rows; retained four-bin distributions, pending finer measurements |
-| Alternative for review | [05-v2 — zeros and small activations](figures/05-v2-activation-mass-grid.pdf) | Six panels: exact zeros above, small nonzero mass below; threshold columns and linear 0–100% scales. See [O010](observations/O010-activation-mass-v2.md). |
-| Supporting appendix | [04 — operation accounting](figures/04-operation-accounting.pdf) | Six solid-color bars decomposing high-threshold results into operations |
-| Supporting appendix | [06 — post-hoc clipping](figures/06-complete-posthoc-comparison.pdf) | Explicit 14M coverage: 15 source checkpoints, each at 10 clipping targets |
-| Systems subsection | [07 — kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and the final kernel on the same 30 included checkpoints |
+| Main: overview | [01 - 14M recipes](figures/01-14m-overview.pdf) | 16 trained endpoints and A0 post-hoc clipping |
+| Main: paired effects | [02 - intervention effects](figures/02-blocked-intervention-effects.pdf) | 29 matched changes in loss and model-wide sparsity |
+| Main: distributions | [05-v3 - signed activation densities](figures/05-v3-activation-density-grid.pdf) | FFN/attention reshaping under A0, A4-OL1 and A7-OL1 |
+| Main: transfer | [03 - scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Test persistence of the high-threshold recipe ordering with a common A7 reference |
+| Appendix support | [04 - operation accounting](figures/04-operation-accounting.pdf), optionally [08 - ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | Interpret operation contributions and architectural reach |
+| Complete clipping appendix | [Run 030 full-range plots and observations](../../runs/030-2026-09-08-all-models-posthoc-clipping/observations/INDEX.md) | All 54 checkpoints and 540 clipping evaluations |
+| Retained alternatives/subsets | [02-v2](figures/02-v2-blocked-intervention-effects.pdf), [05 original](figures/05-activation-mass-grid.pdf), [05-v2](figures/05-v2-activation-mass-grid.pdf), [06](figures/06-complete-posthoc-comparison.pdf) | Available records, not additional selected main-text figures; Figure 06 contains 150 clipping points |
+| Separate systems evidence | [07 - kernel realization](figures/07-kernel-realization.pdf) | Corrected 30-checkpoint summary; the draft currently retains the separately scoped Run029 35-checkpoint case study |
 
-Numbering preserves existing filenames; Figure 08 belongs before Figure 03 in
-the argument. It need not become paper Figure 8. The observations contain
-self-contained captions and evidence links: [observation index](observations/INDEX.md).
+File numbering is unchanged and does not prescribe paper numbering. The
+[observation index](observations/INDEX.md) retains evidence and source links.
+The figure set is selected; results-section insertion is planned, not yet
+performed. No figure or numerical measurement changed for this planning task.
 
 ## Scope and tables
 

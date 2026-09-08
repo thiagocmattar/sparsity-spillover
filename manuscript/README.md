@@ -28,6 +28,15 @@ variant.
 
 ## V2 workspace
 
+The 8 September [results figure and table plan](draft/results-plan.md) maps
+four selected Analysis 018 figures to the draft: overview, paired effects,
+activation reshaping, then transfer across sizes. It recommends one compact
+main-text contrast table and detailed appendix tables plus complete clipping
+and histogram data. The [tracked plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
+and [four captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
+retain the evidence links. This is a planning update; TeX insertion and final
+submission-template layout remain to be performed.
+
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
 argument-first introduction and related work, followed by a compact
 methodology and a separate experimental-study opening. `draft/` now contains
