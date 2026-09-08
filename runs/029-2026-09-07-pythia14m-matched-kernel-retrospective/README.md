@@ -302,3 +302,35 @@ then12 with a fresh publication revision in the new reproduction record; existin
 result paths are historical records, not permission to overwrite them or relaunch
 GPUs. Script17 uses the available Poppler commands and verifies
 current data/input/source hashes, test evidence and the publication PDFs.
+
+## Two-panel paper summary (8 September 2026)
+
+The user-requested combined paper asset is
+[kernel auto-research and R_model](figures/04-kernel-autoresearch-and-rmodel-r02.pdf),
+with its full caption, qualification disclosure, coverage and interpretation
+in [Observation05](observations/05-kernel-autoresearch-and-rmodel.md).
+The original single-panel assets above remain unchanged.
+
+The left panel retains all214 timed history points as regular gray circles,
+including74 numerical failures, and the unchanged qualified-only, fixed-c30
+incumbent. It uses "Kernel iteration" and no explanatory plot annotations.
+The right panel retains all35 qualified K050 points, uses R_model percentage
+ticks, and shows the original OLS fit as a black dashed line. Panel titles
+identify auto-research progress and the best historical kernel at final
+iteration42; a figure title connects the panels. "Best" is among historical
+candidates on the declared c30 criterion, not among diagnostic ablations.
+
+`18_paper_summary.py --revision 2` generates the 1x2 vector PDF from the
+hash-verified existing reduction. `results/figures-summary-002.json` records
+source, iteration-map, script and figure identities plus unchanged point
+counts, progress and fit. No GPU was launched and no new data were gathered.
+For another reproduction, use a fresh revision number; existing outputs
+cannot be overwritten. The initial combined proof is retained, superseded
+by revision2's embedded TrueType fonts and refined title/tick layout.
+
+Verification: the three focused paper-summary tests pass, and the complete
+local bootstrap plus Run029 suite passes315 tests with one expected
+Windows/Triton skip (46.48s). Source, catalog, generator and final PDF hashes
+match the new manifest. Poppler confirms one vector-only page with embedded
+subset Unicode CID TrueType fonts, and the rendered page was visually checked.
+No measured result, qualification threshold, manuscript text or finding changes.

@@ -9,8 +9,13 @@
 - `04-sakana-compatibility.md`: pinned upstream source audit and the exact
   meaning of the Sakana-derived Pythia P0 comparator; no unchanged upstream
   Pythia14M/RTX5090 timing is claimed.
+- `05-kernel-autoresearch-and-rmodel.md`: combined 1x2 paper figure with
+  uniform history circles, unchanged qualified progress, percentage R_model
+  ticks and a black dashed OLS fit; no measurements or qualifications change.
 
-The three `*-r02.pdf` files are the current paper assets. Initial PDF proofs
-are retained for provenance and superseded by the layout-checked revision2.
+The three original single-panel `*-r02.pdf` files remain available. The current
+combined paper asset is `04-kernel-autoresearch-and-rmodel-r02.pdf`.
+Initial PDF proofs are retained for provenance and superseded by their
+layout-checked revision2 outputs.
 All observations use the complete, hash-verified matched matrix; no finding
 or manuscript claim is promoted.
