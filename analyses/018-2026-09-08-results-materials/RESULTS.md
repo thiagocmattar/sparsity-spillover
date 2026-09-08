@@ -84,7 +84,8 @@ uses the same-size A7 ceiling as its common reference.
 > across sizes need not imply a proportional increase in learned zero rates.
 
 Figure 03's top row plots absolute loss against raw model-wide sparsity,
-with each x axis spanning zero to its same-size A7 ceiling.
+with each x axis spanning zero to the next multiple of ten above its A7
+ceiling (30%, 50%, 90%); tick labels use round numbers.
 The bottom row plots A0-relative loss against A7-reference ceiling utilization.
 Both rows include A4-OL1/A7-OL1 at all five κ values and A0 with all ten uniform
 clipping targets p=0,.1,…,.9. The full loss range makes the clipping cost

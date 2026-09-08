@@ -209,8 +209,9 @@ def scaling(d):
                 ax.set_xlim(0,100);ax.set_xticks([0,50,100])
                 ax.axhline(0,color='.6',lw=.7)
             if i==0:
-                ax.set_xlim(0,100*a7)
-                ax.set_xticks([0,50*a7,100*a7],['0',f'{50*a7:.1f}',f'{100*a7:.2f}'])
+                xmax=10*np.ceil(100*a7/10)
+                ax.set_xlim(0,xmax)
+                ax.set_xticks(np.arange(0,xmax+1,10 if xmax<=50 else 30))
                 for f,ls in (('A4-OL1','--'),('A7-OL1','-.')):
                     ceiling=one(rows,family=f,dose=0.)['ceiling']['R_model_max_percent']
                     ax.axvline(ceiling,color=STYLE[f][0],ls=ls,lw=.8,alpha=.8,zorder=0)

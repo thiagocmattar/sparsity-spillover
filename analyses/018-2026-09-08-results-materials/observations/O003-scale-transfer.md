@@ -6,7 +6,7 @@ Which recipe relationships survive larger models, and what does ceiling normaliz
 
 ## Method
 
-Plot five A4-OL1/A7-OL1 thresholds and ten A0 clipping targets at each scale. Top uses raw loss and raw sparsity, from zero to the same-size A7 ceiling. Bottom uses loss minus unmodified same-scale A0 and a common A7-reference utilization for all three curves: `U_arch(A7) = R_model / R_model_max(A7)`. Equivalently, divide the pooled zero-product count by `338 * A7.reachable_product_count`. The A7 ceilings are 29.9524%, 49.4239% and 87.2452% at 14M, 70M and 410M. Source-specific `U_arch` values in the evidence bundle and tables are retained separately; Figure 03 computes its A7-reference coordinate without changing them.
+Plot five A4-OL1/A7-OL1 thresholds and ten A0 clipping targets at each scale. Top uses raw loss and raw sparsity, from zero to the next multiple of ten above the same-size A7 ceiling (30%, 50%, 90%). Bottom uses loss minus unmodified same-scale A0 and a common A7-reference utilization for all three curves: `U_arch(A7) = R_model / R_model_max(A7)`. Equivalently, divide the pooled zero-product count by `338 * A7.reachable_product_count`. The A7 ceilings are 29.9524%, 49.4239% and 87.2452% at 14M, 70M and 410M. Source-specific `U_arch` values in the evidence bundle and tables are retained separately; Figure 03 computes its A7-reference coordinate without changing them.
 
 ## Coverage
 
@@ -16,7 +16,7 @@ Plot five A4-OL1/A7-OL1 thresholds and ten A0 clipping targets at each scale. To
 
 [Publication PDF](../figures/03-scale-transfer-and-ceilings.pdf)
 
-Quality vs. model-wide sparsity frontier across model sizes (Pythia-family). Columns denote size. Top: absolute validation loss versus raw model-wide sparsity, with each x axis ending at its A7 ceiling. Bottom: loss relative to unmodified same-size A0 versus 100 R_model/R_model_max(A7), using the same denominator for every curve within a column. Solid curves connect trained A4-OL1/A7-OL1 endpoints at κ=0,.01,.05,.1,.5; dotted open-marker curves connect A0 clipping evaluations at p=0,.1,…,.9. Curves only order evaluated points; all selected values are shown. A4/clipping-site and A7 theoretical ceilings remain as vertical guides in the top row, identified in the compact legend below the grid. The A4 guide is not the bottom-row denominator.
+Quality vs. model-wide sparsity frontier across model sizes (Pythia-family). Columns denote size. Top: absolute validation loss versus raw model-wide sparsity, with each x axis ending at the next multiple of ten above its A7 ceiling. Ticks are 0,10,20,30 at 14M; 0,10,20,30,40,50 at 70M; and 0,30,60,90 at 410M. The ceiling lines retain their exact values. Bottom: loss relative to unmodified same-size A0 versus 100 R_model/R_model_max(A7), using the same denominator for every curve within a column. Solid curves connect trained A4-OL1/A7-OL1 endpoints at κ=0,.01,.05,.1,.5; dotted open-marker curves connect A0 clipping evaluations at p=0,.1,…,.9. Curves only order evaluated points; all selected values are shown. A4/clipping-site and A7 theoretical ceilings remain as vertical guides in the top row, identified in the compact legend below the grid. The A4 guide is not the bottom-row denominator.
 
 ## Result
 

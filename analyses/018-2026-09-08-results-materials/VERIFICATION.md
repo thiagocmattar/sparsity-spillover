@@ -1,3 +1,16 @@
+# Figure 03 rounded top-row axes, 8 September 2026
+
+Top-row limits round upward to 30%, 50% and 90%. Ticks use 0/10/20/30,
+0/10/20/30/40/50 and 0/30/60/90 respectively. A7 ceiling lines remain at
+their exact values, and the bottom-row normalization is unchanged.
+
+All 18 working analysis tests passed (2.87 s). The two scoped staged
+coordinate/artifact checks passed (1.72 s); staged code reproduces the
+reviewed PDF byte-for-byte. The PDF and updated caption were rendered and
+inspected; the caption compiles without warnings or overfull/underfull
+boxes. All eight other figure PDF hashes remain unchanged. Proofs are in
+ignored tmp/figure03-round-ticks.
+
 # Figure 03 common A7 reference, 8 September 2026
 
 The top-row x axes now run from zero to the same-size A7 ceiling

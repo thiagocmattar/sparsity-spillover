@@ -194,7 +194,10 @@ def test_scale_plot_uses_common_a7_counts_and_only_a0_clipping(data, monkeypatch
                        if not line.get_label().startswith('_')}
                 assert set(paths)=={'A4-OL1','A7-OL1','A0 + clipping'}
                 ceiling=100*a7['reachable_product_count']/a7['model_product_count']
-                assert ax.get_xlim()==pytest.approx((0,ceiling if i==0 else 100))
+                assert ax.get_xlim()==(0,(30,50,90)[j] if i==0 else 100)
+                if i==0:
+                    assert list(ax.get_xticks())==([0,10,20,30],[0,10,20,30,40,50],[0,30,60,90])[j]
+                    assert list(ax.get_lines()[-1].get_xdata())==pytest.approx([ceiling,ceiling])
                 for family,line in paths.items():
                     rows=([r for r in data['clipping'] if r['scale']==scale and r['control']=='A0']
                           if family=='A0 + clipping' else

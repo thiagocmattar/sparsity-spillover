@@ -39,7 +39,7 @@ records the checks actually performed. Original runs and manuscript files are un
 | Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 29 matched comparisons, with all five A1-H→A4 thresholds |
 | Retained alternative | [02-v2 — intervention rows](figures/02-v2-blocked-intervention-effects.pdf) | Unselected vertical layout of the same 29 comparisons |
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
-| Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | A4-OL1/A7-OL1 and A0 clipping; raw sparsity up to each size's A7 ceiling above, common A7-reference utilization below |
+| Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | A4-OL1/A7-OL1 and A0 clipping; raw sparsity with rounded 30/50/90% axis limits above, common A7-reference utilization below |
 | Main case study, or appendix if space is tight | [05 — activation mass](figures/05-activation-mass-grid.pdf) | Site columns h,m,q,k,v and κ=0,.05,.5 rows; retained four-bin distributions, pending finer measurements |
 | Supporting appendix | [04 — operation accounting](figures/04-operation-accounting.pdf) | Six solid-color bars decomposing high-threshold results into operations |
 | Supporting appendix | [06 — post-hoc clipping](figures/06-complete-posthoc-comparison.pdf) | Explicit 14M coverage: 15 source checkpoints, each at 10 clipping targets |

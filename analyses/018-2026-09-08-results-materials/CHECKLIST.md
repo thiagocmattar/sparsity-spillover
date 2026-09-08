@@ -3,7 +3,7 @@
 ## Figure 03: common A7 reference
 
 - [x] Put the compact legend below the grid and remove loss units.
-- [x] Use the same-size A7 ceiling for all normalized curves and top-row x limits.
+- [x] Use the same-size A7 ceiling for all normalized curves; round top-row x limits up to 30%, 50%, 90%, with round-number ticks.
 - [x] Keep A0 clipping only, alongside the A4-OL1/A7-OL1 training curves.
 - [x] Apply the requested title, preserving its font and size.
 - [x] Check all 120 coordinates against pooled counts and retain source normalizations.
