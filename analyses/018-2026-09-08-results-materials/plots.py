@@ -348,22 +348,22 @@ def all_clipping(d):
 
 def kernels(d):
     runtime=d['runtime'];fig,axs=plt.subplots(1,2,figsize=(5.5,3.65))
-    fig.subplots_adjust(left=.11,right=.97,bottom=.17,top=.68,wspace=.34)
+    fig.subplots_adjust(left=.13,right=.97,bottom=.30,top=.78,wspace=.34)
     progress=runtime['progress']
     axs[0].step([p['iteration'] for p in progress],[p['speedup'] for p in progress],where='post',color='#333333')
-    axs[0].set(xlabel='Kernel iteration',ylabel='Speedup (×)',title='(a) Search progress',ylim=(.75,1.90))
+    axs[0].set(xlabel='Eligible proposal ordinal',ylabel='Full-model speedup (×)',title='(a) Search progress',ylim=(.75,1.90))
     rows=[p for p in runtime['points'] if p['candidate']=='k050']
     for f in FAMILIES:
         rr=[r for r in rows if r['family']==f];c,m=STYLE[f]
         axs[1].scatter([100*r['R_model'] for r in rr],[r['speedup'] for r in rr],color=c,marker=m,s=22)
     fit=runtime['k050_regression'];xx=np.array([0,.30])
     axs[1].plot(100*xx,fit['intercept']+fit['slope_per_fraction']*xx,color='.55',ls='--',lw=.8,zorder=0)
-    axs[1].set(xlabel=S_LABEL,title='(b) Final kernel',ylim=(.75,1.90),xlim=(-1,31))
+    axs[1].set(xlabel=S_LABEL,title='(b) Best sparse kernel\nvs. sparsity',ylim=(.75,1.90),xlim=(-1,31))
     for ax in axs:
         ax.axhline(1,color='.65',ls=':',lw=.8);ax.grid(axis='y',color='.92',lw=.6)
-    fig.suptitle('From kernel development to inference speedup',y=.99,fontsize=11)
-    fig.legend(handles=handles(FAMILIES),loc='upper center',ncol=4,frameon=False,
-               bbox_to_anchor=(.55,.91),handletextpad=.4,columnspacing=1.2)
+    fig.suptitle('Sparse kernel auto-research for full-model acceleration',y=.99,fontsize=11)
+    fig.legend(handles=handles(FAMILIES),loc='lower center',ncol=4,frameon=False,
+               bbox_to_anchor=(.55,.025),fontsize=7.5,handletextpad=.4,columnspacing=1.2)
     save(fig,'07-kernel-realization.pdf')
 
 

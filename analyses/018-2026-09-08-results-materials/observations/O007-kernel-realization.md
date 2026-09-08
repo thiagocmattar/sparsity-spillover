@@ -16,7 +16,7 @@ One physical RTX5090; BF16 batch 1, uncached T=2048, full-vocabulary logits. Sam
 
 [Publication PDF](../figures/07-kernel-realization.pdf)
 
-From kernel development to inference speedup. The left panel is titled “Search progress” and retains the best fully qualified speedup definition. Left: the best fully qualified incumbent on fixed A7-OL1 κ=.5 (c30), initialized at native 1×, across 42 eligible proposal ordinals. Right: final K050 on the 30 included checkpoints; the shared recipe legend is included above the panels and uses the same symbols/colors as Figure 01. Dashed line is an unweighted descriptive OLS fit with an intercept (R²=.8167); dotted horizontal lines mark native 1×. Model-wide sparsity uses the same canonical field as the training figures. Failed/unqualified timings are not plotted as usable speedups.
+Sparse kernel auto-research for full-model acceleration. Panel (a), “Search progress,” shows the best fully qualified incumbent on fixed A7-OL1 κ=.5 (c30), initialized at native 1×, across 42 eligible proposal ordinals. Panel (b), “Best sparse kernel vs. sparsity,” shows final K050 on the 30 included checkpoints. The shared recipe legend is below the plots and uses the same symbols/colors as Figure 01. The y-axis reports full-model speedup (×). Dashed line is an unweighted descriptive OLS fit with an intercept (R²=.8167); dotted horizontal lines mark native 1×. Model-wide sparsity uses the same canonical field as the training figures. Failed/unqualified timings are not plotted as usable speedups.
 
 ## Result
 

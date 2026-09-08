@@ -1,3 +1,19 @@
+# Figure 07 title, labels and legend polish, 8 September 2026
+
+The shared legend is below the plots. The title is "Sparse kernel auto-research
+for full-model acceleration"; the y-axis is "Full-model speedup (x)" (rendered
+with a multiplication sign). Panel (b) is "Best sparse kernel vs. sparsity",
+wrapped over two lines in the unchanged font size. The in-panel qualification
+annotation is removed; its scientific scope remains in observation O007.
+
+The PDF was rendered at 1500 pixels and inspected without overlap or clipping.
+All 53 extracted text words fit within its 396 x 262.8 point page;
+fonts are embedded CID TrueType. Coordinate checks preserve the search curve
+and all 30 final-kernel points. The data bundle and all ten other PDFs retain
+their pre-edit hashes. The scoped staged plotting source reproduces the PDF
+byte-for-byte (SHA-256 45de71c9da79b3e8555b74c6d15b84eb9046ef5dcfb198adeb8b7cfa6c8ec431).
+Only Figure 07 was regenerated; no scientific measurement changed.
+
 # Figure 05-v2 alternative, 8 September 2026
 
 ## Figure 05-v3: completed signed-density measurement
