@@ -50,3 +50,13 @@ optimized Blackwell port. No manuscript text changes are made.
 
 Source script: `09_sakana_reference.py`. Supporting historical audit:
 `archive/root/runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/SOURCE_AUDIT.md`.
+
+## Completed matched evaluation
+
+P0 was evaluated on all35 checkpoints in three fresh processes each. It
+qualifies on5/35 under the declared full-validation logit gates, with a0.867570x
+geomean on that qualified subset;30 fail elementwise logit bounds despite finite
+outputs and passing relative-L2/pooled-loss checks. Its qualified c30 speedup is
+0.817961x. [Observation03](03-matched-rmodel-speedup.md) retains the exact
+qualification, checkpoint identities and comparison limits. This does not
+constitute a negative benchmark of the unchanged published SparseLM system.

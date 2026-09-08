@@ -1,8 +1,10 @@
 # Run 029: matched retrospective Pythia-14M kernel evaluation
 
-Status: executing GPU preflight for the user-confirmed design. Design and GPU launches are
-explicitly pre-approved within USD20 and 16 cumulative GPU hours. No training,
-new optimized kernel, manuscript edit, or new paid agent API is authorized.
+Status: completed and verified. All1173 scheduled process outcomes,35 final
+diagnostic passes and three revised paper PDFs are retained locally. The Pod
+is deleted. Design and launches were pre-approved within USD20 and16 cumulative
+GPU hours; no training, new optimized kernel, manuscript edit or paid agent API
+was added. Current assets and interpretation are in the closeout section below.
 
 ## Question and fixed contract
 
@@ -161,3 +163,142 @@ failures. After complete retrieval, script10 reduces the matrix and script12
 creates the three vector PDFs; script13 verifies and imports retrieved output.
 Launch control is deliberately separate: a reproduction is not permission
 to provision or spend, and script08 must receive a fresh live price/resource audit.
+
+For a fresh reproduction, create a new human-approved run record using these
+frozen sources and input identities; do not overwrite this executed artifact
+tree or regenerate its provenance. Existing phase plans intentionally resume
+by skipping terminal leaves rather than silently starting a new experiment.
+Windows Git operations on the vendored tree require `git -c core.longpaths=true`.
+Run-local attributes preserve snapshot/JSON bytes; script14 independently
+compares every staged Git blob with its working-file bytes and rejects weights,
+datasets, caches, credentials directories and live run artifacts.
+
+### Preflight complete; matched matrix started
+
+All60 GPU smoke jobs completed at20:19:42Z:54 numerical passes,6 failures
+(K020-K024 andK026 atc30), and no compilation/execution failure. Both P0 and
+K050 passed the four cohort smoke checks. Short8-block results are not used
+as paper measurements. Receipt`retrieval-smoke002.json` verifies443 files,
+3598664 bytes. The source/protocol foundation is committed as`6d843dc`;
+1518 run files (32234883 bytes) were independently verified against staged
+Git blob identities, excluding weights/data/caches/live evidence.
+
+All six calibration processes then passed all338 validation blocks. P0's
+three c30 paired speedups are0.8180133,0.8177230,0.8179256; K050's are
+1.7825312,1.7832513,1.7827064. Native and K050 BF16 pooled loss is
+5.8313006630; P0 differs by approximately-2.823e-9. These are runtime BF16 checks, not the retained FP16 diagnostic
+loss. Calibration took95.2517s wall time including process lifecycle.
+Individual evaluation time was13.61-14.05s without diagnostics, and21.76s
+for K050's full diagnostic pass. Peak allocated memory was3.034GiB.
+Receipt`retrieval-calibration001.json` verifies490 files,6235778 bytes.
+
+The1173-job scientific matrix launched detached asPID14175 at approximately
+2026-09-07T20:25:06Z on the same physical GPU. Refreshed ETC is4.5-6 hours
+plus retrieval/verification, roughlyUSD3.5-5 total Pod spend including setup
+and storage, belowUSD20 and the unchanged16-hour ceiling. Monitoring uses
+the completed-process wall estimate, including interpreter lifecycle, rather
+than the narrower child-only timer. No additional kernel search or tuning
+occurs in this retrospective matrix.
+
+`results/calibration-summary-001.json` retains the exact calibration scalars,
+full lifecycle estimate (5.173h before candidate/topology adjustment), and
+runtime identity. `provenance/pip-freeze.txt` is a byte-identical copy of the
+verified Linux dependency lock, including all observed transitive versions;
+fresh reproductions should use it alongside the pinned CUDA12.8 image and
+PyTorch CUDA wheel index, not rely on future resolution of unpinned dependencies.
+
+During execution the user requested longer idle sleeps to reduce unnecessary
+status checks and token use. From approximately20:49Z, operational monitoring
+uses600-second PowerShell sleeps between checks, with milestone/error updates.
+This supersedes the initially planned120-second observation cadence only;
+the unchanged controller still enforces each600-second leaf timeout and the
+independent16-hour stop guard remains armed. No scientific input is changed.
+
+Incremental backups verify every inventoried byte but are not transactional
+controller checkpoints. In scientific008, the live controller index advanced
+to1021 entries after leaf enumeration had selected1020 completed results; the
+one newer result was therefore not in that tar. This was detected by a local
+read-only cross-reference check, not a benchmark failure. Final analysis and
+teardown require a quiescent final export and strict reconciliation of all1173
+planned result references, timing pairs, numerical checks and35 diagnostics.
+No result is inferred from an intermediate controller index.
+
+## Completed evaluation and current paper assets
+
+The scientific controller finished at2026-09-08T01:17:05Z after17498.2703s
+(4h51m38s), averaging241.33 complete process lifecycles/hour. Outcomes:
+855 qualified,312 numerical failures,6 explicitly unsupported, with no
+compilation/execution failures. All1167 timed processes completed338-block
+qualification. Reduction reconciles391 three-process comparisons and522816
+raw native/candidate timing pairs on the same64 validation identities and one
+physical GPU. The six unsupported outcomes are K017/K018 on ungated c01.
+
+The matched c30 incumbent improves at paper proposals9,10,11 and42:
+1.057046x,1.097161x,1.602386x and1.783029x. Native1x is a real pre-search
+reference, not a renormalized first kernel. The42 eligible proposals retain
+all53 historical configurations; the independently benchmarked P0 is separate.
+
+K050 passes all35 final checkpoints, with equal-checkpoint geometric mean
+1.250205x and range1.005938-1.783175x. Unweighted estimated-intercept OLS gives
+`S = 0.9531843 + 3.8586398 R_model`, `R_squared = 0.7812572`, with canonical
+R_model expressed as a fraction. This supports a conditional association,
+not a universal or exact runtime law.
+
+Sparse-path contribution is not uniform: K050/no-skip averages1.056401,
+helping19/35 checkpoints and hurting16/35; at c30 it is1.311153. The fused
+no-skip control already averages1.183457x over native. Disabling attention
+skipping is faster on all35 checkpoints (mean control speedup1.267131x versus
+K0501.250205x), so attention skip counts must not be presented as net speed
+benefit. Full35-checkpoint BF16 activation, weight, logical and executed-work
+diagnostics are retained separately from canonical FP16 R_model.
+
+P0, the existing Sakana-derived Pythia adapter, qualifies on5/35 checkpoints
+and averages0.867570x on those five. The other30 fail elementwise logit gates
+despite finite outputs and passing relative-L2/loss checks. No qualified
+all35 P0 average or unchanged SparseLM/H100 comparison is claimed.
+
+Current publication assets (single panels, grids, no bars or variant legend):
+
+- [Matched progress](figures/01-matched-autoresearch-progress-r02.pdf)
+  and [Observation01](observations/01-matched-autoresearch-progress.md).
+- [Individual candidate outcomes](figures/02-matched-individual-candidates-r02.pdf)
+  and [Observation02](observations/02-matched-individual-candidates.md).
+- [Canonical R_model versus acceleration](figures/03-matched-rmodel-speedup-r02.pdf)
+  and [Observation03](observations/03-matched-rmodel-speedup.md).
+
+Revision1 PDFs are superseded proofs retained for audit. Revision2 moves a
+reference annotation off the early steps, displays quarter-step tick values
+exactly and keeps the complete OLS line in view. Measurements, regression,
+point selection and progress definition are unchanged. All three current PDFs
+were rendered and visually inspected; fonts are embedded and graphics vector.
+
+### Final retrieval, verification and teardown
+
+The quiescent final bundle contains9035 files/505698600 inventoried bytes;
+its523530240-byte tar has SHA256
+`5ac93fe118ec053014cc15f43a833cbf26d3c9febd84e90da918e3123470d81b`.
+Receipt`results/retrieval-scientific-final001.json` verifies exact tar members,
+file sizes and SHA256. Strict script10 reconciled all1173 planned result
+references, raw timing/quality coverage and all35 diagnostics before teardown,
+resolving the partial live-index mismatch. Frozen inputs and sources were also
+reverified remotely and locally. All checkpoints, validation inputs, raw
+artifacts, failures, dependency lock and verified bundles remain local.
+
+The owned Pod was deleted successfully (HTTP204) by2026-09-08T01:22:31Z,
+after verification, and its identified local deadline guard was stopped.
+The post-delete audit finds zero Pods and endpoints. Only the pre-existing
+100GB shared network volume remains, unchanged. Creation-to-deletion allocation
+was at most5.732746h. GPU plus Pod-disk estimate is at mostUSD4.02 versus the
+USD20 envelope; posted billing remains lagged (USD3.3506 at closeout), not a
+final invoice. `results/cloud-closeout-001.json` records the live API responses,
+price, timing, estimate and storage boundary. No push or manuscript edit occurs.
+
+The final local bootstrap/run suite passed312 tests with one expected
+Windows/Triton skip (25.51s). Publication verification confirms three single-page,
+vector-only PDFs with embedded subset Unicode TrueType fonts. Results are
+recorded in `results/verification-001.json`; Linux preflight had61 passing checks.
+To reproduce local reporting from retained raw evidence: run scripts10,16,
+then12 with a fresh publication revision in the new reproduction record; existing
+result paths are historical records, not permission to overwrite them or relaunch
+GPUs. Script17 uses the available Poppler commands and verifies
+current data/input/source hashes, test evidence and the publication PDFs.

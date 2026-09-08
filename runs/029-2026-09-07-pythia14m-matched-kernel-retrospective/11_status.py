@@ -1,14 +1,21 @@
 """Read-only concise status, with pooled loss and workload throughput."""
 import json
+import argparse
 from datetime import datetime,timezone
 from io_utils import RUN, read
 
 
 def main():
-    for phase in ['smoke','calibration','scientific']:
+    parser=argparse.ArgumentParser();parser.add_argument('--all',action='store_true');args=parser.parse_args()
+    phases=[p for p in ['smoke','calibration','scientific'] if (RUN/'artifacts'/p/'status.json').exists()]
+    for phase in phases if args.all else phases[-1:]:
         folder=RUN/'artifacts'/phase
         if not (folder/'status.json').exists():continue
         status=read(folder/'status.json')
+        if status['completed'] and status['elapsed_seconds']>0:
+            wall_mean=status['elapsed_seconds']/status['completed']
+            status['completed_leaves_per_hour_including_lifecycle']=3600/wall_mean
+            status['remaining_seconds_including_lifecycle']=(status['total']-status['completed'])*wall_mean
         if (folder/'completed.json').exists():
             completed=read(folder/'completed.json')
             if completed:

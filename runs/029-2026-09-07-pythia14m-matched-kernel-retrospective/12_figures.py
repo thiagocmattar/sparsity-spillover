@@ -1,4 +1,5 @@
 """Three single-panel, vector-only scientific figures; no rescaling of history."""
+import argparse
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ def axes():
     ax.spines[['top','right']].set_visible(False)
     ax.grid(True,which='major',color='#dadde0',linewidth=.5,zorder=0)
     ax.set_axisbelow(True);ax.tick_params(direction='out',length=3,width=.65)
-    ax.yaxis.set_major_formatter(FuncFormatter(lambda x,_:f'{x:.1f}'))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda x,_:f'{x:g}'))
     ax.set_ylabel('Full-model speedup (×)')
     return fig,ax
 
@@ -33,7 +34,7 @@ def progress_figure(data):
     ax.set_xlim(-.7,x[-1]+1.)
     ax.set_xticks([1,10,20,30,x[-1]])
     ax.set_xlabel('Kernel proposal iteration')
-    ax.text(.02,.055,'Native dense = 1×',transform=ax.transAxes,fontsize=8,color=GRAY)
+    ax.text(.48,.045,'Native dense = 1×',transform=ax.transAxes,fontsize=8,color=GRAY)
     ax.annotate(f'Best found: {high:.2f}×',xy=(x[-1],high),xytext=(-4,9),
                 textcoords='offset points',ha='right',color=BLUE,fontsize=9)
     return fig,ax
@@ -72,20 +73,26 @@ def rmodel_figure(data):
                    color=BLUE if qualified else RED,marker='o' if qualified else 'x',
                    alpha=.85,zorder=3,linewidths=0 if qualified else .9)
     fit=data['k050_regression']
+    fitted_endpoints=[]
     if fit:
         qualified=[p for p in rows if p['qualified']]
         x=[min(p['R_model'] for p in qualified),max(p['R_model'] for p in qualified)]
-        ax.plot(x,[fit['intercept']+fit['slope']*v for v in x],color=BLUE,lw=1.3,zorder=2)
+        fitted_endpoints=[fit['intercept']+fit['slope']*v for v in x]
+        ax.plot(x,fitted_endpoints,color=BLUE,lw=1.3,zorder=2)
         ax.text(.04,.96,rf'$\widehat{{S}} = {fit["intercept"]:.3f} + {fit["slope"]:.3f}\,R_{{\mathrm{{model}}}}$'+'\n'+
                 rf'$R^2 = {fit["r_squared"]:.3f}$',transform=ax.transAxes,va='top',fontsize=10)
     ys=[p['speedup'] for p in rows];span=max(max(ys)-min(ys),.2)
-    ax.set_ylim(min(ys)-.09*span,max(ys)+.13*span)
+    ax.set_ylim(min(ys)-.09*span,max(ys+fitted_endpoints)+.13*span)
     ax.xaxis.set_major_locator(MaxNLocator(5))
     ax.set_xlabel(r'Canonical $R_{\mathrm{model}}$ (fraction)')
     return fig,ax
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--revision',type=int,default=1)
+    args=parser.parse_args()
+    if args.revision<1:raise ValueError('Positive publication revision required')
     path=RUN/'results/matched-retrospective-001.json';data=read(path)
     for row in data['sources']:verify(row)
     catalog=read(RUN/'provenance/candidates.json')['configurations']
@@ -94,11 +101,12 @@ def main():
     for name,builder in [('01-matched-autoresearch-progress',lambda:progress_figure(data)),
                          ('02-matched-individual-candidates',lambda:individual_figure(data,catalog)),
                          ('03-matched-rmodel-speedup',lambda:rmodel_figure(data))]:
-        dest=folder/(name+'.pdf')
+        suffix='' if args.revision==1 else f'-r{args.revision:02d}'
+        dest=folder/(name+suffix+'.pdf')
         if dest.exists():raise ValueError('Publication file exists; use a new revision, never overwrite executed output')
         fig,ax=builder();fig.savefig(dest,metadata={'Creator':'Run029 / Matplotlib','Title':name})
         plt.close(fig);outputs.append(record(dest))
-    write(RUN/'results/figures-001.json',{'source':record(path),'script':record(__file__),
+    write(RUN/f'results/figures-{args.revision:03d}.json',{'source':record(path),'script':record(__file__),
           'figures':outputs,'format':'Single axes; vector PDF; embedded TrueType; linear unnormalized speedup; major grid.'})
     print(outputs)
 

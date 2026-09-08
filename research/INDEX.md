@@ -5,17 +5,20 @@
 
 ## Current status
 
-Run 029 is executing the approved matched retrospective evaluation: frozen
-K001-K050 provenance, 42 eligible14M proposals, four retrospective checkpoints,
-and five final comparators across all35 checkpoints. One RTX5090, shared dense
-SDPA CUDA-graph baseline, full338-block qualification, USD20/16GPU-hour ceiling.
-Sakana-derived P0 is labeled separately from unchanged upstream SparseLM code.
+Run029 completed the matched retrospective:1173 process outcomes,42 eligible14M
+proposals, one RTX5090 and a common native SDPA CUDA-graph denominator. Qualified
+c30 progress reaches1.783x; K050 passes35/35 checkpoints, geomean1.250x,
+canonical R_model regression R_squared0.781. Sparse-path benefit is conditional;
+attention skipping adds overhead. The Sakana-derived P0 qualifies on5/35, not an
+unchanged upstream benchmark. Evidence and three revised PDFs are verified
+locally; the Pod is deleted and the existing volume retained. See Run029's
+observations; no finding or manuscript claim is promoted.
 
 Run 028's frozen K050 final evaluation and diagnostics are complete. Qualified
 full-model graph speedups across35 checkpoints range0.979--1.739x; sparse-path
 and fusion ablations are retained. Figure07 and Analysis017 require their
 stated baseline boundaries; mixed historical phases are not one matched curve.
-See Run028's final observations; Run029 will measure a common-denominator history.
+See Run028's final observations; Run029 now supplies a common-denominator history.
 
 Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
 Six variants pass all full-validation gates; their speedups are 1.490-1.808x.
@@ -167,7 +170,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `029`. Next analysis number: `018`. Next finding number: `F003`.
+Next run number: `030`. Next analysis number: `018`. Next finding number: `F003`.
 
 ## Where we stopped
 

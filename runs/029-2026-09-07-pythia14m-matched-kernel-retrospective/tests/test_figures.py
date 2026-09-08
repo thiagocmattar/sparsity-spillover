@@ -38,3 +38,29 @@ def test_rmodel_uses_native_scale_and_uniform_markers(data):
     assert ax.collections[0].get_offsets().tolist()==[[i*.1,1+i*.2] for i in range(4)]
     assert len(ax.collections[0].get_sizes())==1
     plot.plt.close(fig)
+
+
+def test_individual_points_keep_failures_repeated_iterations_and_p0(data):
+    catalog = [{'id': 'p0', 'status': 'eligible'},
+               {'id': 'k011-prefix1', 'status': 'eligible', 'paper_iteration': 3},
+               {'id': 'k011-prefix2', 'status': 'eligible', 'paper_iteration': 3},
+               {'id': 'unsupported', 'status': 'eligible', 'paper_iteration': 4}]
+    data['points'] = [
+        {'phase': 'history', 'candidate': c, 'qualified': ok, 'speedup': s}
+        for c, s, ok in [('p0', .8, True), ('k011-prefix1', 1.1, True),
+                          ('k011-prefix2', 2., False)]]
+    data['points'].append({'phase': 'history', 'candidate': 'unsupported', 'qualified': False})
+    fig, ax = plot.individual_figure(data, catalog)
+    check_axes(fig, ax)
+    assert ax.collections[0].get_offsets().tolist() == [[0, .8], [3, 1.1]]
+    assert ax.collections[1].get_offsets().tolist() == [[3, 2.]]
+    assert ax.get_ylim()[0] < .8 and ax.get_ylim()[1] > 2.
+    assert ax.yaxis.get_major_formatter()(.25, 0) == '0.25'
+    plot.plt.close(fig)
+
+
+def test_regression_endpoint_is_visible(data):
+    data['k050_regression']['slope'] = 4.
+    fig, ax = plot.rmodel_figure(data)
+    assert ax.get_ylim()[1] > 2.2
+    plot.plt.close(fig)

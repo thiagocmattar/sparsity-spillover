@@ -59,7 +59,7 @@ def main():
     completed=read(RUN/'artifacts/scientific/completed.json')
     if len(completed)!=len(plan['jobs']) or {r['job']['key'] for r in completed}!={r['key'] for r in plan['jobs']}:
         raise ValueError('Scientific matrix incomplete')
-    groups=defaultdict(list);sources=[];uuids=set();diagnostics=[]
+    groups=defaultdict(list);sources=[];uuids=set();diagnostics=[];timing_identity=None
     for row in completed:
         path=verify(row['result']);sources.append(row['result']);result=read(path);job=row['job']
         if (result['candidate'],result['condition'])!=(job['candidate'],job['condition']):raise ValueError('Result identity mismatch')
@@ -89,6 +89,11 @@ def main():
                   'interpretation':'BF16 runtime scalar opportunities and MMA/SIMT execution counters are not canonical FP16 R_model or removed FLOPs.'})
         if result['status']=='complete':
             quality=read(path.parent/'quality.json');timing=read(path.parent/'timing.json')
+            indices=timing['indices']
+            if len(indices)!=cfg['timing_inputs'] or len(set(indices))!=len(indices) or any(type(i)!=int or not 0<=i<338 for i in indices):
+                raise ValueError('Invalid timing-block identities')
+            if timing_identity is None:timing_identity=indices
+            if indices!=timing_identity:raise ValueError('Timing inputs differ across matched evaluations')
             sources.extend([record(path.parent/'quality.json'),record(path.parent/'timing.json')])
             if quality['blocks']!=338 or quality['prediction_tokens']!=338*2047 or quality['excluded_tail_tokens']!=1444:
                 raise ValueError('Qualification coverage mismatch')
@@ -125,7 +130,7 @@ def main():
     selected=[p for p in points if p['phase']=='final' and p['candidate']=='k050' and p['qualified']]
     fit=ols([p['R_model'] for p in selected],[p['speedup'] for p in selected]) if len(selected)>=3 else None
     value={'points':points,'progress':progress(points,catalog,cfg['progress_anchor']),'k050_regression':fit,'diagnostics':diagnostics,
-           'physical_gpu_uuid':next(iter(uuids)),'qualification_summary':dict(Counter((p['phase']+'-'+str(p['qualified'])) for p in points)),
+           'physical_gpu_uuid':next(iter(uuids)),'timing_block_indices':timing_identity,'qualification_summary':dict(Counter((p['phase']+'-'+str(p['qualified'])) for p in points)),
            'metric':'Geometric mean of native_graph/candidate_graph host-latency pairs, equally pooling all448 pairs in each of three processes.',
            'sources':sources,'plan':record(RUN/'artifacts/scientific/plan.json'),'script':record(__file__)}
     write(RUN/'results/matched-retrospective-001.json',value)
