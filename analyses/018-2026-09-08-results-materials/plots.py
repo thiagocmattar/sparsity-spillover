@@ -135,6 +135,53 @@ def effects(d):
     save(fig,'02-blocked-intervention-effects.pdf')
 
 
+def effects_v2(d):
+    """Alternative Figure 02: shared intervention rows, two effect columns."""
+    blocks=['GELU to ReLU','Add L1 at h','L1 to OL1 at h','A1-H to A4',
+            'Add OL1 to A4','A4 to A7 gates','Add OL1 to A7']
+    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h','A1-H\n→ A4',
+            'Add OL1\nto A4','A4\n→ A7','Add OL1\nto A7']
+    colors=['#444444','#009E73','#CC79A7','#0072B2','#0072B2','#D55E00','#D55E00']
+    fig,axs=plt.subplots(1,2,figsize=(5.5,5.5),sharey=True)
+    fig.subplots_adjust(left=.30,right=.985,bottom=.10,top=.89,wspace=.23)
+    centers=[]
+    cursor=0
+    for n,(block,color) in enumerate(zip(blocks,colors)):
+        rows=sorted([r for r in d['contrasts'] if r['block']==block],key=lambda r:r['dose'] or 0)
+        yy=cursor+np.arange(len(rows))
+        centers.append(float(np.mean(yy)))
+        for ax,key in zip(axs,['delta_loss','delta_R_pp']):
+            if n%2==0:
+                ax.axhspan(yy[0]-.5,yy[-1]+.5,color='.96',zorder=-2)
+            ax.hlines(yy,0,[r[key] for r in rows],color=color,lw=.8)
+            ax.scatter([r[key] for r in rows],yy,color=color,marker='o',s=18,zorder=3)
+        for y,r in zip(yy,rows):
+            value='—' if r['dose'] is None else f'{r["dose"]:g}'
+            axs[0].annotate(value,(0,y),xycoords=('axes fraction','data'),
+                            xytext=(-6,0),textcoords='offset points',
+                            ha='right',va='center',fontsize=8,fontfamily='STIXGeneral')
+        parameter={'lambda':r'$\lambda$','kappa':r'$\kappa$','none':''}[rows[0]['dose_kind']]
+        axs[0].annotate(parameter,(0,centers[-1]),xycoords=('axes fraction','data'),
+                        xytext=(-30,0),textcoords='offset points',
+                        ha='center',va='center',fontsize=9)
+        cursor+=len(rows)+1
+    for ax in axs:
+        ax.axvline(0,color='.25',lw=.7)
+        ax.grid(axis='x',color='.92',lw=.6)
+        ax.tick_params(axis='y',length=0)
+        ax.spines['left'].set_visible(False)
+        ax.set_ylim(cursor-1.5,-.75)
+    axs[0].set_yticks(centers,labels)
+    axs[0].tick_params(axis='y',pad=48)
+    axs[0].set_ylabel('Intervention',labelpad=12)
+    axs[0].set(xlabel='Δ loss (nats/token)',xlim=(-.20,.42),xticks=[-.2,0,.2,.4])
+    axs[1].set(xlabel='Δ '+S_LABEL.replace('(%)','(pp)'),xlim=(-.7,13),xticks=[0,4,8,12])
+    axs[0].set_title('(a) Validation loss',fontsize=9,pad=8)
+    axs[1].set_title('(b) Model sparsity',fontsize=9,pad=8)
+    fig.suptitle('Matched intervention effects (14M)',y=.985,fontsize=11)
+    save(fig,'02-v2-blocked-intervention-effects.pdf')
+
+
 def scaling(d):
     fig,axs=plt.subplots(2,3,figsize=(5.5,5.1),sharey='row')
     fig.subplots_adjust(left=.12,right=.96,bottom=.14,top=.76,wspace=.14,hspace=.44)
@@ -283,4 +330,4 @@ def ceilings(d):
 
 def make_figures(d):
     configure()
-    overview(d);effects(d);scaling(d);operations(d);activations(d);all_clipping(d);kernels(d);ceilings(d)
+    overview(d);effects(d);effects_v2(d);scaling(d);operations(d);activations(d);all_clipping(d);kernels(d);ceilings(d)

@@ -1,5 +1,12 @@
 # Analysis 018 — Results materials for the revised argument
 
+An alternative [Figure 02-v2](figures/02-v2-blocked-intervention-effects.pdf)
+places **Intervention** on the shared y-axis, with validation-loss changes in
+the left column and model-sparsity changes in the right. Numeric doses sit
+between the intervention names and plots, with separate λ/κ group labels.
+It preserves all 29 comparisons and the original Figure 02; see
+[O009](observations/O009-blocked-effects-v2.md) for its caption and verification.
+
 Figure 02 now labels its categorical x-axis **Intervention**, with numeric dose
 values directly below the points and a separate λ or κ label for each group.
 One marker shape replaces the mixed dose key. A1-H→A4 and A4→A7 name the actual
@@ -7,7 +14,8 @@ paired recipes; all 29 comparisons and their values are retained.
 
 Revised after the user's figure review on 8 September 2026. This package reads
 the current manuscript and reprocesses retained experiments. It contains eight
-publication PDFs, numerical tables, proposed arguments, captions and provenance.
+main publication figures plus the alternative Figure 02-v2 PDF, numerical
+tables, proposed arguments, captions and provenance.
 All artwork is drawn at the ICLR template's 5.5-inch text width and now includes a title.
 
 Figure 01 now shows all 30 trained endpoints with 150 retained post-hoc
@@ -28,6 +36,7 @@ records the checks actually performed. Original runs and manuscript files are un
 | --- | --- | --- |
 | Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 30 trained endpoints with faint post-hoc trajectories for all 15 retained source checkpoints |
 | Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 29 matched comparisons, with all five A1-H→A4 thresholds |
+| Alternative main: matched effects | [02-v2 — intervention rows](figures/02-v2-blocked-intervention-effects.pdf) | The same 29 comparisons on a shared vertical intervention axis and two side-by-side effect columns |
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
 | Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Absolute loss/raw sparsity and theoretical ceiling lines above; relative loss/ceiling utilization below |
 | Main case study, or appendix if space is tight | [05 — activation mass](figures/05-activation-mass-grid.pdf) | Site columns h,m,q,k,v and κ=0,.05,.5 rows; retained four-bin distributions, pending finer measurements |

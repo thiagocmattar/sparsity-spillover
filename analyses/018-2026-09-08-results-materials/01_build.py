@@ -139,7 +139,7 @@ def main():
     inventory={p.relative_to(HERE).as_posix():{'sha256':sha(p),'bytes':p.stat().st_size}
                for folder in ('figures','tables') for p in sorted((HERE/folder).iterdir()) if p.is_file()}
     (HERE/'artifact_inventory.json').write_text(json.dumps(inventory,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
-    print(f'Built {len(d["trained"])} trained conditions, {len(d["clipping"])} clipping points, {len(d["contrasts"])} contrasts; 8 PDFs; {len(d["sources"])} directly hashed sources.')
+    print(f'Built {len(d["trained"])} trained conditions, {len(d["clipping"])} clipping points, {len(d["contrasts"])} contrasts; 9 PDFs (including Figure 02-v2); {len(d["sources"])} directly hashed sources.')
 
 
 if __name__=='__main__':

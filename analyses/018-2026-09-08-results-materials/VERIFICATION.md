@@ -1,3 +1,29 @@
+# Figure 02-v2 alternative orientation, 8 September 2026
+
+The user requested a separate rotated layout with Intervention on the y-axis
+and two columns. Figure 02-v2 uses shared comparison rows, validation-loss
+changes on the left and model-sparsity changes on the right. The original
+seven-group order runs downward; doses increase downward within each group.
+Numeric dose labels sit beside the plots, with separate lambda/kappa group
+labels. Horizontal stems retain the same zero reference and effect ranges as
+Figure 02. The new PDF is 396 by 396 points (5.5 by 5.5 inches).
+
+All 29 comparisons were checked against their raw same-pass loss and integer
+product counts. Direct plot inspection verified all 58 effect coordinates,
+identical row positions across columns, the inverted categorical axis, 29
+aligned dose labels, two lambda groups and four kappa groups. Numeric labels
+do not overlap; all visible text lies within the page. Color and grayscale
+renders were inspected at paper width. Fonts are embedded. The PDF reproduces
+byte-for-byte from the isolated source and freshly loaded retained evidence.
+
+The isolated revision passes **40 focused tests in 0.95 seconds** (analysis
+evidence, ceilings and metrics), including the updated nine-PDF inventory.
+All eight pre-existing PDFs retain their exact hashes. The builder produces
+both orientations, and O009 records the alternative's caption and limitations.
+No numerical evidence, model execution, original figure or manuscript changed.
+Unrelated working-tree changes remain outside the commit scope. Temporary
+proofs are under ignored tmp/analysis018-figure02-v2.
+
 # Figure 02 intervention-axis revision, 8 September 2026
 
 Figure 02 now places the numeric dose values below the plotted points, followed
