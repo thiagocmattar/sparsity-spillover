@@ -1,3 +1,18 @@
+# Figure 07 aligned panels and tighter heading spacing, 8 September 2026
+
+Panel (b) now reads "Best kernel vs. sparsity" on one line, aligned with
+panel (a). Both plotting areas have explicit 1:1 width allocation and measure
+142.1538 points wide, with identical vertical bounds. Raising the plot
+top from .78 to .85 reduces the title spacing while keeping fonts unchanged.
+The rendered main-title-to-panel-title gap is 11.87 points.
+Panel (a) uses the x-axis label "Kernel iteration".
+
+The final 1500-pixel render was inspected. All 51 extracted words
+fit within the page; the legend is below both x-axis labels. The search
+coordinates and all 30 final-kernel points match the source data. The data
+bundle and ten other PDFs retain their pre-edit hashes. The scoped staged
+source reproduces the PDF byte-for-byte (SHA-256 9f0e75efd32754d1f4476f172c631a461bb2957c0c69af74a289062bcff3a4f6).
+
 # Figure 07 title, labels and legend polish, 8 September 2026
 
 The shared legend is below the plots. The title is "Sparse kernel auto-research
