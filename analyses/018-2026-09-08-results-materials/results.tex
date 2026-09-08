@@ -46,19 +46,19 @@ These are one-seed differences, not significance or equivalence claims.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/02-blocked-intervention-effects.pdf}
-\caption{Matched 14M intervention effects. Both panels show treatment minus
-the group-specific comparator in the Ref: row: validation loss above (negative
-is better), and model-sparsity change in percentage points below (positive is
-more logical zero-product opportunity). Ref: A0 is the original GELU control;
-A1-H is the ReLU control; L1($\lambda$) is the $h$-only L1 recipe at matched
-$\lambda$; A4($\kappa$) and A7($\kappa$) are unpressured gate recipes at matched
-$\kappa$. Action labels describe the operation and sites. One-sided gates act
-at $a,m,h,z$, including the change at $h$; symmetric query/key gates follow
-RoPE. Numeric doses increase left to right with ordinal spacing; the dash
-marks the dose-free ReLU replacement. The four-site and seven-site OL1
-treatments use fixed pressure weight $\lambda=1$ and trust budget 1. The
-29 one-seed comparisons use separately trained conditions and group-specific
-references, not a sequence of cumulative updates or runtime measurements.}
+\caption{Matched 14M intervention effects. The upper panel shows validation-loss
+changes (negative is better); the lower panel shows model-sparsity changes in
+percentage points (positive is more logical zero-product opportunity). The
+Intervention: row describes each action, and the Paired: row explicitly names
+treatment minus reference. A0 is the original GELU control; A1-H is the ReLU
+control. L1-to-OL1 pairs share $\lambda$. The four-site and seven-site pressure
+additions and the query/key/value gate addition share $\kappa$ between treatment
+and reference; the other references are fixed controls. Numeric doses increase
+left to right with ordinal spacing; the dash marks the dose-free ReLU
+replacement. One-sided gates include the change at $h$, and symmetric query/key
+gates follow RoPE. Four-site and seven-site OL1 use fixed pressure weight
+$\lambda=1$ and trust budget 1. These 29 one-seed comparisons use separately
+trained conditions and are not cumulative updates or runtime measurements.}
 \label{fig:a018-effects}
 \end{figure}
 

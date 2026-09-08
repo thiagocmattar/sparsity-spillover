@@ -95,8 +95,8 @@ def effects(d):
     labels=['Use ReLU\nat h','Add L1\nat h','L1 → OL1\nat h',
             r'Apply $G_+$'+'\nat a,m,h,z','Add OL1\nat a,m,h,z',
             r'Apply $G_{\pm}$'+'\nat q,k,v','Add OL1\nat a,m,h,z,\nq,k,v']
-    references=['A0','A1-H',r'L1($\lambda$)','A1-H',
-                r'A4($\kappa$)',r'A4($\kappa$)',r'A7($\kappa$)']
+    pairs=['A1-H\n− A0','A1-H-L1\n− A1-H','A1-H-OL1\n− A1-H-L1',
+           'A4\n− A1-H','A4-OL1\n− A4','A7\n− A4','A7-OL1\n− A7']
     colors=['#444444','#009E73','#CC79A7','#0072B2','#0072B2','#D55E00','#D55E00']
     fig,axs=plt.subplots(2,1,figsize=(5.5,4.6),sharex=True)
     fig.subplots_adjust(left=.16,right=.99,bottom=.30,top=.90,hspace=.12)
@@ -126,19 +126,22 @@ def effects(d):
         axs[1].annotate(parameter,(centers[n],0),xycoords=('data','axes fraction'),
                         xytext=(0,-18),textcoords='offset points',
                         ha='center',va='top',fontsize=7.5)
-        axs[1].annotate('Ref: '+references[n],(centers[n],0),
-                        xycoords=('data','axes fraction'),xytext=(0,-65),
-                        textcoords='offset points',ha='center',va='top',
+        axs[1].annotate(labels[n],(centers[n],0),
+                        xycoords=('data','axes fraction'),xytext=(0,-42),
+                        textcoords='offset points',ha='center',va='center',fontsize=7)
+        axs[1].annotate(pairs[n],(centers[n],0),
+                        xycoords=('data','axes fraction'),xytext=(0,-72),
+                        textcoords='offset points',ha='center',va='center',
                         fontsize=7,color='.3')
     for ax in axs:
         ax.axhline(0,color='.25',lw=.7); ax.grid(axis='y',color='.92',lw=.6)
         ax.tick_params(axis='x',length=0);ax.set_xlim(edges[0],edges[-1])
-    axs[0].set(ylabel='Δ loss\nvs group reference',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
-    axs[1].set(ylabel='Δ '+S_LABEL.replace('(%)','(pp)')+'\nvs group reference',
-               ylim=(-.7,13),yticks=[0,4,8,12])
-    axs[1].set_xticks(centers,labels)
-    axs[1].tick_params(axis='x',pad=32,labelsize=7)
-    axs[1].set_xlabel('Intervention',labelpad=29,fontsize=8)
+    axs[0].set(ylabel='Δ loss',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
+    axs[1].set(ylabel='Δ '+S_LABEL.replace('(%)','(pp)'),ylim=(-.7,13),yticks=[0,4,8,12])
+    axs[1].set_xticks([])
+    for text,offset in [('Intervention:',-42),('Paired:',-72)]:
+        axs[1].annotate(text,(0,0),xycoords='axes fraction',xytext=(-7,offset),
+                        textcoords='offset points',ha='right',va='center',fontsize=8)
     fig.suptitle('Matched intervention effects (14M)',y=.985,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 

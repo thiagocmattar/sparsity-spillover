@@ -1,3 +1,27 @@
+# Figure 02 intervention and paired rows, 8 September 2026
+
+The horizontal figure now labels its two annotation rows on the left:
+Intervention: for action/site descriptions and Paired: for full treatment-minus-
+reference names. Each pair wraps onto two lines, with the minus sign preceding
+the reference. The metric axes show only delta loss and delta model sparsity
+(pp); the former "vs group reference" suffixes, Ref: prefixes and bottom
+Intervention axis title are removed. Action and pair text remains 7 pt. O002,
+the README and the optional analysis-owned TeX caption describe the new rows.
+
+All 29 paired differences remain unchanged. Direct plot checks verify all 58
+effect values, 29 aligned dose labels and seven pair names against the stored
+treatment/reference IDs. Both row headings align with their cells. All visible
+text lies within the page; annotation rows and adjacent cells do not overlap.
+Color and grayscale renders and the combined figure/caption page were visually
+inspected. The TeX proof has no warnings or box overflows. The PDF reproduces
+byte-for-byte from the isolated source and freshly loaded retained evidence.
+
+The isolated revision passes **40 focused tests in 1.73 seconds** (analysis
+evidence, ceilings and metrics). The other eight PDFs retain their exact hashes.
+No numerical evidence, model execution or manuscript changed. Unrelated working-
+tree edits remain outside the commit. Temporary proofs are under ignored
+tmp/analysis018-figure02-paired-rows.
+
 # Figure 02 horizontal polish and explicit references, 8 September 2026
 
 The user selected the original horizontal layout. Dose values and intervention

@@ -1,9 +1,10 @@
 # Analysis 018 — Results materials for the revised argument
 
 The user selected the original horizontal [Figure 02](figures/02-blocked-intervention-effects.pdf).
-Its dose values, λ/κ labels and action/site descriptions are smaller. Both
-y-axes say **vs group reference**, and a separate **Ref:** row names the
-comparator beneath every action. All 29 paired differences are retained; the
+Its metric axes show delta loss and delta model sparsity (pp). Beneath the
+plots, two rows have horizontal labels on the left: **Intervention:** for the
+action/site descriptions and **Paired:** for treatment-minus-reference names
+such as A1-H − A0 and A4-OL1 − A4. All 29 paired differences are retained; the
 [O002 reference map](observations/O002-blocked-effects.md#reference-map) defines
 each comparison. The [rotated Figure 02-v2](figures/02-v2-blocked-intervention-effects.pdf)
 is retained as an unselected layout alternative, documented in
