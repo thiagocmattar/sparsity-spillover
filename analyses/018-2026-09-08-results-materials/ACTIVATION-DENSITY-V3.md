@@ -1,8 +1,10 @@
 # Figure 05-v3: signed activation distributions
 
-Status: figure design requested; additional measurement design awaiting
-confirmation. No new run folder, experiment code, inference, or cloud resource
-has been created. This proposal addresses signed densities; the earlier
+Status: design approved on 8 September 2026; the user selected RunPod because
+the local GPU is busy. Implementation and CPU verification are in
+`runs/031-2026-09-08-signed-activation-density/`. The concrete cloud launch
+envelope awaits the separate launch confirmation. No Pod or full measurement
+has started. This design addresses signed densities; the earlier
 ACTIVATION-DIAGNOSTIC.md concerns finer magnitude bins.
 
 ## Question and manuscript purpose
@@ -93,11 +95,10 @@ retained site counts allow checking that limitation. The complete recipes
 change both gates and pressure sets, so this does not isolate their causal
 contributions, demonstrate a training trajectory, or establish speedup.
 
-After design confirmation, implement the next numbered diagnostic run and
-test signed-bin accounting, zero exclusion, boundary equality, exact hooks,
-group weights, full coverage and serialization. Calibrate the actual histogram
-workload locally before proposing launch. The read-only inventory found an
-RTX 5070 Ti Laptop GPU with 12,227 MiB total and 2,708 MiB used; this is not
-a measured workload fit or ETC. Report measured resources/ETC and seek the
-repository's separate launch confirmation before the full evaluation. The
+Run 031 tests signed-bin accounting, zero exclusion, boundary equality, exact
+hooks, group weights, coverage and serialization. Local checks are CPU-only.
+The RunPod launch includes a three-checkpoint, eight-block CUDA calibration
+before full evaluation; use its measured timing and peak memory to determine
+whether the full pass fits the approved envelope. The separate launch proposal,
+tests, current prices and transfer inventory are in Run 031's README. The
 existing checkpoints and cache remain retained throughout.
