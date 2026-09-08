@@ -343,3 +343,40 @@ unchanged. `results/figures-summary-003.json` records the new generator and
 figure hashes. Observation05 documents the filename transition, reproduction
 and verification. All three focused tests pass, and the rendered one-page
 vector PDF has embedded TrueType fonts. No scientific values change.
+
+## Implementation audit and approved manuscript case study
+
+On 8 September 2026 the user requested a complete implementation/evidence
+audit and, if supported, a brief manuscript section with a technical companion.
+[Observation06](observations/06-implementation-and-claim-audit.md) records the
+scoped verdict and limitations. Independent `19_audit_evidence.py` verifies
+5,175 file identities, all 1,173 outcomes, 522,816 timing pairs and 391 grouped
+comparisons; `results/implementation-audit-001.json` reproduces the plot's
+fit and incumbent without modifying old reductions or benchmark artifacts.
+
+One non-cohort gate bug is demonstrated: at kappa=0.7, inherited h/z and
+Q/K/V fused thresholds do not match native BF16 scalar rounding. Exhaustive
+tests over all 65,280 finite BF16 values confirm agreement at every actual
+cohort threshold. The frozen kernels remain unchanged; this is not a claim
+that all candidate code is bug-free. K044's already documented composition
+mismatch and every failed/unsupported result remain explicit.
+
+The audited evidence supports an agent-assisted, hardware/workload-specific
+speedup case and positive R_model association, not monotonicity or causal
+attribution of all gains to sparsity. No-skip fusion itself gains 1.183x;
+sparse paths add 1.0564x on average and help 19/35, while attention skipping
+adds overhead. Configured gpt-6-astra identity is not per-request attestation.
+
+The full local suite passes 319 tests with one expected Windows/Triton skip;
+eight additional frozen component tests pass. This is a local source/artifact
+and CPU audit, not a new GPU rerun or CUDA sanitizer proof. The requested
+manuscript subsection and technical note reference the unchanged main PDF;
+no new GPU or paid model API is launched and no research finding is promoted.
+
+`provenance/manuscript-20260908/` retains byte-identical snapshots of the two
+new manuscript sources while the rest of the draft remains local-only.
+`20_verify_audit_handoff.py` checks their identities, the actual CUDA excerpt,
+local resource links, test receipts and compiled manuscript; it writes
+`results/audit-publication-001.json`. All ten reading-copy pages were visually
+checked. The final-byte suite rerun passes 319 tests with one skip (23.95s).
+The figure and all frozen scientific inputs remain byte-identical.

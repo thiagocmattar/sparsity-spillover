@@ -135,3 +135,12 @@ remain available in Git. Future reproductions use a fresh revision number
 All three focused tests pass (0.43s), including exact one-line titles and
 unchanged measured coordinates/OLS. The single page was rendered and visually
 checked; Poppler confirms embedded Unicode TrueType fonts and no raster images.
+
+### User-authorized manuscript use after audit
+
+The subsequent implementation/claim audit is recorded in Observation06.
+The unchanged PDF is now included by `manuscript/draft/kernel-autoresearch.tex`,
+with qualification, units and causal limits retained in its caption and text.
+The companion `kernel-implementation.md` contains the exact source excerpt,
+implementation contract and audit limitations. This scoped integration was
+requested by the user; it does not promote a centralized research finding.

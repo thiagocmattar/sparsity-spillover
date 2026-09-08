@@ -10,9 +10,12 @@ proposals, one RTX5090 and a common native SDPA CUDA-graph denominator. Qualifie
 c30 progress reaches1.783x; K050 passes35/35 checkpoints, geomean1.250x,
 canonical R_model regression R_squared0.781. Sparse-path benefit is conditional;
 attention skipping adds overhead. The Sakana-derived P0 qualifies on5/35, not an
-unchanged upstream benchmark. Evidence and three revised PDFs are verified
+unchanged upstream benchmark. Evidence and publication PDFs are verified
 locally; the Pod is deleted and the existing volume retained. See Run029's
-observations; no finding or manuscript claim is promoted.
+observations. The 8 September implementation audit supports the user-approved
+scoped case study now in `manuscript/draft/kernel-autoresearch.tex`; it records
+a non-cohort threshold bug and the agent-identity/causal limits. No finding is
+promoted.
 
 Run 028's frozen K050 final evaluation and diagnostics are complete. Qualified
 full-model graph speedups across35 checkpoints range0.979--1.739x; sparse-path

@@ -216,6 +216,20 @@ actually needs it.
 
 ## Result evidence crosswalk
 
+- On 8 September 2026, the user requested an implementation/claim audit and
+  conditional manuscript integration of Run029. The audit independently
+  reconciles all 1,173 outcomes and 522,816 timing pairs and confirms the
+  scoped Pythia-14M/RTX5090 result. `draft/kernel-autoresearch.tex`, included
+  by the experimental section, presents the existing two-panel PDF;
+  `draft/kernel-implementation.md` supplies an actual CUDA excerpt, source
+  map, numerical contract, ablations, a non-cohort gate-threshold bug and
+  model-identity limitations. The text claims a positive association and
+  realizable sparse-path contribution, not universal monotonic scaling,
+  equal-quality gains, or autonomous/model-specific agent superiority.
+  Run029 Observation06 and `19_audit_evidence.py` own the audit evidence.
+  The existing draft remains local-only; run-owned provenance snapshots
+  retain the requested new section and companion without changing that policy.
+
 - On 4 September 2026, the user requested the full manuscript rewrite using
   current evidence and adversarial-review-v3. Analysis 013 reconstructs the
   full 35-condition 14M study, 12 selected conditions each at 70M and 410M,

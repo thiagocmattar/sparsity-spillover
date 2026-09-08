@@ -12,6 +12,9 @@
 - `05-kernel-autoresearch-and-rmodel.md`: combined 1x2 paper figure with
   uniform history circles, unchanged qualified progress, percentage R_model
   ticks and a black dashed OLS fit; no measurements or qualifications change.
+- `06-implementation-and-claim-audit.md`: independent full-matrix reconstruction,
+  scoped paper-claim validation, a non-cohort threshold bug, and the approved
+  manuscript systems subsection/implementation companion.
 
 The three original single-panel `*-r02.pdf` files remain available. The current
 combined paper asset is `04-kernel-autoresearch-and-rmodel.pdf`, a byte-identical
@@ -19,5 +22,6 @@ copy of revision3 with single-line panel titles; Observation05 records the
 archived original proof and publication identity.
 Initial PDF proofs are retained for provenance and superseded by their
 corresponding layout-checked publication revisions.
-All observations use the complete, hash-verified matched matrix; no finding
-or manuscript claim is promoted.
+All observations use the complete, hash-verified matched matrix. Observation06
+records the user-authorized scoped manuscript integration; no centralized
+research finding is promoted.
