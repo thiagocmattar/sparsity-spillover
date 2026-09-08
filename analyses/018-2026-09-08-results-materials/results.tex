@@ -87,7 +87,8 @@ Lines connect computed architectures, not a fitted scaling law.}
 \end{figure}
 
 Figure~\ref{fig:a018-scales} retains absolute quality above and uses
-$U_{\mathrm{arch}}=R_{\mathrm{model}}/R_{\mathrm{model}}^{\max}$ below.
+$U_{\mathrm{arch}}(\mathrm{A7})=R_{\mathrm{model}}/R_{\mathrm{model}}^{\max}(\mathrm{A7})$
+below, with the same-size A7 ceiling as the reference for every curve.
 The high-threshold ordering transfers: at $\kappa=.5$, A7-OL1 improves on
 A4-OL1 by 14.7692, 5.0057 and 9.0241 sparsity points while reducing loss by
 .2086, .1736 and .0703. At $\kappa=0$, A4-OL1 is better on both outcomes at
@@ -99,25 +100,29 @@ peak learning rate is $3\times10^{-4}$ versus $10^{-3}$ at 14M/70M.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/03-scale-transfer-and-ceilings.pdf}
-\caption{Selected recipes and uniform clipping across sizes. Top: absolute
-loss versus raw model-wide sparsity. Bottom: loss minus unmodified same-size
-A0 versus ceiling utilization. Solid curves order the five trained
-$\kappa$ values; dotted open-marker curves order ten clipping targets
-$p=0,.1,\ldots,.9$ for A0 and A1-H. All values are shown. Clipped controls
-use the reach of their evaluation sites $a,m,h,z$, including $p=0$; the
-source A0 topology's zero ceiling is not their denominator. Dashed vertical
-lines in the raw row mark the A4/clipping-site and A7 theoretical ceilings.
-Curves order
-evaluated points and do not establish intermediate attainable outcomes.}
+\caption{Quality versus model-wide sparsity across Pythia model sizes.
+Top: absolute validation loss versus raw model-wide sparsity, from zero to
+each size's A7 ceiling. Bottom: loss minus unmodified same-size A0 versus
+utilization of the same-size A7 ceiling, using a common denominator for
+every curve. Solid curves order A4-OL1/A7-OL1 endpoints at the five trained
+$\kappa$ values; dotted open-marker curves order ten A0 clipping targets
+$p=0,.1,\ldots,.9$. All 60 selected evaluations appear in both rows.
+Vertical guides in the top row mark the A4/clipping-site and A7 theoretical
+ceilings; the A4 guide does not define the bottom-row denominator.
+The shared legend sits below the grid. Curves order evaluated points and
+do not establish intermediate attainable outcomes.}
 \label{fig:a018-scales}
 \end{figure}
 
-Ceiling utilization is explanatory, not a size-invariant quality or speed
-score. A4-OL1 realizes more of its narrower ceiling at every matched dose
-and size; this does not reverse the high-threshold raw advantage of A7-OL1.
-Natural zeros outside selected reach remain in the numerator, so utilization
-need not be bounded by one. Unmodified A0 has an undefined ratio. The
-reach-restricted sensitivity measure is retained separately in the tables.
+A common positive A7 denominator preserves the within-size sparsity
+ordering. Since A7 reaches every counted block operation, this reference
+equals the block-only zero-product fraction and is bounded by one; its
+operation weights still differ across architectures. It is not a
+size-invariant quality or speed score. The tables retain topology-specific
+utilization and the reach-restricted sensitivity measure separately.
+Under that separate normalization, A4-OL1 realizes more of its narrower
+ceiling at every matched threshold and size; natural zeros outside selected
+reach can make utilization exceed one, and unmodified A0 has an undefined ratio.
 
 \subsection{Exact-zero mass and attention operands}
 % Source: observations/O005-activation-case-study.md.

@@ -192,34 +192,43 @@ def effects_v2(d):
 
 def scaling(d):
     fig,axs=plt.subplots(2,3,figsize=(5.5,5.1),sharey='row')
-    fig.subplots_adjust(left=.12,right=.96,bottom=.14,top=.76,wspace=.14,hspace=.44)
+    fig.subplots_adjust(left=.12,right=.96,bottom=.24,top=.83,wspace=.18,hspace=.50)
     for j,scale in enumerate(SCALES):
-        rows=[r for r in d['trained'] if r['scale']==scale]
-        clips=[r for r in d['clipping'] if r['scale']==scale and r['control'] is not None]
-        for i,(x,y) in enumerate((('R_model','loss'),('U_arch','delta_loss_vs_A0'))):
+        a7=one(d['ceilings'],scale=scale,family='A7')['R_model_max_fraction']
+        # A common A7 reference within each size; retain source-site U_arch in the data.
+        rows=[dict(r,U_A7=r['R_model']/a7) for r in d['trained'] if r['scale']==scale]
+        clips=[dict(r,U_A7=r['R_model']/a7) for r in d['clipping']
+               if r['scale']==scale and r['control']=='A0']
+        for i,(x,y) in enumerate((('R_model','loss'),('U_A7','delta_loss_vs_A0'))):
             ax=axs[i,j]
             for f in ('A4-OL1','A7-OL1'):
                 curve(ax,[r for r in rows if r['family']==f],f,x=x,y=y)
-            for f in ('A0','A1-H'):
-                curve(ax,[r for r in clips if r['control']==f],f,x=x,y=y,clipping=True)
+            curve(ax,clips,'A0',x=x,y=y,clipping=True)
             ax.grid(axis='y',color='.92',lw=.6)
-            ax.set_xlim(-3,103);ax.set_xticks([0,50,100])
-            if i==1: ax.axhline(0,color='.6',lw=.7)
+            if i==1:
+                ax.set_xlim(0,100);ax.set_xticks([0,50,100])
+                ax.axhline(0,color='.6',lw=.7)
             if i==0:
+                ax.set_xlim(0,100*a7)
+                ax.set_xticks([0,50*a7,100*a7],['0',f'{50*a7:.1f}',f'{100*a7:.2f}'])
                 for f,ls in (('A4-OL1','--'),('A7-OL1','-.')):
                     ceiling=one(rows,family=f,dose=0.)['ceiling']['R_model_max_percent']
                     ax.axvline(ceiling,color=STYLE[f][0],ls=ls,lw=.8,alpha=.8,zorder=0)
         axs[0,j].set_title(scale)
-    axs[0,0].set_ylabel('Validation loss\n(nats/token)')
-    axs[1,0].set_ylabel('Δ loss vs A0\n(nats/token)')
+    axs[0,0].set_ylabel('Validation loss')
+    axs[1,0].set_ylabel('Δ loss vs A0')
     axs[0,0].set_ylim(3.8,9.6);axs[1,0].set_ylim(-.35,5.4)
-    axs[0,1].set_xlabel(S_LABEL);axs[1,1].set_xlabel(U_LABEL)
+    axs[0,1].set_xlabel(S_LABEL)
+    axs[1,1].set_xlabel(r'A7-reference ceiling utilization $U_{\mathrm{arch}}$ (%)')
     h,l=axs[0,0].get_legend_handles_labels()
     h += [Line2D([],[],color=STYLE[f][0],ls=ls,lw=.8) for f,ls in (('A4-OL1','--'),('A7-OL1','-.'))]
     l += ['A4 / clipping ceiling','A7 ceiling']
-    fig.legend(h,l,loc='upper center',ncol=2,frameon=False,bbox_to_anchor=(.55,.94),
-               handlelength=2.2,columnspacing=1.8)
-    fig.suptitle('Quality-sparsity transfer across model sizes',y=.99,fontsize=11)
+    order=[0,3,1,4,2]  # Curves on the first legend row, ceiling guides below.
+    fig.legend([h[k] for k in order],[l[k] for k in order],loc='lower center',ncol=3,
+               frameon=False,bbox_to_anchor=(.54,.035),fontsize=7.5,
+               handlelength=2.2,columnspacing=1.2)
+    fig.suptitle('Quality vs. model-wide sparsity frontier\n'
+                 'across model sizes (Pythia-family)',y=.985,fontsize=11)
     save(fig,'03-scale-transfer-and-ceilings.pdf')
 
 

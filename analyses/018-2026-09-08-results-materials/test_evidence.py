@@ -176,6 +176,44 @@ def test_saved_bundle_and_all_sources_match(data):
         assert sha(HERE/path)==meta['sha256'] and (HERE/path).stat().st_size==meta['bytes']
 
 
+def test_scale_plot_uses_common_a7_counts_and_only_a0_clipping(data, monkeypatch):
+    import plots
+    figures=[]
+    original=copy.deepcopy(data)
+    monkeypatch.setattr(plots,'save',lambda fig,name:figures.append(fig))
+    plots.configure()
+    plots.scaling(data)
+    try:
+        plotted=0
+        for j,scale in enumerate(SCALES):
+            a7=one(data['ceilings'],scale=scale,family='A7')
+            a0=one(data['trained'],scale=scale,family='A0')
+            for i in range(2):
+                ax=figures[0].axes[3*i+j]
+                paths={line.get_label():line for line in ax.get_lines()
+                       if not line.get_label().startswith('_')}
+                assert set(paths)=={'A4-OL1','A7-OL1','A0 + clipping'}
+                ceiling=100*a7['reachable_product_count']/a7['model_product_count']
+                assert ax.get_xlim()==pytest.approx((0,ceiling if i==0 else 100))
+                for family,line in paths.items():
+                    rows=([r for r in data['clipping'] if r['scale']==scale and r['control']=='A0']
+                          if family=='A0 + clipping' else
+                          [r for r in data['trained'] if r['scale']==scale and r['family']==family])
+                    rows=sorted(rows,key=lambda r:r['dose'])
+                    assert len(rows)==(10 if family=='A0 + clipping' else 5)
+                    denominator=(338*a7['model_product_count'] if i==0 else
+                                 338*a7['reachable_product_count'])
+                    assert list(line.get_xdata())==pytest.approx(
+                        [100*r['counts']['block_zero_product_count']/denominator for r in rows])
+                    assert list(line.get_ydata())==pytest.approx(
+                        [r['loss']-(a0['loss'] if i else 0) for r in rows])
+                    plotted+=len(rows)
+        assert plotted==120
+        assert data==original
+    finally:
+        for fig in figures: plots.plt.close(fig)
+
+
 def test_clipping_uses_evaluation_site_reach_even_for_a0_at_p_zero(data):
     for row in data['clipping']:
         ceiling=one(data['ceilings'],scale=row['scale'],family='A4')

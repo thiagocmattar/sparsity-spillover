@@ -75,16 +75,18 @@ counts of the three architectures and the same uncached T=2048 workload.
 OL1 changes training, not the selected-site ceiling, so A4/A4-OL1 and
 A7/A7-OL1 share curves. The integer-count table fixes the numerator and unit.
 The same A4/A7 ceilings now appear as dashed vertical lines in Figure 03's
-raw-sparsity row; clipped controls share the A4 evaluation-site reach.
+raw-sparsity row; A0 clipping acts at the A4 sites. Every bottom-row curve
+uses the same-size A7 ceiling as its common reference.
 
 > A7's all-block ceiling rises from 29.952% at 14M to 49.424% at 70M and
 > 87.245% at 410M. The dense output head consumes a much larger fraction of
 > the counted workload at 14M. Thus an increase in raw model-wide sparsity
 > across sizes need not imply a proportional increase in learned zero rates.
 
-Figure 03's top row plots absolute loss against raw model-wide sparsity.
-The bottom row plots A0-relative loss against ceiling utilization. Both rows
-include A4-OL1/A7-OL1 at all five κ values and A0/A1-H with all ten uniform
+Figure 03's top row plots absolute loss against raw model-wide sparsity,
+with each x axis spanning zero to its same-size A7 ceiling.
+The bottom row plots A0-relative loss against A7-reference ceiling utilization.
+Both rows include A4-OL1/A7-OL1 at all five κ values and A0 with all ten uniform
 clipping targets p=0,.1,…,.9. The full loss range makes the clipping cost
 and the nonmonotonic absolute quality across model sizes visible.
 
@@ -103,25 +105,24 @@ undertraining as the cause of the 410M response.
 
 ### How to use the proposed normalization
 
-Keep `U_arch = R_model / R_model_max` as an explanatory second view. It is
-the ratio of observed zero products to selected-site reachable products,
-not a model-size-invariant quality or speed score. At κ=.5, A7 realizes
-91.75%, 82.15% and 92.40% of its respective ceilings. A4-OL1 realizes more
-of its own narrower ceiling at all 15 matched dose/size pairs; this does not
-reverse A7-OL1's high-threshold advantage in raw sparsity and loss.
+Figure 03 uses `U_arch(A7) = R_model / R_model_max(A7)` for every curve
+within a model size. This common reference preserves the raw-sparsity
+ordering within each size. A7 reaches all counted block operations, so this
+ratio equals the block-only zero-product fraction and is bounded by one.
+At κ=.5, A7 realizes 91.75%, 82.15% and 92.40% of its respective ceilings.
+The bottom-row loss reference remains the unmodified same-size A0.
+Operation weights differ with architecture/workload, so the normalized view
+is not a model-size-invariant quality or speed score.
 
-For the clipped controls, use the evaluation clipping sites {a,m,h,z}; these
-have A4 reach, even when the source checkpoint is A0 and even at p=0.
-Normalizing by the source A0 topology would divide by zero and would describe
-the wrong intervention. Unmodified A0 retains an undefined ratio in the
-trained table. The bottom-row loss reference remains the unmodified same-size A0.
-
-Natural zeros outside selected reach remain in the U_arch numerator, so the
-ratio need not be bounded by one. Save `U_reach`, which excludes those zeros,
-as a sensitivity measure. High-threshold 14M A4-OL1 gives 99.07% versus
-98.63%, with .05657 raw sparsity points outside reach. A7 reaches all counted
-block operations, so both ratios equal the block-only zero-product fraction.
-Even that fraction changes its operation weights with architecture/workload.
+The numerical tables retain the separate, topology-specific definition
+`U_arch = R_model / R_model_max`: A4-OL1 realizes more of its own narrower
+ceiling at all 15 matched threshold/size pairs. Clipped controls use their
+evaluation sites {a,m,h,z} for that table normalization, including at p=0;
+unmodified A0 retains an undefined ratio in the trained table. These values
+are not Figure 03's A7-reference coordinates. Natural zeros outside selected
+reach can make the topology-specific ratio exceed one; `U_reach` excludes
+those zeros. High-threshold 14M A4-OL1 gives 99.07% versus 98.63%, with
+.05657 raw sparsity points outside reach.
 Figure 04 decomposes the high-threshold raw totals; its full rates remain in tables.
 
 ## 4. A focused activation case

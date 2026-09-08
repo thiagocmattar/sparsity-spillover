@@ -1,3 +1,28 @@
+# Figure 03 common A7 reference, 8 September 2026
+
+The top-row x axes now run from zero to the same-size A7 ceiling
+(29.9524%, 49.4239%, 87.2452%). Every bottom-row curve uses that same A7
+reference within its size. A4-OL1/A7-OL1 retain all five thresholds; only
+A0 retains clipping, with all ten targets. This is 60 evaluations displayed
+twice. Source-specific normalization values and all underlying data remain
+unchanged. The compact legend is below the grid, loss units are removed,
+and the requested title wraps over two lines in the existing DejaVu Sans
+11-point font.
+
+The working evidence/count suite passed 42 tests in 3.30 seconds. The scoped
+staged version passed 41 tests in 1.67 seconds; the extra working-tree test
+belongs to the pre-existing Figure 06 changes. Figure 03's coordinate test
+checks all 120 points against pooled integer counts, A0-relative loss, common
+A7 denominators, exact x limits, and unchanged source data. The staged plotting
+code reproduces the reviewed PDF byte-for-byte (SHA-256
+0fab63e42b75e2e0ee2aba9a0ccb3beb06b9d9c8910b986f8fa8c4af32609cd4).
+
+The PDF and caption were rendered and inspected at manuscript width; the
+caption compiled without warnings or overfull/underfull boxes. All eight
+other analysis PDFs retain their pre-edit hashes. No model evaluation or
+manuscript file edit was performed. Temporary proofs and the scoped staged
+snapshot are under ignored tmp/figure03-a7-reference.
+
 # Figure 01 A0-only clipping revision, 8 September 2026
 
 Post-hoc clipping is drawn only for A0, with a darker dashed path and clearer

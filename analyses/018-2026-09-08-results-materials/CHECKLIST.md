@@ -1,5 +1,13 @@
 # Results materials checklist
 
+## Figure 03: common A7 reference
+
+- [x] Put the compact legend below the grid and remove loss units.
+- [x] Use the same-size A7 ceiling for all normalized curves and top-row x limits.
+- [x] Keep A0 clipping only, alongside the A4-OL1/A7-OL1 training curves.
+- [x] Apply the requested title, preserving its font and size.
+- [x] Check all 120 coordinates against pooled counts and retain source normalizations.
+
 ## Figure 01: A0-only clipping revision
 
 - [x] Show post-hoc clipping only for A0, with a clearer dashed line.
