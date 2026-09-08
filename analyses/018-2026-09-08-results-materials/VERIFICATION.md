@@ -1,3 +1,19 @@
+# Figure 02 title and typography, 8 September 2026
+
+The title is now "Paired intervention effects (14M)". Annotation fonts are
+0.5 pt smaller: dose values, intervention descriptions and paired names are
+6.5 pt; lambda/kappa symbols are 7 pt; Intervention:/Paired: row headings are
+7.5 pt. Paired names use black text. The observation/index and optional
+analysis-owned caption use the revised title.
+
+Direct before/after checks verify all 58 plotted values and all annotation
+positions are unchanged. All seven paired names are black. Text fits within
+the page, and annotation cells do not overlap. The rendered PDF was visually
+inspected at paper width; isolated source reproduces identical PDF bytes.
+Seven other PDFs retain their hashes; Figure 01 changed concurrently outside
+this task. No numerical evidence or manuscript changed. Temporary checks are
+under ignored tmp/pdfs/analysis018-figure02-typography.
+
 # Complete-cohort Figure 01 update, 8 September 2026
 
 Run 030 completed and verified 540 clipping measurements over 54 checkpoints:

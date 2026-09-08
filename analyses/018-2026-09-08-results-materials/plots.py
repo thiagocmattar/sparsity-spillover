@@ -115,20 +115,20 @@ def effects(d):
                 value='.'+value
             axs[1].annotate(value,(x,0),xycoords=('data','axes fraction'),
                             xytext=(0,-5),textcoords='offset points',
-                            ha='center',va='top',fontsize=7,fontfamily='STIXGeneral')
+                            ha='center',va='top',fontsize=6.5,fontfamily='STIXGeneral')
         axs[1].plot([edges[n]+.05,edges[n+1]-.05],[-.16,-.16],
                     transform=axs[1].get_xaxis_transform(),clip_on=False,color='.65',lw=.5)
         parameter={'lambda':r'$\lambda$','kappa':r'$\kappa$','none':''}[rows[0]['dose_kind']]
         axs[1].annotate(parameter,(centers[n],0),xycoords=('data','axes fraction'),
                         xytext=(0,-18),textcoords='offset points',
-                        ha='center',va='top',fontsize=7.5)
+                        ha='center',va='top',fontsize=7)
         axs[1].annotate(labels[n],(centers[n],0),
                         xycoords=('data','axes fraction'),xytext=(0,-42),
-                        textcoords='offset points',ha='center',va='center',fontsize=7)
+                        textcoords='offset points',ha='center',va='center',fontsize=6.5)
         axs[1].annotate(pairs[n],(centers[n],0),
                         xycoords=('data','axes fraction'),xytext=(0,-72),
                         textcoords='offset points',ha='center',va='center',
-                        fontsize=7,color='.3')
+                        fontsize=6.5,color='black')
     for ax in axs:
         ax.axhline(0,color='.25',lw=.7); ax.grid(axis='y',color='.92',lw=.6)
         ax.tick_params(axis='x',length=0);ax.set_xlim(edges[0],edges[-1])
@@ -137,8 +137,8 @@ def effects(d):
     axs[1].set_xticks([])
     for text,offset in [('Intervention:',-42),('Paired:',-72)]:
         axs[1].annotate(text,(0,0),xycoords='axes fraction',xytext=(-7,offset),
-                        textcoords='offset points',ha='right',va='center',fontsize=8)
-    fig.suptitle('Matched intervention effects (14M)',y=.985,fontsize=11)
+                        textcoords='offset points',ha='right',va='center',fontsize=7.5)
+    fig.suptitle('Paired intervention effects (14M)',y=.985,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 
 
