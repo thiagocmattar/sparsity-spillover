@@ -1,12 +1,18 @@
 # Analysis 018 — Results materials for the revised argument
 
+Figure 01 has a separate [v2 with all eight training variants](figures/01-v2-14m-overview.pdf):
+30 trained checkpoints, adding A1-H-L1, A4 and A7 while retaining A0-only
+post-hoc clipping. The original figure and manuscript remain unchanged.
+Generate it with `04_overview_v2.py`; [O013](observations/O013-overview-all-variants.md)
+records its caption and verification.
+
 Figure 05-v3 is complete: [signed activation distributions](figures/05-v3-activation-density-grid.pdf)
 now overlay FFN and attention densities from seven full-validation Run 031
 measurements, with dashed trained thresholds. Exact-zero mass is retained in
 the accompanying data and observation table.
 See [O011](observations/O011-activation-density-v3.md) for the caption, pooling
 and tail coverage, and [the data release](../../runs/031-2026-09-08-signed-activation-density/results/README.md).
-This adds a third alternative PDF (eleven PDFs total). The original Figure 05
+This was the third alternative PDF; Figure 01 v2 brings the current total to twelve PDFs. The original Figure 05
 and Figure 05-v2 are preserved; older pending-bin notes below concern the original
 coarse magnitude plot. Generate v3 with `02_activation_density_v3.py`.
 

@@ -47,12 +47,18 @@ def curve(ax, rows, family, x='R_model', y='loss', clipping=False):
             label=family+' + clipping' if clipping else family)
 
 
-def overview(d):
+def overview(d, *, all_variants=False):
     fig, ax = plt.subplots(figsize=(5.5,4.6))
     fig.subplots_adjust(left=.12, right=.98, bottom=.25, top=.87)
     # The A0 evaluation trajectory sits behind the training sweeps.
     series_rows={name:[one(d['trained']+d['overview_clipping'],id=i) for i in ids]
                  for name,ids in d['overview_series'].items()}
+    families=FAMILIES if all_variants else OVERVIEW_FAMILIES
+    if all_variants:
+        for family in families:
+            series_rows[family]=sorted(
+                [r for r in d['trained'] if r['scale']=='14M' and r['family']==family],
+                key=lambda r:r['dose'] if r['dose'] is not None else -1)
     for series,rows in series_rows.items():
         if not series.endswith(' + clipping'):
             continue
@@ -62,7 +68,7 @@ def overview(d):
                 color=color,marker=marker,ms=3,mfc='white',mew=.6,
                 ls='--',lw=1.,alpha=.85,zorder=2,label=series)
     legend=[]
-    for family in OVERVIEW_FAMILIES:
+    for family in families:
         rows=series_rows[family];color,marker=STYLE[family]
         pressured=family.endswith(('-L1','-OL1'))
         linestyle='--' if pressured else '-'
@@ -76,14 +82,14 @@ def overview(d):
     ax.grid(axis='both',color='.88',lw=.4)
     fig.suptitle('Quality vs. model-wide sparsity frontier for\n'
                  'train-time and post-hoc interventions (Pythia-14M)',y=.985,fontsize=11)
-    fig.legend(handles=legend,loc='upper center',ncol=5,frameon=False,
+    fig.legend(handles=legend,loc='upper center',ncol=4 if all_variants else 5,frameon=False,
                fontsize=7.5,columnspacing=.9,handletextpad=.45,handlelength=1.6,
-               bbox_to_anchor=(.55,.145))
+               bbox_to_anchor=(.55,.16 if all_variants else .145))
     clipping_key=Line2D([],[],color=STYLE['A0'][0],marker='o',mfc='white',mew=.6,
                         ms=3,lw=1.,ls='--',alpha=.85,label='A0 post-hoc clipping')
     fig.legend(handles=[clipping_key],loc='lower center',frameon=False,fontsize=7.5,
-               handlelength=2.5,bbox_to_anchor=(.55,.043))
-    save(fig,'01-14m-overview.pdf')
+               handlelength=2.5,bbox_to_anchor=(.55,.01 if all_variants else .043))
+    save(fig,'01-v2-14m-overview.pdf' if all_variants else '01-14m-overview.pdf')
 
 
 def effects(d):
