@@ -277,8 +277,8 @@ def load_evidence():
     for lam in (.05, .1, .5, 1.):
         contrast('Add L1 at h', get('A1-H'), get('A1-H-L1', lam), lam, 'lambda')
         contrast('L1 to OL1 at h', get('A1-H-L1', lam), get('A1-H-OL1', lam), lam, 'lambda')
-    contrast('A1-H to A4', get('A1-H'), get('A4', 0.), 0., 'kappa')
     for k in DOSES:
+        contrast('A1-H to A4', get('A1-H'), get('A4', k), k, 'kappa')
         for label, p, q in (('Add OL1 to A4', 'A4', 'A4-OL1'),
                             ('A4 to A7 gates', 'A4', 'A7'), ('Add OL1 to A7', 'A7', 'A7-OL1')):
             contrast(label, get(p, k), get(q, k), k, 'kappa')

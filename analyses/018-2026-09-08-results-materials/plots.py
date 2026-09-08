@@ -92,31 +92,46 @@ def overview(d):
 def effects(d):
     blocks=['GELU to ReLU','Add L1 at h','L1 to OL1 at h','A1-H to A4',
             'Add OL1 to A4','A4 to A7 gates','Add OL1 to A7']
-    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h',r'$G_+(x)$'+'\nat a, m, z',
-            'Add OL1\nto A4',r'$G_{\pm}(x)$'+'\nat q, k, v','Add OL1\nto A7']
+    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h','A1-H\n→ A4',
+            'Add OL1\nto A4','A4\n→ A7','Add OL1\nto A7']
     colors=['#444444','#009E73','#CC79A7','#0072B2','#0072B2','#D55E00','#D55E00']
     fig,axs=plt.subplots(2,1,figsize=(5.5,4.6),sharex=True)
-    fig.subplots_adjust(left=.15,right=.99,bottom=.18,top=.80,hspace=.12)
-    dose_markers={0.:'o',.01:'s',.05:'^',.1:'D',.5:'P',1.:'*'}
+    fig.subplots_adjust(left=.15,right=.99,bottom=.27,top=.90,hspace=.12)
+    # Compact the single comparison so the numeric threshold ticks have room.
+    edges=np.r_[0.,np.cumsum([.65,1.,1.,1.2,1.2,1.2,1.2])]
+    centers=(edges[:-1]+edges[1:])/2
     for n,(block,color) in enumerate(zip(blocks,colors)):
         rows=sorted([r for r in d['contrasts'] if r['block']==block],key=lambda r:r['dose'] or 0)
-        xx=n+np.linspace(-.30,.30,len(rows)) if len(rows)>1 else np.array([n])
+        inset=.13 if len(rows)==4 else .09
+        xx=(np.linspace(edges[n]+inset,edges[n+1]-inset,len(rows))
+            if len(rows)>1 else np.array([centers[n]]))
         for ax,key in zip(axs,['delta_loss','delta_R_pp']):
-            if n%2==0: ax.axvspan(n-.48,n+.48,color='.96',zorder=-2)
+            if n%2==0: ax.axvspan(edges[n],edges[n+1],color='.96',zorder=-2)
             ax.vlines(xx,0,[r[key] for r in rows],color=color,lw=.8)
             for x,r in zip(xx,rows):
-                ax.scatter(x,r[key],color=color,marker=dose_markers.get(r['dose'],'o'),s=20,zorder=3)
+                ax.scatter(x,r[key],color=color,marker='o',s=18,zorder=3)
+        for x,r in zip(xx,rows):
+            value='—' if r['dose'] is None else f'{r["dose"]:g}'.removeprefix('0.')
+            if r['dose'] is not None and 0 < r['dose'] < 1:
+                value='.'+value
+            axs[1].annotate(value,(x,0),xycoords=('data','axes fraction'),
+                            xytext=(0,-5),textcoords='offset points',
+                            ha='center',va='top',fontsize=8,fontfamily='STIXGeneral')
+        axs[1].plot([edges[n]+.05,edges[n+1]-.05],[-.16,-.16],
+                    transform=axs[1].get_xaxis_transform(),clip_on=False,color='.65',lw=.5)
+        parameter={'lambda':r'$\lambda$','kappa':r'$\kappa$','none':''}[rows[0]['dose_kind']]
+        axs[1].annotate(parameter,(centers[n],0),xycoords=('data','axes fraction'),
+                        xytext=(0,-18),textcoords='offset points',
+                        ha='center',va='top',fontsize=9)
     for ax in axs:
         ax.axhline(0,color='.25',lw=.7); ax.grid(axis='y',color='.92',lw=.6)
-        ax.tick_params(axis='x',length=0);ax.set_xlim(-.48,6.48)
-    axs[0].set(ylabel='Δ validation loss',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
+        ax.tick_params(axis='x',length=0);ax.set_xlim(edges[0],edges[-1])
+    axs[0].set(ylabel='Δ loss (nats/token)',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
     axs[1].set(ylabel='Δ '+S_LABEL.replace('(%)','(pp)'),ylim=(-.7,13),yticks=[0,4,8,12])
-    axs[1].set_xticks(range(7),labels)
-    dose_handles=[Line2D([],[],color='.3',marker=m,ls='none',ms=4,label=f'{v:g}') for v,m in dose_markers.items()]
-    fig.legend(handles=dose_handles,loc='upper center',ncol=6,frameon=False,
-               title='Dose (λ for local pressure; κ for A4/A7)',title_fontsize=8,
-               handletextpad=.3,columnspacing=1.2,bbox_to_anchor=(.56,.915))
-    fig.suptitle('Intervention effects along the sparsification ladder',y=.99,fontsize=11)
+    axs[1].set_xticks(centers,labels)
+    axs[1].tick_params(axis='x',pad=34)
+    axs[1].set_xlabel('Intervention',labelpad=10)
+    fig.suptitle('Matched intervention effects (14M)',y=.985,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 
 

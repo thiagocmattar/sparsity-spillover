@@ -46,15 +46,17 @@ These are one-seed differences, not significance or equivalence claims.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/02-blocked-intervention-effects.pdf}
-\caption{Matched 14M intervention effects, with identical x positions in both
-rows. Top: treatment-minus-reference loss; bottom: model-sparsity change in
-percentage points. The actions are A0 to A1-H, adding L1 at $h$, replacing L1
-with OL1, applying $G_+(x)$ at $a,m,z$, adding OL1 to A4, applying
-$G_{\pm}(x)$ at $q,k,v$,
-and adding OL1 to A7. Dose increases left to right within each block. The
-shared key denotes $\lambda$ for local pressure and $\kappa$ for A4/A7;
-GELU to ReLU has no dose, and the $a,m,z$ addition uses $\kappa=0$.
-The sequence is not an additive decomposition.}
+\caption{Matched 14M intervention effects. Top: treatment-minus-reference
+validation loss in nats/token (negative is better); bottom: model-sparsity
+change in percentage points (positive is more logical zero-product opportunity).
+The categorical x-axis groups interventions. Numeric labels below each point
+give $\lambda$ in the two local-pressure groups and $\kappa$ in the four A4/A7
+groups; the dash marks the dose-free GELU-to-ReLU comparison. Doses increase
+left to right with ordinal spacing. A1-H to A4 compares fixed A1-H with the
+complete A4 recipe, including its change at $h$; A4 to A7 adds symmetric
+post-RoPE query/key and value gates at matched $\kappa$. A4/A7 OL1 uses fixed
+pressure weight $\lambda=1$ and trust budget 1. These 29 separately trained,
+one-seed comparisons are not an additive decomposition or runtime measurements.}
 \label{fig:a018-effects}
 \end{figure}
 

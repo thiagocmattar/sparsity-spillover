@@ -17,15 +17,19 @@ Same eager full-validation pass for loss and R_model; 338 blocks, one seed. R_mo
 | Add OL1 to A4 | 0.0 | kappa | -0.012240 | +0.5980 | 14M:A4:0.0 | 14M:A4-OL1:0.0 |
 | A4 to A7 gates | 0.0 | kappa | -0.002123 | +0.0056 | 14M:A4:0.0 | 14M:A7:0.0 |
 | Add OL1 to A7 | 0.0 | kappa | +0.011788 | -0.1634 | 14M:A7:0.0 | 14M:A7-OL1:0.0 |
+| A1-H to A4 | 0.01 | kappa | +0.196854 | +4.6996 | 14M:A1-H:None | 14M:A4:0.01 |
 | Add OL1 to A4 | 0.01 | kappa | -0.008179 | +1.1730 | 14M:A4:0.01 | 14M:A4-OL1:0.01 |
 | A4 to A7 gates | 0.01 | kappa | -0.007669 | +0.2039 | 14M:A4:0.01 | 14M:A7:0.01 |
 | Add OL1 to A7 | 0.01 | kappa | +0.016981 | +0.1057 | 14M:A7:0.01 | 14M:A7-OL1:0.01 |
+| A1-H to A4 | 0.05 | kappa | +0.164481 | +5.4918 | 14M:A1-H:None | 14M:A4:0.05 |
 | Add OL1 to A4 | 0.05 | kappa | +0.055645 | +2.2506 | 14M:A4:0.05 | 14M:A4-OL1:0.05 |
 | A4 to A7 gates | 0.05 | kappa | +0.003760 | +0.9210 | 14M:A4:0.05 | 14M:A7:0.05 |
 | Add OL1 to A7 | 0.05 | kappa | +0.024925 | +0.7361 | 14M:A7:0.05 | 14M:A7-OL1:0.05 |
+| A1-H to A4 | 0.1 | kappa | +0.150039 | +6.2389 | 14M:A1-H:None | 14M:A4:0.1 |
 | Add OL1 to A4 | 0.1 | kappa | +0.128580 | +2.4413 | 14M:A4:0.1 | 14M:A4-OL1:0.1 |
 | A4 to A7 gates | 0.1 | kappa | +0.008995 | +1.4720 | 14M:A4:0.1 | 14M:A7:0.1 |
 | Add OL1 to A7 | 0.1 | kappa | +0.000819 | +1.3717 | 14M:A7:0.1 | 14M:A7-OL1:0.1 |
+| A1-H to A4 | 0.5 | kappa | +0.390044 | +7.5014 | 14M:A1-H:None | 14M:A4:0.5 |
 | Add OL1 to A4 | 0.5 | kappa | +0.378304 | +2.4979 | 14M:A4:0.5 | 14M:A4-OL1:0.5 |
 | A4 to A7 gates | 0.5 | kappa | +0.043217 | +5.1713 | 14M:A4:0.5 | 14M:A7:0.5 |
 | Add OL1 to A7 | 0.5 | kappa | +0.126512 | +12.0959 | 14M:A7:0.5 | 14M:A7-OL1:0.5 |

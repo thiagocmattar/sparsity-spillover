@@ -1,3 +1,35 @@
+# Figure 02 intervention-axis revision, 8 September 2026
+
+Figure 02 now places the numeric dose values below the plotted points, followed
+by a separate lambda or kappa group label and the intervention name. The shared
+categorical x-axis is Intervention. Uniform circles replace the mixed dose key;
+the dose-free comparison has a dash. A1-H to A4 and A4 to A7 identify the actual
+paired recipes. Both rows retain the same x coordinates and the original y
+limits. Group widths provide space for the numeric ticks; spacing is ordinal.
+
+All 29 retained comparisons were independently checked against the raw
+same-pass loss and integer product counts. All 58 plotted y coordinates,
+29 numeric labels and their x alignment, two lambda groups, four kappa groups,
+uniform marker shapes and absence of a dose legend were checked directly.
+No numeric labels overlap, and all visible text lies inside the figure bounds.
+The PDF reproduces byte-for-byte from the isolated Figure 02 sources. Color
+and grayscale renders were inspected at paper width. The captions explain the
+fixed OL1 weight/budget and the full A1-H to A4 intervention, including h.
+The analysis-owned TeX caption compiled without warnings or box overflows;
+its combined figure/caption page was rendered and inspected.
+
+The isolated commit scope passes **40 focused tests in 1.00 second** (analysis
+evidence, ceilings and metrics). It includes the previously uncommitted complete
+A1-H to A4 threshold rows needed to reproduce the 29-point figure under review.
+Other figures, ongoing clipping changes and unrelated working-tree edits are
+excluded from this scope. The broader working-tree suite currently reports
+26 passes and 15 fixture errors because the in-progress Run 030 integration
+references its absent results/clipping-points.json; Figure 02 uses retained
+trained comparisons and does not depend on that new clipping file.
+
+Source, data and PDF proofs remain under ignored
+tmp/analysis018-figure02-axis-review. No experiment or manuscript was changed.
+
 # Figure 01 training and clipping revision, 8 September 2026
 
 Only Figure 01 was regenerated in this pass; the other seven publication PDF

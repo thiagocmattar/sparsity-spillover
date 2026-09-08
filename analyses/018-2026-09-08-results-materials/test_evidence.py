@@ -34,7 +34,7 @@ def test_complete_condition_and_clipping_grids(data):
     assert [sum(r['scale']==s for r in data['trained']) for s in SCALES]==[30,12,12]
     assert [sum(r['scale']==s for r in data['clipping']) for s in SCALES]==[150,20,20]
     assert len({r['id'] for r in data['trained']+data['clipping']})==244
-    assert len(data['contrasts'])==25
+    assert len(data['contrasts'])==29
     for scale in SCALES:
         for family in ('A4-OL1','A7-OL1'):
             assert sorted(r['dose'] for r in data['trained'] if r['scale']==scale and r['family']==family)==list(DOSES)
@@ -79,6 +79,16 @@ def test_contrasts_have_matched_identities_and_correct_signs(data):
             assert a['identity'][key]==b['identity'][key]
         assert pair['delta_loss']==b['loss']-a['loss']
         assert pair['delta_R_pp']==100*(b['R_model']-a['R_model'])
+
+
+def test_a1h_to_a4_covers_all_thresholds_with_fixed_reference(data):
+    rows=[r for r in data['contrasts'] if r['block']=='A1-H to A4']
+    reference=one(data['trained'],scale='14M',family='A1-H')
+    assert [r['dose'] for r in rows]==list(DOSES)
+    for r in rows:
+        assert r['reference']==reference['id']
+        treatment=one(data['trained'],scale='14M',family='A4',dose=r['dose'])
+        assert r['treatment']==treatment['id']
 
 
 def test_case_study_uses_common_sites_and_pooled_band_counts(data):
