@@ -1,8 +1,34 @@
 # Run 031: signed activation distributions for Figure 05-v3
 
-Status: design approved on 8 September 2026, with RunPod requested because the
-local GPU is busy. Implemented and CPU-verified; separate cloud launch approval
-is pending. No new Pod, full evaluation or publication figure has been created.
+Status: completed and verified on 8 September 2026 after explicit design and
+launch approval. All seven checkpoints passed full validation and signed-count
+verification. The Pod was deleted after local hash verification; zero Pods
+remain and the existing network volume is retained. The local GPU was unused.
+
+The [complete signed data](results/README.md),
+[Figure 05-v3](../../analyses/018-2026-09-08-results-materials/figures/05-v3-activation-density-grid.pdf)
+and [observation/caption](../../analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md)
+are available. Original Figure 05 and Figure 05-v2 are unchanged.
+
+## Results and closeout
+
+All 2,366 blocks completed in 69.94 seconds after environment setup. Maximum
+absolute validation-loss discrepancy from retained eager results is 0.0000688543,
+below 0.0005. Integer partitions, pooled counts and 108 empty-gate-region checks
+pass. The three-checkpoint CUDA calibration used at most 1.78 GB reserved memory;
+all six remote focused tests and both CUDA dtype boundary controls passed.
+
+At kappa=.5, pooled FFN exact-zero fractions are 99.31% for A4-OL1 and 93.64%
+for A7-OL1. Attention exact-zero fractions are 0.22% and 95.60%, respectively:
+the figure separates A4's sharp central nonzero peak from A7's zero point mass
+and symmetric threshold gap. These are descriptive complete-recipe comparisons.
+
+All 28 transferred files match their remote SHA-256 values and pass local
+verification. Pod `57n9792o4ns8ss` and its deadline guard are removed. Confirmed
+Pod-free time was 19:45:30 UTC; estimated GPU cost is USD0.206, within the USD2
+cap. Posted billing had no records yet. Setup on the network volume dominates
+the roughly 17-minute Pod lifetime. See `transfer-receipt.json`, `closeout.json`
+and `results/scientific-verification.json`. No manuscript or finding was changed.
 
 ## Question and approved scope
 
@@ -73,7 +99,7 @@ artifact verifier passed. These partial CPU measurements are excluded from
 scientific results and are not CUDA performance estimates. The local GPU was
 hidden with `CUDA_VISIBLE_DEVICES=''` throughout.
 
-## Proposed RunPod launch
+## Approved RunPod launch record
 
 Live MCP quotes at 19:22 UTC on 8 September 2026: one Secure RTX PRO 4500
 Blackwell, 32 GB, USD0.72/hour; if unavailable, one Secure RTX 5090, 32 GB,
@@ -102,7 +128,7 @@ evaluation and verified retrieval. Prior Run 030 measured about 12 seconds per
 14M validation pass on RTX 5090, but signed histograms add uncalibrated work;
 this historical timing is not the ETC for the new collector.
 
-Proposed maximum: one hour of GPU time, deadline from Pod creation, with a
+Approved maximum: one hour of GPU time, deadline from Pod creation, with a
 USD2 total incremental spending cap including container storage and contingency.
 At the quoted rates, one hour costs at most USD0.99 GPU plus approximately
 USD0.003 container storage. The already-retained network volume continues

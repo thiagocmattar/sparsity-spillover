@@ -1,11 +1,12 @@
 # Figure 05-v3: signed activation distributions
 
-Status: design approved on 8 September 2026; the user selected RunPod because
-the local GPU is busy. Implementation and CPU verification are in
-`runs/031-2026-09-08-signed-activation-density/`. The concrete cloud launch
-envelope awaits the separate launch confirmation. No Pod or full measurement
-has started. This design addresses signed densities; the earlier
-ACTIVATION-DIAGNOSTIC.md concerns finer magnitude bins.
+Status: design and RunPod launch approved; measurement and Figure 05-v3 completed
+on 8 September 2026. All seven full-validation passes and local transfer checks
+passed. See [O011](observations/O011-activation-density-v3.md) and
+`runs/031-2026-09-08-signed-activation-density/results/README.md` for the retained
+signed counts. The Pod is deleted; the local GPU was unused. Original Figure 05
+and Figure 05-v2 are preserved. This design addresses signed densities; the
+earlier ACTIVATION-DIAGNOSTIC.md concerns finer magnitude bins.
 
 ## Question and manuscript purpose
 

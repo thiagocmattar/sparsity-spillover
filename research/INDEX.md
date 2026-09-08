@@ -5,11 +5,11 @@
 
 ## Current status
 
-Run 031 implements the approved signed activation-density diagnostic for
-Analysis 018 Figure 05-v3 (seven 14M checkpoints; FFN/attention pooled counts).
-CPU tests and checkpoint smokes passed; the user selected RunPod because the
-local GPU is busy. The tested cloud launch envelope awaits confirmation. See
-`runs/031-2026-09-08-signed-activation-density/README.md`.
+Run 031 completed seven full-validation signed activation-density passes for
+Analysis 018 Figure 05-v3. FFN/attention overlays, exact-zero mass, trained gate
+thresholds and lossless per-layer/site counts are retained. All checks passed;
+the Pod is deleted, estimated GPU expense USD0.206, and the existing volume is
+retained. See `runs/031-2026-09-08-signed-activation-density/README.md`.
 
 Run 030 completed all 540 post-hoc clipping evaluations across the 54-checkpoint
 14M/70M/410M manuscript cohort (350 new, 190 reused). CSV, raw/normalized JSON,
@@ -22,7 +22,7 @@ Analysis 018 packages the 8 September draft's results materials: eight revised
 paper-width PDFs, 54 trained conditions, OL1-focused 14M overview, matched effects,
 ceiling-versus-size and scale/clipping views, activation mass, and a consistent
 30-checkpoint runtime subset. Other clipping panels retain their earlier subsets; finer
-magnitude bins remain deferred; signed-density measurement is prepared in Run 031.
+magnitude bins remain deferred; signed-density measurement is complete in Run 031.
 Historical h-only A4 pressure is excluded. No manuscript edit or finding promotion.
 See `analyses/018-2026-09-08-results-materials/README.md`.
 
@@ -194,7 +194,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `031`. Next analysis number: `019`. Next finding number: `F003`.
+Next run number: `032`. Next analysis number: `019`. Next finding number: `F003`.
 
 ## Where we stopped
 

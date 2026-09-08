@@ -1,5 +1,20 @@
 # Figure 05-v2 alternative, 8 September 2026
 
+## Figure 05-v3: completed signed-density measurement
+
+Run 031 completed all seven full-validation passes (2,366 blocks). The largest
+absolute loss discrepancy is 0.0000688543; all integer partitions and pooled
+reductions pass, alongside 108 gate-region checks. All 28 transferred files
+match their remote hashes. The Pod is deleted; estimated GPU expense USD0.206.
+
+The final PDF is one page, 396 x 439.2 points, with embedded TrueType fonts.
+All 146 text words lie within the page. Its final color render was inspected;
+all ten existing PDFs are byte-identical to the pre-v3 snapshot. Exact proof
+metadata is in `activation-density-v3-verification.json`; measurements, zero
+fractions, clipping of display ranges and provenance are in
+`activation-density-v3-data.json` and observation O011. The earlier sections
+below describe the original figure revision and its then-pending diagnostic.
+
 Added a separate six-panel PDF with exact zeros above and small nonzero
 activations (0<|x|<=.01) below. Columns are kappa=0,.05,.5; five sites use
 common linear 0-100% scales and the existing recipe colors/markers. The

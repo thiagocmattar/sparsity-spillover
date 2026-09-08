@@ -200,7 +200,7 @@ def test_saved_bundle_and_all_sources_match(data):
     for path,digest in data['sources'].items():
         assert sha(ROOT/path)==digest
     inventory=json.loads((HERE/'artifact_inventory.json').read_text())
-    assert len(list((HERE/'figures').glob('*.pdf')))==10
+    assert len(list((HERE/'figures').glob('*.pdf')))==11
     for path,meta in inventory.items():
         assert sha(HERE/path)==meta['sha256'] and (HERE/path).stat().st_size==meta['bytes']
 
