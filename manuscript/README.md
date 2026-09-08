@@ -48,6 +48,10 @@ version-controlled [source/PDF snapshot](../analyses/018-2026-09-08-results-mate
 owned by Analysis 018. [O012](../analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md)
 records the evidence and verification. No new experiment was launched.
 
+The alternative [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
+is also copied into the draft figures folder for review, with its source hash
+in `draft/figures/SOURCES.json`. The manuscript still embeds the original overview.
+
 ### Earlier V2 revisions
 
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
