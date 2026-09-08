@@ -306,7 +306,7 @@ current data/input/source hashes, test evidence and the publication PDFs.
 ## Two-panel paper summary (8 September 2026)
 
 The user-requested combined paper asset is
-[kernel auto-research and R_model](figures/04-kernel-autoresearch-and-rmodel-r02.pdf),
+[kernel auto-research and R_model](figures/04-kernel-autoresearch-and-rmodel.pdf),
 with its full caption, qualification disclosure, coverage and interpretation
 in [Observation05](observations/05-kernel-autoresearch-and-rmodel.md).
 The original single-panel assets above remain unchanged.
@@ -334,3 +334,12 @@ Windows/Triton skip (46.48s). Source, catalog, generator and final PDF hashes
 match the new manifest. Poppler confirms one vector-only page with embedded
 subset Unicode CID TrueType fonts, and the rendered page was visually checked.
 No measured result, qualification threshold, manuscript text or finding changes.
+
+Follow-up title edit: revision3 uses the single-line title
+`(b) Best kernel (final iteration 42)` and removes the left title's matching
+blank line. The user-named unsuffixed PDF now matches the retained `*-r03.pdf`
+byte for byte. Its former proof is preserved as `*-r01.pdf`; revision2 remains
+unchanged. `results/figures-summary-003.json` records the new generator and
+figure hashes. Observation05 documents the filename transition, reproduction
+and verification. All three focused tests pass, and the rendered one-page
+vector PDF has embedded TrueType fonts. No scientific values change.

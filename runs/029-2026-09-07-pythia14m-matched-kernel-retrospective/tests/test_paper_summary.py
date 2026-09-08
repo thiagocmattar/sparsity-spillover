@@ -29,9 +29,8 @@ def test_paper_layout_labels_and_no_complex_legend(summary):
     assert left.get_xlabel() == 'Kernel iteration'
     assert right.get_xlabel() == r'$R_{\mathrm{model}}$'
     assert 'auto-research' in fig._suptitle.get_text()
-    assert 'Kernel auto-research progress' in left.get_title()
-    assert 'Best kernel (final iteration 42)' in right.get_title()
-    assert 'increases with sparsity' in right.get_title()
+    assert left.get_title() == '(a) Kernel auto-research progress'
+    assert right.get_title() == '(b) Best kernel (final iteration 42)'
     assert not left.texts
     for ax in (left, right):
         assert ax.get_legend() is None and not ax.containers

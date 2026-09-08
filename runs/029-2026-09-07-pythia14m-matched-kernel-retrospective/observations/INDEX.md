@@ -14,8 +14,10 @@
   ticks and a black dashed OLS fit; no measurements or qualifications change.
 
 The three original single-panel `*-r02.pdf` files remain available. The current
-combined paper asset is `04-kernel-autoresearch-and-rmodel-r02.pdf`.
+combined paper asset is `04-kernel-autoresearch-and-rmodel.pdf`, a byte-identical
+copy of revision3 with single-line panel titles; Observation05 records the
+archived original proof and publication identity.
 Initial PDF proofs are retained for provenance and superseded by their
-layout-checked revision2 outputs.
+corresponding layout-checked publication revisions.
 All observations use the complete, hash-verified matched matrix; no finding
 or manuscript claim is promoted.

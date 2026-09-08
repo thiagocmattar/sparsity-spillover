@@ -50,7 +50,7 @@ def paper_figure(data, catalog):
         left.set_xlim(-1, last + 1)
         left.set_xticks([0, 10, 20, 30, last], ['P0', '10', '20', '30', str(last)])
         left.set_xlabel('Kernel iteration')
-        left.set_title('(a) Kernel auto-research progress\n', pad=9, linespacing=1.4)
+        left.set_title('(a) Kernel auto-research progress', pad=9)
 
         final = [p for p in data['points'] if p['phase'] == 'final'
                  and p['candidate'] == 'k050' and 'speedup' in p]
@@ -72,8 +72,7 @@ def paper_figure(data, catalog):
         right.xaxis.set_major_locator(MultipleLocator(.05))
         right.xaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
         right.set_xlabel(r'$R_{\mathrm{model}}$')
-        right.set_title(f'(b) Best kernel (final iteration {last})\n'
-                        'Speedup increases with sparsity', pad=9, linespacing=1.4)
+        right.set_title(f'(b) Best kernel (final iteration {last})', pad=9)
         return fig, (left, right)
 
 
@@ -113,7 +112,7 @@ def main():
         'final_qualified_points': sum(p['phase'] == 'final' and p['candidate'] == 'k050'
                                       and p['qualified'] for p in data['points']),
         'progress': data['progress'],
-        'display': '1x2 vector PDF; regular history circles include numerical failures; '
+        'display': '1x2 vector PDF; single-line panel titles; regular history circles include numerical failures; '
                    'incumbent remains qualified-only on fixed c30; no history annotations or legend; '
                    'R_model percentage ticks, fractional regression units; black dashed OLS; linear speedups.',
     })

@@ -46,7 +46,8 @@ share training seed 1234; no model is retrained for this figure.
 ## Figure and paper caption
 
 Current combined asset:
-[04-kernel-autoresearch-and-rmodel-r02.pdf](../figures/04-kernel-autoresearch-and-rmodel-r02.pdf).
+[04-kernel-autoresearch-and-rmodel.pdf](../figures/04-kernel-autoresearch-and-rmodel.pdf)
+(byte-identical to retained revision3).
 
 **Caption:** Matched retrospective kernel auto-research and final-kernel
 acceleration for Pythia-14M on an RTX5090. (a) Gray circles show all 214 timed
@@ -111,3 +112,26 @@ embedded, subset Unicode CID TrueType fonts and no raster images. The full
 page was rendered at 160 dpi and visually checked for label legibility,
 alignment, clipping and fit visibility. Focused and full-suite test results
 are recorded in the README's paper-summary closeout.
+
+### Revision3: single-line panel titles
+
+The user subsequently requested the exact unsuffixed PDF filename with the
+right title shortened to `(b) Best kernel (final iteration 42)`. Revision3
+removes the second title line and the left title's matching blank line;
+measurements, points, fit and remaining styling are unchanged from revision2.
+`18_paper_summary.py --revision 3` generates the retained `*-r03.pdf` and
+`results/figures-summary-003.json`. The unsuffixed PDF is a byte-identical
+published copy, SHA-256
+`9f65a78bfe68f96cab04aae9a44349ad460c682584fb91745b44e15ffc39356b`.
+
+Before replacing the requested file, its original proof bytes were copied
+and hash-verified as `figures/04-kernel-autoresearch-and-rmodel-r01.pdf`.
+The old `figures-summary-001.json` figure identity now refers to that archived
+proof (same bytes and SHA-256, different filename), not to the published copy.
+Revision2 and its receipt remain unchanged; historical generator versions
+remain available in Git. Future reproductions use a fresh revision number
+(4 or higher) and do not automatically replace the unsuffixed published copy.
+
+All three focused tests pass (0.43s), including exact one-line titles and
+unchanged measured coordinates/OLS. The single page was rendered and visually
+checked; Poppler confirms embedded Unicode TrueType fonts and no raster images.
