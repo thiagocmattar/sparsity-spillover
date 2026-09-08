@@ -84,11 +84,11 @@ def tables(d):
           [[pool,r['scale'],r['family'],r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
            for pool,ids in d['frontiers'].items() for id_ in ids for r in [one(d['trained']+d['clipping'],id=id_)]],
           'Minimize paired loss and maximize raw model-wide sparsity among evaluated points only. No interpolation or equal-quality inference.')
-    table('overview-series-frontiers',['Legend series','Dose / target p','Loss','S_model (%)','Evidence ID'],
+    table('overview-series',['Legend series','Dose / target p','Loss','S_model (%)','Evidence ID'],
           [[series,r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
-           for series,ids in d['overview_frontiers'].items() for id_ in ids
+           for series,ids in d['overview_series'].items() for id_ in ids
            for r in [one(d['trained']+d['clipping'],id=id_)]],
-          'Independent nondominated set for each of the ten Figure 01 legend series. Trained families are not pooled with clipping. All trained points remain visible; the plot loss window is 5.04–6.15. Source O001.')
+          'All evaluated points in each Figure 01 series, ordered by dose (or clipping target p). Curves retain dominated points; they are dose sweeps, not Pareto envelopes. The plot loss window is 5.04–6.15. Source O001.')
     rows=[]
     for r in d['trained']:
         for site,a in r['sites'].items():

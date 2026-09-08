@@ -296,11 +296,14 @@ def load_evidence():
     fsets = {'14M_main_trained': small,
              '14M_all_trained_and_clipped': small+[r for r in clipping if r['scale']=='14M']}
     frontiers = {name: [r['id'] for r in frontier(rows)] for name, rows in fsets.items()}
-    overview_frontiers = {family: [r['id'] for r in frontier([r for r in small if r['family']==family])]
-                          for family in FAMILIES}
+    # Figure 01 follows the evaluated dose sweeps; Pareto selection is tabulated separately.
+    overview_series = {family: [r['id'] for r in sorted(
+        [r for r in small if r['family']==family], key=lambda r: r['dose'] or 0)]
+        for family in FAMILIES}
     for family in ('A0','A1-H'):
-        overview_frontiers[family+' + clipping'] = [r['id'] for r in frontier(
-            [r for r in clipping if r['scale']=='14M' and r['control']==family])]
+        overview_series[family+' + clipping'] = [r['id'] for r in sorted(
+            [r for r in clipping if r['scale']=='14M' and r['control']==family],
+            key=lambda r: r['dose'])]
     runtime = runtime_subset(source(next((ROOT/'runs').glob('029-*/results/matched-retrospective-001.json'))))
     for point in runtime['points']:
         matched = [r for r in small if r['family'] == point['family']
@@ -308,7 +311,7 @@ def load_evidence():
         assert len(matched) == 1
         point['evidence_id'] = matched[0]['id']
     return {'trained': trained, 'clipping': clipping, 'contrasts': contrasts, 'scale_pairs': scale_pairs,
-            'frontiers': frontiers, 'overview_frontiers': overview_frontiers,
+            'frontiers': frontiers, 'overview_series': overview_series,
             'sources': sources, 'exposure': prior['exposure'],
             'runtime': runtime, 'ceilings': ceilings,
             'activation_case': {'kappas': list(CASE_DOSES), 'sites': list(CASE_SITES),

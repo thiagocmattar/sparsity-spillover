@@ -10,12 +10,12 @@ a separately qualified implementation.
 ## 1. Establish the 14M trade-off
 
 Use Figure 01: all 30 included training conditions plus A0/A1-H post-clipping.
-Each legend entry has its own evaluated nondominated frontier: eight trained
-recipe families and two separate clipping-control series. All trained points
-remain visible; lines connect each series' nondominated points. There is no
-pooled frontier line. The loss window remains 5.04–6.15; the eight control
+Each legend entry has its own dose sweep: eight trained recipe families and
+two separate clipping-control series. Lines connect all evaluated points in
+increasing dose or target order, including dominated points. These curves show
+the response to dose, not a Pareto envelope. The loss window remains 5.04–6.15; the eight control
 clipping evaluations above it are retained in Figure 03 and the tables.
-The series-membership table makes this selection explicit.
+The [series table](tables/overview-series.md) records every point and its connection order.
 
 Suggested text:
 

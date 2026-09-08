@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
-from evidence import HERE, FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, one, frontier
+from evidence import HERE, FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, one
 
 # Consistent symbols across figures, distinguishable without color.
 STYLE = {'A0': ('#444444', 'o'), 'A1-H': ('#888888', 's'),
@@ -48,21 +48,14 @@ def curve(ax, rows, family, x='R_model', y='loss', clipping=False):
 
 
 def overview(d):
-    rows = [r for r in d['trained'] if r['scale']=='14M']
     fig, ax = plt.subplots(figsize=(5.5,4.6))
     fig.subplots_adjust(left=.13, right=.98, bottom=.13, top=.70)
-    for f in FAMILIES:
-        rr=[r for r in rows if r['family']==f]; c,m=STYLE[f]
-        ax.scatter([100*r['R_model'] for r in rr], [r['loss'] for r in rr],
-                   color=c, marker=m, s=33, linewidths=.5, zorder=3)
-        ff=frontier(rr)
-        ax.plot([100*r['R_model'] for r in ff],[r['loss'] for r in ff],
-                color=c,marker=m,ms=4,lw=1,label=f)
-    for f in ('A0','A1-H'):
-        ff=frontier([r for r in d['clipping'] if r['scale']=='14M' and r['control']==f])
-        c,m=STYLE[f]
-        ax.plot([100*r['R_model'] for r in ff],[r['loss'] for r in ff],
-                color=c,marker=m,ms=4,mfc='white',lw=1,ls=':',label=f+' + clipping')
+    for series, ids in d['overview_series'].items():
+        rows = [one(d['trained']+d['clipping'], id=i) for i in ids]
+        clipping = series.endswith(' + clipping')
+        family = series.split(' + ')[0] if clipping else series
+        # A sweep curve records every measured dose, including dominated points.
+        curve(ax, rows, family, clipping=clipping)
     ax.set(xlim=(-.5,29), ylim=(5.04,6.15), xlabel=S_LABEL, ylabel='Validation loss (nats/token)')
     ax.set_yticks(np.arange(5.2,6.2,.2)); ax.grid(axis='y',color='.92',lw=.6)
     fig.suptitle('14M quality-sparsity frontiers',y=.99,fontsize=11)

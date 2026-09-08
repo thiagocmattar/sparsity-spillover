@@ -95,15 +95,37 @@ def test_case_study_uses_common_sites_and_pooled_band_counts(data):
             assert a['rms']==pytest.approx(math.sqrt(a['square_sum']/a['finite']))
 
 
-def test_overview_frontiers_are_scoped_to_each_legend_series(data):
-    assert len(data['overview_frontiers'])==10
-    for series,ids in data['overview_frontiers'].items():
-        if series.endswith(' + clipping'):
-            candidates=[r for r in data['clipping'] if r['scale']=='14M' and r['control']==series.split(' + ')[0]]
-        else:
-            candidates=[r for r in data['trained'] if r['scale']=='14M' and r['family']==series]
-        assert ids==[r['id'] for r in frontier(candidates)]
-        assert all(one(data['trained']+data['clipping'],id=i) in candidates for i in ids)
+def test_overview_retains_complete_dose_sweeps_in_order(data, monkeypatch):
+    # Assert the actual plotted coordinates, not just a reduction agreeing with itself.
+    import plots
+    figures=[]
+    monkeypatch.setattr(plots, 'save', lambda fig, name: figures.append(fig))
+    plots.configure()
+    plots.overview(data)
+    expected={'A0': [None], 'A1-H': [None],
+              'A1-H-L1': [.05,.1,.5,1.], 'A1-H-OL1': [.05,.1,.5,1.],
+              **{f: [0.,.01,.05,.1,.5] for f in ('A4','A4-OL1','A7','A7-OL1')},
+              'A0 + clipping': [i/10 for i in range(10)],
+              'A1-H + clipping': [i/10 for i in range(10)]}
+    try:
+        lines=figures[0].axes[0].get_lines()
+        assert [line.get_label() for line in lines]==list(expected)
+        assert set(data['overview_series'])==set(expected)
+        for line in lines:
+            series=line.get_label()
+            clipping=series.endswith(' + clipping')
+            family=series.split(' + ')[0] if clipping else series
+            candidates=[r for r in data['clipping' if clipping else 'trained']
+                        if r['scale']=='14M' and r['control' if clipping else 'family']==family]
+            rows=[one(candidates,dose=dose) for dose in expected[series]]
+            assert data['overview_series'][series]==[r['id'] for r in rows]
+            assert list(line.get_xdata())==[100*r['R_model'] for r in rows]
+            assert list(line.get_ydata())==[r['loss'] for r in rows]
+        # This low-dose point was previously omitted because a higher dose dominates it.
+        a4=[r for r in data['trained'] if r['scale']=='14M' and r['family']=='A4']
+        assert one(a4,dose=0.) not in frontier(a4)
+    finally:
+        for fig in figures: plots.plt.close(fig)
 
 
 def test_historical_pressure_is_excluded_from_all_current_results(data):

@@ -1,14 +1,22 @@
-# Overview Series Frontiers
+# Overview Series
 
-Independent nondominated set for each of the ten Figure 01 legend series. Trained families are not pooled with clipping. All trained points remain visible; the plot loss window is 5.04–6.15. Source O001.
+All evaluated points in each Figure 01 series, ordered by dose (or clipping target p). Curves retain dominated points; they are dose sweeps, not Pareto envelopes. The plot loss window is 5.04–6.15. Source O001.
 
 | Legend series | Dose / target p | Loss | S_model (%) | Evidence ID |
 | --- | --- | --- | --- | --- |
 | A0 | None | 5.208573 | 0.0000 | 14M:A0:None |
 | A1-H | None | 5.269634 | 2.7141 | 14M:A1-H:None |
+| A1-H-L1 | 0.05 | 5.206144 | 3.1416 | 14M:A1-H-L1:0.05 |
+| A1-H-L1 | 0.1 | 5.165483 | 3.3363 | 14M:A1-H-L1:0.1 |
+| A1-H-L1 | 0.5 | 5.112688 | 3.7876 | 14M:A1-H-L1:0.5 |
 | A1-H-L1 | 1.0 | 5.102275 | 3.9493 | 14M:A1-H-L1:1.0 |
+| A1-H-OL1 | 0.05 | 5.198063 | 3.1452 | 14M:A1-H-OL1:0.05 |
+| A1-H-OL1 | 0.1 | 5.159397 | 3.3386 | 14M:A1-H-OL1:0.1 |
 | A1-H-OL1 | 0.5 | 5.110236 | 3.7680 | 14M:A1-H-OL1:0.5 |
 | A1-H-OL1 | 1.0 | 5.121185 | 3.9384 | 14M:A1-H-OL1:1.0 |
+| A4 | 0.0 | 5.470516 | 7.2120 | 14M:A4:0.0 |
+| A4 | 0.01 | 5.466488 | 7.4137 | 14M:A4:0.01 |
+| A4 | 0.05 | 5.434115 | 8.2059 | 14M:A4:0.05 |
 | A4 | 0.1 | 5.419673 | 8.9530 | 14M:A4:0.1 |
 | A4 | 0.5 | 5.659678 | 10.2155 | 14M:A4:0.5 |
 | A4-OL1 | 0.0 | 5.458276 | 7.8100 | 14M:A4-OL1:0.0 |
@@ -16,8 +24,14 @@ Independent nondominated set for each of the ten Figure 01 legend series. Traine
 | A4-OL1 | 0.05 | 5.489760 | 10.4564 | 14M:A4-OL1:0.05 |
 | A4-OL1 | 0.1 | 5.548254 | 11.3943 | 14M:A4-OL1:0.1 |
 | A4-OL1 | 0.5 | 6.037982 | 12.7134 | 14M:A4-OL1:0.5 |
+| A7 | 0.0 | 5.468393 | 7.2177 | 14M:A7:0.0 |
+| A7 | 0.01 | 5.458820 | 7.6176 | 14M:A7:0.01 |
+| A7 | 0.05 | 5.437875 | 9.1269 | 14M:A7:0.05 |
 | A7 | 0.1 | 5.428668 | 10.4250 | 14M:A7:0.1 |
 | A7 | 0.5 | 5.702895 | 15.3868 | 14M:A7:0.5 |
+| A7-OL1 | 0.0 | 5.480181 | 7.0542 | 14M:A7-OL1:0.0 |
+| A7-OL1 | 0.01 | 5.475801 | 7.7234 | 14M:A7-OL1:0.01 |
+| A7-OL1 | 0.05 | 5.462800 | 9.8630 | 14M:A7-OL1:0.05 |
 | A7-OL1 | 0.1 | 5.429488 | 11.7968 | 14M:A7-OL1:0.1 |
 | A7-OL1 | 0.5 | 5.829407 | 27.4827 | 14M:A7-OL1:0.5 |
 | A0 + clipping | 0.0 | 5.208594 | 0.0000 | 14M:clip:gelu-control:0.0 |

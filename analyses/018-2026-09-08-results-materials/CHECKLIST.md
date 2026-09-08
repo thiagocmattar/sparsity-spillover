@@ -1,5 +1,13 @@
 # Results materials checklist
 
+## Overview curve correction
+
+- [x] Audit all 30 trained coordinates against same-pass raw loss and pooled integer counts.
+- [x] Identify the connection error: within-series Pareto filtering disconnected 14 measured trained points.
+- [x] Restore every measured dose to its recipe curve; preserve separate A0/A1-H post-clipping sweeps.
+- [x] Separate the dose-sweep evidence table from the strict numerical Pareto analysis; reconcile captions and prose.
+- [x] Verify plotted coordinates and dose order, render at paper width, review the scoped diff and commit.
+
 ## Second figure revision
 
 - [x] Add titles to all eight figures.
