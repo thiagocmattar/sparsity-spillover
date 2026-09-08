@@ -18,9 +18,9 @@ main publication figures plus the alternative Figure 02-v2 PDF, numerical
 tables, proposed arguments, captions and provenance.
 All artwork is drawn at the ICLR template's 5.5-inch text width and now includes a title.
 
-Figure 01 now shows A0/A1-H and the three OL1 families: 16 trained endpoints
-with 160 matching clipping evaluations as subtle dashed trajectories. Its title
-is "Quality-sparsity frontiers" and its compact legend sits below the plot.
+Figure 01 shows 16 trained endpoints from A0/A1-H and the three OL1 families,
+with post-hoc clipping drawn only for A0 as a clearly visible dashed path.
+The title is "Quality vs. model-wide sparsity frontier for train-time and post-hoc interventions (Pythia-14M)", wrapped over two lines. Its compact legend remains below the plot.
 The complete 30-checkpoint/300-point 14M measurements remain available. The activation
 distribution grid is restored. **Finer activation bins remain pending:** the stored counts
 only define four bins. The middle κ=.05 row is included now; the exact proposal
@@ -35,7 +35,7 @@ records the checks actually performed. Original runs and manuscript files are un
 
 | Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 16 trained endpoints: A0/A1-H and OL1 variants, with subtle dashed clipping trajectories |
+| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 16 trained endpoints: A0/A1-H and OL1 variants, with a visible dashed A0 clipping path |
 | Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 29 matched comparisons, with all five A1-H→A4 thresholds |
 | Retained alternative | [02-v2 — intervention rows](figures/02-v2-blocked-intervention-effects.pdf) | Unselected vertical layout of the same 29 comparisons |
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
@@ -54,7 +54,7 @@ self-contained captions and evidence links: [observation index](observations/IND
 A4-OL1[h] is excluded from all current numerical results and artwork, including
 runtime summaries. The corrected four-site A4-OL1 remains. There are 54 trained
 conditions (30/12/12 at 14M/70M/410M). [Run 030](../../runs/030-2026-09-08-all-models-posthoc-clipping/README.md)
-provides all 540 clipping evaluations (300/120/120), with 160 selected-family evaluations used in
+provides all 540 clipping evaluations (300/120/120), with A0's ten clipping evaluations used in
 Figure 01. The other seven figures and legacy clipping table retain their
 previous 190-point subset (150/20/20). These are repeated evaluations of fixed
 checkpoints, not independent seeds. Full measurements, CSV, and numerical

@@ -316,7 +316,7 @@ def load_evidence():
         [r for r in small if r['family']==family], key=lambda r: r['dose'] or 0)]
         for family in OVERVIEW_FAMILIES}
     for checkpoint in small:
-        if checkpoint['family'] not in OVERVIEW_FAMILIES:
+        if checkpoint['family'] != 'A0':
             continue
         overview_series[checkpoint['id']+' + clipping'] = [r['id'] for r in sorted(
             [r for r in overview_clipping if r['source_checkpoint_id']==checkpoint['id']],

@@ -1,5 +1,11 @@
 # Results materials checklist
 
+## Figure 01: A0-only clipping revision
+
+- [x] Show post-hoc clipping only for A0, with a clearer dashed line.
+- [x] Apply the exact requested title, wrapped over two lines.
+- [x] Keep the current training families and complete underlying measurements.
+
 ## Figure 01: OL1-focused polish
 
 - [x] Keep A0/A1-H controls and OL1 variants; omit A1-H-L1, A4 and A7.

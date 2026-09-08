@@ -88,7 +88,7 @@ def tables(d):
           [[series,r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
            for series,ids in d['overview_series'].items() for id_ in ids
            for r in [one(d['trained']+d['overview_clipping'],id=id_)]],
-          'Figure 01: 16 trained endpoints and 160 matching clipping evaluations from A0, A1-H, A1-H-OL1, A4-OL1 and A7-OL1, each series in parameter order. '
+          'Figure 01: 16 trained endpoints from A0, A1-H, A1-H-OL1, A4-OL1 and A7-OL1, plus ten post-hoc clipping evaluations of A0, each series in parameter order. '
           'Thin clipping paths preserve actual p=0 measurements; trained paths retain dominated points. '
           'Plot loss window: 5.04–6.15. These are evaluated sweeps, not Pareto envelopes. Source O001.')
     rows=[]

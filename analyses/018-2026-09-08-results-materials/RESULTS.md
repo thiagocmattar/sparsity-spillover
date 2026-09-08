@@ -9,13 +9,13 @@ a separately qualified implementation.
 
 ## 1. Establish the 14M trade-off
 
-Figure 01 focuses on A0/A1-H controls and A1-H-OL1, A4-OL1 and A7-OL1:
-16 trained endpoints and 160 matching clipping evaluations. Subtle dashed
-paths follow each fixed checkpoint through all ten targets; trained curves
-retain every setting. A1-H-L1, A4 and A7 are omitted from this display at the
-user's request. The full cohort and complete loss range remain in Run 030.
-The [series table](tables/overview-series.md) records all 176 input coordinates.
-These curves order measured settings, not a fitted or interpolated envelope.
+Figure 01 retains A0/A1-H controls and A1-H-OL1, A4-OL1 and A7-OL1:
+16 trained endpoints, with post-hoc clipping drawn only for A0. Its visible
+grey dashed path connects ten measured clipping targets. The
+[series table](tables/overview-series.md) records all 26 input coordinates.
+A1-H-L1, A4 and A7 remain omitted from this display. Complete clipping
+measurements and the full loss range remain in Run 030. Curves order measured
+settings, not a fitted or interpolated envelope.
 
 Full-cohort context (including families omitted from Figure 01):
 

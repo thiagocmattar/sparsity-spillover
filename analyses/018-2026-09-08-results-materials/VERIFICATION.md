@@ -1,3 +1,19 @@
+# Figure 01 A0-only clipping revision, 8 September 2026
+
+Post-hoc clipping is drawn only for A0, with a darker dashed path and clearer
+open markers. The five training families remain unchanged. The exact requested
+title wraps over two lines; its existing DejaVu Sans font and 11-point size
+are unchanged. Title page bounds were checked. The plot has six paths and
+26 input coordinates: 16 trained endpoints and ten A0 clipping evaluations.
+Six clipping coordinates lie inside the existing loss window. All complete
+measurements and full-cohort numerical frontiers remain unchanged.
+
+The working figure/evidence suite passed 41 tests in 2.25 seconds. The PDF
+and caption were rendered and inspected at manuscript width; the caption
+compiles without warnings or overfull/underfull boxes. The eight other PDF
+hashes are unchanged. No model evaluation or manuscript edit was performed.
+Proofs are under ignored tmp/figure01-a0-clipping.
+
 # Figure 01 selected-family polish, 8 September 2026
 
 The user requested subtler dashed clipping paths, removal of A1-H-L1/A4/A7,

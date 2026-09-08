@@ -116,15 +116,15 @@ def test_overview_retains_complete_training_and_clipping_sweeps(data, monkeypatc
               'A1-H-OL1': [.05,.1,.5,1.],
               **{f: [0.,.01,.05,.1,.5] for f in ('A4-OL1','A7-OL1')}}
     sources={r['id']+' + clipping':r['id'] for r in data['trained']
-             if r['scale']=='14M' and r['family'] in expected}
-    assert len(sources)==16 and len(data['overview_clipping'])==300
+             if r['scale']=='14M' and r['family']=='A0'}
+    assert len(sources)==1 and len(data['overview_clipping'])==300
     expected.update({label:[i/10 for i in range(10)] for label in sources})
     try:
         lines=figures[0].axes[0].get_lines()
-        assert len(lines)==21
+        assert len(lines)==6
         assert {line.get_label() for line in lines}==set(expected)
         assert set(data['overview_series'])==set(expected)
-        assert sum(len(line.get_xdata()) for line in lines)==176
+        assert sum(len(line.get_xdata()) for line in lines)==26
         for line in lines:
             series=line.get_label()
             clipping=series.endswith(' + clipping')
