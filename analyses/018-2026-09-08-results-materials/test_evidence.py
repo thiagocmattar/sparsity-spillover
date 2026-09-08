@@ -31,10 +31,10 @@ def test_mass_bands_partition_ties_and_reject_nonmonotone_counts():
 
 
 def test_complete_condition_and_clipping_grids(data):
-    assert [sum(r['scale']==s for r in data['trained']) for s in SCALES]==[35,12,12]
+    assert [sum(r['scale']==s for r in data['trained']) for s in SCALES]==[30,12,12]
     assert [sum(r['scale']==s for r in data['clipping']) for s in SCALES]==[150,20,20]
-    assert len({r['id'] for r in data['trained']+data['clipping']})==249
-    assert len(data['contrasts'])==30
+    assert len({r['id'] for r in data['trained']+data['clipping']})==244
+    assert len(data['contrasts'])==25
     for scale in SCALES:
         for family in ('A4-OL1','A7-OL1'):
             assert sorted(r['dose'] for r in data['trained'] if r['scale']==scale and r['family']==family)==list(DOSES)
@@ -73,7 +73,7 @@ def test_operation_weighting_reconstructs_sparsity(data):
 
 def test_contrasts_have_matched_identities_and_correct_signs(data):
     for pair in data['contrasts']:
-        a=one(data['trained'],id=pair['parent']);b=one(data['trained'],id=pair['child'])
+        a=one(data['trained'],id=pair['reference']);b=one(data['trained'],id=pair['treatment'])
         assert a['scale']==b['scale']=='14M'
         for key in ('initial_parameter_sha256','schedule_sha256','validation_sha256','training_tokens','seeds'):
             assert a['identity'][key]==b['identity'][key]
@@ -94,9 +94,10 @@ def test_case_study_uses_common_sites_and_pooled_band_counts(data):
             assert a['rms']==pytest.approx(math.sqrt(a['square_sum']/a['finite']))
 
 
-def test_historical_pressure_cannot_enter_main_ladder_frontier(data):
+def test_historical_pressure_is_excluded_from_all_current_results(data):
     historical=[r for r in data['trained'] if r['family']=='A4-OL1[h]']
-    assert len(historical)==5 and all(r['source'].startswith('runs/012-') for r in historical)
+    assert not historical
+    assert all(p['family'] != 'A4+OL1@h' and int(p['condition'][1:]) <= 30 for p in data['runtime']['points'])
     corrected=[r for r in data['trained'] if r['scale']=='14M' and r['family']=='A4-OL1']
     assert len(corrected)==5 and all(r['source'].startswith('runs/015-') for r in corrected)
     assert not any('OL1[h]' in id_ for id_ in data['frontiers']['14M_main_trained'])
@@ -117,7 +118,37 @@ def test_saved_bundle_and_all_sources_match(data):
     for path,digest in data['sources'].items():
         assert sha(ROOT/path)==digest
     inventory=json.loads((HERE/'artifact_inventory.json').read_text())
-    assert len(list((HERE/'figures').glob('*.pdf')))==7
+    assert len(list((HERE/'figures').glob('*.pdf')))==8
     for path,meta in inventory.items():
         assert sha(HERE/path)==meta['sha256'] and (HERE/path).stat().st_size==meta['bytes']
-    assert sha(HERE/'figures/07-kernel-realization.pdf')==sha(ROOT/data['kernel_pdf_source'])
+
+
+def test_clipping_uses_evaluation_site_reach_even_for_a0_at_p_zero(data):
+    for row in data['clipping']:
+        ceiling=one(data['ceilings'],scale=row['scale'],family='A4')
+        assert set(row['normalization_sites'])=={'a','m','h','z'}
+        assert row['ceiling']['reachable_product_count']==ceiling['reachable_product_count']
+        assert row['U_arch']==pytest.approx(row['R_model']/ceiling['R_model_max_fraction'])
+    assert sum(r['control'] is not None for r in data['clipping'])==60
+
+
+def test_ceiling_grid_has_integer_units_and_shared_ol1_topologies(data):
+    assert len(data['ceilings'])==12
+    for scale in SCALES:
+        for f in ('A4','A7'):
+            ceiling=one(data['ceilings'],scale=scale,family=f)
+            assert isinstance(ceiling['reachable_product_count'],int)
+            assert '2048-token sequence' in ceiling['unit']
+            assert ceiling['R_model_max_fraction']==pytest.approx(
+                ceiling['reachable_product_count']/ceiling['model_product_count'])
+            assert ceiling['R_model_max_fraction']==one(data['trained'],scale=scale,family=f+'-OL1',dose=0.)['ceiling']['R_model_max_fraction']
+
+
+def test_runtime_subset_reduction_uses_thirty_qualified_checkpoints(data):
+    runtime=data['runtime'];rows=[r for r in runtime['points'] if r['candidate']=='k050']
+    assert len(rows)==30 and all(r['qualified'] for r in rows)
+    assert runtime['final_candidates']['k050']['geomean']==pytest.approx(
+        math.prod(r['speedup'] for r in rows)**(1/30))
+    fit=runtime['k050_regression'];mean=sum(r['speedup'] for r in rows)/30
+    sse=sum((r['speedup']-fit['intercept']-fit['slope_per_fraction']*r['R_model'])**2 for r in rows)
+    assert fit['r2']==pytest.approx(1-sse/sum((r['speedup']-mean)**2 for r in rows))

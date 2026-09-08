@@ -1,34 +1,32 @@
-# Blocked matched intervention effects
+# Matched intervention effects
 
 ## Question
 
-Does the additional effect of pressure depend on the trained threshold and gate placement?
+What changes when a specified intervention is added to a matched reference?
 
 ## Method
 
-Compute child-minus-parent differences in paired final loss and count-derived R_model. Draw 25 contrasts in seven sequential blocks: GELU to ReLU; add local L1; replace local L1 with OL1; expand A1-H to A4 at kappa=0; add OL1 to A4; add Q/K/V gates to A4; add OL1 to A7. Five further h-only-to-four-site pressure contrasts are in the complete table.
+Compute treatment minus reference for seven comparison blocks, retaining the same x positions across loss and sparsity rows. Dose increases left to right within each block. No averaging across doses or seed inference.
 
 ## Coverage
 
-Same-size initialization, ordered-schedule and validation-cache hashes agree across contrasts. One seed; complete 338-block validation; 712 boundaries and 1,493,172,224 training tokens. Lambda levels .05/.1/.5/1 and kappa levels 0/.01/.05/.1/.5 are treatment levels.
+25 contrasts from the included 14M cohort; matching initialization, order, validation cache, training tokens and seed checked in evidence.py. Unless the section specifies runtime timing inputs, validation covers all 500 documents packed into 338 complete 2048-token blocks, excluding the 1,444-token tail.
 
 ## Figure and caption
 
 [Publication PDF](../figures/02-blocked-intervention-effects.pdf)
 
-**Matched intervention effects at 14M.** Each x position identifies a treatment level within the named parent-to-child block, aligned vertically across loss (top) and model-wide sparsity (bottom). Negative loss differences indicate better quality; positive sparsity differences indicate more zero-product opportunity. Stems originate at zero. Alternating backgrounds separate comparisons with distinct comparators. Lambda labels apply to local-pressure blocks and kappa labels to gate blocks. These are separately trained conditions; the display is not a cumulative training sequence. The final table retains exact small differences not resolvable visually.
+Matched 14M intervention effects. Top: loss change, where negative is better. Bottom: model-sparsity change in percentage points, where positive is more. Actions proceed from GELU→ReLU, adding L1 at h, replacing L1 with OL1, adding gates at a,m,z, adding OL1 to A4, adding gates at q,k,v, and adding OL1 to A7. The shared key identifies λ in the two local-pressure blocks and κ in the A4/A7 blocks; GELU→ReLU has no dose. The a,m,z addition uses κ=0. Each pair has an explicit reference/treatment ID in the table; the sequence is not an additive decomposition.
 
 ## Result
 
-At A4 kappa=0/.01, OL1 improves both axes. At .5 it adds 2.4979 sparsity points at +.378304 loss. For A7, the zero-threshold OL1 effect worsens both axes; at .1 it adds 1.3717 points at +.000819 loss, and at .5 it adds 12.0959 points at +.126512 loss. Local OL1 is not uniformly better than naive L1: the lambda=1 local comparison favors naive L1 on both axes.
+At κ=.5, OL1 adds 2.4979 sparsity points to A4 for +.3783 loss, versus 12.0959 points to A7 for +.1265 loss. At κ=0/.01 the A4 comparison improves both metrics; pressure is not uniformly beneficial.
 
 ## Caveats
 
-Fixed-topology pressure contrasts isolate addition of the named objective. Comparing pressure responses between A4 and A7 changes pressure sites and their equal-tensor weighting. Missing A7+OL1@four-sites prevents a fixed-objective placement interaction claim. The A4/A7 identity-gate kappa=0 residual is numerical/implementation discrepancy, not a gate benefit. One seed precludes significance or equivalence claims.
+One seed; thresholds are treatments rather than replicates. A4→A7 at κ=0 has a small numerical residual despite identity Q/K/V gates. A1-H→A4 also changes the h boundary derivative. Comparing pressure responses across topologies changes pressure sites and normalization.
 
 ## Source script and evidence
 
-`plots.py:effects`; `evidence.py:load_evidence`; `01_build.py`; `tables/blocked-effects.md` and `tables/pressure-and-gate-effects.tex`. Runs 004/009/011-015.
-
-Paths above are relative to the analysis root or repository root as named.
-Complete count-derived values and source hashes are in [figure_data.json](../figure_data.json).
+`plots.py:effects`, invoked by `01_build.py`. Supporting evidence: tables/blocked-effects.md and tables/pressure-and-gate-effects.md.
+All source identities, integer counts and exact values are retained in [figure_data.json](../figure_data.json).

@@ -1,155 +1,193 @@
-% Optional insertion before the existing kernel subsection in manuscript/draft.
-% Analysis 018, hand-edited descriptive results fragment, 2026-09-08.
-% Evidence: figure_data.json and observations/O001-O007 in this analysis.
-% Generators: evidence.py, plots.py, 01_build.py. No manuscript file was edited.
-% Requirements: graphicx, booktabs, amsmath (already present in draft/main.tex).
-% Override this path when compiling from a different working directory.
+% Optional analysis-owned results fragment; revised after figure review, 2026-09-08.
+% Evidence: Analysis 018 observations O001--O008 and figure_data.json.
+% Generators: evidence.py, plots.py, 01_build.py. No manuscript source was edited.
+% Requires graphicx, amsmath, booktabs. Artwork is exactly 5.5 inches wide.
+% Adopt the main figures selectively; supporting figures at the end are appendix candidates.
+% Runtime numbers describe 30 included checkpoints and replace, rather than supplement,
+% the draft's original 35-checkpoint summary if this revision is adopted.
 \providecommand{\resultsassets}{../../analyses/018-2026-09-08-results-materials}
 
 \subsection{Quality--sparsity trade-offs at 14M}
-\label{sec:results-overview}
-
-% Evidence: observations/O001-overview.md, O006-posthoc-completeness.md.
-The detailed study contains 30 conditions from the main intervention ladder
-and five historical A4 conditions with OL1 applied only at $h$, denoted
-A4-OL1[$h$]. All share initialization and data-order seed 1234, 712 optimizer
-updates and 1,493,172,224 input tokens. Training uses FP16 dynamic loss scaling,
-FP32 parameters and AdamW with global batch 1,024; the peak learning rate is
-$10^{-3}$. Each endpoint pairs loss and model-wide sparsity in the same complete
-eager validation pass over 338 blocks, excluding the 1,444-token tail.
-
-Figure~\ref{fig:results-overview} spans distinct trade-off regimes. Local L1
-pressure at the ReLU FFN hidden activation yields the lowest observed loss:
-at $\lambda=1$, loss is 5.1023 with 3.9493\% model-wide sparsity, compared with
-5.2696 and 2.7141\% for unpressured A1-H. Broader placement reaches a different
-region: A7-OL1 at $\kappa=0.5$ reaches 27.4827\% at loss 5.8294.
-The historical A4-OL1[$h$] condition at $\kappa=0.05$ reaches 9.0356\% at
-loss 5.1956. It is distinct from corrected four-site A4-OL1, which contributes
-no globally nondominated point to the main 30-condition trained ladder.
+% Source: observations/O001-overview.md, O002-blocked-effects.md.
+The detailed study includes 30 trained conditions with matched initialization
+and data-order seed 1234, 712 optimizer updates and 1,493,172,224 input tokens.
+Training uses FP16 dynamic loss scaling, FP32 parameters and AdamW. Each
+endpoint pairs loss and model-wide sparsity in the same complete eager
+validation pass over 338 blocks from 500 documents, excluding a 1,444-token tail.
+Figure~\ref{fig:a018-overview} spans distinct trade-off regimes: local L1 at
+$\lambda=1$ gives the lowest observed loss, 5.1023 at 3.9493\% sparsity, while
+A7-OL1 at $\kappa=.5$ reaches 27.4827\% at loss 5.8294.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/01-14m-overview.pdf}
-\caption{Complete 14M trained overview with the 20 A0/A1-H uniform-clipping
-controls. Colors identify recipes; gray dotted curves are evaluation-only
-clipping. Rings mark nondominated trained points, with solid and dotted
-envelopes for the main ladder and the pool including historical A4-OL1[$h$].
-The right panel retains the full loss range, including eight clipping points
-above the left panel. Connecting lines guide the eye through evaluated points;
-they do not establish attainable intermediate operating points.}
-\label{fig:results-overview}
+\caption{The 30 included trained 14M endpoints. Symbols identify recipe families.
+A4/A7 families use $\kappa=0,.01,.05,.1,.5$; local L1/OL1 use
+$\lambda=.05,.1,.5,1$. Every point is an evaluated condition; no connecting
+curve or interpolated frontier is asserted. Individual doses and exact values
+are retained in the endpoint table.}
+\label{fig:a018-overview}
 \end{figure}
 
-The complete retained post-hoc comparison additionally contains 150 evaluations
-across 15 source checkpoints. Clipping the $\lambda=1$ L1 checkpoint to target
-$p=0.1$ gives 4.7982\% sparsity at loss 5.1070. These are uniform TEAL-style
-targets, not greedy allocation, and the retained clipping pool does not cover
-A7 or corrected A4-OL1. Thus the available comparison does not establish the
-best possible training-plus-clipping composition.
-
-\subsection{Pressure's added value depends on threshold and placement}
-\label{sec:results-effects}
-
-% Evidence: observations/O002-blocked-effects.md; tables/pressure-and-gate-effects.tex.
-Figure~\ref{fig:results-effects} shows child-minus-parent effects with matched
-thresholds. Adding OL1 to A4 improves both outcomes at $\kappa=0$ and $0.01$.
-At $\kappa=0.5$, it adds 2.4979 sparsity points at a 0.3783 loss cost.
-For A7, OL1 instead slightly worsens both outcomes at zero threshold, adds
-1.3717 points for a 0.000819 loss increase at $\kappa=0.1$, and adds 12.0959
-points for a 0.1265 loss increase at $\kappa=0.5$. Pressure therefore has no
-uniform benefit over the tested thresholds.
+Pressure's added effect depends on threshold and topology
+(Figure~\ref{fig:a018-effects}). At fixed A4 gates, OL1 improves both outcomes
+at $\kappa=0$ and $.01$, but at $.5$ adds 2.4979 sparsity points for a .3783
+loss increase. At A7, OL1 instead adds 12.0959 points for a .1265 loss increase
+at $.5$. At $.1$, its gain is 1.3717 points for a .000819 loss increase.
+These are one-seed differences, not significance or equivalence claims.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/02-blocked-intervention-effects.pdf}
-\caption{Blocked matched contrasts at 14M. Each x position aligns the change
-in loss (top) with the change in model-wide sparsity (bottom). Negative loss
-and positive sparsity differences are favorable. Every block names its own
-parent and child; $\lambda$ and $\kappa$ are treatment levels, not statistical
-replicates. The sequence organizes separately trained conditions and is not a
-cumulative training curriculum.}
-\label{fig:results-effects}
+\caption{Matched 14M intervention effects, with identical x positions in both
+rows. Top: treatment-minus-reference loss; bottom: model-sparsity change in
+percentage points. The actions are A0 to A1-H, adding L1 at $h$, replacing L1
+with OL1, adding gates at $a,m,z$, adding OL1 to A4, adding gates at $q,k,v$,
+and adding OL1 to A7. Dose increases left to right within each block. The
+shared key denotes $\lambda$ for local pressure and $\kappa$ for A4/A7;
+GELU to ReLU has no dose, and the $a,m,z$ addition uses $\kappa=0$.
+The sequence is not an additive decomposition.}
+\label{fig:a018-effects}
 \end{figure}
 
-At fixed topology these contrasts isolate addition of the specified pressure
-objective. Across A4 and A7, however, both pressure sites and their equal-tensor
-normalization change. The response difference is therefore recipe dependent;
-without A7 gates with four-site pressure it cannot identify a fixed-objective
-gate-by-pressure interaction. Similarly, expanding historical pressure from
-$h$ to four A4 sites raises loss by 0.2425--0.3196 at every matched threshold,
-but does not identify which added site causes that cost.
-At zero threshold the additional unpressured A7 gates are identities; the
-small measured A4/A7 residual is a numerical/implementation control discrepancy,
-not a benefit of an identity gate. These one-seed comparisons do not support
-statistical significance or equivalence claims.
+Within a fixed topology, only its specified pressure objective is added.
+Across topologies the objective's sites and normalization differ. The
+no-pressure A4/A7 contrast at $\kappa=0$ has a small numerical residual
+($-.002123$ loss, $+.005632$ sparsity points) despite identity Q/K/V gates;
+it is not interpreted as a benefit of an identity transformation.
 
-\subsection{Selected recipes transfer, with a changed low-threshold response}
-\label{sec:results-transfer}
+\subsection{Architecture reach and selected-recipe transfer}
+% Source: observations/O008-ceiling-vs-model-size.md, O003-scale-transfer.md.
+The analytic ceiling separates reachable workload from learned zero rate
+(Figure~\ref{fig:a018-ceiling}). At uncached $T=2048$, A7's all-block ceiling
+is 29.952\%, 49.424\% and 87.245\% at 14M, 70M and 410M. The dense output
+head accounts for a much larger fraction of the counted workload at 14M.
+OL1 changes training but not the selected-topology ceiling.
 
-% Evidence: observations/O003-scale-transfer.md and O004-operation-accounting.md.
-At $\kappa=0.5$, A7-OL1 improves on A4-OL1 at every tested size: model-wide
-sparsity increases by 14.7692, 5.0057 and 9.0241 points at 14M, 70M and 410M,
-while loss decreases by 0.2086, 0.1736 and 0.0703, respectively.
-At zero threshold, A4-OL1 is better on both outcomes at 14M and 70M, whereas
-A7-OL1 is better at 410M. This is partial recipe transfer rather than a uniform
-scaling pattern. The larger cohorts lack unpressured A4/A7, so they cannot
-replicate the isolated pressure contrasts.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{\resultsassets/figures/08-ceiling-vs-model-size.pdf}
+\caption{Analytic all-zero reach ceilings at the three retained architectures.
+The x axis uses actual parameter counts on a logarithmic scale, labeled by
+nominal size. Counts assume one complete uncached $T=2048$ sequence and retain
+the dense vocabulary head in the denominator. OL1 variants share their gate
+topology's ceiling. A0 selects no intervention sites and has zero reach.
+Lines connect computed architectures, not a fitted scaling law.}
+\label{fig:a018-ceiling}
+\end{figure}
+
+Figure~\ref{fig:a018-scales} retains absolute quality above and uses
+$U_{\mathrm{arch}}=R_{\mathrm{model}}/R_{\mathrm{model}}^{\max}$ below.
+The high-threshold ordering transfers: at $\kappa=.5$, A7-OL1 improves on
+A4-OL1 by 14.7692, 5.0057 and 9.0241 sparsity points while reducing loss by
+.2086, .1736 and .0703. At $\kappa=0$, A4-OL1 is better on both outcomes at
+14M/70M, while A7-OL1 is better at 410M. The larger cohorts lack no-pressure
+A4/A7 and therefore test complete recipes, not the isolated pressure effect.
+The fixed token budget gives 106.1, 21.2 and 3.7 tokens/parameter; the 410M
+peak learning rate is $3\times10^{-4}$ versus $10^{-3}$ at 14M/70M.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/03-scale-transfer-and-ceilings.pdf}
-\caption{Selected recipes across scales. Loss is relative to the same-size A0.
-The top row uses raw model-wide sparsity, with topology ceilings marked by
-colored dotted lines. The bottom row divides by each recipe's own ceiling;
-the dotted line marks a ratio of one. All five doses are connected in order,
-with $0$ and $0.5$ labeled. A0's normalized value is undefined. The ratio
-includes natural zeros outside selected reach and is not generally bounded
-by 100\%; different recipes also have different reachable workloads.}
-\label{fig:results-transfer}
+\caption{Selected recipes and uniform clipping across sizes. Top: absolute
+loss versus raw model-wide sparsity. Bottom: loss minus unmodified same-size
+A0 versus ceiling utilization. Solid curves order the five trained
+$\kappa$ values; dotted open-marker curves order ten clipping targets
+$p=0,.1,\ldots,.9$ for A0 and A1-H. All values are shown. Clipped controls
+use the reach of their evaluation sites $a,m,h,z$, including $p=0$; the
+source A0 topology's zero ceiling is not their denominator. Curves order
+evaluated points and do not establish intermediate attainable outcomes.}
+\label{fig:a018-scales}
 \end{figure}
 
-The A7 reach ceiling rises from 29.952\% to 49.424\% and 87.245\%, while
-its high-threshold endpoints realize 91.75\%, 82.15\% and 92.40\% of those
-ceilings. This normalization exposes the contribution of architectural reach
-to raw sparsity growth, but is not a size-invariant performance score.
-Indeed, A4-OL1 realizes a larger fraction of its narrower ceiling at every
-matched dose and size, including where A7-OL1 is better on both raw outcomes.
-Operation-level accounting separates each operation's learned zero-product
-rate from its share of the full model workload.
+Ceiling utilization is explanatory, not a size-invariant quality or speed
+score. A4-OL1 realizes more of its narrower ceiling at every matched dose
+and size; this does not reverse the high-threshold raw advantage of A7-OL1.
+Natural zeros outside selected reach remain in the numerator, so utilization
+need not be bounded by one. Unmodified A0 has an undefined ratio. The
+reach-restricted sensitivity measure is retained separately in the tables.
 
-All sizes receive the same token budget, giving 106.1, 21.2 and 3.7
-tokens per parameter. The 410M peak learning rate is $3\times10^{-4}$,
-compared with $10^{-3}$ at the two smaller sizes. One seed per size and
-unequal exposure per parameter limit extrapolation; the observed reversal
-does not identify undertraining or a particular optimizer mechanism.
-
-\subsection{Small attention activations and exact-zero attention operands}
-\label{sec:results-activations}
-
-% Evidence: observations/O005-activation-case-study.md; tables/activation-statistics.md.
-At 14M and $\kappa=0.5$, A4-OL1 and A7-OL1 both have more than 99.8\%
-exact zeros at $h$, yet differ strongly in attention. Under A4-OL1,
-47.64\% of queries and 56.12\% of keys have magnitude at most 0.01, while
-their exact-zero fractions remain below 0.001\%. Under A7-OL1, queries and
-keys are 93.54\% and 94.54\% exactly zero, and values are 98.71\% zero.
-Query RMS is smaller under A4-OL1 (0.146 versus 0.483), showing why magnitude
-reduction alone does not identify the model-wide zero-product opportunity.
+\subsection{Exact-zero mass and attention operands}
+% Source: observations/O005-activation-case-study.md.
+At $\kappa=.5$, both recipes exceed 99.8\% exact zeros at FFN hidden site $h$.
+Their attention operands differ (Figure~\ref{fig:a018-activation}): A4-OL1
+has 47.64\% of query values and 56.12\% of key values within magnitude .01,
+but fewer than .001\% exact zeros at either site. A7-OL1 instead gives
+93.54\% query zeros, 94.54\% key zeros and 98.71\% value zeros.
+Query RMS is lower under A4-OL1 (.146 versus .483), illustrating that smaller
+magnitudes alone do not identify exact-zero opportunity.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/05-activation-mass-grid.pdf}
-\caption{Retained activation magnitude bands and RMS at 14M. Rows compare
-$\kappa=0$ and $0.5$ for A4-OL1/A7-OL1 against the same repeated A0 baseline.
-Columns use six common diagnostic sites; attention output is after $W_o$,
-not the pre-projection gated context $z$. Four disjoint empirical magnitude
-bands are count-pooled over all layers and validation blocks. Lines connect
-categorical bands; they are not density estimates. The y scale is logarithmic
-above 0.01\% and linear near zero.}
-\label{fig:results-activations}
+\caption{Activation mass at manuscript sites $h,m,q,k,v$ for A0 and
+A4-OL1/A7-OL1. Columns show $\kappa=0$ and $.5$; rows show exact-zero mass
+and disjoint small-nonzero mass $0<|x|\leq .01$. Axes are linear from 0 to
+100\%; the same A0 appears in both columns. Integer counts are pooled across
+layers before division. Query/key sites are post-RoPE. A0 lacks $a,z$
+near-zero diagnostics; post-$W_o$ attention output is not relabeled as $z$.
+These summaries are not reconstructed full activation distributions.}
+\label{fig:a018-activation}
 \end{figure}
 
-These retained diagnostics contain exact/near-zero counts and moments rather
-than full histograms. The case study identifies how the recipes' observed
-zeros differ by site, without establishing a causal spillover mechanism.
-The following kernel case study tests whether an implementation can exploit
-the corresponding opportunity on a declared hardware workload.
+Marginal mass does not identify a causal spillover mechanism. The retained
+artifacts contain counts and moments, not raw samples or signed densities.
+Operation contributions and the complete post-hoc comparison supply supporting
+context in Figures~\ref{fig:a018-operations} and~\ref{fig:a018-clipping}.
+
+\subsection{Qualified kernel realization}
+% Source: observations/O007-kernel-realization.md; revised 30-checkpoint cohort.
+The qualified incumbent reaches 1.7830$\times$ on fixed c30 across 42 eligible
+proposals (Figure~\ref{fig:a018-kernel}). Final K050 qualifies on all 30
+included checkpoints, with a 1.2340$\times$ geometric mean speedup and a
+1.0059--1.7832$\times$ range. The descriptive sparsity--speedup fit has
+$R^2=.8167$. Sparse paths provide a 1.0432$\times$ geometric mean ratio over
+the fused no-skip ablation, but help only 14/30 checkpoints. Disabling
+attention skipping improves all 30, with 1.2506$\times$ mean speedup.
+P0 qualifies on only four checkpoints, preventing a whole-cohort ranking.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{\resultsassets/figures/07-kernel-realization.pdf}
+\caption{Matched kernel evidence restricted to the 30 included checkpoints.
+Left: qualified incumbent on fixed A7-OL1 $\kappa=.5$, initialized at native
+1$\times$, over 42 eligible proposals. Right: final K050; recipe symbols
+follow Figure~\ref{fig:a018-overview}. The dashed line is an unweighted
+OLS fit with an intercept ($R^2=.8167$); dotted lines mark native 1$\times$.
+Timings use one RTX5090, BF16, batch one, uncached $T=2048$, full-vocabulary
+logits, 64 fixed inputs and three fresh processes. Numerical qualification
+covers all 338 validation blocks; the denominator is same-checkpoint native
+SDPA with CUDA graphs.}
+\label{fig:a018-kernel}
+\end{figure}
+
+Canonical sparsity is measured in FP16 while execution uses BF16. Quality,
+weights and gates differ across checkpoints; the correlation does not establish
+causal proportionality or equal-quality acceleration. This workload does not
+establish cached-decoding or larger-model speedup.
+
+% Supporting figure candidates: move to the experimental appendix when integrating.
+% Source: observations/O004-operation-accounting.md.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{\resultsassets/figures/04-operation-accounting.pdf}
+\caption{High-threshold operation contributions. A4/A7 denote the OL1 recipes
+at $\kappa=.5$. Segments divide each operation's pooled zero products by the
+same full-model denominator; they sum to measured model-wide sparsity.
+The dense head receives no numerator credit. Hatches and colors identify
+operations; the complete rates and other doses remain in the tables.}
+\label{fig:a018-operations}
+\end{figure}
+
+% Source: observations/O006-posthoc-completeness.md.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{\resultsassets/figures/06-complete-posthoc-comparison.pdf}
+\caption{All 150 retained 14M uniform-clipping evaluations, with the full loss
+range. Each open marker is one source-checkpoint/target pair. Symbols identify
+five source recipe families; source $\lambda/\kappa$ and target $p$ are
+retained in the table. There are no retained A7 or corrected A4-OL1 clipping
+sweeps, so the plot does not identify a joint training-plus-clipping optimum.
+Uniform clipping does not reproduce TEAL's greedy allocation.}
+\label{fig:a018-clipping}
+\end{figure}

@@ -1,196 +1,196 @@
 # All Clipping Points
 
-Same eager full-validation pass for loss and R_model; 338 blocks, one seed. R_model is the draft S_model. 150 points at 14M and 20 at each larger size. p=0 uses its actual sweep evaluation, not a display anchor.
+Same eager full-validation pass for loss and R_model; 338 blocks, one seed. R_model is the draft S_model. 150 points at 14M and 20 at each larger size. p=0 uses its actual sweep evaluation. All clipping normalizations use evaluation sites a,m,h,z, including p=0.
 
-| Scale | Source checkpoint | Target p | Loss | S_model (%) | Evidence ID |
-| --- | --- | --- | --- | --- | --- |
-| 14M | gelu-control | 0.0 | 5.208594 | 0.0000 | 14M:clip:gelu-control:0.0 |
-| 14M | gelu-control | 0.1 | 5.214453 | 1.2787 | 14M:clip:gelu-control:0.1 |
-| 14M | gelu-control | 0.2 | 5.250270 | 2.5548 | 14M:clip:gelu-control:0.2 |
-| 14M | gelu-control | 0.3 | 5.361901 | 3.8316 | 14M:clip:gelu-control:0.3 |
-| 14M | gelu-control | 0.4 | 5.605384 | 5.1255 | 14M:clip:gelu-control:0.4 |
-| 14M | gelu-control | 0.5 | 6.077731 | 6.4419 | 14M:clip:gelu-control:0.5 |
-| 14M | gelu-control | 0.6 | 6.821173 | 7.7644 | 14M:clip:gelu-control:0.6 |
-| 14M | gelu-control | 0.7 | 7.766948 | 9.1235 | 14M:clip:gelu-control:0.7 |
-| 14M | gelu-control | 0.8 | 8.336118 | 10.5860 | 14M:clip:gelu-control:0.8 |
-| 14M | gelu-control | 0.9 | 8.825610 | 11.9419 | 14M:clip:gelu-control:0.9 |
-| 14M | relu-control | 0.0 | 5.269633 | 2.7141 | 14M:clip:relu-control:0.0 |
-| 14M | relu-control | 0.1 | 5.274073 | 3.5684 | 14M:clip:relu-control:0.1 |
-| 14M | relu-control | 0.2 | 5.307940 | 4.4184 | 14M:clip:relu-control:0.2 |
-| 14M | relu-control | 0.3 | 5.405056 | 5.2719 | 14M:clip:relu-control:0.3 |
-| 14M | relu-control | 0.4 | 5.602965 | 6.1293 | 14M:clip:relu-control:0.4 |
-| 14M | relu-control | 0.5 | 5.976274 | 6.9945 | 14M:clip:relu-control:0.5 |
-| 14M | relu-control | 0.6 | 6.521474 | 7.8929 | 14M:clip:relu-control:0.6 |
-| 14M | relu-control | 0.7 | 7.306175 | 9.0518 | 14M:clip:relu-control:0.7 |
-| 14M | relu-control | 0.8 | 8.107618 | 10.5585 | 14M:clip:relu-control:0.8 |
-| 14M | relu-control | 0.9 | 8.869450 | 11.8789 | 14M:clip:relu-control:0.9 |
-| 14M | relu-l1n-0p05 | 0.0 | 5.206157 | 3.1416 | 14M:clip:relu-l1n-0p05:0.0 |
-| 14M | relu-l1n-0p05 | 0.1 | 5.211364 | 3.9914 | 14M:clip:relu-l1n-0p05:0.1 |
-| 14M | relu-l1n-0p05 | 0.2 | 5.248624 | 4.8361 | 14M:clip:relu-l1n-0p05:0.2 |
-| 14M | relu-l1n-0p05 | 0.3 | 5.350951 | 5.6843 | 14M:clip:relu-l1n-0p05:0.3 |
-| 14M | relu-l1n-0p05 | 0.4 | 5.568858 | 6.5389 | 14M:clip:relu-l1n-0p05:0.4 |
-| 14M | relu-l1n-0p05 | 0.5 | 5.973093 | 7.3957 | 14M:clip:relu-l1n-0p05:0.5 |
-| 14M | relu-l1n-0p05 | 0.6 | 6.600953 | 8.2748 | 14M:clip:relu-l1n-0p05:0.6 |
-| 14M | relu-l1n-0p05 | 0.7 | 7.435047 | 9.2050 | 14M:clip:relu-l1n-0p05:0.7 |
-| 14M | relu-l1n-0p05 | 0.8 | 8.427544 | 10.2861 | 14M:clip:relu-l1n-0p05:0.8 |
-| 14M | relu-l1n-0p05 | 0.9 | 9.082812 | 11.7112 | 14M:clip:relu-l1n-0p05:0.9 |
-| 14M | relu-l1n-0p1 | 0.0 | 5.165466 | 3.3363 | 14M:clip:relu-l1n-0p1:0.0 |
-| 14M | relu-l1n-0p1 | 0.1 | 5.170191 | 4.1862 | 14M:clip:relu-l1n-0p1:0.1 |
-| 14M | relu-l1n-0p1 | 0.2 | 5.207756 | 5.0334 | 14M:clip:relu-l1n-0p1:0.2 |
-| 14M | relu-l1n-0p1 | 0.3 | 5.315055 | 5.8804 | 14M:clip:relu-l1n-0p1:0.3 |
-| 14M | relu-l1n-0p1 | 0.4 | 5.550581 | 6.7275 | 14M:clip:relu-l1n-0p1:0.4 |
-| 14M | relu-l1n-0p1 | 0.5 | 5.979635 | 7.5807 | 14M:clip:relu-l1n-0p1:0.5 |
-| 14M | relu-l1n-0p1 | 0.6 | 6.633155 | 8.4508 | 14M:clip:relu-l1n-0p1:0.6 |
-| 14M | relu-l1n-0p1 | 0.7 | 7.553385 | 9.3610 | 14M:clip:relu-l1n-0p1:0.7 |
-| 14M | relu-l1n-0p1 | 0.8 | 8.650510 | 10.2834 | 14M:clip:relu-l1n-0p1:0.8 |
-| 14M | relu-l1n-0p1 | 0.9 | 9.159795 | 11.5860 | 14M:clip:relu-l1n-0p1:0.9 |
-| 14M | relu-l1n-0p5 | 0.0 | 5.112683 | 3.7876 | 14M:clip:relu-l1n-0p5:0.0 |
-| 14M | relu-l1n-0p5 | 0.1 | 5.117628 | 4.6370 | 14M:clip:relu-l1n-0p5:0.1 |
-| 14M | relu-l1n-0p5 | 0.2 | 5.155895 | 5.4782 | 14M:clip:relu-l1n-0p5:0.2 |
-| 14M | relu-l1n-0p5 | 0.3 | 5.271484 | 6.3172 | 14M:clip:relu-l1n-0p5:0.3 |
-| 14M | relu-l1n-0p5 | 0.4 | 5.510881 | 7.1620 | 14M:clip:relu-l1n-0p5:0.4 |
-| 14M | relu-l1n-0p5 | 0.5 | 5.986626 | 7.9989 | 14M:clip:relu-l1n-0p5:0.5 |
-| 14M | relu-l1n-0p5 | 0.6 | 6.687065 | 8.8436 | 14M:clip:relu-l1n-0p5:0.6 |
-| 14M | relu-l1n-0p5 | 0.7 | 7.495898 | 9.6755 | 14M:clip:relu-l1n-0p5:0.7 |
-| 14M | relu-l1n-0p5 | 0.8 | 8.327347 | 10.5441 | 14M:clip:relu-l1n-0p5:0.8 |
-| 14M | relu-l1n-0p5 | 0.9 | 9.188822 | 11.1798 | 14M:clip:relu-l1n-0p5:0.9 |
-| 14M | relu-l1n-1 | 0.0 | 5.102270 | 3.9493 | 14M:clip:relu-l1n-1:0.0 |
-| 14M | relu-l1n-1 | 0.1 | 5.106970 | 4.7982 | 14M:clip:relu-l1n-1:0.1 |
-| 14M | relu-l1n-1 | 0.2 | 5.144074 | 5.6441 | 14M:clip:relu-l1n-1:0.2 |
-| 14M | relu-l1n-1 | 0.3 | 5.245573 | 6.4902 | 14M:clip:relu-l1n-1:0.3 |
-| 14M | relu-l1n-1 | 0.4 | 5.470511 | 7.3462 | 14M:clip:relu-l1n-1:0.4 |
-| 14M | relu-l1n-1 | 0.5 | 5.898911 | 8.1795 | 14M:clip:relu-l1n-1:0.5 |
-| 14M | relu-l1n-1 | 0.6 | 6.587026 | 9.0087 | 14M:clip:relu-l1n-1:0.6 |
-| 14M | relu-l1n-1 | 0.7 | 7.460709 | 9.8149 | 14M:clip:relu-l1n-1:0.7 |
-| 14M | relu-l1n-1 | 0.8 | 8.253852 | 10.6379 | 14M:clip:relu-l1n-1:0.8 |
-| 14M | relu-l1n-1 | 0.9 | 8.990051 | 11.2974 | 14M:clip:relu-l1n-1:0.9 |
-| 14M | relu-ol1-0p05 | 0.0 | 5.198069 | 3.1452 | 14M:clip:relu-ol1-0p05:0.0 |
-| 14M | relu-ol1-0p05 | 0.1 | 5.203818 | 3.9941 | 14M:clip:relu-ol1-0p05:0.1 |
-| 14M | relu-ol1-0p05 | 0.2 | 5.243323 | 4.8408 | 14M:clip:relu-ol1-0p05:0.2 |
-| 14M | relu-ol1-0p05 | 0.3 | 5.351475 | 5.6874 | 14M:clip:relu-ol1-0p05:0.3 |
-| 14M | relu-ol1-0p05 | 0.4 | 5.568223 | 6.5387 | 14M:clip:relu-ol1-0p05:0.4 |
-| 14M | relu-ol1-0p05 | 0.5 | 5.967554 | 7.3816 | 14M:clip:relu-ol1-0p05:0.5 |
-| 14M | relu-ol1-0p05 | 0.6 | 6.578153 | 8.2633 | 14M:clip:relu-ol1-0p05:0.6 |
-| 14M | relu-ol1-0p05 | 0.7 | 7.491310 | 9.1820 | 14M:clip:relu-ol1-0p05:0.7 |
-| 14M | relu-ol1-0p05 | 0.8 | 8.518643 | 10.2704 | 14M:clip:relu-ol1-0p05:0.8 |
-| 14M | relu-ol1-0p05 | 0.9 | 9.083664 | 11.7052 | 14M:clip:relu-ol1-0p05:0.9 |
-| 14M | relu-ol1-0p1 | 0.0 | 5.159387 | 3.3386 | 14M:clip:relu-ol1-0p1:0.0 |
-| 14M | relu-ol1-0p1 | 0.1 | 5.165409 | 4.1894 | 14M:clip:relu-ol1-0p1:0.1 |
-| 14M | relu-ol1-0p1 | 0.2 | 5.206190 | 5.0342 | 14M:clip:relu-ol1-0p1:0.2 |
-| 14M | relu-ol1-0p1 | 0.3 | 5.323405 | 5.8751 | 14M:clip:relu-ol1-0p1:0.3 |
-| 14M | relu-ol1-0p1 | 0.4 | 5.575266 | 6.7178 | 14M:clip:relu-ol1-0p1:0.4 |
-| 14M | relu-ol1-0p1 | 0.5 | 6.018996 | 7.5556 | 14M:clip:relu-ol1-0p1:0.5 |
-| 14M | relu-ol1-0p1 | 0.6 | 6.686208 | 8.3970 | 14M:clip:relu-ol1-0p1:0.6 |
-| 14M | relu-ol1-0p1 | 0.7 | 7.647184 | 9.2922 | 14M:clip:relu-ol1-0p1:0.7 |
-| 14M | relu-ol1-0p1 | 0.8 | 8.635984 | 10.2201 | 14M:clip:relu-ol1-0p1:0.8 |
-| 14M | relu-ol1-0p1 | 0.9 | 9.266252 | 11.5615 | 14M:clip:relu-ol1-0p1:0.9 |
-| 14M | relu-ol1-0p5 | 0.0 | 5.110230 | 3.7680 | 14M:clip:relu-ol1-0p5:0.0 |
-| 14M | relu-ol1-0p5 | 0.1 | 5.116110 | 4.6156 | 14M:clip:relu-ol1-0p5:0.1 |
-| 14M | relu-ol1-0p5 | 0.2 | 5.163076 | 5.4592 | 14M:clip:relu-ol1-0p5:0.2 |
-| 14M | relu-ol1-0p5 | 0.3 | 5.291757 | 6.2909 | 14M:clip:relu-ol1-0p5:0.3 |
-| 14M | relu-ol1-0p5 | 0.4 | 5.585054 | 7.1044 | 14M:clip:relu-ol1-0p5:0.4 |
-| 14M | relu-ol1-0p5 | 0.5 | 6.130628 | 7.9112 | 14M:clip:relu-ol1-0p5:0.5 |
-| 14M | relu-ol1-0p5 | 0.6 | 6.968931 | 8.6968 | 14M:clip:relu-ol1-0p5:0.6 |
-| 14M | relu-ol1-0p5 | 0.7 | 7.917230 | 9.4801 | 14M:clip:relu-ol1-0p5:0.7 |
-| 14M | relu-ol1-0p5 | 0.8 | 8.780806 | 10.3725 | 14M:clip:relu-ol1-0p5:0.8 |
-| 14M | relu-ol1-0p5 | 0.9 | 9.262722 | 11.1060 | 14M:clip:relu-ol1-0p5:0.9 |
-| 14M | relu-ol1-1 | 0.0 | 5.121213 | 3.9384 | 14M:clip:relu-ol1-1:0.0 |
-| 14M | relu-ol1-1 | 0.1 | 5.129136 | 4.7924 | 14M:clip:relu-ol1-1:0.1 |
-| 14M | relu-ol1-1 | 0.2 | 5.183859 | 5.6439 | 14M:clip:relu-ol1-1:0.2 |
-| 14M | relu-ol1-1 | 0.3 | 5.349408 | 6.4791 | 14M:clip:relu-ol1-1:0.3 |
-| 14M | relu-ol1-1 | 0.4 | 5.680604 | 7.2886 | 14M:clip:relu-ol1-1:0.4 |
-| 14M | relu-ol1-1 | 0.5 | 6.231464 | 8.0762 | 14M:clip:relu-ol1-1:0.5 |
-| 14M | relu-ol1-1 | 0.6 | 7.013678 | 8.8337 | 14M:clip:relu-ol1-1:0.6 |
-| 14M | relu-ol1-1 | 0.7 | 7.875197 | 9.5778 | 14M:clip:relu-ol1-1:0.7 |
-| 14M | relu-ol1-1 | 0.8 | 8.709804 | 10.3224 | 14M:clip:relu-ol1-1:0.8 |
-| 14M | relu-ol1-1 | 0.9 | 9.263879 | 11.0500 | 14M:clip:relu-ol1-1:0.9 |
-| 14M | a4z-one-sided-kappa-0 | 0.0 | 5.470511 | 7.2120 | 14M:clip:a4z-one-sided-kappa-0:0.0 |
-| 14M | a4z-one-sided-kappa-0 | 0.1 | 5.470511 | 7.2120 | 14M:clip:a4z-one-sided-kappa-0:0.1 |
-| 14M | a4z-one-sided-kappa-0 | 0.2 | 5.470511 | 7.2120 | 14M:clip:a4z-one-sided-kappa-0:0.2 |
-| 14M | a4z-one-sided-kappa-0 | 0.3 | 5.470511 | 7.2120 | 14M:clip:a4z-one-sided-kappa-0:0.3 |
-| 14M | a4z-one-sided-kappa-0 | 0.4 | 5.470428 | 7.2189 | 14M:clip:a4z-one-sided-kappa-0:0.4 |
-| 14M | a4z-one-sided-kappa-0 | 0.5 | 5.470153 | 7.3099 | 14M:clip:a4z-one-sided-kappa-0:0.5 |
-| 14M | a4z-one-sided-kappa-0 | 0.6 | 5.539702 | 8.0783 | 14M:clip:a4z-one-sided-kappa-0:0.6 |
-| 14M | a4z-one-sided-kappa-0 | 0.7 | 5.957410 | 8.9564 | 14M:clip:a4z-one-sided-kappa-0:0.7 |
-| 14M | a4z-one-sided-kappa-0 | 0.8 | 6.974517 | 10.2149 | 14M:clip:a4z-one-sided-kappa-0:0.8 |
-| 14M | a4z-one-sided-kappa-0 | 0.9 | 8.247837 | 11.6306 | 14M:clip:a4z-one-sided-kappa-0:0.9 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.0 | 5.466524 | 7.4137 | 14M:clip:a4z-one-sided-kappa-0p01:0.0 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.1 | 5.466524 | 7.4137 | 14M:clip:a4z-one-sided-kappa-0p01:0.1 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.2 | 5.466524 | 7.4137 | 14M:clip:a4z-one-sided-kappa-0p01:0.2 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.3 | 5.466524 | 7.4137 | 14M:clip:a4z-one-sided-kappa-0p01:0.3 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.4 | 5.466524 | 7.4137 | 14M:clip:a4z-one-sided-kappa-0p01:0.4 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.5 | 5.466257 | 7.4565 | 14M:clip:a4z-one-sided-kappa-0p01:0.5 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.6 | 5.534816 | 8.1783 | 14M:clip:a4z-one-sided-kappa-0p01:0.6 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.7 | 5.958228 | 9.0027 | 14M:clip:a4z-one-sided-kappa-0p01:0.7 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.8 | 6.988377 | 10.1968 | 14M:clip:a4z-one-sided-kappa-0p01:0.8 |
-| 14M | a4z-one-sided-kappa-0p01 | 0.9 | 8.158731 | 11.6214 | 14M:clip:a4z-one-sided-kappa-0p01:0.9 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.0 | 5.434159 | 8.2059 | 14M:clip:a4z-one-sided-kappa-0p05:0.0 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.1 | 5.434159 | 8.2059 | 14M:clip:a4z-one-sided-kappa-0p05:0.1 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.2 | 5.434159 | 8.2059 | 14M:clip:a4z-one-sided-kappa-0p05:0.2 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.3 | 5.434159 | 8.2059 | 14M:clip:a4z-one-sided-kappa-0p05:0.3 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.4 | 5.434159 | 8.2059 | 14M:clip:a4z-one-sided-kappa-0p05:0.4 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.5 | 5.434098 | 8.2130 | 14M:clip:a4z-one-sided-kappa-0p05:0.5 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.6 | 5.479514 | 8.7583 | 14M:clip:a4z-one-sided-kappa-0p05:0.6 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.7 | 5.864863 | 9.4169 | 14M:clip:a4z-one-sided-kappa-0p05:0.7 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.8 | 6.693103 | 10.1913 | 14M:clip:a4z-one-sided-kappa-0p05:0.8 |
-| 14M | a4z-one-sided-kappa-0p05 | 0.9 | 8.091245 | 11.4622 | 14M:clip:a4z-one-sided-kappa-0p05:0.9 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.0 | 5.419630 | 8.9530 | 14M:clip:a4z-one-sided-kappa-0p1:0.0 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.1 | 5.419630 | 8.9530 | 14M:clip:a4z-one-sided-kappa-0p1:0.1 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.2 | 5.419630 | 8.9530 | 14M:clip:a4z-one-sided-kappa-0p1:0.2 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.3 | 5.419630 | 8.9530 | 14M:clip:a4z-one-sided-kappa-0p1:0.3 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.4 | 5.419630 | 8.9530 | 14M:clip:a4z-one-sided-kappa-0p1:0.4 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.5 | 5.419605 | 8.9537 | 14M:clip:a4z-one-sided-kappa-0p1:0.5 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.6 | 5.446599 | 9.3424 | 14M:clip:a4z-one-sided-kappa-0p1:0.6 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.7 | 5.775362 | 10.0120 | 14M:clip:a4z-one-sided-kappa-0p1:0.7 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.8 | 6.579617 | 10.6554 | 14M:clip:a4z-one-sided-kappa-0p1:0.8 |
-| 14M | a4z-one-sided-kappa-0p1 | 0.9 | 7.759894 | 11.3782 | 14M:clip:a4z-one-sided-kappa-0p1:0.9 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.0 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.0 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.1 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.1 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.2 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.2 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.3 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.3 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.4 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.4 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.5 | 5.659684 | 10.2154 | 14M:clip:a4z-one-sided-kappa-0p5:0.5 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.6 | 5.660417 | 10.2271 | 14M:clip:a4z-one-sided-kappa-0p5:0.6 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.7 | 5.705777 | 10.5631 | 14M:clip:a4z-one-sided-kappa-0p5:0.7 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.8 | 6.099449 | 11.3257 | 14M:clip:a4z-one-sided-kappa-0p5:0.8 |
-| 14M | a4z-one-sided-kappa-0p5 | 0.9 | 6.824761 | 12.0673 | 14M:clip:a4z-one-sided-kappa-0p5:0.9 |
-| 70M | A0 | 0.0 | 4.099766 | 0.0005 | 70M:clip:A0:0.0 |
-| 70M | A0 | 0.1 | 4.103608 | 3.7048 | 70M:clip:A0:0.1 |
-| 70M | A0 | 0.2 | 4.130721 | 7.4099 | 70M:clip:A0:0.2 |
-| 70M | A0 | 0.3 | 4.207335 | 11.1282 | 70M:clip:A0:0.3 |
-| 70M | A0 | 0.4 | 4.397795 | 14.8442 | 70M:clip:A0:0.4 |
-| 70M | A0 | 0.5 | 4.833057 | 18.5885 | 70M:clip:A0:0.5 |
-| 70M | A0 | 0.6 | 5.657785 | 22.4109 | 70M:clip:A0:0.6 |
-| 70M | A0 | 0.7 | 6.927989 | 26.3484 | 70M:clip:A0:0.7 |
-| 70M | A0 | 0.8 | 8.072236 | 30.4621 | 70M:clip:A0:0.8 |
-| 70M | A0 | 0.9 | 9.179397 | 34.5814 | 70M:clip:A0:0.9 |
-| 70M | A1-H | 0.0 | 4.222750 | 10.0658 | 70M:clip:A1-H:0.0 |
-| 70M | A1-H | 0.1 | 4.223747 | 12.5370 | 70M:clip:A1-H:0.1 |
-| 70M | A1-H | 0.2 | 4.234510 | 15.0099 | 70M:clip:A1-H:0.2 |
-| 70M | A1-H | 0.3 | 4.269464 | 17.4855 | 70M:clip:A1-H:0.3 |
-| 70M | A1-H | 0.4 | 4.346144 | 19.9851 | 70M:clip:A1-H:0.4 |
-| 70M | A1-H | 0.5 | 4.522054 | 22.5156 | 70M:clip:A1-H:0.5 |
-| 70M | A1-H | 0.6 | 4.914340 | 25.1077 | 70M:clip:A1-H:0.6 |
-| 70M | A1-H | 0.7 | 5.722641 | 27.8935 | 70M:clip:A1-H:0.7 |
-| 70M | A1-H | 0.8 | 6.912035 | 31.0351 | 70M:clip:A1-H:0.8 |
-| 70M | A1-H | 0.9 | 9.133301 | 33.8912 | 70M:clip:A1-H:0.9 |
-| 410M | A0 | 0.0 | 4.547456 | 0.0110 | 410M:clip:A0:0.0 |
-| 410M | A0 | 0.1 | 4.553016 | 7.4632 | 410M:clip:A0:0.1 |
-| 410M | A0 | 0.2 | 4.581109 | 14.8833 | 410M:clip:A0:0.2 |
-| 410M | A0 | 0.3 | 4.672734 | 22.2428 | 410M:clip:A0:0.3 |
-| 410M | A0 | 0.4 | 4.931758 | 29.5388 | 410M:clip:A0:0.4 |
-| 410M | A0 | 0.5 | 5.585540 | 36.8043 | 410M:clip:A0:0.5 |
-| 410M | A0 | 0.6 | 6.721288 | 44.0981 | 410M:clip:A0:0.6 |
-| 410M | A0 | 0.7 | 7.758184 | 51.5636 | 410M:clip:A0:0.7 |
-| 410M | A0 | 0.8 | 8.311326 | 60.0129 | 410M:clip:A0:0.8 |
-| 410M | A0 | 0.9 | 9.027046 | 70.0471 | 410M:clip:A0:0.9 |
-| 410M | A1-H | 0.0 | 4.651294 | 21.0497 | 410M:clip:A1-H:0.0 |
-| 410M | A1-H | 0.1 | 4.652483 | 25.9843 | 410M:clip:A1-H:0.1 |
-| 410M | A1-H | 0.2 | 4.662035 | 30.9048 | 410M:clip:A1-H:0.2 |
-| 410M | A1-H | 0.3 | 4.693632 | 35.8103 | 410M:clip:A1-H:0.3 |
-| 410M | A1-H | 0.4 | 4.773735 | 40.7131 | 410M:clip:A1-H:0.4 |
-| 410M | A1-H | 0.5 | 4.975709 | 45.6193 | 410M:clip:A1-H:0.5 |
-| 410M | A1-H | 0.6 | 5.444486 | 50.5821 | 410M:clip:A1-H:0.6 |
-| 410M | A1-H | 0.7 | 6.466273 | 55.6422 | 410M:clip:A1-H:0.7 |
-| 410M | A1-H | 0.8 | 8.391250 | 61.7700 | 410M:clip:A1-H:0.8 |
-| 410M | A1-H | 0.9 | 9.029800 | 69.1629 | 410M:clip:A1-H:0.9 |
+| Scale | Source checkpoint | Target p | Loss | S_model (%) | Clip-site ceiling (%) | U_arch (%) | Evidence ID |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 14M | gelu-control | 0.0 | 5.208594 | 0.0000 | 12.8332 | 0.0000 | 14M:clip:gelu-control:0.0 |
+| 14M | gelu-control | 0.1 | 5.214453 | 1.2787 | 12.8332 | 9.9641 | 14M:clip:gelu-control:0.1 |
+| 14M | gelu-control | 0.2 | 5.250270 | 2.5548 | 12.8332 | 19.9077 | 14M:clip:gelu-control:0.2 |
+| 14M | gelu-control | 0.3 | 5.361901 | 3.8316 | 12.8332 | 29.8574 | 14M:clip:gelu-control:0.3 |
+| 14M | gelu-control | 0.4 | 5.605384 | 5.1255 | 12.8332 | 39.9399 | 14M:clip:gelu-control:0.4 |
+| 14M | gelu-control | 0.5 | 6.077731 | 6.4419 | 12.8332 | 50.1975 | 14M:clip:gelu-control:0.5 |
+| 14M | gelu-control | 0.6 | 6.821173 | 7.7644 | 12.8332 | 60.5028 | 14M:clip:gelu-control:0.6 |
+| 14M | gelu-control | 0.7 | 7.766948 | 9.1235 | 12.8332 | 71.0930 | 14M:clip:gelu-control:0.7 |
+| 14M | gelu-control | 0.8 | 8.336118 | 10.5860 | 12.8332 | 82.4891 | 14M:clip:gelu-control:0.8 |
+| 14M | gelu-control | 0.9 | 8.825610 | 11.9419 | 12.8332 | 93.0549 | 14M:clip:gelu-control:0.9 |
+| 14M | relu-control | 0.0 | 5.269633 | 2.7141 | 12.8332 | 21.1494 | 14M:clip:relu-control:0.0 |
+| 14M | relu-control | 0.1 | 5.274073 | 3.5684 | 12.8332 | 27.8061 | 14M:clip:relu-control:0.1 |
+| 14M | relu-control | 0.2 | 5.307940 | 4.4184 | 12.8332 | 34.4293 | 14M:clip:relu-control:0.2 |
+| 14M | relu-control | 0.3 | 5.405056 | 5.2719 | 12.8332 | 41.0801 | 14M:clip:relu-control:0.3 |
+| 14M | relu-control | 0.4 | 5.602965 | 6.1293 | 12.8332 | 47.7616 | 14M:clip:relu-control:0.4 |
+| 14M | relu-control | 0.5 | 5.976274 | 6.9945 | 12.8332 | 54.5030 | 14M:clip:relu-control:0.5 |
+| 14M | relu-control | 0.6 | 6.521474 | 7.8929 | 12.8332 | 61.5040 | 14M:clip:relu-control:0.6 |
+| 14M | relu-control | 0.7 | 7.306175 | 9.0518 | 12.8332 | 70.5344 | 14M:clip:relu-control:0.7 |
+| 14M | relu-control | 0.8 | 8.107618 | 10.5585 | 12.8332 | 82.2753 | 14M:clip:relu-control:0.8 |
+| 14M | relu-control | 0.9 | 8.869450 | 11.8789 | 12.8332 | 92.5644 | 14M:clip:relu-control:0.9 |
+| 14M | relu-l1n-0p05 | 0.0 | 5.206157 | 3.1416 | 12.8332 | 24.4803 | 14M:clip:relu-l1n-0p05:0.0 |
+| 14M | relu-l1n-0p05 | 0.1 | 5.211364 | 3.9914 | 12.8332 | 31.1026 | 14M:clip:relu-l1n-0p05:0.1 |
+| 14M | relu-l1n-0p05 | 0.2 | 5.248624 | 4.8361 | 12.8332 | 37.6848 | 14M:clip:relu-l1n-0p05:0.2 |
+| 14M | relu-l1n-0p05 | 0.3 | 5.350951 | 5.6843 | 12.8332 | 44.2939 | 14M:clip:relu-l1n-0p05:0.3 |
+| 14M | relu-l1n-0p05 | 0.4 | 5.568858 | 6.5389 | 12.8332 | 50.9534 | 14M:clip:relu-l1n-0p05:0.4 |
+| 14M | relu-l1n-0p05 | 0.5 | 5.973093 | 7.3957 | 12.8332 | 57.6295 | 14M:clip:relu-l1n-0p05:0.5 |
+| 14M | relu-l1n-0p05 | 0.6 | 6.600953 | 8.2748 | 12.8332 | 64.4802 | 14M:clip:relu-l1n-0p05:0.6 |
+| 14M | relu-l1n-0p05 | 0.7 | 7.435047 | 9.2050 | 12.8332 | 71.7284 | 14M:clip:relu-l1n-0p05:0.7 |
+| 14M | relu-l1n-0p05 | 0.8 | 8.427544 | 10.2861 | 12.8332 | 80.1526 | 14M:clip:relu-l1n-0p05:0.8 |
+| 14M | relu-l1n-0p05 | 0.9 | 9.082812 | 11.7112 | 12.8332 | 91.2577 | 14M:clip:relu-l1n-0p05:0.9 |
+| 14M | relu-l1n-0p1 | 0.0 | 5.165466 | 3.3363 | 12.8332 | 25.9975 | 14M:clip:relu-l1n-0p1:0.0 |
+| 14M | relu-l1n-0p1 | 0.1 | 5.170191 | 4.1862 | 12.8332 | 32.6205 | 14M:clip:relu-l1n-0p1:0.1 |
+| 14M | relu-l1n-0p1 | 0.2 | 5.207756 | 5.0334 | 12.8332 | 39.2218 | 14M:clip:relu-l1n-0p1:0.2 |
+| 14M | relu-l1n-0p1 | 0.3 | 5.315055 | 5.8804 | 12.8332 | 45.8223 | 14M:clip:relu-l1n-0p1:0.3 |
+| 14M | relu-l1n-0p1 | 0.4 | 5.550581 | 6.7275 | 12.8332 | 52.4232 | 14M:clip:relu-l1n-0p1:0.4 |
+| 14M | relu-l1n-0p1 | 0.5 | 5.979635 | 7.5807 | 12.8332 | 59.0709 | 14M:clip:relu-l1n-0p1:0.5 |
+| 14M | relu-l1n-0p1 | 0.6 | 6.633155 | 8.4508 | 12.8332 | 65.8514 | 14M:clip:relu-l1n-0p1:0.6 |
+| 14M | relu-l1n-0p1 | 0.7 | 7.553385 | 9.3610 | 12.8332 | 72.9441 | 14M:clip:relu-l1n-0p1:0.7 |
+| 14M | relu-l1n-0p1 | 0.8 | 8.650510 | 10.2834 | 12.8332 | 80.1317 | 14M:clip:relu-l1n-0p1:0.8 |
+| 14M | relu-l1n-0p1 | 0.9 | 9.159795 | 11.5860 | 12.8332 | 90.2818 | 14M:clip:relu-l1n-0p1:0.9 |
+| 14M | relu-l1n-0p5 | 0.0 | 5.112683 | 3.7876 | 12.8332 | 29.5140 | 14M:clip:relu-l1n-0p5:0.0 |
+| 14M | relu-l1n-0p5 | 0.1 | 5.117628 | 4.6370 | 12.8332 | 36.1327 | 14M:clip:relu-l1n-0p5:0.1 |
+| 14M | relu-l1n-0p5 | 0.2 | 5.155895 | 5.4782 | 12.8332 | 42.6878 | 14M:clip:relu-l1n-0p5:0.2 |
+| 14M | relu-l1n-0p5 | 0.3 | 5.271484 | 6.3172 | 12.8332 | 49.2256 | 14M:clip:relu-l1n-0p5:0.3 |
+| 14M | relu-l1n-0p5 | 0.4 | 5.510881 | 7.1620 | 12.8332 | 55.8085 | 14M:clip:relu-l1n-0p5:0.4 |
+| 14M | relu-l1n-0p5 | 0.5 | 5.986626 | 7.9989 | 12.8332 | 62.3303 | 14M:clip:relu-l1n-0p5:0.5 |
+| 14M | relu-l1n-0p5 | 0.6 | 6.687065 | 8.8436 | 12.8332 | 68.9125 | 14M:clip:relu-l1n-0p5:0.6 |
+| 14M | relu-l1n-0p5 | 0.7 | 7.495898 | 9.6755 | 12.8332 | 75.3948 | 14M:clip:relu-l1n-0p5:0.7 |
+| 14M | relu-l1n-0p5 | 0.8 | 8.327347 | 10.5441 | 12.8332 | 82.1633 | 14M:clip:relu-l1n-0p5:0.8 |
+| 14M | relu-l1n-0p5 | 0.9 | 9.188822 | 11.1798 | 12.8332 | 87.1163 | 14M:clip:relu-l1n-0p5:0.9 |
+| 14M | relu-l1n-1 | 0.0 | 5.102270 | 3.9493 | 12.8332 | 30.7744 | 14M:clip:relu-l1n-1:0.0 |
+| 14M | relu-l1n-1 | 0.1 | 5.106970 | 4.7982 | 12.8332 | 37.3894 | 14M:clip:relu-l1n-1:0.1 |
+| 14M | relu-l1n-1 | 0.2 | 5.144074 | 5.6441 | 12.8332 | 43.9808 | 14M:clip:relu-l1n-1:0.2 |
+| 14M | relu-l1n-1 | 0.3 | 5.245573 | 6.4902 | 12.8332 | 50.5739 | 14M:clip:relu-l1n-1:0.3 |
+| 14M | relu-l1n-1 | 0.4 | 5.470511 | 7.3462 | 12.8332 | 57.2439 | 14M:clip:relu-l1n-1:0.4 |
+| 14M | relu-l1n-1 | 0.5 | 5.898911 | 8.1795 | 12.8332 | 63.7376 | 14M:clip:relu-l1n-1:0.5 |
+| 14M | relu-l1n-1 | 0.6 | 6.587026 | 9.0087 | 12.8332 | 70.1984 | 14M:clip:relu-l1n-1:0.6 |
+| 14M | relu-l1n-1 | 0.7 | 7.460709 | 9.8149 | 12.8332 | 76.4812 | 14M:clip:relu-l1n-1:0.7 |
+| 14M | relu-l1n-1 | 0.8 | 8.253852 | 10.6379 | 12.8332 | 82.8940 | 14M:clip:relu-l1n-1:0.8 |
+| 14M | relu-l1n-1 | 0.9 | 8.990051 | 11.2974 | 12.8332 | 88.0327 | 14M:clip:relu-l1n-1:0.9 |
+| 14M | relu-ol1-0p05 | 0.0 | 5.198069 | 3.1452 | 12.8332 | 24.5086 | 14M:clip:relu-ol1-0p05:0.0 |
+| 14M | relu-ol1-0p05 | 0.1 | 5.203818 | 3.9941 | 12.8332 | 31.1235 | 14M:clip:relu-ol1-0p05:0.1 |
+| 14M | relu-ol1-0p05 | 0.2 | 5.243323 | 4.8408 | 12.8332 | 37.7210 | 14M:clip:relu-ol1-0p05:0.2 |
+| 14M | relu-ol1-0p05 | 0.3 | 5.351475 | 5.6874 | 12.8332 | 44.3181 | 14M:clip:relu-ol1-0p05:0.3 |
+| 14M | relu-ol1-0p05 | 0.4 | 5.568223 | 6.5387 | 12.8332 | 50.9520 | 14M:clip:relu-ol1-0p05:0.4 |
+| 14M | relu-ol1-0p05 | 0.5 | 5.967554 | 7.3816 | 12.8332 | 57.5195 | 14M:clip:relu-ol1-0p05:0.5 |
+| 14M | relu-ol1-0p05 | 0.6 | 6.578153 | 8.2633 | 12.8332 | 64.3905 | 14M:clip:relu-ol1-0p05:0.6 |
+| 14M | relu-ol1-0p05 | 0.7 | 7.491310 | 9.1820 | 12.8332 | 71.5488 | 14M:clip:relu-ol1-0p05:0.7 |
+| 14M | relu-ol1-0p05 | 0.8 | 8.518643 | 10.2704 | 12.8332 | 80.0301 | 14M:clip:relu-ol1-0p05:0.8 |
+| 14M | relu-ol1-0p05 | 0.9 | 9.083664 | 11.7052 | 12.8332 | 91.2110 | 14M:clip:relu-ol1-0p05:0.9 |
+| 14M | relu-ol1-0p1 | 0.0 | 5.159387 | 3.3386 | 12.8332 | 26.0153 | 14M:clip:relu-ol1-0p1:0.0 |
+| 14M | relu-ol1-0p1 | 0.1 | 5.165409 | 4.1894 | 12.8332 | 32.6448 | 14M:clip:relu-ol1-0p1:0.1 |
+| 14M | relu-ol1-0p1 | 0.2 | 5.206190 | 5.0342 | 12.8332 | 39.2284 | 14M:clip:relu-ol1-0p1:0.2 |
+| 14M | relu-ol1-0p1 | 0.3 | 5.323405 | 5.8751 | 12.8332 | 45.7808 | 14M:clip:relu-ol1-0p1:0.3 |
+| 14M | relu-ol1-0p1 | 0.4 | 5.575266 | 6.7178 | 12.8332 | 52.3473 | 14M:clip:relu-ol1-0p1:0.4 |
+| 14M | relu-ol1-0p1 | 0.5 | 6.018996 | 7.5556 | 12.8332 | 58.8754 | 14M:clip:relu-ol1-0p1:0.5 |
+| 14M | relu-ol1-0p1 | 0.6 | 6.686208 | 8.3970 | 12.8332 | 65.4318 | 14M:clip:relu-ol1-0p1:0.6 |
+| 14M | relu-ol1-0p1 | 0.7 | 7.647184 | 9.2922 | 12.8332 | 72.4079 | 14M:clip:relu-ol1-0p1:0.7 |
+| 14M | relu-ol1-0p1 | 0.8 | 8.635984 | 10.2201 | 12.8332 | 79.6383 | 14M:clip:relu-ol1-0p1:0.8 |
+| 14M | relu-ol1-0p1 | 0.9 | 9.266252 | 11.5615 | 12.8332 | 90.0906 | 14M:clip:relu-ol1-0p1:0.9 |
+| 14M | relu-ol1-0p5 | 0.0 | 5.110230 | 3.7680 | 12.8332 | 29.3614 | 14M:clip:relu-ol1-0p5:0.0 |
+| 14M | relu-ol1-0p5 | 0.1 | 5.116110 | 4.6156 | 12.8332 | 35.9660 | 14M:clip:relu-ol1-0p5:0.1 |
+| 14M | relu-ol1-0p5 | 0.2 | 5.163076 | 5.4592 | 12.8332 | 42.5401 | 14M:clip:relu-ol1-0p5:0.2 |
+| 14M | relu-ol1-0p5 | 0.3 | 5.291757 | 6.2909 | 12.8332 | 49.0206 | 14M:clip:relu-ol1-0p5:0.3 |
+| 14M | relu-ol1-0p5 | 0.4 | 5.585054 | 7.1044 | 12.8332 | 55.3600 | 14M:clip:relu-ol1-0p5:0.4 |
+| 14M | relu-ol1-0p5 | 0.5 | 6.130628 | 7.9112 | 12.8332 | 61.6462 | 14M:clip:relu-ol1-0p5:0.5 |
+| 14M | relu-ol1-0p5 | 0.6 | 6.968931 | 8.6968 | 12.8332 | 67.7686 | 14M:clip:relu-ol1-0p5:0.6 |
+| 14M | relu-ol1-0p5 | 0.7 | 7.917230 | 9.4801 | 12.8332 | 73.8717 | 14M:clip:relu-ol1-0p5:0.7 |
+| 14M | relu-ol1-0p5 | 0.8 | 8.780806 | 10.3725 | 12.8332 | 80.8259 | 14M:clip:relu-ol1-0p5:0.8 |
+| 14M | relu-ol1-0p5 | 0.9 | 9.262722 | 11.1060 | 12.8332 | 86.5413 | 14M:clip:relu-ol1-0p5:0.9 |
+| 14M | relu-ol1-1 | 0.0 | 5.121213 | 3.9384 | 12.8332 | 30.6890 | 14M:clip:relu-ol1-1:0.0 |
+| 14M | relu-ol1-1 | 0.1 | 5.129136 | 4.7924 | 12.8332 | 37.3442 | 14M:clip:relu-ol1-1:0.1 |
+| 14M | relu-ol1-1 | 0.2 | 5.183859 | 5.6439 | 12.8332 | 43.9787 | 14M:clip:relu-ol1-1:0.2 |
+| 14M | relu-ol1-1 | 0.3 | 5.349408 | 6.4791 | 12.8332 | 50.4873 | 14M:clip:relu-ol1-1:0.3 |
+| 14M | relu-ol1-1 | 0.4 | 5.680604 | 7.2886 | 12.8332 | 56.7951 | 14M:clip:relu-ol1-1:0.4 |
+| 14M | relu-ol1-1 | 0.5 | 6.231464 | 8.0762 | 12.8332 | 62.9325 | 14M:clip:relu-ol1-1:0.5 |
+| 14M | relu-ol1-1 | 0.6 | 7.013678 | 8.8337 | 12.8332 | 68.8348 | 14M:clip:relu-ol1-1:0.6 |
+| 14M | relu-ol1-1 | 0.7 | 7.875197 | 9.5778 | 12.8332 | 74.6336 | 14M:clip:relu-ol1-1:0.7 |
+| 14M | relu-ol1-1 | 0.8 | 8.709804 | 10.3224 | 12.8332 | 80.4354 | 14M:clip:relu-ol1-1:0.8 |
+| 14M | relu-ol1-1 | 0.9 | 9.263879 | 11.0500 | 12.8332 | 86.1052 | 14M:clip:relu-ol1-1:0.9 |
+| 14M | a4z-one-sided-kappa-0 | 0.0 | 5.470511 | 7.2120 | 12.8332 | 56.1984 | 14M:clip:a4z-one-sided-kappa-0:0.0 |
+| 14M | a4z-one-sided-kappa-0 | 0.1 | 5.470511 | 7.2120 | 12.8332 | 56.1984 | 14M:clip:a4z-one-sided-kappa-0:0.1 |
+| 14M | a4z-one-sided-kappa-0 | 0.2 | 5.470511 | 7.2120 | 12.8332 | 56.1984 | 14M:clip:a4z-one-sided-kappa-0:0.2 |
+| 14M | a4z-one-sided-kappa-0 | 0.3 | 5.470511 | 7.2120 | 12.8332 | 56.1984 | 14M:clip:a4z-one-sided-kappa-0:0.3 |
+| 14M | a4z-one-sided-kappa-0 | 0.4 | 5.470428 | 7.2189 | 12.8332 | 56.2522 | 14M:clip:a4z-one-sided-kappa-0:0.4 |
+| 14M | a4z-one-sided-kappa-0 | 0.5 | 5.470153 | 7.3099 | 12.8332 | 56.9610 | 14M:clip:a4z-one-sided-kappa-0:0.5 |
+| 14M | a4z-one-sided-kappa-0 | 0.6 | 5.539702 | 8.0783 | 12.8332 | 62.9484 | 14M:clip:a4z-one-sided-kappa-0:0.6 |
+| 14M | a4z-one-sided-kappa-0 | 0.7 | 5.957410 | 8.9564 | 12.8332 | 69.7912 | 14M:clip:a4z-one-sided-kappa-0:0.7 |
+| 14M | a4z-one-sided-kappa-0 | 0.8 | 6.974517 | 10.2149 | 12.8332 | 79.5975 | 14M:clip:a4z-one-sided-kappa-0:0.8 |
+| 14M | a4z-one-sided-kappa-0 | 0.9 | 8.247837 | 11.6306 | 12.8332 | 90.6296 | 14M:clip:a4z-one-sided-kappa-0:0.9 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.0 | 5.466524 | 7.4137 | 12.8332 | 57.7699 | 14M:clip:a4z-one-sided-kappa-0p01:0.0 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.1 | 5.466524 | 7.4137 | 12.8332 | 57.7699 | 14M:clip:a4z-one-sided-kappa-0p01:0.1 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.2 | 5.466524 | 7.4137 | 12.8332 | 57.7699 | 14M:clip:a4z-one-sided-kappa-0p01:0.2 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.3 | 5.466524 | 7.4137 | 12.8332 | 57.7699 | 14M:clip:a4z-one-sided-kappa-0p01:0.3 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.4 | 5.466524 | 7.4137 | 12.8332 | 57.7699 | 14M:clip:a4z-one-sided-kappa-0p01:0.4 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.5 | 5.466257 | 7.4565 | 12.8332 | 58.1031 | 14M:clip:a4z-one-sided-kappa-0p01:0.5 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.6 | 5.534816 | 8.1783 | 12.8332 | 63.7280 | 14M:clip:a4z-one-sided-kappa-0p01:0.6 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.7 | 5.958228 | 9.0027 | 12.8332 | 70.1522 | 14M:clip:a4z-one-sided-kappa-0p01:0.7 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.8 | 6.988377 | 10.1968 | 12.8332 | 79.4569 | 14M:clip:a4z-one-sided-kappa-0p01:0.8 |
+| 14M | a4z-one-sided-kappa-0p01 | 0.9 | 8.158731 | 11.6214 | 12.8332 | 90.5575 | 14M:clip:a4z-one-sided-kappa-0p01:0.9 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.0 | 5.434159 | 8.2059 | 12.8332 | 63.9429 | 14M:clip:a4z-one-sided-kappa-0p05:0.0 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.1 | 5.434159 | 8.2059 | 12.8332 | 63.9429 | 14M:clip:a4z-one-sided-kappa-0p05:0.1 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.2 | 5.434159 | 8.2059 | 12.8332 | 63.9429 | 14M:clip:a4z-one-sided-kappa-0p05:0.2 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.3 | 5.434159 | 8.2059 | 12.8332 | 63.9429 | 14M:clip:a4z-one-sided-kappa-0p05:0.3 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.4 | 5.434159 | 8.2059 | 12.8332 | 63.9429 | 14M:clip:a4z-one-sided-kappa-0p05:0.4 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.5 | 5.434098 | 8.2130 | 12.8332 | 63.9983 | 14M:clip:a4z-one-sided-kappa-0p05:0.5 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.6 | 5.479514 | 8.7583 | 12.8332 | 68.2473 | 14M:clip:a4z-one-sided-kappa-0p05:0.6 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.7 | 5.864863 | 9.4169 | 12.8332 | 73.3798 | 14M:clip:a4z-one-sided-kappa-0p05:0.7 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.8 | 6.693103 | 10.1913 | 12.8332 | 79.4142 | 14M:clip:a4z-one-sided-kappa-0p05:0.8 |
+| 14M | a4z-one-sided-kappa-0p05 | 0.9 | 8.091245 | 11.4622 | 12.8332 | 89.3174 | 14M:clip:a4z-one-sided-kappa-0p05:0.9 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.0 | 5.419630 | 8.9530 | 12.8332 | 69.7647 | 14M:clip:a4z-one-sided-kappa-0p1:0.0 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.1 | 5.419630 | 8.9530 | 12.8332 | 69.7647 | 14M:clip:a4z-one-sided-kappa-0p1:0.1 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.2 | 5.419630 | 8.9530 | 12.8332 | 69.7647 | 14M:clip:a4z-one-sided-kappa-0p1:0.2 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.3 | 5.419630 | 8.9530 | 12.8332 | 69.7647 | 14M:clip:a4z-one-sided-kappa-0p1:0.3 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.4 | 5.419630 | 8.9530 | 12.8332 | 69.7647 | 14M:clip:a4z-one-sided-kappa-0p1:0.4 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.5 | 5.419605 | 8.9537 | 12.8332 | 69.7704 | 14M:clip:a4z-one-sided-kappa-0p1:0.5 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.6 | 5.446599 | 9.3424 | 12.8332 | 72.7986 | 14M:clip:a4z-one-sided-kappa-0p1:0.6 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.7 | 5.775362 | 10.0120 | 12.8332 | 78.0167 | 14M:clip:a4z-one-sided-kappa-0p1:0.7 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.8 | 6.579617 | 10.6554 | 12.8332 | 83.0299 | 14M:clip:a4z-one-sided-kappa-0p1:0.8 |
+| 14M | a4z-one-sided-kappa-0p1 | 0.9 | 7.759894 | 11.3782 | 12.8332 | 88.6622 | 14M:clip:a4z-one-sided-kappa-0p1:0.9 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.0 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.0 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.1 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.1 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.2 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.2 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.3 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.3 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.4 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.4 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.5 | 5.659684 | 10.2154 | 12.8332 | 79.6019 | 14M:clip:a4z-one-sided-kappa-0p5:0.5 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.6 | 5.660417 | 10.2271 | 12.8332 | 79.6928 | 14M:clip:a4z-one-sided-kappa-0p5:0.6 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.7 | 5.705777 | 10.5631 | 12.8332 | 82.3114 | 14M:clip:a4z-one-sided-kappa-0p5:0.7 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.8 | 6.099449 | 11.3257 | 12.8332 | 88.2531 | 14M:clip:a4z-one-sided-kappa-0p5:0.8 |
+| 14M | a4z-one-sided-kappa-0p5 | 0.9 | 6.824761 | 12.0673 | 12.8332 | 94.0323 | 14M:clip:a4z-one-sided-kappa-0p5:0.9 |
+| 70M | A0 | 0.0 | 4.099766 | 0.0005 | 37.0634 | 0.0012 | 70M:clip:A0:0.0 |
+| 70M | A0 | 0.1 | 4.103608 | 3.7048 | 37.0634 | 9.9958 | 70M:clip:A0:0.1 |
+| 70M | A0 | 0.2 | 4.130721 | 7.4099 | 37.0634 | 19.9924 | 70M:clip:A0:0.2 |
+| 70M | A0 | 0.3 | 4.207335 | 11.1282 | 37.0634 | 30.0248 | 70M:clip:A0:0.3 |
+| 70M | A0 | 0.4 | 4.397795 | 14.8442 | 37.0634 | 40.0509 | 70M:clip:A0:0.4 |
+| 70M | A0 | 0.5 | 4.833057 | 18.5885 | 37.0634 | 50.1533 | 70M:clip:A0:0.5 |
+| 70M | A0 | 0.6 | 5.657785 | 22.4109 | 37.0634 | 60.4664 | 70M:clip:A0:0.6 |
+| 70M | A0 | 0.7 | 6.927989 | 26.3484 | 37.0634 | 71.0901 | 70M:clip:A0:0.7 |
+| 70M | A0 | 0.8 | 8.072236 | 30.4621 | 37.0634 | 82.1892 | 70M:clip:A0:0.8 |
+| 70M | A0 | 0.9 | 9.179397 | 34.5814 | 37.0634 | 93.3034 | 70M:clip:A0:0.9 |
+| 70M | A1-H | 0.0 | 4.222750 | 10.0658 | 37.0634 | 27.1582 | 70M:clip:A1-H:0.0 |
+| 70M | A1-H | 0.1 | 4.223747 | 12.5370 | 37.0634 | 33.8258 | 70M:clip:A1-H:0.1 |
+| 70M | A1-H | 0.2 | 4.234510 | 15.0099 | 37.0634 | 40.4979 | 70M:clip:A1-H:0.2 |
+| 70M | A1-H | 0.3 | 4.269464 | 17.4855 | 37.0634 | 47.1772 | 70M:clip:A1-H:0.3 |
+| 70M | A1-H | 0.4 | 4.346144 | 19.9851 | 37.0634 | 53.9213 | 70M:clip:A1-H:0.4 |
+| 70M | A1-H | 0.5 | 4.522054 | 22.5156 | 37.0634 | 60.7490 | 70M:clip:A1-H:0.5 |
+| 70M | A1-H | 0.6 | 4.914340 | 25.1077 | 37.0634 | 67.7426 | 70M:clip:A1-H:0.6 |
+| 70M | A1-H | 0.7 | 5.722641 | 27.8935 | 37.0634 | 75.2589 | 70M:clip:A1-H:0.7 |
+| 70M | A1-H | 0.8 | 6.912035 | 31.0351 | 37.0634 | 83.7351 | 70M:clip:A1-H:0.8 |
+| 70M | A1-H | 0.9 | 9.133301 | 33.8912 | 37.0634 | 91.4410 | 70M:clip:A1-H:0.9 |
+| 410M | A0 | 0.0 | 4.547456 | 0.0110 | 74.7764 | 0.0148 | 410M:clip:A0:0.0 |
+| 410M | A0 | 0.1 | 4.553016 | 7.4632 | 74.7764 | 9.9807 | 410M:clip:A0:0.1 |
+| 410M | A0 | 0.2 | 4.581109 | 14.8833 | 74.7764 | 19.9037 | 410M:clip:A0:0.2 |
+| 410M | A0 | 0.3 | 4.672734 | 22.2428 | 74.7764 | 29.7457 | 410M:clip:A0:0.3 |
+| 410M | A0 | 0.4 | 4.931758 | 29.5388 | 74.7764 | 39.5028 | 410M:clip:A0:0.4 |
+| 410M | A0 | 0.5 | 5.585540 | 36.8043 | 74.7764 | 49.2192 | 410M:clip:A0:0.5 |
+| 410M | A0 | 0.6 | 6.721288 | 44.0981 | 74.7764 | 58.9733 | 410M:clip:A0:0.6 |
+| 410M | A0 | 0.7 | 7.758184 | 51.5636 | 74.7764 | 68.9571 | 410M:clip:A0:0.7 |
+| 410M | A0 | 0.8 | 8.311326 | 60.0129 | 74.7764 | 80.2566 | 410M:clip:A0:0.8 |
+| 410M | A0 | 0.9 | 9.027046 | 70.0471 | 74.7764 | 93.6755 | 410M:clip:A0:0.9 |
+| 410M | A1-H | 0.0 | 4.651294 | 21.0497 | 74.7764 | 28.1502 | 410M:clip:A1-H:0.0 |
+| 410M | A1-H | 0.1 | 4.652483 | 25.9843 | 74.7764 | 34.7494 | 410M:clip:A1-H:0.1 |
+| 410M | A1-H | 0.2 | 4.662035 | 30.9048 | 74.7764 | 41.3296 | 410M:clip:A1-H:0.2 |
+| 410M | A1-H | 0.3 | 4.693632 | 35.8103 | 74.7764 | 47.8899 | 410M:clip:A1-H:0.3 |
+| 410M | A1-H | 0.4 | 4.773735 | 40.7131 | 74.7764 | 54.4464 | 410M:clip:A1-H:0.4 |
+| 410M | A1-H | 0.5 | 4.975709 | 45.6193 | 74.7764 | 61.0076 | 410M:clip:A1-H:0.5 |
+| 410M | A1-H | 0.6 | 5.444486 | 50.5821 | 74.7764 | 67.6445 | 410M:clip:A1-H:0.6 |
+| 410M | A1-H | 0.7 | 6.466273 | 55.6422 | 74.7764 | 74.4115 | 410M:clip:A1-H:0.7 |
+| 410M | A1-H | 0.8 | 8.391250 | 61.7700 | 74.7764 | 82.6063 | 410M:clip:A1-H:0.8 |
+| 410M | A1-H | 0.9 | 9.029800 | 69.1629 | 74.7764 | 92.4930 | 410M:clip:A1-H:0.9 |

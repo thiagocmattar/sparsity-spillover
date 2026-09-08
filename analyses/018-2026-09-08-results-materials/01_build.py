@@ -31,12 +31,13 @@ def tables(d):
                      f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',f'{ceil:.4f}',
                      '--' if r['U_arch'] is None else f'{100*r["U_arch"]:.3f}',r['id']])
     table('all-trained-endpoints',['Scale','Recipe','Dose','Loss','S_model (%)','Ceiling (%)','U_arch (%)','Evidence ID'],rows,paired)
-    table('all-clipping-points',['Scale','Source checkpoint','Target p','Loss','S_model (%)','Evidence ID'],
-          [[r['scale'],r['family'],f'{r["dose"]:.1f}',f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']] for r in d['clipping']],
-          paired+' 150 points at 14M and 20 at each larger size. p=0 uses its actual sweep evaluation, not a display anchor.')
-    table('blocked-effects',['Contrast','Level','Dose type','Δ loss','Δ S_model (pp)','Parent ID','Child ID'],
-          [[r['block'],r['dose'],r['dose_kind'],f'{r["delta_loss"]:+.6f}',f'{r["delta_R_pp"]:+.4f}',r['parent'],r['child']] for r in d['contrasts']],
-          paired+' Child minus parent; treatment levels are not replicates.')
+    table('all-clipping-points',['Scale','Source checkpoint','Target p','Loss','S_model (%)','Clip-site ceiling (%)','U_arch (%)','Evidence ID'],
+          [[r['scale'],r['family'],f'{r["dose"]:.1f}',f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',
+            f'{r["ceiling"]["R_model_max_percent"]:.4f}',f'{100*r["U_arch"]:.4f}',r['id']] for r in d['clipping']],
+          paired+' 150 points at 14M and 20 at each larger size. p=0 uses its actual sweep evaluation. All clipping normalizations use evaluation sites a,m,h,z, including p=0.')
+    table('blocked-effects',['Contrast','Level','Dose type','Δ loss','Δ S_model (pp)','Reference ID','Treatment ID'],
+          [[r['block'],r['dose'],r['dose_kind'],f'{r["delta_loss"]:+.6f}',f'{r["delta_R_pp"]:+.4f}',r['reference'],r['treatment']] for r in d['contrasts']],
+          paired+' Treatment minus reference; treatment levels are not replicates.')
     compact=[]
     for k in DOSES:
         row=[f'{k:g}']
@@ -69,6 +70,10 @@ def tables(d):
                          f'{100*c["lm_head_product_count"]/c["model_product_count"]:.3f}',f'{ex["tokens_per_parameter"]:.3f}'])
     table('architecture-counts',['Scale','Recipe','L','d','FFN width','T','V','Reach products','Model products','Ceiling (%)','Dense head share (%)','Tokens/parameter'],rows,
           'Analytic integer counts per one complete, uncached 2048-token sequence; pooled measurements multiply these by 338. Source O004.')
+    table('ceiling-vs-model-size',['Scale','Parameters','Topology','Active sites','Reach products','Model products','Ceiling (%)'],
+          [[r['scale'],r['parameters'],r['family'],', '.join(r['active_sites']),r['reachable_product_count'],
+            r['model_product_count'],f'{r["R_model_max_percent"]:.6f}'] for r in d['ceilings']],
+          'Analytic logical scalar products per one complete uncached 2048-token sequence. OL1 does not change the selected-site ceiling. Source O008.')
     table('normalization-audit',['Scale','Recipe','Dose','U_arch (%)','U_reach (%)','Outside-reach zero products','Outside-reach contribution (pp)'],
           [[r['scale'],r['family'],r['dose'],
             '--' if r['U_arch'] is None else f'{100*r["U_arch"]:.6f}',
@@ -109,7 +114,7 @@ def tables(d):
           'Realized recipe from per-attempt config/manifest. Random initialization and order seed 1234; AdamW (0.9,0.95), eps 1e-8, decay .1, clip norm 1; 1% warmup, cosine to 10% peak. 714 training blocks wrap beyond the complete pass.')
     table('runtime-summary',['Candidate','Qualified checkpoints','Speedup geomean','Minimum','Maximum','Above 1x'],
           [[k,v['n'],f'{v["geomean"]:.6f}',f'{v["minimum"]:.6f}',f'{v["maximum"]:.6f}',v['above_one']] for k,v in d['runtime']['final_candidates'].items()],
-          'Run 029, RTX5090, BF16 batch 1, T=2048, native SDPA CUDA-graph denominator, 3 fresh processes. Geomeans for P0 cover only its five qualified checkpoints; they are not cohort-matched rankings. Source O007.')
+          'Run 029 restricted to the 30 included checkpoints; RTX5090, BF16 batch 1, T=2048, native SDPA CUDA-graph denominator, 3 fresh processes. P0 covers only four qualified checkpoints; it is not a cohort-matched ranking. Source O007.')
 
 
 def main():
@@ -120,7 +125,7 @@ def main():
     inventory={p.relative_to(HERE).as_posix():{'sha256':sha(p),'bytes':p.stat().st_size}
                for folder in ('figures','tables') for p in sorted((HERE/folder).iterdir()) if p.is_file()}
     (HERE/'artifact_inventory.json').write_text(json.dumps(inventory,indent=2,sort_keys=True)+'\n',encoding='utf-8',newline='\n')
-    print(f'Built {len(d["trained"])} trained conditions, {len(d["clipping"])} clipping points, {len(d["contrasts"])} contrasts; 7 PDFs; {len(d["sources"])} directly hashed sources.')
+    print(f'Built {len(d["trained"])} trained conditions, {len(d["clipping"])} clipping points, {len(d["contrasts"])} contrasts; 8 PDFs; {len(d["sources"])} directly hashed sources.')
 
 
 if __name__=='__main__':

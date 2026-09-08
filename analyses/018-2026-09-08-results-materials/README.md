@@ -1,64 +1,62 @@
-# Analysis 018 - Results materials for the revised argument
+# Analysis 018 — Results materials for the revised argument
 
-Prepared for the user's 8 September 2026 request after reading the ten-page
-`manuscript/draft/main.pdf`, dated 8 September. This folder reprocesses existing
-local evidence. It does not alter prior runs or the manuscript, execute a model,
-or promote a research finding. The repository convention is `analyses/`, rather
-than a separate `/analysis` tree.
+Revised after the user's figure review on 8 September 2026. This package reads
+the current manuscript and reprocesses retained experiments. It contains eight
+publication PDFs, numerical tables, proposed arguments, captions and provenance.
+All artwork is drawn at the ICLR template's 5.5-inch text width.
 
-Start with [RESULTS.md](RESULTS.md): the recommended argument, numerical claims,
-and decisions about normalization and the activation case study. The maintained
-[checklist](CHECKLIST.md) records every work item. [EVIDENCE-AUDIT.md](EVIDENCE-AUDIT.md)
-documents coverage, exclusions, and discrepancies.
+Start with [RESULTS.md](RESULTS.md) for the argument and
+[FIGURE-REVIEW.md](FIGURE-REVIEW.md) for the critical review of every figure.
+The [checklist](CHECKLIST.md) records completion; [verification](VERIFICATION.md)
+records the checks actually performed. Original runs and manuscript files are unchanged.
 
-## Recommended results order
+## Suggested paper order
 
-| Role | Material | Question answered |
+| Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main, opening | [01: 14M overview](figures/01-14m-overview.pdf) | Which recipes occupy the quality-sparsity frontier? |
-| Main, explanation | [02: blocked effects](figures/02-blocked-intervention-effects.pdf) | What does each matched intervention add, and how does the effect change with dose? |
-| Main, transfer | [03: scale and ceilings](figures/03-scale-transfer-and-ceilings.pdf) | Which recipe orderings persist, and what does normalization change? |
-| Supporting explanation / appendix | [04: operation accounting](figures/04-operation-accounting.pdf) | How much is learned zero rate versus architecture-dependent weighting? |
-| Main case study or appendix if space is tight | [05: activation mass grid](figures/05-activation-mass-grid.pdf) | Where does mass become exactly zero, and where does it merely become small? |
-| Appendix, full comparison | [06: all post-hoc points](figures/06-complete-posthoc-comparison.pdf) | Does the overview survive the available trained-plus-clipped controls? |
-| Existing systems subsection | [07: kernel realization](figures/07-kernel-realization.pdf) | Can a specialized implementation exploit the opportunity? |
+| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | One scatter plot of all 30 included trained conditions; no frontier overlay |
+| Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 25 matched comparisons |
+| Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
+| Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Absolute loss/raw sparsity above; relative loss/ceiling utilization below, including both clipped controls |
+| Main case study, or appendix if space is tight | [05 — activation mass](figures/05-activation-mass-grid.pdf) | Exact-zero and small-nonzero mass at manuscript sites h, m, q, k, v |
+| Supporting appendix | [04 — operation accounting](figures/04-operation-accounting.pdf) | Six bars decomposing the high-threshold results into affected operations |
+| Supporting appendix | [06 — post-hoc clipping](figures/06-complete-posthoc-comparison.pdf) | All 150 retained 14M clipping evaluations, without connecting curves |
+| Systems subsection | [07 — kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and the final kernel on the same 30 included checkpoints |
 
-Figures 01-06 use the draft's calligraphic S notation. Figure 07 is a byte-identical
-copy of Run 029's final revision, already used in the draft; its R_model is the
-same operational field. Do not insert a duplicate of the existing kernel figure.
-Every figure's caption, interpretation, and source is in [observations/INDEX.md](observations/INDEX.md).
+Numbering preserves existing filenames; Figure 08 belongs before Figure 03 in
+the argument. It need not become paper Figure 8. The observations contain
+self-contained captions and evidence links: [observation index](observations/INDEX.md).
 
-## Tables and insertion material
+## Scope and tables
 
-- Main table candidates: [pressure and gate effects](tables/pressure-and-gate-effects.md)
-  and [scale endpoints](tables/scale-endpoints.md), each with a `.tex` counterpart.
-- Complete tables: [all 59 trained conditions](tables/all-trained-endpoints.md),
-  [all 190 clipping points](tables/all-clipping-points.md), [30 matched contrasts](tables/blocked-effects.md),
-  [all 15 cross-scale recipe pairs](tables/scale-paired-recipes.md), and [frontier membership](tables/frontiers.md).
-- Audit/appendix tables: [training protocol](tables/training-protocol.md),
-  [analytic counts](tables/architecture-counts.md), [operation counts](tables/operation-counts.md),
-  [activation statistics](tables/activation-statistics.md), [normalization audit](tables/normalization-audit.md),
-  and [runtime summary](tables/runtime-summary.md).
-- [results.tex](results.tex) is an optional, self-contained results fragment for
-  insertion before the existing kernel subsection. It has source-observation
-  comments and uses analysis-owned assets. The draft itself is untouched.
+A4-OL1[h] is excluded from all current numerical results and artwork, including
+runtime summaries. The corrected four-site A4-OL1 remains. There are 54 trained
+conditions (30/12/12 at 14M/70M/410M) and 190 clipping evaluations (150/20/20).
+These 244 evaluated conditions are not independent random seeds.
 
-The main ladder has 30 trained 14M conditions. The overview also explicitly
-identifies five historical A4-OL1[h] conditions, for 35 total. Each larger size
-has 12 trained conditions. Clipping covers 150 14M evaluations and 20 at each
-larger size. These are evaluated conditions, not 249 independent random seeds.
+- Compact table candidates: [pressure and gate effects](tables/pressure-and-gate-effects.md)
+  and [scale endpoints](tables/scale-endpoints.md), both also available as TeX.
+- Complete numerical results: [trained endpoints](tables/all-trained-endpoints.md),
+  [clipping evaluations](tables/all-clipping-points.md), [matched effects](tables/blocked-effects.md),
+  [cross-scale pairs](tables/scale-paired-recipes.md), [numerical frontier membership](tables/frontiers.md).
+- Supporting evidence: [ceilings versus size](tables/ceiling-vs-model-size.md),
+  [architecture counts](tables/architecture-counts.md), [normalization audit](tables/normalization-audit.md),
+  [operation counts](tables/operation-counts.md), [activation statistics](tables/activation-statistics.md),
+  [training protocol](tables/training-protocol.md), [runtime summary](tables/runtime-summary.md).
 
-## Reproduction and provenance
+[results.tex](results.tex) is an optional analysis-owned insertion fragment.
+It does not modify the draft. The revised runtime cohort requires replacing
+the old 35-checkpoint summary if this material is adopted in the manuscript.
+
+## Reproduce
 
 ```powershell
 .venv/Scripts/python.exe analyses/018-2026-09-08-results-materials/01_build.py
 .venv/Scripts/python.exe -m pytest -p no:cacheprovider analyses/018-2026-09-08-results-materials/test_evidence.py tests/test_ceilings.py tests/test_metrics.py -q
 ```
 
-`evidence.py` reads raw retained counts, manifests, configs, and clipping
-evaluations; `plots.py` owns only this folder's figures; `01_build.py` writes
-the reproducible data, tables and PDFs. `figure_data.json` includes source
-SHA-256 identities, integer counts, normalization numerators, contrast IDs,
-and both endpoint and terminal losses. `artifact_inventory.json` identifies
-the generated figures/tables. Read [VERIFICATION.md](VERIFICATION.md) for the
-actual verification scope. No dataset or checkpoint bytes are copied here.
+`evidence.py` reconciles retained artifacts; `plots.py` draws only this analysis's
+figures; `01_build.py` writes tables, PDFs and data. `figure_data.json` retains
+integer counts, endpoint identities, normalization definitions, runtime
+replicates and 230 directly hashed source files. `artifact_inventory.json`
+identifies every generated PDF/table. No training, inference or cloud work was run.

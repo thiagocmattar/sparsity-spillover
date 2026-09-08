@@ -1,34 +1,32 @@
-# Scale transfer and ceiling normalization
+# Scale transfer with clipping controls
 
 ## Question
 
-Which 14M recipe relationships persist at 70M/410M, and does dividing by the reach ceiling remove architecture effects?
+Which recipe relationships survive larger models, and what does ceiling normalization explain?
 
 ## Method
 
-Plot all five doses for A4-OL1 and A7-OL1 at three sizes. Subtract the same-size A0 paired loss for the vertical coordinate. Top row uses raw R_model; bottom uses observed zero products divided by selected-site reachable products, U_arch. Recompute all analytic counts from L,d,FFN width,T,V and compare to retained diagnostics. Record U_reach as a numerator-scope sensitivity check.
+Plot five A4-OL1/A7-OL1 doses and ten targets per clipped A0/A1-H control at each scale. Top uses raw loss and raw sparsity. Bottom uses loss minus unmodified same-scale A0 and U_arch. Clipped controls use the declared evaluation-site ceiling {a,m,h,z}, including p=0.
 
 ## Coverage
 
-Thirty trained OL1 endpoints and six A0/A1-H controls. All endpoints use complete validation (338 blocks, 1,444-token tail excluded), one seed per size, and 1,493,172,224 training tokens. Controls are shown on raw panels; A0 normalization is undefined.
+90 plotted evaluations: 30 trained recipe endpoints plus 60 clipped-control evaluations across 14M/70M/410M. Each p=0 is the actual sweep measurement. Unless the section specifies runtime timing inputs, validation covers all 500 documents packed into 338 complete 2048-token blocks, excluding the 1,444-token tail.
 
 ## Figure and caption
 
 [Publication PDF](../figures/03-scale-transfer-and-ceilings.pdf)
 
-**Selected-recipe transfer in raw and reach-normalized coordinates.** Columns show 14M, 70M and 410M. The y axis is final loss relative to that size's A0. Top panels display raw model-wide sparsity; colored vertical dotted lines mark each topology's analytic ceiling. Bottom panels divide by that recipe's own ceiling; the dotted line is a ratio of one. Points connect in kappa order 0, .01, .05, .1, .5; endpoint labels identify 0 and .5. A0 is omitted from normalized panels because its selected reach is zero. Ratio values need not be bounded by 100%, and different recipes use different denominators.
+Selected recipes and uniform clipping across model sizes. Columns denote size. Top: absolute validation loss versus raw model-wide sparsity. Bottom: loss relative to unmodified same-size A0 versus 100 R_model/R_model_max. Solid curves connect trained κ=0,.01,.05,.1,.5 endpoints; dotted open-marker curves connect p=0,.1,…,.9 clipping evaluations. Curves only order evaluated points. Clipped A0/A1-H use the reach of their clipping sites a,m,h,z, not the source checkpoint topology. Both rows retain every value; one shared legend applies to all panels.
 
 ## Result
 
-At kappa=.5, A7-OL1 improves both raw axes over A4-OL1 at every size. At kappa=0 the A4-over-A7 ordering at 14M/70M reverses at 410M. The A7 high-dose normalized values are 91.75%, 82.15%, 92.40%, despite raw values 27.48%, 40.60%, 80.62%. A4-OL1 has a higher fraction of its own narrower ceiling at all 15 matched recipe pairs.
+At κ=.5 A7-OL1 has lower loss and greater raw sparsity than A4-OL1 at every scale. At κ=0 that ordering holds only at 410M. A4-OL1 has higher utilization of its own narrower ceiling in all 15 matched pairs.
 
 ## Caveats
 
-Normalization changes the question and does not create a size-invariant quality score. Natural zeros outside selected reach remain in U_arch. Even block-only rates retain architecture-dependent operation weights. Larger cohorts lack no-pressure A4/A7 controls, so only recipe transfer is identified. Tokens/parameter and peak LR differ across sizes; no scaling law, seed uncertainty, or causal explanation of the 410M reversal is inferred.
+Recipe transfer, not replication of an isolated pressure effect: larger scales lack no-pressure A4/A7. Equal tokens are unequal tokens/parameter; 410M uses a different peak LR. U_arch is not a size-invariant quality score or speedup and need not be bounded by one. Full clipping losses compress fine trained differences, which the tables retain.
 
 ## Source script and evidence
 
-`plots.py:scaling`; `evidence.py`; `01_build.py`; `tables/scale-endpoints.tex`, `tables/scale-paired-recipes.md`, `tables/normalization-audit.md`. Runs 014/015/018/019 and Run 004 controls.
-
-Paths above are relative to the analysis root or repository root as named.
-Complete count-derived values and source hashes are in [figure_data.json](../figure_data.json).
+`plots.py:scaling`, invoked by `01_build.py`. Supporting evidence: tables/scale-paired-recipes.md, tables/all-clipping-points.md and tables/normalization-audit.md.
+All source identities, integer counts and exact values are retained in [figure_data.json](../figure_data.json).

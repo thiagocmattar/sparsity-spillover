@@ -1,34 +1,32 @@
-# Activation magnitude-band case study
+# Activation mass at manuscript sites
 
 ## Question
 
-How do comparable FFN zeros coexist with different attention opportunities in A4-OL1 and A7-OL1?
+How can similar FFN hidden zeros coexist with different attention opportunities?
 
 ## Method
 
-Select 14M A0 and the two OL1 recipes at kappa=0/.5. Reconstruct four disjoint magnitude bands from integer counts: exact zero; (0,.001]; (.001,.01]; and >.01. Pool counts and square sums across six layers before dividing or taking RMS. Use only six sites common to all five source diagnostics.
+Pool integer counts across layers before division. Show exact zeros and disjoint small-nonzero mass 0<|x|≤.01 at h,m,q,k,v, using κ=0/.5 columns and one shared recipe legend. The same A0 baseline appears in both columns. RMS and all retained bands remain in the table.
 
 ## Coverage
 
-All 338 validation blocks and all six layers. Five unique checkpoints; the identical A0 diagnostic repeats in both rows. Each width-d site pools 531,628,032 values; h pools 2,126,512,128. Diagnostics are the retained FP16 eager activation passes; loss and logical counts come from their separately paired logical passes.
+Five checkpoints: 14M A0 plus A4-OL1/A7-OL1 at κ=0 and .5. Five common sites from complete activation-diagnostic passes. q/k are post-RoPE as in the manuscript ladder. Unless the section specifies runtime timing inputs, validation covers all 500 documents packed into 338 complete 2048-token blocks, excluding the 1,444-token tail.
 
 ## Figure and caption
 
 [Publication PDF](../figures/05-activation-mass-grid.pdf)
 
-**Activation mass and scale at 14M.** Rows compare zero and high threshold; columns show FFN input m, hidden h, post-RoPE query/key, value, and attention output after W_o. Each series shows probability mass in four categorical |x| bands; connecting lines guide comparison and are not continuous density estimates. The shared y scale is logarithmic above .01% and linear near zero to display empty bands. Text reports count-pooled activation RMS. A0 is the same checkpoint in both rows. The final column is post-W_o attention_output, not the pre-W_o gated context z.
+Exact zeros versus small nonzero activations at 14M. Columns show κ=0 and .5; top panels show exact-zero mass, bottom panels show 0<|x|≤.01 mass. All panels use linear 0–100% axes. The single shared legend identifies A0, A4-OL1 and A7-OL1. Site names follow the manuscript ladder: h is FFN hidden, m FFN input, q/k post-RoPE query/key and v value. Markers retain zero-valued entries; stems compare separate sites without interpolating a distribution.
 
 ## Result
 
-At kappa=.5, h is >99.8% zero under both recipes. A4-OL1 Q/K have 47.64/56.12% mass within .01 but <.001% exact zeros. A7-OL1 Q/K have 93.54/94.54% exact zeros and v has 98.71%. A4-OL1 query RMS is smaller (.146 versus .483), illustrating that small magnitude and exact-zero opportunity differ. At zero threshold, neither recipe creates substantial Q/K exact zeros.
+At κ=.5 both recipes exceed 99.8% h zeros. A4 query/key mass below magnitude .01 is 47.64%/56.12% with fewer than .001% exact zeros, while A7 query/key exact zeros are 93.54%/94.54%; v exact zeros reach 98.71%. A4 query RMS (.146) is lower than A7 (.483), despite fewer zeros.
 
 ## Caveats
 
-No full histograms or signed samples are retained, so density shape, quantiles and within-band structure are unknown. A0 lacks a/z three-threshold statistics in this pass; those ports are not fabricated from another precision or pass. Separate activation and logical passes have slight numerical differences. This selected-recipe comparison does not isolate pressure placement or establish a causal spillover mechanism; RMS changes are not automatically distributional broadening.
+These are mass summaries, not signed densities or full histograms. A0 lacks a/z near-zero statistics. The post-Wo attention_output diagnostic is omitted, not relabeled as pre-Wo z. Separate activation and logical passes can differ numerically. Marginal distributions alone do not identify a causal spillover mechanism.
 
 ## Source script and evidence
 
-`plots.py:activations`; `evidence.py:mass_bands/load_evidence`; `01_build.py`; `tables/activation-statistics.md`. Run 004 A0 and Runs 014/015 OL1 activation_statistics.json.
-
-Paths above are relative to the analysis root or repository root as named.
-Complete count-derived values and source hashes are in [figure_data.json](../figure_data.json).
+`plots.py:activations`, invoked by `01_build.py`. Supporting evidence: tables/activation-statistics.md; manuscript/artifacts/pythia-architecture-sparsification-ladder.pdf.
+All source identities, integer counts and exact values are retained in [figure_data.json](../figure_data.json).
