@@ -2,7 +2,8 @@
 
 Figure 05-v3 is complete: [signed activation distributions](figures/05-v3-activation-density-grid.pdf)
 now overlay FFN and attention densities from seven full-validation Run 031
-measurements, with separate exact-zero mass and dashed trained thresholds.
+measurements, with dashed trained thresholds. Exact-zero mass is retained in
+the accompanying data and observation table.
 See [O011](observations/O011-activation-density-v3.md) for the caption, pooling
 and tail coverage, and [the data release](../../runs/031-2026-09-08-signed-activation-density/results/README.md).
 This adds a third alternative PDF (eleven PDFs total). The original Figure 05

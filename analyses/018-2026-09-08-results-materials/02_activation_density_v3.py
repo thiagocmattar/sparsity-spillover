@@ -67,8 +67,7 @@ def main():
         for j,name in enumerate(GROUPS):
             ax = axes[i,j]
             panel = {'kappa':kappa,'group':name,'xlim':XLIMS[j],'recipes':{}}
-            ax.text(.98,.96,r'Mass at $x=0$',ha='right',va='top',transform=ax.transAxes,fontsize=7.5)
-            for f,(family,color) in enumerate(zip(FAMILIES,COLORS)):
+            for family,color in zip(FAMILIES,COLORS):
                 data = rows[(family,None if family=='A0' else kappa)]
                 group = data['groups'][name]
                 edges, values, counts = density(group,data['grid'])
@@ -77,8 +76,6 @@ def main():
                 ax.stairs(values,edges,color=color,fill=True,alpha=.10,lw=0,zorder=2)
                 zero = group['exact_zero_count']/group['total']
                 zero_label = '0%' if zero==0 else '<0.01%' if 100*zero<.01 else f'{100*zero:.2f}%'
-                ax.text(.98,.84-.12*f,f'{family}: {zero_label}',color=color,
-                        ha='right',va='top',transform=ax.transAxes,fontsize=7.5,zorder=5)
                 outside = int(counts[(edges[:-1]<XLIMS[j][0])|(edges[1:]>XLIMS[j][1])].sum())
                 outside += group['underflow']+group['overflow']
                 panel['recipes'][family] = {'zero_fraction':zero,
@@ -100,13 +97,11 @@ def main():
             if i==2:
                 ax.set_xlabel(r'Activation $x$')
             report['panels'].append(panel)
-    fig.suptitle('Reshaping activation distributions (Pythia-14M)',fontsize=11,y=.985)
+    fig.suptitle('How interventions reshape activation distributions (Pythia-14M)',fontsize=11,y=.985)
     legend = [Line2D([],[],color=c,lw=1.2,label=f) for f,c in zip(FAMILIES,COLORS)]
     legend += [Line2D([],[],color='.3',lw=.8,ls='--',label=r'Gate threshold $\kappa$')]
     fig.legend(handles=legend,loc='lower center',bbox_to_anchor=(.54,.035),ncol=4,
                frameon=False,fontsize=7.5,columnspacing=1.0,handlelength=1.6,handletextpad=.4)
-    fig.text(.54,.005,'Central ranges shown; density: symlog. Attention thresholds apply to A7-OL1.',
-             ha='center',va='bottom',fontsize=7)
     (HERE/'figures').mkdir(exist_ok=True)
     fig.savefig(HERE/'figures/05-v3-activation-density-grid.pdf',
                 metadata={'Creator':'Analysis 018; Run 031 measurements','CreationDate':None,'ModDate':None})

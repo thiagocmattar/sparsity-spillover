@@ -24,8 +24,9 @@ These correlated elements are not independent experimental replicates.
 The retained histogram has nominal .001 bins over [-8,8], separate tails and
 extrema, and a separate exact-zero point mass. Display bins sum ten adjacent
 native bins. Density is count/(all captured elements * actual bin width): its
-integral is the nonzero probability in range, not one. The zero mass is listed
-in each panel and is never spread into a KDE peak. Signed x remains linear.
+integral is the nonzero probability in range, not one. The zero mass is retained
+in the accompanying data and table below, without panel annotations or a KDE peak.
+Signed x remains linear.
 The density axis is symlog, linear below .01, so large central peaks, lower
 densities and genuinely empty gate regions can all be seen.
 
@@ -34,11 +35,12 @@ densities and genuinely empty gate regions can all be seen.
 [Figure 05-v3](../figures/05-v3-activation-density-grid.pdf) is a separate
 alternative; the original Figure 05 and Figure 05-v2 remain available.
 
-**Signed activation distributions under train-time interventions (Pythia-14M).**
+**How interventions reshape activation distributions (Pythia-14M).**
 Columns pool FFN (h,m) and attention (q,k,v) activation elements; rows compare
 trained thresholds kappa=0,.05,.5. Gray, blue and orange outlines and translucent
 fills show A0, A4-OL1 and A7-OL1 histogram densities. The same A0 reference is
-repeated across rows. Exact-zero probabilities are listed separately. Dashed
+repeated across rows. Exact-zero probabilities are reported in the accompanying
+data and table below. Dashed
 vertical lines indicate +kappa for A4/A7 FFN gates and +/-kappa for A7 attention
 gates; A4 does not directly gate q,k,v. Density uses a symlog scale, while signed
 activation x is linear. The common per-column x ranges show the central
@@ -57,7 +59,7 @@ versus 93.64% for A7-OL1. Both leave nonzero FFN density above the positive
 threshold. In attention, A4-OL1 produces a sharp central nonzero peak with
 only 0.22% exact zeros, while A7-OL1 places 95.60% at zero and leaves nonzero
 density outside the symmetric threshold gap. Thus small nonzero values and
-exact-zero mass are visibly different outcomes of the complete recipes.
+exact-zero mass are different measured outcomes of the complete recipes.
 
 | Trained kappa | A4-OL1 FFN zero mass | A7-OL1 FFN zero mass | A4-OL1 attention zero mass | A7-OL1 attention zero mass |
 | --- | ---: | ---: | ---: | ---: |
