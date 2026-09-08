@@ -99,7 +99,7 @@ def main():
             report['panels'].append(panel)
     fig.suptitle('How interventions reshape activation distributions (Pythia-14M)',fontsize=11,y=.985)
     legend = [Line2D([],[],color=c,lw=1.2,label=f) for f,c in zip(FAMILIES,COLORS)]
-    legend += [Line2D([],[],color='.3',lw=.8,ls='--',label=r'Gate threshold $\kappa$')]
+    legend += [Line2D([],[],color='.3',lw=.8,ls='--',label=r'Threshold $\kappa$')]
     fig.legend(handles=legend,loc='lower center',bbox_to_anchor=(.54,.035),ncol=4,
                frameon=False,fontsize=7.5,columnspacing=1.0,handlelength=1.6,handletextpad=.4)
     (HERE/'figures').mkdir(exist_ok=True)

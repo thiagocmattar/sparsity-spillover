@@ -8,7 +8,7 @@ reductions pass, alongside 108 gate-region checks. All 28 transferred files
 match their remote hashes. The Pod is deleted; estimated GPU expense USD0.206.
 
 The final PDF is one page, 396 x 439.2 points, with embedded TrueType fonts.
-All 72 text words lie within the page. Its final color render was inspected.
+All 71 text words lie within the page. Its final color render was inspected.
 The requested title retains the 11-point font; panel zero-mass annotations
 and the footer are removed. Density data are unchanged;
 all ten existing PDFs are byte-identical to the pre-v3 snapshot. Exact proof
