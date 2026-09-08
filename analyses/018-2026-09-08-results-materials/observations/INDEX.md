@@ -17,3 +17,5 @@ Descriptive results from the included one-seed cohorts. No finding is promoted.
 - [O013: Overview with all variants](O013-overview-all-variants.md): Figure 01 v2 adds A1-H-L1, A4 and A7, showing all 30 trained endpoints with A0-only clipping.
 
 - [O014 - Reviewed manuscript and terminology](O014-manuscript-polish.md): paragraph-level revision with technical-reader, scientific and literature reviews; unchanged figures/numbers, stronger argument, concise captions, reproducibility protocol and verified 26-page snapshot.
+
+- [O015 - Fixed thresholds and kernel specialization](O015-threshold-kernel-argument.md): source-checked methodological rationale, adapted-kernel comparison, agent-assisted search, descriptive sparsity-speedup association and attention-skipping limits; unchanged measurements and figures.

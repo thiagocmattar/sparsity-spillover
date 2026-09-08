@@ -28,7 +28,7 @@ variant.
 
 ## V2 workspace
 
-The [26-page reading copy](draft/main.pdf) now contains the reviewed paper:
+The [27-page reading copy](draft/main.pdf) now contains the reviewed paper:
 abstract, introduction, related work, methodology, experimental results,
 discussion and complete appendices. The user's first two introduction
 paragraphs are unchanged. The five-part results argument is preserved and
@@ -36,10 +36,19 @@ sharpened around matched effects, distributions, product counts, scale transfer
 and measured execution. Terminology consistently uses thresholds/nonlinearities,
 activation sparsity, model-wide sparsity and sparsity ceiling.
 
+The latest revision adds the fixed-threshold rationale and the kernel
+specialization argument requested by the user. It distinguishes early search
+gains from convergence, a descriptive sparsity-speedup association from a
+scaling law, and zero-fragment skipping from profitable execution. The
+[argument review](draft/reviews/2026-09-08-kernel-argument/revision-log.md) and
+[O015 snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-threshold-kernel/README.md)
+retain the source checks and verified reading copy. Figures, numerical tables,
+bibliography and introduction remain unchanged.
+
 Technical-reader, scientific-reviewer and literature sub-agents reviewed every
 figure, table and result. The [revision log](draft/reviews/2026-09-08-polish/revision-log.md)
 records their resolutions and the [verification](draft/reviews/2026-09-08-polish/verification.json).
-All 26 pages were inspected, all citations and labels resolve, and all fonts
+All 26 pages of that earlier revision were inspected, all citations and labels resolve, and all fonts
 are embedded. Template fitting remains outside this revision.
 
 Five main and five appendix figures retain their original artwork. The
@@ -49,7 +58,7 @@ generated tables preserve every numerical row. The supplementary directory
 retains all 540 clipping evaluations, seven signed histograms and a newly
 sourced preparation/environment protocol.
 
-The local-only draft has a new, version-controlled
+The earlier full polish has a version-controlled
 [source/PDF snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-polished/README.md).
 [O014](../analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md)
 records this revision. The original

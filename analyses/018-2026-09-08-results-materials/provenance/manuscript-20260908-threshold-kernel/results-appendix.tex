@@ -1,0 +1,320 @@
+% Source observation: analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md
+% Evidence: Analysis 018 O001--O004/O007/O011, figure_data.json and tables/training-protocol.md.
+% Complete clipping: Run 030 observations/O001--O003 and results/*.
+% Signed distributions: Run 031 results/histograms/*.json.gz.
+% Kernel contract: Run 029 observations/06-implementation-and-claim-audit.md.
+% Kernel compatibility/predicate revision: Analysis 018 O015; Run 022 README, Run 025 SOURCE_AUDIT.md.
+% Generated tables: Analysis 018 / 03_manuscript_tables.py.
+\subsection{Realized training protocol}
+\label{app:training-protocol}
+
+We use MiniPile and the Pythia-14M-deduped tokenizer for every size. Each document
+is encoded without added special tokens, followed by one end-of-sequence token.
+Concatenated tokens are packed into nonoverlapping 2,048-token blocks. Training
+uses a seeded permutation of the block indices; validation retains source
+order. The training split contains 1,000,000 documents and 1,491,711,416 tokens,
+yielding 728,374 complete blocks and an excluded 1,464-token tail.
+The supplementary \texttt{protocol.json} records immutable dataset and tokenizer
+revisions, cache hashes and implementation identities.
+
+All conditions start from random weights drawn from the pinned Pythia
+architecture configurations; released pretrained weights are not used.
+Model initialization and data-order seeds are both 1234, with one training
+seed per condition. Parameter sweeps measure intervention variability rather
+than variation over independent training seeds. All quality comparisons reuse
+the same validation split, without a separate confirmation set. Within a size, the
+conditions share the initial parameter hash and training schedule. The
+30-condition 14M cohort contains A0, A1-H, four weights each for A1-H-L1 and
+A1-H-OL1, and five thresholds each for A4, A4-OL1, A7 and A7-OL1. Each
+larger cohort contains A0, A1-H, and the five-threshold A4-OL1/A7-OL1 sweeps.
+Local pressure weights are $\{0.05,0.1,0.5,1\}$; thresholds are
+$\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$, with pressure
+at all four or seven selected sites. Every OL1 condition uses trust budget 1
+and projection stabilizer $\epsilon=10^{-12}$.
+
+Training uses AdamW with $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight
+decay 0.1 and global task-gradient clipping at norm 1. Naive L1 clips the
+combined objective gradient instead. The learning rate warms up linearly
+for eight updates and follows cosine decay to one tenth of its peak.
+Parameters and optimizer state are FP32; forward computation uses FP16
+autocast with dynamic loss scaling. Attention and hidden dropout are zero.
+Table~\ref{tab:training-settings} gives size-dependent settings. The global
+batch is 1,024 sequences of 2,048 tokens, for 712 optimizer updates and
+1,493,172,224 input tokens. This wraps 714 blocks beyond the 728,374 complete
+blocks in one packed training pass. We use the final checkpoint without
+validation-based checkpoint selection. The lower 410M learning rate is part
+of the realized protocol, so size alone is not the only cross-scale change.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Size-dependent training settings. Tokens per parameter use the
+common realized input-token budget; they are not held fixed across sizes.}
+\label{tab:training-settings}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Setting & 14M & 70M & 410M \\
+\midrule
+Parameters & 14,067,712 & 70,426,624 & 405,334,016 \\
+Peak learning rate & $10^{-3}$ & $10^{-3}$ & $3\!\times\!10^{-4}$ \\
+Minimum learning rate & $10^{-4}$ & $10^{-4}$ & $3\!\times\!10^{-5}$ \\
+Microbatch (sequences) & 32 & 4 & 4 \\
+Gradient accumulation & 32 & 256 & 256 \\
+Tokens per parameter & 106.14 & 21.20 & 3.68 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+\section{Complete results and supporting diagnostics}
+\label{app:complete-results}
+
+The following tables report every selected trained endpoint, all 29 paired
+14M contrasts and all 15 cross-scale recipe comparisons. They retain
+dominated settings as well as favorable ones. Each entry summarizes one
+trained model on complete validation. Sparsity percentages are formed from pooled integer
+product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
+from Figure~\ref{fig:scale-transfer}, rather than a different denominator
+for each recipe. The notation $U_{\mathrm{arch}}$ is shared with the main text.
+
+\input{tables/trained-endpoints}
+\input{tables/paired-effects}
+\input{tables/scale-contrasts-full}
+
+\subsection{Activation sparsity and signed-density coverage}
+\label{app:density-results}
+
+The seven frozen-checkpoint evaluations underlying
+Figure~\ref{fig:activation-reshaping} record signed values after the trained
+nonlinearities, with Q/K measured after RoPE. Each checkpoint contributes
+2,658,140,160 FFN elements and 1,594,884,096 attention elements across the
+complete validation set. Summing integer counts gives the 80:20 weighting
+of $h:m$ and equal weighting of $q:k:v$. These pooled distributions are
+element-weighted mixtures, not distributions of layer means.
+
+Exact zeros are stored separately from the nonzero histogram. The native
+grid spans $[-8,8]$ with 16,000 bins of nominal width 0.001; the figure
+combines ten bins at a time and divides by the actual floating-point bin
+width and the count of all captured elements. Consequently, a curve's full
+integral is the recorded nonzero mass inside that grid, not one. Table~\ref{tab:density-mass}
+reports the zero mass and the fractions outside the displayed and native
+ranges. Underflow and overflow counts are retained rather than folded into
+edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
+attention. The largest omitted display tail is $6.6719\%$; the native-grid
+tail is at most $0.7607\%$.
+
+The diagnostic reruns use FP32 parameters with FP16 autocast and no
+additional clipping. Their maximum absolute validation-loss difference
+from the retained reference is $6.89\times10^{-5}$, below the specified
+$5\times10^{-4}$ tolerance; all 108 threshold-consistency checks pass. Small
+rounding differences in exact-zero counts between evaluation passes do not
+change the displayed conclusions. Complete per-site and pooled histograms,
+counts and checkpoint hashes accompany the data release.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Activation sparsity (the probability mass at zero) omitted from the
+density curves, and mass outside their
+displayed range (view tail) and the native $[-8,8]$ histogram (grid tail).
+Grid tails are a subset of view tails, not an additional mass to add.
+All percentages divide integer counts by all captured elements. A0 is
+listed once although it is repeated in each figure row. These 14 groups
+come from seven checkpoints.}
+\label{tab:density-mass}
+\input{tables/density-mass}
+\end{table}
+
+\FloatBarrier
+\subsection{Operation contributions to model-wide sparsity}
+\label{app:operation-results}
+
+An operation's contribution to $\Smodel$ is its zero-product count divided
+by the full model product count. Summing these contributions recovers the
+model-wide fraction; summing local activation percentages would not.
+Table~\ref{tab:operation-contributions} gives this decomposition at
+$\kappa=0.5$. At 14M, extending from A4-OL1 to A7-OL1 adds attention
+opportunity while reducing the contribution from some projections.
+At larger sizes, projection work carries more weight in the workload, so
+an equal change in activation sparsity need not yield an equal change in
+model-wide sparsity. Figure~\ref{fig:operation-accounting} displays the
+operation-level view at the same threshold and all three sizes.
+
+\begin{table}[htbp]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Contributions to $100\Smodel$ in percentage points at
+$\kappa=0.5$. All six operations share the same model denominator within
+each size. The dense LM head contributes to that denominator but receives
+no zero credit. Differences in rounded entries can affect the displayed sum.}
+\label{tab:operation-contributions}
+\input{tables/operation-contributions}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/04-operation-accounting.pdf}
+\caption{Operation accounting for A4-OL1 and A7-OL1 at $\kappa=0.5$ across
+14M, 70M and 410M. Zero-operand
+products are counted over causally valid positions and pooled across all
+338 validation blocks. Each contribution uses the full model denominator,
+including the dense LM head without zero credit. At 14M, attention contributes
+more under A7-OL1, outweighing smaller contributions from several projections.
+The bars show logical multiplication opportunities, not runtime savings.}
+\label{fig:operation-accounting}
+\end{figure}
+
+\FloatBarrier
+\subsection{Complete post-hoc clipping trajectories}
+\label{app:clipping-results}
+
+The complete release contains 540 evaluations: ten clipping targets for
+each of the 54 trained checkpoints. It joins 350 new evaluations with 190
+retained evaluations matched by checkpoint content hash. Calibration uses
+the first ten complete training blocks in source order, separately for
+each layer's $a,m,h,z$ activations. Evaluation zeros values satisfying
+$|x|\leq t$ after the trained nonlinearities, without changing weights or A7's
+internal attention nonlinearities. The target $p$ controls a calibration quantile;
+it is not the achieved model-wide sparsity. In particular, an existing
+zero mass can make several targets identical.
+
+Figures~\ref{fig:clipping-14m}--\ref{fig:clipping-410m} retain the full
+loss range and every target, including dominated points and ties. Each
+path begins at its actually measured $p=0$ evaluation. Small numerical
+differences from the canonical training endpoint can change strict
+nondominance without implying a substantive improvement. Numerical
+frontier memberships are stored separately from the lines connecting
+evaluated settings. All evaluations use complete validation with FP32
+parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/14m-posthoc-frontiers.pdf}
+\caption{Complete 14M training and post-hoc clipping results: 30 trained
+endpoints and 300 clipping evaluations. Large filled markers denote trained
+endpoints; bold lines connect their settings, solid for unpressured recipes
+and dashed for L1/OL1. Each faint open-marker path follows one fixed
+checkpoint through $p=0,0.1,\ldots,0.9$. Colors and symbols identify its
+source recipe. The full loss range is shown. Connections order evaluated
+settings and do not interpolate attainable models or fitted Pareto envelopes.}
+\label{fig:clipping-14m}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/70m-posthoc-frontiers.pdf}
+\caption{Complete 70M training and post-hoc clipping results: 12 trained
+endpoints and 120 clipping evaluations. Large filled markers and bold
+lines identify the trained recipes; faint open-marker paths follow each
+checkpoint through ten increasing clipping targets. All points, including
+overlaps and high-loss settings, are retained. The evaluation and line
+conventions match Figure~\ref{fig:clipping-14m}.}
+\label{fig:clipping-70m}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/410m-posthoc-frontiers.pdf}
+\caption{Complete 410M training and post-hoc clipping results: 12 trained
+endpoints and 120 clipping evaluations. Large filled markers and bold
+lines identify the trained recipes; faint open-marker paths follow each
+checkpoint through ten increasing clipping targets. All points, including
+overlaps and high-loss settings, are retained. The evaluation and line
+conventions match Figure~\ref{fig:clipping-14m}.}
+\label{fig:clipping-410m}
+\end{figure}
+
+\FloatBarrier
+\subsection{Kernel qualification and ablations}
+\label{app:kernel-results}
+
+The unchanged Sakana/TwELL control achieves $1.3001\times$ on its supported
+SparseLM-0.5B/H100 workload. Its raw projection primitive at the Pythia-14M
+width $N=128$ instead gives relative L2 error 0.69055, exceeding the 0.02
+bound; that test stops before full-model Pythia timing. This is a compatibility
+test, not an unchanged upstream speedup comparison on our model.
+The later P0 adapter changes signed-value packing, shape tails and numerical
+handling for Pythia. It retains dense attention and uses native projection
+fallback on A0. Table~\ref{tab:kernel-ablations} reports this adapted baseline.
+
+Historical proposals are replayed on four representative checkpoints; the
+plotted incumbent uses fixed A7-OL1, $\kappa=0.5$. Final implementation and
+ablation summaries retain the 30-checkpoint manuscript cohort from the
+historical 35-checkpoint sweep. Five A4 checkpoints with pressure only at $h$
+are excluded because they do not implement the four-site pressure objective
+studied here. Search progress and the
+final sweep are separate measurements, explaining the small difference
+between their $1.7830\times$ and $1.7832\times$ maxima.
+
+The coding-agent configuration records \emph{gpt-6-astra} as the default
+model, not the model served for every request. This is one human-guided
+development trajectory and does not compare agent-assisted with human-only
+kernel development. Kernel measurements use Python 3.12.3, PyTorch
+2.11.0+cu128, Transformers 5.12.1, CUDA 12.8 and nvcc 12.8.93.
+The supplementary protocol records dependency and frozen-source hashes.
+
+Every candidate must produce finite outputs, with each logit satisfying
+$|y-\hat y|\leq0.25+0.02|\hat y|$, per-block relative output L2 error at
+most 0.02, and absolute pooled loss difference at most 0.001. Here
+$\hat y$ is the unmodified native eager reference. All three fresh
+processes must pass on all 338 validation blocks. Qualification is bounded
+numerical agreement on these inputs, not bitwise equivalence. Failed
+candidates are excluded from qualified speedup summaries. P0, an early
+projection adapter derived from the released kernels of
+\citet{cetin2026sparser}, qualifies on only four checkpoints. Its average
+is not comparable to a 30-checkpoint mean or an unchanged upstream benchmark.
+
+Timing uses the same checkpoint, inputs and CUDA-graph scaffold for native
+PyTorch/SDPA and each candidate. For each checkpoint, we take the geometric
+mean of 1,344 paired host-latency ratios (native divided by candidate): 64 inputs,
+seven randomized paired passes, and three fresh processes. Compilation,
+static weight preparation, graph capture and equal input staging
+are excluded. Preprocessing that depends on activations, embeddings, every block,
+final normalization and full vocabulary logits are included. There is no
+activation cache. Cohort summaries give each checkpoint equal weight.
+
+K050 combines normalization and RoPE fusion, zero-fragment tensor-core
+bypass and sparse-row projection paths, using CUDA, CUTLASS,
+FlashAttention and PyTorch components. K049 is its searched predecessor;
+K050 adds fusion of the two input LayerNorms while preserving their separate
+affine parameters and thresholds. The all-skips-off control retains
+fusion while disabling both attention and projection skips; the
+attention-dense control retains projection skips. Their ratios are formed
+from separately measured, native-normalized timings. K050's sparse paths
+improve 14 of 30 checkpoints relative to all-skips-off, with geometric
+mean ratio $1.0432\times$. Disabling attention skipping improves all 30:
+at the search checkpoint, instrumentation confirms that skipping bypasses
+$58.0\%$ of eligible $QK$ and $67.2\%$ of $PV$ tensor-core
+matrix multiply-accumulate (MMA) instructions, yet its overhead
+exceeds the saved time. Scalar zero-product fractions and skipped MMA
+fractions are different estimands.
+
+The attention path tests whether either warp-distributed operand fragment
+contains only zeros, and issues an MMA only when both fragments contain a
+nonzero. Partial sparsity can therefore leave an entire instruction active.
+Zero detection, warp votes and branches recur inside the kernel; causal
+masking and softmax still execute. A zero $QK$ score does not imply a zero
+softmax probability. The measurements do not identify a profitable joint-zero
+pattern or break-even threshold. They show that the skipped work does not
+repay these costs for the measured 14M shapes and hardware.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Numerically qualified full-model speedups against native SDPA
+CUDA graphs. GM is the equal-checkpoint geometric mean; the range is across
+qualified checkpoints, not a confidence interval. All conditions use one
+RTX5090, BF16, batch one, 2,048 tokens and full vocabulary logits. P0's
+four-checkpoint subset is shown only to document its limited qualification.}
+\label{tab:kernel-ablations}
+\input{tables/kernel-ablations}
+\end{table}
+
+\FloatBarrier
+\subsection{Evidence and data accompanying the draft}
+\label{app:result-data}
+
+The supplementary directory \path{supplementary-data/} contains all 54 training records with
+integer operation counts, all 540 clipping evaluations and frontier
+memberships, seven signed histograms with zero and tail counts, figure
+coordinates, and the 30-checkpoint runtime reduction. The included README
+defines fields and units. Copy hashes are recorded in \texttt{SOURCES.json};
+\texttt{protocol.json} gives data preparation, training settings and
+implementation identities. Paths refer to the accompanying repository;
+the supplementary directory is not a standalone checkpoint or kernel release.
