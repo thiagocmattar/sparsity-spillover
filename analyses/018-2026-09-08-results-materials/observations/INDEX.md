@@ -11,3 +11,4 @@ Descriptive results from the included one-seed cohorts. No finding is promoted.
 - [O007: Qualified kernel realization on the included cohort](O007-kernel-realization.md): Can a specialized implementation realize measured inference gains on the included checkpoints?
 - [O008: Analytic ceiling versus model size](O008-ceiling-vs-model-size.md): How does the selected-topology all-zero reach ceiling change with architecture size?
 - [O009: Matched effects, alternative orientation](O009-blocked-effects-v2.md): The same 29 comparisons with intervention rows and side-by-side loss and sparsity columns.
+- [O010: Activation mass, alternative layout](O010-activation-mass-v2.md): Figure 05-v2 separates exact zeros and small nonzero activations in six panels with linear percentage scales.

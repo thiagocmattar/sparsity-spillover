@@ -105,6 +105,35 @@ def test_case_study_uses_common_sites_and_pooled_band_counts(data):
             assert a['rms']==pytest.approx(math.sqrt(a['square_sum']/a['finite']))
 
 
+def test_activation_v2_separates_exact_zero_from_small_nonzero_counts(data, monkeypatch):
+    import plots
+    figures=[]
+    monkeypatch.setattr(plots,'save',lambda fig,name:figures.append(fig))
+    plots.configure()
+    plots.activations_v2(data)
+    try:
+        assert len(figures[0].axes)==6
+        for i in range(2):
+            for j,k in enumerate(CASE_DOSES):
+                ax=figures[0].axes[3*i+j]
+                paths={line.get_label():line for line in ax.get_lines()}
+                assert set(paths)=={'A0','A4-OL1','A7-OL1'}
+                assert ax.get_xlim()==(0,100) and ax.get_xscale()=='linear'
+                for f,line in paths.items():
+                    r=one(data['trained'],scale='14M',family=f,dose=None if f=='A0' else k)
+                    stats=[r['sites'][site] for site in CASE_SITES]
+                    # Independently use cumulative source counts, rather than the plotted bins.
+                    expected=[100*(a['exact_zero_count'] if i==0 else
+                                   a['threshold_hits']['0.01']-a['exact_zero_count'])/a['total']
+                              for a in stats]
+                    assert list(line.get_xdata())==pytest.approx(expected)
+                    assert len(line.get_ydata())==5
+                    assert list(line.get_ydata()-line.get_ydata()[0])==pytest.approx([0,1,2,3,4])
+        assert sum(len(line.get_xdata()) for ax in figures[0].axes for line in ax.get_lines())==90
+    finally:
+        for fig in figures: plots.plt.close(fig)
+
+
 def test_overview_retains_complete_training_and_clipping_sweeps(data, monkeypatch):
     # Assert the actual plotted coordinates, not just a reduction agreeing with itself.
     import plots
@@ -171,7 +200,7 @@ def test_saved_bundle_and_all_sources_match(data):
     for path,digest in data['sources'].items():
         assert sha(ROOT/path)==digest
     inventory=json.loads((HERE/'artifact_inventory.json').read_text())
-    assert len(list((HERE/'figures').glob('*.pdf')))==9
+    assert len(list((HERE/'figures').glob('*.pdf')))==10
     for path,meta in inventory.items():
         assert sha(HERE/path)==meta['sha256'] and (HERE/path).stat().st_size==meta['bytes']
 

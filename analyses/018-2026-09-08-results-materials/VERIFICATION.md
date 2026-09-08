@@ -1,3 +1,23 @@
+# Figure 05-v2 alternative, 8 September 2026
+
+Added a separate six-panel PDF with exact zeros above and small nonzero
+activations (0<|x|<=.01) below. Columns are kappa=0,.05,.5; five sites use
+common linear 0-100% scales and the existing recipe colors/markers. The
+figure is 5.5 inches wide with an 11-point title, thin grey grids and a
+7.5-point legend below. The original Figure 05 and all eight other existing
+PDFs retain their pre-edit hashes.
+
+All 19 working analysis tests passed in 3.14 seconds. The coordinate check
+verifies all 90 markers against cumulative source counts, independently
+subtracting exact-zero counts for the lower row. The two scoped staged
+coordinate/artifact checks passed in 1.39 seconds; staged code reproduces
+the PDF byte-for-byte (SHA-256
+556e0d9a96179f3e38c90515f10c281a6f56459838a305ff92ebfc824d9cc701).
+The PDF was rendered and inspected after correcting row-header spacing.
+No source measurements or manuscript files were changed. O010 supplies the
+caption, source provenance and limitations. Preview and scoped snapshot:
+ignored tmp/figure05-v2.
+
 # Figure 03 rounded top-row axes, 8 September 2026
 
 Top-row limits round upward to 30%, 50% and 90%. Ticks use 0/10/20/30,

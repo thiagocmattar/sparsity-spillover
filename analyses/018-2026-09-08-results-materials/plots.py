@@ -278,6 +278,44 @@ def activations(d):
     save(fig,'05-activation-mass-grid.pdf')
 
 
+def activations_v2(d):
+    """Alternative Figure 05: separate exact zeros from small nonzero mass."""
+    families=('A0','A4-OL1','A7-OL1')
+    fig,axs=plt.subplots(2,3,figsize=(5.5,5.2),sharex=True,sharey=True)
+    fig.subplots_adjust(left=.10,right=.97,bottom=.21,top=.80,wspace=.20,hspace=.50)
+    yy=np.arange(len(CASE_SITES))
+    for j,k in enumerate(CASE_DOSES):
+        for f,offset in zip(families,(-.18,0,.18)):
+            r=one(d['trained'],scale='14M',family=f,dose=None if f=='A0' else k)
+            stats=[r['sites'][site] for site in CASE_SITES]
+            color,marker=STYLE[f]
+            for i in range(2):
+                # The lower row excludes the exact-zero bin before division.
+                counts=[a['mass_bands'][0] if i==0 else sum(a['mass_bands'][1:3])
+                        for a in stats]
+                values=[100*n/a['total'] for n,a in zip(counts,stats)]
+                axs[i,j].plot(values,yy+offset,ls='none',color=color,marker=marker,
+                              ms=4.5,mew=.65,clip_on=False,label=f)
+        axs[0,j].set_title(r'$\kappa='+f'{k:g}'+r'$',fontsize=10,pad=8)
+    for ax in axs.flat:
+        ax.set(xlim=(0,100),ylim=(4.5,-.5),xticks=[0,25,50,75,100])
+        ax.set_yticks(yy,['$h$','$m$','$q$','$k$','$v$'])
+        ax.tick_params(axis='x',labelbottom=True)
+        ax.grid(axis='both',color='.88',lw=.4)
+    for ax in axs[:,0]:
+        ax.set_ylabel('Site')
+    fig.suptitle('Exact zeros and small activations\n'
+                 'across sites (Pythia-14M)',y=.985,fontsize=11)
+    fig.text(.54,.875,r'Exact zeros ($x=0$)',ha='center',fontsize=9)
+    fig.text(.54,.48,r'Small nonzero activations ($0<|x|\leq0.01$)',
+             ha='center',fontsize=9)
+    fig.supxlabel('Activation fraction (%)',x=.54,y=.12,fontsize=9)
+    fig.legend(handles=handles(families),loc='lower center',ncol=3,frameon=False,
+               bbox_to_anchor=(.54,.025),fontsize=7.5,columnspacing=1.6,
+               handletextpad=.35)
+    save(fig,'05-v2-activation-mass-grid.pdf')
+
+
 def all_clipping(d):
     clip=[r for r in d['clipping'] if r['scale']=='14M']
     def family(r):
@@ -348,4 +386,4 @@ def ceilings(d):
 
 def make_figures(d):
     configure()
-    overview(d);effects(d);effects_v2(d);scaling(d);operations(d);activations(d);all_clipping(d);kernels(d);ceilings(d)
+    overview(d);effects(d);effects_v2(d);scaling(d);operations(d);activations(d);activations_v2(d);all_clipping(d);kernels(d);ceilings(d)

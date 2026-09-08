@@ -14,7 +14,7 @@ is retained as an unselected layout alternative, documented in
 
 Revised after the user's figure review on 8 September 2026. This package reads
 the current manuscript and reprocesses retained experiments. It contains eight
-main publication figures plus the alternative Figure 02-v2 PDF, numerical
+main publication figures plus alternative Figures 02-v2 and 05-v2, numerical
 tables, proposed arguments, captions and provenance.
 All artwork is drawn at the ICLR template's 5.5-inch text width and now includes a title.
 
@@ -41,6 +41,7 @@ records the checks actually performed. Original runs and manuscript files are un
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
 | Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | A4-OL1/A7-OL1 and A0 clipping; raw sparsity with rounded 30/50/90% axis limits above, common A7-reference utilization below |
 | Main case study, or appendix if space is tight | [05 — activation mass](figures/05-activation-mass-grid.pdf) | Site columns h,m,q,k,v and κ=0,.05,.5 rows; retained four-bin distributions, pending finer measurements |
+| Alternative for review | [05-v2 — zeros and small activations](figures/05-v2-activation-mass-grid.pdf) | Six panels: exact zeros above, small nonzero mass below; threshold columns and linear 0–100% scales. See [O010](observations/O010-activation-mass-v2.md). |
 | Supporting appendix | [04 — operation accounting](figures/04-operation-accounting.pdf) | Six solid-color bars decomposing high-threshold results into operations |
 | Supporting appendix | [06 — post-hoc clipping](figures/06-complete-posthoc-comparison.pdf) | Explicit 14M coverage: 15 source checkpoints, each at 10 clipping targets |
 | Systems subsection | [07 — kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and the final kernel on the same 30 included checkpoints |
