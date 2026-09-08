@@ -46,17 +46,19 @@ These are one-seed differences, not significance or equivalence claims.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/02-blocked-intervention-effects.pdf}
-\caption{Matched 14M intervention effects. Top: treatment-minus-reference
-validation loss in nats/token (negative is better); bottom: model-sparsity
-change in percentage points (positive is more logical zero-product opportunity).
-The categorical x-axis groups interventions. Numeric labels below each point
-give $\lambda$ in the two local-pressure groups and $\kappa$ in the four A4/A7
-groups; the dash marks the dose-free GELU-to-ReLU comparison. Doses increase
-left to right with ordinal spacing. A1-H to A4 compares fixed A1-H with the
-complete A4 recipe, including its change at $h$; A4 to A7 adds symmetric
-post-RoPE query/key and value gates at matched $\kappa$. A4/A7 OL1 uses fixed
-pressure weight $\lambda=1$ and trust budget 1. These 29 separately trained,
-one-seed comparisons are not an additive decomposition or runtime measurements.}
+\caption{Matched 14M intervention effects. Both panels show treatment minus
+the group-specific comparator in the Ref: row: validation loss above (negative
+is better), and model-sparsity change in percentage points below (positive is
+more logical zero-product opportunity). Ref: A0 is the original GELU control;
+A1-H is the ReLU control; L1($\lambda$) is the $h$-only L1 recipe at matched
+$\lambda$; A4($\kappa$) and A7($\kappa$) are unpressured gate recipes at matched
+$\kappa$. Action labels describe the operation and sites. One-sided gates act
+at $a,m,h,z$, including the change at $h$; symmetric query/key gates follow
+RoPE. Numeric doses increase left to right with ordinal spacing; the dash
+marks the dose-free ReLU replacement. The four-site and seven-site OL1
+treatments use fixed pressure weight $\lambda=1$ and trust budget 1. The
+29 one-seed comparisons use separately trained conditions and group-specific
+references, not a sequence of cumulative updates or runtime measurements.}
 \label{fig:a018-effects}
 \end{figure}
 

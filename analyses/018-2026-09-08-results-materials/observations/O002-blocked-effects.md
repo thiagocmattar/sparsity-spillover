@@ -6,7 +6,7 @@ What changes when a specified intervention is added to a matched reference?
 
 ## Method
 
-Compute treatment minus reference for seven comparison blocks, retaining the same x positions across loss and sparsity rows. The categorical x-axis is Intervention; numeric dose labels sit directly under each point, above a per-block lambda or kappa label and the intervention name. Dose increases left to right within each block, with ordinal rather than numerical spacing. All points use the same marker. No averaging across doses or seed inference.
+Compute treatment minus reference for seven comparison blocks, retaining the same x positions across loss and sparsity rows. The categorical x-axis is Intervention; numeric dose labels sit directly under each point, above a per-block lambda or kappa label and an action/site description. A separate Ref: row identifies each group's comparator. Both y-axes explicitly say "vs group reference." Dose increases left to right within each block, with ordinal rather than numerical spacing. All points use the same marker. No averaging across doses or seed inference.
 
 ## Coverage
 
@@ -16,7 +16,22 @@ Compute treatment minus reference for seven comparison blocks, retaining the sam
 
 [Publication PDF](../figures/02-blocked-intervention-effects.pdf)
 
-Matched 14M intervention effects. Top: treatment-minus-reference validation loss in nats/token, where negative is better. Bottom: model-sparsity change in percentage points, where positive is more logical zero-product opportunity. The x-axis groups GELU→ReLU, adding L1 at h, replacing L1 with OL1 at h, A1-H→A4, adding OL1 to A4, A4→A7, and adding OL1 to A7. Numeric labels directly below the points give λ in the two local-pressure blocks and κ in the four A4/A7 blocks; the dash marks the dose-free GELU→ReLU comparison. Positions order the doses without encoding numerical distances. The A1-H→A4 block compares fixed A1-H with the complete A4 recipe at each κ=0,.01,.05,.1,.5, including its change at h. A4→A7 adds symmetric post-RoPE q/k and v gates at matched κ. In A4-OL1 and A7-OL1, pressure weight λ and trust budget are both fixed at 1. Each pair has an explicit reference/treatment ID in the table. These are separately trained, one-seed comparisons, not an additive decomposition or runtime measurements.
+Matched 14M intervention effects. Both panels show treatment minus the group-specific reference printed in the Ref: row: validation loss above (negative is better) and model-sparsity change in percentage points below (positive is more logical zero-product opportunity). The seven actions are using ReLU at h, adding L1 at h, replacing L1 with OL1 at h, applying one-sided gates at a,m,h,z, adding OL1 at those four sites, applying symmetric gates at q,k,v, and adding OL1 at all seven sites. Numeric labels give λ in the two local-pressure groups and κ in the four gated-recipe groups; the dash marks the dose-free ReLU replacement. Ref: A0 is the original GELU control; A1-H is the ReLU control; L1(λ) is the h-only L1 recipe at the same λ; A4(κ) and A7(κ) are the corresponding unpressured gate recipes at the same κ. Positions order the doses without encoding numerical distances. The one-sided-gate action includes the change at h. Query/key gates are post-RoPE. In the four-site and seven-site OL1 treatments, pressure weight λ and trust budget are both fixed at 1. The references vary by group; the actions are not a sequence of cumulative updates. These are separately trained, one-seed comparisons, not runtime measurements.
+
+## Reference map
+
+The displayed deltas are not uniformly relative to the immediately preceding
+group or to A0. Each pair uses its declared reference:
+
+| Displayed action | Reference | Treatment | Matching dose |
+| --- | --- | --- | --- |
+| Use ReLU at h | A0 (GELU) | A1-H | None |
+| Add L1 at h | A1-H | A1-H-L1 | Reference is fixed; treatment varies λ |
+| L1 → OL1 at h | A1-H-L1 | A1-H-OL1 | Same λ |
+| Apply G+ at a,m,h,z | A1-H | A4 | Reference is fixed; treatment varies κ |
+| Add OL1 at a,m,h,z | A4 | A4-OL1 | Same κ |
+| Apply Gpm at q,k,v | A4 | A7 | Same κ |
+| Add OL1 at all seven sites | A7 | A7-OL1 | Same κ |
 
 ## Result
 

@@ -92,13 +92,16 @@ def overview(d):
 def effects(d):
     blocks=['GELU to ReLU','Add L1 at h','L1 to OL1 at h','A1-H to A4',
             'Add OL1 to A4','A4 to A7 gates','Add OL1 to A7']
-    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h','A1-H\n→ A4',
-            'Add OL1\nto A4','A4\n→ A7','Add OL1\nto A7']
+    labels=['Use ReLU\nat h','Add L1\nat h','L1 → OL1\nat h',
+            r'Apply $G_+$'+'\nat a,m,h,z','Add OL1\nat a,m,h,z',
+            r'Apply $G_{\pm}$'+'\nat q,k,v','Add OL1\nat a,m,h,z,\nq,k,v']
+    references=['A0','A1-H',r'L1($\lambda$)','A1-H',
+                r'A4($\kappa$)',r'A4($\kappa$)',r'A7($\kappa$)']
     colors=['#444444','#009E73','#CC79A7','#0072B2','#0072B2','#D55E00','#D55E00']
     fig,axs=plt.subplots(2,1,figsize=(5.5,4.6),sharex=True)
-    fig.subplots_adjust(left=.15,right=.99,bottom=.27,top=.90,hspace=.12)
+    fig.subplots_adjust(left=.16,right=.99,bottom=.30,top=.90,hspace=.12)
     # Compact the single comparison so the numeric threshold ticks have room.
-    edges=np.r_[0.,np.cumsum([.65,1.,1.,1.2,1.2,1.2,1.2])]
+    edges=np.r_[0.,np.cumsum([.85,1.,1.1,1.2,1.2,1.2,1.2])]
     centers=(edges[:-1]+edges[1:])/2
     for n,(block,color) in enumerate(zip(blocks,colors)):
         rows=sorted([r for r in d['contrasts'] if r['block']==block],key=lambda r:r['dose'] or 0)
@@ -116,21 +119,26 @@ def effects(d):
                 value='.'+value
             axs[1].annotate(value,(x,0),xycoords=('data','axes fraction'),
                             xytext=(0,-5),textcoords='offset points',
-                            ha='center',va='top',fontsize=8,fontfamily='STIXGeneral')
+                            ha='center',va='top',fontsize=7,fontfamily='STIXGeneral')
         axs[1].plot([edges[n]+.05,edges[n+1]-.05],[-.16,-.16],
                     transform=axs[1].get_xaxis_transform(),clip_on=False,color='.65',lw=.5)
         parameter={'lambda':r'$\lambda$','kappa':r'$\kappa$','none':''}[rows[0]['dose_kind']]
         axs[1].annotate(parameter,(centers[n],0),xycoords=('data','axes fraction'),
                         xytext=(0,-18),textcoords='offset points',
-                        ha='center',va='top',fontsize=9)
+                        ha='center',va='top',fontsize=7.5)
+        axs[1].annotate('Ref: '+references[n],(centers[n],0),
+                        xycoords=('data','axes fraction'),xytext=(0,-65),
+                        textcoords='offset points',ha='center',va='top',
+                        fontsize=7,color='.3')
     for ax in axs:
         ax.axhline(0,color='.25',lw=.7); ax.grid(axis='y',color='.92',lw=.6)
         ax.tick_params(axis='x',length=0);ax.set_xlim(edges[0],edges[-1])
-    axs[0].set(ylabel='Δ loss (nats/token)',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
-    axs[1].set(ylabel='Δ '+S_LABEL.replace('(%)','(pp)'),ylim=(-.7,13),yticks=[0,4,8,12])
+    axs[0].set(ylabel='Δ loss\nvs group reference',ylim=(-.20,.42),yticks=[-.2,0,.2,.4])
+    axs[1].set(ylabel='Δ '+S_LABEL.replace('(%)','(pp)')+'\nvs group reference',
+               ylim=(-.7,13),yticks=[0,4,8,12])
     axs[1].set_xticks(centers,labels)
-    axs[1].tick_params(axis='x',pad=34)
-    axs[1].set_xlabel('Intervention',labelpad=10)
+    axs[1].tick_params(axis='x',pad=32,labelsize=7)
+    axs[1].set_xlabel('Intervention',labelpad=29,fontsize=8)
     fig.suptitle('Matched intervention effects (14M)',y=.985,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 

@@ -1,3 +1,30 @@
+# Figure 02 horizontal polish and explicit references, 8 September 2026
+
+The user selected the original horizontal layout. Dose values and intervention
+descriptions are now 7 pt; lambda/kappa labels are 7.5 pt; the shared Intervention
+axis title is 8 pt. The actions consistently describe operations and sites,
+including h in the four-site gate action and all seven sites in the final OL1
+action. A separate Ref: row identifies each comparator. Both y-axes explicitly
+say "vs group reference"; the loss axis omits nats/token. O002 and the optional
+analysis-owned TeX caption define the reference identities and matching doses.
+
+All 29 paired differences remain unchanged. The raw loss/count audit and direct
+plot checks reconcile all 58 effect values, 29 aligned dose labels, seven
+reference labels against the actual pair IDs, and same-lambda/same-kappa
+matching where displayed. The font sizes and absence of recipe IDs from the
+action labels were checked directly. Dose, parameter, action and reference rows
+do not overlap; the smallest numeric-label gap is 2.17 pt. All visible text lies
+inside the page. Color and grayscale renders and the combined figure/caption
+page were inspected at paper width. The TeX proof has no warnings or box
+overflows. The PDF reproduces byte-for-byte from the isolated source and freshly
+loaded retained evidence.
+
+The isolated revision passes **40 focused tests in 1.03 seconds**. The other
+eight PDFs, including the unselected 02-v2 alternative, retain their exact
+hashes. No numerical evidence, model execution or manuscript changed. Unrelated
+working-tree edits remain outside the commit. Temporary proofs are under
+ignored tmp/analysis018-figure02-polish.
+
 # Figure 02-v2 alternative orientation, 8 September 2026
 
 The user requested a separate rotated layout with Intervention on the y-axis
