@@ -1,5 +1,10 @@
 # Figure captions
 
+These are the original planned captions. The reviewed manuscript's shorter,
+standardized captions are in the [O014 snapshot](provenance/manuscript-20260908-polished/README.md),
+within `training-results.tex`, `kernel-autoresearch.tex` and the appendix sources.
+Figure artwork and numerical results are unchanged.
+
 Draft captions for five selected results figures: four training figures and
 the kernel case study, 8 September 2026. Numbers below identify analysis files,
 not final manuscript numbering.

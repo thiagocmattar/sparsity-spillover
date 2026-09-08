@@ -15,3 +15,5 @@ Descriptive results from the included one-seed cohorts. No finding is promoted.
 - [O011: Signed activation densities](O011-activation-density-v3.md): Figure 05-v3 overlays measured FFN/attention distributions, separate zero mass and the trained thresholds. Seven complete Run 031 validation passes.
 - [O012: Results adopted into the manuscript](O012-manuscript-results.md): Five main figures, argument-led prose, complete appendix tables and local evidence release; no new measurements.
 - [O013: Overview with all variants](O013-overview-all-variants.md): Figure 01 v2 adds A1-H-L1, A4 and A7, showing all 30 trained endpoints with A0-only clipping.
+
+- [O014 - Reviewed manuscript and terminology](O014-manuscript-polish.md): paragraph-level revision with technical-reader, scientific and literature reviews; unchanged figures/numbers, stronger argument, concise captions, reproducibility protocol and verified 26-page snapshot.

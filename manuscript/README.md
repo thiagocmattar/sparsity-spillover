@@ -28,29 +28,34 @@ variant.
 
 ## V2 workspace
 
-The user-authorized 8 September results are now written in `draft/`.
-An [argument map](draft/results-argument-map.md) precedes the prose:
-overview, paired effects, distribution reshaping, transfer across sizes,
-then measured kernel acceleration. Five unchanged Analysis 018 PDFs are
-copied into `draft/figures/` and appear as paper Figures 1-5. One compact
-contrast table supports the main text; the appendix includes all endpoints,
-paired comparisons, zero masses, operation counts, complete clipping plots
-and kernel qualification/ablations. The 30-checkpoint runtime cohort is
-used consistently. A local data release contains all 540 clipping points
-and seven signed-histogram files, with source hashes.
+The [26-page reading copy](draft/main.pdf) now contains the reviewed paper:
+abstract, introduction, related work, methodology, experimental results,
+discussion and complete appendices. The user's first two introduction
+paragraphs are unchanged. The five-part results argument is preserved and
+sharpened around matched effects, distributions, product counts, scale transfer
+and measured execution. Terminology consistently uses thresholds/nonlinearities,
+activation sparsity, model-wide sparsity and sparsity ceiling.
 
-The [24-page reading copy](draft/main.pdf) builds cleanly and has been
-visually checked. It retains the lightweight wrapper; ICLR submission-template
-layout is not yet assessed. The [approved plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
-and [source captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
-remain available. The draft stays local-only, with a self-contained,
-version-controlled [source/PDF snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-results/README.md)
-owned by Analysis 018. [O012](../analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md)
-records the evidence and verification. No new experiment was launched.
+Technical-reader, scientific-reviewer and literature sub-agents reviewed every
+figure, table and result. The [revision log](draft/reviews/2026-09-08-polish/revision-log.md)
+records their resolutions and the [verification](draft/reviews/2026-09-08-polish/verification.json).
+All 26 pages were inspected, all citations and labels resolve, and all fonts
+are embedded. Template fitting remains outside this revision.
 
-The alternative [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
-is also copied into the draft figures folder for review, with its source hash
-in `draft/figures/SOURCES.json`. The manuscript still embeds the original overview.
+Five main and five appendix figures retain their original artwork. The
+alternative [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
+remains copied for review; the paper embeds the original overview. Seven
+generated tables preserve every numerical row. The supplementary directory
+retains all 540 clipping evaluations, seven signed histograms and a newly
+sourced preparation/environment protocol.
+
+The local-only draft has a new, version-controlled
+[source/PDF snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-polished/README.md).
+[O014](../analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md)
+records this revision. The original
+[results snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-results/README.md)
+and [figure plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
+remain historical records. No new experiment was launched.
 
 ### Earlier V2 revisions
 

@@ -1,5 +1,11 @@
 # Analysis 018 — Results materials for the revised argument
 
+The manuscript has now received paragraph-level technical-reader, scientific
+and literature review. [O014](observations/O014-manuscript-polish.md) records the
+stronger argument, standardized terminology, concise captions, unchanged
+figures/numbers and verified 26-page [source/PDF snapshot](provenance/manuscript-20260908-polished/README.md).
+The initial results snapshot below remains a historical record.
+
 Figure 01 has a separate [v2 with all eight training variants](figures/01-v2-14m-overview.pdf):
 30 trained checkpoints, adding A1-H-L1, A4 and A7 while retaining A0-only
 post-hoc clipping. The original figure and manuscript remain unchanged.

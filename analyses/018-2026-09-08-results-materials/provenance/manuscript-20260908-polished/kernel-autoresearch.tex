@@ -1,0 +1,51 @@
+% Source observation: analyses/018-2026-09-08-results-materials/observations/O007-kernel-realization.md
+% Replacement prose for kernel-autoresearch.tex; Analysis 018 O007 and figure_data.json:runtime.
+% Source reduction: evidence.py:runtime_subset; figure: plots.py:kernels.
+% Underlying implementation audit: Run 029 observations/06-implementation-and-claim-audit.md.
+\subsection{Realizing sparsity with specialized inference kernels}
+\label{sec:kernel-autoresearch}
+
+Logical sparsity helps execution only when skipping work costs less than
+performing it. We evaluate 42 proposals from a human-guided Codex search
+against native PyTorch scaled dot-product attention (SDPA) in CUDA graphs
+on one RTX5090. The workload is BF16, batch-one, uncached 2,048-token
+inference with full vocabulary logits. A proposal qualifies only if its
+logits and loss agree with the native reference within specified tolerances
+on complete validation (Appendix~\ref{app:kernel-results}).
+
+The best qualified incumbent reaches $1.7830\times$ on the fixed A7-OL1,
+$\kappa=0.5$ search checkpoint (Figure~\ref{fig:kernel-autoresearch}, left).
+The selected implementation K050 qualifies on all 30 checkpoints in the
+14M cohort, with geometric mean speedup $1.2340\times$. Speedup is positively
+associated with sparsity (right; OLS $R^2=0.8167$), but checkpoint quality,
+topology and weights vary; this is not an equal-quality acceleration comparison.
+
+Relative to the same fusion with sparse paths disabled, K050 is
+$1.311\times$ as fast at the search checkpoint and $1.043\times$ as fast
+geometrically across the cohort, helping 14 of 30 checkpoints.
+Attention skipping is unprofitable:
+disabling it improves every checkpoint, raising the mean to $1.2506\times$.
+Appendix~\ref{app:kernel-results} details the implementation and ablations.
+The full-model gain therefore combines fusion with a conditional benefit
+from sparse paths; a large zero-product fraction does not make every
+sparse operation worthwhile.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/07-kernel-realization.pdf}
+\caption{\textbf{Sparse kernel auto-research for full-model acceleration.}
+(a) Best qualified incumbent on fixed A7-OL1, $\kappa=0.5$, across 42
+iterations, starting at native $1\times$ and reaching $1.7830\times$.
+(b) The selected K050 implementation on 30 Pythia-14M checkpoints; symbols identify recipes. The dashed
+line is a descriptive OLS fit with intercept ($R^2=0.8167$); dotted lines
+mark native $1\times$. Speedup uses each checkpoint's native SDPA CUDA-graph
+baseline on one RTX5090: BF16, batch one, uncached 2,048-token inference and
+full vocabulary logits. Qualification covers all 338 validation blocks. All checkpoints
+qualify, with geometric mean $1.2340\times$. Here ``best'' refers to the
+searched proposals; the attention-dense ablation is faster on every checkpoint
+(Table~\ref{tab:kernel-ablations}). Sparsity uses FP16 measurements, while
+timing uses BF16; both speedup axes have restricted ranges. The fit describes
+association across different checkpoints, not a causal sparsity effect.}
+\label{fig:kernel-autoresearch}
+\end{figure}
+\FloatBarrier

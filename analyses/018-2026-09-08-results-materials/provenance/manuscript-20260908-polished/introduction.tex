@@ -1,0 +1,79 @@
+% Source observation: analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md
+% Argument revision after adversarial review, 2026-09-05. Hand-edited.
+% Sources and claim boundaries: positioning.md and reviews/2026-09-05-adversarial/.
+% Result preview authorized 8 September 2026; evidence: Analysis 018 O002/O003/O007/O011.
+\section{Introduction}
+\label{sec:introduction}
+
+% Activation sparsity can reduce language-model inference cost when specialized
+% kernels skip products and weight accesses associated with zero activations.
+% Recent work shows that useful sparsity can be exposed in pretrained models
+% through thresholding or encouraged during training, with measured acceleration
+% in both cases~\citep{liu2024teal,cetin2026sparser}. These successes create a
+% practical design problem: how should a researcher combine and place
+% sparsification interventions to obtain more useful sparsity at an acceptable
+% quality cost? Answering this question matters when choosing which components
+% of a recipe to retain, where to invest additional training, and which
+% operations warrant sparse-kernel development.
+
+Activation sparsity can improve language-model inference efficiency when specialized kernels skip computation and memory access associated with zero activations. Recent work has shown that sparsity can be exposed in pretrained models through post-hoc thresholding or induced during training, in both cases with measured inference speedups~\citep{liu2024teal,cetin2026sparser}. These results raise a practical design question: how should a researcher place and combine sparsification interventions to obtain more useful sparsity at an acceptable quality cost? Answering this question matters when choosing which components of a recipe to retain, where to invest additional training, and which operations justify sparse-kernel development.
+
+
+% The available approaches act on different parts of this problem. Post-hoc
+% thresholding exploits the tolerance of an existing representation;
+% activation regularization changes what the model learns; and broader site
+% placement exposes additional operations to sparsification. TEAL, ProSparse,
+% and Q-Sparse establish the effectiveness of these approaches and investigate
+% choices within them~\citep{liu2024teal,song2024prosparse,wang2024qsparse}.
+% These findings motivate examining the additional value of pressure as
+% thresholding and placement change.
+% An intervention that helps on its own may add little to another intervention,
+% or impose a different quality cost when applied elsewhere. Without knowing
+% these dependencies, an improved sparsity fraction gives limited guidance
+% about why a recipe works or how to adapt it to a different model.
+
+Existing approaches induce activation sparsity in different ways. TEAL applies post-hoc thresholding to pretrained models, ProSparse uses L1 regularization on FFN activations during training, and Q-Sparse applies top-k sparsification to both FFN and attention activations~\citep{liu2024teal,song2024prosparse,wang2024qsparse}. While each approach is effective in its own setting, it remains unclear how they compare under a common setup and how their effects interact when combined. An intervention that works well in isolation may add little on top of another or incur a different quality cost when applied at additional sites, making sparsity alone insufficient to identify which choices drive the improvement.
+
+
+We study three choices: \emph{pressure}, which encourages selected activations
+toward zero; \emph{thresholding}, which sets values to exactly zero; and
+\emph{site placement}, which specifies where each acts. We ask how much
+pressure adds at a given threshold, and how that response changes when thresholding
+and pressure target more sites. We compare these components under matched
+pretraining conditions. This component study tests their additional and
+combined effects under a common setup; it does not reproduce each prior
+method's full training and allocation procedure.
+
+Zero fractions alone do not describe the affected computation. Shrinking
+activations need not create exact zeros, and zeros at one site may affect
+only a small share of the forward pass. Applying thresholding at more sites can
+expose more computation to sparsification, but also changes what the model
+must learn. We therefore measure both how the activation distributions change
+and which operations their zeros affect.
+
+Our \emph{model-wide sparsity} measure, $\Smodel$, counts the fraction of
+forward matrix-multiplication products with a zero activation operand.
+An architecture-dependent sparsity ceiling, $\Smax$, gives the fraction reached
+if the selected sites had 100\% activation sparsity. Together, they distinguish learned
+sparsity from the amount of computation the intervention can affect. Direct
+timing then tests whether kernels can exploit those zeros on hardware.
+
+We pretrain 54 Pythia-family models from random initialization: 30 conditions
+at 14M parameters and 12 each at 70M and 410M~\citep{biderman2023pythia}.
+A sparsification intervention ladder organizes local FFN pressure, four-site
+and seven-site nonlinearities with or without pressure. Within each size, models
+share initialization, data order and token budget. The 14M comparisons isolate
+individual additions; the larger models test whether selected recipe
+relationships persist.
+
+Pressure's additional value depends on the threshold and target set. The
+seven-site recipe with pressure can produce greater model-wide sparsity despite fewer FFN
+zeros, because it also sparsifies attention products. At the largest tested
+threshold, it improves both loss and sparsity over its four-site counterpart
+at all three sizes. A specialized inference implementation achieves a
+$1.234\times$ geometric mean speedup across the 30 Pythia-14M checkpoints
+on one RTX5090, although attention skipping adds overhead. These results
+connect intervention choices to learned zeros, affected computation and
+measured execution cost. The contribution is a matched account of when
+pressure adds useful sparsity, why its location changes the model-wide result,
+and which execution costs determine the benefit on hardware.

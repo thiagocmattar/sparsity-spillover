@@ -76,8 +76,8 @@ def main() -> None:
     rows = [f"{r['scale']} & {r['family']} & {parameter(r)} & {r['loss']:.4f} & {100*r['R_model']:.3f} & {100*r['R_model']/ceilings[r['scale']]:.3f}"
             for r in ordered]
     write("trained-endpoints", fulltable("lllrrr",
-          r"All 54 trained endpoints. $\lambda$ is pressure weight; $\kappa$ is the trained gate threshold. $U_{\mathrm{A7}}=\Smodel/\Smax(\mathrm{A7})$ uses the same A7 reference within each model size, including for A0. Rounded zero sparsity need not be exactly zero.",
-          "tab:trained-endpoints", r"Size & Recipe & Parameter & Loss & $\Smodel$ (\%) & $U_{\mathrm{A7}}$ (\%)", rows))
+          r"All 54 trained endpoints. $\lambda$ is pressure weight; $\kappa$ is the trained threshold. $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ uses the same A7 reference within each model size, including for A0. Rounded zero sparsity need not be exactly zero.",
+          "tab:trained-endpoints", r"Size & Recipe & Parameter & Loss & $\Smodel$ (\%) & $U_{\mathrm{arch}}$ (\%)", rows))
     rows = []
     blocks = list(dict.fromkeys(r["block"] for r in d["contrasts"]))
     for r in sorted(d["contrasts"], key=lambda r: (blocks.index(r["block"]), r["dose"] or 0)):
@@ -108,7 +108,7 @@ def main() -> None:
             kp = "---" if kappa is None else f"{kappa:g}"
             rows.append(f"{family} & {kp} & {short} & {zero_text} & {100*f['display_outside_fraction']:.4f} & {tail:.4f}")
     write("density-mass", tabular("lllrrr",
-          r"Recipe & $\kappa$ & Group & Zero (\%) & View tail (\%) & Grid tail (\%)", rows))
+          r"Recipe & $\kappa$ & Group & Sparsity (\%) & View tail (\%) & Grid tail (\%)", rows))
 
     ops = [("qkv_projection", "QKV"), ("qk_scores", "$QK$"), ("probability_value", "$PV$"),
            ("attention_output_projection", "Attention output"), ("mlp_w1", "FFN up"), ("mlp_w2", "FFN down")]
