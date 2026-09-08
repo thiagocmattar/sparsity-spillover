@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run 030 is evaluating the 35 missing post-hoc clipping sweeps for the current
+54-checkpoint manuscript cohort across 14M/70M/410M. It will retain all 540
+clipping points (350 new, 190 reused), then update Analysis 018 Figure 01.
+The user pre-approved execution; two RunPod workers operate within USD15.
+
 Analysis 018 packages the 8 September draft's results materials: eight revised
 paper-width PDFs, 54 trained conditions, 190 clipping evaluations, matched effects,
 ceiling-versus-size and scale/clipping views, activation mass, and a consistent
@@ -181,7 +186,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `030`. Next analysis number: `019`. Next finding number: `F003`.
+Next run number: `031`. Next analysis number: `019`. Next finding number: `F003`.
 
 ## Where we stopped
 
