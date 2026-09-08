@@ -5,6 +5,12 @@
 
 ## Current status
 
+Analysis 018 packages the 8 September draft's results materials: seven PDFs,
+59 trained conditions, 190 clipping evaluations, matched effects, scale/reach
+accounting, a retained activation-band case study, tables and proposed prose.
+It preserves partial recipe transfer and pressure-identity limits; no new run,
+manuscript edit or finding promotion. See `analyses/018-2026-09-08-results-materials/README.md`.
+
 Run029 completed the matched retrospective:1173 process outcomes,42 eligible14M
 proposals, one RTX5090 and a common native SDPA CUDA-graph denominator. Qualified
 c30 progress reaches1.783x; K050 passes35/35 checkpoints, geomean1.250x,
@@ -173,7 +179,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `030`. Next analysis number: `018`. Next finding number: `F003`.
+Next run number: `030`. Next analysis number: `019`. Next finding number: `F003`.
 
 ## Where we stopped
 

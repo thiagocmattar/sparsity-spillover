@@ -1,0 +1,18 @@
+# Scale Endpoints
+
+Same eager full-validation pass for loss and R_model; 338 blocks, one seed. R_model is the draft S_model. Source observations O003/O004. Ratios are descriptive, not size-invariant quality or speed.
+
+| Scale | Recipe | κ | Loss | S (%) | Ceiling (%) | U (%) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 14M | A4-OL1 | 0 | 5.4583 | 7.81 | 12.83 | 60.86 |
+| 14M | A7-OL1 | 0 | 5.4802 | 7.05 | 29.95 | 23.55 |
+| 14M | A4-OL1 | 0.5 | 6.0380 | 12.71 | 12.83 | 99.07 |
+| 14M | A7-OL1 | 0.5 | 5.8294 | 27.48 | 29.95 | 91.75 |
+| 70M | A4-OL1 | 0 | 4.8054 | 25.67 | 37.06 | 69.27 |
+| 70M | A7-OL1 | 0 | 4.9412 | 23.56 | 49.42 | 47.67 |
+| 70M | A4-OL1 | 0.5 | 5.3895 | 35.60 | 37.06 | 96.04 |
+| 70M | A7-OL1 | 0.5 | 5.2159 | 40.60 | 49.42 | 82.15 |
+| 410M | A4-OL1 | 0 | 5.6921 | 38.34 | 74.78 | 51.27 |
+| 410M | A7-OL1 | 0 | 5.4263 | 41.12 | 87.25 | 47.13 |
+| 410M | A4-OL1 | 0.5 | 5.1910 | 71.59 | 74.78 | 95.74 |
+| 410M | A7-OL1 | 0.5 | 5.1207 | 80.62 | 87.25 | 92.40 |
