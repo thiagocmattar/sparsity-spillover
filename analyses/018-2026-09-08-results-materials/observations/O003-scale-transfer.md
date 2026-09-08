@@ -16,7 +16,7 @@ Plot five A4-OL1/A7-OL1 doses and ten targets per clipped A0/A1-H control at eac
 
 [Publication PDF](../figures/03-scale-transfer-and-ceilings.pdf)
 
-Selected recipes and uniform clipping across model sizes. Columns denote size. Top: absolute validation loss versus raw model-wide sparsity. Bottom: loss relative to unmodified same-size A0 versus 100 R_model/R_model_max. Solid curves connect trained κ=0,.01,.05,.1,.5 endpoints; dotted open-marker curves connect p=0,.1,…,.9 clipping evaluations. Curves only order evaluated points. Clipped A0/A1-H use the reach of their clipping sites a,m,h,z, not the source checkpoint topology. Both rows retain every value; one shared legend applies to all panels.
+Selected recipes and uniform clipping across model sizes. Columns denote size. Top: absolute validation loss versus raw model-wide sparsity. Bottom: loss relative to unmodified same-size A0 versus 100 R_model/R_model_max. Solid curves connect trained κ=0,.01,.05,.1,.5 endpoints; dotted open-marker curves connect p=0,.1,…,.9 clipping evaluations. Curves only order evaluated points. Clipped A0/A1-H use the reach of their clipping sites a,m,h,z, not the source checkpoint topology. Both rows retain every value. Dashed vertical lines in the first row mark the A4/clipping-site and A7 theoretical ceilings, identified in the shared legend.
 
 ## Result
 

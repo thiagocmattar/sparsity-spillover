@@ -1,6 +1,19 @@
 # Results materials checklist
 
-## Figure revision after user review
+## Second figure revision
+
+- [x] Add titles to all eight figures.
+- [x] Restore separate recipe frontiers and A0/A1-H post-clipping to the 14M overview.
+- [x] Use G+(x) and Gpm(x) in the aligned intervention labels.
+- [x] Restore theoretical ceiling lines in the raw scale panels.
+- [x] Remove operation fill hatches and add a descriptive title.
+- [x] Restore the site-column, kappa-row activation distribution grid with middle kappa=.05.
+- [ ] Obtain the finer activation-bin measurements requested; existing counts cannot supply them. Design confirmation is pending; see ACTIVATION-DIAGNOSTIC.md.
+- [x] Explain 14M clipping coverage with explicit checkpoint and target structure.
+- [x] Add the kernel legend and replace the incumbent wording.
+- [x] Reconcile captions/prose/tables, render and verify, then commit.
+
+## First figure revision (superseded by the second revision above)
 
 - [x] Review every figure at the ICLR 5.5-inch text width and record criticism.
 - [x] Exclude historical h-only A4 pressure from every current analysis output.

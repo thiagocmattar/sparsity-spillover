@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
-from evidence import HERE, FAMILIES, OPS, SCALES, one
+from evidence import HERE, FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, one, frontier
 
 # Consistent symbols across figures, distinguishable without color.
 STYLE = {'A0': ('#444444', 'o'), 'A1-H': ('#888888', 's'),
@@ -49,27 +49,36 @@ def curve(ax, rows, family, x='R_model', y='loss', clipping=False):
 
 def overview(d):
     rows = [r for r in d['trained'] if r['scale']=='14M']
-    fig, ax = plt.subplots(figsize=(5.5,3.7))
-    fig.subplots_adjust(left=.13, right=.98, bottom=.16, top=.80)
+    fig, ax = plt.subplots(figsize=(5.5,4.6))
+    fig.subplots_adjust(left=.13, right=.98, bottom=.13, top=.70)
     for f in FAMILIES:
         rr=[r for r in rows if r['family']==f]; c,m=STYLE[f]
         ax.scatter([100*r['R_model'] for r in rr], [r['loss'] for r in rr],
                    color=c, marker=m, s=33, linewidths=.5, zorder=3)
+        ff=frontier(rr)
+        ax.plot([100*r['R_model'] for r in ff],[r['loss'] for r in ff],
+                color=c,marker=m,ms=4,lw=1,label=f)
+    for f in ('A0','A1-H'):
+        ff=frontier([r for r in d['clipping'] if r['scale']=='14M' and r['control']==f])
+        c,m=STYLE[f]
+        ax.plot([100*r['R_model'] for r in ff],[r['loss'] for r in ff],
+                color=c,marker=m,ms=4,mfc='white',lw=1,ls=':',label=f+' + clipping')
     ax.set(xlim=(-.5,29), ylim=(5.04,6.15), xlabel=S_LABEL, ylabel='Validation loss (nats/token)')
     ax.set_yticks(np.arange(5.2,6.2,.2)); ax.grid(axis='y',color='.92',lw=.6)
-    fig.legend(handles=handles(FAMILIES),loc='upper center',ncol=4,frameon=False,
-               columnspacing=1.4,handletextpad=.4,bbox_to_anchor=(.53,.98))
+    fig.suptitle('14M quality-sparsity frontiers',y=.99,fontsize=11)
+    fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=3,frameon=False,
+               columnspacing=1.2,handletextpad=.5,bbox_to_anchor=(.54,.925))
     save(fig,'01-14m-overview.pdf')
 
 
 def effects(d):
     blocks=['GELU to ReLU','Add L1 at h','L1 to OL1 at h','A1-H to A4',
             'Add OL1 to A4','A4 to A7 gates','Add OL1 to A7']
-    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h','Gate\na, m, z',
-            'Add OL1\nto A4','Gate\nq, k, v','Add OL1\nto A7']
+    labels=['GELU\n→ ReLU','Add L1\nat h','L1 → OL1\nat h',r'$G_+(x)$'+'\nat a, m, z',
+            'Add OL1\nto A4',r'$G_{\pm}(x)$'+'\nat q, k, v','Add OL1\nto A7']
     colors=['#444444','#009E73','#CC79A7','#0072B2','#0072B2','#D55E00','#D55E00']
-    fig,axs=plt.subplots(2,1,figsize=(5.5,4.3),sharex=True)
-    fig.subplots_adjust(left=.15,right=.99,bottom=.20,top=.85,hspace=.12)
+    fig,axs=plt.subplots(2,1,figsize=(5.5,4.6),sharex=True)
+    fig.subplots_adjust(left=.15,right=.99,bottom=.18,top=.80,hspace=.12)
     dose_markers={0.:'o',.01:'s',.05:'^',.1:'D',.5:'P',1.:'*'}
     for n,(block,color) in enumerate(zip(blocks,colors)):
         rows=sorted([r for r in d['contrasts'] if r['block']==block],key=lambda r:r['dose'] or 0)
@@ -88,13 +97,14 @@ def effects(d):
     dose_handles=[Line2D([],[],color='.3',marker=m,ls='none',ms=4,label=f'{v:g}') for v,m in dose_markers.items()]
     fig.legend(handles=dose_handles,loc='upper center',ncol=6,frameon=False,
                title='Dose (λ for local pressure; κ for A4/A7)',title_fontsize=8,
-               handletextpad=.3,columnspacing=1.2,bbox_to_anchor=(.56,1.0))
+               handletextpad=.3,columnspacing=1.2,bbox_to_anchor=(.56,.915))
+    fig.suptitle('Intervention effects along the sparsification ladder',y=.99,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 
 
 def scaling(d):
-    fig,axs=plt.subplots(2,3,figsize=(5.5,4.7),sharey='row')
-    fig.subplots_adjust(left=.12,right=.96,bottom=.17,top=.84,wspace=.14,hspace=.44)
+    fig,axs=plt.subplots(2,3,figsize=(5.5,5.1),sharey='row')
+    fig.subplots_adjust(left=.12,right=.96,bottom=.14,top=.76,wspace=.14,hspace=.44)
     for j,scale in enumerate(SCALES):
         rows=[r for r in d['trained'] if r['scale']==scale]
         clips=[r for r in d['clipping'] if r['scale']==scale and r['control'] is not None]
@@ -107,25 +117,32 @@ def scaling(d):
             ax.grid(axis='y',color='.92',lw=.6)
             ax.set_xlim(-3,103);ax.set_xticks([0,50,100])
             if i==1: ax.axhline(0,color='.6',lw=.7)
+            if i==0:
+                for f,ls in (('A4-OL1','--'),('A7-OL1','-.')):
+                    ceiling=one(rows,family=f,dose=0.)['ceiling']['R_model_max_percent']
+                    ax.axvline(ceiling,color=STYLE[f][0],ls=ls,lw=.8,alpha=.8,zorder=0)
         axs[0,j].set_title(scale)
     axs[0,0].set_ylabel('Validation loss\n(nats/token)')
     axs[1,0].set_ylabel('Δ loss vs A0\n(nats/token)')
     axs[0,0].set_ylim(3.8,9.6);axs[1,0].set_ylim(-.35,5.4)
     axs[0,1].set_xlabel(S_LABEL);axs[1,1].set_xlabel(U_LABEL)
     h,l=axs[0,0].get_legend_handles_labels()
-    fig.legend(h,l,loc='upper center',ncol=2,frameon=False,bbox_to_anchor=(.55,1.),
+    h += [Line2D([],[],color=STYLE[f][0],ls=ls,lw=.8) for f,ls in (('A4-OL1','--'),('A7-OL1','-.'))]
+    l += ['A4 / clipping ceiling','A7 ceiling']
+    fig.legend(h,l,loc='upper center',ncol=2,frameon=False,bbox_to_anchor=(.55,.94),
                handlelength=2.2,columnspacing=1.8)
+    fig.suptitle('Quality-sparsity transfer across model sizes',y=.99,fontsize=11)
     save(fig,'03-scale-transfer-and-ceilings.pdf')
 
 
 def operations(d):
-    fig,ax=plt.subplots(figsize=(5.5,3.6))
-    fig.subplots_adjust(left=.13,right=.99,bottom=.23,top=.79)
+    fig,ax=plt.subplots(figsize=(5.5,3.9))
+    fig.subplots_adjust(left=.13,right=.99,bottom=.22,top=.74)
     rows=[one(d['trained'],scale=s,family=f,dose=.5) for s in SCALES for f in ('A4-OL1','A7-OL1')]
     xx=np.array([0,1,3,4,6,7]);base=np.zeros(6)
-    for op,c,label,hatch in zip(OPS,OP_COLORS,OP_LABELS,('', '/', '\\', '.', 'xx', '--')):
+    for op,c,label in zip(OPS,OP_COLORS,OP_LABELS):
         values=np.array([100*r['counts']['per_operation'][op]['zero_product_count']/r['counts']['model_product_count'] for r in rows])
-        ax.bar(xx,values,bottom=base,color=c,width=.68,label=label,hatch=hatch,
+        ax.bar(xx,values,bottom=base,color=c,width=.68,label=label,
                edgecolor='white',linewidth=.35);base+=values
     ax.set(ylim=(0,100),ylabel='Contribution to '+S_LABEL.replace('(%)','(pp)'))
     ax.set_xticks(xx,['A4','A7']*3)
@@ -133,37 +150,33 @@ def operations(d):
         ax.text(center,-.22,scale,ha='center',transform=ax.get_xaxis_transform(),fontsize=9)
     ax.grid(axis='y',color='.92',lw=.6)
     fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=3,frameon=False,
-               columnspacing=1.0,handlelength=1.5,bbox_to_anchor=(.55,1.))
+               columnspacing=1.0,handlelength=1.5,bbox_to_anchor=(.55,.91))
+    fig.suptitle('Operation contributions to model-wide sparsity',y=.99,fontsize=11)
     save(fig,'04-operation-accounting.pdf')
 
 
 def activations(d):
-    sites=('h','m','q_post','k_post','v');families=('A0','A4-OL1','A7-OL1')
-    fig,axs=plt.subplots(2,2,figsize=(5.5,4.4),sharex=True,sharey='row')
-    fig.subplots_adjust(left=.14,right=.99,bottom=.14,top=.83,wspace=.15,hspace=.17)
-    for j,k in enumerate((0.,.5)):
-        for n,f in enumerate(families):
-            r=one(d['trained'],scale='14M',family=f,dose=None if f=='A0' else k)
-            zero=[];small=[]
-            for site in sites:
-                a=r['sites'][site]
-                zero.append(100*a['exact_zero_count']/a['total'])
-                small.append(100*(a['threshold_hits']['0.01']-a['exact_zero_count'])/a['total'])
-            for ax,values in zip(axs[:,j],(zero,small)):
-                c,m=STYLE[f];xx=np.arange(5)+(n-1)*.22
-                ax.vlines(xx,0,values,color=c,lw=2.5,alpha=.7)
-                ax.scatter(xx,values,color=c,marker=m,s=25,zorder=3)
-        axs[0,j].set_title(r'$\kappa = '+f'{k:g}'+r'$')
-        axs[0,j].set_ylim(-3,105);axs[0,j].set_yticks([0,50,100])
-        axs[1,j].set_ylim(-3,105);axs[1,j].set_yticks([0,50,100])
-        for ax in axs[:,j]:
-            ax.set_xticks(range(5),[r'$h$',r'$m$',r'$q$',r'$k$',r'$v$'])
+    sites=CASE_SITES;families=('A0','A4-OL1','A7-OL1')
+    fig,axs=plt.subplots(3,5,figsize=(5.5,6.2),sharex=True,sharey=True)
+    fig.subplots_adjust(left=.14,right=.99,bottom=.19,top=.82,wspace=.12,hspace=.22)
+    for i,k in enumerate(CASE_DOSES):
+        for j,site in enumerate(sites):
+            ax=axs[i,j]
+            for f in families:
+                r=one(d['trained'],scale='14M',family=f,dose=None if f=='A0' else k)
+                a=r['sites'][site];c,m=STYLE[f]
+                ax.plot(range(4),[100*n/a['total'] for n in a['mass_bands']],
+                        color=c,marker=m,ms=3,lw=.8)
+            ax.set_yscale('symlog',linthresh=.01,linscale=.5)
+            ax.set_ylim(-.002,140);ax.set_yticks([0,.01,1,100],['0','.01','1','100'])
+            ax.set_xticks(range(4),['0','(0,.001]','(.001,.01]','>.01'],rotation=90)
             ax.grid(axis='y',color='.92',lw=.6)
-    axs[0,0].set_ylabel('Exact-zero mass (%)')
-    axs[1,0].set_ylabel('Small nonzero mass (%)')
+            if i==0: ax.set_title(['$h$','$m$','$q$','$k$','$v$'][j])
+            if j==0: ax.set_ylabel(r'$\kappa='+f'{k:g}'+r'$'+'\nMass (%)')
     fig.legend(handles=handles(families),loc='upper center',ncol=3,frameon=False,
-               bbox_to_anchor=(.56,.99))
-    fig.supxlabel('Activation site',y=.015,fontsize=9)
+               bbox_to_anchor=(.56,.94))
+    fig.suptitle('14M activation magnitude distributions',y=.99,fontsize=11)
+    fig.supxlabel(r'Activation magnitude $|x|$ bin',y=.055,fontsize=9)
     save(fig,'05-activation-mass-grid.pdf')
 
 
@@ -177,8 +190,8 @@ def all_clipping(d):
         if name.startswith('relu-ol1'): return 'A1-H-OL1'
         assert name.startswith('a4z-')
         return 'A4'
-    fig,ax=plt.subplots(figsize=(5.5,3.7))
-    fig.subplots_adjust(left=.13,right=.98,bottom=.16,top=.80)
+    fig,ax=plt.subplots(figsize=(5.5,4.3))
+    fig.subplots_adjust(left=.13,right=.98,bottom=.14,top=.70)
     families=('A0','A1-H','A1-H-L1','A1-H-OL1','A4')
     for f in families:
         rr=[r for r in clip if family(r)==f];c,m=STYLE[f]
@@ -186,18 +199,23 @@ def all_clipping(d):
                    edgecolors=c,facecolors='none',marker=m,s=23,linewidths=.8)
     ax.set(xlim=(-.3,13),ylim=(5.,9.6),xlabel=S_LABEL,ylabel='Validation loss (nats/token)')
     ax.grid(axis='y',color='.92',lw=.6)
-    fig.legend(handles=handles(families),loc='upper center',ncol=3,frameon=False,
-               title='Source checkpoint family (uniform clipping)',title_fontsize=8,
-               bbox_to_anchor=(.55,1.),handletextpad=.4,columnspacing=1.1)
+    hh=handles(families)
+    for h,n in zip(hh,(1,1,4,4,5)):
+        h.set_label(h.get_label()+f' ({n})');h.set_markerfacecolor('white')
+    fig.legend(handles=hh,loc='upper center',ncol=3,frameon=False,
+               title='Source family (number of checkpoints)',title_fontsize=8,
+               bbox_to_anchor=(.55,.885),handletextpad=.4,columnspacing=1.1)
+    fig.suptitle('14M post-hoc clipping',y=.99,fontsize=11)
+    fig.text(.55,.925,'15 checkpoints, 10 clipping targets each',ha='center',fontsize=9)
     save(fig,'06-complete-posthoc-comparison.pdf')
 
 
 def kernels(d):
-    runtime=d['runtime'];fig,axs=plt.subplots(1,2,figsize=(5.5,2.9))
-    fig.subplots_adjust(left=.11,right=.97,bottom=.21,top=.84,wspace=.34)
+    runtime=d['runtime'];fig,axs=plt.subplots(1,2,figsize=(5.5,3.65))
+    fig.subplots_adjust(left=.11,right=.97,bottom=.17,top=.68,wspace=.34)
     progress=runtime['progress']
     axs[0].step([p['iteration'] for p in progress],[p['speedup'] for p in progress],where='post',color='#333333')
-    axs[0].set(xlabel='Kernel iteration',ylabel='Speedup (×)',title='(a) Qualified incumbent',ylim=(.75,1.90))
+    axs[0].set(xlabel='Kernel iteration',ylabel='Speedup (×)',title='(a) Search progress',ylim=(.75,1.90))
     rows=[p for p in runtime['points'] if p['candidate']=='k050']
     for f in FAMILIES:
         rr=[r for r in rows if r['family']==f];c,m=STYLE[f]
@@ -207,13 +225,15 @@ def kernels(d):
     axs[1].set(xlabel=S_LABEL,title='(b) Final kernel',ylim=(.75,1.90),xlim=(-1,31))
     for ax in axs:
         ax.axhline(1,color='.65',ls=':',lw=.8);ax.grid(axis='y',color='.92',lw=.6)
-    # Recipe symbols follow Figure 01; caption makes this cross-reference explicit.
+    fig.suptitle('From kernel development to inference speedup',y=.99,fontsize=11)
+    fig.legend(handles=handles(FAMILIES),loc='upper center',ncol=4,frameon=False,
+               bbox_to_anchor=(.55,.91),handletextpad=.4,columnspacing=1.2)
     save(fig,'07-kernel-realization.pdf')
 
 
 def ceilings(d):
-    fig,ax=plt.subplots(figsize=(5.5,3.2))
-    fig.subplots_adjust(left=.14,right=.96,bottom=.20,top=.83)
+    fig,ax=plt.subplots(figsize=(5.5,3.65))
+    fig.subplots_adjust(left=.14,right=.96,bottom=.18,top=.74)
     for f,ls in zip(('A0','A1-H','A4','A7'),(':','--','-.','-')):
         rr=[one(d['ceilings'],scale=s,family=f) for s in SCALES];c,m=STYLE[f]
         ax.plot([r['parameters'] for r in rr],[r['R_model_max_percent'] for r in rr],
@@ -223,7 +243,8 @@ def ceilings(d):
                               ylabel=r'Analytic ceiling $\mathcal{S}_{\mathrm{model}}^{\max}$ (%)')
     ax.grid(axis='y',color='.92',lw=.6)
     fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=4,frameon=False,
-               bbox_to_anchor=(.55,1.),handlelength=2.3)
+               bbox_to_anchor=(.55,.91),handlelength=2.3)
+    fig.suptitle('Theoretical sparsity ceiling by model size',y=.99,fontsize=11)
     save(fig,'08-ceiling-vs-model-size.pdf')
 
 

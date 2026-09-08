@@ -23,9 +23,11 @@ A7-OL1 at $\kappa=.5$ reaches 27.4827\% at loss 5.8294.
 \includegraphics[width=\linewidth]{\resultsassets/figures/01-14m-overview.pdf}
 \caption{The 30 included trained 14M endpoints. Symbols identify recipe families.
 A4/A7 families use $\kappa=0,.01,.05,.1,.5$; local L1/OL1 use
-$\lambda=.05,.1,.5,1$. Every point is an evaluated condition; no connecting
-curve or interpolated frontier is asserted. Individual doses and exact values
-are retained in the endpoint table.}
+$\lambda=.05,.1,.5,1$. Each trained family has its own nondominated frontier;
+all trained markers remain visible. Dotted open-marker curves show the
+separate A0/A1-H clipping frontiers. Eight high-loss clipping evaluations lie
+above this panel's range and remain in Figure~\ref{fig:a018-scales} and the
+tables. There is no pooled frontier or claim of intermediate attainability.}
 \label{fig:a018-overview}
 \end{figure}
 
@@ -42,7 +44,8 @@ These are one-seed differences, not significance or equivalence claims.
 \caption{Matched 14M intervention effects, with identical x positions in both
 rows. Top: treatment-minus-reference loss; bottom: model-sparsity change in
 percentage points. The actions are A0 to A1-H, adding L1 at $h$, replacing L1
-with OL1, adding gates at $a,m,z$, adding OL1 to A4, adding gates at $q,k,v$,
+with OL1, applying $G_+(x)$ at $a,m,z$, adding OL1 to A4, applying
+$G_{\pm}(x)$ at $q,k,v$,
 and adding OL1 to A7. Dose increases left to right within each block. The
 shared key denotes $\lambda$ for local pressure and $\kappa$ for A4/A7;
 GELU to ReLU has no dose, and the $a,m,z$ addition uses $\kappa=0$.
@@ -95,7 +98,9 @@ A0 versus ceiling utilization. Solid curves order the five trained
 $\kappa$ values; dotted open-marker curves order ten clipping targets
 $p=0,.1,\ldots,.9$ for A0 and A1-H. All values are shown. Clipped controls
 use the reach of their evaluation sites $a,m,h,z$, including $p=0$; the
-source A0 topology's zero ceiling is not their denominator. Curves order
+source A0 topology's zero ceiling is not their denominator. Dashed vertical
+lines in the raw row mark the A4/clipping-site and A7 theoretical ceilings.
+Curves order
 evaluated points and do not establish intermediate attainable outcomes.}
 \label{fig:a018-scales}
 \end{figure}
@@ -109,6 +114,7 @@ reach-restricted sensitivity measure is retained separately in the tables.
 
 \subsection{Exact-zero mass and attention operands}
 % Source: observations/O005-activation-case-study.md.
+% Finer magnitude bins requested by the user still require a new diagnostic pass.
 At $\kappa=.5$, both recipes exceed 99.8\% exact zeros at FFN hidden site $h$.
 Their attention operands differ (Figure~\ref{fig:a018-activation}): A4-OL1
 has 47.64\% of query values and 56.12\% of key values within magnitude .01,
@@ -121,12 +127,13 @@ magnitudes alone do not identify exact-zero opportunity.
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/05-activation-mass-grid.pdf}
 \caption{Activation mass at manuscript sites $h,m,q,k,v$ for A0 and
-A4-OL1/A7-OL1. Columns show $\kappa=0$ and $.5$; rows show exact-zero mass
-and disjoint small-nonzero mass $0<|x|\leq .01$. Axes are linear from 0 to
-100\%; the same A0 appears in both columns. Integer counts are pooled across
-layers before division. Query/key sites are post-RoPE. A0 lacks $a,z$
-near-zero diagnostics; post-$W_o$ attention output is not relabeled as $z$.
-These summaries are not reconstructed full activation distributions.}
+A4-OL1/A7-OL1. Columns identify sites and rows show $\kappa=0,.05,.5$.
+The four retained magnitude bins are exact zero, $(0,.001]$, $(.001,.01]$
+and $>.01$. Mass uses a logarithmic axis above .01\% and a linear region
+around zero. The same A0 repeats across rows; one legend applies throughout.
+Integer counts are pooled across layers before division. Query/key sites are
+post-RoPE. A0 lacks $a,z$ near-zero diagnostics; post-$W_o$ output is not
+relabeled as $z$. Lines connect categorical masses rather than a smooth density.}
 \label{fig:a018-activation}
 \end{figure}
 
@@ -151,8 +158,8 @@ P0 qualifies on only four checkpoints, preventing a whole-cohort ranking.
 \includegraphics[width=\linewidth]{\resultsassets/figures/07-kernel-realization.pdf}
 \caption{Matched kernel evidence restricted to the 30 included checkpoints.
 Left: qualified incumbent on fixed A7-OL1 $\kappa=.5$, initialized at native
-1$\times$, over 42 eligible proposals. Right: final K050; recipe symbols
-follow Figure~\ref{fig:a018-overview}. The dashed line is an unweighted
+1$\times$, over 42 eligible proposals. Right: final K050; the shared legend identifies all eight recipe families
+with symbols consistent with Figure~\ref{fig:a018-overview}. The dashed line is an unweighted
 OLS fit with an intercept ($R^2=.8167$); dotted lines mark native 1$\times$.
 Timings use one RTX5090, BF16, batch one, uncached $T=2048$, full-vocabulary
 logits, 64 fixed inputs and three fresh processes. Numerical qualification
@@ -174,7 +181,7 @@ establish cached-decoding or larger-model speedup.
 \caption{High-threshold operation contributions. A4/A7 denote the OL1 recipes
 at $\kappa=.5$. Segments divide each operation's pooled zero products by the
 same full-model denominator; they sum to measured model-wide sparsity.
-The dense head receives no numerator credit. Hatches and colors identify
+The dense head receives no numerator credit. Solid colors identify
 operations; the complete rates and other doses remain in the tables.}
 \label{fig:a018-operations}
 \end{figure}
@@ -183,8 +190,10 @@ operations; the complete rates and other doses remain in the tables.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{\resultsassets/figures/06-complete-posthoc-comparison.pdf}
-\caption{All 150 retained 14M uniform-clipping evaluations, with the full loss
-range. Each open marker is one source-checkpoint/target pair. Symbols identify
+\caption{14M post-hoc clipping: 15 fixed pretrained checkpoints, each evaluated
+at ten targets $p=0,.1,\ldots,.9$, for 150 evaluations with the full loss range.
+The source families contain 1 A0, 1 A1-H, 4 A1-H-L1, 4 A1-H-OL1 and 5 A4
+checkpoints, as indicated in the legend. Each open marker is one source-checkpoint/target pair. Symbols identify
 five source recipe families; source $\lambda/\kappa$ and target $p$ are
 retained in the table. There are no retained A7 or corrected A4-OL1 clipping
 sweeps, so the plot does not identify a joint training-plus-clipping optimum.

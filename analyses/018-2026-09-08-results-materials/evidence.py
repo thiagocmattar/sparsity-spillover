@@ -16,6 +16,8 @@ from sparsity_research.ceilings import architecture_ceiling
 
 SCALES = ('14M', '70M', '410M')
 DOSES = (0., .01, .05, .1, .5)
+CASE_DOSES = (0., .05, .5)
+CASE_SITES = ('h','m','q_post','k_post','v')
 FAMILIES = ('A0', 'A1-H', 'A1-H-L1', 'A1-H-OL1', 'A4', 'A4-OL1', 'A7', 'A7-OL1')
 RENAMES = {'A1-H+L1': 'A1-H-L1', 'A1-H+OL1': 'A1-H-OL1',
            'A4+OL1@4': 'A4-OL1', 'A7+OL1@7': 'A7-OL1'}
@@ -294,6 +296,11 @@ def load_evidence():
     fsets = {'14M_main_trained': small,
              '14M_all_trained_and_clipped': small+[r for r in clipping if r['scale']=='14M']}
     frontiers = {name: [r['id'] for r in frontier(rows)] for name, rows in fsets.items()}
+    overview_frontiers = {family: [r['id'] for r in frontier([r for r in small if r['family']==family])]
+                          for family in FAMILIES}
+    for family in ('A0','A1-H'):
+        overview_frontiers[family+' + clipping'] = [r['id'] for r in frontier(
+            [r for r in clipping if r['scale']=='14M' and r['control']==family])]
     runtime = runtime_subset(source(next((ROOT/'runs').glob('029-*/results/matched-retrospective-001.json'))))
     for point in runtime['points']:
         matched = [r for r in small if r['family'] == point['family']
@@ -301,8 +308,11 @@ def load_evidence():
         assert len(matched) == 1
         point['evidence_id'] = matched[0]['id']
     return {'trained': trained, 'clipping': clipping, 'contrasts': contrasts, 'scale_pairs': scale_pairs,
-            'frontiers': frontiers, 'sources': sources, 'exposure': prior['exposure'],
+            'frontiers': frontiers, 'overview_frontiers': overview_frontiers,
+            'sources': sources, 'exposure': prior['exposure'],
             'runtime': runtime, 'ceilings': ceilings,
+            'activation_case': {'kappas': list(CASE_DOSES), 'sites': list(CASE_SITES),
+                                'bin_status': 'four retained bins; finer measurement pending design confirmation'},
             'coverage': {'documents': 500, 'sequences': 338, 'input_tokens': 692224,
                          'prediction_tokens': 691886, 'excluded_tail_tokens': 1444, 'seed_count': 1},
             'normalization': 'U_arch = all observed zero products / selected-site reachable products; not bounded by one. U_reach excludes outside-reach zero products.',

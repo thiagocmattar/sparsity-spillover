@@ -8,7 +8,9 @@
 Analysis 018 packages the 8 September draft's results materials: eight revised
 paper-width PDFs, 54 trained conditions, 190 clipping evaluations, matched effects,
 ceiling-versus-size and scale/clipping views, activation mass, and a consistent
-30-checkpoint runtime subset. Historical h-only A4 pressure is excluded. No new run,
+30-checkpoint runtime subset. Titles and per-recipe frontiers are restored; finer
+activation bins await diagnostic design confirmation. Historical h-only A4 pressure
+is excluded. No new run,
 manuscript edit or finding promotion. See `analyses/018-2026-09-08-results-materials/README.md`.
 
 Run029 completed the matched retrospective:1173 process outcomes,42 eligible14M

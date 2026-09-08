@@ -1,7 +1,7 @@
 """Build the results materials from retained local evidence."""
 import json
 
-from evidence import HERE, DOSES, FAMILIES, OPS, SCALES, load_evidence, one, sha
+from evidence import HERE, DOSES, FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, load_evidence, one, sha
 from plots import make_figures
 
 
@@ -84,6 +84,11 @@ def tables(d):
           [[pool,r['scale'],r['family'],r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
            for pool,ids in d['frontiers'].items() for id_ in ids for r in [one(d['trained']+d['clipping'],id=id_)]],
           'Minimize paired loss and maximize raw model-wide sparsity among evaluated points only. No interpolation or equal-quality inference.')
+    table('overview-series-frontiers',['Legend series','Dose / target p','Loss','S_model (%)','Evidence ID'],
+          [[series,r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
+           for series,ids in d['overview_frontiers'].items() for id_ in ids
+           for r in [one(d['trained']+d['clipping'],id=id_)]],
+          'Independent nondominated set for each of the ten Figure 01 legend series. Trained families are not pooled with clipping. All trained points remain visible; the plot loss window is 5.04–6.15. Source O001.')
     rows=[]
     for r in d['trained']:
         for site,a in r['sites'].items():
@@ -93,6 +98,13 @@ def tables(d):
     table('activation-statistics',['Scale','Recipe','Dose','Site','Count','Exact zeros','abs(x)<=.001','abs(x)<=.01','RMS','Sum squares',
                                   'Band 0','Band (0,.001]','Band (.001,.01]','Band >.01'],rows,
           'Count-first pooling across all layers and full validation. Separate activation diagnostic pass; not identical to logical-product pass. attention_output is post-Wo; z is pre-Wo. Source O005.')
+    case=[one(d['trained'],scale='14M',family='A0')]+[
+        one(d['trained'],scale='14M',family=f,dose=k) for k in CASE_DOSES for f in ('A4-OL1','A7-OL1')]
+    table('activation-case-mass-bins',['Recipe','Kappa','Site','Exact zero (%)','(0,.001] (%)','(.001,.01] (%)','>.01 (%)','RMS'],
+          [[r['family'],'--' if r['dose'] is None else r['dose'],{'q_post':'q','k_post':'k'}.get(site,site),
+            *[f'{100*n/r["sites"][site]["total"]:.6f}' for n in r['sites'][site]['mass_bands']],
+            f'{r["sites"][site]["rms"]:.6g}'] for r in case for site in CASE_SITES],
+          'Figure 05: seven checkpoints, five common sites, four retained magnitude bins. A0 is repeated visually across three kappa rows. Finer bins require new measurements; no tail mass is fabricated. Source O005.')
     rows=[]
     for r in d['trained']:
         c=r['counts']

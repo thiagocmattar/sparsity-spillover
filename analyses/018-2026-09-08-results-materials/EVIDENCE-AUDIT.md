@@ -47,8 +47,10 @@ Analysis 011. All 230 direct source files are hashed.
    are post-RoPE. The available post-Wo attention_output is not pre-Wo z.
    A0 lacks a/z near-zero diagnostics, so the activation figure omits them.
 6. **Retained distributions.** Artifacts hold exact-zero and magnitude-.001/.01
-   counts plus moments. Figure 05 shows exact-zero and small-nonzero mass;
-   tables preserve all retained bands/RMS. No density or raw sample is invented.
+   counts plus moments. Figure 05 restores four measured magnitude bins in
+   κ=0,.05,.5 rows; finer .05/.5 boundaries require new measurement. The
+   diagnostic design is pending, not silently approximated from the >.01 tail.
+   Tables preserve all retained bands/RMS. No density or raw sample is invented.
 7. **Numerical controls.** No-pressure A4/A7 gates agree mathematically at κ=0
    but have small trained numerical differences. A1-H and G+,0 also differ in
    boundary derivative. These are disclosed comparison limits.

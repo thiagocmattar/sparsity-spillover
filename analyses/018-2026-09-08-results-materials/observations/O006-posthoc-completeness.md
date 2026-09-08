@@ -16,7 +16,7 @@ Use all raw uniform-clipping evaluations across 15 source checkpoints and ten ta
 
 [Publication PDF](../figures/06-complete-posthoc-comparison.pdf)
 
-Complete retained 14M uniform-clipping evaluations. Each open marker is one evaluated source-checkpoint/target pair; symbols and colors identify the source family. The plot includes the full loss range for all 150 evaluations. Source λ/κ, clipping p and exact values are in the table. No curve or interpolated frontier is asserted; Figure 01 supplies the separate trained overview.
+14M post-hoc clipping: 15 pretrained checkpoints, ten targets each. Source family counts are A0 (1), A1-H (1), A1-H-L1 (4), A1-H-OL1 (4), and A4 (5). Each open marker is one evaluated source-checkpoint/target pair; symbols and colors identify the source family. The plot includes the full loss range for all 150 evaluations. Every source checkpoint is evaluated at p=0,.1,…,.9 with fixed weights; these are 150 evaluations, not 150 trained models. Source λ/κ, clipping p and exact values are in the table. No curve or interpolated frontier is asserted; Figure 01 supplies the separate trained overview.
 
 ## Result
 

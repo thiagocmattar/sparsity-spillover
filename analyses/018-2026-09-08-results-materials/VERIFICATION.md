@@ -1,85 +1,66 @@
-# Verification record ? revised 8 September 2026
+# Verification record - second figure revision, 8 September 2026
 
-## Numerical and source verification
+## Scope and outstanding measurement
 
-The revised local build completed successfully:
+Eight figures were revised, titled and reviewed. The 54 trained conditions,
+190 clipping evaluations and 30-checkpoint runtime cohort are unchanged.
+The overview now has ten separately defined frontier series. Its numerical
+membership is stored and tabulated. The activation grid now uses seven
+checkpoints, five common sites and kappa=0,.05,.5 rows.
 
-```text
-54 trained conditions (30 / 12 / 12)
-190 raw clipping evaluations (150 / 20 / 20)
-25 matched intervention contrasts
-12 analytic topology-by-architecture ceilings
-30 included final-kernel checkpoints
-8 single-page PDF figures
-230 directly hashed source files
-```
+**The requested finer activation bins are not complete.** Stored statistics
+only define the four bins {0}, (0,.001], (.001,.01] and >.01. No finer-bin
+counts were inferred or fabricated. The separate ACTIVATION-DIAGNOSTIC.md
+proposal awaits design confirmation under AGENTS.md; no new diagnostic code,
+numbered run or model execution has been started. The checklist leaves this
+item open. The restored distribution figure is explicitly a coarse view.
 
-Raw logical counts reconcile with model/block denominators and recomputed
-analytic per-sequence ceilings. All measured endpoints retain complete
-validation coverage. Activation pooling reconstructs site totals, zero counts,
-threshold counts and RMS from per-layer summaries. Same-size initialization,
-order and cache identities, seed 1234, 712 updates and input-token budgets
-are checked against actual manifests/configs. Larger clipping values also
-match Analysis 011. Evaluation clipping sites are verified as a,m,h,z before
-using their reach ceiling. No source-A0 zero denominator is substituted.
-
-The historical h-only A4 cohort is absent from every current numerical result,
-including runtime. All final runtime points link to an included trained
-checkpoint's canonical sparsity. Candidate and ablation summaries and the
-OLS fit are recomputed on the filtered cohort, not copied from the old report.
+## Numerical checks
 
 ```powershell
 .venv/Scripts/python.exe -m pytest -p no:cacheprovider analyses/018-2026-09-08-results-materials/test_evidence.py tests/test_ceilings.py tests/test_metrics.py -q
 ```
 
-Result: **38 passed in 1.54 seconds**. Coverage includes count corruption
-rejection, band partitioning, frontier dominance/ties, cohort/dose coverage,
-matched differences and identities, natural-zero normalization, undefined
-unmodified A0, clipping evaluation-site normalization, integer ceiling units,
-operation weighting, common-site statistics, scoped transfer claims,
-runtime subset arithmetic and saved data/source/artifact hashes.
-No model execution or shared scientific-code change was made. There is no
-experiment launch, so the full bootstrap launch suite is not applicable.
+**39 passed in 1.65 seconds.** Checks cover complete cohorts and validation,
+integer logical counts, count-first activation pooling, magnitude-bin
+partitioning, source hashes, same-size identities, exact matched differences,
+ceiling units and clipping-site normalization, scope of each overview frontier,
+all three case-study thresholds, the 30-checkpoint runtime reduction and output
+inventory hashes. The saved bundle still identifies 230 direct source files.
+No shared scientific code changed. The full bootstrap launch suite is not
+applicable until a new diagnostic is implemented for launch.
 
-## Figure and insertion review
+## Visual and TeX checks
 
-Every final PDF was rendered in color and grayscale at 115.2 dpi and visually
-inspected. Every page is exactly 396 points (5.5 inches) wide. All text lies
-inside its page bounds; ordinary labels are at least 8 pt. Only conventional
-math subscript/superscript words (model, arch, max) are smaller, at 6.3 pt.
-All figures use embedded vector lettering with selectable text.
+All eight final PDFs were rendered at 115.2 dpi in color and grayscale and
+visually inspected. Each is one page and exactly 396 points (5.5 inches) wide.
+Every extracted text span lies inside its page bounds; ordinary text is at
+least 8 pt, with conventionally smaller math scripts. Every figure has a title.
 
-The review fixed cropped right-edge ticks in Figures 03/07 and an initially
-truncated activation-mass range in Figure 05. Final plotted measurement
-ranges contain all selected values. Distinct recipe markers, clipping line
-styles and operation hatches retain the intended distinctions in grayscale.
-The low-threshold overview cluster remains naturally overlapping; exact values
-are in the table. The complete clipping-loss range necessarily compresses
-small trained differences in Figure 03.
+The overview uses separate trained-family and control-clipping frontiers,
+without a pooled envelope. Eight high-loss clipping points lie beyond its
+5.04?6.15 loss window; their complete range is visible in the scale figure
+and the clipping appendix. The scale ceiling lines use both color and differing
+line patterns. Operation fills are solid as requested; their stack order and
+legend identify operations. The activation grid uses matched axes, one shared
+legend and the original measured bins. The clipping legend states source
+checkpoint counts. The kernel plot now includes the full recipe legend.
 
-[FIGURE-REVIEW.md](FIGURE-REVIEW.md) records a criticism, revision and proposed
-paper role for all eight figures. The canonical site labels were checked
-against the manuscript architecture ladder PDF. One shared activation legend
-replaces repeated panel annotations; post-Wo output is not mislabeled as z.
+The optional results.tex and both compact generated tables compile in the
+5.5-inch-text-width article wrapper. The final reference-resolved compile has
+**no LaTeX warnings, unresolved references, overfull or underfull boxes**.
+All ten preview pages were rendered and inspected as a syntax/caption/layout
+proof; the wrapper's float pagination is not a final conference page budget.
+The manuscript itself was not edited or rebuilt.
 
-The revised results.tex and both generated compact tables compile in a
-temporary 5.5-inch-text-width article wrapper. The second pass produces an
-8-page preview with **no LaTeX warnings, unresolved references, overfull or
-underfull boxes**. All preview pages were rendered and inspected as a layout
-proof. This validates syntax, captions and target-width appearance; it is not
-a final conference page-budget or float-placement decision. No manuscript
-source was edited or rebuilt.
+The final scale-line pattern change was rendered and checked separately.
+Temporary renders and wrapper files stay under ignored tmp/analysis018-revision2.
+Publication artwork remains PDF only. artifact_inventory.json records all
+PDF/table hashes and sizes; the analysis .gitattributes preserves those bytes.
 
-Temporary wrappers, logs, PNG renders, grayscale renders and contact sheets
-remain under ignored tmp/analysis018-revision. Publication outputs are PDF only.
-artifact_inventory.json records every generated figure/table's SHA-256 and
-byte size. The analysis .gitattributes preserves their inventoried bytes
-across Git line-ending conversion.
+## Closeout
 
-## Closeout scope
-
-The revision is limited to Analysis 018 and its summary in research/INDEX.md.
-Original runs, prior analyses, manuscript, unrelated .gitignore/run-log changes,
-and historical archive state remain outside the change. No dataset, weights,
-credentials, temporary render or active-run file belongs in the commit.
-The completed checklist includes the scoped review and version-control closeout.
+The coherent figure revision, updated captions/prose/tables and pending
+measurement design are committed together. The open finer-bin item is not
+represented as finished. Original runs, prior analyses, model weights, caches,
+credentials, temporary outputs and unrelated work remain outside this commit.

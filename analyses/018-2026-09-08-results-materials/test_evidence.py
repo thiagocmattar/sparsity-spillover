@@ -8,7 +8,7 @@ import sys
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from evidence import HERE, ROOT, OPS, SCALES, DOSES, frontier, load_evidence, logical_counts, mass_bands, one, sha
+from evidence import HERE, ROOT, OPS, SCALES, DOSES, CASE_DOSES, CASE_SITES, frontier, load_evidence, logical_counts, mass_bands, one, sha
 
 
 @pytest.fixture(scope='module')
@@ -84,7 +84,8 @@ def test_contrasts_have_matched_identities_and_correct_signs(data):
 def test_case_study_uses_common_sites_and_pooled_band_counts(data):
     common={'m','h','q_post','k_post','v','attention_output'}
     selected=[one(data['trained'],scale='14M',family='A0')]
-    selected += [one(data['trained'],scale='14M',family=f,dose=k) for f in ('A4-OL1','A7-OL1') for k in (0.,.5)]
+    selected += [one(data['trained'],scale='14M',family=f,dose=k) for f in ('A4-OL1','A7-OL1') for k in CASE_DOSES]
+    assert len(selected)==7 and list(CASE_DOSES)==data['activation_case']['kappas']
     assert set(selected[0]['sites'])==common
     for r in selected:
         for site in common:
@@ -92,6 +93,17 @@ def test_case_study_uses_common_sites_and_pooled_band_counts(data):
             assert sum(a['mass_bands'])==a['total']
             assert a['mass_bands'][0]==a['exact_zero_count']
             assert a['rms']==pytest.approx(math.sqrt(a['square_sum']/a['finite']))
+
+
+def test_overview_frontiers_are_scoped_to_each_legend_series(data):
+    assert len(data['overview_frontiers'])==10
+    for series,ids in data['overview_frontiers'].items():
+        if series.endswith(' + clipping'):
+            candidates=[r for r in data['clipping'] if r['scale']=='14M' and r['control']==series.split(' + ')[0]]
+        else:
+            candidates=[r for r in data['trained'] if r['scale']=='14M' and r['family']==series]
+        assert ids==[r['id'] for r in frontier(candidates)]
+        assert all(one(data['trained']+data['clipping'],id=i) in candidates for i in ids)
 
 
 def test_historical_pressure_is_excluded_from_all_current_results(data):

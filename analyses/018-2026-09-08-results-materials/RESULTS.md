@@ -9,9 +9,13 @@ a separately qualified implementation.
 
 ## 1. Establish the 14M trade-off
 
-Use Figure 01: one scatter plot of the 30 included training conditions.
-The overview intentionally contains no connecting curves or frontier overlay.
-The complete evaluated frontier is available in the numerical table.
+Use Figure 01: all 30 included training conditions plus A0/A1-H post-clipping.
+Each legend entry has its own evaluated nondominated frontier: eight trained
+recipe families and two separate clipping-control series. All trained points
+remain visible; lines connect each series' nondominated points. There is no
+pooled frontier line. The loss window remains 5.04–6.15; the eight control
+clipping evaluations above it are retained in Figure 03 and the tables.
+The series-membership table makes this selection explicit.
 
 Suggested text:
 
@@ -34,8 +38,9 @@ training-plus-clipping recipe. Uniform clipping is not TEAL's greedy allocation.
 
 ## 2. Explain the added effect of each intervention
 
-Figure 02 preserves the requested aligned two-row design. Each x block names
-an action; its points increase in dose from left to right. Every value is
+Figure 02 preserves the aligned two-row design and is titled “Intervention
+effects along the sparsification ladder.” The gate additions are labeled
+G+(x) at a,m,z and Gpm(x) at q,k,v. Points increase in dose left to right. Every value is
 treatment minus the stated reference. The sequence builds an explanation,
 not an additive decomposition or a curriculum used to train one model.
 
@@ -66,6 +71,8 @@ all-zero reach ceiling, not an observed zero rate. It uses the actual parameter
 counts of the three architectures and the same uncached T=2048 workload.
 OL1 changes training, not the selected-site ceiling, so A4/A4-OL1 and
 A7/A7-OL1 share curves. The integer-count table fixes the numerator and unit.
+The same A4/A7 ceilings now appear as dashed vertical lines in Figure 03's
+raw-sparsity row; clipped controls share the A4 evaluation-site reach.
 
 > A7's all-block ceiling rises from 29.952% at 14M to 49.424% at 70M and
 > 87.245% at 410M. The dense output head consumes a much larger fraction of
@@ -116,10 +123,17 @@ Figure 04 decomposes the high-threshold raw totals; its full rates remain in tab
 
 ## 4. A focused activation case
 
-Figure 05 compares A0 with A4-OL1/A7-OL1 at the tested threshold endpoints
-κ=0 and .5. It has two columns for κ, with exact-zero mass above and small
-nonzero mass `0 < |x| ≤ .01` below. All axes are linear 0–100%; the same A0
-is repeated in both columns. Symbols h,m,q,k,v match the manuscript ladder.
+Figure 05 restores the distribution grid: columns h,m,q,k,v and rows κ=0,
+.05,.5. Each panel shows four measured magnitude-bin masses: exact zero,
+(0,.001], (.001,.01] and >.01. A shared legend identifies A0/A4-OL1/A7-OL1;
+the same A0 is repeated across rows. The y axis is logarithmic above .01%
+and linear near zero to retain empty bins. Lines connect categorical masses,
+not a reconstructed continuous density.
+
+The requested finer bins at .05 and .5 are not available in the stored
+statistics. Figure 05 remains a coarse distribution view until the proposed
+checkpoint diagnostic is confirmed and run. The diagnostic would also provide
+the missing A0 a/z counts and permit all seven site columns.
 
 > At κ=.5, both recipes make over 99.8% of FFN hidden activations exactly
 > zero. Their attention operands differ: A4-OL1 has 47.64% of query values
@@ -145,6 +159,8 @@ Figure 07 is redrawn from Run 029, restricted to the same 30 included
 checkpoints. Its left curve retains the qualified incumbent on fixed c30
 across 42 eligible proposals; the excluded cohort was absent from this search
 subset. Its right panel and all runtime summaries are recomputed for 30 models.
+The figure now has a shared recipe legend, an overall title and the panel
+label “Search progress”; the qualified-incumbent definition remains in the caption.
 
 > The qualified incumbent reaches 1.7830× on the search checkpoint.
 > Final K050 qualifies on all 30 included checkpoints, with 1.2340× geometric

@@ -16,7 +16,7 @@ Compute treatment minus reference for seven comparison blocks, retaining the sam
 
 [Publication PDF](../figures/02-blocked-intervention-effects.pdf)
 
-Matched 14M intervention effects. Top: loss change, where negative is better. Bottom: model-sparsity change in percentage points, where positive is more. Actions proceed from GELU→ReLU, adding L1 at h, replacing L1 with OL1, adding gates at a,m,z, adding OL1 to A4, adding gates at q,k,v, and adding OL1 to A7. The shared key identifies λ in the two local-pressure blocks and κ in the A4/A7 blocks; GELU→ReLU has no dose. The a,m,z addition uses κ=0. Each pair has an explicit reference/treatment ID in the table; the sequence is not an additive decomposition.
+Matched 14M intervention effects. Top: loss change, where negative is better. Bottom: model-sparsity change in percentage points, where positive is more. Actions proceed from GELU→ReLU, adding L1 at h, replacing L1 with OL1, applying G+(x) at a,m,z, adding OL1 to A4, applying Gpm(x) at q,k,v, and adding OL1 to A7. The shared key identifies λ in the two local-pressure blocks and κ in the A4/A7 blocks; GELU→ReLU has no dose. The a,m,z addition uses κ=0. Each pair has an explicit reference/treatment ID in the table; the sequence is not an additive decomposition.
 
 ## Result
 

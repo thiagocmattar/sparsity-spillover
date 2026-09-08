@@ -1,47 +1,26 @@
-# Critical figure review — 8 September 2026
+# Figure review after the second user revision
 
-The first package carried too much information inside the artwork. Wide source
-canvases hid the problem: scaling them to paper width made labels small and
-made annotations compete with the data. The revised figures are all exactly
-5.5 inches wide, with ordinary lettering at least 8 pt (math subscripts and
-superscripts scale conventionally). Numerical detail belongs in captions and tables.
+The previous revision removed useful structure. This revision restores the
+requested curves and distribution layout while retaining paper-width lettering.
+Every figure now has a descriptive title. The artwork remains 5.5 inches wide;
+ordinary text is at least 8 pt, with conventional smaller math scripts.
 
 The [official ICLR template](https://github.com/ICLR/Master-Template/blob/master/iclr2026/iclr2026_conference.tex)
-specifies a 5.5-inch text width and asks for clean, legible, reproducible artwork
-that remains understandable in black and white. The 8-pt threshold is our
-review criterion, not a claimed numeric ICLR rule. This review checks clarity
-and formatting; it does not certify conference acceptance or final page fit.
+asks for clean, legible artwork and uses a 5.5-inch text width. The 8-pt
+criterion is our review choice, not a claimed numeric conference requirement.
 
-| Figure | Critical assessment of the first version | Revision and decision |
+| Figure | Current decision | Remaining interpretation or layout limit |
 | --- | --- | --- |
-| 01: 14M overview | Two views, recipe lines, frontier lines, rings, clipping curves and a historical cohort competed in one graphic. Dose detail was unreadable after reduction. | One scatter plot; 30 included training conditions, eight consistent recipe symbols; no connecting lines or frontier overlay. Full numerical frontier remains a table. Clipping has its own figure. Keep in main text. |
-| 02: matched effects | The aligned rows worked, but “child”, “parent” and “expand gates” obscured the scientific change. Twenty-five full tick labels crowded the axis. | Seven concrete action labels, 25 aligned points, one shared dose key; treatment minus reference throughout. Points progress left to right with dose within a block. No additive-chain interpretation. Keep in main text. |
-| 03: scale transfer | Both rows centered loss on A0, hiding absolute quality. Missing clipped controls weakened the comparison. Per-point labels and ceiling lines added clutter. | Top row: complete absolute loss versus raw sparsity. Bottom: A0-relative loss versus ceiling utilization. Both rows include all ten clipping targets for A0/A1-H and five doses for A4-OL1/A7-OL1. One shared legend; ceiling curves move to Figure 08. Keep in main text. |
-| 04: operation accounting | Stacks, ceiling markers, numeric stack labels and a second heatmap repeated the same evidence. | Six stacked bars at κ=.5; operation color and hatch key shared once. Full dose and per-operation rates remain in tables. Move to appendix unless needed to explain the activation case. |
-| 05: activation mass | Twelve panels, four categorical magnitude bands, a symlog scale and per-panel RMS annotations required too much decoding. | Four panels: κ=0/.5 columns and exact-zero/small-nonzero rows, linear 0–100% scales. Five shared sites h,m,q,k,v, one recipe legend, no RMS text or connecting lines across sites. Keep as a focused case study. |
-| 06: clipping coverage | Fifteen clipping trajectories plus all trained curves and frontier overlays duplicated Figure 01. | A single full-range scatter of all 150 post-hoc evaluations, grouped by five source families. Source dose and clipping target remain in the table. Appendix only. |
-| 07: runtime | Copying the previous 35-checkpoint artwork preserved clutter and violated the requested cohort exclusion. | Qualified incumbent curve only on the left; final K050 scatter and descriptive fit for 30 included checkpoints on the right. Recompute every cohort-dependent statistic. Recipe symbols follow Figure 01; no giant equation, repeated legend or failed-timing cloud. Keep in systems section. |
-| 08: ceiling versus size | Missing entirely; embedding ceiling markers inside other figures did not answer the structural question directly. | Dedicated four-topology plot at the three actual parameter counts, with a log size axis and a fixed full-sequence workload. OL1 variants share the same ceilings, so duplicate curves are unnecessary. Introduce before scale normalization. |
+| 01 | Title “14M quality-sparsity frontiers”; eight trained recipe series plus A0/A1-H post-clipping. Each legend entry has its own nondominated set and connection. All 30 trained markers remain. | No global frontier. Eight high-loss clipping points are outside the quality-focused window and remain in Figure 03/tables. Some family frontiers contain only one point. |
+| 02 | Title “Intervention effects along the sparsification ladder”; replace gate wording with G+(x) at a,m,z and Gpm(x) at q,k,v. Preserve the aligned rows and dose key. | “Cumulative effect” would imply summed effects. These are separate matched differences, so the title avoids that claim. |
+| 03 | Keep the absolute/normalized rows and clipping controls; restore dashed A4/A7 theoretical ceiling lines in the raw row and identify them in the shared legend. | The A0/A1-H clipping reach is A4, not their source checkpoint topology. Full clipping losses compress fine trained differences. |
+| 04 | Add title; use solid operation fills and thin white boundaries. Remove all hatch patterns. | Segment order and the legend support interpretation; very small contributions remain easier to compare in the table. |
+| 05 | Restore site columns and κ rows, with κ=.05 added between 0 and .5. One shared recipe legend and four retained magnitude bins on a symlog mass axis. | Finer bins at .05/.5 need new checkpoint measurements. The grid is explicitly coarse until that diagnostic is confirmed and run. Five common sites are shown; new measurements would also supply baseline a/z. |
+| 06 | Title explicitly says 14M; subtitle says 15 checkpoints, ten clipping targets each. Legend includes the checkpoint count for each source family and matches the open markers. | It is repeated evaluation of 15 fixed pretrained models, not a scale comparison or 150 newly trained models. |
+| 07 | Add overall title and eight-recipe legend; use “Search progress” above the left panel and “Final kernel” above the right. | The search curve still admits only fully qualified speedups. Runtime scope remains the 30 included checkpoints. |
+| 08 | Add title “Theoretical sparsity ceiling by model size”; retain topology curves and actual parameter-count positions. | These are analytic reach ceilings at a fixed workload, not quality-constrained attainability or runtime speedup. |
 
-## Final visual decisions and remaining limits
-
-- All eight figures have a single reading task; no narrative headline is embedded
-  above the artwork. Captions supply coverage, dose interpretation and limitations.
-- Recipe color and marker identity are consistent. Dose symbols in Figure 02 have
-  a separate explicit key; operation hatches in Figure 04 preserve grayscale distinctions.
-- Paper-width rendering caught cropped right-edge ticks in Figures 03/07 and an
-  activation value above the first proposed Figure 05 axis range. Both were fixed.
-- The dense low-threshold cluster in Figure 01 is real. It is not jittered or
-  expanded in an inset; exact endpoint identification is available in the table.
-- Full clipping losses compress the trained differences in Figure 03. This is the
-  cost of the requested complete quality view; Figure 02 and the scale-pair table
-  carry the fine differences. Do not reintroduce another zoomed panel.
-- Figure 05 shows measured mass summaries, not a reconstructed density. A0 lacks
-  a/z near-zero measurements. Post-Wo attention output is omitted because it is
-  not the manuscript's pre-Wo z site.
-- A single seed supplies no between-seed intervals. No error bars are invented.
-  Connecting scale/threshold curves show evaluated order, not a fitted scaling law.
-
-The main text should use Figures 01, 02, 08 and 03 as the central sequence;
-include 05 if the mechanism discussion has space, followed by the systems
-figure. Figures 04/06 and complete tables provide supporting detail.
+The fine-bin request remains a data requirement rather than a styling choice.
+[ACTIVATION-DIAGNOSTIC.md](ACTIVATION-DIAGNOSTIC.md) records the exact seven-
+checkpoint measurement design and the repository's confirmation boundary.
+No unsupported mass was assigned to a finer bin.
