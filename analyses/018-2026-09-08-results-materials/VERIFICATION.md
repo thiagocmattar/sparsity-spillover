@@ -1,3 +1,34 @@
+# Figure 01 training and clipping revision, 8 September 2026
+
+Only Figure 01 was regenerated in this pass; the other seven publication PDF
+hashes are unchanged. The single-panel layout now uses a smaller 7.5-pt legend
+below the plot, thin grey x/y grid lines, a shorter title and validation-loss
+label, dashed pressure curves, and thin post-hoc trajectories. The cutoff
+annotation was removed. Every trained marker renders above the clipping paths.
+
+The figure uses 23 series and 180 input coordinates: all 30 trained endpoints
+and all 150 retained clipping evaluations, preserving each measured p=0 point.
+The quality-focused window includes all trained endpoints and 100 clipping
+points. Complete clipping ranges remain in Figure 06. No missing A4-OL1 or A7
+clipping trajectory is inferred, and no checkpoint inference was performed.
+
+The regression check inspects actual plotted coordinates and connection order
+against the complete source checkpoint/parameter grids, including all 15
+clipping sources and the training-above-clipping drawing order. Retained count,
+coverage, provenance and serialization checks pass. The PDF was rendered and
+inspected at paper width; an independent visual review found no material
+cropping, overlap or legibility defect and scored the design 20/25. This is an
+editorial score, not a scientific inference. Captions and the series table were
+reconciled; temporary proofs remain under ignored tmp/analysis018-small-fixes.
+
+The isolated staged revision passed **39 focused tests in 1.00 second**
+(Analysis 018 evidence checks plus ceiling and metric tests). Figure 01 and
+its overview-series table reproduce byte-for-byte from the staged source.
+Only Figure 01 is staged among the publication PDFs. The optional TeX caption
+compiled with resolved references and no LaTeX warnings or overfull/underfull
+boxes; its figure/caption page was rendered and inspected. This staged proof
+is under ignored tmp/analysis018-figure01-staged.
+
 # Verification record - overview correction, 8 September 2026
 
 ## Overview correction

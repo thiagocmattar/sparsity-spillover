@@ -4,6 +4,7 @@ The previous revision removed useful structure. This revision restores the
 requested curves and distribution layout while retaining paper-width lettering.
 Every figure now has a descriptive title. The artwork remains 5.5 inches wide;
 ordinary text is at least 8 pt, with conventional smaller math scripts.
+Figure 01 uses the user-requested smaller 7.5-pt legend below the plot.
 
 The [official ICLR template](https://github.com/ICLR/Master-Template/blob/master/iclr2026/iclr2026_conference.tex)
 asks for clean, legible artwork and uses a 5.5-inch text width. The 8-pt
@@ -11,7 +12,7 @@ criterion is our review choice, not a claimed numeric conference requirement.
 
 | Figure | Current decision | Remaining interpretation or layout limit |
 | --- | --- | --- |
-| 01 | Title “14M quality-sparsity frontiers”; eight trained recipe series plus A0/A1-H post-clipping. Curves connect every evaluated dose within its series, restoring 14 previously disconnected trained markers. | “Frontiers” in the title names the quality–sparsity comparison; these are dose sweeps, not Pareto envelopes. The caption states this explicitly. Eight high-loss clipping points remain outside this window and are reported in Figure 03/tables. |
+| 01 | Title “14M quality-sparsity trade-offs”; small legend below; thin grey x/y grid; dashed pressured training curves; all 15 retained clipping trajectories drawn faintly behind training points. | All 30 trained and 150 clipping inputs remain; the quality-focused range omits high-loss clipping points from view. Corrected A4-OL1/A7 clipping is unavailable. No jitter or interpolated frontier. |
 | 02 | Title “Intervention effects along the sparsification ladder”; replace gate wording with G+(x) at a,m,z and Gpm(x) at q,k,v. Preserve the aligned rows and dose key. | “Cumulative effect” would imply summed effects. These are separate matched differences, so the title avoids that claim. |
 | 03 | Keep the absolute/normalized rows and clipping controls; restore dashed A4/A7 theoretical ceiling lines in the raw row and identify them in the shared legend. | The A0/A1-H clipping reach is A4, not their source checkpoint topology. Full clipping losses compress fine trained differences. |
 | 04 | Add title; use solid operation fills and thin white boundaries. Remove all hatch patterns. | Segment order and the legend support interpretation; very small contributions remain easier to compare in the table. |

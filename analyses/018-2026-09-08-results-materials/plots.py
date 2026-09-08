@@ -49,18 +49,43 @@ def curve(ax, rows, family, x='R_model', y='loss', clipping=False):
 
 def overview(d):
     fig, ax = plt.subplots(figsize=(5.5,4.6))
-    fig.subplots_adjust(left=.13, right=.98, bottom=.13, top=.70)
-    for series, ids in d['overview_series'].items():
-        rows = [one(d['trained']+d['clipping'], id=i) for i in ids]
-        clipping = series.endswith(' + clipping')
-        family = series.split(' + ')[0] if clipping else series
-        # A sweep curve records every measured dose, including dominated points.
-        curve(ax, rows, family, clipping=clipping)
-    ax.set(xlim=(-.5,29), ylim=(5.04,6.15), xlabel=S_LABEL, ylabel='Validation loss (nats/token)')
-    ax.set_yticks(np.arange(5.2,6.2,.2)); ax.grid(axis='y',color='.92',lw=.6)
-    fig.suptitle('14M quality-sparsity frontiers',y=.99,fontsize=11)
-    fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=3,frameon=False,
-               columnspacing=1.2,handletextpad=.5,bbox_to_anchor=(.54,.925))
+    fig.subplots_adjust(left=.12, right=.98, bottom=.25, top=.91)
+    # Thin evaluation trajectories sit behind the unchanged training sweeps.
+    series_rows={name:[one(d['trained']+d['clipping'],id=i) for i in ids]
+                 for name,ids in d['overview_series'].items()}
+    for series,rows in series_rows.items():
+        if not series.endswith(' + clipping'):
+            continue
+        source=rows[0]['family']
+        family=rows[0]['control']
+        if family is None:
+            family=('A1-H-L1' if source.startswith('relu-l1n') else
+                    'A1-H-OL1' if source.startswith('relu-ol1') else 'A4')
+        color,marker=STYLE[family]
+        ax.plot([100*r['R_model'] for r in rows],[r['loss'] for r in rows],
+                color=color,marker=marker,ms=2.2,mfc='white',mew=.45,
+                lw=.5,alpha=.45,zorder=2,label=series)
+    legend=[]
+    for family in FAMILIES:
+        rows=series_rows[family];color,marker=STYLE[family]
+        pressured=family.endswith(('-L1','-OL1'))
+        linestyle='--' if pressured else '-'
+        ax.plot([100*r['R_model'] for r in rows],[r['loss'] for r in rows],
+                color=color,marker=marker,ms=4,mew=.65,lw=1.15,
+                ls=linestyle,zorder=4,label=family)
+        legend.append(Line2D([],[],color=color,marker=marker,ms=4,lw=1.15,
+                             ls=linestyle if len(rows)>1 else 'none',label=family))
+    ax.set(xlim=(-.5,29),ylim=(5.04,6.15),xlabel=S_LABEL,ylabel='Validation loss')
+    ax.set_yticks(np.arange(5.2,6.2,.2))
+    ax.grid(axis='both',color='.88',lw=.4)
+    fig.suptitle('14M quality-sparsity trade-offs',y=.985,fontsize=11)
+    fig.legend(handles=legend,loc='upper center',ncol=4,frameon=False,
+               fontsize=7.5,columnspacing=1.0,handletextpad=.45,handlelength=2.0,
+               bbox_to_anchor=(.55,.145))
+    clipping_key=Line2D([],[],color='.55',marker='o',mfc='white',mew=.45,
+                        ms=2.5,lw=.5,label='Post-hoc clipping (thin lines, open markers)')
+    fig.legend(handles=[clipping_key],loc='lower center',frameon=False,fontsize=7.5,
+               handlelength=2.5,bbox_to_anchor=(.55,.004))
     save(fig,'01-14m-overview.pdf')
 
 

@@ -104,23 +104,34 @@ def test_overview_retains_complete_dose_sweeps_in_order(data, monkeypatch):
     plots.overview(data)
     expected={'A0': [None], 'A1-H': [None],
               'A1-H-L1': [.05,.1,.5,1.], 'A1-H-OL1': [.05,.1,.5,1.],
-              **{f: [0.,.01,.05,.1,.5] for f in ('A4','A4-OL1','A7','A7-OL1')},
-              'A0 + clipping': [i/10 for i in range(10)],
-              'A1-H + clipping': [i/10 for i in range(10)]}
+              **{f: [0.,.01,.05,.1,.5] for f in ('A4','A4-OL1','A7','A7-OL1')}}
+    sources={'A0 + clipping':'gelu-control','A1-H + clipping':'relu-control'}
+    raw_sources=[f'relu-{method}-{level}' for method in ('l1n','ol1')
+                 for level in ('0p05','0p1','0p5','1')]
+    raw_sources += [f'a4z-one-sided-kappa-{level}' for level in ('0','0p01','0p05','0p1','0p5')]
+    sources.update({source+' + clipping':source for source in raw_sources})
+    expected.update({label:[i/10 for i in range(10)] for label in sources})
     try:
         lines=figures[0].axes[0].get_lines()
-        assert [line.get_label() for line in lines]==list(expected)
+        assert len(lines)==23
+        assert {line.get_label() for line in lines}==set(expected)
         assert set(data['overview_series'])==set(expected)
+        assert sum(len(line.get_xdata()) for line in lines)==180
         for line in lines:
             series=line.get_label()
             clipping=series.endswith(' + clipping')
-            family=series.split(' + ')[0] if clipping else series
+            family=sources[series] if clipping else series
             candidates=[r for r in data['clipping' if clipping else 'trained']
-                        if r['scale']=='14M' and r['control' if clipping else 'family']==family]
+                        if r['scale']=='14M' and r['family']==family]
             rows=[one(candidates,dose=dose) for dose in expected[series]]
             assert data['overview_series'][series]==[r['id'] for r in rows]
             assert list(line.get_xdata())==[100*r['R_model'] for r in rows]
             assert list(line.get_ydata())==[r['loss'] for r in rows]
+        # The actual measured p=0 values stay in the thin trajectories, while
+        # canonical trained markers render above them instead of being hidden.
+        clipped=[line for line in lines if line.get_label() in sources]
+        trained=[line for line in lines if line.get_label() not in sources]
+        assert min(line.get_zorder() for line in trained)>max(line.get_zorder() for line in clipped)
         # This low-dose point was previously omitted because a higher dose dominates it.
         a4=[r for r in data['trained'] if r['scale']=='14M' and r['family']=='A4']
         assert one(a4,dose=0.) not in frontier(a4)

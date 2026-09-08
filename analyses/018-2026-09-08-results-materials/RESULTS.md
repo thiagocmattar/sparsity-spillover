@@ -9,13 +9,15 @@ a separately qualified implementation.
 
 ## 1. Establish the 14M trade-off
 
-Use Figure 01: all 30 included training conditions plus A0/A1-H post-clipping.
-Each legend entry has its own dose sweep: eight trained recipe families and
-two separate clipping-control series. Lines connect all evaluated points in
-increasing dose or target order, including dominated points. These curves show
-the response to dose, not a Pareto envelope. The loss window remains 5.04–6.15; the eight control
-clipping evaluations above it are retained in Figure 03 and the tables.
-The [series table](tables/overview-series.md) records every point and its connection order.
+Use Figure 01: all 30 trained endpoints and all 150 retained post-hoc clipping
+evaluations from 15 source checkpoints. Bold training curves use solid lines
+without pressure and dashed lines with L1/OL1. Thin faint open-marker trajectories
+follow clipping targets within each fixed source checkpoint. All training
+settings remain connected, including dominated points. The loss window is
+5.04–6.15; Figure 06 retains the complete clipping loss range. Corrected A4-OL1
+and A7 variants have no retained post-hoc sweeps. These curves show measured
+trade-offs, not a fitted or interpolated Pareto envelope. The
+[series table](tables/overview-series.md) records all 180 input coordinates.
 
 Suggested text:
 

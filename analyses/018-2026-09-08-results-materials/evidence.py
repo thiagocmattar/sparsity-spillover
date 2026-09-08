@@ -304,6 +304,11 @@ def load_evidence():
         overview_series[family+' + clipping'] = [r['id'] for r in sorted(
             [r for r in clipping if r['scale']=='14M' and r['control']==family],
             key=lambda r: r['dose'])]
+    for source_family in sorted({r['family'] for r in clipping
+                                 if r['scale']=='14M' and r['control'] is None}):
+        overview_series[source_family+' + clipping'] = [r['id'] for r in sorted(
+            [r for r in clipping if r['scale']=='14M' and r['family']==source_family],
+            key=lambda r:r['dose'])]
     runtime = runtime_subset(source(next((ROOT/'runs').glob('029-*/results/matched-retrospective-001.json'))))
     for point in runtime['points']:
         matched = [r for r in small if r['family'] == point['family']

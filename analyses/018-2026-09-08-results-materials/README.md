@@ -5,8 +5,9 @@ the current manuscript and reprocesses retained experiments. It contains eight
 publication PDFs, numerical tables, proposed arguments, captions and provenance.
 All artwork is drawn at the ICLR template's 5.5-inch text width and now includes a title.
 
-Figure 01 now connects every measured dose within its recipe, correcting the
-Pareto filtering that had left 14 trained markers disconnected. The activation
+Figure 01 now shows all 30 trained endpoints with 150 retained post-hoc
+clipping evaluations as faint trajectories. Pressure curves are dashed; its
+smaller legend sits below the plot. No training point is filtered. The activation
 distribution grid is restored. **Finer activation bins remain pending:** the stored counts
 only define four bins. The middle κ=.05 row is included now; the exact proposal
 for new counts is [ACTIVATION-DIAGNOSTIC.md](ACTIVATION-DIAGNOSTIC.md).
@@ -20,7 +21,7 @@ records the checks actually performed. Original runs and manuscript files are un
 
 | Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 30 trained conditions and A0/A1-H post-clipping, connected in dose order within each legend series |
+| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 30 trained endpoints with faint post-hoc trajectories for all 15 retained source checkpoints |
 | Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 25 matched comparisons |
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
 | Main: transfer | [03 — scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Absolute loss/raw sparsity and theoretical ceiling lines above; relative loss/ceiling utilization below |
