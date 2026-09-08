@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
-from evidence import HERE, FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, one
+from evidence import HERE, FAMILIES, OVERVIEW_FAMILIES, OPS, SCALES, CASE_DOSES, CASE_SITES, one
 
 # Consistent symbols across figures, distinguishable without color.
 STYLE = {'A0': ('#444444', 'o'), 'A1-H': ('#888888', 's'),
@@ -59,10 +59,10 @@ def overview(d):
         family=rows[0]['family']
         color,marker=STYLE[family]
         ax.plot([100*r['R_model'] for r in rows],[r['loss'] for r in rows],
-                color=color,marker=marker,ms=2.2,mfc='white',mew=.45,
-                lw=.5,alpha=.45,zorder=2,label=series)
+                color=color,marker=marker,ms=1.8,mfc='white',mew=.35,
+                ls='--',lw=.45,alpha=.28,zorder=2,label=series)
     legend=[]
-    for family in FAMILIES:
+    for family in OVERVIEW_FAMILIES:
         rows=series_rows[family];color,marker=STYLE[family]
         pressured=family.endswith(('-L1','-OL1'))
         linestyle='--' if pressured else '-'
@@ -74,14 +74,14 @@ def overview(d):
     ax.set(xlim=(-.5,29),ylim=(5.04,6.15),xlabel=S_LABEL,ylabel='Validation loss')
     ax.set_yticks(np.arange(5.2,6.2,.2))
     ax.grid(axis='both',color='.88',lw=.4)
-    fig.suptitle('14M quality-sparsity trade-offs',y=.985,fontsize=11)
-    fig.legend(handles=legend,loc='upper center',ncol=4,frameon=False,
-               fontsize=7.5,columnspacing=1.0,handletextpad=.45,handlelength=2.0,
+    fig.suptitle('Quality-sparsity frontiers',y=.985,fontsize=11)
+    fig.legend(handles=legend,loc='upper center',ncol=5,frameon=False,
+               fontsize=7.5,columnspacing=.9,handletextpad=.45,handlelength=1.6,
                bbox_to_anchor=(.55,.145))
-    clipping_key=Line2D([],[],color='.55',marker='o',mfc='white',mew=.45,
-                        ms=2.5,lw=.5,label='Post-hoc clipping (thin lines, open markers)')
+    clipping_key=Line2D([],[],color='.65',marker='o',mfc='white',mew=.35,
+                        ms=1.8,lw=.45,ls='--',label='Post-hoc clipping')
     fig.legend(handles=[clipping_key],loc='lower center',frameon=False,fontsize=7.5,
-               handlelength=2.5,bbox_to_anchor=(.55,.004))
+               handlelength=2.5,bbox_to_anchor=(.55,.043))
     save(fig,'01-14m-overview.pdf')
 
 

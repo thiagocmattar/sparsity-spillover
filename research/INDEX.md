@@ -8,12 +8,12 @@
 Run 030 completed all 540 post-hoc clipping evaluations across the 54-checkpoint
 14M/70M/410M manuscript cohort (350 new, 190 reused). CSV, raw/normalized JSON,
 per-scale full-range PDFs and hash verification are retained. Analysis 018
-Figure 01 now includes all 30 matching 14M trajectories. Both Pods are deleted;
+Figure 01 now selects the OL1 recipes and A0/A1-H controls (16 trajectories). Both Pods are deleted;
 zero Pods/endpoints remain, with the existing network volume preserved. See
 `runs/030-2026-09-08-all-models-posthoc-clipping/README.md`.
 
 Analysis 018 packages the 8 September draft's results materials: eight revised
-paper-width PDFs, 54 trained conditions, complete 300-point 14M overview, matched effects,
+paper-width PDFs, 54 trained conditions, OL1-focused 14M overview, matched effects,
 ceiling-versus-size and scale/clipping views, activation mass, and a consistent
 30-checkpoint runtime subset. Other clipping panels retain their earlier subsets; finer
 activation bins await diagnostic design confirmation. Historical h-only A4 pressure

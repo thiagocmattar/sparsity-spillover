@@ -19,6 +19,7 @@ DOSES = (0., .01, .05, .1, .5)
 CASE_DOSES = (0., .05, .5)
 CASE_SITES = ('h','m','q_post','k_post','v')
 FAMILIES = ('A0', 'A1-H', 'A1-H-L1', 'A1-H-OL1', 'A4', 'A4-OL1', 'A7', 'A7-OL1')
+OVERVIEW_FAMILIES = ('A0', 'A1-H', 'A1-H-OL1', 'A4-OL1', 'A7-OL1')
 RENAMES = {'A1-H+L1': 'A1-H-L1', 'A1-H+OL1': 'A1-H-OL1',
            'A4+OL1@4': 'A4-OL1', 'A7+OL1@7': 'A7-OL1'}
 OPS = ('qkv_projection', 'mlp_w1', 'mlp_w2', 'attention_output_projection', 'qk_scores', 'probability_value')
@@ -313,8 +314,10 @@ def load_evidence():
     # Figure 01 follows every evaluated sweep; Pareto selection is tabulated separately.
     overview_series = {family: [r['id'] for r in sorted(
         [r for r in small if r['family']==family], key=lambda r: r['dose'] or 0)]
-        for family in FAMILIES}
+        for family in OVERVIEW_FAMILIES}
     for checkpoint in small:
+        if checkpoint['family'] not in OVERVIEW_FAMILIES:
+            continue
         overview_series[checkpoint['id']+' + clipping'] = [r['id'] for r in sorted(
             [r for r in overview_clipping if r['source_checkpoint_id']==checkpoint['id']],
             key=lambda r:r['dose'])]

@@ -9,15 +9,15 @@ a separately qualified implementation.
 
 ## 1. Establish the 14M trade-off
 
-Use Figure 01: all 30 trained endpoints and all 300 post-hoc clipping
-evaluations from all 30 source checkpoints. Bold training curves use solid lines
-without pressure and dashed lines with L1/OL1. Thin faint open-marker trajectories
-follow clipping targets within each fixed source checkpoint. All training
-settings remain connected, including dominated points. The loss window is
-5.04–6.15; Run 030's 14M PDF retains the complete clipping loss range.
-These curves show measured
-trade-offs, not a fitted or interpolated Pareto envelope. The
-[series table](tables/overview-series.md) records all 330 input coordinates.
+Figure 01 focuses on A0/A1-H controls and A1-H-OL1, A4-OL1 and A7-OL1:
+16 trained endpoints and 160 matching clipping evaluations. Subtle dashed
+paths follow each fixed checkpoint through all ten targets; trained curves
+retain every setting. A1-H-L1, A4 and A7 are omitted from this display at the
+user's request. The full cohort and complete loss range remain in Run 030.
+The [series table](tables/overview-series.md) records all 176 input coordinates.
+These curves order measured settings, not a fitted or interpolated envelope.
+
+Full-cohort context (including families omitted from Figure 01):
 
 Suggested text:
 

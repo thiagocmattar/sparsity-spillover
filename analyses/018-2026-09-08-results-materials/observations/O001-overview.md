@@ -1,33 +1,31 @@
-# 14M training and clipping trade-offs
+# Quality-sparsity frontiers
 
 ## Question
 
-How do train-time sparsification recipes and subsequent clipping shape the observed quality-sparsity trade-off?
+How do the OL1 recipes and subsequent clipping compare with the A0/A1-H controls at 14M?
 
 ## Method
 
-Keep all 30 trained endpoints, connecting each family in increasing lambda or kappa order, including dominated points. Draw all 30 post-hoc trajectories behind them with thin, faint lines and small open markers, each ordered by clipping target p. Preserve the actual measured p=0 coordinates; never replace them with the separately measured training endpoints. Trained markers render above the clipping paths. Dashed training curves identify L1/OL1 pressure; solid curves identify unpressured recipes.
+Show A0, A1-H, A1-H-OL1, A4-OL1 and A7-OL1. Connect every retained training setting in increasing lambda or kappa order. Draw each matching clipping trajectory with a fine, faint dashed line and small open markers, ordered by target p. Preserve actual measured p=0 coordinates; trained markers render above clipping paths. A1-H-L1, A4 and A7 are omitted from this view at the user's request. Their measurements remain in the complete data release.
 
 ## Coverage
 
-Eight trained families and all 30 source checkpoints, each evaluated at p=0,.1,...,.9: 30 training endpoints plus 300 clipping evaluations. Clipping sources are A0 (1), A1-H (1), local L1 (4), local OL1 (4), A4 (5), corrected A4-OL1 (5), A7 (5), and A7-OL1 (5). The 5.04-6.15 loss window contains every trained endpoint and 222 clipping evaluations; 78 clipping evaluations exceed it. Run 030's full-range 14M PDF retains all 300 evaluations. One matched seed and 712 training updates. Validation uses all 500 documents packed into 338 complete 2048-token blocks, excluding the 1,444-token tail. Uniform clipping acts at a,m,h,z after trained gates; A7 query/key/value gates remain unchanged.
+Five families, 16 trained checkpoints and 160 clipping evaluations: A0 (1 checkpoint), A1-H (1), A1-H-OL1 (4), A4-OL1 (5), and A7-OL1 (5). Every source has p=0,.1,...,.9. The 5.04-6.15 loss window contains all 16 trained endpoints and 116 clipping evaluations; 44 clipping evaluations exceed it. Run 030 retains the full 30-checkpoint/300-point 14M cohort and its full-range PDF. One seed, 712 training updates, and complete validation over 500 documents packed into 338 blocks, with the 1444-token tail excluded. Clipping acts at a,m,h,z after trained gates, preserving A7 query/key/value gates.
 
 ## Figure and caption
 
 [Publication PDF](../figures/01-14m-overview.pdf)
 
-14M quality-sparsity trade-offs. Large filled markers show the 30 final trained endpoints. Bold curves connect every evaluated training threshold or pressure value within its recipe: solid for unpressured recipes and dashed for L1/OL1. Thin faint curves and small open markers trace all 300 uniform post-hoc clipping evaluations for the 30 source checkpoints across all eight families. Clipping colors follow the source family; each trajectory preserves its measured p=0 endpoint and follows p=0,.1,...,.9. A4/A7 training thresholds are kappa=0,.01,.05,.1,.5; local pressure weights are lambda=.05,.1,.5,1. The single panel uses a quality-focused loss window; Run 030's 14M PDF shows the complete clipping loss range. The compact legend is below the plot. Connections order measured settings, not an interpolated or fitted Pareto frontier.
+Quality-sparsity frontiers. The 14M comparison shows A0/A1-H controls and the A1-H-OL1, A4-OL1 and A7-OL1 recipes. Large filled markers identify 16 trained endpoints; bold curves connect every evaluated training setting within each OL1 recipe. Faint dashed paths with small open markers trace 160 post-hoc clipping evaluations from those same checkpoints, preserving measured p=0 and following p=0,.1,...,.9. Colors and symbols identify the source family. Local OL1 uses lambda=.05,.1,.5,1; A4/A7-OL1 uses kappa=0,.01,.05,.1,.5. The quality-focused loss window contains 116 clipping evaluations. The compact legend is below the plot. Connections order measured settings, not interpolated or fitted Pareto envelopes. The full cohort and loss range are retained in Run 030.
 
 ## Result
 
-Local L1 at lambda=1 has the lowest trained loss (5.1023) at 3.9493% model-wide sparsity. Post-hoc clipping of this checkpoint gives 4.7982% at loss 5.1070 (p=.1) and 5.6441% at loss 5.1441 (p=.2). A7-OL1 at kappa=.5 reaches 27.4827% at loss 5.8294; clipping this fixed checkpoint at p=.8 reaches 28.2258% at loss 6.0221. Corrected A4-OL1 has no globally nondominated trained endpoint within this 30-condition pool.
+The selected families retain the low-loss local-OL1 regime and the higher-sparsity A7-OL1 regime. A7-OL1 at kappa=.5 has 27.4827% model-wide sparsity at loss 5.8294; clipping at p=.8 reaches 28.2258% at loss 6.0221. Removing displayed families does not change measurements or full-cohort frontier membership.
 
 ## Caveats
 
-This is a one-seed descriptive comparison. All cohort checkpoints are covered, but a ten-target uniform grid does not establish the optimal joint recipe or greedy TEAL allocation. Some points overlap; no jitter or coordinate adjustment is introduced. A0/A1-H each have one trained endpoint. Separately measured clipping p=0 and canonical training endpoints have small numerical differences. The strict joint frontier contains 29 records at 18 distinct coordinates; zero-mass ties preserve multiple target records at the same coordinate. Its only displacement of a previously nondominated training point is a numerical p=0 difference at A7-OL1 kappa=.1, not a substantive improvement. Curves do not establish attainable intermediate models or runtime gains. Strict evaluated nondomination is tabulated separately in tables/frontiers.md.
+This is a selected-family, one-seed view. The full-cohort numerical frontier in tables/frontiers.md still includes the omitted families and is not restricted to this display. Repeated targets may coincide because of natural zero mass. No jitter or artificial p=0 anchors are introduced. Small p=0 numerical differences are not substantive improvement claims. The finite uniform grid establishes neither optimal clipping allocation, attainable intermediate models nor runtime gains.
 
 ## Source script and evidence
 
-`plots.py:overview`, invoked by `01_build.py`. `evidence.py:load_evidence` declares all 38 series. Supporting evidence: tables/all-trained-endpoints.md, tables/frontiers.md and tables/overview-series.md. Integer counts, source identities and exact values remain in [figure_data.json](../figure_data.json).
-
-Complete measurements and full-range plots: [Run 030](../../../runs/030-2026-09-08-all-models-posthoc-clipping/README.md). Figure 06 preserves the earlier 15-checkpoint subset.
+`plots.py:overview`, invoked by `01_build.py`; `evidence.py:load_evidence` declares the 21 displayed series. [Overview series](../tables/overview-series.md) records all 176 input coordinates. [figure_data.json](../figure_data.json) and [Run 030](../../../runs/030-2026-09-08-all-models-posthoc-clipping/results/README.md) retain the complete measurements, identities and counts.

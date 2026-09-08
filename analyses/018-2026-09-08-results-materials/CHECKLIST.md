@@ -1,5 +1,12 @@
 # Results materials checklist
 
+## Figure 01: OL1-focused polish
+
+- [x] Keep A0/A1-H controls and OL1 variants; omit A1-H-L1, A4 and A7.
+- [x] Use subtler dashed clipping paths and the concise "Post-hoc clipping" key.
+- [x] Title: "Quality-sparsity frontiers".
+- [x] Retain complete measurements; reconcile the selected 16/160-point display and caption.
+
 ## Figure 01: focused user revision
 
 - [x] Preserve the single panel and every trained setting.

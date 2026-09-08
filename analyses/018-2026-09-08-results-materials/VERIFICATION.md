@@ -1,3 +1,18 @@
+# Figure 01 selected-family polish, 8 September 2026
+
+The user requested subtler dashed clipping paths, removal of A1-H-L1/A4/A7,
+and the title "Quality-sparsity frontiers". The figure retains A0/A1-H controls
+and the three OL1 variants: 16 trained endpoints plus 160 matching clipping
+evaluations, in 21 paths. The compact legend reads "Post-hoc clipping".
+The displayed loss window contains 116 clipping coordinates. All 300 clipping
+measurements and full-cohort numerical frontier memberships remain unchanged.
+
+The working figure/evidence suite passed 41 tests in 3.06 seconds. The PDF
+and updated caption were rendered at manuscript width; the caption compiled
+without warnings or overfull/underfull boxes. The eight other analysis PDFs
+retain their hashes. No new model evaluations or manuscript edits were made.
+Temporary proofs are under ignored tmp/figure01-polish.
+
 # Figure 02 final title and caption, 8 September 2026
 
 The user approved Figure 02 with its final title, "Paired intervention effects".
