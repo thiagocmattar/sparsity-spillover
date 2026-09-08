@@ -43,11 +43,12 @@ records the checks actually performed. Original runs and manuscript files are un
 
 ## Selected paper figures and supporting material
 
-The user selected four training-results figures. The proposed manuscript order
-is overview, paired effects, distribution reshaping, then transfer across sizes.
+The user selected five results figures. The proposed manuscript order is
+overview, paired effects, distribution reshaping, transfer across sizes, then
+kernel realization on the corrected 30-checkpoint cohort.
 [MANUSCRIPT-PLAN.md](MANUSCRIPT-PLAN.md) specifies each goal, draft location,
 main-table recommendation and appendix coverage; [CAPTIONS.md](CAPTIONS.md)
-contains all four proposed captions. The working copy is in
+contains all five proposed captions. The working copy is in
 [the manuscript draft](../../manuscript/draft/results-plan.md).
 
 | Placement | Figure | Purpose |
@@ -56,10 +57,10 @@ contains all four proposed captions. The working copy is in
 | Main: paired effects | [02 - intervention effects](figures/02-blocked-intervention-effects.pdf) | 29 matched changes in loss and model-wide sparsity |
 | Main: distributions | [05-v3 - signed activation densities](figures/05-v3-activation-density-grid.pdf) | FFN/attention reshaping under A0, A4-OL1 and A7-OL1 |
 | Main: transfer | [03 - scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Test persistence of the high-threshold recipe ordering with a common A7 reference |
+| Main: kernel realization | [07 - kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and measured acceleration across the corrected 30-checkpoint cohort; replaces the older kernel figure when the draft is updated |
 | Appendix support | [04 - operation accounting](figures/04-operation-accounting.pdf), optionally [08 - ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | Interpret operation contributions and architectural reach |
 | Complete clipping appendix | [Run 030 full-range plots and observations](../../runs/030-2026-09-08-all-models-posthoc-clipping/observations/INDEX.md) | All 54 checkpoints and 540 clipping evaluations |
 | Retained alternatives/subsets | [02-v2](figures/02-v2-blocked-intervention-effects.pdf), [05 original](figures/05-activation-mass-grid.pdf), [05-v2](figures/05-v2-activation-mass-grid.pdf), [06](figures/06-complete-posthoc-comparison.pdf) | Available records, not additional selected main-text figures; Figure 06 contains 150 clipping points |
-| Separate systems evidence | [07 - kernel realization](figures/07-kernel-realization.pdf) | Corrected 30-checkpoint summary; the draft currently retains the separately scoped Run029 35-checkpoint case study |
 
 File numbering is unchanged and does not prescribe paper numbering. The
 [observation index](observations/INDEX.md) retains evidence and source links.

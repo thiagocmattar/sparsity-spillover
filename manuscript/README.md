@@ -29,13 +29,15 @@ variant.
 ## V2 workspace
 
 The 8 September [results figure and table plan](draft/results-plan.md) maps
-four selected Analysis 018 figures to the draft: overview, paired effects,
-activation reshaping, then transfer across sizes. It recommends one compact
+five selected Analysis 018 figures to the draft: overview, paired effects,
+activation reshaping, transfer across sizes, then kernel realization. It recommends one compact
 main-text contrast table and detailed appendix tables plus complete clipping
 and histogram data. The [tracked plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
-and [four captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
+and [five captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
 retain the evidence links. This is a planning update; TeX insertion and final
-submission-template layout remain to be performed.
+submission-template layout remain to be performed. Figure 07 replaces the
+older kernel figure in the plan; its 30-checkpoint caption and cohort statistics
+will be adopted together when updating the current 35-checkpoint draft text.
 
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
 argument-first introduction and related work, followed by a compact

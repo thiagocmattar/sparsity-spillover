@@ -1,7 +1,7 @@
 # Results figures, captions and table plan
 
-8 September 2026. Editorial plan requested after selection of the four final
-training-results figures. This plans insertion into the current draft; the
+8 September 2026. Editorial plan for five selected results figures: four
+training-results figures and Figure 07's kernel case study. This plans insertion into the current draft; the
 approved artwork and current TeX remain unchanged. The canonical captions are
 in [Analysis 018 CAPTIONS.md](../../analyses/018-2026-09-08-results-materials/CAPTIONS.md).
 A byte-identical copy of this plan is retained there as `MANUSCRIPT-PLAN.md`,
@@ -9,9 +9,9 @@ preserving the draft's local-only Git policy.
 
 ## Argument and placement
 
-The four selected figures are sufficient for the training-results story.
+The four training figures are followed by the selected kernel realization figure.
 Use **overview -> paired effects -> distribution reshaping -> transfer across
-sizes**. Discussing distributions before transfer shows what changes in the
+sizes -> full-model acceleration**. Discussing distributions before transfer shows what changes in the
 activations before asking which recipe relationship survives scale. File
 numbers remain unchanged.
 
@@ -28,18 +28,20 @@ in the existing methods/setup sections and their appendix.
 | Paired intervention effects | 02: blocked effects | Identify what changes when each intervention is added to its matched reference. | `fig:paired-intervention-effects` |
 | Reshaping activation distributions | 05-v3: signed density grid | Show the distribution changes, including a response outside A4's intervention set. | `fig:activation-reshaping` |
 | Transfer across model sizes | 03: scale transfer | Establish which recipe relationship persists at 70M/410M, with architectural reach accounted for. | `fig:scale-transfer` |
+| Realizing sparsity with specialized inference kernels | 07: kernel realization | Show qualified kernel-search progress and how the final selected kernel's measured speedup relates to model-wide sparsity. | `fig:kernel-autoresearch` (reuse existing label) |
 
 For a compact main paper, move the existing full architecture/ladder figure
 to the experimental appendix and retain the recipe definitions in the setup
-prose. Then the selected results become paper Figures 1-4. Let LaTeX number
+prose. Then the selected results become paper Figures 1-5. Let LaTeX number
 them by placement; update the setup/introduction references to the ladder's
 appendix location. This is a recommendation, not an already performed move.
 
-Keep the authorized kernel subsection after these results as a separate
-execution case study; its figure is additional to the four training figures.
-Its historical 35-checkpoint cohort differs from the corrected 30-checkpoint
-14M training cohort. Keep that boundary explicit rather than silently replacing
-its figure/statistics with Analysis 018 Figure 07's 30-checkpoint summary.
+Revise the existing [kernel subsection](../../manuscript/draft/kernel-autoresearch.tex)
+after the four training subsections to use the selected Analysis 018 Figure 07.
+Replace its older Run 029 figure and caption, rather than adding a second
+kernel figure. Update the surrounding cohort statistics together: the selected
+figure uses the corrected 30-checkpoint 14M cohort, while the current TeX uses
+35 historical checkpoints. The source Run 029 records remain historical.
 
 ## Figure goals and captions
 
@@ -117,6 +119,44 @@ one-seed, fixed-token recipe transfer with a different 410M peak learning
 rate, not a scaling law or a demonstrated transfer of the distribution
 mechanism. Source: O003.
 
+### Kernel realization: connect logical sparsity to measured acceleration
+
+Use [caption 07](../../analyses/018-2026-09-08-results-materials/CAPTIONS.md#figure-07-kernel-realization)
+with `../../analyses/018-2026-09-08-results-materials/figures/07-kernel-realization.pdf`.
+
+Question: can specialized kernels exploit the observed zeros to accelerate
+the complete forward pass? Panel (a) shows the best numerically qualified
+incumbent on fixed A7-OL1 kappa=0.5 across 42 eligible kernel iterations,
+reaching 1.7830x. Panel (b) shows the final selected kernel K050 across all
+30 included checkpoints: geometric mean speedup 1.2340x, with a descriptive
+positive association with model-wide sparsity (OLS R-squared 0.8167).
+"Best kernel" refers to the selected search result; it does not assert
+optimality over every implementation or ablation.
+
+Keep one paragraph on attribution: fusion and sparse paths both contribute.
+Relative to the fused no-skip ablation, enabling sparse paths gives a 1.0432x
+geometric ratio and helps 14/30 checkpoints. Disabling attention skipping
+improves all 30 (geometric mean speedup 1.2506x), so greater logical attention
+opportunity does not guarantee profitable attention skipping at T=2048.
+Detailed qualification and ablation tables belong in the appendix.
+
+This is one RTX5090, BF16, batch-one, uncached full-model case study with
+full vocabulary logits, using each checkpoint's native SDPA CUDA-graph
+baseline. It does not establish equal-quality gains, cached-decoding or
+larger-model transfer, a causal speedup law, or superiority of agent-assisted
+search over human development. Preserve the existing agent-provenance caveat.
+Canonical sparsity remains the FP16 measurement used by the training figures.
+Sources: [O007](../../analyses/018-2026-09-08-results-materials/observations/O007-kernel-realization.md),
+`figure_data.json:runtime` and `tables/runtime-summary.md` in Analysis 018.
+
+When updating `kernel-autoresearch.tex`, replace 35/35 with 30/30, the 1.25x
+cohort mean with 1.2340x, R-squared 0.781 with 0.8167, and the cohort sparse-path
+gain of 5.6% on 19/35 with 4.32% on 14/30. Replace the attention-dense cohort
+mean of 1.267x with 1.2506x. The fixed-checkpoint result remains separately
+scoped. The old caption's gray failed-candidate points, blue incumbent line,
+P0 comparator and fitted equation are absent from Figure 07: use the new
+caption in full. The main-text table recommendation below remains unchanged.
+
 ## One compact main-text table
 
 Place a six-row, four-column table after the scale discussion. It adds
@@ -163,6 +203,7 @@ and paired results in the PDF, with larger collections also supplied as data.
 | Exact-zero mass and distribution coverage | Run 031's seven checkpoint histograms and Analysis 018 `activation-density-v3-data.json`; 14 unique pooled groups | Give group counts, zero fractions and out-of-view/tail mass omitted from the density curves; retain per-layer/site counts in the release. |
 | Operation accounting and reach | Figure 04/O004, `tables/operation-counts.md`, `tables/architecture-counts.md`, and the architecture/ladder artifact | Explain the numerator and changing workload shares; Figure 08 is optional appendix context, not another main-text ceiling plot. |
 | Complete post-hoc trajectories | Run 030's full-range `14m-posthoc-frontiers.pdf`, `70m-posthoc-frontiers.pdf`, `410m-posthoc-frontiers.pdf` and observations | Show every trained model's clipping trajectory, including poor-loss and overlapping settings; all values remain in the supplement. |
+| Kernel qualification and ablations | Analysis 018 O007, `tables/runtime-summary.md` and `figure_data.json:runtime`; corrected 30-checkpoint cohort | Give numerical qualification, timing protocol and sparse-path/attention ablations behind Figure 07; distinguish P0's four qualified checkpoints from cohort-wide comparisons. |
 
 The machine-readable supplement contains Run 030's **540 clipping evaluations**
 (300/120/120): `clipping-points.csv`, count-preserving `clipping-points.json`,
@@ -185,7 +226,7 @@ figures. No new measurement or figure redesign is needed for this plan.
 
 Use the existing analysis PDFs directly with `width=\linewidth`, preserving
 titles, fonts and legends. Give each figure a nearby first reference and
-the linked caption. Keep the four figures at readable paper width instead
+the linked caption. Keep the five figures at readable paper width instead
 of shrinking them into tiny composites. The density caption must retain
 zero-mass exclusion, normalization and symlog details despite the removal
 of the panel/footer annotations.

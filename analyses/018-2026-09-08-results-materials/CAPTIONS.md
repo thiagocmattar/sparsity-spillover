@@ -1,7 +1,8 @@
 # Figure captions
 
-Draft captions for the four selected training-results figures, 8 September
-2026. Numbers below identify analysis files, not final manuscript numbering.
+Draft captions for five selected results figures: four training figures and
+the kernel case study, 8 September 2026. Numbers below identify analysis files,
+not final manuscript numbering.
 Placement and intended claims are in [MANUSCRIPT-PLAN.md](MANUSCRIPT-PLAN.md).
 The existing PDFs are unchanged. Replace descriptive appendix references with
 LaTeX labels when inserting these captions into the draft.
@@ -113,3 +114,32 @@ Generating code: [02_activation_density_v3.py](02_activation_density_v3.py).
 Display provenance: [activation-density-v3-data.json](activation-density-v3-data.json).
 Source measurement and retained histograms:
 [Run 031 release](../../runs/031-2026-09-08-signed-activation-density/results/README.md).
+
+## Figure 07: Kernel realization
+
+**Sparse kernel auto-research for full-model acceleration.** (a) Best
+numerically qualified incumbent on the fixed Pythia-14M A7-OL1,
+$\kappa=0.5$ checkpoint across 42 eligible kernel iterations, initialized at
+native $1\times$ and reaching $1.7830\times$. (b) Final selected kernel K050
+on the 30 included checkpoints; colors and markers identify trained recipes.
+The dashed line is an unweighted descriptive OLS fit with an intercept
+($R^2=0.8167$); dotted horizontal lines mark native $1\times$.
+Speedup is measured against each checkpoint's native PyTorch/SDPA CUDA-graph
+baseline on one RTX5090, using BF16, batch one, and uncached 2,048-token
+inference with full vocabulary logits. Timings use 64 fixed inputs, seven
+paired passes and three fresh processes. All 30 checkpoints qualify
+numerically over 338 complete validation blocks from 500 MiniPile documents,
+excluding the 1,444-token tail. Their geometric mean speedup is
+$1.2340\times$. Model-wide sparsity uses the canonical FP16 measurement
+shared with the training figures; both speedup axes use a restricted range.
+Checkpoint quality, weights and topology vary, so the association does not
+isolate a causal sparsity effect or establish equal-quality acceleration.
+The appendix reports fusion and sparse-path ablations.
+
+Figure: [07-kernel-realization.pdf](figures/07-kernel-realization.pdf).
+Evidence, runtime protocol and caveats: [O007](observations/O007-kernel-realization.md).
+Generating code: [plots.py](plots.py), `kernels`, invoked by [01_build.py](01_build.py).
+Numerical source: [figure_data.json](figure_data.json), `runtime`, reduced by
+`evidence.py:runtime_subset`; [runtime summary](tables/runtime-summary.md).
+Use this 30-checkpoint caption and cohort statistics together when replacing
+the draft's older 35-checkpoint Run 029 figure.
