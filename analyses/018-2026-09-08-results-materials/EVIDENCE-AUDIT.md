@@ -10,6 +10,7 @@
 | Selected ladder at 70M/410M | Runs 018/019 | Twelve conditions each |
 | Uniform clipping at 14M | Analysis 006 raw combined artifact | 150 actual evaluations |
 | Uniform clipping at 70M/410M | Runs 018/019 raw TEAL artifacts | Twenty evaluations each |
+| Complete cohort clipping | Run 030 measurement release | 540 evaluations across 54 checkpoints; Figure 01 uses all 300 at 14M |
 | Matched kernel retrospective | Run 029 matched-retrospective-001.json | Final cohort restricted to c01–c30; existing qualified progress |
 
 The user explicitly excluded historical A4-OL1[h]. Run 012 is not admitted
@@ -24,7 +25,11 @@ integer pooling, site/layer reconstruction, RMS, same-size initialization and
 schedule hashes, random initialization, seed 1234, 712 updates and
 1,493,172,224 input tokens. It checks all 190 clipping points against actual
 evaluation counts and coverage, and reconciles the larger points against
-Analysis 011. All 230 direct source files are hashed.
+Analysis 011. Figure 01 additionally reads the hashed Run 030 release, checks
+all 30 source identities and ten-target grids, and reconciles coverage and
+integer counts for its 300 evaluations. Other figures preserve their original
+clipping subsets. Run 030 records checkpoint hashes, calibration thresholds,
+full raw measurements and transfer verification for the complete cohort.
 
 ## Presentation-sensitive definitions
 

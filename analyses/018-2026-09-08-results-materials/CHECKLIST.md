@@ -3,10 +3,10 @@
 ## Figure 01: focused user revision
 
 - [x] Preserve the single panel and every trained setting.
-- [x] Add all 15 retained post-hoc trajectories with actual p=0 measurements.
+- [x] Add all 30 post-hoc trajectories with actual p=0 measurements.
 - [x] Place the smaller legend below; distinguish pressure with dashed lines.
 - [x] Simplify the title/loss label; add thin x/y grid lines; remove the cutoff note.
-- [x] Verify 180 coordinates and source identities; reconcile captions and render.
+- [x] Verify 330 coordinates and source identities; reconcile captions and render.
 
 
 ## Overview curve correction

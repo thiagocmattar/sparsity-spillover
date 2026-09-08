@@ -24,7 +24,7 @@ Clipping the λ=1 L1 model to p=.1/.2 gives 4.7982%/5.6441% sparsity at losses 5
 
 ## Caveats
 
-No retained post-hoc study of A7 or corrected A4-OL1 is available. Uniform TEAL-style clipping does not reproduce greedy TEAL allocation. Target p is a calibration target, not achieved model-wide sparsity. Overlapping scatter points remain individual table rows.
+This figure preserves the earlier 15-checkpoint subset. Run 030 now supplies A7 and corrected A4-OL1 clipping sweeps, used in Figure 01 and its own full-range plots. Uniform TEAL-style clipping does not reproduce greedy TEAL allocation. Target p is a calibration target, not achieved model-wide sparsity. Overlapping scatter points remain individual table rows.
 
 ## Source script and evidence
 

@@ -5,18 +5,19 @@
 
 ## Current status
 
-Run 030 is evaluating the 35 missing post-hoc clipping sweeps for the current
-54-checkpoint manuscript cohort across 14M/70M/410M. It will retain all 540
-clipping points (350 new, 190 reused), then update Analysis 018 Figure 01.
-The user pre-approved execution; two RunPod workers operate within USD15.
+Run 030 completed all 540 post-hoc clipping evaluations across the 54-checkpoint
+14M/70M/410M manuscript cohort (350 new, 190 reused). CSV, raw/normalized JSON,
+per-scale full-range PDFs and hash verification are retained. Analysis 018
+Figure 01 now includes all 30 matching 14M trajectories. Both Pods are deleted;
+zero Pods/endpoints remain, with the existing network volume preserved. See
+`runs/030-2026-09-08-all-models-posthoc-clipping/README.md`.
 
 Analysis 018 packages the 8 September draft's results materials: eight revised
-paper-width PDFs, 54 trained conditions, 190 clipping evaluations, matched effects,
+paper-width PDFs, 54 trained conditions, complete 300-point 14M overview, matched effects,
 ceiling-versus-size and scale/clipping views, activation mass, and a consistent
-30-checkpoint runtime subset. The overview connects complete per-recipe dose sweeps; finer
+30-checkpoint runtime subset. Other clipping panels retain their earlier subsets; finer
 activation bins await diagnostic design confirmation. Historical h-only A4 pressure
-is excluded. No new run,
-manuscript edit or finding promotion. See `analyses/018-2026-09-08-results-materials/README.md`.
+is excluded. No manuscript edit or finding promotion. See `analyses/018-2026-09-08-results-materials/README.md`.
 
 Run029 completed the matched retrospective:1173 process outcomes,42 eligible14M
 proposals, one RTX5090 and a common native SDPA CUDA-graph denominator. Qualified

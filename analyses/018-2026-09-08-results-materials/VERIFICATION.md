@@ -1,3 +1,43 @@
+# Complete-cohort Figure 01 update, 8 September 2026
+
+Run 030 completed and verified 540 clipping measurements over 54 checkpoints:
+300 at 14M, 120 at 70M and 120 at 410M. It adds 350 evaluations to the 190
+retained points. Every source has all ten targets and complete 338-block
+validation. Raw/JSON/CSV values, checkpoint hashes, integer counts and
+thresholds agree exactly. The largest p=0 loss discrepancy is 0.000180712,
+below the declared 0.0005 guard. All 444 final transferred files were verified
+locally before both Pods were deleted. Zero Pods/endpoints remain; the existing
+network volume is preserved. See Run 030's results/verification.json and
+results/transfer-receipt.json.
+
+Figure 01 now contains 38 paths and 330 input coordinates: 30 trained endpoints
+plus all 300 matching clipping evaluations. Its layout, axes, legend, grid and
+styles remain the approved design. The loss window contains all trained
+endpoints and 222 clipping evaluations; the full-range 14M PDF is in Run 030.
+Numerical frontier membership and the overview-series table use the complete
+pool. The original clipping subsets in the other figures remain separate.
+
+The working figure/evidence suite passed **41 tests in 2.44 seconds**. Actual
+coordinate tests check every source/target pair, family encoding, order and
+training-above-clipping placement. The publication PDF matches the reviewed
+proof byte-for-byte (SHA-256 c7f4f47d95399ca81f9571f5add3e6b4e0eba3741e1f3df9dd47e925843f771c).
+Independent scientific/design rubrics both score 20/25; details are in
+FIGURE-REVIEW.md. The caption proof compiles without warnings or overfull/
+underfull boxes and was rendered at 5.5-inch width. The three complete-range
+Run 030 PDFs were also rendered and inspected.
+
+A concurrent task committed Figure 02 revisions and its alternative 02-v2
+while Run 030 was running. Those committed changes were preserved. This task
+regenerated only Figure 01 within Analysis 018; hashes of the eight other
+current PDFs were checked before and after the scoped update. The earlier
+Figure 06/other readability edits remain outside this commit's scope.
+Temporary proofs and checks are under ignored tmp/run030-figure-preview.
+
+The isolated staged revision passed **40 focused tests in 1.81 seconds**.
+Figure 01 and both overview/frontier tables reproduce byte-for-byte from the
+staged source. Every Run 030 publication output hash matches its staged bytes,
+including the complete raw measurement archive.
+
 # Figure 02 intervention and paired rows, 8 September 2026
 
 The horizontal figure now labels its two annotation rows on the left:

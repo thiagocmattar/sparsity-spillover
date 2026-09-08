@@ -51,16 +51,12 @@ def overview(d):
     fig, ax = plt.subplots(figsize=(5.5,4.6))
     fig.subplots_adjust(left=.12, right=.98, bottom=.25, top=.91)
     # Thin evaluation trajectories sit behind the unchanged training sweeps.
-    series_rows={name:[one(d['trained']+d['clipping'],id=i) for i in ids]
+    series_rows={name:[one(d['trained']+d['overview_clipping'],id=i) for i in ids]
                  for name,ids in d['overview_series'].items()}
     for series,rows in series_rows.items():
         if not series.endswith(' + clipping'):
             continue
-        source=rows[0]['family']
-        family=rows[0]['control']
-        if family is None:
-            family=('A1-H-L1' if source.startswith('relu-l1n') else
-                    'A1-H-OL1' if source.startswith('relu-ol1') else 'A4')
+        family=rows[0]['family']
         color,marker=STYLE[family]
         ax.plot([100*r['R_model'] for r in rows],[r['loss'] for r in rows],
                 color=color,marker=marker,ms=2.2,mfc='white',mew=.45,

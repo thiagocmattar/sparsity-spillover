@@ -293,21 +293,30 @@ def load_evidence():
             scale_pairs.append({'scale': scale, 'dose': k, 'delta_loss': b['loss']-a['loss'],
                                 'delta_R_pp': 100*(b['R_model']-a['R_model']),
                                 'delta_U_pp': 100*(b['U_arch']-a['U_arch'])})
+    complete_clipping = source(ROOT/'runs/030-2026-09-08-all-models-posthoc-clipping/results/clipping-points.json')
+    assert complete_clipping['status'] == 'complete_verified'
+    assert len(complete_clipping['points']) == 540 and len(complete_clipping['trained']) == 54
+    overview_clipping = [r for r in complete_clipping['points'] if r['scale'] == '14M']
+    assert len(overview_clipping) == 300
+    for checkpoint in small:
+        rows = [r for r in overview_clipping if r['source_checkpoint_id'] == checkpoint['id']]
+        assert sorted(r['dose'] for r in rows) == [i/10 for i in range(10)]
+        assert all(r['family'] == checkpoint['family'] for r in rows)
+        assert abs(one(rows, dose=0.)['loss'] - checkpoint['loss']) <= 5e-4
+        for row in rows:
+            coverage(row['coverage'])
+            logical_counts(row['counts'])
+            close(row['R_model'], row['counts']['R_model'])
     fsets = {'14M_main_trained': small,
-             '14M_all_trained_and_clipped': small+[r for r in clipping if r['scale']=='14M']}
+             '14M_all_trained_and_clipped': small+overview_clipping}
     frontiers = {name: [r['id'] for r in frontier(rows)] for name, rows in fsets.items()}
-    # Figure 01 follows the evaluated dose sweeps; Pareto selection is tabulated separately.
+    # Figure 01 follows every evaluated sweep; Pareto selection is tabulated separately.
     overview_series = {family: [r['id'] for r in sorted(
         [r for r in small if r['family']==family], key=lambda r: r['dose'] or 0)]
         for family in FAMILIES}
-    for family in ('A0','A1-H'):
-        overview_series[family+' + clipping'] = [r['id'] for r in sorted(
-            [r for r in clipping if r['scale']=='14M' and r['control']==family],
-            key=lambda r: r['dose'])]
-    for source_family in sorted({r['family'] for r in clipping
-                                 if r['scale']=='14M' and r['control'] is None}):
-        overview_series[source_family+' + clipping'] = [r['id'] for r in sorted(
-            [r for r in clipping if r['scale']=='14M' and r['family']==source_family],
+    for checkpoint in small:
+        overview_series[checkpoint['id']+' + clipping'] = [r['id'] for r in sorted(
+            [r for r in overview_clipping if r['source_checkpoint_id']==checkpoint['id']],
             key=lambda r:r['dose'])]
     runtime = runtime_subset(source(next((ROOT/'runs').glob('029-*/results/matched-retrospective-001.json'))))
     for point in runtime['points']:
@@ -316,7 +325,7 @@ def load_evidence():
         assert len(matched) == 1
         point['evidence_id'] = matched[0]['id']
     return {'trained': trained, 'clipping': clipping, 'contrasts': contrasts, 'scale_pairs': scale_pairs,
-            'frontiers': frontiers, 'overview_series': overview_series,
+            'frontiers': frontiers, 'overview_series': overview_series, 'overview_clipping': overview_clipping,
             'sources': sources, 'exposure': prior['exposure'],
             'runtime': runtime, 'ceilings': ceilings,
             'activation_case': {'kappas': list(CASE_DOSES), 'sites': list(CASE_SITES),

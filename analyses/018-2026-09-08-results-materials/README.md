@@ -16,8 +16,8 @@ main publication figures plus the alternative Figure 02-v2 PDF, numerical
 tables, proposed arguments, captions and provenance.
 All artwork is drawn at the ICLR template's 5.5-inch text width and now includes a title.
 
-Figure 01 now shows all 30 trained endpoints with 150 retained post-hoc
-clipping evaluations as faint trajectories. Pressure curves are dashed; its
+Figure 01 now shows all 30 trained endpoints with 300 post-hoc
+clipping evaluations from all 30 checkpoints as faint trajectories. Pressure curves are dashed; its
 smaller legend sits below the plot. No training point is filtered. The activation
 distribution grid is restored. **Finer activation bins remain pending:** the stored counts
 only define four bins. The middle κ=.05 row is included now; the exact proposal
@@ -32,7 +32,7 @@ records the checks actually performed. Original runs and manuscript files are un
 
 | Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 30 trained endpoints with faint post-hoc trajectories for all 15 retained source checkpoints |
+| Main: overview | [01 — 14M recipes](figures/01-14m-overview.pdf) | 30 trained endpoints with faint post-hoc trajectories for all 30 source checkpoints |
 | Main: matched effects | [02 — intervention effects](figures/02-blocked-intervention-effects.pdf) | Aligned loss and sparsity changes for 29 matched comparisons, with all five A1-H→A4 thresholds |
 | Retained alternative | [02-v2 — intervention rows](figures/02-v2-blocked-intervention-effects.pdf) | Unselected vertical layout of the same 29 comparisons |
 | Main: structural context | [08 — ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | The architecture ceiling at each model size and topology |
@@ -50,8 +50,12 @@ self-contained captions and evidence links: [observation index](observations/IND
 
 A4-OL1[h] is excluded from all current numerical results and artwork, including
 runtime summaries. The corrected four-site A4-OL1 remains. There are 54 trained
-conditions (30/12/12 at 14M/70M/410M) and 190 clipping evaluations (150/20/20).
-These 244 evaluated conditions are not independent random seeds.
+conditions (30/12/12 at 14M/70M/410M). [Run 030](../../runs/030-2026-09-08-all-models-posthoc-clipping/README.md)
+provides all 540 clipping evaluations (300/120/120), including the 300 shown in
+Figure 01. The other seven figures and legacy clipping table retain their
+previous 190-point subset (150/20/20). These are repeated evaluations of fixed
+checkpoints, not independent seeds. Full measurements, CSV, and numerical
+frontier memberships are available in Run 030's results folder.
 
 - Compact table candidates: [pressure and gate effects](tables/pressure-and-gate-effects.md)
   and [scale endpoints](tables/scale-endpoints.md), both also available as TeX.
@@ -77,5 +81,6 @@ the old 35-checkpoint summary if this material is adopted in the manuscript.
 `evidence.py` reconciles retained artifacts; `plots.py` draws only this analysis's
 figures; `01_build.py` writes tables, PDFs and data. `figure_data.json` retains
 integer counts, endpoint identities, normalization definitions, runtime
-replicates and 230 directly hashed source files. `artifact_inventory.json`
-identifies every generated PDF/table. No training, inference or cloud work was run.
+replicates and directly hashed source files, including Run 030's complete measurement release. `artifact_inventory.json`
+identifies every generated PDF/table. This analysis only plots retained evidence; Run 030 performed the additional
+user-authorized checkpoint evaluations.

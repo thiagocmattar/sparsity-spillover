@@ -44,7 +44,10 @@ def build():
     assert len(raw)==540
     points=[]
     trained=[]
-    for source in inputs['checkpoints']:
+    families=('A0','A1-H','A1-H-L1','A1-H-OL1','A4','A4-OL1','A7','A7-OL1')
+    ordered=sorted(inputs['checkpoints'],key=lambda r:(('14M','70M','410M').index(r['scale']),
+                   families.index(r['family']),r['training_parameter'] or 0))
+    for source in ordered:
         group=sorted([r for r in raw if r['source_checkpoint_id']==source['id']],
                      key=lambda r:r['target_sparsity'])
         assert [r['target_sparsity'] for r in group]==inputs['targets']
@@ -105,12 +108,12 @@ def main():
     with (out/'raw-points.json.gz').open('wb') as file:
         with gzip.GzipFile(fileobj=file,mode='wb',mtime=0,filename='') as stream:
             stream.write(json.dumps(raw,sort_keys=True,separators=(',',':')).encode())
-    columns=['source_checkpoint_id','scale','family','training_parameter','dose','loss',
+    columns=['source_checkpoint_id','scale','family','training_parameter','clipping_target_p','loss',
              'delta_loss_from_p0','R_model','U_arch','nondominated_within_checkpoint']
     with (out/'clipping-points.csv').open('w',newline='') as f:
-        writer=csv.DictWriter(f,fieldnames=columns)
+        writer=csv.DictWriter(f,fieldnames=columns,lineterminator='\n')
         writer.writeheader()
-        writer.writerows({k:r[k] for k in columns} for r in data['points'])
+        writer.writerows({k:r['dose'] if k=='clipping_target_p' else r[k] for k in columns} for r in data['points'])
     (out/'frontiers.json').write_text(json.dumps(data['frontiers'],indent=2)+'\n',newline='\n')
     print(json.dumps({'points':len(data['points']),'frontier_counts':{
         k:len(v['training_and_clipping']) for k,v in data['frontiers'].items()}}))

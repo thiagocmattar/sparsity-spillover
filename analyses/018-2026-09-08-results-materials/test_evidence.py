@@ -105,7 +105,7 @@ def test_case_study_uses_common_sites_and_pooled_band_counts(data):
             assert a['rms']==pytest.approx(math.sqrt(a['square_sum']/a['finite']))
 
 
-def test_overview_retains_complete_dose_sweeps_in_order(data, monkeypatch):
+def test_overview_retains_complete_training_and_clipping_sweeps(data, monkeypatch):
     # Assert the actual plotted coordinates, not just a reduction agreeing with itself.
     import plots
     figures=[]
@@ -115,24 +115,24 @@ def test_overview_retains_complete_dose_sweeps_in_order(data, monkeypatch):
     expected={'A0': [None], 'A1-H': [None],
               'A1-H-L1': [.05,.1,.5,1.], 'A1-H-OL1': [.05,.1,.5,1.],
               **{f: [0.,.01,.05,.1,.5] for f in ('A4','A4-OL1','A7','A7-OL1')}}
-    sources={'A0 + clipping':'gelu-control','A1-H + clipping':'relu-control'}
-    raw_sources=[f'relu-{method}-{level}' for method in ('l1n','ol1')
-                 for level in ('0p05','0p1','0p5','1')]
-    raw_sources += [f'a4z-one-sided-kappa-{level}' for level in ('0','0p01','0p05','0p1','0p5')]
-    sources.update({source+' + clipping':source for source in raw_sources})
+    sources={r['id']+' + clipping':r['id'] for r in data['trained'] if r['scale']=='14M'}
+    assert len(sources)==30 and len(data['overview_clipping'])==300
     expected.update({label:[i/10 for i in range(10)] for label in sources})
     try:
         lines=figures[0].axes[0].get_lines()
-        assert len(lines)==23
+        assert len(lines)==38
         assert {line.get_label() for line in lines}==set(expected)
         assert set(data['overview_series'])==set(expected)
-        assert sum(len(line.get_xdata()) for line in lines)==180
+        assert sum(len(line.get_xdata()) for line in lines)==330
         for line in lines:
             series=line.get_label()
             clipping=series.endswith(' + clipping')
-            family=sources[series] if clipping else series
-            candidates=[r for r in data['clipping' if clipping else 'trained']
-                        if r['scale']=='14M' and r['family']==family]
+            if clipping:
+                candidates=[r for r in data['overview_clipping'] if r['source_checkpoint_id']==sources[series]]
+                source=one(data['trained'],id=sources[series])
+                assert all(r['family']==source['family'] for r in candidates)
+            else:
+                candidates=[r for r in data['trained'] if r['scale']=='14M' and r['family']==series]
             rows=[one(candidates,dose=dose) for dose in expected[series]]
             assert data['overview_series'][series]==[r['id'] for r in rows]
             assert list(line.get_xdata())==[100*r['R_model'] for r in rows]

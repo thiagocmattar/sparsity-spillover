@@ -80,15 +80,15 @@ def tables(d):
             '--' if r['U_reach'] is None else f'{100*r["U_reach"]:.6f}',
             r['outside_reach_zero_products'],f'{100*r["outside_reach_zero_products"]/r["counts"]["model_product_count"]:.8f}'] for r in d['trained']],
           'U_arch uses all actual block zero products. U_reach restricts the numerator to selected reachable operations. A0 has no selected reach and both ratios are undefined. Sources O003/O004.')
-    table('frontiers',['Pool','Scale','Recipe / checkpoint','Dose','Loss','S_model (%)','Evidence ID'],
+    table('frontiers',['Pool','Scale','Recipe / checkpoint','Parameter / target p','Loss','S_model (%)','Evidence ID'],
           [[pool,r['scale'],r['family'],r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
-           for pool,ids in d['frontiers'].items() for id_ in ids for r in [one(d['trained']+d['clipping'],id=id_)]],
+           for pool,ids in d['frontiers'].items() for id_ in ids for r in [one(d['trained']+d['overview_clipping'],id=id_)]],
           'Minimize paired loss and maximize raw model-wide sparsity among evaluated points only. No interpolation or equal-quality inference.')
     table('overview-series',['Series','Threshold / pressure / target p','Loss','S_model (%)','Evidence ID'],
           [[series,r['dose'],f'{r["loss"]:.6f}',f'{100*r["R_model"]:.4f}',r['id']]
            for series,ids in d['overview_series'].items() for id_ in ids
-           for r in [one(d['trained']+d['clipping'],id=id_)]],
-          'Figure 01: all 30 trained endpoints and all 150 retained clipping evaluations, each series in parameter order. '
+           for r in [one(d['trained']+d['overview_clipping'],id=id_)]],
+          'Figure 01: all 30 trained endpoints and all 300 clipping evaluations from those checkpoints, each series in parameter order. '
           'Thin clipping paths preserve actual p=0 measurements; trained paths retain dominated points. '
           'Plot loss window: 5.04–6.15. These are evaluated sweeps, not Pareto envelopes. Source O001.')
     rows=[]

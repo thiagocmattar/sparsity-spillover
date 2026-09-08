@@ -9,15 +9,15 @@ a separately qualified implementation.
 
 ## 1. Establish the 14M trade-off
 
-Use Figure 01: all 30 trained endpoints and all 150 retained post-hoc clipping
-evaluations from 15 source checkpoints. Bold training curves use solid lines
+Use Figure 01: all 30 trained endpoints and all 300 post-hoc clipping
+evaluations from all 30 source checkpoints. Bold training curves use solid lines
 without pressure and dashed lines with L1/OL1. Thin faint open-marker trajectories
 follow clipping targets within each fixed source checkpoint. All training
 settings remain connected, including dominated points. The loss window is
-5.04–6.15; Figure 06 retains the complete clipping loss range. Corrected A4-OL1
-and A7 variants have no retained post-hoc sweeps. These curves show measured
+5.04–6.15; Run 030's 14M PDF retains the complete clipping loss range.
+These curves show measured
 trade-offs, not a fitted or interpolated Pareto envelope. The
-[series table](tables/overview-series.md) records all 180 input coordinates.
+[series table](tables/overview-series.md) records all 330 input coordinates.
 
 Suggested text:
 
@@ -32,11 +32,12 @@ these 30 conditions, despite improving parts of the within-A4 comparison.
 Do not describe a within-family improvement as a global frontier improvement.
 The excluded historical h-only A4 pressure cohort contributes no current result.
 
-The appendix's Figure 06 shows all 150 available 14M clipping evaluations.
+The appendix's Figure 06 preserves the earlier 150-point subset.
 Clipping the λ=1 L1 checkpoint gives 4.7982% sparsity at loss 5.1070 (p=.1)
-and 5.6441% at loss 5.1441 (p=.2). The retained post-hoc study does not clip
-A7 or corrected A4-OL1. It therefore cannot identify an optimal joint
-training-plus-clipping recipe. Uniform clipping is not TEAL's greedy allocation.
+and 5.6441% at loss 5.1441 (p=.2). Run 030 completes the A7 and corrected A4-OL1 sweeps: for example,
+clipping A7-OL1 at kappa=.5 to p=.8 reaches 28.2258% at loss 6.0221.
+The full cohort is covered, but this finite uniform grid does not establish an
+optimal joint training-plus-clipping recipe or TEAL's greedy allocation.
 
 ## 2. Explain the added effect of each intervention
 
