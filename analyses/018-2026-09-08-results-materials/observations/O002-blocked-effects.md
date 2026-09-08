@@ -16,6 +16,8 @@ Compute treatment minus reference for seven comparison blocks, retaining the sam
 
 [Publication PDF](../figures/02-blocked-intervention-effects.pdf)
 
+[Reusable paper caption](../CAPTIONS.md#figure-02-paired-intervention-effects).
+
 Paired 14M intervention effects. The upper panel shows validation-loss changes (negative is better); the lower panel shows model-sparsity changes in percentage points (positive is more logical zero-product opportunity). The Intervention: row describes each action. The Paired: row explicitly gives treatment minus reference: A1-H − A0, A1-H-L1 − A1-H, A1-H-OL1 − A1-H-L1, A4 − A1-H, A4-OL1 − A4, A7 − A4, and A7-OL1 − A7. A0 is the original GELU control, and A1-H is the ReLU control. Numeric labels give λ in the two local-pressure groups and κ in the four gated-recipe groups; the dash marks the dose-free ReLU replacement. L1-to-OL1 pairs share λ. The four-site and seven-site pressure additions and the query/key/value gate addition share κ between treatment and reference. The other references are fixed controls. Positions order doses without encoding numerical distances. The one-sided-gate action includes h; query/key gates are post-RoPE. Four-site and seven-site OL1 use fixed pressure weight λ=1 and trust budget 1. These 29 one-seed comparisons use separately trained conditions and are not cumulative updates or runtime measurements.
 
 ## Reference map

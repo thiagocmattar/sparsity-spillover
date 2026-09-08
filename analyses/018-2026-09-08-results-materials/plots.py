@@ -138,7 +138,7 @@ def effects(d):
     for text,offset in [('Intervention:',-42),('Paired:',-72)]:
         axs[1].annotate(text,(0,0),xycoords='axes fraction',xytext=(-7,offset),
                         textcoords='offset points',ha='right',va='center',fontsize=7.5)
-    fig.suptitle('Paired intervention effects (14M)',y=.985,fontsize=11)
+    fig.suptitle('Paired intervention effects',y=.985,fontsize=11)
     save(fig,'02-blocked-intervention-effects.pdf')
 
 

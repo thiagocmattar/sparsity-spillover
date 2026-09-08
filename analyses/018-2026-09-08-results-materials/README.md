@@ -1,6 +1,8 @@
 # Analysis 018 — Results materials for the revised argument
 
 The user selected the original horizontal [Figure 02](figures/02-blocked-intervention-effects.pdf).
+Its final title is **Paired intervention effects**. A reusable paper caption is
+in [CAPTIONS.md](CAPTIONS.md#figure-02-paired-intervention-effects).
 Its metric axes show delta loss and delta model sparsity (pp). Beneath the
 plots, two rows have horizontal labels on the left: **Intervention:** for the
 action/site descriptions and **Paired:** for treatment-minus-reference names

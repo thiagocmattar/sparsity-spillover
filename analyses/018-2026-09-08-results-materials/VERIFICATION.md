@@ -1,3 +1,13 @@
+# Figure 02 final title and caption, 8 September 2026
+
+The user approved Figure 02 with its final title, "Paired intervention effects".
+Only the title changed in the plotting function. CAPTIONS.md contains a reusable
+paper caption, including the 14M scope, paired-difference semantics and evidence
+link; the README and O002 link to it. The regenerated PDF was visually inspected.
+All text fits within the page; numerical evidence is unchanged, and the other
+eight PDFs retain their hashes. Temporary rendering: ignored
+tmp/pdfs/analysis018-figure02-final.
+
 # Figure 02 title and typography, 8 September 2026
 
 The title is now "Paired intervention effects (14M)". Annotation fonts are
