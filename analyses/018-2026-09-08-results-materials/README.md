@@ -39,16 +39,16 @@ for new counts is [ACTIVATION-DIAGNOSTIC.md](ACTIVATION-DIAGNOSTIC.md).
 Start with [RESULTS.md](RESULTS.md) for the argument and
 [FIGURE-REVIEW.md](FIGURE-REVIEW.md) for the critical review of every figure.
 The [checklist](CHECKLIST.md) records completion; [verification](VERIFICATION.md)
-records the checks actually performed. Original runs and manuscript files are unchanged.
+records the checks actually performed. Original runs are unchanged; the manuscript adoption is recorded in O012.
 
 ## Selected paper figures and supporting material
 
-The user selected five results figures. The proposed manuscript order is
+The user selected five results figures. The implemented manuscript order is
 overview, paired effects, distribution reshaping, transfer across sizes, then
 kernel realization on the corrected 30-checkpoint cohort.
 [MANUSCRIPT-PLAN.md](MANUSCRIPT-PLAN.md) specifies each goal, draft location,
 main-table recommendation and appendix coverage; [CAPTIONS.md](CAPTIONS.md)
-contains all five proposed captions. The working copy is in
+contains the five source captions, adapted with resolved references in the draft. The working plan is in
 [the manuscript draft](../../manuscript/draft/results-plan.md).
 
 | Placement | Figure | Purpose |
@@ -57,15 +57,18 @@ contains all five proposed captions. The working copy is in
 | Main: paired effects | [02 - intervention effects](figures/02-blocked-intervention-effects.pdf) | 29 matched changes in loss and model-wide sparsity |
 | Main: distributions | [05-v3 - signed activation densities](figures/05-v3-activation-density-grid.pdf) | FFN/attention reshaping under A0, A4-OL1 and A7-OL1 |
 | Main: transfer | [03 - scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Test persistence of the high-threshold recipe ordering with a common A7 reference |
-| Main: kernel realization | [07 - kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and measured acceleration across the corrected 30-checkpoint cohort; replaces the older kernel figure when the draft is updated |
+| Main: kernel realization | [07 - kernel realization](figures/07-kernel-realization.pdf) | Qualified search progress and measured acceleration across the corrected 30-checkpoint cohort; replaces the older kernel figure and its 35-checkpoint prose |
 | Appendix support | [04 - operation accounting](figures/04-operation-accounting.pdf), optionally [08 - ceiling versus size](figures/08-ceiling-vs-model-size.pdf) | Interpret operation contributions and architectural reach |
 | Complete clipping appendix | [Run 030 full-range plots and observations](../../runs/030-2026-09-08-all-models-posthoc-clipping/observations/INDEX.md) | All 54 checkpoints and 540 clipping evaluations |
 | Retained alternatives/subsets | [02-v2](figures/02-v2-blocked-intervention-effects.pdf), [05 original](figures/05-activation-mass-grid.pdf), [05-v2](figures/05-v2-activation-mass-grid.pdf), [06](figures/06-complete-posthoc-comparison.pdf) | Available records, not additional selected main-text figures; Figure 06 contains 150 clipping points |
 
 File numbering is unchanged and does not prescribe paper numbering. The
 [observation index](observations/INDEX.md) retains evidence and source links.
-The figure set is selected; results-section insertion is planned, not yet
-performed. No figure or numerical measurement changed for this planning task.
+Results-section insertion is complete. [O012](observations/O012-manuscript-results.md)
+records the argument-led prose, seven generated manuscript tables, complete
+appendix and local evidence release. The [tracked source/PDF snapshot](provenance/manuscript-20260908-results/README.md)
+preserves the 24-page reading copy while `manuscript/draft/` remains ignored.
+No figure artwork or numerical measurement changed during manuscript assembly.
 
 ## Scope and tables
 
@@ -89,8 +92,10 @@ frontier memberships are available in Run 030's results folder.
   [training protocol](tables/training-protocol.md), [runtime summary](tables/runtime-summary.md).
 
 [results.tex](results.tex) is an optional analysis-owned insertion fragment.
-It does not modify the draft. The revised runtime cohort requires replacing
-the old 35-checkpoint summary if this material is adopted in the manuscript.
+The adopted, hand-written prose is in the manuscript snapshot; it supersedes
+this optional fragment for the current draft. The draft now uses the corrected
+30-checkpoint runtime summary. Generate its seven retained-evidence tables with
+`.venv/Scripts/python.exe analyses/018-2026-09-08-results-materials/03_manuscript_tables.py`.
 
 ## Reproduce
 

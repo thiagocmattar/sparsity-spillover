@@ -1,0 +1,90 @@
+% Source observation: analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md
+% Argument revision after adversarial review, 2026-09-05. Hand-edited.
+% Sources and claim boundaries: positioning.md and reviews/2026-09-05-adversarial/.
+% Result preview authorized 8 September 2026; evidence: Analysis 018 O002/O003/O007/O011.
+\section{Introduction}
+\label{sec:introduction}
+
+% Activation sparsity can reduce language-model inference cost when specialized
+% kernels skip products and weight accesses associated with zero activations.
+% Recent work shows that useful sparsity can be exposed in pretrained models
+% through thresholding or encouraged during training, with measured acceleration
+% in both cases~\citep{liu2024teal,cetin2026sparser}. These successes create a
+% practical design problem: how should a researcher combine and place
+% sparsification interventions to obtain more useful sparsity at an acceptable
+% quality cost? Answering this question matters when choosing which components
+% of a recipe to retain, where to invest additional training, and which
+% operations warrant sparse-kernel development.
+
+Activation sparsity can improve language-model inference efficiency when specialized kernels skip computation and memory access associated with zero activations. Recent work has shown that sparsity can be exposed in pretrained models through post-hoc thresholding or induced during training, in both cases with measured inference speedups~\citep{liu2024teal,cetin2026sparser}. These results raise a practical design question: how should a researcher place and combine sparsification interventions to obtain more useful sparsity at an acceptable quality cost? Answering this question matters when choosing which components of a recipe to retain, where to invest additional training, and which operations justify sparse-kernel development.
+
+
+% The available approaches act on different parts of this problem. Post-hoc
+% thresholding exploits the tolerance of an existing representation;
+% activation regularization changes what the model learns; and broader site
+% placement exposes additional operations to sparsification. TEAL, ProSparse,
+% and Q-Sparse establish the effectiveness of these approaches and investigate
+% choices within them~\citep{liu2024teal,song2024prosparse,wang2024qsparse}.
+% These findings motivate examining the additional value of pressure as
+% thresholding and placement change.
+% An intervention that helps on its own may add little to another intervention,
+% or impose a different quality cost when applied elsewhere. Without knowing
+% these dependencies, an improved sparsity fraction gives limited guidance
+% about why a recipe works or how to adapt it to a different model.
+
+Existing approaches induce activation sparsity in different ways. TEAL applies post-hoc thresholding to pretrained models, ProSparse uses L1 regularization on FFN activations during training, and Q-Sparse applies top-k sparsification to both FFN and attention activations~\citep{liu2024teal,song2024prosparse,wang2024qsparse}. While each approach is effective in its own setting, it remains unclear how they compare under a common setup and how their effects interact when combined. An intervention that works well in isolation may add little on top of another or incur a different quality cost when applied at additional sites, making sparsity alone insufficient to identify which choices drive the improvement.
+
+
+We study this problem through three separately controllable design choices:
+\emph{pressure}, which encourages selected activations toward zero;
+\emph{thresholding}, which sets values to exactly zero according to a gate;
+and \emph{site placement}, which specifies where each acts.
+\emph{The interventions are separately controllable, but their effects need
+not be separable.} Our central question is how their individual effects and
+interactions determine the quality--sparsity trade-off. In particular, does
+adding pressure become more or less useful as thresholding changes, and how
+does that response depend on where pressure and gates are applied?
+
+Explaining that response requires connecting learned behavior to the
+computation it affects. A reduction in activation magnitude can leave the
+number of exact zeros unchanged; additional zeros can also be concentrated
+at sites that affect only a small share of the forward pass. Conversely,
+extending the gate set can expose additional operations to sparsification while
+changing the representation the model must learn. The empirical issue is how
+learning responds to these choices: when pressure produces additional zeros,
+how much quality that change costs, and which operations account for the
+result. Distinguishing these outcomes helps diagnose whether limited gains
+reflect the response to pressure, the computational reach of the chosen sites,
+or the cost of expanding the intervention.
+
+To make that diagnosis model-wide, we pair observed zero-product counts with
+an architecture-dependent reach ceiling. $\Smodel$ measures the
+fraction of counted forward matrix-multiplication products with a zero
+activation operand; $\Smax$ describes the fraction
+reachable if the selected sites were entirely zero. We refer to the former as
+\emph{model-wide sparsity}, distinguishing it from a local activation zero
+fraction. This accounting makes the location of sparsity consequential: the
+same local zero rate can affect different amounts of computation as the
+architecture or workload changes. It helps distinguish a change in learned
+sparsity from a change in the work reachable through the chosen sites.
+Direct timing then tests
+whether an implementation can exploit the observed zeros on hardware.
+
+We organize matched pretraining comparisons around a \emph{sparsification
+intervention ladder} (Figure~\ref{fig:intervention-ladder}), which organizes gate
+and pressure alternatives across feed-forward (FFN) and attention sites. Pythia-family
+models provide a common architecture for examining these choices and their
+behavior across sizes~\citep{biderman2023pythia}. We use the ladder to trace
+individual and joint intervention effects from learned activations to the
+operations they affect, then test selected recipe relationships at larger
+sizes where both learned responses and computational reach can differ.
+
+The results show that pressure's additional value depends on the gate
+setting and target set. Broader interventions reshape attention as well as
+FFN distributions, and the high-threshold seven-site recipe improves both
+quality and sparsity over its four-site counterpart at all three sizes.
+Direct timing closes the comparison: the selected inference implementation
+achieves a $1.234\times$ geometric mean speedup across 30 Pythia-14M
+checkpoints, while ablations show that fusion and sparse-path overhead both
+matter. Together, these findings distinguish learning a sparse representation,
+reaching substantial model-wide work, and executing that work efficiently.

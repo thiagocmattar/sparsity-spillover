@@ -24,7 +24,7 @@ Qualified incumbent: 1.7830×. K050 qualifies on 30/30, geometric mean 1.2340×,
 
 ## Caveats
 
-This revised 30-checkpoint summary supersedes the original 35-checkpoint statistics only within this analysis; the source run and manuscript remain untouched. Ablations compare separately measured native-normalized timings. Canonical sparsity is FP16 while execution is BF16. Quality, topology and weights vary, preventing a causal or equal-quality interpretation. No cached-decoding or larger-model transfer follows.
+This revised 30-checkpoint summary supersedes the original 35-checkpoint statistics in this analysis and the user-authorized manuscript revision recorded in [O012](O012-manuscript-results.md); the source run remains unchanged. Ablations compare separately measured native-normalized timings. Canonical sparsity is FP16 while execution is BF16. Quality, topology and weights vary, preventing a causal or equal-quality interpretation. No cached-decoding or larger-model transfer follows.
 
 ## Source script and evidence
 

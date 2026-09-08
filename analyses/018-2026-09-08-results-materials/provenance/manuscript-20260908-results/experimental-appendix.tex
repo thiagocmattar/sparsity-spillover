@@ -1,0 +1,121 @@
+% Concrete setup definitions, relocated from the prior methodology appendix.
+% Source identities and evidence boundary: experimental-notes.md.
+\section{Experimental setup details}
+\label{app:experiment}
+
+\subsection{Pythia sites and gate placement}
+\label{app:sites}
+
+Pythia uses parallel attention and FFN branches with separate LayerNorms.
+For batch size $B$, sequence length $T$, residual width $d$, FFN width $d_f$,
+and $H$ heads, let $d_h=d/H$. Table~\ref{tab:sites} identifies the actual
+operands recorded after any selected gate. The same site mapping is applied
+in every layer, with one common threshold per condition.
+The recipe and pressure assignments are defined in
+Section~\ref{sec:experiments}.
+
+\begin{table}[ht]
+\centering\small
+\caption{Intervention sites and the matrix products that consume them directly.}
+\label{tab:sites}
+\vspace{4pt}
+\begin{tabularx}{\linewidth}{@{}lllX@{}}
+\toprule
+Site & Shape & Consuming operation & Placement \\
+\midrule
+$a$ & $B\!\times\!T\!\times\!d$ & QKV projection & After attention LayerNorm \\
+$m$ & $B\!\times\!T\!\times\!d$ & FFN up projection & After FFN LayerNorm \\
+$h$ & $B\!\times\!T\!\times\!d_f$ & FFN down projection & Nonlinearity output \\
+$q,k$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Attention scores & After partial RoPE \\
+$v$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Probability--value & After the QKV split \\
+$z$ & $B\!\times\!T\!\times\!d$ & Attention output & Concatenated context, before output projection \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+At an ungated $h$, the activation is GELU; a selected gate replaces GELU.
+At other ungated sites the map is the identity applied to that port's input.
+At zero threshold, A7's additional symmetric query/key/value gates are exact
+identities in both values and gradients. They therefore do not change A4's
+mathematical forward map in the absence of pressure. A7-OL1 still differs
+from A4-OL1 in its pressure targets and their equal-tensor normalization.
+
+Query and key counts use actual
+post-RoPE operands: rotation can repopulate an individual zero coordinate.
+Likewise, the output projection uses actual post-gate context $z$, rather than
+inferring its zeros from the value mask. 
+% Existing architecture/ladder moved to the appendix; artwork unchanged.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/pythia-architecture-sparsification-ladder.pdf}
+\caption{Shared Pythia block and sparsification intervention ladder.
+The map separates gate placement, gate family, and pressure; L1N denotes
+naive L1. The final columns show analytic selected-site reach $100\Smax\%$
+at $T=2{,}048$, not observed sparsity or speedup. Pressure targets all gated
+sites in each pressure-bearing row. Rows define candidate recipes; their
+experimental coverage is reported with the results.}
+\label{fig:intervention-ladder}
+\end{figure}
+
+
+
+\FloatBarrier
+\subsection{Architecture-specific counts and reach}
+\label{app:architecture-counts}
+
+The operation inventory comprises QKV projection, attention scores ($QK$),
+probability--value products ($PV$), attention-output projection, and the two
+FFN projections. For one uncached, unpadded sequence, each block contributes $3Td^2$ products
+from QKV projection, $Td^2$ from the attention-output projection, $Td d_f$ from
+each FFN projection, and $dT(T+1)/2$ from each of $QK$ and $PV$.
+Thus, for $L$ blocks and vocabulary size $V_{\!\mathrm{vocab}}$,
+\begin{equation}
+\begin{split}
+C_{\mathrm{block}}&=T(4d^2+2dd_f)+dT(T+1),\\
+C_{\mathrm{model}}&=LC_{\mathrm{block}}+TdV_{\!\mathrm{vocab}}.
+\end{split}
+\label{eq:denominator}
+\end{equation}
+Over $B$ sequences, $N_{\mathrm{model}}=BC_{\mathrm{model}}$; the dense head
+contributes only to the denominator, as defined in Section~\ref{sec:measurement}.
+
+Let $\mathcal{O}(\mathcal{G})$ be the union of operations reachable when the
+selected sites are all zero: $a$ reaches QKV; $m$ reaches FFN up; $h$ reaches
+FFN down; either $q$ or $k$ reaches $QK$; $v$ reaches $PV$ and attention output;
+and $z$ reaches attention output. Each operation is counted once.
+The $v$ rule includes the exact closure $V=0\Rightarrow PV=0$. No further
+propagation is assumed: QKV biases can survive $a=0$, and zero scores do not
+imply zero softmax probabilities. For the same site set in every layer,
+$N_{\mathrm{reach}}=BL\sum_{o\in\mathcal{O}(\mathcal{G})}C_o$, where $C_o$
+is that operation's per-sequence count. Division by $N_{\mathrm{model}}$ gives
+$\Smax$.
+
+With Pythia's $d_f=4d$, the per-block reachable counts for A0, A1-H, A4, and A7
+are $0$, $4Td^2$, $12Td^2$, and $C_{\mathrm{block}}$, respectively. The ladder
+evaluates these formulas at $T=2{,}048$, $V_{\!\mathrm{vocab}}=50{,}304$, and
+the pinned $(L,d)$ configurations $(6,128)$, $(6,512)$, and $(24,1{,}024)$.%
+\footnote{Architecture configurations: EleutherAI's
+\href{https://huggingface.co/EleutherAI/pythia-14m-deduped/blob/7386d9a4ae45aef494a6e704910394def3037fc5/config.json}{Pythia-14M-deduped},
+\href{https://huggingface.co/EleutherAI/pythia-70m-deduped/blob/e93a9faa9c77e5d09219f6c868bfc7a1bd65593c/config.json}{Pythia-70M-deduped}, and
+\href{https://huggingface.co/EleutherAI/pythia-410m-deduped/blob/b5e8535141902c0e985cea61fd02afe7fe86af32/config.json}{Pythia-410M-deduped}.
+Links identify immutable configuration revisions; released weights are not used.}
+No checkpoint enters this calculation. In particular, A0 has zero selected-site
+reach but may have positive observed sparsity from natural zeros. The ceiling
+is consequently not an upper bound on every observed $\Smodel$, nor does its
+gap to an observation measure sparsity available without quality loss.
+
+\subsection{Evaluation scope}
+\label{app:evaluation}
+
+Quality and logical counts are paired in the same eager-attention evaluation
+of a checkpoint, with its declared gates and evaluation precision. The complete
+MiniPile validation split contains 500 documents. Concatenation and packing
+produce 338 complete blocks of 2,048 tokens (692,224 input tokens); the final
+1,444-token tail is excluded. Each block contributes 2,047 next-token targets
+to cross-entropy, while product accounting includes all 2,048 input positions.
+Loss is averaged over the equally sized blocks, and sparsity is count-pooled.
+This workload uses no key--value cache. Condition-specific training budgets,
+optimizer settings, seeds, and checkpoint selection accompany their results;
+they are not implied by the ladder's list of candidate conditions.
+
+\input{results-appendix}

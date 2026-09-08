@@ -28,26 +28,37 @@ variant.
 
 ## V2 workspace
 
-The 8 September [results figure and table plan](draft/results-plan.md) maps
-five selected Analysis 018 figures to the draft: overview, paired effects,
-activation reshaping, transfer across sizes, then kernel realization. It recommends one compact
-main-text contrast table and detailed appendix tables plus complete clipping
-and histogram data. The [tracked plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
-and [five captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
-retain the evidence links. This is a planning update; TeX insertion and final
-submission-template layout remain to be performed. Figure 07 replaces the
-older kernel figure in the plan; its 30-checkpoint caption and cohort statistics
-will be adopted together when updating the current 35-checkpoint draft text.
+The user-authorized 8 September results are now written in `draft/`.
+An [argument map](draft/results-argument-map.md) precedes the prose:
+overview, paired effects, distribution reshaping, transfer across sizes,
+then measured kernel acceleration. Five unchanged Analysis 018 PDFs are
+copied into `draft/figures/` and appear as paper Figures 1-5. One compact
+contrast table supports the main text; the appendix includes all endpoints,
+paired comparisons, zero masses, operation counts, complete clipping plots
+and kernel qualification/ablations. The 30-checkpoint runtime cohort is
+used consistently. A local data release contains all 540 clipping points
+and seven signed-histogram files, with source hashes.
+
+The [24-page reading copy](draft/main.pdf) builds cleanly and has been
+visually checked. It retains the lightweight wrapper; ICLR submission-template
+layout is not yet assessed. The [approved plan](../analyses/018-2026-09-08-results-materials/MANUSCRIPT-PLAN.md)
+and [source captions](../analyses/018-2026-09-08-results-materials/CAPTIONS.md)
+remain available. The draft stays local-only, with a self-contained,
+version-controlled [source/PDF snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-results/README.md)
+owned by Analysis 018. [O012](../analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md)
+records the evidence and verification. No new experiment was launched.
+
+### Earlier V2 revisions
 
 The user requested a clean start for V2 on 2026-09-05 and then authorized an
 argument-first introduction and related work, followed by a compact
-methodology and a separate experimental-study opening. `draft/` now contains
+methodology and a separate experimental-study opening. That revision contained
 these four sections, general-method and experimental-detail appendices,
 a checked bibliography, and a lightweight reading wrapper. The
 framing concerns how pressure, gate nonlinearity, and site placement interact
 in the quality--sparsity trade-off. The text develops a candidate explanation
 and asks how it transfers. The experimental opening defines setup and
-comparison logic; empirical findings remain deferred. The user's `draft/supplementary.md` remains unchanged.
+comparison logic; empirical findings were deferred until the results adoption above. The user's `draft/supplementary.md` remains unchanged.
 
 [Draft positioning notes](draft/positioning.md) record the literature checks,
 length budget, and evidence boundaries, including the combined gate/pressure
@@ -68,7 +79,7 @@ no dedicated gradient-surgery strand. Detailed reports, initial/final source
 snapshots, scores, and the response to criticisms are indexed in
 [the review record](draft/reviews/2026-09-05-adversarial/README.md).
 The review strengthens positioning; the empirical insight and its transfer
-remain obligations for the later results stage.
+were obligations for the later results stage, now addressed within the stated one-seed limits.
 
 The methodology defines independent gate and pressure choices, exact-zero
 model-wide sparsity, and the all-zero selected-site reach ceiling, with most

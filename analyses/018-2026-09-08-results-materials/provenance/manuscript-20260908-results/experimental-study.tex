@@ -1,0 +1,56 @@
+% Experimental setup/comparison logic and the user-authorized kernel case study.
+% Provenance and scope: experimental-notes.md.
+\section{Experimental study}
+\label{sec:experiments}
+
+We examine how pressure, thresholding and placement change quality and
+model-wide sparsity, which recipe relationships persist across model sizes,
+and whether specialized kernels can exploit the resulting zeros.
+We pretrain randomly initialized Pythia-14M, 70M, and 410M
+models~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}.
+Their shared parallel attention and FFN architecture gives the sites a
+consistent interpretation across sizes. Detailed comparisons use 14M;
+the larger models cover selected recipes. We pair validation cross-entropy
+and $\Smodel$ from the same checkpoint and forward configuration.
+Appendix~\ref{app:experiment} specifies the architecture and evaluation details.
+
+The architecture map in Appendix~\ref{app:sites}
+(Figure~\ref{fig:intervention-ladder}) locates the normalized attention and
+FFN inputs ($a,m$), FFN hidden activation ($h$), concatenated attention
+context ($z$), and query, key, and value operands ($q,k,v$).
+Query and key gates follow rotary position encoding (RoPE); $z$ precedes
+the attention-output projection. A0 retains the stock block. A1-H replaces
+GELU at $h$ with ReLU; A4 applies one-sided thresholding at $\{a,m,h,z\}$;
+A7 adds symmetric gates at $\{q,k,v\}$. The L1/OL1 variants apply pressure
+to all gated sites in their row. These are separately pretrained conditions,
+not stages of a training curriculum. The ladder includes each recipe's
+analytic reach, which changes with model architecture.
+
+Within each size, matched contrasts share initialization, data order, and
+training budget. Adding pressure at fixed gates measures its additional
+quality and sparsity effects; repeating the contrast across thresholds tests
+how those effects depend on thresholding. Comparing A4 with A7 without
+pressure examines broader gate placement. A4-OL1 versus A7-OL1 changes both
+gate and pressure sets, so it compares complete recipes rather than isolating
+gate placement at a fixed pressure objective. At 70M and 410M, we evaluate
+A0, A1-H, A4-OL1, and A7-OL1 with the same training-token budget as at 14M. Comparisons use one initialization seed
+per size; thresholds are treatment levels, not statistical replicates.
+The cohort contains 30 conditions at 14M and 12 at each larger size.
+Each trains for 712 updates and 1.493 billion input tokens; all endpoints are
+measured at the final update. Appendix~\ref{app:training-protocol} gives the
+realized optimizer, precision and learning-rate settings.
+Across sizes, we examine each operation's zero-product fraction and its share
+of the model workload to interpret changes in $\Smodel$ alongside $\Smax$.
+
+For the evaluation-only reference, we apply uniform magnitude-clipping targets
+$p=0,0.1,\ldots,0.9$ at $a,m,h,z$ without updating weights. Site--layer
+thresholds are calibrated separately on ten training blocks. This is a
+uniform TEAL-style control~\citep{liu2024teal}, not a reproduction of an
+optimized allocation across sites. The main figures show A0 clipping;
+Appendix~\ref{app:clipping-results} includes all 540 evaluations across the
+54 trained checkpoints. All training results use one initialization seed
+per size and complete validation, as defined in Appendix~\ref{app:evaluation}.
+
+\input{training-results}
+\input{kernel-autoresearch}
+
