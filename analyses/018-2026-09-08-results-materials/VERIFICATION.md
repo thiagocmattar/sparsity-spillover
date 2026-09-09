@@ -145,22 +145,6 @@ All text fits within the page; numerical evidence is unchanged, and the other
 eight PDFs retain their hashes. Temporary rendering: ignored
 tmp/pdfs/analysis018-figure02-final.
 
-# Figure 02 title and typography, 8 September 2026
-
-The title is now "Paired intervention effects (14M)". Annotation fonts are
-0.5 pt smaller: dose values, intervention descriptions and paired names are
-6.5 pt; lambda/kappa symbols are 7 pt; Intervention:/Paired: row headings are
-7.5 pt. Paired names use black text. The observation/index and optional
-analysis-owned caption use the revised title.
-
-Direct before/after checks verify all 58 plotted values and all annotation
-positions are unchanged. All seven paired names are black. Text fits within
-the page, and annotation cells do not overlap. The rendered PDF was visually
-inspected at paper width; isolated source reproduces identical PDF bytes.
-Seven other PDFs retain their hashes; Figure 01 changed concurrently outside
-this task. No numerical evidence or manuscript changed. Temporary checks are
-under ignored tmp/pdfs/analysis018-figure02-typography.
-
 # Complete-cohort Figure 01 update, 8 September 2026
 
 Run 030 completed and verified 540 clipping measurements over 54 checkpoints:
@@ -200,6 +184,22 @@ The isolated staged revision passed **40 focused tests in 1.81 seconds**.
 Figure 01 and both overview/frontier tables reproduce byte-for-byte from the
 staged source. Every Run 030 publication output hash matches its staged bytes,
 including the complete raw measurement archive.
+
+# Figure 02 title and typography, 8 September 2026
+
+The title is now "Paired intervention effects (14M)". Annotation fonts are
+0.5 pt smaller: dose values, intervention descriptions and paired names are
+6.5 pt; lambda/kappa symbols are 7 pt; Intervention:/Paired: row headings are
+7.5 pt. Paired names use black text. The observation/index and optional
+analysis-owned caption use the revised title.
+
+Direct before/after checks verify all 58 plotted values and all annotation
+positions are unchanged. All seven paired names are black. Text fits within
+the page, and annotation cells do not overlap. The rendered PDF was visually
+inspected at paper width; isolated source reproduces identical PDF bytes.
+Seven other PDFs retain their hashes; Figure 01 changed concurrently outside
+this task. No numerical evidence or manuscript changed. Temporary checks are
+under ignored tmp/pdfs/analysis018-figure02-typography.
 
 # Figure 02 intervention and paired rows, 8 September 2026
 
@@ -435,3 +435,15 @@ The coherent figure revision, updated captions/prose/tables and pending
 measurement design are committed together. The open finer-bin item is not
 represented as finished. Original runs, prior analyses, model weights, caches,
 credentials, temporary outputs and unrelated work remain outside this commit.
+
+# Repository closeout, 9 September 2026
+
+Reviewed the pending readability changes to Figures 04, 05, 06 and 08.
+All four PDFs reproduce byte-for-byte from the current plotting code, and
+their rendered layouts were inspected. The focused evidence suite passes
+19/19 tests, including the 15 separate, target-ordered clipping trajectories.
+The artifact check now reconciles the actual PDF set with the inventory,
+which contains 12 figures including the separately generated overview v2.
+Six manuscript-source fingerprints were refreshed after the user's draft
+edits and figure relocation; all numerical fields and measurement-source
+hashes remain unchanged. Earlier source/PDF snapshots remain historical.

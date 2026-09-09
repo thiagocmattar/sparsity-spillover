@@ -55,8 +55,8 @@ not an additive decomposition or a curriculum used to train one model.
 > Pressure has no uniform benefit across doses and topologies.
 
 The seven comparisons are A0→A1-H; A1-H→A1-H-L1; L1→OL1 at h;
-A1-H→A4 at κ=0; A4→A4-OL1; A4→A7; A7→A7-OL1. The table identifies
-the exact source endpoints for all 25 pairs. Within fixed A4/A7 topology,
+A1-H→A4 at all five κ values; A4→A4-OL1; A4→A7; A7→A7-OL1. The table identifies
+the exact source endpoints for all 29 pairs. Within fixed A4/A7 topology,
 only the specified pressure objective is added. Across topologies, its sites
 and equal-tensor normalization change, so this is a recipe response rather
 than a gate-by-pressure interaction under one fixed objective.
@@ -65,7 +65,7 @@ Small loss differences are descriptive, not evidence of equivalence or
 significance. At κ=0, added Q/K/V gates are mathematical identities, yet the
 trained no-pressure A4/A7 endpoints differ by −.002123 loss and +.005632
 sparsity points. Treat this residual as a numerical/implementation control
-discrepancy. A1-H→A4 also changes the boundary derivative convention at h.
+discrepancy. A1-H→A4 also changes the boundary derivative convention at h; at nonzero κ, it thresholds h as well as adding gates at a,m,z.
 
 ## 3. Introduce the ceiling, then assess transfer
 

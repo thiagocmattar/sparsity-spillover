@@ -1,6 +1,11 @@
 # Analysis 018 — Results materials for the revised argument
 
-The latest manuscript revision adds the fixed-threshold motivation and kernel
+The current 26-page manuscript uses the all-variant overview v2 and places the
+architecture/recipe diagram in the main experimental setup. See the
+[manuscript record](../../manuscript/README.md). The snapshots below preserve
+the earlier revisions; the 9 September closeout checks are in [VERIFICATION.md](VERIFICATION.md).
+
+The 8 September manuscript revision added the fixed-threshold motivation and kernel
 specialization argument. [O015](observations/O015-threshold-kernel-argument.md)
 records primary-source checks, the corrected historical-replay coverage,
 unchanged figures/data and the verified 27-page
@@ -14,7 +19,7 @@ The initial results snapshot below remains a historical record.
 
 Figure 01 has a separate [v2 with all eight training variants](figures/01-v2-14m-overview.pdf):
 30 trained checkpoints, adding A1-H-L1, A4 and A7 while retaining A0-only
-post-hoc clipping. The original figure and manuscript remain unchanged.
+post-hoc clipping. The original figure is retained; the current manuscript uses v2.
 Generate it with `04_overview_v2.py`; [O013](observations/O013-overview-all-variants.md)
 records its caption and verification.
 
@@ -39,6 +44,11 @@ such as A1-H − A0 and A4-OL1 − A4. All 29 paired differences are retained; t
 each comparison. The [rotated Figure 02-v2](figures/02-v2-blocked-intervention-effects.pdf)
 is retained as an unselected layout alternative, documented in
 [O009](observations/O009-blocked-effects-v2.md).
+
+Latest revision follows the user's request for small readability/label fixes.
+The existing eight layouts are retained. Figure 06 connects each checkpoint's
+clipping trajectory, and Figure 02 now includes all five A1-H→A4 thresholds.
+The broader redesign was rolled back.
 
 Revised after the user's figure review on 8 September 2026. This package reads
 the current manuscript and reprocesses retained experiments. It contains eight
@@ -71,7 +81,7 @@ contains the five source captions, adapted with resolved references in the draft
 
 | Placement | Figure | Purpose |
 | --- | --- | --- |
-| Main: overview | [01 - 14M recipes](figures/01-14m-overview.pdf) | 16 trained endpoints and A0 post-hoc clipping |
+| Main: overview | [01-v2 - 14M recipes](figures/01-v2-14m-overview.pdf) | 30 trained endpoints and A0 post-hoc clipping |
 | Main: paired effects | [02 - intervention effects](figures/02-blocked-intervention-effects.pdf) | 29 matched changes in loss and model-wide sparsity |
 | Main: distributions | [05-v3 - signed activation densities](figures/05-v3-activation-density-grid.pdf) | FFN/attention reshaping under A0, A4-OL1 and A7-OL1 |
 | Main: transfer | [03 - scale transfer](figures/03-scale-transfer-and-ceilings.pdf) | Test persistence of the high-threshold recipe ordering with a common A7 reference |

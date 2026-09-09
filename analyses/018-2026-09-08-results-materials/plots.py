@@ -249,13 +249,14 @@ def operations(d):
         ax.bar(xx,values,bottom=base,color=c,width=.68,label=label,
                edgecolor='white',linewidth=.35);base+=values
     ax.set(ylim=(0,100),ylabel='Contribution to '+S_LABEL.replace('(%)','(pp)'))
-    ax.set_xticks(xx,['A4','A7']*3)
+    ax.set_xticks(xx,['A4-OL1','A7-OL1']*3)
+    ax.tick_params(axis='x',labelsize=8)
     for center,scale in zip((.5,3.5,6.5),SCALES):
         ax.text(center,-.22,scale,ha='center',transform=ax.get_xaxis_transform(),fontsize=9)
     ax.grid(axis='y',color='.92',lw=.6)
     fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=3,frameon=False,
                columnspacing=1.0,handlelength=1.5,bbox_to_anchor=(.55,.91))
-    fig.suptitle('Operation contributions to model-wide sparsity',y=.99,fontsize=11)
+    fig.suptitle(r'Operation contributions at $\kappa=.5$',y=.99,fontsize=11)
     save(fig,'04-operation-accounting.pdf')
 
 
@@ -280,6 +281,8 @@ def activations(d):
     fig.legend(handles=handles(families),loc='upper center',ncol=3,frameon=False,
                bbox_to_anchor=(.56,.94))
     fig.suptitle('14M activation magnitude distributions',y=.99,fontsize=11)
+    fig.text(.56,.865,'Four retained bins; mass axis logarithmic above .01%',
+             ha='center',fontsize=8)
     fig.supxlabel(r'Activation magnitude $|x|$ bin',y=.055,fontsize=9)
     save(fig,'05-activation-mass-grid.pdf')
 
@@ -335,10 +338,15 @@ def all_clipping(d):
     fig,ax=plt.subplots(figsize=(5.5,4.3))
     fig.subplots_adjust(left=.13,right=.98,bottom=.14,top=.70)
     families=('A0','A1-H','A1-H-L1','A1-H-OL1','A4')
-    for f in families:
-        rr=[r for r in clip if family(r)==f];c,m=STYLE[f]
-        ax.scatter([100*r['R_model'] for r in rr],[r['loss'] for r in rr],
-                   edgecolors=c,facecolors='none',marker=m,s=23,linewidths=.8)
+    for source in sorted({r['family'] for r in clip}):
+        rr=sorted([r for r in clip if r['family']==source],key=lambda r:r['dose'])
+        c,m=STYLE[family(rr[0])]
+        ax.plot([100*r['R_model'] for r in rr],[r['loss'] for r in rr],
+                color=c,marker=m,ms=4,mfc='white',mew=.8,lw=.8,
+                label=source)
+        # Each trajectory starts at its actual unclipped sweep measurement.
+        ax.plot(100*rr[0]['R_model'],rr[0]['loss'],color=c,marker=m,
+                ms=4,ls='none')
     ax.set(xlim=(-.3,13),ylim=(5.,9.6),xlabel=S_LABEL,ylabel='Validation loss (nats/token)')
     ax.grid(axis='y',color='.92',lw=.6)
     hh=handles(families)
@@ -349,6 +357,8 @@ def all_clipping(d):
                bbox_to_anchor=(.55,.885),handletextpad=.4,columnspacing=1.1)
     fig.suptitle('14M post-hoc clipping',y=.99,fontsize=11)
     fig.text(.55,.925,'15 checkpoints, 10 clipping targets each',ha='center',fontsize=9)
+    fig.text(.55,.025,r'Each line: one checkpoint; filled markers: unclipped $p=0$',
+             ha='center',fontsize=8)
     save(fig,'06-complete-posthoc-comparison.pdf')
 
 
@@ -387,7 +397,8 @@ def ceilings(d):
     ax.grid(axis='y',color='.92',lw=.6)
     fig.legend(*ax.get_legend_handles_labels(),loc='upper center',ncol=4,frameon=False,
                bbox_to_anchor=(.55,.91),handlelength=2.3)
-    fig.suptitle('Theoretical sparsity ceiling by model size',y=.99,fontsize=11)
+    fig.suptitle('Selected-site reach ceiling by model size',y=.99,fontsize=11)
+    fig.text(.55,.81,'T=2048, uncached; dense LM head included',ha='center',fontsize=8)
     save(fig,'08-ceiling-vs-model-size.pdf')
 
 

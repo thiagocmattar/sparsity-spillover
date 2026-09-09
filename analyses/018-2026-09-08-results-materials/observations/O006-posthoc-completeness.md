@@ -6,7 +6,7 @@ Which post-hoc quality–sparsity regimes exist in the available clipping evalua
 
 ## Method
 
-Use all raw uniform-clipping evaluations across 15 source checkpoints and ten target sparsities. Group markers by the five source recipe families, retaining the full loss range. Do not connect source trajectories or overlay the trained overview.
+Use all raw uniform-clipping evaluations across 15 source checkpoints and ten target sparsities. Group markers by the five source recipe families, retaining the full loss range. Connect each fixed source checkpoint through its ten targets in increasing p order; mark its actual p=0 measurement with a filled symbol.
 
 ## Coverage
 
@@ -16,7 +16,7 @@ Use all raw uniform-clipping evaluations across 15 source checkpoints and ten ta
 
 [Publication PDF](../figures/06-complete-posthoc-comparison.pdf)
 
-14M post-hoc clipping: 15 pretrained checkpoints, ten targets each. Source family counts are A0 (1), A1-H (1), A1-H-L1 (4), A1-H-OL1 (4), and A4 (5). Each open marker is one evaluated source-checkpoint/target pair; symbols and colors identify the source family. The plot includes the full loss range for all 150 evaluations. Every source checkpoint is evaluated at p=0,.1,…,.9 with fixed weights; these are 150 evaluations, not 150 trained models. Source λ/κ, clipping p and exact values are in the table. No curve or interpolated frontier is asserted; Figure 01 supplies the separate trained overview.
+14M post-hoc clipping: 15 pretrained checkpoints, ten targets each. Source family counts are A0 (1), A1-H (1), A1-H-L1 (4), A1-H-OL1 (4), and A4 (5). Each marker is one evaluated source-checkpoint/target pair; filled markers identify p=0 and open markers identify p>0; symbols and colors identify the source family. The plot includes the full loss range for all 150 evaluations. Every source checkpoint is evaluated at p=0,.1,…,.9 with fixed weights; these are 150 evaluations, not 150 trained models. Source λ/κ, clipping p and exact values are in the table. Each line follows one fixed checkpoint through all ten evaluated targets; no intermediate attainable model or interpolated frontier is asserted; Figure 01 supplies the separate trained overview.
 
 ## Result
 
@@ -24,7 +24,7 @@ Clipping the λ=1 L1 model to p=.1/.2 gives 4.7982%/5.6441% sparsity at losses 5
 
 ## Caveats
 
-This figure preserves the earlier 15-checkpoint subset. Run 030 now supplies A7 and corrected A4-OL1 clipping sweeps, used in Figure 01 and its own full-range plots. Uniform TEAL-style clipping does not reproduce greedy TEAL allocation. Target p is a calibration target, not achieved model-wide sparsity. Overlapping scatter points remain individual table rows.
+This figure preserves the earlier 15-checkpoint subset. Run 030 now supplies A7 and corrected A4-OL1 clipping sweeps, used in Figure 01 and its own full-range plots. Uniform TEAL-style clipping does not reproduce greedy TEAL allocation. Target p is a calibration target, not achieved model-wide sparsity. Overlapping points remain individual table rows. Lines never join different source checkpoints.
 
 ## Source script and evidence
 

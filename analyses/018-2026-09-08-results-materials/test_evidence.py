@@ -91,6 +91,32 @@ def test_a1h_to_a4_covers_all_thresholds_with_fixed_reference(data):
         assert r['treatment']==treatment['id']
 
 
+def test_clipping_lines_follow_each_fixed_checkpoint_in_target_order(data, monkeypatch):
+    import plots
+    figures=[]
+    monkeypatch.setattr(plots,'save',lambda fig,name:figures.append(fig))
+    plots.configure()
+    plots.all_clipping(data)
+    rows=[r for r in data['clipping'] if r['scale']=='14M']
+    sources={r['family'] for r in rows}
+    try:
+        ax=figures[0].axes[0]
+        trajectories={line.get_label():line for line in ax.get_lines()
+                      if line.get_label() in sources}
+        assert len(trajectories)==15 and set(trajectories)==sources
+        for source,line in trajectories.items():
+            rr=sorted([r for r in rows if r['family']==source],key=lambda r:r['dose'])
+            assert [r['dose'] for r in rr]==[i/10 for i in range(10)]
+            assert list(line.get_xdata())==[100*r['R_model'] for r in rr]
+            assert list(line.get_ydata())==[r['loss'] for r in rr]
+        starts=[line for line in ax.get_lines() if len(line.get_xdata())==1]
+        assert len(starts)==15
+        assert sorted((float(l.get_xdata()[0]),float(l.get_ydata()[0])) for l in starts)==sorted(
+            (100*r['R_model'],r['loss']) for r in rows if r['dose']==0.)
+    finally:
+        for fig in figures: plots.plt.close(fig)
+
+
 def test_case_study_uses_common_sites_and_pooled_band_counts(data):
     common={'m','h','q_post','k_post','v','attention_output'}
     selected=[one(data['trained'],scale='14M',family='A0')]
@@ -200,7 +226,9 @@ def test_saved_bundle_and_all_sources_match(data):
     for path,digest in data['sources'].items():
         assert sha(ROOT/path)==digest
     inventory=json.loads((HERE/'artifact_inventory.json').read_text())
-    assert len(list((HERE/'figures').glob('*.pdf')))==11
+    actual_figures={p.relative_to(HERE).as_posix() for p in (HERE/'figures').glob('*.pdf')}
+    inventoried_figures={p for p in inventory if p.startswith('figures/') and p.endswith('.pdf')}
+    assert actual_figures==inventoried_figures
     for path,meta in inventory.items():
         assert sha(HERE/path)==meta['sha256'] and (HERE/path).stat().st_size==meta['bytes']
 

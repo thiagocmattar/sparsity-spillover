@@ -16,7 +16,7 @@ Six trained endpoints; all six counted block operations, with the dense LM head 
 
 [Publication PDF](../figures/04-operation-accounting.pdf)
 
-Operation contributions at κ=.5. In each size group, A4 and A7 denote A4-OL1 and A7-OL1. Stacked segments show zero products divided by all counted model products, in percentage points; the sum is measured model-wide sparsity. Solid colors identify QKV projections, FFN up/down, attention output projection, QK scores and PV. Analytic ceilings are shown separately in Figure 08.
+Operation contributions at κ=.5. Each size group explicitly labels A4-OL1 and A7-OL1. Stacked segments show zero products divided by all counted model products, in percentage points; the sum is measured model-wide sparsity. Solid colors identify QKV projections, FFN up/down, attention output projection, QK scores and PV. Analytic ceilings are shown separately in Figure 08.
 
 ## Result
 
