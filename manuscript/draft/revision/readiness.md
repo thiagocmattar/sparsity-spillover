@@ -11,7 +11,7 @@ The scores below are planning judgments under task.md Section 1.3, not acceptanc
 probabilities. They are separate assessments and must not be averaged to obscure
 a blocking issue.
 
-| Dimension | Score (0?3) | Assessment and remaining boundary |
+| Dimension | Score (0-3) | Assessment and remaining boundary |
 |---|---:|---|
 | Contribution clarity | 2 | Two specific findings connect paired intervention effects to the local-zero/operation/runtime distinction. Author approval of this empirical framing remains open. |
 | Comparison validity | 2 | Fixed-recipe pressure contrasts, unpressured placement changes and complete-recipe comparisons are distinguished. Expansion of the pressure objective also changes old coefficients; the missing fixed-weight crossed control remains unresolved. |
@@ -63,7 +63,7 @@ The proposed outcomes and wording consequences are in experiment_decisions.md.
 
 The rewrite cannot remove the single-seed, objective-identification or comparator
 limitations. Existing-results completion supports a bounded empirical reading
-copy, not a universal sparsification method or a proven quality?latency advantage.
+copy, not a universal sparsification method or a proven quality-latency advantage.
 
 Venue facts were checked on 9 September 2026 against the
 [official author guidelines](https://iclr.cc/Conferences/2027/AuthorGuidelines)

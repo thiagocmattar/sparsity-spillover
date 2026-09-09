@@ -62,7 +62,7 @@ They do not call model evaluation or original reducers' executable entry points:
 ```
 
 Audits retain exact values and hashes; percentages and rounded prose are display
-conventions. Original source observations remain in Analysis 018 and Runs 029?031.
+conventions. Original source observations remain in Analysis 018 and Runs 029-031.
 The manuscript uses architectural reach `R_arch`; raw `R_model`, `R_block`,
 `R_model_max*` and historical `U_arch` keys are unchanged.
 

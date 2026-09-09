@@ -112,3 +112,11 @@ unresolved training variability, component controls, comparator strength and
 venue length. PREP-07 remains WAITING_AUTHOR for framing/headline and figure
 budget. All optional experiments remain deferred; the runbook is not marked
 fully complete while these required editorial decisions are pending.
+
+## B20: QA-23, QA-25 - handoff note encoding
+
+Revalidated the committed PDF and source hashes, handoff artifacts and PREP-07
+requirement. Corrected six dash-to-question-mark encoding defects in the current
+READMEs and readiness rubric using ASCII punctuation. The manuscript PDF, TeX,
+measurements and generated figures/tables are unchanged. Framing and page-budget
+choices remain awaiting the author; no new experimental work is authorized.

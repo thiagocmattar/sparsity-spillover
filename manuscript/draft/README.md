@@ -13,8 +13,8 @@ rankings obtained from local zeros, operation-weighted counts and execution.
 The user approved **architectural reach**, `R_arch`, as the name and symbol for
 the existing analytic quantity. Stored scientific identifiers remain unchanged.
 
-[main.pdf](main.pdf) has 30 pages: main text on pages 1?14, the AI use statement
-and references starting on page 14, and appendices on pages 16?30. It contains
+[main.pdf](main.pdf) has 30 pages: main text on pages 1-14, the AI use statement
+and references starting on page 14, and appendices on pages 16-30. It contains
 six main figures, five appendix figures and fourteen numbered tables. It is a
 reading draft, not a page-limit-compliant submission: shortening to the official
 nine-page main-text limit and the author's framing/figure-budget decisions remain
