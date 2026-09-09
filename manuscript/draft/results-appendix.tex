@@ -64,6 +64,7 @@ Tokens per parameter & 106.14 & 21.20 & 3.68 \\
 \end{tabular}
 \end{table}
 
+\input{training-dynamics-appendix}
 \FloatBarrier
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
@@ -79,6 +80,25 @@ for each recipe. This common normalization equals $\Sblock$.
 \input{tables/trained-endpoints}
 \input{tables/paired-effects}
 \input{tables/scale-contrasts-full}
+
+\subsection{A4 with pressure at h only: a separate historical comparison}
+\label{app:pressure-targets}
+% Analysis 019: 03_audit_history.py, historical-audit.json, O003-history.md.
+
+Five Run 012 checkpoints threshold $a,m,h,z$ but apply OL1 only at $h$.
+They are outside the 54 primary conditions and the 30-checkpoint timing
+cohort. Their configs, inherited capture code, initialization, schedule,
+checkpoint hashes and complete FP16 diagnostic coverage were reconciled
+against Run 015's four-site-pressure counterparts. Across the five matched
+thresholds, four-site pressure raises loss by 0.2425--0.3196 relative to
+h-only pressure. Its sparsity change is $-0.599$ pp at zero threshold,
+$+0.001$ pp at 0.01, and $+1.421$--$+2.486$ pp at larger thresholds.
+The comparison motivates choosing pressure targets separately from threshold
+sites: broader pressure is not automatically preferable. It changes the
+aggregate gradient mixture; the coefficient change from $1/6$ to $1/24$
+alone does not identify the effective-update mechanism, because OL1's cap
+can suppress global scaling (Appendix~\ref{app:pressure}). These diagnostic
+losses are paired with FP16 counts; terminal training losses are not substituted.
 
 \subsection{Activation sparsity and signed-density coverage}
 \label{app:density-results}
@@ -175,31 +195,27 @@ untimed K050 diagnostic; they are not the pooled FP16 $h,m$ histograms.}
 \subsection{Complete cross-size curves and normalization}
 \label{app:scale-curves}
 
-Figure~\ref{fig:scale-transfer} retains all selected A4-OL1/A7-OL1 thresholds
-and A0 clipping evaluations at every size, including unfavorable settings.
-The common A7 reach denominator equals the block-only normalization for
-this graph; it removes dense-head share, not changes in block-operation weights.
-The higher 410M A0 loss than 70M's under the shared token budget is retained.
+Figure~\ref{fig:scale-transfer-full} expands the main cross-size figure to
+its full loss ranges, including the GELU A0 and ReLU A1-H clipping tails.
+There are 36 trained endpoints and 60 measured clipping evaluations, repeated
+across both rows. The larger 396-record comparison dataset additionally
+retains clipping of every selected A4-OL1/A7-OL1 checkpoint; all 540 clipping
+evaluations across the complete primary study remain below.
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/03-scale-transfer-and-reach.pdf}
-\caption{\textbf{The high-threshold A7-OL1 advantage persists across model sizes.} Columns compare
-14M, 70M and 410M. Solid curves connect separately trained A4-OL1 and A7-OL1
-checkpoints at $\kappa=0,0.01,0.05,0.1,0.5$; dotted open-marker curves show
-A0 post-hoc clipping at $a,m,h,z$ for targets $p=0,0.1,\ldots,0.9$.
-The 60 evaluations appear in both rows. Top: validation loss versus
-$100\mathcal{S}_{\mathrm{model}}$; vertical guides indicate A4/clipping-site
-and A7 architectural reach. Bottom: loss minus unmodified same-size A0
-versus $100\Sblock$, where
-$\Sblock=\Smodel/\Rarch(\mathrm{A7})$ for \textbf{every curve}.
-The A7 reference reach values are 29.95\%, 49.42\% and 87.25\%; the A4 guide is
-not the normalization denominator. At $\kappa=0.5$, A7-OL1 improves both
-axes over A4-OL1 at all sizes; the ordering at smaller thresholds varies.
-Table~\ref{tab:cross-scale-recipe-contrasts} gives the boundary-threshold
-comparisons. These are complete-recipe comparisons with matched token
-budgets, unequal tokens per parameter and a lower 410M learning rate.}
-\label{fig:scale-transfer}
+\includegraphics[width=\linewidth]{figures/09-cross-size-full.pdf}
+\caption{\textbf{Complete cross-size trajectories, including extreme-target reversals.}
+All 96 evaluations from Figure~\ref{fig:scale-transfer} appear in both rows,
+without loss-range omissions. Filled colored markers connect separately
+trained A4-OL1/A7-OL1 thresholds; rings mark $\kappa=0.5$.
+Open paths follow A0/A1-H through ten clipping targets, using measured $p=0$;
+filled gray markers denote their canonical unmodified endpoints.
+Every lower-row curve uses the common $\Sblock=\Smodel/\Rarch(\mathrm{A7})$
+normalization. Raw-view guides show A4/clipping and A7 reach; the former
+also applies to A1-H after four-site clipping. All 15 A7-OL1 minus A4-OL1
+contrasts are in Table~\ref{tab:scale-pairs-full}.}
+\label{fig:scale-transfer-full}
 \end{figure}
 \FloatBarrier
 
@@ -269,6 +285,19 @@ frontier memberships are stored separately from the lines connecting
 evaluated settings. All evaluations use complete validation with FP32
 parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
 
+For completeness, Table~\ref{tab:quality-budgets} retains the retrospective
+loss-budget reduction. It selects observed points, without interpolation;
+clipped selections have no matched latency measurement.
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{Maximum observed sparsity under same-size A0 loss plus the stated
+budget, across 54 trained and 540 clipped evaluations. Trained excludes A0;
+``none'' means no eligible sparse recipe. Budgets are retrospective;
+identical selections are grouped.}
+\label{tab:quality-budgets}
+\input{tables/quality-budgets}
+\end{table}
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/14m-posthoc-frontiers.pdf}
@@ -322,16 +351,9 @@ fallback on A0. Table~\ref{tab:kernel-ablations} reports this adapted baseline.
 Historical proposals are replayed on four representative checkpoints; the
 plotted incumbent uses fixed A7-OL1, $\kappa=0.5$. Final implementation and
 ablation summaries retain the 30-checkpoint manuscript cohort from the
-historical 35-checkpoint sweep. Five A4 checkpoints with pressure only at $h$
-remain outside the main cohort because they implement a distinct objective.
-Their original configurations, inherited capture code, initialization,
-schedule and checkpoint identities were reconciled against the corrected
-four-site runs. Across the five matched thresholds, four-site pressure
-raises diagnostic loss by $0.2425$--$0.3196$ relative to $h$-only pressure.
-Its sparsity change is $-0.599$ pp at zero threshold, $+0.001$ pp at 0.01,
-and $+1.421$--$+2.486$ pp at larger thresholds. Adding pressure sites changes
-each old site--layer coefficient from $1/6$ to $1/24$, so this historical
-comparison does not hold per-site pressure fixed. Search progress and the
+historical 35-checkpoint sweep. Five historical A4 checkpoints with pressure only at $h$ remain outside
+that cohort; Appendix~\ref{app:pressure-targets} gives the separate scientific
+comparison. Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
 
@@ -452,7 +474,7 @@ that precision mismatch.
 \centering\small
 \caption{Descriptive association sensitivity. Each column regresses its
 timing ratio on canonical FP16 model-wide sparsity with an intercept. Native
-relative uses K050/native; sparse factor uses the incremental definition above.
+relative uses native/K050 latency; sparse factor uses the incremental definition above.
 Subsets are retrospective and overlapping, with no independent training seeds.}
 \label{tab:runtime-sensitivity}
 \input{tables/runtime-sensitivity}

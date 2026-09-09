@@ -6,6 +6,7 @@ We pretrain Pythia models from random initialization on
 MiniPile~\citep{biderman2023pythia,kaddour2023minipile}: 30 conditions at 14M
 and 12 each at 70M and 410M. Each trains for 712 updates and 1.493 billion
 input tokens, with one training seed; we evaluate the final checkpoint.
+This common budget does not imply the same training stage at each size.
 Loss is next-token cross-entropy (lower is better), measured with $\Smodel$
 over all 338 complete 2,048-token blocks from 500 validation documents;
 the 1,444-token tail is excluded. Appendix~\ref{app:training-protocol}
@@ -26,18 +27,19 @@ Within each size, paired conditions share initialization, data order and
 budget; reused controls are not independent replications. Pressure on/off
 contrasts hold nonlinearities and threshold fixed. Unpressured A7 versus A4
 adds symmetric $q,k,v$ thresholding; A7-OL1 versus A4-OL1 changes complete
-recipes, including pressure normalization. A4 versus A1-H also changes
+recipes, including the target-gradient mixture and cap-dependent scale. A4 versus A1-H also changes
 $h$'s threshold above zero and its derivative at zero. Local pressure varies
 $\lambda\in\{0.05,0.1,0.5,1\}$; A4/A7 vary
 $\kappa\in\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$;
 all OL1 conditions use trust budget 1. Larger models use A0, A1-H, A4-OL1
 and A7-OL1; Figure~\ref{fig:intervention-ladder} lists all eight recipes.
 
-The evaluation-only reference applies uniform magnitude clipping at
+We also apply post-hoc clipping to fixed trained checkpoints, including
+GELU A0 and ReLU A1-H. This second intervention uses uniform magnitude clipping at
 $a,m,h,z$, calibrated separately per site/layer on ten training blocks,
 for targets $p=0,0.1,\ldots,0.9$. Target $p$ is a quantile, not achieved
 $\Smodel$. This TEAL-style control does not optimize allocation~\citep{liu2024teal}.
-It acts after the trained nonlinearity, preserving A0's GELU, whereas A7
+It acts after the trained nonlinearity, preserving A0's GELU or A1-H's ReLU, whereas A7
 replaces GELU and also thresholds internal attention. Thus the comparison
 changes reach and final transformations as well as intervention timing.
 Appendix~\ref{app:clipping-results} retains all 540 evaluations.

@@ -1,50 +1,52 @@
-% Evidence: Analysis 019 / 02_audit_runtime.py; observations/O002-runtime.md.
-% Original implementation, qualification and compatibility: Runs 022, 025, 029.
+% Evidence: Analysis 019 / 02_audit_runtime.py; Analysis 020 / 03_figures.py.
+% Observations: Analysis 019 O002-runtime.md; Analysis 020 O005-figures.md.
 \subsection{Realizing sparsity with specialized inference kernels}
 \label{sec:kernel-autoresearch}
 
-Released TwELL kernels accelerated their supported workload, but the unchanged
-small-width primitive failed Pythia-14M qualification. Its adapted P0
-descendant qualifies on only four of our 30 checkpoints; the $0.8910\times$
-subset mean is not comparable to a full-cohort mean
-(Appendix~\ref{app:kernel-results}). We use a human-guided coding-agent loop
-and replay 42 eligible proposals against native PyTorch/SDPA CUDA graphs.
-The workload is one RTX5090, BF16, batch one, uncached 2,048-token inference
+Which counted zeros improve full-model latency after separating fusion from
+skipping overhead? We compare specialized kernels with native PyTorch/SDPA
+CUDA graphs on one RTX5090: BF16, batch one, uncached 2,048-token inference
 with full vocabulary logits. Qualification checks logits and loss within
-specified tolerances on all 338 validation blocks. The recorded agent default
-is \emph{gpt-6-astra}; per-request served models and superiority over
-human-only development are unverified.
+specified tolerances on all 338 validation blocks. The selected K050
+qualifies on all 30 checkpoints; Appendix~\ref{app:kernel-results} retains
+the development history, TwELL compatibility and numerical contract.
 
-\begin{figure}[!htbp]
+Speedup is native latency divided by candidate latency in paired timing
+samples. K050 achieves a $1.2340\times$ equal-checkpoint geometric mean;
+the same implementation with all skipping disabled gives $1.1829\times$.
+The ratio of these separately measured native-relative speedups defines
+the sparse-path factor: $1.0432\times$ geometrically, benefiting 14 of 30
+checkpoints. At the fixed A7-OL1, $\kappa=0.5$ search checkpoint, the
+retrospective reaches $1.7830\times$ over native and sparse paths add
+$1.311\times$ over the matched control. This factor is not a direct paired
+latency ratio between implementations; Appendix~\ref{app:runtime-sensitivity}
+retains the separate final sweep and descriptive association checks.
+
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/07-kernel-attribution.pdf}
-\caption{\textbf{Fusion gains and a conditional contribution from sparse execution.}
-(a) Equal-checkpoint geometric mean native-relative speedups over all 30
-14M checkpoints. (b) K050's speedup divided by all-skips-off's; values above
-one favor sparse paths. The circle marks the search checkpoint; the dashed
-line is descriptive OLS. Timings use the BF16 workload above, while the
-horizontal axis uses canonical FP16 counts. Axes are restricted; neither the
-fit nor same-checkpoint ratios establish a quality-matched model advantage.}
+\includegraphics[width=\linewidth]{figures/07-v2-kernel-quality-latency.pdf}
+\caption{\textbf{More sparsity need not select a better quality--latency point.}
+(a) All 30 checkpoints' native BF16 reference loss and absolute latency, paired across K050
+and its all-skips-off control. Labeled A4/A7 endpoints are unpressured,
+at $\kappa=0.5$. (b) Sparse-path factor versus canonical FP16 $\Smodel$;
+the reference line marks one and the ring marks the search checkpoint.
+The dashed OLS fit is descriptive. BF16 timing/quality and FP16 counts are
+distinct measurements; connections pair implementations on the same weights.}
 \label{fig:kernel-autoresearch}
 \end{figure}
 
-Selected K050 qualifies on all 30 checkpoints, with geometric mean
-native-relative speedup $1.2340\times$. Its search retrospective reaches
-$1.7830\times$ at the fixed A7-OL1, $\kappa=0.5$ checkpoint; Appendix~\ref{app:kernel-results}
-retains the history and distinguishes the final-sweep maximum.
-Fusion alone gives $1.1829\times$ (Figure~\ref{fig:kernel-autoresearch}).
-Relative to that matched all-skips-off control, sparse paths add
-$1.311\times$ at the search checkpoint and $1.043\times$ geometrically,
-helping 14 of 30 checkpoints. These factors derive from separately measured
-native-normalized timings. Their association with canonical FP16 sparsity
-is weaker than native-relative speedup's ($R^2=0.5037$ versus $0.8167$);
-Appendix~\ref{app:runtime-sensitivity} retains all descriptive sensitivity
-checks and absolute latencies. BF16 timing and FP16 counts remain distinct.
+For example, unpressured A4 and A7 at $\kappa=0.5$ have specialized
+latencies of 0.4790 and 0.4789\,ms, but BF16 losses of 5.6623 and 5.7076.
+A7 has more counted zeros and a larger native-relative speedup, yet the
+absolute latencies are almost identical and its loss is higher. Different
+native baselines can enlarge a normalized speedup without identifying a
+better intervention on the quality--latency plane.
 
-Disabling attention skipping improves every checkpoint, raising the mean to
-$1.2506\times$. The kernel skips an instruction when either complete operand
-fragment is zero. It bypasses $58.0\%$ of eligible $QK$ and $67.2\%$ of
-$PV$ instructions at the search checkpoint, yet runs slower than the dense
-attention ablation. Partial zeros can still require an instruction, while
-detection and control cost time. Scalar zero opportunity alone therefore
-does not identify profitable execution.
+Disabling attention skipping improves every checkpoint, raising the
+native-relative geometric mean to $1.2506\times$. K050 bypasses an
+instruction when either complete operand fragment is zero; at the search
+checkpoint it skips $58.0\%$ of eligible $QK$ and $67.2\%$ of $PV$
+instructions, yet is slower than dense attention. Partial zeros can still
+require the instruction, while detection and control cost time. Architectural
+reach justifies investigating attention; profitable execution additionally
+depends on fragment granularity, shape and overhead in this workload.

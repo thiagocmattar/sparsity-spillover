@@ -18,17 +18,17 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | R01 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
 | R02 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
 | R03 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
-| G01 | TODO | See task.md |
-| G02 | TODO | See task.md |
-| V01 | TODO | See task.md |
-| V02 | TODO | See task.md |
-| V03 | TODO | See task.md |
-| W01 | TODO | See task.md |
-| W02 | TODO | See task.md |
-| W03 | TODO | See task.md |
-| W04 | TODO | See task.md |
-| W05 | TODO | See task.md |
-| W06 | TODO | See task.md |
+| G01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| G02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| V01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| V02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| V03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W04 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W05 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| W06 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
 | W07 | TODO | See task.md |
 | W08 | TODO | See task.md |
 | W09 | TODO | See task.md |
@@ -41,5 +41,5 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | E03 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 | E04 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 
-Next batch: T01-T02/A01; cross-size and dynamics reductions follow.
+Next batch: W07-W10 framing; Q01-Q03 final verification and nine-page layout.
 Historical revision/ records describe the prior completed rewrite; revision-v2/ owns this task.

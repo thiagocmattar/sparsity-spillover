@@ -13,23 +13,13 @@ loss 5.8294, or $+0.6208$ over A0. Its $29.952\%$ architectural reach also
 exceeds the four-site clipping reference's $12.833\%$; the comparison
 changes both the representation and affected computation.
 
-Retrospective quality budgets change which endpoint is preferable
-(Table~\ref{tab:quality-budgets}). Under a $+0.05$ same-size A0 loss allowance,
-the greatest observed sparsities are $6.490\%$, $7.410\%$ and $14.883\%$.
-All use post-hoc clipping, including a pressure-trained checkpoint at 14M.
-No sparsified training recipe at 70M or 410M meets the two smallest budgets.
-These are evaluated points, without interpolation or matched latency
-measurements for the clipped winners.
-
-\begin{table}[tbp]
-\centering\footnotesize\setlength{\tabcolsep}{3pt}
-\caption{Maximum observed sparsity under same-size A0 loss plus the stated
-budget, across 54 trained and 540 clipped evaluations. Trained excludes A0;
-``none'' means no eligible sparse recipe. Budgets are retrospective;
-identical winners are grouped. Clipped winners have no measured latency.}
-\label{tab:quality-budgets}
-\input{tables/quality-budgets}
-\end{table}
+The learned representation also changes the response to later clipping.
+At 14M and matched target $p=0.6$, ReLU-pretrained A1-H plus clipping reaches
+$7.893\%$ sparsity at loss 6.5215, versus A0 clipping's $7.764\%$ at 6.8212
+(a 0.129 pp sparsity mismatch). Relative to each measured $p=0$,
+clipping adds 1.2518 versus 1.6126 loss. This benefit overcomes ReLU's
+initial $+0.0611$ loss cost here; it does not do so at every target.
+Figure~\ref{fig:scale-transfer} shows the cross-size comparison.
 
 \begin{figure}[tbp]
 \centering
@@ -59,9 +49,11 @@ sparsity at increasing quality cost: 2.498 pp for $+0.3783$ loss at
 $\kappa=0.5$. The corresponding A7 addition yields 12.096 pp for $+0.1265$;
 at $\kappa=0.1$ it yields 1.372 pp for $+0.0008$, which does not establish
 loss equivalence. Without pressure, A7 minus A4 at $\kappa=0.5$ adds
-5.171 pp for $+0.0432$ loss. The larger pressured gain under A7 involves
-more targets and reweighted existing terms: it cannot be assigned solely
-to broader thresholding or pressure at $q,k,v$.
+5.171 pp for $+0.0432$ loss. The larger pressured gain under A7 changes
+the target-gradient mixture and, outside saturation, its scale; it cannot
+be assigned solely to broader thresholding. A separate historical comparison
+of A4 with pressure at $h$ only (Appendix~\ref{app:pressure-targets}) further
+motivates separating pressure placement from threshold placement.
 
 \begin{figure}[tbp]
 \centering
@@ -91,10 +83,15 @@ Appendix~\ref{app:density-results} retains all thresholds and tails.
 Operation counts explain the ranking reversal (Table~\ref{tab:operation-summary}).
 A7-OL1's $QK+PV$ contribution rises by 16.72 pp while its projection
 contribution falls by 1.95 pp, producing greater model-wide sparsity despite
-fewer FFN zeros. Separate BF16 projection-input row diagnostics in
-Appendix~\ref{app:projection-inputs} do not establish residual-branch
-inactivity or context insensitivity: biases may remain and token identities
-were not retained.
+fewer FFN zeros. Reach identifies which work can be affected;
+the measured counts establish how much has zero operands. Local FFN
+sparsity alone therefore reverses the complete recipes' apparent ranking.
+
+In separate BF16 diagnostics, entire $z$ rows are zero on $97.15\%$ of
+rows for A4-OL1 and $91.20\%$ for A7-OL1. On those rows the output projection
+returns its bias, if present. This does not zero the residual stream;
+whether the remaining branch contributions retain meaningful context
+dependence is an open question (Appendix~\ref{app:projection-inputs}).
 
 \begin{table}[tbp]
 \centering\small
@@ -122,27 +119,51 @@ Appendix~\ref{app:density-results}.}
 \subsection{Transfer across model sizes}
 \label{sec:scale-results}
 
-At $\kappa=0.5$, A7-OL1 improves both loss and model-wide sparsity over
-A4-OL1 at all three sizes (Table~\ref{tab:cross-scale-recipe-contrasts}).
-At zero threshold, A4-OL1 is better at 14M and 70M, while A7-OL1 is better
-at 410M. This transfers a complete-recipe relationship, not every threshold
-effect: larger cohorts lack no-pressure A4/A7 controls, share tokens rather
-than tokens per parameter, and use a lower learning rate at 410M.
+The high-threshold recipe relationship recurs beyond 14M
+(Figure~\ref{fig:scale-transfer}). At $\kappa=0.5$, A7-OL1 improves over
+A4-OL1 by 0.2086, 0.1736 and 0.0703 loss and by 14.769, 5.006 and
+9.024 sparsity pp at 14M, 70M and 410M. At zero threshold, A4-OL1 is
+better on both axes at 14M/70M, while A7-OL1 is better at 410M.
+Larger cohorts test complete recipes; they lack no-pressure A4/A7 controls.
 
-A7 reach rises from $29.95\%$ to $49.42\%$ and $87.25\%$ as the dense
-head's share of counted work falls. Figure~\ref{fig:scale-transfer} therefore
-also reports block-only sparsity $\Sblock=\Smodel/\Rarch(\mathrm{A7})$,
-using the same A7 reference for every curve within a size. This removes
-head share but retains differing block-operation weights; it is not a
-quality scaling law. Trained endpoints improve on uniform A0 clipping
-at aggressive $p\geq0.5$ targets at all sizes, including a check beyond
-observed $p=0$ numerical drift (Appendix~\ref{app:clipping-results}).
+A7-OL1 at $\kappa=0.5$ reaches $27.483\%$, $40.602\%$ and $80.616\%$
+model-wide sparsity against A7 reaches of $29.952\%$, $49.424\%$ and
+$87.245\%$. Part of this increase is architectural: the dense head's
+share falls, and the block-operation mix changes. The normalized row divides
+every curve by its size's common A7 reach, giving $\Sblock$; this removes
+head share while retaining differences in block-operation weights.
 
-\begin{table}[tbp]
-\centering\small
-\caption{A7-OL1 minus A4-OL1 at matched size and threshold.
-Negative loss and positive sparsity changes favor A7-OL1. These are
-complete-recipe contrasts; Table~\ref{tab:scale-pairs-full} retains all thresholds.}
-\label{tab:cross-scale-recipe-contrasts}
-\input{tables/scale-contrasts-compact}
-\end{table}
+ReLU pretraining followed by clipping also has a recurring favorable
+region: at $p=0.5$, A1-H has lower loss and higher sparsity than A0 clipping
+at every size. ReLU's initial loss costs are $+0.0611$, $+0.1230$ and
+$+0.1038$, yet its incremental clipping damage is smaller at all positive
+tested targets. Total loss still favors A0 at $p\leq0.3$ and returns to
+favor A0 at $p=0.9$ for 14M and $p\geq0.8$ for 410M. ReLU's starting
+zeros and the added four-site reach are distinct from sensitivity to
+removing further values; a matched quantile is not matched achieved sparsity.
+
+Absolute quality and dense-relative penalty follow different patterns.
+A0 loss falls from 5.2086 to 4.0998, then rises to 4.5475 at 410M;
+high-threshold A7-OL1 instead improves from 5.8294 to 5.2159 to 5.1207.
+Its penalties over A0 are consequently $+0.6208$, $+1.1162$ and $+0.5732$.
+The 14M/70M peak learning rates agree; 410M uses a lower rate and far fewer
+tokens per parameter. Retained 410M A0 loss continues improving in the final
+20\% of training, with median pre-clipping task norm 0.850 versus
+0.317/0.295 at 14M/70M (Appendix~\ref{app:training-dynamics}). This supports
+investigating a finite-budget explanation, without establishing its cause.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/03-v4-cross-size-interventions.pdf}
+\caption{\textbf{High-threshold A7-OL1 improves both axes over A4-OL1 at every size.}
+Columns compare 14M, 70M and 410M; rows show absolute loss versus
+$\Smodel$ and loss minus same-size A0 versus $\Sblock$.
+Filled colored paths connect five separately trained thresholds; rings mark
+$\kappa=0.5$. Open paths follow ten post-hoc targets on fixed GELU A0 or
+ReLU A1-H checkpoints; filled gray markers show their unmodified endpoints.
+There are 96 distinct evaluations, repeated across rows. Dashed guides show
+A4/clipping and A7 reach. Top panels omit 6/3/5 high-loss clipping points;
+bottom panels omit 6/5/6. Appendix~\ref{app:scale-curves} retains all ranges.
+The token budget is common, with a lower learning rate at 410M.}
+\label{fig:scale-transfer}
+\end{figure}

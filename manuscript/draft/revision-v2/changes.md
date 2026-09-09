@@ -42,3 +42,19 @@ the unchanged54/540 source study. Script02 verifies source/checkpoint hashes
 and integer-count identities. The expanded figure selects96 of these records.
 No result text is changed in this batch; the build incorporates prior method edits.
 Next: place the restored visual, dynamics audit and rewritten result paragraphs.
+
+## Batch 4: cross-size/dynamics visuals and result exposition
+
+V01 restores the96-evaluation cross-size figure to main text,adding A1-H
+clipping with actual inference reach and counted omissions/full-range appendix.
+V02 replaces Cohort means with BF16 reference quality versus absolute latency;
+V03 moves the retrospective budget table to the appendix and removes the
+boundary table from main (all15 contrasts remain). G01-G02 add raw nine-curve
+trajectories,predeclared late-window summaries and conditional budget wording.
+W01-W06 revise setup,quality,paired/distribution/cross-size/runtime explanations.
+The historical h-only comparison now has its own pressure-target subsection.
+Runtime ratio wording is corrected to native/K050 latency after script inspection.
+All numeric geometry derives from audited files; no original measurement changes.
+Figure-level renders were inspected; an overlapping runtime note was repositioned.
+Build:batch4-*.log,34 pages,no undefined references/overfull boxes;main currently
+spills a short conclusion paragraph onto page10, to be resolved by W07-W10/Q02.
