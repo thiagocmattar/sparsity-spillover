@@ -84,7 +84,7 @@ for each recipe. This common normalization equals $\Sblock$.
 \label{app:density-results}
 
 The seven frozen-checkpoint evaluations underlying
-Figure~\ref{fig:activation-reshaping} record signed values after the trained
+Figure~\ref{fig:activation-reshaping-full} record signed values after the trained
 nonlinearities, with Q/K measured after RoPE. Each checkpoint contributes
 2,658,140,160 FFN elements and 1,594,884,096 attention elements across the
 complete validation set. Summing integer counts gives the 80:20 weighting
@@ -123,7 +123,25 @@ come from seven checkpoints.}
 \input{tables/density-mass}
 \end{table}
 
-\FloatBarrier
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/05-v4-activation-density-grid.pdf}
+\caption{\textbf{Interventions reshape FFN and attention distributions differently.}
+\textbf{Exact zeros are reported above each panel and excluded from the
+nonzero curves.} Columns pool FFN $(h,m)$ and attention
+$(q,k,v)$ activations; rows use trained thresholds $\kappa=0,0.05,0.5$.
+A0 is repeated across rows. Counts are pooled across all layers and validation
+blocks, weighting $h:m$ by 80:20 and $q:k:v$ equally. Density divides nonzero
+bin counts by all captured elements and bin width, without renormalizing
+the visible range. The vertical scale is symlog, linear below 0.01 and
+logarithmic above it; plotted areas do not represent probability mass. Dotted lines mark
+$+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
+Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
+A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
+\label{fig:activation-reshaping-full}
+\end{figure}
+
 \subsection{Projection-input vectors in the BF16 kernel diagnostic}
 \label{app:projection-inputs}
 % Analysis 019 / 02_audit_runtime.py and observations/O002-runtime.md;
@@ -136,11 +154,13 @@ histogram reruns above. Every layer contributes 692,224 rows; $h$ has 512
 coordinates per row and $z$ has 128. Table~\ref{tab:projection-input-rows}
 reports the two $\kappa=0.5$ pressured recipes. Summing the row histograms
 recovers the captured sitewise zero counts. Pooling rows across layers gives
-the all-zero-vector rates reported in Section~\ref{sec:activation-reshaping}.
+the all-zero-vector rates reported below.
 The records do not retain token identities or context perturbations, and
 zero projection inputs can still produce bias outputs. They therefore do
 not establish whether a branch has lost its function.
 
+At $\kappa=0.5$, pooling all layers gives all-zero $h/z$ row fractions
+of $83.72\%/97.15\%$ for A4-OL1 and $63.12\%/91.20\%$ for A7-OL1.
 \begin{table}[htbp]
 \centering\small\setlength{\tabcolsep}{4pt}
 \caption{Entirely zero projection-input rows and mean nonzero coordinates
@@ -151,7 +171,38 @@ untimed K050 diagnostic; they are not the pooled FP16 $h,m$ histograms.}
 \input{tables/projection-input-rows}
 \end{table}
 
+\clearpage
+\subsection{Complete cross-size curves and normalization}
+\label{app:scale-curves}
+
+Figure~\ref{fig:scale-transfer} retains all selected A4-OL1/A7-OL1 thresholds
+and A0 clipping evaluations at every size, including unfavorable settings.
+The common A7 reach denominator equals the block-only normalization for
+this graph; it removes dense-head share, not changes in block-operation weights.
+The higher 410M A0 loss than 70M's under the shared token budget is retained.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/03-scale-transfer-and-reach.pdf}
+\caption{\textbf{The high-threshold A7-OL1 advantage persists across model sizes.} Columns compare
+14M, 70M and 410M. Solid curves connect separately trained A4-OL1 and A7-OL1
+checkpoints at $\kappa=0,0.01,0.05,0.1,0.5$; dotted open-marker curves show
+A0 post-hoc clipping at $a,m,h,z$ for targets $p=0,0.1,\ldots,0.9$.
+The 60 evaluations appear in both rows. Top: validation loss versus
+$100\mathcal{S}_{\mathrm{model}}$; vertical guides indicate A4/clipping-site
+and A7 architectural reach. Bottom: loss minus unmodified same-size A0
+versus $100\Sblock$, where
+$\Sblock=\Smodel/\Rarch(\mathrm{A7})$ for \textbf{every curve}.
+The A7 reference reach values are 29.95\%, 49.42\% and 87.25\%; the A4 guide is
+not the normalization denominator. At $\kappa=0.5$, A7-OL1 improves both
+axes over A4-OL1 at all sizes; the ordering at smaller thresholds varies.
+Table~\ref{tab:cross-scale-recipe-contrasts} gives the boundary-threshold
+comparisons. These are complete-recipe comparisons with matched token
+budgets, unequal tokens per parameter and a lower 410M learning rate.}
+\label{fig:scale-transfer}
+\end{figure}
 \FloatBarrier
+
 \subsection{Operation contributions to model-wide sparsity}
 \label{app:operation-results}
 

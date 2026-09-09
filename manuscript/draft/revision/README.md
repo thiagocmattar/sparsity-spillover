@@ -23,3 +23,12 @@ rewrite. No experiments are authorized or launched.
 - `change_log.md`: batch changes by runbook task ID.
 - `experiment_decisions.md`: proposed-only follow-up work and outcome rules.
 - `readiness.md`: final criterion-by-criterion assessment and remaining limits.
+
+## Current completion
+
+The author approved the empirical framing and requested immediate condensation.
+All current-results runbook tasks are verified; optional experiments remain deferred.
+The final PDF has eight main-text pages and 28 pages overall. Supporting recipe,
+density and cross-size figures remain in the appendix. The final source hashes,
+clean-build comparison, 61 passing tests and page-by-page review are recorded in
+`verification.json`; B21-B23 in `change_log.md` describe this condensation.

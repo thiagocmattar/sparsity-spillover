@@ -1,11 +1,13 @@
 # Readiness assessment: existing-results rewrite
 
-The reading draft is clearer and better supported, but is **not ready for
-submission**. The current 30-page PDF has main text through page 14; the official
-ICLR 2027 submission limit is nine main-text pages. The author must decide the
-framing and figure budget and review the completeness of the AI use statement.
-The unchanged definition now uses the approved architectural reach / R_arch
-terminology. No new experiment is approved or implied by this assessment.
+The existing-results rewrite and approved condensation are complete. The author
+confirmed the empirical-design framing and the use of bounded uniform clipping as
+supporting evidence. The 28-page PDF has main text on pages 1-8, within the nine-page
+budget, followed by AI disclosure/references on pages 9-10 and appendices on 11-28.
+Official template fonts and margins are unchanged. The approved architectural reach /
+R_arch terminology retains its definition. No new experiment was authorized.
+Scientific limitations remain; completing the rewrite does not settle submission
+judgment or replace the authors' review of disclosure and artifact access.
 
 The scores below are planning judgments under task.md Section 1.3, not acceptance
 probabilities. They are separate assessments and must not be averaged to obscure
@@ -13,13 +15,13 @@ a blocking issue.
 
 | Dimension | Score (0-3) | Assessment and remaining boundary |
 |---|---:|---|
-| Contribution clarity | 2 | Two specific findings connect paired intervention effects to the local-zero/operation/runtime distinction. Author approval of this empirical framing remains open. |
+| Contribution clarity | 2 | Two specific findings connect paired intervention effects to the local-zero/operation/runtime distinction. The author approved this empirical framing. |
 | Comparison validity | 2 | Fixed-recipe pressure contrasts, unpressured placement changes and complete-recipe comparisons are distinguished. Expansion of the pressure objective also changes old coefficients; the missing fixed-weight crossed control remains unresolved. |
 | Repeatability | 1 | Each training condition has one seed. Shared initialization supports pairing, not independent replication. Three timing processes do not establish training variability; tiny loss changes are not equivalence. |
 | Quality and baseline fairness | 2 | High sparsity is paired with its A0 quality cost; retrospective loss budgets disclose clipped winners and absent latency measurements. Uniform four-site clipping is not optimized TEAL or a matched final-transformation adaptation control. A practical-efficiency headline would require stronger evidence. |
 | Runtime attribution | 2 | Native, fusion-only and sparse-path comparisons use verified records; absolute latency and all sensitivity subsets are retained. Attention-dense is faster on every tested checkpoint. One 14M workload and a canonical-FP16/BF16-timing mismatch limit inference. |
 | Scope and transfer | 2 | Larger-size results concern selected complete recipes, common token budgets and a lower 410M learning rate. No cross-size kernel speedup, scaling law or cached-decoding result is inferred. |
-| Insight and readability | 2 | Operation sums explain the ranking reversal; zero masses are visible and runtime attribution replaces search chronology in the main text. All thirty pages were inspected. Main-text length still blocks venue compliance. |
+| Insight and readability | 2 | Operation sums explain the ranking reversal; zero masses are visible and runtime attribution replaces search chronology in the main text. All 28 pages were inspected. Eight main-text pages fit the budget; full supporting figures and tables remain in appendices. |
 
 ## Verified current-results work
 
@@ -32,26 +34,26 @@ visible. Seven signed histograms and separate BF16 h/z row statistics retain
 their actual precision and coverage.
 
 The draft builds in a separate directory without prior LaTeX intermediates.
-All thirty pages match the working PDF in extracted text and rendered pixels.
-Twelve tables and five data PDFs regenerate byte-for-byte; two recipe PDFs
-match in text and pixels despite LaTeX metadata differences. This used the
+All 28 pages match the working PDF in extracted text and rendered pixels.
+Twelve tables and eight data PDFs, including three compact displays, regenerate
+byte-for-byte. The unchanged recipe PDFs retain their prior verified source hashes.
+Compact displays preserve numeric geometry; the full density grid remains available. This used the
 installed environment, not a new environment or a training reproduction.
 All 61 focused scientific/evidence tests pass. Exact hashes and limitations
 are recorded in verification.json and numerical_checks.json.
 
-## Remaining decisions and recommendation
+## Author decisions and remaining submission work
 
-1. Confirm the empirical-design framing and keep the bounded uniform-clipping
-   result as supporting evidence, or request a different headline. Broad
-   post-hoc superiority is not supported by the present comparison.
-2. Choose between retaining this fuller reading draft and condensing the main
-   text to nine pages. The current six main figures are retained pending that
-   choice. The separate optional ladder-to-matrix rename was not approved;
-   the figure explicitly states that its rows are separately pretrained recipes.
-3. Before submission, the authors must verify the AI use statement's completeness
-   and their submission-form disclosure, and arrange any intended anonymous
-   artifact access. No public anonymous release or complete checkpoint bundle
-   is claimed by the current supplement.
+The author confirmed empirical-design framing and requested immediate condensation.
+Both decisions are implemented. Five figures remain in the main text; the full recipe
+composite, density grid and cross-size curves are in the appendix. The optional
+ladder-to-matrix rename was not requested; the figure states that its rows identify
+separately pretrained recipes.
+
+Before submission, the authors should verify the AI use statement's completeness,
+submission-form disclosure and intended anonymous artifact access. No public anonymous
+release or complete checkpoint bundle is claimed by the current supplement. These
+submission actions are separate from the completed existing-results rewrite.
 
 For a stronger empirical case, the first additional investment should be the
 fixed-coefficient controls (M1) and independent seed pairs (M2), with outcomes

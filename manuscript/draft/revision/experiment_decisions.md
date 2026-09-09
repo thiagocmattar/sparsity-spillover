@@ -2,7 +2,8 @@
 
 Mode: **CURRENT_RESULTS_ONLY**. No new experiment is approved, implemented or
 launched by this rewrite. The author has authorized the architectural-reach
-rename; the remaining editorial direction and figure-budget questions are open.
+rename, confirmed empirical-design framing and requested condensation to the
+nine-page main-text budget. These editorial decisions authorize no new experiments.
 The existing-data audits below are complete reductions, not new runs.
 
 Completed: DATA-01 recovers absolute timing and sparse-path attribution;

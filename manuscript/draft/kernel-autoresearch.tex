@@ -1,87 +1,50 @@
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O007-kernel-realization.md
-% Replacement prose for kernel-autoresearch.tex; Analysis 018 O007 and figure_data.json:runtime.
-% Source reduction: evidence.py:runtime_subset; figure: plots.py:kernels.
-% Underlying implementation audit: Run 029 observations/06-implementation-and-claim-audit.md.
-% Argument revision: Analysis 018 observations/O015-threshold-kernel-argument.md.
-% Compatibility evidence: Run 022 README; Run 025 SOURCE_AUDIT.md; Run 029 Observation 04.
-% Recomputed attribution and raw latencies: Analysis 019 / 02_audit_runtime.py,
-% runtime-audit.json; observations/O002-runtime.md.
+% Evidence: Analysis 019 / 02_audit_runtime.py; observations/O002-runtime.md.
+% Original implementation, qualification and compatibility: Runs 022, 025, 029.
 \subsection{Realizing sparsity with specialized inference kernels}
 \label{sec:kernel-autoresearch}
 
-Realizing activation sparsity requires kernels matched to the model's shapes,
-nonlinearities and hardware. The released TwELL kernels~\citep{cetin2026sparser}
-accelerated their supported workload, but the unchanged small-width primitive
-failed numerical qualification for Pythia-14M. A shape- and sign-adapted
-descendant, P0, qualifies on only four of our 30 checkpoints, with geometric
-mean speedup $0.8910\times$ on that subset (Appendix~\ref{app:kernel-results}).
-These are compatibility results for the tested shapes and implementation;
-the four-checkpoint mean is not a fair aggregate comparator for our full cohort.
-
-To make this specialization practical within an architecture study, we use
-a human-guided coding-agent loop to propose, test and refine implementations.
-Execution and profiling feedback provide a basis for this
-approach~\citep{ouyang2025kernelbench,luo2026agentic}.
-We replay 42 eligible proposals from the Codex search against native PyTorch
-scaled dot-product attention (SDPA) in CUDA graphs on one RTX5090.
-The workload is BF16, batch-one, uncached 2,048-token inference with full
-vocabulary logits. Qualification requires logits and loss to agree with the
-native reference within specified tolerances on complete validation.
-The recorded agent default is \emph{gpt-6-astra}, without a verified served
-model for every request; this single trajectory does not measure agent
-productivity against human-only development.
-
-The selected implementation K050 qualifies on all 30 checkpoints in the
-14M cohort, with geometric mean native-relative speedup $1.2340\times$.
-The matched search retrospective reaches $1.7830\times$ on its fixed
-A7-OL1, $\kappa=0.5$ checkpoint; Appendix~\ref{app:kernel-results}
-retains the search history. Across the final cohort, canonical FP16
-model-wide sparsity is associated with BF16 native-relative speedup
-(descriptive OLS $R^2=0.8167$). Topology, weights, quality and execution
-overhead vary across these checkpoints, so this association alone cannot
-attribute the gain to skipping zero products.
-
-Ablations distinguish fusion from the contribution of sparse paths.
-With all sparse paths disabled, the fused implementation already achieves
-$1.1829\times$ geometric mean speedup over native execution
-(Figure~\ref{fig:kernel-autoresearch}). Relative to this control, K050 is
-$1.311\times$ as fast at the search checkpoint and $1.043\times$ as fast
-geometrically across the cohort, helping 14 of 30 checkpoints.
-These incremental factors derive from separately measured native-relative
-timings; they do not credit fusion as a sparsity gain.
-
-Attention skipping is unprofitable in this workload:
-disabling it improves every checkpoint, raising the mean to $1.2506\times$.
-The attention kernel can skip a matrix-multiply instruction when either
-complete operand fragment is zero. At the search checkpoint, it bypasses
-$58.0\%$ of eligible $QK$ and $67.2\%$ of $PV$ instructions, yet remains
-slower than executing those paths densely. Partially zero fragments can
-still require an instruction, and detection and control have a cost.
-Scalar zero opportunity alone is therefore insufficient to select a
-profitable execution path.
-
-The incremental sparse-path factor has a weaker association with canonical
-FP16 sparsity than native-relative speedup does ($R^2=0.5037$ versus
-$0.8167$). Removing the searched checkpoint gives $R^2=0.4080$ for the
-incremental factor; removing its entire A7-OL1 family gives $0.4910$.
-Appendix~\ref{app:runtime-sensitivity} reports all leave-family and
-within-family checks. These descriptive comparisons retain the FP16/BF16
-mismatch and are not prospective prediction tests.
+Released TwELL kernels accelerated their supported workload, but the unchanged
+small-width primitive failed Pythia-14M qualification. Its adapted P0
+descendant qualifies on only four of our 30 checkpoints; the $0.8910\times$
+subset mean is not comparable to a full-cohort mean
+(Appendix~\ref{app:kernel-results}). We use a human-guided coding-agent loop
+and replay 42 eligible proposals against native PyTorch/SDPA CUDA graphs.
+The workload is one RTX5090, BF16, batch one, uncached 2,048-token inference
+with full vocabulary logits. Qualification checks logits and loss within
+specified tolerances on all 338 validation blocks. The recorded agent default
+is \emph{gpt-6-astra}; per-request served models and superiority over
+human-only development are unverified.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/07-kernel-attribution.pdf}
-\caption{\textbf{Fusion gains coexist with conditional benefit from sparse paths.}
-(a) Equal-checkpoint geometric mean speedups on all 30 Pythia-14M checkpoints,
-each relative to its native SDPA CUDA-graph baseline. Attention-dense execution
-is faster than K050 on every checkpoint. (b) K050's native-relative speedup
-divided by that of all-skips-off; values above one favor sparse execution.
-The circled point is the searched A7-OL1, $\kappa=0.5$ checkpoint. Symbols
-identify recipes; the dashed line is descriptive OLS with an intercept.
-Timings use one RTX5090, BF16, batch one, uncached 2,048-token sequences and
-full vocabulary logits; qualification covers all 338 validation blocks.
-The horizontal axis uses canonical FP16 counts. Axes have restricted ranges;
-neither the fit nor these ratios imply a causal or general scaling law.}
+\caption{\textbf{Fusion gains and a conditional contribution from sparse execution.}
+(a) Equal-checkpoint geometric mean native-relative speedups over all 30
+14M checkpoints. (b) K050's speedup divided by all-skips-off's; values above
+one favor sparse paths. The circle marks the search checkpoint; the dashed
+line is descriptive OLS. Timings use the BF16 workload above, while the
+horizontal axis uses canonical FP16 counts. Axes are restricted; neither the
+fit nor same-checkpoint ratios establish a quality-matched model advantage.}
 \label{fig:kernel-autoresearch}
 \end{figure}
-\FloatBarrier
+
+Selected K050 qualifies on all 30 checkpoints, with geometric mean
+native-relative speedup $1.2340\times$. Its search retrospective reaches
+$1.7830\times$ at the fixed A7-OL1, $\kappa=0.5$ checkpoint; Appendix~\ref{app:kernel-results}
+retains the history and distinguishes the final-sweep maximum.
+Fusion alone gives $1.1829\times$ (Figure~\ref{fig:kernel-autoresearch}).
+Relative to that matched all-skips-off control, sparse paths add
+$1.311\times$ at the search checkpoint and $1.043\times$ geometrically,
+helping 14 of 30 checkpoints. These factors derive from separately measured
+native-normalized timings. Their association with canonical FP16 sparsity
+is weaker than native-relative speedup's ($R^2=0.5037$ versus $0.8167$);
+Appendix~\ref{app:runtime-sensitivity} retains all descriptive sensitivity
+checks and absolute latencies. BF16 timing and FP16 counts remain distinct.
+
+Disabling attention skipping improves every checkpoint, raising the mean to
+$1.2506\times$. The kernel skips an instruction when either complete operand
+fragment is zero. It bypasses $58.0\%$ of eligible $QK$ and $67.2\%$ of
+$PV$ instructions at the search checkpoint, yet runs slower than the dense
+attention ablation. Partial zeros can still require an instruction, while
+detection and control cost time. Scalar zero opportunity alone therefore
+does not identify profitable execution.

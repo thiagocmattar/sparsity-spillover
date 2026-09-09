@@ -120,3 +120,40 @@ requirement. Corrected six dash-to-question-mark encoding defects in the current
 READMEs and readiness rubric using ASCII punctuation. The manuscript PDF, TeX,
 measurements and generated figures/tables are unchanged. Framing and page-budget
 choices remain awaiting the author; no new experimental work is authorized.
+
+## B21: PREP-07 and approved main-text condensation
+
+The author answered "1. Ok; 2. condense now": empirical-design framing is approved,
+with bounded uniform clipping as supporting evidence, and the main text is condensed
+immediately. This supersedes B19/B20's pending editorial choices. No experiments are
+approved. Main prose was shortened around conditional pressure effects, quality
+budgets, operation accounting, selected size transfer and measured runtime attribution.
+Numerical comparisons retain their references and scientific limitations.
+
+## B22: VIS/FIG and appendix retention
+
+The main architecture diagram uses the unchanged retained panel. The full recipe
+composite moves to Appendix C.1, the full six-panel distribution grid to D.1, and
+complete cross-size curves to D.3. The high-threshold density comparison remains in
+the main text; the BF16 h/z row details remain in D.2. Script 07 makes compact overview,
+paired-effect and density PDFs, asserting unchanged numeric axes and plotted geometry.
+All 54 endpoints, 29 paired contrasts, 15 scale pairs, 540 clipping evaluations and
+30-checkpoint runtime summaries remain accessible. O005 records the new display scope.
+
+## B23: final QA and provenance after condensation
+
+Main text is eight pages, down from fourteen, with five figures and three tables.
+The complete PDF is 28 pages; AI disclosure/references occupy 9-10 and appendices
+11-28. All 13 figures and 14 numbered tables were inspected on the final pages.
+The clean-directory build matches all 28 pages in text and pixels. Twelve table
+fragments and eight data PDFs regenerate byte-for-byte, and all 61 focused tests
+pass. All 63 labels and 15 citations resolve; no overfull boxes remain. The official
+styles and bibliography are byte-unchanged. Some template vertical stretching remains.
+
+Verified copy inventories contain 19 PDF assets, 12 table fragments and 17 supplemental
+measurement files. Six Analysis 018 manuscript context hashes were refreshed; every
+scientific field remains unchanged. Original runs, measured data, experimental code,
+old figure assets and historical manuscript versions were not modified. The small
+operation-difference summary rounds existing values to +16.72 attention pp and -1.95
+projection pp. PREP-07 and all current-results tasks are DONE_VERIFIED; optional
+experiment tasks remain deferred. Source and PDF hashes are in verification.json.

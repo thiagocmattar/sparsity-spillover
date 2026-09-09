@@ -13,12 +13,14 @@ rankings obtained from local zeros, operation-weighted counts and execution.
 The user approved **architectural reach**, `R_arch`, as the name and symbol for
 the existing analytic quantity. Stored scientific identifiers remain unchanged.
 
-[main.pdf](main.pdf) has 30 pages: main text on pages 1-14, the AI use statement
-and references starting on page 14, and appendices on pages 16-30. It contains
-six main figures, five appendix figures and fourteen numbered tables. It is a
-reading draft, not a page-limit-compliant submission: shortening to the official
-nine-page main-text limit and the author's framing/figure-budget decisions remain
-open. The authors should also check the completeness of [ai-use.tex](ai-use.tex).
+The author approved the empirical-design framing and requested condensation.
+[main.pdf](main.pdf) now has 28 pages: main text on pages 1-8, the AI use statement
+and references on pages 9-10, and appendices on pages 11-28. Its five main figures,
+eight appendix figures and fourteen numbered tables preserve the complete results.
+The main text fits the nine-page budget without changing template fonts or margins.
+The full recipe diagram, distribution grid and cross-size curves are in the appendix;
+compact main figures preserve plotted values. The authors should check the
+completeness of [ai-use.tex](ai-use.tex) before submission.
 
 The [revision record](revision/README.md) contains the paragraph map, batch log,
 claim ledger, numerical checks, author decisions and readiness assessment.
@@ -64,7 +66,7 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 All active figure PDFs, table inputs, bibliography and official styles are
 included. The revision's [verification](revision/verification.json) records the
 clean-directory build, page comparison, figure/table regeneration, scientific
-checks and source-copy hashes. The final thirty pages were visually inspected;
+checks and source-copy hashes. The final 28 pages were visually inspected;
 minor underfull vertical boxes retain the official page-stretching behavior.
 
 ## Retained history

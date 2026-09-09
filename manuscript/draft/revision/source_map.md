@@ -3,7 +3,7 @@
 All paths are repository-relative. AVAILABLE means the file exists and its
 structure has been inspected; detailed numerical/source-hash verification is
 recorded separately in the numerical ledger. The untouched baseline compilation matched all 27 source-PDF pages in text and
-rendered pixels. The revised 30-page verification is in verification.json.
+rendered pixels. The condensed 28-page verification is in verification.json.
 
 ## Authoring sources
 
@@ -13,7 +13,7 @@ rendered pixels. The revised 30-page verification is in verification.json.
 | Main prose | `abstract.tex`, `introduction.tex`, `related-work.tex`, `methodology.tex`, `experimental-study.tex`, `training-results.tex`, `kernel-autoresearch.tex`, `conclusion.tex` under `manuscript/draft/` | AVAILABLE; paragraph map records 45 RW tasks |
 | Appendices | `methodology-appendix.tex`, `experimental-appendix.tex`, `results-appendix.tex` under the draft | AVAILABLE |
 | Bibliography | `manuscript/draft/references.bib` | AVAILABLE; 15 resolved citations in baseline |
-| Figure copies/provenance | `manuscript/draft/figures/`, `figures/SOURCES.json` | AVAILABLE; 15 retained PDFs, 11 embedded in the revised draft |
+| Figure copies/provenance | `manuscript/draft/figures/`, `figures/SOURCES.json` | AVAILABLE; 19 retained PDFs, 13 embedded in the revised draft |
 | Table fragments | `manuscript/draft/tables/`, `tables/SOURCES.json` | AVAILABLE; twelve generated fragments in the revised draft |
 | Supporting records | `manuscript/draft/supplementary-data/` and `SOURCES.json` | AVAILABLE; 14 original measurement copies, three audit summaries and protocol |
 
@@ -21,12 +21,12 @@ rendered pixels. The revised 30-page verification is in verification.json.
 
 | Manuscript visual | Original generator / source | Revised owner |
 |---|---|---|
-| Figure 1 architecture/recipe map | `manuscript/artifacts/pythia-architecture-map.tex`, `sparsification-ladder.tex`, `pythia-architecture-sparsification-ladder.tex` | Analysis 019; preserve graph and analytic counts |
+| Figure 1 architecture map; full recipe composite in appendix | `manuscript/artifacts/pythia-architecture-map.tex`, `sparsification-ladder.tex`, `pythia-architecture-sparsification-ladder.tex` | Analysis 019; preserve graph and analytic counts |
 | Figure 2 14M overview | `analyses/018-2026-09-08-results-materials/04_overview_v2.py` | Analysis 019 |
-| Figure 3 paired effects | Analysis 018 `plots.py:effects` | Retain original points; review caption |
-| Figure 4 distributions | Analysis 018 `02_activation_density_v3.py` | Analysis 019; add measured zero masses |
-| Figure 5 scale comparison | Analysis 018 `plots.py:scaling` | Analysis 019; unchanged common A7 denominator |
-| Figure 6 runtime | Analysis 018 `plots.py:kernels`; Run 029 `18_paper_summary.py` | Analysis 019; promote attribution |
+| Figure 3 paired effects | Analysis 018 `plots.py:effects` | Analysis 019 script 07; unchanged points in compact layout |
+| Figure 4 distributions | Analysis 018 `02_activation_density_v3.py` | Analysis 019; script 07 selects high-threshold panels, full grid retained |
+| Appendix full scale comparison | Analysis 018 `plots.py:scaling` | Analysis 019; unchanged common A7 denominator |
+| Figure 5 runtime | Analysis 018 `plots.py:kernels`; Run 029 `18_paper_summary.py` | Analysis 019; promote attribution |
 | Appendix operation breakdown | Analysis 018 `plots.py:operations` | Retain full three-size view; compact main-text comparison |
 | Appendix complete clipping | `runs/030-2026-09-08-all-models-posthoc-clipping/` figure scripts and PDFs | Retain all 540 coordinates |
 | Existing numerical tables | Analysis 018 `03_manuscript_tables.py` | Preserve numerical rows; add separate derived summaries |
@@ -49,5 +49,7 @@ rendered pixels. The revised 30-page verification is in verification.json.
 ## Presentation decisions
 
 The author approved architectural reach and R_arch, with unchanged mathematics.
-Framing/headline and figure-budget decisions are pending. New experiments remain
-unapproved; optional M/H tasks are deferred rather than represented as findings.
+The author confirmed empirical-design framing and requested condensation. Main
+text now spans eight pages, with five figures; supporting detail is in the appendix.
+Script 07 creates compact displays without changing coordinates. New experiments
+remain unapproved; optional M/H tasks are deferred rather than represented as findings.

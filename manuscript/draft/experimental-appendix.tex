@@ -11,8 +11,23 @@ For batch size $B$, sequence length $T$, residual width $d$, FFN width $d_f$,
 and $H$ heads, let $d_h=d/H$. Table~\ref{tab:sites} identifies the actual
 operands recorded after the selected nonlinearity. The same site mapping is applied
 in every layer, with one common threshold per condition.
-Figure~\ref{fig:intervention-ladder} in Section~\ref{sec:experiments} shows the
-shared block and its recipe and pressure assignments.
+Figure~\ref{fig:architecture-sites} shows the shared block;
+Figure~\ref{fig:intervention-ladder} below retains all recipe, pressure and reach assignments.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/pythia-architecture-sparsification-ladder.pdf}
+\caption{\textbf{Pythia architecture and sparsification recipes.}
+Top: the shared block and activation sites; $q,k$ follow RoPE and $z$ precedes
+the attention-output projection. Bottom: nonlinearity placement, pressure and
+architectural reach for the eight recipes. Selected nonlinearities
+replace GELU at $h$ and act on existing activations elsewhere. L1N denotes
+naive L1; pressure targets every site with a selected nonlinearity in its row.
+The reach columns report $100\Rarch\%$ for $T=2{,}048$, rather than measured
+sparsity or speedup. All recipes are evaluated at 14M; 70M and 410M use A0,
+A1-H, A4-OL1 and A7-OL1. Rows identify separately trained recipes, not curriculum stages.}
+\label{fig:intervention-ladder}
+\end{figure}
 
 \begin{table}[ht]
 \centering\small
@@ -44,7 +59,6 @@ Query and key counts use actual
 post-RoPE operands: rotation can repopulate an individual zero coordinate.
 Likewise, the output projection uses actual post-nonlinearity context $z$, rather than
 inferring its zeros from the value mask.
-\FloatBarrier
 \subsection{Architecture-specific counts and architectural reach}
 \label{app:architecture-counts}
 

@@ -1,5 +1,11 @@
 # Frozen paragraph-anchor map
 
+This map preserves the original runbook anchors used for the first rewrite. The
+author-approved condensation merges those paragraphs; B21-B23 in `change_log.md`
+and the current section files record the final organization. Scientific claims
+retain their source boundaries in `claim_ledger.md` and TeX evidence comments.
+
+
 Source: Git `1e14471bd4763dbfef84a162d4429021d2f7e2e6`. Line numbers locate the original TeX; anchors remain authoritative after reflow. Paragraphs continuing around a figure/page are mapped to their complete source paragraph. The JSON retains the original text.
 
 | Task | File:lines | Heading | Opening anchor / action |

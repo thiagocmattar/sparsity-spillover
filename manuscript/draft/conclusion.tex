@@ -1,38 +1,21 @@
-% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md;
-% canonical sources remain Analysis 018 and the original run records.
+% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md.
 \section{Discussion and conclusion}
 \label{sec:conclusion}
 
-An intervention should be evaluated against the recipe to which it is added.
-In the matched 14M comparisons, pressure can improve both observed loss and
-sparsity at one threshold, then exchange quality for additional zeros at
-another. Broader intervention at internal attention can also increase
-model-wide zero-product counts while reducing pooled FFN sparsity. Assessing
-an addition therefore requires its paired quality change and the operations
-affected, alongside the number of zero activations.
+Pressure's additional value depends on the threshold and target objective:
+it can improve both observed axes at one setting and exchange quality for
+zeros at another. Broader attention intervention can also raise model-wide
+sparsity while reducing pooled FFN sparsity. Recipe comparisons therefore
+require paired quality changes and operation-weighted counts. Selecting a
+model under a loss budget and selecting its execution kernel require further
+comparisons: neither a high sparsity percentage nor a same-checkpoint
+native-relative speedup establishes a quality-matched model advantage.
 
-Recipe comparisons, model selection under a loss budget, and kernel selection
-require different references. The high-threshold seven-site pressured recipe
-improves on its four-site counterpart at all three sizes, yet neither recipe
-supplies the best point under the smallest tested A0-relative loss budgets.
-Similarly, a kernel can accelerate a sparse checkpoint relative to native
-execution while some of its skipping paths make it slower. A favorable paired
-recipe result or a high sparsity percentage alone does not settle the other
-selection decisions.
-
-Architectural reach identifies which products the selected sites can affect;
-actual-operand counts measure zeros in the learned model; kernel instrumentation
-measures skipped instructions; and timing determines whether skipping pays.
-The attention ablation separates these quantities concretely: many eligible
-instructions are skipped, but dense attention is faster on every checkpoint.
-Reporting native, matched-fusion and sparse-path controls is necessary to
-identify where the observed acceleration comes from.
-
-These conclusions concern one-seed MiniPile pretraining at a fixed token
-budget, with a lower learning rate at 410M and selected complete recipes at
-the larger sizes. Uniform four-site clipping is a limited post-hoc comparator.
-Distribution diagnostics cover 14M; the kernel study uses one RTX5090 and
-full-sequence inference, with canonical FP16 counts and BF16 timing. Two
-high-value questions remain: whether the placement relationships replicate
-when existing pressure coefficients are held fixed, and whether the same
-execution trade-off persists at larger widths.
+Architectural reach, observed zero products, skipped instructions and runtime
+are distinct quantities. Here, fusion and sparse paths both contribute, but
+attention skipping loses despite bypassing many instructions. These findings
+concern one-seed MiniPile pretraining, selected larger-size recipes, a limited
+uniform-clipping reference and one 14M kernel workload, with FP16 counts and
+BF16 timing. The next questions are whether the pressure relationships
+replicate with existing coefficients held fixed, and whether the execution
+trade-off persists at larger widths.

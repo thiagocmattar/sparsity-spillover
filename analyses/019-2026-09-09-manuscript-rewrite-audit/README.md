@@ -20,8 +20,10 @@ remain bounded by one training seed, the tested recipes and the stated workloads
   separately compared with corrected Run 015. They remain outside the main
   30-condition cohort; existing per-term pressure coefficients also differ.
 - `tables/`: twelve TeX fragments and their source hashes.
-- `figures/`: five revised data figures and two recipe PDFs. Source hashes are
-  in `figures/SOURCES.json` and `figure-source/SOURCES.json`.
+- `figures/`: five revised data figures, two recipe PDFs and three compact
+  main-text displays of unchanged measurements. Source hashes and geometry
+  checks are in `figures/SOURCES.json`, `figures/CONDENSED-SOURCES.json` and
+  `figure-source/SOURCES.json`.
 - `figure-source/`: revised recipe/composite TeX and the unchanged architecture
   panel needed to compile it without the ignored historical artifacts folder.
 - [observations/INDEX.md](observations/INDEX.md): question, method, coverage,
@@ -38,6 +40,7 @@ numerical records and require no model weights, token caches or GPU inference:
 .venv/Scripts/python.exe analyses/019-2026-09-09-manuscript-rewrite-audit/04_make_tables.py
 .venv/Scripts/python.exe analyses/019-2026-09-09-manuscript-rewrite-audit/05_make_figures.py
 .venv/Scripts/python.exe analyses/019-2026-09-09-manuscript-rewrite-audit/06_make_recipe_figure.py
+.venv/Scripts/python.exe analyses/019-2026-09-09-manuscript-rewrite-audit/07_make_condensed_figures.py
 ```
 
 Keep the repository layout: the generators import Analysis 018's plot/binning
@@ -45,6 +48,10 @@ functions and read its frozen coordinates/table fragments. Density regeneration
 reads `manuscript/draft/supplementary-data/histograms/`. Script 06 writes build
 intermediates under ignored `tmp/rewrite-recipe-build/`. It compiles the retained
 source; original site placement and twelve analytic values are preserved.
+Script 07 preserves every original overview point and paired delta. Its density
+display selects the kappa=0.5 panels; the complete grid remains in the appendix.
+Assertions compare numerical axes, lines, collections and patches before and after
+layout changes. The unchanged architecture panel is copied to the main text.
 The source PDFs/tables are copied into the draft as recorded by its SOURCES files.
 Rebuilding a PDF may change LaTeX metadata without changing text or pixels.
 

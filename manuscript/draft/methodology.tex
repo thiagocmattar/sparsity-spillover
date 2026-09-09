@@ -1,81 +1,53 @@
-% General definitions; study-specific recipes are in experimental-study.tex.
-% Operational provenance: methodology-notes.md. No empirical results.
+% General definitions; unchanged operational contracts: methodology-notes.md.
 \section{Methodology}
 \label{sec:methodology}
 
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
-We study fixed elementwise thresholds that leave the number of surviving
-activations free to vary with the learned representation. Unlike top-$k$
-selection or its statistical approximation~\citep{wang2024qsparse,you2025spark},
-a fixed cutoff does not target a prescribed activation count. It requires
-neither ranking nor input-dependent moment estimates. This motivates the
-design choice; an end-to-end speed advantage over selection-based methods
-would require a separate implementation comparison.
-
-A sparsification intervention specifies thresholding sites $\mathcal{N}$,
-their nonlinearities and thresholds, and pressure sites $\mathcal{P}$ at which
-training encourages smaller activation magnitudes. Choosing where to apply a
-threshold and where to apply pressure are separate decisions, although many
-evaluated recipes align the two sets. Figure~\ref{fig:intervention-ladder}
-gives the assignments; the cohort does not cross every possible combination.
-
-We use ReLU and two thresholding nonlinearities:
+An intervention specifies thresholding sites $\mathcal{N}$, their nonlinearities
+and thresholds, and pressure sites $\mathcal{P}$. The sets are independent
+choices, although many evaluated recipes align them
+(Figure~\ref{fig:architecture-sites}; Appendix~\ref{app:sites}).
+We use ReLU and fixed elementwise maps
 $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
 $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
-One-sided thresholding removes all negative values and positive values below $\kappa$;
-symmetric thresholding removes small magnitudes while preserving the signs
-and values of survivors. At $\kappa=0$, their forward maps are ReLU and the
-identity, respectively. Appendix~\ref{app:interventions} specifies boundary
-and derivative conventions.
+The former removes negative values and positives below $\kappa$; the latter
+preserves the signs and values of surviving magnitudes. At zero threshold,
+their forward maps are ReLU and identity. Appendix~\ref{app:interventions}
+gives boundary derivatives. Fixed thresholds require neither ranking nor
+input-dependent moment estimates, but this does not establish a speed
+advantage over selection-based methods.
 
-The threshold is fixed within each training condition. We hypothesize that
-training can reshape the activation distribution around this nonlinearity,
-with pressure providing an additional influence. We examine quality and
-sparsity at the final checkpoints and compare their signed activation
-distributions. These endpoint measurements describe the resulting
-representations; they do not identify the adaptation process during training.
-
-Pressure uses $\mathcal{L}_1$: we take the mean absolute activation in each
-targeted site--layer tensor, after the nonlinearity where one is applied, then average these
-means equally. Adding target sites therefore changes the objective and reduces
-the weight of each existing site--layer term. Equal $\lambda$ across target
-sets does not mean equal per-site pressure.
-
-\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$,
-clipping the combined gradient before AdamW.
-\emph{Orthogonal L1} (OL1) adapts gradient-conflict
-projection~\citep{yu2020pcgrad,hsieh2024bloop} to this pressure objective.
-It makes a task-only AdamW update, then adds a pressure
-correction preconditioned by the task's second-moment estimates. When this
-correction opposes the adaptive task direction, OL1 projects out its
-conflicting component. A positive trust budget caps its norm relative to that task
-direction. This limits the pressure correction without guaranteeing preserved task
-loss; Appendix~\ref{app:pressure} defines the procedure.
+Pressure uses the mean absolute activation in each targeted site--layer
+tensor, after its nonlinearity, then averages these means equally.
+Adding targets changes the objective and reduces each existing term's weight;
+equal $\lambda$ does not imply equal per-site pressure. \emph{Naive L1}
+optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, clipping the
+combined gradient before AdamW. \emph{Orthogonal L1} (OL1) adapts gradient-conflict
+projection~\citep{yu2020pcgrad,hsieh2024bloop}: after a task-only AdamW update,
+it adds pressure preconditioned by the task's second moments, removes a
+conflicting component, and caps the correction with a trust budget.
+This does not guarantee preserved task loss; Appendix~\ref{app:pressure}
+specifies the exact update.
 
 \subsection{Sparsity and architectural reach}
 \label{sec:measurement}
 
-\emph{Activation sparsity} is the fraction of exactly zero entries at a named site.
-We weight zeros by their affected work using \emph{model-wide activation sparsity},
-$\Smodel=N_0/N_{\mathrm{model}}$, reported as $100\Smodel\%$.
-One scalar multiplication in a declared transformer-block matrix product
-receives one zero credit if either activation operand is zero, including when
-both are zero. The denominator also includes the dense language-model (LM)
-head, which receives no zero credit. We pool integer counts before dividing
-and count only causally valid pairs in full, uncached sequences.
-Appendix~\ref{app:accounting} specifies the operations and actual operands.
-This fraction measures a declared multiplication opportunity, not total
-FLOPs, memory traffic or elapsed time.
+\emph{Activation sparsity} is the exact-zero fraction at a named site.
+\emph{Model-wide activation sparsity}, $\Smodel=N_0/N_{\mathrm{model}}$,
+weights zeros by affected scalar multiplications. Each declared block product
+gets one credit when either activation operand is zero; the denominator
+also includes the dense LM head, which gets no zero credit. Integer counts
+are pooled before division, using actual operands and causally valid pairs
+in full, uncached sequences (Appendix~\ref{app:accounting}). We report
+$100\Smodel\%$; this is multiplication opportunity, not runtime or total FLOPs.
 
-The \emph{architectural reach},
-$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, is the fraction
-of the declared workload structurally reached when the selected sites are
-entirely zero, counting overlapping effects once. It depends on the
-architecture, site set and sequence length, but not on a checkpoint, pressure
-objective or quality constraint. Observed $\Smodel$ also includes natural
-zeros outside the selected-site reach, so $\Rarch$ need not bound every
-observation. Its gap to measured sparsity does not quantify further sparsity
-available at acceptable quality. Appendix~\ref{app:ceiling} defines the
-reach accounting.
+\emph{Architectural reach},
+$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, describes the
+work structurally reached if the selected sites were entirely zero, counting
+overlaps once. Architecture, sites and sequence length determine it, not
+checkpoint quality. Natural zeros outside selected-site reach can contribute
+to $\Smodel$, so $\Rarch$ need not bound every observation. Its gap to
+observed sparsity is not sparsity available without quality loss
+(Appendix~\ref{app:ceiling}).

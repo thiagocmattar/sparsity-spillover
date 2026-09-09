@@ -25,3 +25,13 @@ Read-only audits verified original source hashes and exact stored scientific
 fields. New experiments, confidence intervals, contextual-function tests and
 general optimizer or systems superiority are not evidence available for this
 rewrite. Literature claims are tracked separately during APP-REF.
+
+## Condensed presentation
+
+The approved eight-page main text retains the claims and limitations above. Full
+recipe assignments move to Appendix C.1; the seven-checkpoint density grid and
+zero/tail counts remain in D.1, BF16 h/z rows in D.2, and full scale curves in D.3.
+Main Figure 4 selects only kappa=0.5 and links the complete grid. The operation
+contrast uses the same counts: A7-OL1 minus A4-OL1 at 14M/kappa=0.5 yields
++16.716717 attention percentage points and -1.947482 projection points, displayed
+as +16.72 and -1.95. No scientific claim is broadened by the shorter presentation.
