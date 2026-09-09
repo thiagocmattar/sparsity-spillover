@@ -31,3 +31,14 @@ exact site maps and boundary derivatives. Reach now serves pre-training planning
 with width/depth/sequence/vocabulary consequences and tested appendix formulas.
 41 tests pass; no new numerical measurements. Build: batch2-*.log.
 Full page-layout review follows cross-size figure restoration.
+
+## Batch 3: R01-R03
+
+Assembled 396 identity-checked FP16 records with actual inference reach and
+measured p=0 increments. ReLU/clipping findings retain all matched targets,
+base costs, observed sparsity mismatches and extreme-target reversals.
+No training/evaluation added; 36 endpoints +360 clipped records, drawn from
+the unchanged54/540 source study. Script02 verifies source/checkpoint hashes
+and integer-count identities. The expanded figure selects96 of these records.
+No result text is changed in this batch; the build incorporates prior method edits.
+Next: place the restored visual, dynamics audit and rewritten result paragraphs.

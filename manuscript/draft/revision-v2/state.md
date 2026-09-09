@@ -15,9 +15,9 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | T01 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
 | T02 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
 | A01 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
-| R01 | TODO | See task.md |
-| R02 | TODO | See task.md |
-| R03 | TODO | See task.md |
+| R01 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
+| R02 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
+| R03 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
 | G01 | TODO | See task.md |
 | G02 | TODO | See task.md |
 | V01 | TODO | See task.md |
