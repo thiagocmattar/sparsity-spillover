@@ -51,9 +51,13 @@ records their resolutions and the [verification](draft/reviews/2026-09-08-polish
 All 26 pages of that earlier revision were inspected, all citations and labels resolve, and all fonts
 are embedded. Template fitting remains outside this revision.
 
-Five main and five appendix figures retain their original artwork. The
-alternative [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
-remains copied for review; the paper embeds the original overview. Seven
+Five main and five appendix figures retain their source artwork. On 9 September,
+the user selected the [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
+for Figure 1. The rebuilt reading copy embeds all 30 trained checkpoints, and
+its caption and source comments now follow Analysis 018
+[O013](../analyses/018-2026-09-08-results-materials/observations/O013-overview-all-variants.md)
+and `04_overview_v2.py`; the original overview is retained. The build and affected
+pages were checked. Draft sources and the PDF retain the local-only Git policy. Seven
 generated tables preserve every numerical row. The supplementary directory
 retains all 540 clipping evaluations, seven signed histograms and a newly
 sourced preparation/environment protocol.
