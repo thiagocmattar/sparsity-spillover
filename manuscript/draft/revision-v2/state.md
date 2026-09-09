@@ -9,9 +9,9 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | B00 | DONE_VERIFIED | baseline.json and source-map.md |
 | B01 | DONE_VERIFIED | baseline.json and source-map.md |
 | B02 | DONE_VERIFIED | baseline.json and source-map.md |
-| O01 | TODO | See task.md |
-| O02 | TODO | See task.md |
-| O03 | TODO | See task.md |
+| O01 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
+| O02 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
+| O03 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
 | T01 | TODO | See task.md |
 | T02 | TODO | See task.md |
 | A01 | TODO | See task.md |
@@ -41,5 +41,5 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | E03 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 | E04 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 
-Next batch: O01-O03, then T01-T02/A01.
+Next batch: T01-T02/A01; cross-size and dynamics reductions follow.
 Historical revision/ records describe the prior completed rewrite; revision-v2/ owns this task.

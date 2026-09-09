@@ -12,3 +12,14 @@ Created the source map, baseline fingerprints, task state and claim registry;
 Analysis 020 owns the new reductions and scientific figures. Frozen the primary
 cohort, precision boundaries, operation accounting and executed interventions.
 Next: audit the implemented OL1 rule, retained diagnostics and analytic checks.
+
+## Batch 1: O01-O03
+
+Methodology pressure rationale and Appendix A.2 now explain the executed rule,
+protected direction, saturation, and target-mixture distinction. Analysis 020
+verifies 336 source references and all OL1 logs, with exact phase summaries.
+41 focused mathematical/site/reach tests pass. The initially misspelled test
+topology was corrected to the existing A2 identifier; scientific code unchanged.
+One corrupt A1-H log line is documented and excluded from unrelated reductions.
+Build is recorded in tmp/revision-v2-qa/batch1-*.log; page budget/layout finalization
+depends on later figure/prose batches. No new measurement is required.

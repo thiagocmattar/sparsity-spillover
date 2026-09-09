@@ -21,15 +21,25 @@ advantage over selection-based methods.
 
 Pressure uses the mean absolute activation in each targeted site--layer
 tensor, after its nonlinearity, then averages these means equally.
-Adding targets changes the objective and reduces each existing term's weight;
-equal $\lambda$ does not imply equal per-site pressure. \emph{Naive L1}
+Expanding the targets changes the mixture of site gradients. \emph{Naive L1}
 optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, clipping the
-combined gradient before AdamW. \emph{Orthogonal L1} (OL1) adapts gradient-conflict
-projection~\citep{yu2020pcgrad,hsieh2024bloop}: after a task-only AdamW update,
-it adds pressure preconditioned by the task's second moments, removes a
-conflicting component, and caps the correction with a trust budget.
-This does not guarantee preserved task loss; Appendix~\ref{app:pressure}
-specifies the exact update.
+combined gradient before AdamW.
+
+\emph{Orthogonal L1} (OL1) keeps task optimization primary. After task-only
+AdamW, it preconditions pressure using the task's second moments, removes
+the component opposing the adaptive task direction under conflict, and
+caps the auxiliary vector relative to that direction's norm. This adapts
+gradient-conflict projection~\citep{yu2020pcgrad,hsieh2024bloop} while
+extending the norm-limiting principle of Pythia's gradient clipping to an
+auxiliary update. The two caps act in different spaces.
+
+Once this relative cap binds, increasing the pressure weight $\lambda$
+no longer increases the ideal correction. We use this conditional property
+to motivate a fixed pressure mechanism, holding budget $b=1$ and multisite
+$\lambda=1$ while varying threshold and placement. Saturation is recipe-dependent:
+retained logs show frequent capping for A7-OL1 at 14M and 70M, but rarely
+at 410M. Appendix~\ref{app:pressure} gives the protected-direction geometry,
+its distinction from task-loss preservation, and the measured cap activity.
 
 \subsection{Sparsity and architectural reach}
 \label{sec:measurement}

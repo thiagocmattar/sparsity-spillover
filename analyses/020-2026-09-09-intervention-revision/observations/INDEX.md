@@ -1,4 +1,3 @@
-# Intervention revision observations
+# Observations
 
-The source and scope of each new reduction and figure will be recorded here.
-No new training or model evaluation is included in this analysis.
+- O001-optimizer-logs.md: verified OL1 rule, saturation and log coverage.

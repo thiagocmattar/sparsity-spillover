@@ -20,8 +20,8 @@ the pressure objective is
 $\mathcal{L}_1=J^{-1}\sum_{j=1}^{J}n_j^{-1}\sum_{i=1}^{n_j}|A_{j,i}|$.
 The tensors contain the executed site activations, after the nonlinearity where one is applied.
 Absolute values and means are evaluated in float32.
-Each tensor receives equal weight regardless of its size; adding pressure
-sites changes both the objective and the weight of existing targets.
+Each tensor receives equal weight regardless of its size. Adding pressure
+sites changes the aggregate direction and, when the cap is inactive, its scale.
 Task and pressure losses are averaged over the same accumulation microbatches.
 For naive L1, the accumulated gradient of
 $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$ is globally norm-clipped
@@ -53,12 +53,70 @@ $\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
 The experiments' clipping thresholds, $b$, and $\lambda$ are condition
 parameters.
 
-This procedure is related to gradient-conflict projection~\citep{yu2020pcgrad}
-and the use of smoothed primary directions~\citep{hsieh2024bloop}, but defines
-a particular correction in AdamW-preconditioned coordinates. The stabilized
-projection is only approximately orthogonal under conflict. Its geometry and
-budget precede multiplication by group learning rates and exclude decoupled
-weight decay. They therefore do not guarantee task-loss descent or preservation.
+The executed FP16 boundaries accumulate and unscale the two gradients
+separately. A nonfinite gradient skips the entire boundary, including the
+correction. Missing gradients or uninitialized moment state exclude a parameter
+from its pooled geometry. All reported OL1 runs use $b=1$ and
+$\epsilon=10^{-12}$; the local study sweeps $\lambda\in\{0.05,0.1,0.5,1\}$,
+whereas multisite runs fix $\lambda=1$. The norms precede group learning rates
+and exclude AdamW's decoupled weight decay.
+
+\paragraph{Protected direction and saturation.}
+For the ideal rule, omit stabilizers and take $u\ne0$. Project only under
+conflict, using $\widetilde w=w-(u^\top w/\|u\|^2)u$; otherwise retain $w$.
+Then the pressure descent vector is
+\begin{equation}
+d_{\mathrm p}=\min\!\left(\lambda,\frac{b\|u\|}{\|\widetilde w\|}\right)
+\widetilde w,
+\qquad d_{\mathrm p}=0\ \text{if }\widetilde w=0.
+\label{eq:ol1-ideal}
+\end{equation}
+It satisfies $u^\top d_{\mathrm p}\geq0$, with equality after a conflicting
+projection, and hence $u^\top(u+d_{\mathrm p})\geq\|u\|^2$.
+Also $\|d_{\mathrm p}\|\leq b\|u\|$: the auxiliary vector is capped,
+while the combined vector can be longer than $u$. At a fixed gradient pair
+and optimizer state, $\lambda\|\widetilde w\|\geq b\|u\|$ makes the vector
+independent of further increases in $\lambda$. A common learning rate
+$\alpha$ turns this into the added displacement $-\alpha d_{\mathrm p}$.
+
+With $\rho=b\|u\|$ and nonzero $\widetilde w$, the saturated vector maximizes
+$w^\top d$ subject to $u^\top d\geq0$ and $\|d\|\leq\rho$.
+Without conflict this follows from Cauchy--Schwarz. Under conflict,
+$w=\widetilde w+cu/\|u\|^2$ with $c<0$, so every feasible $d$ satisfies
+$w^\top d\leq\widetilde w^\top d\leq\rho\|\widetilde w\|$;
+the stated vector attains both bounds. If $w$ exactly opposes $u$, zero
+is an optimum, possibly nonunique. This is alignment with preconditioned
+pressure, not necessarily the first-order decrease $g_1^\top d$.
+
+The protected adaptive direction generally differs from the current task
+gradient: first-order task loss depends on $g_t^\top d_{\mathrm p}$, and
+finite steps also depend on curvature. Thus the property does not guarantee
+task-loss preservation. In the implementation, stabilizers make the projection
+approximately orthogonal, and $q\leq\epsilon$ bypasses it altogether.
+
+\paragraph{Observed cap activity and objective scaling.}
+% Analysis 020: 01_audit_logs.py; observations/O001-optimizer-logs.md.
+All 34 OL1 conditions retain all 712 boundary records, with no skipped updates.
+The cap is active exactly when $r>0$ and $b/(r+\epsilon)<1$, using the logged
+pre-learning-rate ratio on eligible parameters. It binds on
+7,283 of 24,208 boundaries (30.08\%), but this pooled fraction hides large
+recipe differences. Across thresholds, A7-OL1 binds on 84.97--100\% of steps
+at 14M and 100\% at 70M, versus 0.42--0.84\% at 410M. A4-OL1 binds on
+0.14--2.67\% across all sizes; local h-only OL1 ranges from 0 to 10.67\%
+across its four weights. The first boundary has zero learning rate: its
+cap diagnostic describes a vector, not parameter movement. Supplementary
+records retain counts, correction-ratio distributions and separate early
+(steps 1--142) and late (570--712) summaries for every condition.
+
+Multiplying a fixed objective by a positive scalar preserves the saturated
+ideal vector's direction and norm when both versions remain saturated.
+For a fixed seven-site target set, replacing $\sum_7/(7L)$ by
+$\sum_7/(4L)$ only rescales that vector before the cap. Expanding four
+targets to seven instead changes their gradient mixture, even under
+saturation. Smaller coefficients in the written mean therefore do not
+establish proportional dilution of the effective update. Relative weights
+between old and new targets would test a different direction; the current
+experiments do not identify that contribution separately.
 
 \section{Sparsity accounting}
 \label{app:accounting}
