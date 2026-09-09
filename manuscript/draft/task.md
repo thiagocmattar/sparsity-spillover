@@ -1,1459 +1,1062 @@
-# Agentic rewrite runbook
-## Activation Sparsification in Transformers: Pressure, Thresholding, and Site Placement
+# Revision v2: an intervention-centered, explanatory paper
+## Coding-agent task file for *Activation Sparsification in Transformers: Pressure, Thresholding, and Site Placement*
 
-**Purpose:** Turn the current manuscript into a more convincing, readable, and informative empirical paper through traceable, paragraph-level edits. Separate what can be improved using existing evidence from claims that require additional experiments.
-
-**Source version:** `main(20260909-182851).pdf`, 27 pages, supplied by the authors. Page numbers below refer to this PDF, not a future compilation. Paragraph anchors quote the opening words of the original paragraph; paragraphs can continue across pages or around figures.
-
-**Source SHA-256:** `a2aa5fefd6cfe0ccc51d025f9ec692db366f929a6cefbaabb401454dfecc2f1a`.
-
-**Available for this plan:** The manuscript and its rendered pages. Authoring sources, checkpoints, training logs, supplementary data files, and timing records were not supplied here. Their existence in the manuscript is not proof that the rewriting agent has access to them.
-
-**Recommended route:** Execute the low-effort rewrite and existing-data audit first. In parallel, obtain author approval for a small, decisive set of mid-effort controls and replications. Reserve high-effort work for a specific unresolved claim. A stronger presentation cannot substitute for a missing comparison.
-
-**Default operating mode:** `CURRENT_RESULTS_ONLY`. Do not launch experiments, change the scientific conclusions, or imply that proposed experiments have been completed. Switch individual tasks to `NEW_EVIDENCE_APPROVED` only after approval and ingestion of verified results.
+**Base manuscript:** `main(20260909-211032).pdf` (28 pages).  
+**Base PDF SHA-256:** `b0686105e14298cb7b329a2f14c5aa2ed820ae56474a31474dc3bb970172b0b2`.  
+**Earlier visual reference:** `main(20260909-182851).pdf`, especially original Figure 5 on p. 10.  
+**Purpose:** Make a focused second revision of the existing LaTeX paper and figure-generation code. Explain the experimental choices, restore the cross-size visual argument, and turn observations into useful scientific lessons. Do not restart the entire paper or turn it into a leaderboard.  
+**Default mode:** `EXISTING_EVIDENCE`. Read repository code and records, regenerate figures, perform CPU analyses and mathematical unit tests, and edit `.tex`/`.bib`. New training, checkpoint reevaluation, GPU measurements, and remote paid jobs require explicit authorization.  
+**Source convention:** `[M]` denotes the base manuscript; `[O]` the earlier manuscript; `[Q]`, `[S]`, and `[P]` the primary literature identified in the source register. Page numbers are PDF pages in these source versions. Find edits by section, paragraph opening, and LaTeX label—not by changing page numbers.
 
 ---
 
-## Start here: the next agent's first actions
+## 0. Author decisions: implement these, do not reopen them by default
 
-- [ ] **START-01:** Read Sections 1–4 of this runbook. Record the manuscript's intended contribution in two sentences before editing.
-- [ ] **START-02:** Locate the authoring source and existing data. Create the inventories in Section 4. If only the PDF is available, produce anchored replacement passages and figure specifications rather than pretending to edit unavailable LaTeX.
-- [ ] **START-03:** Freeze the original manuscript and create a paragraph-anchor map. Never use a changing PDF page number as the only locator.
-- [ ] **START-04:** Obtain a decision on the proposed terminology change from “sparsity ceiling” to “architectural reach.” Preserve the mathematics either way.
-- [ ] **START-05:** Execute the rewrite in this order: methods and setup → results → figures and tables → appendices → discussion → related work → introduction → abstract and title → verification.
-- [ ] **START-06:** Work on one coherent batch at a time, usually two to four paragraph tasks. Update the state file after every batch. Do not rewrite the whole manuscript in a single pass.
+- [ ] **Restore the cross-size quality–model-wide-sparsity comparison to the main text.** It is evidence that a particular intervention relationship is observed beyond 14M. Keep the 14M/70M/410M side-by-side view and the useful distinction between absolute and normalized comparisons.
+- [ ] **Remove the “Cohort means” subplot.** Preserve its numerical attribution evidence in prose and the implementation table; do not replace it with another average-speedup bar chart.
+- [ ] **Remove the main-text “Maximum observed sparsity under same-size A0” table and its winner-selection paragraph.** Retain the underlying reduction in the supplement. Use the freed space for intervention comparisons and their explanation.
+- [ ] **Explain why OL1 was chosen.** Present its protected-direction geometry, relative norm cap, and conditional saturation with respect to the regularization weight. Treat it as a fixed experimental instrument, not a newly validated optimizer.
+- [ ] **Restore the motivation for fixed thresholding.** Connect projection-input sparsification to Q-Sparse and the selection-overhead question to Spark; then explain why this study lets learned distributions determine the surviving count under a fixed cutoff.
+- [ ] **Present architectural reach as an a priori planning tool.** Explain what can be calculated before training, including width, depth, sequence length, and dense-head effects.
+- [ ] **Analyze ReLU-trained checkpoints plus post-hoc clipping explicitly.** Add the A1-H clipping trajectories to the cross-size comparison, subject to verification of the existing records.
+- [ ] **Investigate the 410M training-budget explanation using retained logs.** Treat the author's gradient-norm observation as a hypothesis to check, not an established result to insert.
+- [ ] **Write an informative paper, not an extended disclaimer.** Each major finding should tell the reader what changes, what explains the change, and what experimental choice it informs.
 
-**Success condition:** A reader can identify the comparison behind each conclusion, understand the size and cost of the effect, distinguish a measured result from an explanation or hypothesis, and leave with useful questions for designing their own sparsification experiments.
+These instructions supersede conflicting editorial choices in `activation_sparsification_agentic_rewrite_plan.md`, especially requirements to prioritize a quality-budget winner table or an aggregate-speedup panel. They do **not** supersede numerical provenance, fair comparisons, or honest reporting of unfavorable results.
 
-**Not the success condition:** Making every intervention look effective, maximizing the number of favorable statements, or eliminating all limitations through wording.
+### The desired argument
 
-### Navigation
+> We examine how pressure, thresholding, and placement interact. A priori operation accounting explains the opportunity associated with each placement; paired training comparisons show how the intervention changes loss and zeros; selected cross-size comparisons show which relationships recur; and kernel controls distinguish counted opportunity from profitable execution.
 
-1. [Strategy and acceptance rubric](#1-strategy-and-acceptance-rubric)
-2. [Writing contract: informative, precise, readable](#2-writing-contract-informative-precise-readable)
-3. [Terminology, notation, and numerical conventions](#3-terminology-notation-and-numerical-conventions)
-4. [Agent workflow, evidence inventory, and checkpoints](#4-agent-workflow-evidence-inventory-and-checkpoints)
-5. [Paragraph-by-paragraph main-text rewrite](#5-paragraph-by-paragraph-main-text-rewrite)
-6. [Figure and table surgery](#6-figure-and-table-surgery)
-7. [Appendix and reproducibility edits](#7-appendix-and-reproducibility-edits)
-8. [Optional experiments and exact insertion points](#8-optional-experiments-and-exact-insertion-points)
-9. [Final verification and author handoff](#9-final-verification-and-author-handoff)
-10. [Portable source register](#10-portable-source-register)
+This is an **intervention study with an execution case study**. It is not primarily a search for the best checkpoint under a chosen quality budget, a claim of universal optimizer superiority, or a general scaling law.
 
----
+### Three distinctions that the revision must make positively
 
-<a id="1-strategy-and-acceptance-rubric"></a>
-
-## 1. Strategy and acceptance rubric
-
-### 1.1 The contribution to preserve
-
-The manuscript studies pressure, thresholding, and site placement under a shared experimental protocol. Its most promising current contribution is not a universally better sparse-model recipe. It is a set of informative comparisons connecting intervention choices to activation distributions, operation-weighted zero counts, and measured execution.
-
-Build the paper around **two primary findings**:
-
-1. **An intervention's marginal effect depends on what is already in the recipe.** Pressure does not have a single quality–sparsity effect across thresholds and target sets.
-2. **The ranking can change between local activation sparsity, model-wide zero-product counts, and runtime.** Broader attention interventions increase counted opportunity, but the tested attention-skipping path is slower than its dense-attention ablation.
-
-Use the selected larger-model results as a **bounded extension of complete-recipe comparisons**, not as proof that all individual effects transfer or that sparsification obeys a scaling law. These distinctions are supported by the current paired comparisons, operation breakdown, and kernel ablations. [S08](#s08) [S09](#s09) [S10](#s10) [S11](#s11)
-
-### 1.2 Two legitimate paper directions
-
-| Direction | What the paper must establish | Recommended now? |
-|---|---|---|
-| **Empirical design study** | Nontrivial, well-supported relationships between interventions; clear accounting; meaningful boundaries and counterexamples; appropriate repeatability. | **Yes.** This best fits the existing evidence. |
-| **Practical sparsification method** | A defensible quality–latency advantage over competitive alternatives, with adequate implementation and training controls. | Only if new comparisons support it. Do not imply this result through maximum sparsity or same-checkpoint speedup alone. |
-
-Narrowing the claim is not a license to make the paper uninformative. “Sparsity does not always give speedup” is too generic by itself. Identify **which operations, which controls, how much skipped work, and what overhead-limited behavior** make the observed case instructive.
-
-### 1.3 Readiness rubric
-
-Score each dimension separately. Scores are planning judgments, not estimated acceptance probabilities or an official venue rubric.
-
-- **0 — Missing or contradicted:** The claim lacks the necessary evidence, or the manuscript says more than the result supports.
-- **1 — Partial:** There is relevant evidence, but a major ambiguity, control, or scope issue remains.
-- **2 — Adequate for the stated claim:** The comparison and its limits are explicit and defensible.
-- **3 — Strong:** The evidence is replicated or independently reinforced and supports a useful, clearly bounded conclusion.
-
-| Dimension | Evidence needed for a score of 2 or higher | What a rewrite alone can accomplish |
-|---|---|---|
-| Contribution clarity | Two memorable findings, each tied to a specific comparison and a reader-relevant implication. | Substantial improvement. |
-| Comparison validity | Explicit separation of fixed-site pressure effects, unpressured placement effects, and complete-recipe changes; no causal attribution to untested components. | Clarify existing contrasts; cannot create missing controls. |
-| Repeatability | Independent training replications for the headline contrasts, or a clearly limited claim acknowledging the single-seed evidence. | Honest qualification; cannot establish training variability. |
-| Quality and baseline fairness | Visible quality costs; accurately scoped post-hoc baseline; no confusion between quality-matched model comparisons and same-checkpoint execution. | Reanalysis and better presentation, subject to data access. |
-| Runtime attribution | Native, matched-fusion, and sparse-path comparisons distinguished; workload and precision stated. | Major improvement using the reported ablations. |
-| Scope and transfer | Larger-size findings restricted to what was tested; no extrapolation to unmeasured workloads. | Major improvement. |
-| Insight and readability | Results tell the reader what changes, why the evidence matters, and where the inference stops. | Major improvement. |
-
-**Do not average away a blocking flaw.** A polished introduction does not compensate for a numerical error or an unsupported practical-efficiency claim. A replication with mixed results is not a failed experiment; it changes the claim the paper can make.
-
-### 1.4 Effort and priority
-
-**Effort definitions:** Low = writing, verification, or analysis of already available records. Mid = short new runs, targeted checkpoint evaluation, or short calibration experiments. High = long training/ablation packages, larger-model experiments, or substantial new kernel engineering. Reclassify a collection of individually short runs when its aggregate cost becomes high. No wall-clock or GPU-hour estimate is assumed here.
-
-**Impact:** 5 = addresses an acceptance-blocking objection; 4 = materially strengthens the argument; 3 = supporting improvement. Rank by relevance to the chosen paper direction, not by the possibility of obtaining a favorable result.
-
-| Package | Highest-value tasks, in order | Expected effect on the acceptance case |
-|---|---|---|
-| **Low** | L1 (5/5): claim and narrative reset; L2 (5/5): quality and speedup attribution; L3 (4/5, potentially higher): audit omitted historical controls; L4 (4/5): terminology, figure, and reproducibility repair. | Makes the current paper substantially more credible, but is not a reliable standalone route to acceptance because design and repeatability gaps remain. |
-| **Mid** | M1 (5/5): fixed-weight crossed placement/pressure controls; M2 (5/5): headline-contrast replication; M3 (5/5 when claim retained): stronger post-hoc comparison; M4 (4/5): precision-consistent and functional diagnostics. | The recommended investment. Can put an empirical-design paper into plausible acceptance territory if the findings remain informative and claims follow the outcomes. |
-| **High** | H1 (4/5): longer-training confirmation at 70M; H2 (4/5, or 5/5 for an efficiency headline): one larger-model quality–latency study. | Strengthens generality or practical relevance. Worth doing only after the central comparison is sound and the remaining objection is specific. |
-
-**Low-effort workstream map:** L1 = RW-40/RW-42/RW-10/RW-ABS; L2 = DATA-01/02 and RW-41/RW-45; L3 = DATA-03; L4 = STYLE/VIS/APP/QA tasks. These are workstream aliases, not additional experiments. Each paragraph task below remains the unit of execution.
-
-**Candid decision:** Low-only is a defensible fallback, not the preferred bet. Low + targeted mid is the best expected improvement per unit effort. High effort is conditional, not an automatic requirement or a guarantee of acceptance.
+1. **Design rationale versus empirical validation:** A well-motivated fixed OL1 configuration is legitimate without a full optimizer sweep. A mathematical saturation property is not evidence that every training run operated in that regime.
+2. **Cross-size recurrence versus universal scaling:** A named comparison recurring at 14M, 70M, and 410M is meaningful. It does not imply that every threshold ordering or dense-relative loss penalty improves with size.
+3. **Intervention comparison versus winner selection:** Show the loss–sparsity response of each intervention, including trade-offs and reversals. Avoid converting the discussion into retrospective winners at arbitrary budgets.
 
 ---
 
-<a id="2-writing-contract-informative-precise-readable"></a>
+## 1. Execution order, priorities, and completion rubric
 
-## 2. Writing contract: informative, precise, readable
+### 1.1 Work in small, restartable batches
 
-### 2.1 Language and audience
-
-- [ ] **STYLE-01:** Write the paper in consistent, natural academic English. Prefer US spelling unless the authoring source clearly follows another convention; choose once and apply consistently.
-- [ ] **STYLE-02:** Write for an ML researcher who understands transformers but has not memorized this paper's recipe IDs or custom accounting. Define task-specific terms before relying on them.
-- [ ] **STYLE-03:** Prefer concrete subjects and verbs: “adding pressure increases…” rather than “the incorporation of pressure yields an enhancement…”. Use active voice for experimental choices; passive voice is acceptable when the procedure matters more than the actor.
-- [ ] **STYLE-04:** Keep technical precision without making every sentence carry every qualification. State a shared protocol once, then repeat only the details necessary to interpret a local comparison.
-- [ ] **STYLE-05:** Prefer one central comparison per paragraph. As a soft guide, aim for three to six sentences and inspect sentences longer than about 30 words. These are editing prompts, not rigid limits.
-- [ ] **STYLE-06:** Use prose for the argument. Reserve compact lists and tables for experimental inventories, definitions, and contrasts. Do not turn the paper into this runbook's checklist format.
-
-### 2.2 Avoid jargon that obscures the experiment
-
-Use the established term when it is precise; explain it at first use. Do not invent a vocabulary that makes simple observations sound like a new theory.
-
-| Avoid or qualify | Prefer |
-|---|---|
-| “forces activations to zero” for the L1 objective | “encourages smaller activation magnitudes”; exact zeros are measured after the relevant transformations. |
-| “synergy” without a specified interaction contrast | “adding pressure at this threshold changes sparsity by… and loss by…”. |
-| “disentangles all three factors” | State which contrasts hold which factors fixed, and identify complete-recipe comparisons separately. |
-| “near-optimal sparsity” | “close to the selected-site architectural reach,” with quality cost and denominator stated. |
-| “FLOP savings” when reporting this paper's count | “zero-operand scalar products” or “logical multiplication opportunity.” |
-| “preserves quality” based on a small single-seed difference | Report the observed loss change; add uncertainty when available. |
-| “dominates the frontier” without checking the domain and endpoints | Name the comparator, evaluated region, and nondominance criterion. |
-| “predicts speedup” for the existing cross-checkpoint fit | “is associated with measured speedup in this cohort.” |
-| “attention sparsity is ineffective” | “the tested attention-skipping implementation is slower on this workload.” |
-| “spillover mechanism” without an isolating test | “a distribution change at sites not directly targeted”; mechanism remains a hypothesis. |
-| “best kernel” | “selected searched implementation,” or identify the faster ablation explicitly. |
-| “robust,” “substantial,” “negligible,” or “competitive” without support | Give the measured magnitude, comparator, and relevant uncertainty or budget. |
-
-Retain standard technical terms such as matrix multiplication, causal masking, softmax, geometric mean, and gradient projection when needed. Plain language does not mean removing the information needed to reproduce the method.
-
-### 2.3 The informative-paragraph pattern
-
-Use this pattern for substantive results, but vary the prose so the paper does not feel templated:
-
-> **Question or contrast → observed result → explanation supported by measurement → implication with a boundary.**
-
-A paragraph should usually answer:
-
-1. What comparison is being made, and what is held fixed?
-2. What changes, in the units the reader needs?
-3. What does the evidence explain? What remains only a hypothesis?
-4. What should a researcher examine or reconsider because of this result?
-
-Not every methods paragraph needs a takeaway. Not every paragraph needs all four elements. Apply the test at the subsection level when a single paragraph would become overloaded.
-
-**Bad use of “insight”:** Add speculative explanations, promotional adjectives, or a sentence saying “this provides valuable insights.”
-
-**Good use of insight:** Reveal an unexpected reversal, explain a denominator effect, distinguish two apparently similar comparisons, or identify the operation-level bottleneck that changes a design decision.
-
-### 2.4 Examples of the intended approach
-
-**Example A — Distinguish local sparsity from model-wide opportunity.**
-
-Weak: “A7 achieves superior sparsity through broader placement.”
-
-Better: “At the largest tested threshold, the seven-site recipe has fewer pooled FFN zeros than the four-site recipe, yet more model-wide zero-product counts. The operation breakdown attributes the increase to QK and PV products. In this setting, choosing a recipe from FFN sparsity alone would select the wrong recipe for maximizing counted model-wide opportunity.”
-
-Boundary to retain: this is a complete-recipe observation, not proof of a pure pressure-site effect or a latency advantage. [S09](#s09)
-
-**Example B — Separate observed acceleration from its source.**
-
-Weak: “Our sparse kernel gives a 1.78× speedup.”
-
-Better: “The selected implementation is 1.78× faster than native execution at the search checkpoint. Against a matched fused implementation with sparse paths disabled, the additional factor is 1.311× at that checkpoint and 1.043× geometrically across the cohort. The native-relative result therefore combines fusion with a checkpoint-dependent contribution from sparse execution.”
-
-Boundary to retain: the ratios compare execution of the same checkpoints, not different models at matched quality. [S11](#s11)
-
-**Example C — Report a conditional pressure effect without overselling a tiny difference.**
-
-Weak: “OL1 preserves quality and unlocks attention sparsity.”
-
-Better: “For A7 at κ = 0.1, adding OL1 changes loss by +0.0008 and model-wide sparsity by +1.372 percentage points in the reported run. At κ = 0.5, the corresponding changes are +0.1265 and +12.096 percentage points. The additional sparsity and its quality cost depend on the operating point; independent seeds are needed before interpreting the smallest loss difference.” [S08](#s08)
-
-These are examples of sentence structure and evidential restraint, not instructions to paste the same text into multiple sections.
-
-### 2.5 Build an insight ledger, not a list of attractive claims
-
-Before polishing a results subsection, fill one row in the ledger:
-
-| Candidate takeaway | Existing evidence | Reader implication | Boundary or next question |
+| Batch | Task IDs | Main deliverable | Effort |
 |---|---|---|---|
-| Pressure has a threshold-dependent marginal effect. | Fixed-recipe pressure contrasts in Figure 3 / Table 5. | Evaluate the addition at the intended operating point, rather than assuming a fixed benefit. | Current cross-target contrasts also change objective normalization; replication is limited. |
-| Local FFN sparsity can rank recipes differently from model-wide counts. | Figure 4, Tables 7–8. | Report operation-weighted counts alongside site sparsity. | More counted opportunity does not establish lower latency. |
-| The dense-head fraction changes the interpretation of cross-size sparsity. | Section 4.4, Appendix C.2. | Inspect the denominator before attributing raw sparsity increases to a better learned representation. | Block-only normalization still retains differing operation weights. |
-| Substantial instruction skipping can lose to dense execution. | Appendix D.4 and Table 9. | Measure the overhead and granularity of the actual sparse path. | No general break-even point or impossibility result is established. |
-| A recipe can beat another sparse recipe while remaining much worse than A0. | Tables 1, 4, and 6. | Compare against both the paired recipe and the dense-model reference. | Same-checkpoint acceleration does not answer the model-selection question. |
+| 0 | B00–B02 | Source map, evidence ledger, baseline build | Low |
+| 1 | O01–O03, T01–T02, A01 | Verified method rationale and analytic checks | Low; some diagnostics may require mid effort |
+| 2 | R01–R03, G01–G02 | Cross-size/ReLU analyses and training-log audit | Low with retained records; reevaluation is mid |
+| 3 | V01–V03 | Restored cross-size figure, revised runtime figure, table relocation | Low |
+| 4 | W01–W06 | Paragraph-level setup and results edits | Low |
+| 5 | W07–W10 | Related work, discussion, introduction, abstract | Low |
+| 6 | Q01–Q03 | Numeric, mathematical, visual, and prose verification | Low |
+| Optional | E01–E04 | Approved evidence that answers a specific unresolved question | Mid to high |
 
-Keep two primary takeaways and a few supporting ones. Do not manufacture an “insight” for every sweep value.
+Implement evidence-bearing figures and their analyses before writing the abstract. Complete two to four related tasks per batch, inspect the diff, update the state, and build. Do not make a single sprawling unreviewable rewrite commit.
 
-### 2.6 Precision and reader trust
+### 1.2 Rubric
 
-- [ ] **STYLE-07:** Distinguish **measured**, **derived**, **inferred**, and **proposed** statements in the agent's evidence ledger. In manuscript prose, use natural signals such as “we measure,” “the accounting implies,” “is consistent with,” and “we leave untested.”
-- [ ] **STYLE-08:** Put the decisive caveat beside the claim it limits. A limitation on page 26 does not repair an unqualified claim in the abstract.
-- [ ] **STYLE-09:** Do not turn descriptive data into causal or statistical language through editing. “Significant” requires the relevant statistical evidence; “isolates” requires a suitable design.
-- [ ] **STYLE-10:** Do not hide unfavorable or dominated settings. Keep complete results accessible and show the region relevant to the stated question in the main text.
-- [ ] **STYLE-11:** Define the reference whenever using “improves,” “more,” “lower,” “faster,” or a delta. Recipe IDs alone are not an explanation.
-- [ ] **STYLE-12:** Use exact benchmark scope. “Full-model” here is not cached token-by-token decoding, a production serving stack, or an all-hardware result.
-- [ ] **STYLE-13:** Remove self-assessment such as “these comprehensive experiments convincingly demonstrate.” Replace it with the actual comparison or omit it.
-- [ ] **STYLE-14:** End the paper with what the reader has learned, not with a larger list of claims than the experiments support.
+Score each dimension from 0 to 3: **0** missing/wrong; **1** partial; **2** adequate and verifiable; **3** especially clear and well supported. Do not average away a factual or mathematical failure.
+
+| Dimension | Required for 2 or higher |
+|---|---|
+| Design justification | OL1, thresholds, and reach each have a stated purpose, an exact definition, and a supported scope. |
+| Intervention insight | Results explain named comparisons, not just maximum values or winners. |
+| Cross-size evidence | The main figure shows all three sizes, the recurring relationship, and the deviations. |
+| Scientific precision | Adaptive-direction protection is not actual-loss protection; clipping timing is correct; gradient norms are not convergence certificates. |
+| Runtime attribution | Removing the means plot does not remove the fusion and sparse-path controls. |
+| Human readability | Stable terminology, explicit subjects/comparators, short explanations before qualifications. |
+| Traceability | Every new number, graph, and empirical claim maps to a verified source or reproducible reduction. |
+
+**Highest return at low effort:** Restore the cross-size figure; justify the methods; replace winner-focused prose; extract the ReLU/clipping response; correct the scale narrative.  
+**Highest return at mid effort:** Missing checkpoint evaluations, targeted repeatability, and a diagnostic test selected after inspecting OL1 saturation and training logs.  
+**Highest return at high effort:** A matched longer-training continuation only when it directly tests the remaining 410M budget hypothesis. Do not automatically run another full large-model sweep.
+
+A completed rewrite can materially improve the submission. It cannot establish repeatability or convergence from prose alone. The handoff must distinguish editorial completion from evidence still needed for the strongest claims.
 
 ---
 
-<a id="3-terminology-notation-and-numerical-conventions"></a>
+## 2. Writing contract
 
-## 3. Terminology, notation, and numerical conventions
+### 2.1 Language and readability
 
-### 3.1 Freeze the vocabulary before editing
+- Use consistent, professional English, preferably the manuscript's existing American-English conventions. Correct `GeLU` to **GELU**, `atention` to **attention**, and `accross` to **across**. Preserve proper method names.
+- Prefer a concrete subject and verb: “Adding pressure increases…” rather than “An increase can be observed…”.
+- Explain the experimental choice before listing its limitations. “We use a fixed relative norm budget to…” is more informative than an isolated “This does not guarantee…”.
+- Keep one principal claim per sentence. Aim for roughly 3–6 sentences per results paragraph, but do not enforce a mechanical word-count rule.
+- Define technical shorthand on first use. Use “speedup over standard PyTorch execution” before “native-relative speedup”; “same fused implementation with skipping disabled” before “all-skips-off”.
+- Keep legitimate technical terms. Do not replace “orthogonal,” “preconditioned,” “causal,” or “geometric mean” with vague language. Explain the coordinate system or denominator when it matters.
+- Do not invent jargon: avoid “sparsity leverage,” “quality elasticity,” “frontier robustness,” and similar phrases unless a quantity is formally defined and genuinely necessary.
+- Do not use “scales better,” “improves,” “preserves the pattern,” or “does not hurt” without naming the axis, comparator, and setting.
+- Do not repeatedly apologize for the same experimental boundary. State it at the first relevant comparison and in the limitations; repeat locally only when a reader could otherwise misunderstand the figure.
+- Do not call a numerical diagnostic, extra-seed run, or checkpoint reevaluation “just a rewrite.” Label new evidence accurately.
 
-Create a shared glossary and use it in prose, equations, figure labels, captions, tables, and supplement documentation. Preserve the original recipe IDs; their names identify experimental records.
+### 2.2 The informative paragraph
 
-| Concept | Canonical expression | Required distinction |
-|---|---|---|
-| Training regularizer | **activation pressure**; introduce it as L1 pressure | Pressure encourages small magnitudes; it is not the thresholding map. |
-| Plain regularized optimizer | **naive L1** in the methods, or **ordinary L1** if changed consistently | Keep `A1-H-L1` and data identifiers unchanged. Do not alternate labels without explanation. |
-| Projected update | **orthogonal L1 (OL1)** | This is the specified update rule, not a guarantee of task-loss preservation. |
-| Sparsifying function | **thresholding nonlinearity** | One-sided and symmetric variants are different transformations. |
-| Site choice | **site placement** or **thresholding sites / pressure sites** | The two site sets need not coincide. |
-| Zero proportion at a site | **activation sparsity at site s** | Never silently substitute pooled FFN sparsity. |
-| Count-based model metric | **model-wide activation sparsity**, then **model-wide sparsity** | A fraction of declared matrix-product multiplications, not all operations or time. |
-| Structural accounting quantity | **architectural reach** (proposed replacement for “sparsity ceiling”) | Not a universal upper bound on observed sparsity and not a quality-feasible target. |
-| Reference model | **same-size A0 reference** | Distinguish from native execution of a sparse checkpoint. |
-| Execution reference | **native PyTorch/SDPA execution of the same checkpoint** | This is an implementation comparison. |
-| Fusion control | **matched fused implementation with all sparse paths disabled** | Preserve graph, checkpoint, nonlinearities, and workload. |
-| Evaluation-only comparator | **uniform post-hoc magnitude clipping** | Not a reproduction of optimized TEAL allocation. |
-| Cross-size result | **complete-recipe comparison across model sizes** | Not transferred weights or an isolated pressure effect. |
+A useful paragraph usually follows:
 
-Use **GELU**, **ReLU**, **nonlinearity**, **QK**, **PV**, **FFN**, **LM head**, **BF16**, and **FP16** consistently. Introduce “feed-forward network (FFN)” and “language-model (LM) head” before relying on abbreviations. Preserve formal matrix transposes where mathematical notation requires them.
+> **Question or design choice → named comparison → quantitative observation → supported explanation → implication.**
 
-### 3.2 Notation ledger
+Add the necessary boundary beside the claim it limits. Do not end every paragraph with a generic disclaimer. A subsection should leave the reader with a useful consequence, for example:
 
-| Symbol | Meaning and convention |
+- Choosing a fixed threshold lets the active count respond to training; it does not impose a constant sparse compute budget.
+- Adding pressure targets changes the direction of the pressure correction, even when a norm cap largely removes its overall scale.
+- A larger fraction of model-wide zero products can arise from a changing operation denominator, not only from more zero activations.
+- A training nonlinearity changes the representation to which post-hoc clipping is later applied.
+- A relationship that recurs across model sizes can coexist with a failure of absolute quality to improve uniformly.
+
+Do not add a speculative mechanism merely to make a paragraph sound insightful. Mark a hypothesis as a hypothesis and name the test that would distinguish it.
+
+### 2.3 Required terminology and symbols
+
+| Use | Meaning / restriction |
 |---|---|
-| `\mathcal{N}` | Set of thresholding/nonlinearity sites. |
-| `\mathcal{P}` | Set of pressure sites; visually distinct from attention probability matrix `P`. |
-| `a, m, h, q, k, v, z` | Site labels from Figure 1 / Table 2. Keep placement relative to LayerNorm, RoPE, nonlinearities, and projections unchanged. |
-| `G_{+,\kappa}` | One-sided threshold, retaining values satisfying `x >= κ`; removes all negative values. |
-| `G_{\pm,\kappa}` | Symmetric threshold, retaining values satisfying `|x| >= κ`. |
-| `\kappa` | Trained threshold, fixed within a condition. |
-| `\lambda` | Pressure coefficient. Do not interpret equal λ as equal effective pressure across different objectives. |
-| `b` | Positive OL1 trust budget; retain its existing meaning. |
-| `p` | Post-hoc calibration target, not achieved model-wide sparsity and not `P`. |
-| `Z_s` | Exact-zero fraction at site s. |
-| `N_0`, `N_{\mathrm{model}}` | Zero-operand numerator and declared multiplication denominator. |
-| `S_{\mathrm{model}} = N_0/N_{\mathrm{model}}` | Fraction in [0,1]; a percentage is `100 S_{\mathrm{model}}`. |
-| `S_{\mathrm{block}}` | Same zero numerator divided by block-only counted products. |
-| `R_{\mathrm{arch}}(\mathcal{N})` | **Proposed notation change:** exactly the quantity currently written `S_{\mathrm{model}}^{\max}`. Keep the original definition and workload dependence. Author approval required. |
-| `U_{\mathrm{arch}}` | Existing A7-reference normalization. In this graph, it equals `S_{\mathrm{block}}`. Prefer the simpler established block-only interpretation where practical. |
-| `L_{\mathrm{val}}`, `\Delta L_{\mathrm{val}}` | Optional consistent labels for validation cross-entropy and a stated-reference difference. Do not confuse with training objectives. |
-| `t_{\mathrm{native}}, t_{\mathrm{fused}}, t_{\mathrm{sparse}}` | Optional notation for latency of matched implementations at one checkpoint and workload. |
+| **pressure** | Training-time activation regularization, not the thresholding map itself. |
+| **naive L1** / **OL1** | Existing update-rule labels. Expand OL1 as orthogonal L1; explain that projection is conflict-conditioned. |
+| `\mathcal L_{\mathrm{task}}`, `\mathcal L_1`, `\lambda` | Task objective, activation-pressure objective, pressure weight. |
+| `b` | Relative pressure-update norm budget, fixed to 1 in the reported OL1 conditions. Not the task-gradient clipping threshold. |
+| `u`, `w`, `\widetilde w` | Adaptive task vector, preconditioned pressure vector, and projected pressure vector, as in Appendix A.2. |
+| `G_{+,\kappa}(x)=x\mathbf1\{x\ge\kappa\}` | One-sided, value-preserving thresholding. Not `ReLU(x-\kappa)`. |
+| `G_{\pm,\kappa}(x)=x\mathbf1\{|x|\ge\kappa\}` | Symmetric magnitude thresholding. |
+| `\mathcal N`, `\mathcal P` | Thresholding sites and pressure sites, respectively. They need not coincide. |
+| `p` | Post-hoc calibration quantile target. Not achieved model-wide sparsity or fraction of surviving entries removed. |
+| **post-hoc magnitude thresholding (clipping)** | Evaluation-only zeroing after training. “Clipping” here is zeroing small values, not saturating large values. |
+| **gradient clipping** | Norm limiting before the optimizer, distinct from activation clipping and the OL1 correction cap. |
+| `S_{\mathrm{model}}` | Counted zero-operand scalar multiplications / declared full-model multiplication workload. |
+| `R_{\mathrm{arch}}(\mathcal N)` | A priori architectural reach for the declared sites, graph, and workload. |
+| `S_{\mathrm{block}}` | Zero-product fraction using the block-only denominator; do not call it ceiling utilization. |
+| `\Delta\mathcal L` | Always specify treatment minus reference. Use same-size A0 for dense-relative cross-size comparisons. |
+| **percentage points (pp)** | Differences between sparsity percentages. Do not confuse with relative percent changes. |
+| **trade-off curve** | Connections between evaluated settings. “Observed frontier” requires actual nondominance calculation; it is not a fitted curve. |
+| **complete-recipe comparison** | A comparison that changes more than one intervention component. Explain once rather than using it as a repeated warning label. |
+| **14M, 70M, 410M** | Nominal Pythia-family labels; architecture dimensions and actual parameter counts remain documented. |
 
-**Notation-change protocol:** Do not silently redefine an existing quantity. Record old symbol → new symbol → unchanged definition → affected source files. Update all equations, labels, captions, tables, and supplement field descriptions together. Keep original data field names and document the presentation alias when renaming would break provenance.
+Preserve raw data keys and run IDs. For example, `R_model_max` may remain an archival key mapped to manuscript `R_{\mathrm{arch}}`; do not rename historical datasets merely to match prose.
 
-**Fallback if the authors decline the reach rename:** Retain `S_{\mathrm{model}}^{\max}` but explicitly call it selected-site reach at first use and remove language implying a universal or quality-feasible maximum. Do not clamp observed values or ratios to one.
+---
 
-### 3.3 Nonnegotiable mathematical distinctions
+## 3. Baseline, repository discovery, and evidence controls
 
-- `G_{+,0}` and ReLU share forward values but differ in the stated derivative at zero. `G_{\pm,0}` is the identity in both values and gradients. Preserve the original equality and derivative conventions. [S04](#s04)
-- Pressure averages site–layer means equally in the existing runs. Adding sites changes the existing terms' weights. Do not describe those runs as having fixed per-site pressure. [S04](#s04)
-- Each scalar multiplication receives at most one zero credit even when both activation operands are zero. Future masked positions are excluded. The dense head receives no zero credit. [S05](#s05)
-- Natural zeros outside selected-site reach can contribute to observed model-wide sparsity. Reach is therefore not an upper bound on every observation. [S05](#s05)
-- Sparsity at a projection input, zero fragments, and skipped tensor-core instructions are different measurements. Preserve the distinction throughout the systems section. [S11](#s11)
-- A zero attention score does not imply a zero softmax probability. A zero projection input does not necessarily imply a zero output when a bias is present. Preserve the declared graph rather than assuming unrestricted zero propagation. [S05](#s05)
+### B00 — Establish the editable baseline
 
-### 3.4 Numerical reporting
+**Priority:** P0. **Effort:** Low. **Sources:** [M], [O].
 
-- Use one source of truth per reported number: full-precision experimental records when available, reconciled against the original tables. Do not silently replace a canonical paired delta with a difference of rounded endpoints.
-- The main text can use two decimals for sparsity percentages and three or four decimals for loss when useful; complete tables may retain their existing precision. Round at display time, not before computing deltas or ratios.
-- A change in a sparsity percentage is in **percentage points (pp)**, not percent. Make `100 ΔS_model` explicit when needed to avoid mixing fractions and percentage units.
-- Define all loss deltas as treatment minus a named reference. Negative is better. Do not compare cross-size deltas to different A0 models as though they were absolute quality.
-- Report a geometric mean as a geometric mean, with the population and weights specified. A range across checkpoints is not a confidence interval.
-- For optional perplexity reporting, confirm natural-log cross-entropy and use `exp(ΔL)`. Mark ratios computed from displayed loss values as approximate. This is explanatory re-expression, not additional experimental evidence.
-- A native-relative speedup is `t_native / t_sparse`. The incremental sparse-path factor is `t_fused / t_sparse`. Do not add multiplicative factors or attribute the entire native-relative factor to sparsity.
-- Use raw timing records to obtain absolute latency. The PDF's speedup ratios alone do not determine milliseconds. Do not synthesize latency bars from an assumed baseline.
-- Keep FP16 quality/count measurements distinct from BF16 timing/qualification measurements until precision-consistent evaluation has actually been performed.
+- [ ] Read the draft README and the existing figure/table regeneration README, including the manuscript's referenced Analysis 019 instructions if present.
+- [ ] Locate the root `.tex`, included section files, bibliography, figure source scripts, generated assets, supplementary records, training code/configs, and logs.
+- [ ] Record `git status` and the current commit. Preserve unrelated user edits. Do not reset, clean, or overwrite the repository.
+- [ ] Build the current paper with the repository's documented command. Save the baseline PDF, build log, and relevant rendered pages outside tracked source directories unless repository conventions say otherwise.
+- [ ] Record actual paths in `revision-v2/source-map.md`. The paths in this task file are intended outputs or search anchors, not claims that files already exist.
 
-<a id="4-agent-workflow-evidence-inventory-and-checkpoints"></a>
+Suggested searches, adapting to available tools:
 
-## 4. Agent workflow, evidence inventory, and checkpoints
-
-### 4.1 Preparation tasks
-
-The paths below are **proposed working outputs**, not files assumed to exist in the author's repository. Reuse an equivalent existing organization rather than imposing a new one unnecessarily.
-
-- [ ] **PREP-01 — Inventory the source.** Locate the manuscript entry point, included section files, bibliography, figure scripts, and supplement. Record the actual paths in `revision/source_map.md`. Do not invent filenames or repository locations.
-- [ ] **PREP-02 — Freeze the starting version.** Save a source-control revision or immutable copy, record the PDF hash, and compile the untouched source when available. Identify discrepancies between that compilation and the supplied PDF before editing.
-- [ ] **PREP-03 — Map paragraphs.** For every `RW-*` task below, record the actual file, heading, opening anchor, and current paragraph boundary. Include text that continues across a page break. Anchors supersede page numbers after rewriting.
-- [ ] **PREP-04 — Inventory evidence.** Check access to the manuscript's described training records, integer operation counts, clipping evaluations, histograms, figure coordinates, runtime reductions, protocol, and hashes. Mark each `AVAILABLE`, `MISSING`, or `UNVERIFIED`.
-- [ ] **PREP-05 — Create a claim ledger.** For each proposed main-text claim, record the comparator, held-fixed factors, result, source, limitation, and whether new evidence is needed. Never cite a previous review as the experimental source.
-- [ ] **PREP-06 — Create a numerical ledger.** Store exact record IDs, checkpoint hashes, precision, evaluation split, units, and display rounding. Track derived quantities separately from measured ones.
-- [ ] **PREP-07 — Confirm editorial decisions.** Obtain decisions on paper direction, the reach terminology, figure budget, whether post-hoc superiority remains a headline, and the permitted experimental budget. Do not assume a current venue page limit from memory.
-
-### 4.2 Existing-data audit with the highest potential return
-
-- [ ] **DATA-01 — Recover per-checkpoint runtime records.** Determine whether absolute native, all-skips-off, K050, and attention-dense timings are available. Align records by checkpoint, workload, precision, and measurement protocol. Missing raw latency blocks the absolute quality–latency plot; it does not block reporting the existing ratio summaries.
-- [ ] **DATA-02 — Recompute a transparent quality-budget view.** Use all eligible evaluated endpoints. As a descriptive analysis, report the greatest observed sparsity under chosen same-size A0 loss-increase budgets, for example 0.05, 0.10, and 0.20. These budgets are new presentation choices, not previously prespecified tests. Show “no eligible sparse endpoint” when appropriate. Include A0 as the reference rather than selecting a weak sparse reference.
-- [ ] **DATA-03 — Audit the five historical A4/h-pressure checkpoints.** Appendix D.4 says they were excluded because pressure targeted only h. Locate them and verify initialization, token budget, optimizer, thresholds, evaluation, and identities. They may provide useful additional comparisons; they do not automatically supply the proposed fixed-weight four/seven-site design. Do not silently change the 30-checkpoint manuscript cohort to 35. [S11](#s11)
-- [ ] **DATA-04 — Separate numerical and substantive frontier changes.** Use the complete clipping records and their actual p = 0 measurements. Document how tiny rerun differences are treated; do not cherry-pick strict nondominance caused by rounding or numerical drift. [S07](#s07)
-- [ ] **DATA-05 — Inspect existing per-site records before requesting new evaluations.** Some h/m/q/k/v distribution information may already exist. Token-level all-zero-vector statistics cannot be reconstructed from an aggregate histogram alone. Mark unavailable diagnostics as M4 rather than inventing them.
-
-### 4.3 Seed values to check against the evidence ledger
-
-This table is a verification aid, not a replacement for machine-readable records. Quality gaps below are arithmetic differences of the displayed Table 4 losses and should be treated as approximate until checked against full precision.
-
-| Item | Reported value or derived check | Source |
-|---|---|---|
-| 14M A0 loss | 5.2086 | Table 4, p. 19 |
-| 14M A1-H-L1, λ = 1 | Loss 5.1023; sparsity 3.949% | Table 4, p. 19 |
-| 14M A7-OL1, κ = 0.5 | Loss 5.8294; sparsity 27.483%; Δloss vs A0 ≈ +0.6208 | Table 4, p. 19 |
-| 70M A7-OL1, κ = 0.5 | Loss 5.2159; sparsity 40.602%; A0 loss 4.0998; Δloss ≈ +1.1161 | Table 4, p. 19 |
-| 410M A7-OL1, κ = 0.5 | Loss 5.1207; sparsity 80.616%; A0 loss 4.5475; Δloss ≈ +0.5732 | Table 4, p. 19 |
-| A4 pressure addition, κ = 0.5 | +2.498 pp sparsity; +0.3783 loss | Table 5, p. 20 |
-| A7 pressure addition, κ = 0.5 | +12.096 pp sparsity; +0.1265 loss | Table 5, p. 20 |
-| A7 pressure addition, κ = 0.1 | +1.372 pp sparsity; +0.0008 loss | Table 5, p. 20 |
-| Pooled FFN zeros at κ = 0.5 | A4-OL1 99.31%; A7-OL1 93.64% | Table 7, p. 21 |
-| K050 vs native | Geometric mean 1.2340× across 30; retrospective search maximum 1.7830× | Section 4.5, p. 11 |
-| K050 vs matched all-skips-off | 1.311× at search checkpoint; geometric mean 1.0432×; helps 14/30 checkpoints | Section 4.5 / Appendix D.4 |
-| Attention-dense ablation vs native | Geometric mean 1.2506×; faster than K050 on all 30 | Table 9 / Appendix D.4 |
-| All-skips-off vs native | Geometric mean 1.1829× | Table 9, p. 27 |
-| Attention instruction skipping at search checkpoint | 58.0% of eligible QK and 67.2% of PV MMA instructions bypassed, but net slowdown | Appendix D.4, p. 26 |
-
-Do not replace the reported 1.7830× search maximum with the 1.7832× final-sweep maximum without explaining the different measurements. Do not call 1.8022× the original search result; it belongs to the attention-dense ablation's range. [S11](#s11)
-
-### 4.4 Batch execution protocol
-
-For each task:
-
-1. **Locate:** Read the whole original paragraph, its caption/table dependencies, and the neighboring paragraphs.
-2. **Verify:** Check the claim ledger and numerical source. Mark unsupported requested content as blocked.
-3. **Patch:** Make the smallest coherent edit that accomplishes the task. Do not change unrelated notation or insert new literature while editing results.
-4. **Check locally:** Read the preceding paragraph, edited passage, and following paragraph continuously. Remove duplicated definitions or abrupt transitions.
-5. **Check globally:** Find every occurrence of the changed headline, symbol, statistic, and figure reference. Update related claims deliberately, not through unreviewed global replacement.
-6. **Save state:** Record completed task IDs, evidence used, unresolved questions, and the next task. Compile when source is available.
-
-**Completion states:** `TODO`, `IN_PROGRESS`, `DONE_VERIFIED`, `BLOCKED_DATA`, `BLOCKED_AUTHOR`, `DEFERRED_EXPERIMENT`, `NOT_APPLICABLE`.
-
-A task is `DONE_VERIFIED` only when its evidence and local consistency checks pass. A rewritten paragraph with an unresolved numerical placeholder is not complete.
-
-### 4.5 Minimal state template
-
-```yaml
-mode: CURRENT_RESULTS_ONLY
-source_revision: <actual source revision or immutable PDF identifier>
-paper_direction: empirical_design_study
-current_batch: <task IDs>
-completed_verified: []
-blocked:
-  - task: <ID>
-    reason: <missing record, author decision, or unsupported claim>
-    safe_fallback: <existing-evidence wording or omit the addition>
-notation_decisions:
-  reach_name: <approved term>
-  reach_symbol: <approved symbol>
-evidence_added: []
-claims_strengthened: []
-claims_narrowed: []
-next_tasks: []
+```bash
+rg -n -g '*.tex' 'SPARSIFICATION|Sparsification|architectural reach|Architectural reach' .
+rg -n -g '*.tex' 'Maximum observed sparsity|Cohort means|Transfer across model sizes' .
+rg -n -g '*.tex' 'This does not guarantee|pressure.*normalization|Retrospective quality' .
+rg -n 'all.skips.off|statistical.top|trust.budget|grad.norm|gradient.norm' \
+  --glob '*.py' --glob '*.json' --glob '*.yaml' --glob '*.yml' .
 ```
 
-Keep state concise. The full evidence ledger, not accumulated chat history, should carry provenance. When restarting, read the state, glossary, claim ledger, and current task—not a fresh speculative summary of the paper.
+**Done when:** The agent can identify the source block and generating script for every edited figure, table, and paragraph. Missing logs do not block unrelated text and figure edits.
+
+### B01 — Create a restartable task and claim ledger
+
+- [ ] Create `revision-v2/state.md` with task statuses: `TODO`, `IN_PROGRESS`, `DONE_VERIFIED`, `BLOCKED_MISSING_DATA`, `NEEDS_AUTHORIZATION`, `NOT_APPLICABLE`.
+- [ ] Create `revision-v2/claims.csv` with fields: `claim_id`, `claim_text`, `type`, `source_path`, `run_ids`, `precision`, `comparison`, `manuscript_location`, `verification`, `allowed_wording`.
+- [ ] Use types `OBSERVED`, `DERIVED`, `DESIGN_RATIONALE`, and `HYPOTHESIS`.
+- [ ] Record the author's OL1 robustness and 410M gradient observations as rationale/hypothesis until the required checks establish more.
+- [ ] Maintain `revision-v2/changes.md`: task ID, paragraph anchor, files changed, numerical changes, build/test result, and remaining dependency.
+
+**Done when:** A fresh agent can resume without rereading the entire conversation or inferring that pending experiments already happened.
+
+### B02 — Freeze the scientific invariants
+
+- [ ] Preserve the realized 54-condition primary study and its identities unless new conditions are explicitly added as a separate analysis.
+- [ ] Preserve one-seed reporting. Neither 29 paired contrasts nor three model sizes are independent seed replications.
+- [ ] Preserve all evaluated thresholds, clipping targets, unfavorable points, and full-range supplementary figures.
+- [ ] Do not alter training code, checkpoint semantics, objective normalization, or threshold derivatives to make the method match a preferred explanation.
+- [ ] Establish one source of truth for numerical table/figure data. Generate new summaries from records, not from rounded PDF entries.
+- [ ] Require an explicit evidence update before changing cohort sizes, evaluation counts, or the statistical status of a finding.
+
+**Done when:** Editorial changes cannot silently change what experiment is being described.
 
 ---
 
-<a id="5-paragraph-by-paragraph-main-text-rewrite"></a>
+## 4. Method rationale: precise positive arguments
 
-## 5. Paragraph-by-paragraph main-text rewrite
+### O01 — Audit the implemented OL1 rule before describing its geometry
 
-**How to use this section:** The task IDs identify stable units of work. “Keep” means preserve the substance, not necessarily the exact wording. “Change” is a proposed editorial action. “Done when” is the check before marking completion. New paragraphs are explicitly labeled; optional evidence must not appear in the current-results draft.
+**Priority:** P0. **Effort:** Low. **Locate:** §3.1 paragraph beginning “Pressure uses the mean absolute activation”; Appendix A.2, p. 11. **Source:** [M, Appendix A.2].
 
-### 5.1 Section 3.1 — Sparsification interventions
+Verify against the training implementation and run configs:
 
-#### RW-31-01 — Explain the fixed-threshold design without claiming unmeasured savings
+- [ ] The task gradient is accumulated, unscaled if AMP is used, globally clipped, and supplied to AdamW separately from the pressure gradient.
+- [ ] `u` uses the updated, bias-corrected task moments; `w` uses the pressure gradient and the task second-moment preconditioner.
+- [ ] Projection is applied only when `u · w < 0`, subject to the actual small-norm safeguard. It is not unconditional orthogonalization.
+- [ ] The correction norm is capped relative to `||u||`, over the documented eligible parameters, before group learning rates.
+- [ ] Record the actual treatment of decoupled weight decay, parameter groups with different learning rates, absent gradients, zero vectors, numerical stabilizers, and skipped optimizer steps.
+- [ ] Verify that all reported OL1 runs use `b=1`, while the local study sweeps `lambda` and the multisite study fixes `lambda=1`.
 
-**Locate:** p. 3, paragraph beginning “Q-Sparse selects the top-k activation magnitudes.”
+**Deliverable:** `revision-v2/ol1-audit.md`, with implementation locations and the implemented formula. Do not call `lambda=1` “large enough to saturate” solely because it is the largest tested value.
 
-- [ ] Keep the distinction between top-k selection and a fixed cutoff that leaves the number of retained activations free to vary.
-- [ ] Reduce literature detail that is already in Section 2. Make the design choice, not an implied speed advantage over prior methods, the paragraph's subject.
-- [ ] State that the fixed cutoff avoids ranking and the specified input-dependent estimates, but do not translate this implementation property into an unmeasured end-to-end benefit.
+**Done when:** The main-text rationale and appendix describe the rule that produced the checkpoints, not an improved rule the agent wishes had been used.
 
-**Reader takeaway:** A fixed threshold allows training to change how many activations survive; it does not enforce a sparsity budget.
+### O02 — Replace the unsupported-disclaimer paragraph with the protected-direction argument
 
-**Done when:** The paragraph answers why this nonlinearity is studied without claiming superiority to top-k. **Evidence:** [S04](#s04).
+**Priority:** P0. **Effort:** Low. **Dependencies:** O01. **Source:** [M, Appendix A.2]; the derivation below is new mathematical reasoning, not a new experiment.
 
-#### RW-31-02 — Make the two placement decisions explicit
+#### Exact editorial target
 
-**Locate:** p. 3, “A sparsification intervention specifies where to set activations to zero…”
+Replace the main-text sentence beginning **“This does not guarantee preserved task loss”** as the paragraph's explanatory conclusion. Do not simply delete the boundary and substitute an unconditional claim that task loss is preserved.
 
-- [ ] Keep `\mathcal{N}` and `\mathcal{P}` distinct and define them before the recipe IDs.
-- [ ] Add one plain-language sentence: choosing where to apply a threshold and choosing where to apply pressure are separate decisions, even though many evaluated recipes align them.
-- [ ] Point to Figure 1 for assignments. Do not describe the full cohort as a fully crossed factorial design.
+Use two short paragraphs after the pressure-objective definition:
 
-**Done when:** The reader can distinguish “adding Q/K/V thresholds” from “adding Q/K/V pressure” before reaching the results. **Evidence:** [S04](#s04).
+**Paragraph O-P1: why this pressure implementation.**
 
-#### RW-31-03 — Preserve sign treatment and boundary conventions
+- Task optimization remains the primary update.
+- The pressure correction uses the task optimizer's coordinate scaling.
+- Under conflict, remove the component opposing the adaptive task direction.
+- Bound the correction using that direction's norm instead of letting a large pressure weight produce an arbitrarily large correction.
 
-**Locate:** p. 3, “We use ReLU and two thresholding nonlinearities…”
+**Paragraph O-P2: why a fixed configuration.**
 
-- [ ] Keep both equations and the distinction between one-sided and symmetric thresholding.
-- [ ] Say explicitly that the one-sided map removes all negative values, not only small-magnitude activations.
-- [ ] Keep the κ = 0 forward-map interpretation; retain the Appendix A.1 pointer for the derivative-at-zero distinction.
-- [ ] Avoid introducing “soft thresholding,” “shrinkage,” top-k, or a straight-through estimator: those would change the specified method.
+- In the cap-active regime, increasing `lambda` no longer materially increases the correction magnitude.
+- This motivates holding `b` and the multisite `lambda` fixed to keep the study focused on thresholds and placement.
+- Describe this as a design rationale and a conditional geometric property, not measured hyperparameter robustness unless O03 provides evidence.
+- Say the budget extends the **norm-limiting principle** of the Pythia training recipe to an auxiliary update. Do not say update-norm capping is mathematically identical to Pythia's gradient clipping.
 
-**Done when:** A reader could implement the forward maps correctly from the paragraph and find the exact backward convention in the appendix. **Evidence:** [S04](#s04).
+#### Analytic explanation to add to Appendix A.2
 
-#### RW-31-04 — Separate a training hypothesis from what distributions demonstrate
+Keep the exact stabilized implementation first. Then introduce an explicitly **idealized** version, ignoring numerical stabilizers and using a common learning rate for the displacement interpretation.
 
-**Locate:** p. 3, “The threshold is fixed within each training condition.”
+For a nonzero adaptive task direction `u`, define
 
-- [ ] Keep the fixed-threshold protocol.
-- [ ] Retain adaptation as a hypothesis being examined, not a guarantee of quality preservation.
-- [ ] Describe the distribution analysis as evidence about the learned endpoints. Do not imply it directly measures the entire training trajectory.
+\[
+\widetilde w =
+\begin{cases}
+w-\frac{u^\top w}{\|u\|^2}u, & u^\top w<0,\\
+w, & u^\top w\ge0.
+\end{cases}
+\]
 
-**Done when:** The paragraph does not turn endpoint distributions into proof of a causal adaptation mechanism. **Evidence:** [S04](#s04), [S09](#s09).
+The ideal pressure descent vector is
 
-#### RW-31-05 — Split pressure definition from optimizer implementation
+\[
+d_{\mathrm p}
+=\min\!\left(\lambda,\frac{b\|u\|}{\|\widetilde w\|}\right)\widetilde w,
+\]
 
-**Locate:** p. 3, “Pressure uses L1: we take the mean absolute activation…”
+with `d_p=0` when `w_tilde=0`. The added parameter displacement is `-alpha d_p`.
 
-- [ ] Split into two short paragraphs if needed. First define the pressure objective, including post-nonlinearity measurement and equal site–layer weighting.
-- [ ] Add the consequence next to the definition: adding targets changes the objective and the weights of existing targets in the reported protocol.
-- [ ] In the second paragraph, summarize naive L1 and OL1. Keep task-only AdamW state, conflict projection, and the trust-budget role; leave exact update geometry to Appendix A.2.
-- [ ] Remove any implication that OL1 is the central novelty or uniformly improves naive L1. Do not say it guarantees task-loss preservation.
+This gives three useful properties:
 
-**Done when:** The reader understands what changes between the pressure variants and why equal λ across target sets does not imply equal per-site pressure. **Evidence:** [S04](#s04), [S08](#s08).
+1. **Adaptive-direction protection:** `u^T d_p >= 0`, and equality holds in the nondegenerate conflicting case after projection. Thus `u^T(u+d_p) >= ||u||^2`. The added direction does not cancel progress measured along `u`.
+2. **Relative norm control:** `||d_p|| <= b ||u||` in the idealized rule. At `b=1`, the auxiliary vector cannot exceed the adaptive task vector in this norm. The combined vector is not itself constrained to the task-vector norm.
+3. **Saturation in lambda:** once `lambda ||w_tilde|| >= b ||u||`, `d_p = b ||u|| w_tilde / ||w_tilde||`. The ideal vector is then independent of further increases in `lambda` at that fixed optimizer state and gradient pair.
 
-### 5.2 Section 3.2 — Sparsity and architectural reach
+Optional, if a compact formal statement improves the appendix: with `rho=b||u||` and nonzero projected direction, the cap-saturated ideal vector solves
 
-#### RW-32-01 — Define exactly what the model-wide metric counts
+\[
+\underset{d}{\operatorname{maximize}}\;w^\top d
+\quad\text{subject to}\quad
+u^\top d\ge0,\quad\|d\|\le\rho,
+\]
 
-**Locate:** p. 4, “Activation sparsity is the fraction of exactly zero entries at a named site.”
+The constraint defines the adaptive-task half-space. This is maximum alignment with the **preconditioned pressure direction** inside the norm ball and protected half-space. In the conflicting case, the optimum lies in the orthogonal subspace. In the nonconflicting case, retaining an aligned component is appropriate. In the exactly opposing degenerate case, the implemented zero correction is an optimum but need not be the only one.
 
-- [ ] Keep the local definition, then give `S_model = N0 / N_model`.
-- [ ] Explain the atomic unit in one accessible sentence: one scalar multiplication in a declared matrix product receives credit if an activation operand is zero.
-- [ ] Keep the dense LM head in the denominator with no zero credit, count-pooling, and causally valid full-sequence scope.
-- [ ] End by distinguishing this quantity from total FLOPs, memory traffic, and elapsed time.
+Do not call that objective the true first-order pressure-loss decrease: it is `w^T d`, not generally `g_1^T d`.
 
-**Done when:** A reader cannot mistake 27% model-wide sparsity for a measured 27% runtime reduction. **Evidence:** [S05](#s05).
+#### The necessary boundary, stated constructively and once
 
-#### RW-32-02 — Repair the “ceiling” interpretation, not the measurement
+An AdamW adaptive direction is not generally the current task gradient. The protected quantity above is its directional component, not the actual task loss. Actual first-order task loss depends on `g_task^T d_p`; finite-step behavior also depends on curvature. The implemented stabilizers make conflict removal approximate, and group learning rates/weight decay require the scope stated in O01.
 
-**Locate:** p. 4, “The model-wide sparsity ceiling…”
+Use wording such as:
 
-- [ ] Apply the approved reach terminology and symbol consistently.
-- [ ] Define the quantity as the fraction structurally reached when the selected sites are entirely zero, with overlap counted once.
-- [ ] State that it depends on architecture, site set, and sequence length, but not a checkpoint or a quality constraint.
-- [ ] Retain the natural-zero caveat: observed sparsity can include zeros outside selected-site reach.
-- [ ] Do not change the numerator, normalize every recipe by a new denominator, or reinterpret closeness to reach as practical optimality.
+> “The projection protects the adaptive task direction, and the relative norm cap makes the auxiliary step saturate with its weight. We therefore use a fixed budget as a controlled pressure mechanism rather than tuning an optimizer for each intervention. Appendix A.2 states the geometric property and its relation to the implemented update.”
 
-**Reader takeaway:** The quantity explains the scope of the intervention in the declared workload; it does not say how much sparsity can be achieved without unacceptable loss.
+Place the exact distinction from task-loss preservation in the appendix explanation, not as the only reason offered in the main text.
 
-**Done when:** Abstract, introduction, equations, figure labels, and appendices use the same interpretation. **Evidence:** [S05](#s05).
+#### CPU verification tasks
 
-### 5.3 Section 4 opening — Experimental protocol and comparison map
+- [ ] Test ideal projection on aligned, orthogonal, conflicting, exactly opposing, and zero pressure vectors.
+- [ ] Test the ideal cap and the lambda-saturation boundary.
+- [ ] Compare the stabilized implementation with the ideal rule and describe differences rather than imposing exact equality tests on an approximate projection.
+- [ ] Include an internal negative test preventing a false task-loss claim: `u=(1,1)`, `w=(-2,0)`, `b=1`, cap active gives `d_p=(-1,1)`. For task gradient `g=(1,0)`, `u^T d_p=0`, but `g^T(u+d_p)=0` versus `g^T u=1`. Orthogonality to `u` can remove the Adam direction's predicted loss improvement. This is a verification example, not a necessary manuscript figure.
+- [ ] Remove any statement that `b=1` makes the full update identical to a gradient-clipped Pythia step. The norm domains and sequence of operations differ.
 
-#### RW-40-01 — Establish the common evaluation and the actual scale of the study
+**Done when:** The authors' intended rationale is explained positively, with a real, verified geometric result and no false loss-preservation theorem.
 
-**Locate:** p. 4, “We pretrain randomly initialized Pythia-14M, 70M, and 410M models…”
+### O03 — Check saturation before asserting robustness or a normalization confound
 
-- [ ] Keep random initialization, MiniPile, and the detailed-14M / selected-larger-recipes distinction.
-- [ ] State validation cross-entropy as the quality measure and explain “lower is better” once.
-- [ ] Keep the complete validation-block count, sequence length, and shared loss/count pass; move packing detail to the appendix only if needed for flow, not to conceal the evaluation scope.
-- [ ] Make clear that recipe rows identify separately pretrained models.
+**Priority:** P0 for analysis; empirical extension conditional. **Effort:** Low with logs; mid for a short approved diagnostic. **Dependencies:** O01–O02.
 
-**Done when:** The reader does not infer fine-tuning of released Pythia weights or a large-model intervention sweep. **Evidence:** [S06](#s06).
+This task also corrects an over-simple interpretation in the previous revision advice: changing the mean's denominator changes the objective algebraically, but it need not change a saturated OL1 correction's magnitude.
 
-#### RW-40-02 — Turn matching claims into an explicit comparison map
+- [ ] Search retained per-step records for `||u||`, `||w_tilde||`, `lambda`, cap multiplier, conflict indicator, and update norms.
+- [ ] Compute the fraction of steps on which the cap binds and the distribution of `||d_p||/||u||`, separately by recipe, threshold, and early/late training phase.
+- [ ] Define “cap active” from the actual implementation condition, not from a rounded correction norm alone.
+- [ ] Report whether stored norms precede or follow learning-rate multiplication and which parameter set they cover.
+- [ ] When records are absent, retain the conditional analytic rationale. Mark actual saturation as unknown; do not infer it from endpoint sparsity or the selected `lambda`.
 
-**Locate:** p. 4, “Within each size, matched contrasts share initialization, data order, and training budget.”
+#### Positive-scaling invariance check
 
-- [ ] Keep those matching properties.
-- [ ] Distinguish three cases: pressure on/off at fixed nonlinearities; unpressured A7 versus A4 at fixed κ; A7-OL1 versus A4-OL1 as a complete-recipe comparison.
-- [ ] State that the last case changes both target placement and objective normalization.
-- [ ] Qualify A4 versus A1-H: beyond the κ = 0 boundary details, this changes extra sites and the h threshold, not only the number of sites.
-- [ ] Add a compact comparison map in text or a table if the figure alone is insufficient. Avoid repeating all 29 deltas here.
+At fixed `u`, multiplying the entire pressure objective by a positive scalar multiplies `w` and `w_tilde` by that scalar. If both corrections are cap-saturated, their normalized directions are identical in the ideal rule. The implemented epsilon terms make the equivalence approximate.
 
-**Done when:** Every later use of “effect of placement” can be traced to a contrast that actually holds the relevant factors fixed. **Evidence:** [S06](#s06), [S04](#s04).
+Consequently:
 
-#### RW-40-03 — Bring the single-seed and budget limitations into the setup
+- A four-target mean extended to seven targets changes the mixture of site gradients. That directional change remains scientifically relevant even under saturation.
+- For a **fixed expanded target set**, using `sum_7/(7L)` versus `sum_7/(4L)` differs only by an overall factor. A saturated normalization step can remove that factor's effect.
+- Do not claim that the existing sites necessarily received a proportionally smaller **effective update** just because their coefficients in the written mean became smaller.
+- Do not order a long “fixed coefficient” ablation that merely rescales the same always-saturated vector. First establish that it changes effective updates or a meaningful relative weighting.
+- Independent weighting of old versus newly added sites can change direction; that is a different experiment from changing one global denominator.
 
-**Locate:** p. 4, “The cohort contains 30 conditions at 14M and 12 at each larger size.”
+**Approved wording without saturation logs:** “Expanding the pressure targets changes the aggregate direction and, when the cap is inactive, its scale. The comparison therefore evaluates a different pressure objective.”
 
-- [ ] Keep cohort sizes, update/token budget, final-checkpoint selection, and swept λ/κ values.
-- [ ] Add a short sentence stating one training seed per condition. Shared initialization is a paired design feature, not independent replication.
-- [ ] Keep the larger-size learning-rate difference and tokens-per-parameter details in Table 3 / Section 4.4; cross-reference them here as needed.
-- [ ] Do not call the 29 comparisons 29 independent trials.
+**Approved stronger wording with logs:** Quantify the observed cap-active fraction and explain how often global rescaling is suppressed. Do not extrapolate to untested weights or training settings.
 
-**Done when:** The reader knows the unit of replication before interpreting small differences. **Evidence:** [S06](#s06).
+**Done when:** The paper neither asserts unmeasured hyperparameter robustness nor overstates normalization dilution as an established mechanism.
 
-#### RW-40-04 — Define the post-hoc control narrowly and transparently
+### T01 — Restore the Q-Sparse → Spark → fixed-threshold rationale
 
-**Locate:** p. 4, “For the evaluation-only reference, we apply uniform magnitude-clipping targets…”
+**Priority:** P0. **Effort:** Low. **Locate:** §3.1 opening paragraph; §2.1 paragraph beginning “Beyond FFNs”; original §3.1 first paragraph. **Sources:** [Q], [S], [O, §3.1].
 
-- [ ] Keep the four sites, separate site–layer calibration, ten training blocks, and fixed weights.
-- [ ] Use “uniform post-hoc magnitude clipping” as the main label. Keep TEAL-style provenance without implying a full optimized-TEAL reproduction.
-- [ ] Distinguish calibration target p from achieved sparsity.
-- [ ] State that comparing this four-site reference to A7 also changes reach and, depending on the contrast, the final transformation at h.
+Write a short motivation paragraph **before** the threshold equations:
 
-**Done when:** A reviewer can identify exactly what this baseline does and what superiority over it would not establish. **Evidence:** [S06](#s06), [S07](#s07).
+- [ ] Describe this study as testing the broader idea of train-time activation sparsification motivated by projection-input selection, not as reproducing Q-Sparse.
+- [ ] Cite [Q] for top-k magnitude selection and its straight-through training rule. The present rule changes both selection and gradient treatment; do not imply identical methods.
+- [ ] Cite [S, §3] for the implementation-overhead motivation and statistical top-k alternative. Describe fixed thresholds as avoiding per-input selection and threshold-estimation work, not as a measured speedup over Spark.
+- [ ] State the experimental hypothesis: with the cutoff held fixed, training and optional pressure reshape site distributions, so the surviving count is an outcome rather than a constraint.
+- [ ] Connect this choice to the distribution study: the histograms investigate the representation learned with that intervention; they do not establish an entire time trajectory from initialization.
 
-### 5.4 Section 4.1 — Quality–sparsity trade-offs
+Suggested final logic, to adapt rather than copy mechanically:
 
-#### RW-41-01 — Lead with the low-loss operating regime, not only high sparsity
+> “We study a fixed-cutoff alternative to activation selection. The cutoff requires neither ranking nor a per-input estimate, and leaves the surviving count free to change as training reshapes the activation distribution. This makes the threshold and pressure separate experimental controls: the threshold defines what is zeroed, while pressure can change how much activation mass reaches it.”
 
-**Locate:** p. 4, “Local pressure and broader nonlinearities offer different quality–sparsity trade-offs…”
+**Literature precision:** Avoid saying all top-k algorithms require a full sort. Attribute the costly selection/sorting motivation to the implementation context in [S]. Spark's statistical operator, its attention-position selection, and this paper's feature-coordinate thresholding are not interchangeable mechanisms.
 
-- [ ] Keep the observation that local pressure can lower validation loss while introducing modest model-wide sparsity in the reported runs.
-- [ ] Mention the strongest observed naive-L1 local endpoint, not only the selected OL1 endpoint: Table 4 gives loss 5.1023 and sparsity 3.949% at λ = 1.
-- [ ] The existing OL1 versus A0-clipping contrast can remain as an illustration of different quality at similar, not identical, sparsity. Do not call it an exactly matched-quality or matched-sparsity experiment.
-- [ ] Avoid inferring a statistically established regularization benefit until replicated.
+**Done when:** The reader understands why this simpler intervention is scientifically useful without being told it has already beaten selection-based methods.
 
-**Reader takeaway:** The low-quality-cost regime and maximum-sparsity regime answer different design questions.
+### T02 — Keep the actual maps, site assignments, and derivatives exact
 
-**Done when:** Readers do not come away believing that the main empirical benefit is unique to OL1. **Evidence:** [S07](#s07), [S08](#s08).
+**Priority:** P0. **Effort:** Low. **Locate:** threshold equations; Figure 1 caption; Appendix A.1 and Table 4. **Source:** [M].
 
-#### RW-41-02 — Attach a visible quality cost to the aggressive operating point
+- [ ] Preserve the factor `x` in both maps: `G(x)=x * indicator`. A binary indicator alone is not the executed activation.
+- [ ] Explain that retained values are unchanged. `G_{+,kappa}` is not `ReLU(x-kappa)`; at a positive cutoff the map is discontinuous at the boundary.
+- [ ] Preserve the executed site map: **one-sided** at `a,m,h,z`; **symmetric** at `q,k,v` in A7.
+- [ ] Do not simplify this to “one-sided at FFN sites and symmetric at all attention sites.” The attention projection sites `a,z` also use the one-sided map in the reported recipes.
+- [ ] Describe `h` as replacing GELU; describe extra sites as adding the declared transformation. Q/K thresholding is after RoPE.
+- [ ] Retain the detached mask convention and boundary derivatives. `G_{+,0}` and ReLU share forward values but differ at zero in the specified implementation; `G_{±,0}` is identity in values and gradients.
+- [ ] Add a small method test or verify an existing test at `-kappa`, `0`, `kappa`, and just inside/outside boundaries.
+- [ ] Keep any new all-attention symmetric-site ablation in the optional experiment list. Do not alter old recipes through prose.
 
-**Locate:** pp. 4 and 6, “Broader interventions reach much greater sparsity.” Include the continuation beginning “the internal attention operands.”
+**Done when:** The appealing rationale accurately describes what was trained.
 
-- [ ] Keep the 14M A7-OL1 κ = 0.5 result, but report its loss increase relative to same-size A0 alongside 27.483% sparsity.
-- [ ] Keep the four-site versus seven-site reach distinction next to the clipping comparison.
-- [ ] Replace broad “dominates the frontier” language with a statement about the tested comparator and region, only after checking the actual endpoint/frontier records.
-- [ ] End with the unresolved design question: how much of the increased opportunity is available within a specified loss budget?
+### A01 — Make architectural reach useful before training
 
-**Done when:** The reader sees that “more sparsity,” “better than another sparse recipe,” and “better quality–efficiency than A0” are separate statements. **Evidence:** [S07](#s07), [S05](#s05).
+**Priority:** P0. **Effort:** Low. **Locate:** §3.2 paragraph beginning “Architectural reach”; Appendix B.2 and C.2. **Source:** [M, pp. 3, 12, 14]; algebra below is derived from its declared counts.
 
-#### RW-41-03 — Add a quality-budget summary only from available records
+Replace the definition-only paragraph with **purpose → definition → analytic consequence**:
 
-**Locate:** New paragraph or compact table immediately after RW-41-02.
+1. **Purpose:** Before training, estimate which fraction of the declared multiplication workload a proposed set of sites can structurally affect. This helps distinguish a narrow intervention from one that reaches substantially different operations.
+2. **Definition:** Preserve `R_arch=N_reach(N)/N_model`, actual graph closure, union counting, and the dense-head denominator.
+3. **Consequence:** Explain how changing width/depth/sequence length changes reachable work. Reach is architecture/workload potential, not a quality-preserving sparsity prediction or a measured speedup.
 
-- [ ] Insert the DATA-02 summary: greatest observed sparsity within stated same-size A0 loss budgets, with recipe and κ/λ.
-- [ ] Include a note that the budgets describe a retrospective summary of evaluated points; they were not the original selection criterion.
-- [ ] Preserve unfavorable or empty regimes. Never interpolate an untrained model between endpoints.
-- [ ] Add absolute latency only when DATA-01 provides valid measurements. If only speedup ratios exist, keep the latency addition blocked rather than relabeling ratios as quality–latency data.
+#### Analytic specialization to verify and retain in the appendix
 
-**Done when:** A reader can identify a feasible tested operating point without treating all sparsity increases as useful. **Dependency:** DATA-01/02 as applicable. **Evidence:** [S07](#s07).
+For the manuscript's full-sequence causal Pythia graph, with `d_f=4d`,
 
-### 5.5 Section 4.2 — Paired intervention effects
+\[
+C_{\mathrm{model}}
+=Td\,[L(12d+T+1)+V_{\mathrm{vocab}}].
+\]
 
-#### RW-42-01 — Explain the local comparison without an optimizer-superiority story
+Let `D=L(12d+T+1)+V_vocab`. Then
 
-**Locate:** p. 6, “Pressure's additional value depends on the threshold and target set…”
+\[
+R_{\mathrm{arch}}(\{h\})=\frac{4Ld}{D},\qquad
+R_{\mathrm{arch}}(\{m,h\})=\frac{8Ld}{D},
+\]
+\[
+R_{\mathrm{arch}}(A4)=\frac{12Ld}{D},\qquad
+R_{\mathrm{arch}}(A7)=\frac{L(12d+T+1)}{D}.
+\]
 
-- [ ] Keep the ReLU-versus-GELU contrast and the local-pressure comparisons.
-- [ ] Report naive-L1 versus OL1 as update-rule comparisons, not as an isolated test of conflict projection.
-- [ ] Retain the reversal at λ = 1 and explain that small differences at other weights are single-seed endpoint differences.
-- [ ] Use the complete Table 5 deltas rather than recomputing from rounded Table 4 entries.
+The additional operation coverage from A4 to A7 is
 
-**Done when:** The paragraph supports conditional behavior, not a universal ranking of optimizers. **Evidence:** [S08](#s08).
+\[
+R_{\mathrm{arch}}(A7)-R_{\mathrm{arch}}(A4)
+=\frac{L(T+1)}{D},
+\]
 
-#### RW-42-02 — Make the threshold dependence quantitatively memorable
+which is the share of the two attention matrix products for this graph; A4 already reaches the attention-output projection.
 
-**Locate:** pp. 6–7, “For A4, adding OL1 improves both loss and sparsity at κ = 0 and 0.01.” Include its continuation after Figure 3.
+Explain the distinctions:
 
-- [ ] Keep one low/moderate-threshold comparison and one high-threshold comparison. Reduce the recital of sweep values that are already visible in the figure.
-- [ ] Pair every sparsity increment with its loss change and the exact pressure-on versus pressure-off comparator.
-- [ ] Preserve the different A4 and A7 outcomes at κ = 0.5, but immediately identify their different pressure objectives.
-- [ ] Treat +0.0008 loss as a reported difference, not evidence of equivalence or loss preservation.
+- At fixed depth, vocabulary, and sequence length, FFN/projection work grows quadratically in width, while the two attention products grow linearly in width.
+- At fixed architecture, projection work grows linearly with sequence length, while causal attention-product work grows quadratically. Thus long sequences increase the relative importance of internal-attention sparsification.
+- More depth can reduce the dense head's relative share. “Model size” is not a single geometric variable; width, depth, and vocabulary affect the ratio differently.
+- Attention **projections** also have width-quadratic work. Do not describe all attention operations as quadratic in sequence length.
+- The statements concern full uncached sequences. Do not silently apply the same formula to cached decoding.
 
-**Reader takeaway:** The value of pressure is conditional on the base recipe and operating point; its cost is part of the result.
+Use the existing architecture configurations to verify these approximate percentages at `T=2048`, `V_vocab=50304`:
 
-**Done when:** The reader can explain one meaningful change of behavior without memorizing every point. **Evidence:** [S08](#s08).
+| Size | h-only reach | A4 reach | A7 reach |
+|---|---:|---:|---:|
+| 14M | 4.278% | 12.833% | 29.952% |
+| 70M | 12.354% | 37.063% | 49.424% |
+| 410M | 24.925% | 74.776% | 87.245% |
 
-#### RW-42-03 — Replace broad isolation language with an exact scope statement
+The h-only ceiling rises substantially across these configurations even before observing any learned sparsity. This is a useful explanation for part of the cross-size change, not evidence that training itself improves monotonically.
 
-**Locate:** p. 7, “Pressure therefore needs to be evaluated at its actual threshold and sites.”
+- [ ] Add CPU tests against the original operation inventory, overlap counting, and `V=0 => PV=0` closure.
+- [ ] Check width/sequence-length trends by evaluating the formulas; no training is needed.
+- [ ] Keep `S_block=S_model/R_arch(A7)` only with the explanation that A7 reaches every counted block operation and its denominator is the same for all curves within a size.
+- [ ] State once that natural zeros outside selected-site reach can contribute to `S_model`; do not reintroduce “universal sparsity ceiling.”
 
-- [ ] Keep the existing normalization caveat; it is essential, not expendable detail.
-- [ ] State what is learned now: pressure on/off effects within each defined objective vary across thresholds.
-- [ ] State what is not learned now: the larger A7 pressure increment cannot be attributed solely to broader nonlinearity placement or solely to pressure at q/k/v.
-- [ ] Transition to distributions as a description of complete learned recipes, not a mechanism-identifying test.
+**Done when:** A reader can use the metric to reason about a proposed intervention before committing training compute.
 
-**Done when:** This paragraph matches the comparison map in RW-40-02. **Optional extension:** M1 adds a separately labeled fixed-weight comparison; it does not retroactively change the meaning of the original runs. **Evidence:** [S08](#s08).
-
-### 5.6 Section 4.3 — Reshaping activation distributions
-
-#### RW-43-01 — Make the zero mass visible and name the aggregation
-
-**Locate:** p. 7, “More FFN zeros need not mean more model-wide sparsity…”
-
-- [ ] Keep the 99.31% versus 93.64% pooled-FFN comparison and the corresponding attention distinction.
-- [ ] Use “pooled FFN elements at h and m” rather than suggesting the percentage describes every site or layer.
-- [ ] Put the zero masses directly in the revised figure; retain Table 7 for complete values and tails.
-- [ ] Explain once that a sharp nonzero peak near zero is not exact-zero mass.
-
-**Done when:** The central sparsity information is not absent from the main distribution figure. **Evidence:** [S09](#s09).
-
-#### RW-43-02 — Describe nonlocal changes without claiming a mechanism
-
-**Locate:** pp. 7–8, “A4 does not directly threshold or pressure q, k, v…”
-
-- [ ] Keep the observation that distributions at untargeted q/k/v sites change under the complete A4-OL1 recipe.
-- [ ] Prefer a direct description over the undefined term “spillover.” If that term remains, define it descriptively and keep the causal caveat.
-- [ ] Keep the distinction between indirect distribution changes in A4 and direct intervention in A7.
-- [ ] Do not infer that pressure alone caused the change relative to A0.
-
-**Done when:** A reader can separate the measurement from a proposed explanatory mechanism. **Evidence:** [S09](#s09).
-
-#### RW-43-03 — Explain the ranking reversal using operation counts
-
-**Locate:** p. 8, “The operation counts show why this distinction matters model-wide.”
-
-- [ ] Keep the QK/PV contribution comparison and the fact that some projection contributions fall under A7-OL1.
-- [ ] Prefer one net explanation over a long list: the added attention contribution outweighs the reduced projection contributions in the total.
-- [ ] Reference a compact operation breakdown in the main text or main figure, derived from Table 8 / Figure 7.
-- [ ] End with the bounded implication: local FFN sparsity is insufficient to rank these recipes by counted model-wide opportunity. Do not imply it ranks their latency.
-
-**Done when:** The reader can reconstruct why the local and aggregate metrics disagree. **Evidence:** [S09](#s09).
-
-#### RW-43-04 — Optional insertion: investigate extreme branch-input sparsity
-
-**Locate:** New paragraph after RW-43-03, only after verified DATA-05/M4 results.
-
-- [ ] Report h and z separately, with per-token and per-layer nonzero counts or all-zero-vector rates when actually available.
-- [ ] Relate pooled statistics to their aggregation weights; do not substitute pooled h/m percentages for h alone.
-- [ ] Distinguish an all-zero projection input from the entire residual branch's output, since biases may remain.
-- [ ] Discuss context sensitivity or branch-function tests only when performed. Do not diagnose “collapse” from rounded product contributions alone.
-
-**Safe current-results fallback:** No new functional claim. Retain the pooled-distribution limitations and place the diagnostic question in the discussion or revision notes. **Dependency:** M4.
-
-### 5.7 Section 4.4 — Transfer across model sizes
-
-#### RW-44-01 — Define exactly which ordering persists
-
-**Locate:** p. 8, “The high-threshold A7-OL1 advantage persists at all three model sizes…”
-
-- [ ] Keep the same-κ A7-OL1 versus A4-OL1 comparison at κ = 0.5 and the smaller-threshold reversals.
-- [ ] Use “the ordering of these complete recipes recurs” rather than a broad statement that “the method transfers.”
-- [ ] Make clear that improving both axes relative to A4-OL1 does not imply improving either axis relative to A0.
-- [ ] Consider renaming the subsection **“Complete-recipe comparisons across model sizes”** to match its actual evidence.
-
-**Done when:** The reader knows the comparator and boundary threshold without consulting a footnote. **Evidence:** [S10](#s10).
-
-#### RW-44-02 — Turn normalization into an explanatory result
-
-**Locate:** p. 8, “Raw sparsity must also be read against the changing workload.”
-
-- [ ] Keep the changing dense-head share and the reach values, using the approved terminology.
-- [ ] Explain the common A7-reference denominator. Do not normalize A4 points by A4 reach in one panel and by A7 reach in another without explicit labeling.
-- [ ] Prefer identifying the normalized axis as block-only sparsity, since the current graph gives `U_arch = S_block`.
-- [ ] State that this removes the dense-head share, not differences in the relative operation mix inside blocks.
-
-**Reader takeaway:** A change in the denominator can make cross-size sparsity percentages look more different than the block-level counts alone.
-
-**Done when:** Figure 5's axis and its explanation use exactly the same quantity. **Evidence:** [S10](#s10), [S05](#s05).
-
-#### RW-44-03 — Keep the training-budget limitation adjacent to the scale claim
-
-**Locate:** p. 8, “This is transfer of a complete-recipe comparison.”
-
-- [ ] Keep the absence of no-pressure A4/A7 controls at larger sizes.
-- [ ] Keep the common token budget, unequal tokens per parameter, lower 410M learning rate, and the poorer 410M A0 loss relative to 70M under this protocol.
-- [ ] Describe longer training as an untested explanation/check, not as a proven correction for the results.
-- [ ] Do not call the observed curves a quality scaling law or conclude that sparsification becomes intrinsically more beneficial with scale.
-
-**Done when:** The subsection's last paragraph narrows only what the experiment does not test, without retreating from the actual same-size comparisons. **Evidence:** [S10](#s10), [S06](#s06).
-
-### 5.8 Section 4.5 — Specialized inference kernels
-
-#### RW-45-01 — Present compatibility testing without attacking the upstream method
-
-**Locate:** p. 11, “Realizing activation sparsity requires kernels matched to the model's shapes…”
-
-- [ ] Keep the unchanged primitive's numerical qualification failure and P0's limited qualified subset.
-- [ ] State that these are compatibility results for the tested implementation and shape, not proof that TwELL is generally inaccurate or slower.
-- [ ] Do not compare P0's four-checkpoint geometric mean with K050's 30-checkpoint mean as a fair aggregate ranking.
-- [ ] Shorten this opening if it delays the central execution finding; leave primitive errors and adaptation details in Appendix D.4.
-
-**Done when:** The section motivates specialization without claiming an unsupported victory over prior work. **Evidence:** [S11](#s11).
-
-#### RW-45-02 — State the workload and development scope precisely
-
-**Locate:** p. 11, “To make this specialization practical within an architecture study…”
-
-- [ ] Keep the human-guided coding-agent loop and retrospective evaluation as implementation-development details.
-- [ ] Keep BF16, batch one, uncached 2,048-token inference, full vocabulary logits, one RTX5090, and numerical qualification.
-- [ ] Avoid claiming a controlled evaluation of agent productivity or a verified served model for every request; the appendix describes one development trajectory and a default configuration.
-- [ ] Move detailed search chronology to the appendix if necessary to give attribution and operation-level findings more main-text space.
-
-**Done when:** The reader can identify both the inference workload and the narrower role of the coding-agent case study. **Evidence:** [S11](#s11).
-
-#### RW-45-03 — Separate search progress from the scientific runtime comparison
-
-**Locate:** p. 11, “The matched retrospective reaches 1.6024× by iteration 11…”
-
-- [ ] Retain search progress only as development context; do not make it the section's main contribution.
-- [ ] Report the selected implementation's 30-checkpoint qualification and geometric-mean speedup with its native reference.
-- [ ] Replace “predicts realized speedup” elsewhere with “is associated with native-relative speedup across the evaluated checkpoints.” Keep the fit descriptive, not causal or out-of-sample predictive.
-- [ ] State that topology, weights, quality, and implementation overhead differ across checkpoints. Keep the FP16-count/BF16-timing mismatch visible until resolved.
-
-**Done when:** The fit is neither stronger than the design nor allowed to substitute for a matched sparse-path ablation. **Evidence:** [S11](#s11).
-
-#### RW-45-04 — Promote the fusion and sparse-path decomposition
-
-**Locate:** p. 11, “Ablations distinguish fusion from the contribution of sparse paths.”
-
-- [ ] Split this into two paragraphs if needed. The first reports native versus fused versus sparse execution, including the 1.311× search-checkpoint and 1.043× cohort incremental factors and 14/30 count.
-- [ ] The second reports attention skipping: the attention-dense ablation improves every checkpoint; substantial eligible MMA skipping still fails to repay overhead in the measured setting.
-- [ ] Explain the granularity plainly: an instruction remains active unless the required zero-fragment condition is met; detection and control have a cost.
-- [ ] Keep “either operand fragment entirely zero” correct. Do not say both Q and K fragments must be zero.
-- [ ] End with the specific implication: scalar zero opportunity is not sufficient to select a profitable execution path.
-
-**Done when:** A reviewer can attribute the native-relative speedup and understand the negative attention result without reading the appendix. **Evidence:** [S11](#s11).
-
-#### RW-45-05 — Optional existing-data reanalysis of the sparsity/runtime association
-
-**Locate:** Replace or supplement the Figure 6 association paragraph, only when records support it.
-
-- [ ] Analyze incremental sparse-path speedup relative to all-skips-off, not only native-relative speedup.
-- [ ] Use BF16 counts if M4 has produced them. Otherwise label the existing FP16/BF16 comparison explicitly; do not pretend the mismatch is resolved.
-- [ ] Show sensitivity to the searched checkpoint and recipe families. With only 30 checkpoints, prefer simple, interpretable descriptive checks over a heavily fitted predictor.
-- [ ] Treat a weaker association as an informative result, not something to hide or repair by selecting points.
-- [ ] Distinguish retrospective sensitivity checks from genuinely held-out prospective validation.
-
-**Safe fallback:** Keep the existing descriptive fit with its limitations; give attribution the stronger narrative role. **Dependency:** DATA-01; M4 for precision alignment.
-
-### 5.9 Section 5 — Discussion and conclusion
-
-#### RW-50-01 — State the decision lesson, not a broad winning recipe
-
-**Locate:** p. 13, “Pressure, thresholds and site placement need to be evaluated together.”
-
-- [ ] Keep the conditional pressure result and the local/global ranking distinction.
-- [ ] Explain the practical experimental implication: evaluate the marginal addition against the actual base recipe and inspect both quality and affected operations.
-- [ ] Do not repeat every maximum or imply that the seven-site recipe is the best choice under all quality budgets.
-
-**Done when:** The paragraph offers a transferable way to evaluate an intervention while remaining tied to the experiment. **Evidence:** [S12](#s12), [S08](#s08).
-
-#### RW-50-02 — Replace self-evaluation with an unresolved but useful distinction
-
-**Locate:** p. 13, “The interpretation is supported by a connected pattern across experiments.”
-
-- [ ] Remove self-assessment such as the statement that the pattern makes the work “more informative.” Show the connection instead.
-- [ ] Use this space to distinguish three decisions: which recipe improves on its paired alternative, which endpoint fits a quality budget, and which execution path is profitable.
-- [ ] State that the current results answer parts of those questions differently. A high-sparsity endpoint is not automatically a good model-selection endpoint.
-- [ ] Do not add an untested claim of conditional computation or a collapse diagnosis.
-
-**Done when:** The paragraph adds an idea the reader did not already get from the results summary. **Evidence:** [S07](#s07), [S10](#s10), [S11](#s11).
-
-#### RW-50-03 — Explain why the accounting and kernel findings belong in one paper
-
-**Locate:** p. 13, “Product accounting and kernel timing answer different questions.”
-
-- [ ] Keep this strong organizing distinction.
-- [ ] Connect selected-site reach → measured zero products → actual skipped instructions → elapsed time, without implying equality between them.
-- [ ] Use the attention ablation as the concrete counterexample. Avoid claiming an unmeasured break-even threshold.
-- [ ] End with a measurement principle: report the controls needed to determine where acceleration came from.
-
-**Done when:** The architecture and systems sections read as one investigation rather than two loosely joined contributions. **Evidence:** [S05](#s05), [S11](#s11).
-
-#### RW-50-04 — Make limitations specific, proportionate, and actionable
-
-**Locate:** p. 13, “These conclusions concern MiniPile pretraining at a fixed token budget…”
-
-- [ ] Preserve the existing scope: dataset/budget, learning-rate difference, complete-recipe larger-model results, 14M diagnostics, one GPU, and full-sequence workload.
-- [ ] Add the single-seed limitation and the restricted post-hoc baseline if still applicable. Mention the precision mismatch if it remains unresolved.
-- [ ] State at most two high-value open questions in the conclusion, such as whether fixed-weight placement effects replicate and whether the same execution trade-off holds at larger widths.
-- [ ] Put the full proposed-experiment inventory in revision notes, not a final paragraph that promises a different paper.
-
-**Done when:** Every limitation is attached to a real inference boundary, not a generic apology. **Evidence:** [S06](#s06), [S11](#s11), [S12](#s12).
-
-### 5.10 Section 2 — Related work, edited after the results story stabilizes
-
-#### RW-21-01 — Post-hoc thresholding paragraph
-
-**Locate:** p. 2, “Post-hoc thresholding removes activations that a trained model can tolerate losing.”
-
-- [ ] Preserve the manuscript's existing CATS/TEAL distinctions and citations.
-- [ ] Keep the explicit difference between allocation-aware prior work and the uniform control used here.
-- [ ] End with the study's actual question, not a claim to supersede optimized post-hoc methods.
-
-**Done when:** The reader understands both provenance and the comparator's limits. **Evidence:** [S03](#s03).
-
-#### RW-21-02 — Training-time pressure paragraph
-
-**Locate:** p. 2, “Training-time interventions allow the representation to adapt to sparse computation.”
-
-- [ ] Preserve the supported distinctions among ReLU restoration, progressive pressure, threshold shifts, and the existing training studies.
-- [ ] Reduce name-by-name recital where possible; organize around the design dimensions the current experiments examine.
-- [ ] End with the marginal-pressure and operation-weighting questions. Do not imply OL1 or activation pressure itself is a newly invented principle.
-
-**Done when:** The paragraph identifies the study's contribution without inventing a novelty gap. **Evidence:** [S03](#s03).
-
-#### RW-21-03 — Beyond-FFN placement paragraph
-
-**Locate:** pp. 2–3, “Extending sparsification beyond FFNs makes the choice of sites explicit.”
-
-- [ ] Preserve the distinction between projection-input sparsity, feature-coordinate sparsity inside attention, and token-position selection.
-- [ ] Explain the current seven sites in those terms without pretending all forms of “attention sparsity” are interchangeable.
-- [ ] Use only claims supported by the existing cited discussion. Any new literature claim requires checking its primary source before insertion.
-
-**Done when:** The reader knows which type of attention work this paper targets. **Evidence:** [S03](#s03).
-
-#### RW-22-01 — Workload-specific execution paragraph
-
-**Locate:** p. 3, “Converting activation sparsity into speedup requires an execution strategy suited to the workload.”
-
-- [ ] Preserve the distinction between autoregressive decoding and full-sequence/batched computation.
-- [ ] Keep the explanation that saved work must repay representation and execution overhead.
-- [ ] Do not place prior published speedup numbers beside this paper's maximum as though their workloads and baselines were comparable.
-
-**Done when:** Runtime comparisons are framed by workload, not by the largest isolated multiplier. **Evidence:** [S03](#s03).
-
-#### RW-22-02 — Shape, structure, and development tools paragraph
-
-**Locate:** p. 3, “The execution strategy also depends on shape and sparsity structure.”
-
-- [ ] Keep the role of mask structure and tiled computation.
-- [ ] Keep agent-assisted development as a tool for the case study, not an independently validated scientific contribution here.
-- [ ] Remove repeated implementation details that now belong in Section 4.5 / Appendix D.4.
-
-**Done when:** The paragraph motivates why the measured negative attention result is informative rather than anomalous. **Evidence:** [S03](#s03), [S11](#s11).
-
-### 5.11 Section 1 — Introduction, rewritten near the end
-
-#### RW-10-01 — Opening problem paragraph
-
-**Locate:** p. 1, “Activation sparsity can improve language-model inference efficiency…”
-
-- [ ] Keep the practical question about useful sparsity at acceptable quality cost.
-- [ ] Introduce the mismatch between activation zeros, affected multiplication work, and runtime as the central motivation.
-- [ ] Avoid a generic efficiency preamble and unqualified promises that zeros improve memory or latency in every workload.
-
-**Done when:** The first paragraph poses the exact question the results can answer. **Evidence:** [S02](#s02).
-
-#### RW-10-02 — Existing-methods and gap paragraph
-
-**Locate:** p. 1, “Existing approaches induce activation sparsity in different ways.”
-
-- [ ] Keep a compact account of pressure, thresholding, and placement in prior recipes.
-- [ ] Replace a sweeping claim that effects “have not been isolated” with the narrower motivation for this matched study, unless a verified literature review justifies the stronger statement.
-- [ ] Distinguish intervention interaction from method leaderboard comparison.
-
-**Done when:** The novelty claim does not depend on ignoring existing ablations or on reproducing methods not actually reproduced here. **Evidence:** [S02](#s02), [S03](#s03).
-
-#### RW-10-03 — Definitions and study-design paragraph
-
-**Locate:** pp. 1–2, “In this work, we study three sparsification interventions…”
-
-- [ ] Define pressure as encouraging small magnitudes, thresholding as the specified zeroing maps, and placement as the selected sites.
-- [ ] Replace “isolates the individual and interaction effects of each intervention” with the exact scope of the matched contrasts.
-- [ ] Introduce model-wide sparsity and architectural reach in plain language; reserve equations and full exclusions for Section 3.2.
-- [ ] Do not describe reach as the maximum achievable sparsity at useful quality.
-
-**Done when:** This paragraph matches RW-40-02 and the approved notation without exaggerating experimental identification. **Evidence:** [S02](#s02), [S05](#s05), [S06](#s06).
-
-#### RW-10-04 — Empirical findings paragraph
-
-**Locate:** p. 2, “We pretrain Pythia-family models from scratch at multiple scales…”
-
-- [ ] Lead with the two main findings rather than a list of all three maximum sparsity percentages.
-- [ ] Include at most one or two quantitative contrasts that the reader can interpret with the named reference and quality cost.
-- [ ] Keep the larger-size result as a selected complete-recipe extension and retain its threshold-dependent ordering.
-- [ ] Narrow the clipping claim to the uniform comparator and verified region; omit a global superiority statement if it cannot be supported concisely.
-
-**Done when:** The introduction makes the current evidence sound as informative as it is, not stronger than it is. **Evidence:** [S07](#s07), [S08](#s08), [S09](#s09), [S10](#s10).
-
-#### RW-10-05 — Systems findings paragraph
-
-**Locate:** p. 2, “Finally, we test whether specialized kernels can translate these sparsity gains into faster inference…”
-
-- [ ] State the full-sequence 14M workload and the native-relative nature of any headline multiplier.
-- [ ] Bring the matched-fusion sparse-path comparison and negative attention ablation into the paragraph.
-- [ ] Downgrade “predicts realized speedup” to the supported descriptive association or remove the fit from the introduction to make space for attribution.
-- [ ] Remove any implication that the study compares coding agents or verifies the served model of every development request.
-
-**Done when:** A reader who stops after the introduction understands what generated the speedup and what remains untested. **Evidence:** [S02](#s02), [S11](#s11).
-
-### 5.12 Abstract and title — Last substantive rewrite
-
-#### RW-ABS-01 — Rewrite the abstract as a compact evidence-based argument
-
-**Locate:** p. 1, the complete abstract.
-
-Use the following sentence functions; this is a structure, not mandatory wording:
-
-1. **Question:** Why pressure, thresholding, and placement need to be considered together when seeking useful activation sparsity.
-2. **Design and scope:** Matched 14M study, with selected larger-model complete recipes and a scoped execution case study.
-3. **First result:** The marginal quality–sparsity effect of pressure varies with the base intervention and threshold.
-4. **Second result:** Operation accounting explains why local FFN sparsity can mis-rank model-wide opportunity.
-5. **Execution result:** Native-relative speedup has a matched-fusion component; sparse paths contribute conditionally, and attention skipping is slower in the measured workload.
-6. **Bounded implication:** Evaluate the intervention, affected operations, quality cost, and execution granularity jointly.
-
-- [ ] Include one interpretable quantitative comparison, not an unqualified string of maxima.
-- [ ] If reporting maximum sparsity, attach a same-size A0 loss cost. If reporting 1.78×, identify native execution and avoid attributing the whole factor to sparsity.
-- [ ] Remove broad dominance, optimality, prediction, and complete-factor-isolation claims unless new verified evidence supports them.
-- [ ] Replace “sparsity ceiling” according to the approved terminology decision.
-- [ ] Correct the original grammar errors (“interventions reaches,” “recipes … dominates,” “accross”).
-- [ ] Use roughly 170–220 words as a drafting target only; honor the actual author/venue constraint after checking it.
-
-**Done when:** Every abstract claim points to a specific result paragraph, and every decisive caveat needed to interpret a headline is visible here or built into its wording. **Evidence:** [S01](#s01) plus the verified main-result ledger.
-
-#### RW-TITLE-01 — Preserve the title unless the final scope makes a change useful
-
-**Locate:** p. 1, title.
-
-- [ ] Default: keep the current title. It already names the actual study dimensions and does not promise a universally faster model.
-- [ ] Consider a subtitle only after the argument is stable; do not add “optimal,” “general,” “scaling law,” or “quality-preserving.”
-- [ ] Keep terminology identical to the abstract and Section 3.
-
-**Done when:** The title describes the paper the experiments support, not a larger project planned for later.
-
-<a id="6-figure-and-table-surgery"></a>
-
-## 6. Figure and table surgery
-
-### 6.1 Rules for every visual
-
-- [ ] **VIS-00A:** Give each main visual one question to answer. The caption should state its takeaway, what is plotted, the comparison/normalization, and the one limitation needed to interpret it.
-- [ ] **VIS-00B:** Regenerate from verified data and source scripts. Do not redraw coordinates from a screenshot when numerical records are available. Do not fabricate error bars or unmeasured operating points.
-- [ ] **VIS-00C:** Use consistent recipe colors, marker shapes, names, units, and line conventions across figures. Ensure recipe distinctions remain readable without color alone.
-- [ ] **VIS-00D:** Check the compiled figure at normal reading size. Axis labels and zero-mass annotations must be readable without zooming to poster size.
-- [ ] **VIS-00E:** Distinguish a line joining evaluated settings from a fitted curve, a Pareto envelope, and a training trajectory. Do not use “frontier” in a title unless a frontier is actually computed and identified.
-- [ ] **VIS-00F:** Keep data exclusions, restricted axes, zero omissions, and unavailable measurements visible. Complete appendix views should remain accessible.
-
-### 6.2 Figure-specific tasks
-
-#### FIG-01 — Figure 1: architecture and recipe matrix, p. 5
-
-- [ ] Retain the graph's parallel branches, post-RoPE q/k sites, z before the output projection, and all seven labels.
-- [ ] Replace “sparsification ladder” / “Step” with **recipe matrix** / **recipe**, if approved, to avoid suggesting curriculum stages.
-- [ ] Make pressure sites explicit. In the current eight rows they follow the selected sites when pressure is enabled; any added historical h-only or crossed control needs a distinct assignment.
-- [ ] Use the approved reach terminology in the three rightmost columns and caption. Preserve the existing calculation and T = 2,048.
-- [ ] Standardize GELU / ReLU / nonlinearity spelling and explain that h replaces GELU while other selected maps act at the specified sites.
-
-**Acceptance check:** A reader can reproduce each row's thresholding and pressure placement without inferring assignments from the recipe name. **Evidence:** [S04](#s04), [S05](#s05).
-
-#### FIG-02 — Figure 2: quality–sparsity endpoints, p. 6
-
-- [ ] Retain all 30 training endpoints and the stated A0 clipping reference; keep the full-range appendix view.
-- [ ] Remove “frontier” from the plot title unless an explicit nondominated set is added and defined.
-- [ ] Make A0 and the low-loss local-pressure regime visible. Label a small number of meaningful endpoints, not every sweep value.
-- [ ] Add Δloss versus A0 in an annotation, inset, or companion table rather than making the reader infer the high-sparsity cost from a compressed axis.
-- [ ] Identify the four-site versus seven-site reach mismatch in the caption when discussing post-hoc comparisons.
-
-**Acceptance check:** The visual communicates a trade-off, not a universal trained-method victory. **Evidence:** [S07](#s07).
-
-#### FIG-03 — Figure 3: paired effects, p. 7
-
-- [ ] Preserve the treatment-minus-reference convention, paired recipe labels, sweep ordering, and units.
-- [ ] In the caption, distinguish pressure additions within a fixed recipe from comparisons that change multiple aspects of the intervention.
-- [ ] Keep the shared-control / one-seed limitation near the figure or in the directly adjacent setup; do not imply 29 independent estimates.
-- [ ] Add replicate points or uncertainty only after M2. Prefer showing individual paired effects over hiding them behind a single aggregate bar.
-- [ ] Display any new fixed-weight M1 design separately from the original normalized-objective sweep.
-
-**Acceptance check:** A reader can tell exactly what each delta means and what uncertainty is available. **Evidence:** [S08](#s08).
-
-#### FIG-04 — Figure 4: activation distributions, p. 9
-
-- [ ] Add zero-mass annotations to every plotted recipe/group panel, using the verified counts from Table 7.
-- [ ] Retain h:m weighting, q:k:v pooling, post-RoPE measurement, tail accounting, and non-renormalized histogram convention.
-- [ ] Explain symlog once; do not invite readers to read the plotted area as probability mass.
-- [ ] Reduce visual crowding rather than deleting the zero masses or hiding the pooling definition.
-- [ ] Add separate h/z diagnostics only if available and readable; otherwise keep those in a new appendix panel.
-
-**Acceptance check:** The main figure contains the probability mass most relevant to its sparsity claim. **Evidence:** [S09](#s09).
-
-#### FIG-05 — Figure 5: cross-size comparison, p. 10
-
-- [ ] Rename reach guides and the normalized axis consistently with Section 3.2.
-- [ ] Prefer **block-only sparsity** for the bottom axis after verifying the existing identity; preserve the common denominator for every curve within a size.
-- [ ] Keep same-size A0 references and distinguish the high-threshold pairwise finding from the full curve ordering.
-- [ ] State that model sizes share a token budget, not tokens per parameter, and that these are complete-recipe comparisons.
-- [ ] Do not hide the high loss of some 410M settings to make the cross-size result look smoother.
-
-**Acceptance check:** A reader does not interpret increased normalized or raw sparsity as proof of better quality scaling. **Evidence:** [S10](#s10).
-
-#### FIG-06 — Figure 6: prioritize execution attribution over search chronology, p. 12
-
-- [ ] Recommended: move the search-progress panel to the appendix and use the main space for matched-fusion versus sparse execution and/or the operation-level negative result.
-- [ ] Preserve the original search sequence and its retrospective status wherever it appears. Do not substitute the later faster ablation into the historical incumbent trace.
-- [ ] If retaining the association scatter, label the exact reference, precision, selected checkpoint, and descriptive nature of the fit.
-- [ ] Use incremental sparse-path ratios for the stronger attribution question when available. Add absolute latency only from actual records.
-- [ ] Identify the attention-dense ablation as faster than the selected K050 on this cohort; “best” must name the search set or comparison set.
-
-**Acceptance check:** The main visual answers “what produced the acceleration?” rather than “how large was the best observed multiplier?”. **Evidence:** [S11](#s11).
-
-#### FIG-07 — Promote the operation explanation, currently Figure 7 on p. 22
-
-- [ ] Consider moving a compact 14M operation breakdown into the main distribution/results discussion; retain the full three-size version in the appendix if space is tight.
-- [ ] Use the common model denominator and include the dense head's role in the caption even though it receives no zero contribution.
-- [ ] Make the attention contribution and the offsetting projection changes visually identifiable.
-- [ ] Do not label bar heights as time or FLOPs saved.
-
-**Acceptance check:** The reader can see the source of the local-versus-model-wide ranking reversal rather than having to trust a sentence about it. **Evidence:** [S09](#s09).
-
-#### FIG-08 — Figures 8–10: retain the complete post-hoc record, pp. 23–25
-
-- [ ] Keep all evaluated settings, ties, dominated points, and full loss ranges.
-- [ ] Update recipe/metric terminology and references after main-figure changes.
-- [ ] Preserve the distinction between actually measured p = 0 evaluations and canonical training endpoints.
-- [ ] Do not present connecting paths as attainable interpolation or as training trajectories.
-
-**Acceptance check:** The main-text view is selective for readability, not selective in the evidence it discloses. **Evidence:** [S07](#s07).
-
-### 6.3 Table-specific tasks
-
-- [ ] **TAB-01 — Table 1 / Table 6:** Retain complete-recipe wording, treatment-minus-reference sign, same-κ matching, and all cross-size reversals. Do not relabel these as isolated placement effects.
-- [ ] **TAB-02 — Table 2:** Keep exact site shapes and consuming operations. Check against the implementation before any diagram simplification.
-- [ ] **TAB-03 — Table 3:** Preserve all size-dependent settings and tokens-per-parameter differences. Add actual compute cost only from logs, not an estimate disguised as a measurement.
-- [ ] **TAB-04 — Table 4:** Preserve all 54 endpoints. Apply notation aliases consistently, retain rounded-zero caveats, and consider a supplementary Δloss-vs-A0 column generated from full precision.
-- [ ] **TAB-05 — Table 5:** Keep canonical paired deltas. Any new seeds or objective variants require new rows/blocks with explicit identities rather than replacing the original records silently.
-- [ ] **TAB-06 — Table 7:** Keep zero, displayed-tail, and native-grid-tail definitions. Grid tails are a subset, not an additional probability mass to sum.
-- [ ] **TAB-07 — Table 8:** Preserve common denominator and sum-to-total checks. Do not infer exact per-site percentages from rounded operation entries when exact counts are available.
-- [ ] **TAB-08 — Table 9:** Keep qualification counts, cohort weights, and noncomparable P0 subset disclosure. Add the sparse-versus-fusion factor in a separate clearly referenced column/table, not as though it were native-relative speedup.
-- [ ] **TAB-09 — New quality-budget table:** Add only after DATA-02. Name the same-size A0 loss reference, eligibility rule, precision, and whether latency is measured or unavailable.
-
-**Space rule:** Do not simply add all proposed visuals. Replace redundant search chronology or repeated maxima before enlarging the paper. Preserve the current scientific organization unless a concrete clarity benefit justifies a move.
 
 ---
 
-<a id="7-appendix-and-reproducibility-edits"></a>
+## 5. Existing-data analyses that drive the rewritten results
 
-## 7. Appendix and reproducibility edits
+### R01 — Assemble a precision-consistent cross-size comparison dataset
 
-The appendices contain important safeguards that should be preserved and selectively promoted into the main text. Technical editing must not change the reported algorithm or counter definitions.
+**Priority:** P0. **Effort:** Low. **Locate:** endpoint records; 540 clipping records; current Figure 8 and Figures 10–12 scripts. **Source:** [M, Tables 6 and 8; Appendix D.5].
 
-### APP-A1 — Thresholding conventions, p. 15
+- [ ] Join records by checkpoint content hash/run identity, size, recipe, trained `kappa` or `lambda`, clipping target `p`, and evaluation precision. Do not join by a display label alone.
+- [ ] Retain each measurement's source and whether it is a training endpoint or an evaluation-only clipping result.
+- [ ] Build `revision-v2/data/cross_size_interventions.csv` from all verified records relevant to A0, A1-H, A4-OL1, and A7-OL1 at all three sizes.
+- [ ] Include absolute loss, same-size A0 loss difference, `S_model`, `S_block`, operation numerators/denominators if available, and architectural reach for the actual inference sites.
+- [ ] For clipping trajectories, use their measured `p=0` values; do not silently substitute canonical endpoints when tiny evaluation differences exist.
+- [ ] Keep a discrepancy report for endpoint versus `p=0`, including precision and implementation differences. Do not treat numerical drift as a substantive intervention gain.
 
-**Anchor:** “For finite κ ≥ 0, both thresholding nonlinearities retain equality…”
+**Done when:** The same data file can generate the cross-size figure, the ReLU analysis, and all quoted numerical comparisons.
 
-- [ ] Preserve retained-equality behavior, detached comparison masks, exact derivative statements, and the distinction from a straight-through estimator.
-- [ ] Check every main-text summary against this paragraph after terminology edits.
-- [ ] Keep unselected-site behavior explicit. Do not replace it with an assumption that all sites use the same activation.
+### R02 — Test what ReLU changes about post-hoc clipping
 
-### APP-A2 — Pressure and OL1, p. 15
+**Priority:** P0. **Effort:** Low with the complete clipping records; missing reevaluations are mid. **Dependencies:** R01. **Source:** [M, Tables 6 and 1; Figures 10–12].
 
-**Anchor 1:** “For the J targeted site–layer tensors…”
+The author's proposed result is worth testing and showing. Its accurate description is **“ReLU pretraining followed by post-hoc clipping”**, not “train-time clipping,” unless a separate run actually clips activations during training.
 
-- [ ] Keep equal-tensor weighting, post-nonlinearity measurement, float32 reduction, and shared accumulation microbatches.
-- [ ] Preserve the fact that naive L1 clips the combined gradient, whereas OL1 uses the task-only clipped update.
-- [ ] For any new fixed-weight experiment, give it a separate objective definition and a new configuration ID. Never rewrite this paragraph as though the historical runs used that objective.
+#### Required comparisons
 
-**Anchor 2:** “For OL1, let gt and g1…” through Equation (1) and the trust-budget update.
+For each size, compare **A0 + clipping** with **A1-H + clipping**, using the same clipping sites and calibration procedure.
 
-- [ ] Preserve task-only optimizer moments, pressure-gradient handling, eligibility rules, projection condition, stabilizers, group learning rates, and weight-decay exclusion.
-- [ ] Compare equations and pseudocode to the actual implementation when accessible; mark any discrepancy for author resolution, not silent correction.
-- [ ] Do not simplify the update into “PCGrad plus AdamW” if that omits substantive differences.
+- [ ] Show the absolute loss versus achieved `S_model` trajectories. Include unmodified A0 and A1-H as visible reference points.
+- [ ] Report the base cost of changing GELU to ReLU, before any extra clipping. Current endpoint deltas versus same-size A0 are about `+0.0611`, `+0.1230`, and `+0.1038` at 14M, 70M, and 410M, respectively. Recompute from unrounded records.
+- [ ] Also compute within-checkpoint clipping increments:
 
-**Anchor 3:** “This procedure is related to gradient-conflict projection…”
+\[
+\delta\mathcal L_r(p)=\mathcal L_r(p)-\mathcal L_r(0),\qquad
+\delta S_r(p)=S_r(p)-S_r(0),
+\]
 
-- [ ] Keep approximate orthogonality under stabilization and the absence of a task-loss guarantee.
-- [ ] Avoid presenting the related-work attribution as proof of a property this exact update has not established.
+where `r` is A0 or A1-H. This separates the starting representation from sensitivity to the additional evaluation intervention.
 
-### APP-B1 — Exact counters, pp. 15–16
+- [ ] Compare matched `p` as a **matched calibration policy**, not as matched achieved sparsity.
+- [ ] Find where the observed curves cross or change ordering. Summarize the region where ReLU-trained checkpoints have a favorable observed trade-off and the region where the GELU baseline retains lower loss.
+- [ ] For a claim about comparable achieved sparsity, use verified observed points and report their sparsity mismatch. Where records do not give a close comparison, label the gap or request a small new evaluation. Do not invent equal-sparsity points through smooth interpolation.
+- [ ] Report all sizes separately before describing any cross-size trend. Do not infer a monotonic tolerance improvement from an increasing raw sparsity percentage alone.
 
-**Anchors:** “Activation sparsity at site s…”; “The atomic unit…”; “Here P is the causal softmax probability tensor…”
+#### Interpretive checks
 
-- [ ] Preserve count-pooling, the distinction between near-zero and exactly zero, and zero-weight exclusion.
-- [ ] Check the logical OR in the QK/PV numerators and exclusion of future masked pairs from both numerator and denominator.
-- [ ] Retain actual-consumed-operand measurement after intervening transformations and the causal-position weighting of V.
-- [ ] Keep underflow zeros within the declared precision-dependent measurement. Do not substitute threshold-mask membership for actual zeros.
+- Existing zero mass can make several quantile targets produce the same mask. A flat response over those targets does not by itself prove greater tolerance to removing additional nonzero activations.
+- A1-H starts with exact zeros at `h`; adding four-site clipping changes its inference reach. **A1-H + four-site clipping has the union of those four sites, not h-only reach.** Use the A4/clipping reach guide for that trajectory.
+- At the same achieved total `S_model`, local zero allocations can still differ. State which comparison is being made rather than claiming site-matched behavior that was not measured.
+- Any increasing cross-size benefit must be distinguished from the dense head's shrinking contribution and the different block-operation weights.
 
-### APP-B2 — Reach and normalization, p. 16
+#### Outcome-dependent wording
 
-**Anchors:** “For a specified graph and workload…”; “To construct the reach numerator…”
-
-- [ ] Apply approved terminology without changing exclusions, dense-head treatment, or the block-only metric.
-- [ ] Retain one credit for overlapping reach, declared zero-preserving propagation, and the caveat about natural zeros outside reach.
-- [ ] Keep the warning that the gap to reach does not measure sparsity available without loss degradation.
-- [ ] Audit every use of “maximum,” “ceiling,” and “utilization” in the paper against this definition.
-
-### APP-C1 — Sites, p. 16 and continuation on p. 17
-
-**Anchors:** “Pythia uses parallel attention and FFN branches…”; “At h, the selected nonlinearity replaces GELU.”; “Query and key counts use actual post-RoPE operands…”
-
-- [ ] Keep tensor shapes, partial RoPE placement, and exact z definition.
-- [ ] Preserve the zero-threshold A4/A7 identity statement only for the unpressured mathematical maps; pressured recipes still differ.
-- [ ] Use this equivalence as the basis for the M2 implementation check, not as proof that two independently executed training traces must be bitwise identical.
-
-### APP-C2 — Architecture-specific counts, p. 17
-
-**Anchors:** “The operation inventory comprises…”; “Let O(N) be the union…”; “With Pythia's df = 4d…”
-
-- [ ] Preserve Equation (4), the exact causal count, vocabulary size, and pinned configurations.
-- [ ] Keep the restricted propagation rules, including V = 0 implying PV = 0 and biases blocking some other propagation.
-- [ ] Rename reach columns/symbols consistently; do not recalculate a different quantity to make a ratio look more favorable.
-- [ ] Verify A0 can have zero selected-site reach while still having natural observed zeros.
-
-### APP-C3 — Evaluation, p. 17
-
-**Anchor:** “Quality and logical counts are paired in the same eager-attention evaluation…”
-
-- [ ] Preserve the 338 blocks, 2,048 input positions, 2,047 prediction targets per block, excluded tail, and no-cache scope.
-- [ ] Describe any added BF16 evaluation separately from the original FP16 endpoint evaluation.
-- [ ] Do not imply a new confirmation split exists unless one has actually been defined and evaluated.
-
-### APP-C4 — Training protocol, pp. 17–18
-
-**Anchors:** “We use MiniPile and the Pythia-14M-deduped tokenizer…”; “All conditions start from random weights…”; “Training uses AdamW…”
-
-- [ ] Preserve tokenization/packing, pinned revisions, seeds, final-checkpoint rule, token counts, and all optimizer settings.
-- [ ] Keep the one-seed and reused-validation disclosures. If new independent seeds are added, identify which conditions they cover rather than declaring the entire study replicated.
-- [ ] Distinguish any new shortened screening runs from the canonical 712-update protocol and any later long-training confirmation.
-- [ ] Record changed learning-rate schedules, repeated data, or token budgets explicitly; do not label an unmatched continuation a controlled replication.
-
-### APP-D0 — Complete-results preamble, p. 18
-
-**Anchor:** “The following tables report every selected trained endpoint…”
-
-- [ ] Preserve the distinction between the 54-condition manuscript cohort and any historical or new cohorts.
-- [ ] Keep dominated settings, common normalization, and count-pooling.
-- [ ] Update cohort totals only after matching all records and regenerating affected tables/figures.
-
-### APP-D1 — Distribution measurement, p. 18
-
-**Anchors:** “The seven frozen-checkpoint evaluations…”; “Exact zeros are stored separately…”; “The diagnostic reruns use FP32 parameters…”
-
-- [ ] Preserve pooling weights, bins, tails, precision, no-additional-clipping status, and qualification tolerance.
-- [ ] Move zero masses into the main figure without deleting the detailed accounting here.
-- [ ] Keep histogram rerun differences separate from independent training-run variability.
-- [ ] Add new h/z or context diagnostics as separately described measurements with their own protocol and hashes.
-
-### APP-D2 — Operation contributions, p. 21
-
-**Anchor:** “An operation's contribution to Smodel is its zero-product count divided by the full model product count.”
-
-- [ ] Keep the additivity explanation and common denominator.
-- [ ] Update pointers if Figure 7 or a compact version moves to the main text.
-- [ ] Retain the distinction between operation contributions and local activation percentages.
-
-### APP-D3 — Post-hoc trajectories, p. 23
-
-**Anchors:** “The complete release contains 540 evaluations…”; “Figures 8–10 retain the full loss range…”
-
-- [ ] Preserve the calibration set, quantile target semantics, threshold inequality, post-trained-nonlinearity placement, and actual p = 0 evaluations.
-- [ ] Do not confuse the clipping rule `|x| <= t` with the trained threshold's retained-equality convention.
-- [ ] Keep numerical frontier membership separate from drawn lines.
-- [ ] Describe any M3 baseline in a separate subsection, including allocation/calibration budget and final transformation at h.
-
-### APP-D4 — Kernel qualification and ablations, pp. 26–27
-
-Treat the following original paragraphs as separate edit units:
-
-- [ ] **APP-D4-01 — “The unchanged Sakana/TwELL control…”:** Preserve upstream supported-workload versus Pythia compatibility-test distinctions and all qualification failures. Do not count an unqualified result as a valid model speedup.
-- [ ] **APP-D4-02 — “Historical proposals are replayed…”:** Keep search-versus-sweep separation, 35-versus-30 cohort provenance, and excluded h-only pressure controls. Add DATA-03 results only after verification.
-- [ ] **APP-D4-03 — “The coding-agent configuration records…”:** Preserve the distinction between a default configuration and verified per-request served model, plus the single human-guided trajectory. Do not infer agent superiority.
-- [ ] **APP-D4-04 — “Every candidate must produce finite outputs…”:** Keep logit, relative-output, loss, process, and full-validation qualification conditions. Bounded numerical agreement is not bitwise equivalence.
-- [ ] **APP-D4-05 — “Timing uses the same checkpoint…”:** Preserve timing population, paired-pass protocol, process repeats, geometric means, inclusions/exclusions, no activation cache, and equal-checkpoint weighting.
-- [ ] **APP-D4-06 — “K050 combines normalization and RoPE fusion…”:** Preserve the exact differences among K049, K050, all-skips-off, and attention-dense. State that some relative factors derive from separately measured native-normalized timings; do not invent paired confidence intervals from aggregate ratios.
-- [ ] **APP-D4-07 — “The attention path tests whether either…”:** Preserve the zero-fragment condition, remaining softmax/masking work, instrumentation percentages, and absence of an identified general break-even threshold.
-
-### APP-D5 — Evidence package, p. 27
-
-**Anchor:** “The supplementary directory supplementary-data/ contains…”
-
-- [ ] Verify which files are actually available to reviewers. Distinguish tables/coordinates from executable training code, kernel code, and checkpoints.
-- [ ] Replace unverified release promises with accurate availability statements. Do not fabricate anonymous access links.
-- [ ] Provide commands that regenerate the central tables/figures when the actual repository is available; test them in a clean environment or disclose what was not tested.
-- [ ] Keep data hashes, checkpoint identities, software versions, evaluation precision, and schema/unit descriptions aligned with the final manuscript.
-- [ ] Preserve anonymity and any applicable disclosure requirements; confirm the current requirements rather than assuming them.
-
-### APP-REF — References, pp. 13–14
-
-- [ ] Preserve citations attached to retained scientific claims.
-- [ ] Check bibliography metadata against the actual bibliography and, for any new or altered claim about prior work, its primary source.
-- [ ] Do not silently update the literature, add an unverified 2026/2027 claim, or import statements from a review into the paper as facts.
-- [ ] Do not globally rename words inside publication titles while standardizing manuscript terminology.
-
-<a id="8-optional-experiments-and-exact-insertion-points"></a>
-
-## 8. Optional experiments and exact insertion points
-
-**This section is a proposed research plan, not a statement of completed work.** The rewrite agent may prepare configurations, analysis specifications, and insertion stubs in revision notes. Launching runs or adding new findings to the manuscript requires author approval and verified evidence.
-
-### 8.1 Approval and measurement contract for every new experiment
-
-- [ ] **EXP-00A:** Write the claim being tested, the alternative explanation, the minimum comparison, and the result that would change the paper's wording.
-- [ ] **EXP-00B:** Freeze conditions, seeds, checkpoint-selection rule, evaluation, and primary contrasts before looking at new outcomes. Separate short screening from matched-budget confirmation.
-- [ ] **EXP-00C:** Specify total cost for the complete package, including controls, replications, evaluation, and implementation work. Reclassify as high effort if necessary.
-- [ ] **EXP-00D:** Preserve independent seed pairing within a condition set. Record actual configs and hashes, not only intended settings.
-- [ ] **EXP-00E:** Define how favorable, null, mixed, and reversed outcomes change the claim. Do not create a protocol that only has a manuscript destination for favorable results.
-- [ ] **EXP-00F:** Keep exploratory selection on existing validation data distinct from confirmation. Do not retrospectively describe the original analysis as preregistered or independently confirmed.
-
-### M1 — Fixed-weight crossed placement/pressure controls
-
-**Priority:** 5/5. **Effort:** Mid for a small short-run screen; a full multiseed, multithreshold matched-budget package may be high. **Question:** Does the placement relationship remain when adding pressure targets does not dilute the existing targets' nominal coefficients?
-
-**Current ambiguity:** Original multisite pressure averages all targeted site–layer means. A4-OL1 versus A7-OL1 changes thresholding sites, pressure sites, and normalization. [S04](#s04), [S08](#s08)
-
-- [ ] **M1-01:** Choose one informative nonzero κ based on the claim being tested. κ = 0.5 targets the headline high-sparsity contrast; it is not necessarily the most useful quality operating point. Record the choice before the run.
-- [ ] **M1-02:** Cross thresholding sites `N4 = {a,m,h,z}` / `N7 = N4 ∪ {q,k,v}` with pressure sites `P4` / `P7`.
-- [ ] **M1-03:** Define a new fixed-coefficient objective explicitly. For example, let each site–layer mean have coefficient `1/(4L)` in all four cells, where L is the number of layers; adding the three sites then adds terms without reducing the original four terms' coefficients.
-- [ ] **M1-04:** Include the corresponding no-pressure N4/N7 controls at the same budget and seed, either by verified reuse or fresh runs. Do not reuse a longer-budget old checkpoint as the control for a new short run.
-- [ ] **M1-05:** Keep nonlinearities, optimizer details, data order, and nominal λ fixed across the intended contrast. Label this new objective distinctly from the historical equal-target-mean objective.
-- [ ] **M1-06:** Log task-direction and pressure-correction norms, effective correction size, conflict-projection frequency, and trust-budget binding. Fixed nominal coefficients do not hold the total pressure magnitude or capped correction constant.
-- [ ] **M1-07:** Analyze the conditional effect of adding threshold sites at fixed pressure sites, and adding pressure targets at fixed threshold sites. Report both loss and sparsity changes, plus operation contributions.
-- [ ] **M1-08:** Add a representative multisite naive-L1 condition with a clearly matched objective if the paper continues to suggest OL1 is needed. Do not claim this alone isolates the effect of conflict projection.
-
-**Important boundary:** This design removes dilution of existing objective terms; adding terms still changes total pressure. Stronger claims about “location alone at equal effective strength” need an additional strength control. Do not oversell what the new design isolates.
-
-**Historical reuse rule:** The old A7-OL1 objective has a different normalization from the example above. Do not silently populate the new matrix with that old run. Reuse requires demonstrably identical effective configuration, not a matching recipe name.
-
-**Insert verified results into:** RW-40-02, a new block after RW-42-03, a separate panel/table adjacent to Figure 3, and Appendix A.2/C.4.
-
-**Outcome-to-wording rule:**
-
-| Outcome | Manuscript consequence |
+| Data outcome | Appropriate manuscript statement |
 |---|---|
-| The relationship persists under fixed coefficients. | State the fixed-weight conditional comparison directly; preserve original full-recipe findings separately. |
-| It shrinks or reverses. | Make objective weighting part of the result. Remove the claim that the original gap establishes an attention-placement benefit by itself. |
-| It varies strongly with correction norms or budget binding. | Report that dependence; do not attribute the change solely to site choice. |
+| A1-H + clipping gives lower loss at comparable achieved sparsity in a verified region at all sizes | State that region and the actual comparisons; describe a recurring benefit of the ReLU-trained representation for this clipping policy. |
+| ReLU reduces incremental clipping damage, but total loss remains worse | Distinguish robustness to the added clipping from final quality; retain the base ReLU cost. |
+| The favorable region expands in raw sparsity but not after block normalization | Explain the architectural contribution; do not call this improved intrinsic tolerance. |
+| Curves cross or the pattern differs by size | Make the crossing or reversal the finding, not a failed story to suppress. |
+| Records cannot resolve comparable sparsity | Show the trajectories and bound the claim; request E01 only if needed. |
 
-### M2 — Replicate the contrasts that carry the narrative
+**Deliverable:** `revision-v2/relu_clipping_findings.md`, containing exact run/target pairs, base costs, incremental responses, and proposed wording. Do not produce a new cross-recipe winner table.
 
-**Priority:** 5/5. **Effort:** Mid for a focused short-run package; potentially high in aggregate. **Question:** Which headline effects are stable across independent initializations and data orders?
+**Done when:** The figure can support a specific statement about ReLU and subsequent clipping, rather than a visual impression of “scaling better.”
 
-- [ ] **M2-01:** Choose the conditions from the final claim ledger. A statement about threshold dependence needs at least two operating points, not repetitions of only the best high-threshold checkpoint.
-- [ ] **M2-02:** Add at least two independent seed pairs to the selected original-seed conditions when feasible. Each pair shares initialization and data order across treatments, while different pairs use independent seeds.
-- [ ] **M2-03:** Example minimal threshold-dependence package: A7 and A7-OL1 at κ = 0.1 and 0.5, repeated for two additional seeds = eight additional training runs. Add seed-matched A0 when making absolute-quality claims. This is an example, not a mandatory package or a guaranteed mid-effort cost.
-- [ ] **M2-04:** Reuse M1 conditions only where the objective and protocol genuinely match. A new fixed-coefficient run is not a replicate of an old differently normalized condition.
-- [ ] **M2-05:** Add an implementation sanity check for unpressured A4 versus A7 at κ = 0. Verify identical forward/backward mathematics and inspect execution-dependent divergence. Diagnose differences before interpreting effects of a similar scale.
-- [ ] **M2-06:** Show per-seed paired deltas, averages, and clearly defined uncertainty when justified. Distinguish training variability from evaluation sampling and repeated timing variability.
-- [ ] **M2-07:** Keep checkpoint selection fixed. Do not select the best seed or use different stopping points to make a comparison look stable.
+### R03 — Correct and sharpen the cross-size story
 
-**Do not substitute:** Many validation blocks, repeated inference timing, or many sweep values do not estimate independent training-run variability.
+**Priority:** P0. **Effort:** Low. **Dependencies:** R01–R02. **Locate:** §4.4, Table 3, restored cross-size figure. **Source:** [M, Tables 6 and 8].
 
-**Insert into:** RW-40-03, RW-42-01/02, Figure 3 or a compact replication panel, Appendix C.4, and the limitations paragraph.
+Separate **three questions** in the analysis and prose:
 
-**Outcome-to-wording rule:** Stable large effects support stronger within-protocol conclusions. Mixed or tiny effects become descriptive or inconclusive. Preserve seed-level reversals if they change the design recommendation.
+1. Does a specified **within-size intervention contrast** recur?
+2. Does the **absolute loss** of a matched recipe improve with more parameters?
+3. Does its **penalty relative to same-size A0** shrink?
 
-### M3 — Strengthen the post-hoc comparison only if that claim remains important
+They need not have the same answer.
 
-**Priority:** 5/5 when retaining post-hoc superiority; otherwise defer. **Effort:** Mid for targeted calibration/evaluation; reclassify for expensive allocation searches. **Question:** Does the trained recipe's advantage survive a fairer comparator, and what aspect of the comparison actually explains it?
+#### Facts already visible in the base manuscript
 
-Treat two questions separately:
+Verify from source records, then use as safeguards against an overbroad story:
 
-1. **Adaptation comparison:** Does training with a particular final sparsifying architecture help relative to applying that same transformation without adaptation?
-2. **Competitive baseline comparison:** Does the trained recipe improve the observed quality–sparsity or quality–latency trade-off relative to a reasonably allocated post-hoc alternative?
+| Comparison | 14M | 70M | 410M | Correct interpretation |
+|---|---:|---:|---:|---|
+| A0 absolute loss | 5.2086 | 4.0998 | 4.5475 | Dense quality improves at 70M, then worsens at 410M in this protocol. |
+| A7-OL1, `kappa=0.5`, absolute loss | 5.8294 | 5.2159 | 5.1207 | This high-threshold recipe's absolute loss improves at both size changes. |
+| A7-OL1, `kappa=0.5`, `S_model` | 27.483% | 40.602% | 80.616% | Raw model-wide sparsity increases; accounting changes must also be shown. |
+| Same recipe's loss penalty versus A0 | +0.6208 | +1.1162 | +0.5732 | The dense-relative penalty is not monotonic. |
+| A4-OL1, `kappa=0.5`, absolute loss | 6.0380 | 5.3895 | 5.1910 | This recipe also improves in absolute loss from 70M to 410M. |
 
-- [ ] **M3-01:** For the adaptation question, match sites, sign treatment, and the final transformation's position in the graph. Matching the label h is insufficient: the trained map replaces GELU, whereas the current clipping control operates after the trained nonlinearity.
-- [ ] **M3-02:** Specify threshold/calibration selection and any remaining architecture or optimization differences. Do not call the result a pure training-adaptation effect if those differences remain.
-- [ ] **M3-03:** For the competitive comparison, implement and document a stronger allocation-aware baseline with a bounded calibration budget. Verify its primary-source specification before claiming a faithful reproduction.
-- [ ] **M3-04:** Use calibration data separate from final evaluation and give the competing methods comparable selection opportunities. Do not tune allocation on the reported final outcomes.
-- [ ] **M3-05:** Report all relevant points, including ties, losses, and unreachable quality budgets. Evaluate latency only with qualified implementations; do not infer speed from matched sparsity.
+The claim “410M is worse than 70M” is therefore valid for A0 and several settings, **not every sparse recipe**. The 410M high-threshold behavior is part of the result, not an inconvenient exception to discard.
 
-**Insert into:** RW-40-04, RW-41-02/03, Figure 2/5 as appropriate, and a new Appendix D.3 subsection.
+- [ ] State the recurring high-threshold A7-OL1 versus A4-OL1 contrast explicitly: lower loss and higher `S_model` at every tested size.
+- [ ] Retain the zero/smaller-threshold order changes. A4-OL1 is better at zero threshold for 14M/70M, whereas A7-OL1 is better at 410M.
+- [ ] Explain why 14M → 70M is a cleaner architecture/protocol extension: the recorded peak learning rates agree, whereas 410M also changes that setting. Do not call the transition fully controlled in every respect; tokens per parameter and shapes still differ.
+- [ ] Do not describe better absolute quality in a larger sparse model as a reduced sparsification penalty unless same-size A0 differences show it.
+- [ ] Do not infer greater compute efficiency merely because a larger model has lower loss and a higher sparsity percentage. The absolute multiplication workload and latency differ by size.
+- [ ] Use “the high-threshold recipe relationship recurs beyond 14M” or equivalent positive wording. Do not reduce the transfer section to caveats.
 
-**Outcome-to-wording rule:** If a stronger post-hoc baseline closes the gap, report that the original advantage was baseline-dependent. The empirical-design paper can survive this result; a broad superiority claim cannot.
+**Done when:** The reader learns both what is reproducible across the three architecture sizes and what is not monotonic under the fixed budget.
 
-**Low-effort fallback:** Keep the current uniform control and explicitly narrow every comparison to it.
+### G01 — Audit the author's gradient-norm evidence
 
-### M4 — Precision-consistent accounting and functional diagnostics
+**Priority:** P1. **Effort:** Low with logs; otherwise blocked or mid for approved diagnostics. **Locate:** training logs and their generating code; new appendix training-dynamics subsection. **Source status:** The current PDF does not establish the proposed gradient-norm comparison; it must be verified in the repository.
 
-**Priority:** 4/5, potentially 5/5 if the high-sparsity operating point is central. **Effort:** Mid targeted evaluations, not training by default. **Questions:** Are the counts aligned with the timed precision, and what computation remains active at extreme sparsity?
+- [ ] Find the exact logged gradient-norm field and its implementation.
+- [ ] Determine whether it is task-only or combined-objective, before or after gradient clipping, before or after AMP unscaling, and per microbatch or accumulated optimizer step.
+- [ ] Determine whether it covers all parameters, an eligible OL1 subset, or distributed shards; identify the reduction convention.
+- [ ] Check whether logged norms after clipping are capped at 1. Such a curve cannot show the size of pre-clipping gradients beyond the cap.
+- [ ] Align by actual input tokens and, where relevant, successful optimizer updates. Record skipped updates and missing log intervals.
+- [ ] Compare matched recipes and thresholds. Start with A0 across all three sizes; add the same sparse recipes at the same threshold rather than comparing unrelated runs.
+- [ ] Retain the actual learning-rate schedule and any recorded training/validation loss histories.
 
-- [ ] **M4-01:** First inspect DATA-05 outputs. Reuse actual per-site counters rather than rerunning data already recorded.
-- [ ] **M4-02:** Evaluate the relevant checkpoints in BF16 with the declared timed graph semantics. Record loss, exact operand-zero counts, and per-operation contributions alongside the FP16 measurements. Do not mix precisions silently in a joined analysis.
-- [ ] **M4-03:** Measure h and z nonzero counts per token and layer, all-zero-vector rates, and residual-branch output magnitudes. Separate input sparsity from bias contributions and residual-stream state.
-- [ ] **M4-04:** Check whether surviving coordinates vary with inputs when testing a conditional-computation interpretation. A global histogram is insufficient for this question.
-- [ ] **M4-05:** Design a small context-sensitivity diagnostic with the same evaluation targets and a clearly specified context perturbation. Compare with A0 and moderate-sparsity recipes. Avoid creating a different task and then interpreting the result as the original validation score.
-- [ ] **M4-06:** Instrument zero-fragment and skipped-instruction statistics only for the actual kernel path being timed. Keep those measurements separate from scalar zero-product counts.
+Do not infer nonconvergence from a larger raw global norm alone. Parameter count, parameter scaling, gradient aggregation, stochastic variation, and optimization settings can change that norm. Dividing by `sqrt(parameter_count)` is a supplementary descriptive normalization, not a universal convergence test.
 
-**Insert into:** RW-43-04, RW-45-05, a compact diagnostic panel if informative, Appendix D.1/D.4, and the limitations paragraph.
+**Deliverable:** A log-field provenance note and machine-readable aligned records. If the logs are absent, explicitly record that the author's observation was not verified and continue other revision tasks.
 
-**Outcome-to-wording rule:** Dynamic nonzeros and context-sensitive computation may support a functional sparsity interpretation. Largely inactive branches or strong context loss are limitations to explain, not evidence of useful conditional computation. Neither outcome alone proves global “collapse.”
+**Done when:** The agent knows what the plotted norm means and which cross-size comparisons are actually valid.
 
-### M5 — Optional optimizer-mechanism control
+### G02 — Evaluate a finite-budget explanation without claiming it is proven
 
-**Priority:** 3/5 for the recommended empirical paper; higher only if OL1 is made a central contribution. **Effort:** Mid for a narrow control; high for a broad optimizer study.
+**Priority:** P1. **Effort:** Low from retained logs. **Dependencies:** G01. **Locate:** §4.4 final paragraph; Appendix C.4 / new training-dynamics appendix.
 
-- [ ] Compare OL1 against an otherwise identical split task/pressure update with conflict projection disabled.
-- [ ] Match moments, clipping, preconditioning, trust budget, parameter eligibility, and update order. Ordinary L1 alone does not isolate projection because those other details differ.
-- [ ] Report how often projection and the cap activate, plus training-time cost.
+- [ ] Plot retained task loss and verified pre-clipping task-gradient norms against tokens, using the same chosen recipe set in all sizes. Preserve raw curves; any smoothing must be documented and must not replace the endpoint.
+- [ ] Include learning-rate information. A declining norm or flattening loss under a decayed rate alone is not a fair convergence comparison across different schedules.
+- [ ] Inspect a fixed late-run interval, defined before outcome-specific selection; for example, the final 20% of logged optimizer updates, if coverage is sufficient.
+- [ ] Quantify the late training-loss trend and retained validation trend when available. Do not invent intermediate validation evaluations.
+- [ ] Report whether 410M is still making observable progress at the stopping point and whether this differs from the smaller models.
+- [ ] Keep the 712-update budget, 1.493B tokens, tokens-per-parameter differences, and lower 410M learning rate visible in the methodological context.
 
-**Insert into:** Section 3.1 / 4.2 and Appendix A.2 only if the evidence supports a mechanistic claim. **Default decision:** Defer and frame OL1 as an implementation choice.
+**Outcome-specific language:**
 
-### M6 — Optional sign-treatment control
+- Stronger evidence: “The retained trajectory continues to improve near the stopping point, and the task-gradient diagnostic remains elevated under the stated measurement. These observations are consistent with a training-budget limitation.”
+- Norm alone: “The larger terminal norm motivates inspecting training dynamics, but does not establish undertraining by itself.”
+- No corroboration: Report what the logs show and do not assign the loss reversal to premature stopping.
 
-**Priority:** 4/5 if a pure threshold-placement interpretation remains important. **Effort:** Mid for one controlled operating point.
+Do not write “410M failed because it did not converge,” “longer training would restore the expected scaling,” or “the sparse penalty is explained by undertraining.” A matched continuation is needed to test the causal explanation and may change dense and sparse recipes differently.
 
-- [ ] Compare the existing one-sided maps at a, m, and z with symmetric magnitude thresholds, holding the intended FFN nonlinearity at h and the q/k/v maps fixed.
-- [ ] Match training protocol and state exactly which sites change sign treatment. Do not call it a placement-only test.
-- [ ] Report whether the trade-off depends materially on suppressing all negative coordinates rather than only small magnitudes.
-
-**Insert into:** Section 3.1 and a limited Section 4.2 or appendix comparison. **Default fallback:** Preserve the explicit sign-treatment limitation instead of expanding the study automatically.
-
-### H1 — Longer-training confirmation at 70M
-
-**Priority:** 4/5 after the main comparisons are sound. **Effort:** High. **Question:** Does a selected recipe relationship survive a less restrictive training budget?
-
-- [ ] Select A0 and two recipes that test a specific surviving claim; do not repeat every threshold.
-- [ ] Define a matched longer schedule. State whether training continues from a checkpoint or restarts, how learning rate changes, and whether tokens repeat or new data are introduced.
-- [ ] Keep these choices matched across recipes. A longer sparse run against the old shorter A0 is not the intended control.
-- [ ] Report trajectories and final comparisons. Do not call a favorable longer run proof of convergence or optimal training.
-
-**Insert into:** Section 4.4, Appendix C.4, and a new training-curve appendix. **Decision value:** Distinguishes a persistent recipe relationship from an effect limited to the original budget.
-
-### H2 — One larger-model quality–latency study
-
-**Priority:** 4/5 for the empirical paper; 5/5 if practical efficiency is a headline. **Effort:** High because shape qualification and kernel work can dominate. **Question:** Does the execution finding extend beyond the measured 14M shapes, and is there a useful model-selection operating point?
-
-- [ ] Start with existing 70M checkpoints rather than a new full 410M sweep.
-- [ ] Qualify native, matched all-skips-off, sparse, and attention-dense paths in the same workload and precision.
-- [ ] Report absolute latency, quality, per-operation time, and sparse-path attribution.
-- [ ] Where feasible, compare with a smaller dense model at similar absolute validation loss. Use the same evaluator and workload; same-size Δloss values are not themselves a cross-size quality match.
-- [ ] Keep shape-specific failures and negative gains. Do not extrapolate sparse-kernel speedup from the architecture's reach or the scalar zero fraction.
-
-**Insert into:** A bounded extension of Section 4.5 and its appendix. **Decision value:** Supports a broader efficiency story only when the measured comparison actually favors the sparse model at a defensible quality level.
-
-### 8.2 Stopping and escalation rules
-
-| After completing… | Continue when… | Stop or narrow when… |
-|---|---|---|
-| Low-effort rewrite | The two primary findings remain nontrivial and their evidence gaps are clearly identified. | The narrative still relies on unqualified maximum sparsity, an unfair baseline, or a prediction claim from a descriptive fit. |
-| M1/M2 | Controlled and replicated effects support a meaningful comparison, or a reversal itself explains an important dependency. | Only tiny unstable differences remain. Remove those as headlines rather than adding more adjectives or an indiscriminate sweep. |
-| M3 | Competitive/adaptation claims remain important and the baseline is now appropriately matched. | The stronger baseline removes the claimed advantage. Report the boundary and keep the empirical contribution. |
-| M4 | Functional and precision diagnostics clarify the meaning of the extreme point. | The high-sparsity point cannot support the proposed practical interpretation. Keep it as a stress-test endpoint, not the recommended operating point. |
-| Before H1/H2 | A specific remaining generality or practical-value objection is worth the cost. | The unresolved problem is still a basic missing control or unclear claim; larger models will not resolve that ambiguity. |
+**Done when:** The budget hypothesis is either supported by specified diagnostics, retained as a clearly unverified interpretation, or removed. It is never inserted as an established explanation because it sounds plausible.
 
 ---
 
-<a id="9-final-verification-and-author-handoff"></a>
+## 6. Figure and table edits
+
+### V01 — Restore and expand the cross-size visual argument
+
+**Priority:** P0. **Effort:** Low. **Dependencies:** R01–R03, A01. **Locate:** current Figure 8, p. 20; original Figure 5, p. 10; §4.4 reference. **Source:** [M], [O].
+
+**Mandatory design:** Restore a main-text figure comparing 14M, 70M, and 410M side by side. Preserve the original figure's direct visual comparison rather than replacing it with a numerical ranking table.
+
+- [ ] Top row: absolute validation loss versus `100 S_model` for each size.
+- [ ] Bottom row: loss relative to **unmodified same-size A0** versus `100 S_block` for every recipe in that size. State the normalization; do not normalize each recipe by its own reach.
+- [ ] Include A4-OL1 and A7-OL1 across all five trained thresholds.
+- [ ] Include the full A0 + clipping and A1-H + clipping trajectories across all ten targets. Show their baseline points distinctly.
+- [ ] Retain the A4/four-site-clipping and A7 architectural-reach guides in the raw view. A1-H + clipping uses the four-site guide; its unmodified endpoint has h-only intervention reach.
+- [ ] Use a single consistent recipe-to-color/marker mapping across the paper. Retain the existing visual scheme unless there is a legibility problem. Use open markers for post-hoc trajectories and filled markers for trained endpoints.
+- [ ] Mark or annotate `kappa=0.5` so the recurring comparison is immediately locatable. Also make the low-threshold reversal visible rather than drawing only favorable segments.
+- [ ] Distinguish “separately trained thresholds” from “post-hoc targets on one fixed checkpoint” in the legend or caption.
+- [ ] Use shared y-axis limits within a row where legible. Different raw x-limits by size are legitimate but must be apparent; the normalized bottom row should use a common x scale.
+- [ ] Preserve full-range trajectories in the appendix. If a main-text view omits high-loss tails, mark and count omitted points in the caption; do not hide them silently.
+- [ ] Recalculate the number of distinct evaluations. The previous caption's “60 evaluations” is no longer correct when A1-H clipping is added. Distinguish duplicate plot appearances and near-identical `p=0` records from new runs.
+
+**Preferred title:** “Quality–sparsity trade-offs across the Pythia family.” The author's familiar “frontier” wording is acceptable only if the figure explicitly distinguishes an observed nondominated set from the paths connecting all evaluated settings. Do not manufacture fitted frontiers or hide dominated observations.
+
+**Caption structure:**
+
+1. What repeats at the high threshold, stated as a named comparison.
+2. What each column and row measures.
+3. Which curves are trained recipes and which are post-hoc clipping of GELU/ReLU-trained checkpoints.
+4. Why architectural reach changes; where the complete ranges are retained.
+5. One concise sentence on the fixed token budget and changed 410M learning rate.
+
+**Space fallback:** First reduce redundant text or remove the now-unnecessary main-text boundary-threshold table. Keep a legible three-size raw figure in the main text even if the normalized row must remain in the appendix. Do not again demote all cross-size visual evidence to the appendix merely to preserve the systems figure.
+
+**Done when:** Without reading the appendix, a reviewer can see the beyond-14M recurrence, the ReLU/clipping behavior, and the nonuniform 410M response.
+
+### V02 — Remove “Cohort means” without losing execution attribution
+
+**Priority:** P0. **Effort:** Low. **Locate:** current Figure 5, p. 7, subplot (a); Appendix Table 12 and Table 13.
+
+- [ ] Remove the aggregate means panel and its subplot caption. Do not replace it with a differently named aggregate bar/lollipop plot.
+- [ ] Preserve the three implementation summaries in §4.5 prose and the existing appendix implementation table: all-skips-off `1.1829x`, K050 `1.2340x`, attention-dense `1.2506x` over native execution, subject to source revalidation.
+- [ ] Keep the incremental sparse-path factor `1.0432x` and count `14/30` in the result text. These are interpretation controls, not mandatory chart panels.
+
+**Preferred replacement figure:** Two intervention-level views generated from retained records:
+
+- **Left:** BF16 validation loss versus absolute latency for the measured 14M checkpoints. Show matched fused/skips-disabled and K050 results using a consistent execution marker convention. Identify A0 and the informative A4/A7 pair at `kappa=0.5`; do not mark a global “winner.” Put the attention-dense variant in the appendix if the main panel becomes crowded.
+- **Right:** Retain the checkpoint-level incremental sparse-path factor versus `S_model`, with a one-factor reference line, recipe symbols, and an explicitly descriptive fit only if it adds information. Label the FP16-count/BF16-timing distinction.
+
+**Permitted simpler layout:** A single checkpoint-level runtime panel, with attribution and absolute-latency examples in prose, if two panels crowd the restored cross-size figure. Do not sacrifice readable cross-size evidence to add more kernel panels.
+
+**Measurement constraints:**
+
+- Use BF16 quality values alongside BF16 timings, not FP16 endpoint loss values presented as identical.
+- Do not time clipping results by assumption; the existing timing cohort contains unmodified trained checkpoints.
+- A ratio of rounded latency summaries is not the geometric mean of paired timing ratios. Define plotted statistics correctly.
+- Do not present a ratio of separately native-normalized speedups as a directly paired cross-implementation measurement.
+- Keep the A4/A7 comparison concrete: at `kappa=0.5`, the displayed K050 summaries are approximately `0.4790`/`0.4789 ms`, while BF16 losses are `5.6623`/`5.7076` and their FP16 `S_model` values differ substantially. Describe the summaries as close, not as statistically equivalent.
+
+**Done when:** The figure compares actual interventions and execution paths, not aggregate winners, while the text preserves the fusion/sparsity distinction.
+
+### V03 — Relocate the quality-budget table and trim redundancy
+
+**Priority:** P0. **Effort:** Low. **Locate:** current Table 1 and §4.1 paragraph beginning “Retrospective quality budgets change which endpoint is preferable.”
+
+- [ ] Remove Table 1 from the main argument and remove its winner-centered paragraph.
+- [ ] Keep the reduction code, source rows, and a supplementary table or machine-readable artifact. Relabel it as an optional retrospective quality-budget view, not the study's objective.
+- [ ] Replace the paragraph with an intervention question: how does the representation produced by ReLU training change the response to subsequent clipping? Use R02's verified observation.
+- [ ] Keep absolute quality costs visible in the surrounding text and restored curves. Removing winner selection must not become hiding unfavorable losses.
+- [ ] Keep the operation-contribution Table 2 or integrate its two numbers into the distribution paragraph if space is tight; it explains a result rather than ranking arbitrary candidates.
+- [ ] Consider moving current Table 3's boundary-threshold summary to the appendix once the restored main figure and a quantitative sentence carry the same comparison. Keep all five thresholds in the complete results.
+- [ ] Update LaTeX labels and references by symbolic labels, not hand-edited figure numbers.
+
+**Done when:** Main-text space is spent explaining intervention effects. No result records are deleted or selectively excluded.
+
+
+---
+
+## 7. Paragraph-by-paragraph LaTeX edits
+
+The method paragraphs are specified in O02, T01–T02, and A01. The following tasks cover the rest of the paper. Resolve actual source files and labels through B00. Do not duplicate the same explanation in several sections.
+
+### W01 — Experimental setup: make the comparisons easy to follow
+
+**Priority:** P0. **Locate:** §4 opening, p. 3. **Sources:** [M, §4; Appendix C.4].
+
+**Paragraph 1 — anchor: “We pretrain Pythia models from random initialization…”**
+
+- [ ] Preserve sizes, conditions, dataset, fixed updates/tokens, final-checkpoint evaluation, validation definition, and single-seed status.
+- [ ] Explain the budget as a shared experimental protocol, not evidence that the three sizes have reached an equivalent training stage.
+- [ ] Leave detailed optimizer settings in Appendix C.4; retain a concise adjacent note about the lower 410M learning rate.
+
+**Paragraph 2 — anchor: “Within each size, paired conditions share initialization…”**
+
+- [ ] State what is fixed in the pressure on/off contrasts and what changes in the placement comparisons.
+- [ ] Explain that the multisite OL1 settings are fixed to focus the sweep, linking to the new rationale rather than asserting they were tuned or validated as optimal.
+- [ ] Update the normalization language using O03. Do not imply effective per-site dilution proportional to the written coefficient without inspecting the cap regime.
+- [ ] Keep the independent-site-set definition and one compact recipe key accessible in the main text.
+
+**Paragraph 3 — anchor: “The evaluation-only reference applies uniform magnitude clipping…”**
+
+- [ ] Introduce clipping as a second intervention applied to already-trained representations, including A0 and A1-H.
+- [ ] State the calibration policy, four sites, fixed weights, and target-versus-achieved-sparsity distinction.
+- [ ] Retain its limited allocation scope, but do not make the paragraph mostly an explanation of why the baseline is inadequate.
+
+**Done when:** A reader knows which differences can be attributed to a matched intervention and which are comparisons of different complete recipes.
+
+### W02 — Quality–sparsity results: compare interventions, not budget winners
+
+**Priority:** P0. **Locate:** §4.1, p. 4. **Dependencies:** R02, V03.
+
+**Paragraph 1 — anchor: “Local pressure and broader nonlinearities occupy different regimes…”**
+
+- [ ] Keep the useful distinction between local pressure and broader thresholding.
+- [ ] Retain a concrete local-pressure result, with both loss and sparsity, without presenting L1 or OL1 as uniformly superior.
+- [ ] Retain the aggressive A7-OL1 endpoint and its actual quality cost; maximum sparsity is context, not the sole contribution.
+
+**Paragraph 2 — replace “Retrospective quality budgets change which endpoint is preferable…”**
+
+- [ ] Introduce the ReLU/clipping comparison from R02.
+- [ ] Name the exact clipping regime and size(s) where the verified pattern occurs. Use a quantitative pair or a clearly identified crossing rather than a generic “better frontier.”
+- [ ] State the base ReLU cost separately from the added clipping cost when relevant.
+- [ ] End with the implication: training the activation function changes the representation exposed to later thresholding; intervention timing and nonlinearity can interact.
+- [ ] Point to the cross-size figure for recurrence and the full supplementary trajectories for unfavorable settings.
+
+**Done when:** This section motivates understanding interventions without turning into a model-selection contest.
+
+### W03 — Paired effects and the historical pressure-target audit
+
+**Priority:** P0. **Locate:** §4.2, p. 5; historical paragraph in Appendix D.6, p. 25. **Dependencies:** O03. **Source:** [M, Tables 7–8; historical audit].
+
+**Paragraph 1 — anchor: “Pressure’s additional value depends on threshold and targets…”**
+
+- [ ] Preserve the ReLU cost and local L1/OL1 comparison.
+- [ ] Explain that the optimizer comparison is between complete update rules. Do not demand an optimizer-contribution story or hide the `lambda=1` reversal.
+- [ ] Replace any implication that OL1 is chosen because it wins the local sweep with the fixed-instrument rationale in §3.1.
+
+**Paragraph 2 — anchor: “For A4, adding OL1 improves both axes…”**
+
+- [ ] Preserve the quantitative A4/A7 pressure increments at the same threshold.
+- [ ] State the useful finding first: the same pressure mechanism has a different marginal effect when the thresholded sites and target objective change.
+- [ ] Explain the remaining distinction in terms of target-gradient mixture and cap-dependent scaling, following O03.
+
+**Optional short paragraph 3 — promote the audited h-only pressure comparison.**
+
+- [ ] Move the scientific portion of the historical audit out of kernel qualification and into a pressure-target appendix, referenced here.
+- [ ] Verify all five original configs, checkpoint identities, and diagnostic precision before quoting comparisons.
+- [ ] State that broad thresholding with pressure only at `h` was a distinct historical condition, not one of the original 54 primary conditions. Give it an unambiguous descriptive label such as “A4 with pressure at h only,” retaining its raw run ID.
+- [ ] Use the observation to motivate separating thresholding placement from pressure placement. Do not make a causal claim about the changed denominator alone.
+- [ ] Do not expand the 30-checkpoint timing cohort or the 54-condition headline silently. A separate audited comparison is sufficient.
+
+**Done when:** The section explains a real design choice—where to apply pressure—without turning normalization arithmetic into an untested causal mechanism.
+
+### W04 — Distribution results: connect zero mass to the measured computation
+
+**Priority:** P1. **Locate:** §4.3, pp. 5–6. **Source:** [M, Figure 4; Tables 2, 9–11].
+
+**Paragraph 1 — anchor: “More FFN zeros need not mean more model-wide sparsity…”**
+
+- [ ] Keep exact-zero masses adjacent to the distributions and define the pooled `h,m` and `q,k,v` groups.
+- [ ] Explain why a narrow nonzero peak is not the same as zero mass.
+- [ ] Distinguish directly thresholded attention operands from nonlocal distribution changes under A4.
+
+**Paragraph 2 — anchor: “Operation counts explain the ranking reversal…”**
+
+- [ ] Preserve the operation-level explanation: increased QK/PV contributions outweigh reduced projection contributions.
+- [ ] Tie this back to architectural reach: reach identifies which work can be affected; the measured counts identify how much of that work has zero operands.
+- [ ] End with a concrete consequence: local FFN sparsity alone can reverse the apparent ranking of the complete recipes for model-wide zero products.
+
+**Paragraph 3 — replace the current diagnostics-only disclaimer at the end.**
+
+- [ ] State the verified all-zero-input result first: pooled `z` rows are entirely zero at about 97.15% for A4-OL1 and 91.20% for A7-OL1 at the high threshold in the BF16 diagnostic.
+- [ ] Explain the algebraic consequence carefully: the affected output projection returns its bias on those rows, if that bias exists. This says nothing by itself about the entire residual stream or all context use.
+- [ ] Give one useful open question: whether the remaining nonzero branch contributions retain meaningful context dependence.
+- [ ] Keep detailed per-layer diagnostics in the appendix; do not allow a speculative collapse narrative to displace the intervention findings.
+
+**Done when:** Readers understand what the distribution evidence explains and what the more extreme regime invites them to test.
+
+### W05 — Cross-size section: restore a positive, quantitatively bounded argument
+
+**Priority:** P0. **Locate:** §4.4, p. 6. **Dependencies:** R02–R03, V01, G02.
+
+Replace the current two compressed paragraphs with approximately four short paragraphs:
+
+**Paragraph 1 — recur beyond 14M.**
+
+- [ ] Open with the named high-threshold A7-OL1 versus A4-OL1 relationship at all three sizes.
+- [ ] Give its paired loss/sparsity differences compactly or point to visible annotations. Say this is evidence beyond the 14M architecture, not three independent replications.
+- [ ] Immediately identify the lower-threshold ordering changes as the boundary of the recurring relationship.
+
+**Paragraph 2 — separate learning from architectural accounting.**
+
+- [ ] Explain the increase in reach and model-wide sparsity using the shrinking dense-head share and changed operation mix.
+- [ ] Refer to the normalized row so readers can see what remains after removing head share.
+- [ ] Do not describe the normalized plot as controlling for all architecture differences.
+
+**Paragraph 3 — ReLU plus post-hoc clipping.**
+
+- [ ] State the verified outcome from R02 across sizes, including any crossing or unfavorable region.
+- [ ] Explicitly distinguish increasing structural reach, initial ReLU zero mass, incremental clipping sensitivity, and final loss.
+- [ ] Do not assert a monotonic scale benefit unless the actual relevant metric supports it.
+
+**Paragraph 4 — absolute quality and the training-budget question.**
+
+- [ ] Explain that 14M→70M improves absolute quality for the compared recipes, but not necessarily their same-size dense-relative penalty.
+- [ ] Name which 410M trajectories depart from that pattern. Do not apply A0's deterioration to the high-threshold sparse endpoints that actually improve.
+- [ ] Include a concise training-dynamics observation only if G02 verifies it. Otherwise state the fixed-budget protocol and leave the premature-stopping explanation as an open question.
+
+**Done when:** The section's main message is a useful cross-size observation, not a defense of why a scaling law was not established.
+
+### W06 — Runtime section: explain implementation-dependent outcomes
+
+**Priority:** P0. **Locate:** §4.5, pp. 7–8. **Dependencies:** V02.
+
+**Paragraph 1 — replace the TwELL/provenance-led opening.**
+
+- [ ] Open with the execution question: which counted zeros improve full-model latency once fusion and skip overhead are separated?
+- [ ] State the workload, reference implementation, and numerical qualification concisely.
+- [ ] Move detailed TwELL compatibility history, coding-agent model provenance, and the absence of human-only-development controls to their existing appendix/AI-use locations. They are not the main scientific result.
+
+**Paragraph 2 — quantitative attribution, without a means plot.**
+
+- [ ] Report native, matched fused/skips-disabled, and sparse-path comparisons, keeping the aggregate figures in prose.
+- [ ] Define speedup as `native latency / candidate latency` for paired samples, and define the incremental factor as the ratio of native-relative speedups.
+- [ ] Correct Table 14's “K050/native” wording if it names latency ratios in the wrong direction. Inspect the script before changing a formula.
+- [ ] Keep the search result separate from the later final sweep and attention-dense ablation.
+
+**Paragraph 3 — informative intervention example.**
+
+- [ ] Use the A4/A7 high-threshold comparison: more counted zeros but nearly identical reported specialized latencies and different losses/native baselines.
+- [ ] Explain why the baseline-normalized speedup can look better without selecting a better absolute-latency intervention.
+- [ ] Avoid equivalence tests or causal runtime claims that were not performed.
+
+**Paragraph 4 — attention skipping and the physical granularity.**
+
+- [ ] Keep the instruction-skipping negative result and its measured skipped fractions.
+- [ ] Explain the mismatch between scalar zero products and whole-fragment bypass, plus recurring detection/control costs.
+- [ ] End with the implementation lesson: architecture-level reach can justify investigating attention, but profitability still depends on granularity, shape, and overhead in the measured workload.
+
+**Done when:** The runtime subsection supports the intervention argument and preserves attribution without dominating the paper or relying on a bar chart of means.
+
+### W07 — Related work: explain the design lineage, not a list of citations
+
+**Priority:** P1. **Locate:** §2.1 and §2.2, p. 2. **Dependencies:** T01, final methods/results story.
+
+- [ ] Keep the distinction between post-hoc intervention, train-time nonlinearity/pressure, and broader placement.
+- [ ] Use the verified literature facts from T01 once; avoid repeating a full literature summary in both §2.1 and §3.1.
+- [ ] State which idea motivated the current study and which implementation choices differ. Do not claim to evaluate Q-Sparse or Spark directly unless their actual methods are implemented and compared.
+- [ ] Explain that this study uses a simpler fixed-cutoff mechanism to examine distributional adaptation and intervention interactions.
+- [ ] Keep workload-specific kernel distinctions, but remove unnecessary detail that belongs in execution provenance.
+- [ ] Do not add new efficiency records, dates, or state-of-the-art claims unrelated to the revision.
+
+**Done when:** Prior work explains why the study's controlled choices are interesting rather than becoming a defensive enumeration of missing baselines.
+
+### W08 — Discussion and conclusion: three lessons, not three more warnings
+
+**Priority:** P0. **Locate:** §5, p. 8. **Dependencies:** verified result edits.
+
+Write approximately three compact paragraphs:
+
+**Paragraph 1 — intervention interaction.** State how the threshold and pressure objective change pressure's marginal effect. Add the verified ReLU/clipping implication. Avoid listing which checkpoint wins.
+
+**Paragraph 2 — architecture and cross-size evidence.** Explain the practical use of reach before training and the particular relationship that recurs beyond 14M. State the differing low-threshold behavior as a boundary, not a contradiction to erase.
+
+**Paragraph 3 — execution and next question.** Connect zero counts to the measured granularity/overhead result. End with the most informative unresolved question supported by the paper: pressure direction versus weighting, training-budget sensitivity, or larger-width execution, choosing only those still genuinely unresolved after the audits.
+
+- [ ] Keep one concise scope statement covering single-seed evidence, selected larger-size recipes, clipping policy, and measured runtime workload.
+- [ ] Do not end with “our results provide valuable insights.” State the actual lesson.
+- [ ] Do not infer a universal recommendation from a complete-recipe observation.
+
+**Done when:** A reader can name at least two experimental decisions they would now investigate differently.
+
+### W09 — Introduction: make the intended contribution legible
+
+**Priority:** P0. **Locate:** §1, pp. 1–2. **Dependencies:** all major results/visuals stable.
+
+**Paragraph 1 — anchor: “Activation sparsity can reduce inference cost…”** Keep the practical question: how to place and combine interventions so that the resulting zeros affect useful computation at an explicit quality cost.
+
+**Paragraph 2 — anchor: “Existing recipes combine these choices differently…”** Introduce pressure, thresholding, and placement. State the study's scope as examining interactions under a common protocol, not reproducing every complete prior method.
+
+**Paragraph 3 — anchor: “We pretrain Pythia-family models from scratch…”** Give two quantitative intervention findings and their beyond-14M extension. Introduce reach as a planning quantity that can be computed before training. Include the ReLU/clipping result only at the strength supported by R02.
+
+**Paragraph 4 — anchor: “A human-guided coding-agent case study then measures execution…”** Lead with the scientific role of the case study, not the development tool. Give a brief attribution result and the attention-skipping counterexample. Keep coding-agent details out of the contribution claim unless they are themselves evaluated.
+
+- [ ] Remove “small quality budgets can favor clipped endpoints” as a headline contribution; replace it with the intervention-level observation.
+- [ ] Keep the per-size and same-size quality comparisons unambiguous.
+- [ ] Avoid copying the abstract's phrasing and numbers wholesale.
+
+**Done when:** The introduction promises the paper the reader will actually encounter in the main figures and results.
+
+### W10 — Abstract: update last
+
+**Priority:** P0. **Locate:** abstract, p. 1. **Dependencies:** W01–W09, Q01 numerical checks.
+
+Use roughly 7–9 sentences, adapted to the venue's actual space constraints:
+
+1. The design question: inducing zeros is not sufficient without placement, quality, and execution context.
+2. The controlled study and the division between detailed 14M comparisons and selected larger recipes.
+3. The role of model-wide sparsity and a priori architectural reach.
+4. A concrete conditional pressure effect, with a comparator.
+5. The cross-size recurrence of the named high-threshold recipe relationship, not an unspecified “advantage.”
+6. The ReLU/post-hoc finding only if verified and sufficiently central; otherwise keep it in the introduction/results.
+7. The execution result with clear attribution to fusion versus incremental sparse paths, choosing only enough numbers for readability.
+8. A substantive design implication, not a general statement that all sparse execution is useful.
+
+- [ ] Do not use the abstract to advertise a theoretical actual-loss-preservation guarantee for OL1.
+- [ ] Do not claim full convergence, universal scaling, or broad dominance of clipping baselines.
+- [ ] Do not return to maximum sparsity as the only training result, or make aggregate means the only execution result.
+- [ ] Keep one-seed and workload scope where necessary, without making the final sentence solely a disclaimer.
+
+**Done when:** Each abstract finding has a visible main-text comparison and a traceable number or derivation.
+
+---
+
+## 8. Optional evidence: choose tests after the audits
+
+Do not launch these automatically. Write an experiment request naming the unresolved claim, minimum conditions, stopping rule, evaluation protocol, expected cost, and how each possible outcome would change the paper. Short training runs are mid effort; aggregate packages may become high effort. Larger-model training and long continuations are high effort.
+
+### E01 — Fill a ReLU/clipping comparison gap
+
+**Effort:** Mid for short checkpoint evaluations. **Trigger:** Existing quantile targets do not resolve an important comparable-sparsity comparison in R02.
+
+- [ ] Evaluate a small number of additional clipping targets on the fixed A0 and A1-H checkpoints using the same calibration/evaluation protocol.
+- [ ] Keep calibration on training data; do not tune thresholds directly to validation labels/loss.
+- [ ] Report achieved sparsity and both total and incremental loss costs.
+- [ ] Add every evaluated target to the supplement, not only successful comparisons.
+
+**Insertion:** R02, V01, W02/W05. No new training is needed for this specific question.
+
+### E02 — Test the OL1 rationale with a small diagnostic, not a new optimizer campaign
+
+**Effort:** Mid. **Trigger:** No saturation logs exist and an empirical robustness sentence is important to the narrative.
+
+- [ ] Instrument a small, clearly labeled diagnostic at representative thresholds, retaining task/pressure vectors, cap state, and effective correction norms.
+- [ ] Test weights below and above the observed saturation threshold at fixed gradient/optimizer states first. This is a one-step mechanism check, not proof of training-trajectory robustness.
+- [ ] Only run a short multi-weight training comparison if a trajectory-level claim is intended. Use matched initialization/data order and report it as a diagnostic when its budget differs from the primary experiment.
+- [ ] For target weighting, choose genuinely different relative old/new-site weights or a cap-inactive regime. Do not spend compute on a globally rescaled vector that remains saturated and directionally identical.
+
+**Insertion:** O03 and the pressure-target appendix. This is not a prerequisite for an honestly stated fixed-design rationale.
+
+### E03 — Replicate the central intervention contrast
+
+**Effort:** Mid per short/small run; price the aggregate package. **Trigger:** The final abstract depends on unreplicated endpoint differences.
+
+- [ ] Select the few conditions carrying the main claim and add independent seeds, preserving matched initialization and data order within each seed.
+- [ ] Use the same training budget for confirmatory comparisons. Shortened runs can screen a hypothesis but cannot be substituted for matched-budget endpoint evidence.
+- [ ] Report paired differences across seeds, not a misleading error bar over threshold settings or validation blocks.
+- [ ] Run the zero-threshold A4/A7 forward/gradient identity check as a low-cost implementation test; repeat training only when needed to diagnose a discrepancy.
+
+**Insertion:** paired/cross-size claim wording and complete results. A null or reversed effect changes the claim; it is not grounds to omit the seed.
+
+### E04 — Test the 410M finite-budget explanation
+
+**Effort:** High. **Trigger:** Retained logs motivate the explanation and the authors wish to make a stronger causal statement.
+
+- [ ] Continue a matched dense baseline and selected sparse recipe(s), not only the condition expected to improve.
+- [ ] Define the continuation token budget and learning-rate treatment before inspecting outcomes. Preserve optimizer state when the test requires continuation rather than restart.
+- [ ] Track task loss, validation loss, sparsity, verified gradient diagnostics, and effective update size.
+- [ ] Distinguish “more training improves this checkpoint” from “the original 70M→410M reversal is resolved” and from “the sparse penalty shrinks.”
+- [ ] A consistent longer-budget training design is stronger than a one-off warm-restart rescue; document schedule changes and their interpretation.
+
+**Insertion:** G02/W05 and a training-dynamics appendix. Do not delay the entire rewrite waiting for this high-effort option.
+
+---
 
 ## 9. Final verification and author handoff
 
-### 9.1 Claim-strength audit
+### Q01 — Numerical and mathematical verification
 
-- [ ] **QA-01:** Every abstract and introduction claim maps to a result, comparator, and explicit scope in the evidence ledger.
-- [ ] **QA-02:** All uses of “isolates,” “causes,” “synergy,” “preserves,” “dominates,” “predicts,” “optimal,” “robust,” and “generalizes” have been reviewed manually. Keep only meanings justified by the experiment.
-- [ ] **QA-03:** High sparsity is not presented without quality context; same-checkpoint acceleration is not presented as a quality-matched model advantage.
-- [ ] **QA-04:** Complete-recipe larger-model comparisons are not relabeled as individual pressure or placement effects.
-- [ ] **QA-05:** A post-hoc result names the actual baseline and does not imply a full TEAL reproduction unless one was performed.
-- [ ] **QA-06:** Results from optional experiments appear only after their records, analysis, and qualification checks have been verified. No future-tense proposal has become a past-tense finding by accident.
+- [ ] Recompute every quoted delta from unrounded source values; preserve pp versus percent conventions.
+- [ ] Verify `S_model` versus `S_block` and the common A7 normalization; do not divide each recipe by a different reach.
+- [ ] Verify the expanded figure's condition/evaluation counts and the A1-H + clipping reach.
+- [ ] Keep FP16 training/count results and BF16 timing/quality results distinct.
+- [ ] Check all speedup ratios, especially the Table 14 caption and incremental-factor axis.
+- [ ] Run OL1 direction, cap, saturation, degeneracy, and global-rescaling tests. Label exact ideal properties separately from the stabilized implementation.
+- [ ] Verify the theoretical half-space result with a brief proof or independent calculation; do not present a stronger actual-loss guarantee.
+- [ ] Verify every training-dynamics statement against a known log field and matched recipe.
+- [ ] Confirm that removing Table 1 and the means subplot does not remove unfavorable quality results or runtime attribution.
 
-### 9.2 Numerical and methodological audit
+### Q02 — LaTeX build and visual inspection
 
-- [ ] **QA-07:** Cross-check every headline value against its exact table/record, including reference, precision, units, and rounding.
-- [ ] **QA-08:** Verify operation contributions sum to model-wide counts at full precision. Tolerate only explained display-rounding discrepancies.
-- [ ] **QA-09:** Verify reach formula, common A7 normalization, and any `U_arch` → `S_block` relabeling. Do not apply this identity outside its declared graph.
-- [ ] **QA-10:** Reconcile 30 manuscript checkpoints, 35 historical checkpoints, 54 training endpoints, 540 clipping evaluations, seven histogram checkpoints, and any new cohorts. Do not update one count without its downstream figures and tables.
-- [ ] **QA-11:** Preserve 1.7830× search versus 1.7832× final-sweep context; distinguish K050 from the faster attention-dense ablation.
-- [ ] **QA-12:** Verify that native-relative, fusion-relative, and absolute-latency comparisons are labeled correctly. Ranges are not confidence intervals; separately measured normalized ratios are not raw paired timing records.
-- [ ] **QA-13:** Check the exact threshold inequalities, derivative conventions, pressure averaging, clipping, and OL1 equations against the unchanged method and any explicitly new variants.
-- [ ] **QA-14:** Verify the dataset/evaluation split, target-token versus input-token counts, training budget, learning-rate differences, and final-checkpoint rule.
-- [ ] **QA-15:** Keep all relevant exclusions and qualification failures. Missing measurements must say unavailable, not zero or equivalent.
+- [ ] Regenerate figures/tables through source scripts, not manual raster edits.
+- [ ] Use the documented build command; inspect warnings for missing references, undefined citations, multiply defined labels, and overfull boxes.
+- [ ] Render and inspect every changed page at readable size. Check legends, tick labels, markers, panel letters, clipping/reach guides, and placement relative to first reference.
+- [ ] Confirm the cross-size figure is in the main text and readable at final printed width.
+- [ ] Confirm “Cohort means” is gone and no equivalent aggregate panel has appeared under another name.
+- [ ] Confirm the main-text quality-budget winner table is gone; the underlying data remain available.
+- [ ] Do not reduce fonts or margins to fit prose. Trim duplicate scope statements, redundant tables, and development provenance first.
+- [ ] Preserve the venue template and documented page limit. Do not assume a future limit from an earlier PDF's page count.
 
-### 9.3 Human-readability and insight audit
+### Q03 — Human-reader and claim audit
 
-Ask a reader—or a separate review pass—to answer these questions from the revised paper without consulting this runbook:
+Read only the main text and figures first, without consulting the appendix. Then answer:
 
-1. What are the two principal findings, and which comparison supports each?
-2. Why can fewer pooled FFN zeros produce more model-wide zero-product counts?
-3. Why is the architectural reach neither a universal observed-sparsity bound nor a quality-preserving target?
-4. Which part of the reported acceleration comes from sparse paths rather than matched fusion?
-5. What changes across model sizes besides parameter count, and what remains untested?
+- [ ] Why use a fixed threshold rather than choose a surviving count?
+- [ ] Why use OL1 with a fixed relative budget, and what property is actually protected?
+- [ ] What can architectural reach predict before training?
+- [ ] Which pressure effect depends on the threshold or target mixture?
+- [ ] How does ReLU training change subsequent clipping, and what does “better” mean in the reported region?
+- [ ] Which relationship recurs at all three sizes, and which one changes at 410M?
+- [ ] What do the training logs support about the stopping point, if anything?
+- [ ] Why can more model-wide zero products fail to reduce latency?
 
-- [ ] **QA-16:** Each substantive results subsection contains at least one clearly supported implication, not only a sequence of numbers.
-- [ ] **QA-17:** No implication outruns its evidence. Proposed mechanisms and future tests are labeled as such.
-- [ ] **QA-18:** Recipe IDs are expanded with site or pressure meaning when the reader needs it. A page of unexplained A4/A7 comparisons is not a readable argument.
-- [ ] **QA-19:** Remove duplicated caveat paragraphs, repeated maxima, and self-praise. Keep short local caveats that prevent a misleading reading.
-- [ ] **QA-20:** Read each section continuously, then the abstract and conclusion together. The ending must not make a broader claim than the opening or vice versa.
+A “yes” requires a concrete answer, not a paragraph saying the issue is complicated.
 
-### 9.4 Build and visual audit
-
-- [ ] **QA-21:** Compile the source after structural edits and at completion. Resolve undefined citations, references, and missing figures.
-- [ ] **QA-22:** Inspect every rendered page at normal reading size. Check legend readability, symbols, zero-mass annotations, table headings, figure order, and page breaks.
-- [ ] **QA-23:** Check that the manuscript and supplement use the same names and units. Preserve raw data identifiers or document aliases.
-- [ ] **QA-24:** Search the final manuscript for unresolved placeholders, `TODO`, `NEW_DATA`, obsolete symbols, and contradictory old headlines. Place unresolved requests in revision notes, not submission prose.
-- [ ] **QA-25:** Verify availability statements and instructions against the actual delivered files. Do not claim the code, checkpoints, or plots were reproduced when they were not.
-
-### 9.5 Required author handoff
-
-Deliver a compact package, not an unexplained rewritten manuscript:
-
-1. **Revised source and compiled PDF**, when source was available; otherwise anchored replacement passages with explicit insertion locations.
-2. **Change log by task ID**, including major claims narrowed, removed, or supported by new evidence.
-3. **Claim/evidence ledger and numerical checks**, identifying all remaining missing data and unverified items.
-4. **Experiment decision note**, distinguishing completed runs from approved-but-pending and proposed-only work.
-5. **Readiness assessment using Section 1.3**, including blocking issues and a candid recommendation on whether more experiments are worth the cost.
-
-### 9.6 Final readiness decision
-
-**Low-only completion:** The paper can become clearer, fairer, and more informative. Treat acceptance as uncertain because the single-seed and identification limitations remain. Do not report that a rewrite has “resolved” them.
-
-**Low + targeted mid completion:** This is the recommended route to a defensible empirical paper. A favorable readiness assessment requires informative comparisons that withstand the relevant controls, or a clearly explained reversal that itself provides a useful result. It does not require every recipe to win.
-
-**Low + mid + selected high completion:** Supports a broader claim only to the extent the new data support it. Larger models and longer training are not substitutes for a clear contribution, fair comparator, or correct attribution.
-
-**The final manuscript should leave readers thinking:** “I now know what to measure, which comparison to trust, and what experiment to try next”—not merely “this paper reports a large sparsity percentage.”
-
-### 9.7 Restart prompt for a new agent
+Search for and manually inspect occurrences of:
 
 ```text
-You are continuing the rewrite of the supplied activation-sparsification manuscript.
-Read the runbook's Start Here section, the current revision state, the glossary,
-and the claim/evidence ledger. Work only on the next approved batch of task IDs.
-Locate each original paragraph by its heading and opening anchor before editing.
-Use verified source data; distinguish measured, derived, inferred, and proposed content.
-Do not launch experiments or add findings from the optional experiment plan.
-Do not silently change equations, objective normalization, cohort definitions, or baselines.
-Make the smallest coherent patch, check neighboring paragraphs and dependent captions,
-then update the state with completed tasks, evidence used, and unresolved blockers.
-Stop the batch when a required record or author decision is missing; use the documented
-safe fallback rather than inventing evidence or expanding the scope.
+preserves task loss
+maximum orthogonal step
+does not hurt
+hyperparameter robust
+converged
+premature stopping
+scales better
+consistent across all
+all attention sites
+train-time clipping
+Cohort means
+Maximum observed sparsity
+winner
+K050/native
 ```
 
----
+These are audit triggers, not blind find-and-replace instructions. A source quotation or a clearly bounded discussion can legitimately contain them.
 
-<a id="10-portable-source-register"></a>
+### Required handoff
 
-## 10. Portable source register
+Deliver:
 
-All entries below refer to the supplied manuscript, **Activation Sparsification in Transformers: Pressure, Thresholding, and Site Placement**, file `main(20260909-182851).pdf`. These references are intentionally portable: they use printed page numbers, section/table/figure names, and anchors rather than chat-only citation identifiers.
+1. Edited `.tex`/`.bib`, figure scripts/assets, and the compiled PDF, with actual paths.
+2. `revision-v2/changes.md`, mapping each task to its paragraph/figure edits.
+3. `revision-v2/claims.csv` and the derived data needed to reproduce new numerical comparisons.
+4. A short **verified / conditional / unresolved** report: OL1 saturation, ReLU/clipping comparison, training dynamics, cross-size recurrence, and runtime attribution.
+5. Exact regeneration/build/test commands, their outcomes, and any required data or environment dependencies.
+6. A concise recommendation on additional evidence: no new runs needed for a particular wording, a targeted mid-effort test, or an optional high-effort continuation. Do not promise acceptance.
 
-The register records what the manuscript supports. Its descriptions of cited prior work are not an independent verification of those external papers. Proposed editorial changes, experiments, and readiness judgments in this runbook are recommendations, not findings reported by the manuscript.
+### Restart prompt for the next coding agent
 
-<a id="s01"></a>
-**S01 — Abstract and title.** p. 1. Contains the current isolation claim, reach/“ceiling” terminology, maximum sparsity figures, uniform post-hoc frontier claim, 1.78× headline, and R² association.
-
-<a id="s02"></a>
-**S02 — Introduction.** pp. 1–2, Section 1. Five paragraphs, beginning respectively “Activation sparsity can improve…,” “Existing approaches induce…,” “In this work, we study…,” “We pretrain Pythia-family models…,” and “Finally, we test whether…”.
-
-<a id="s03"></a>
-**S03 — Related work.** pp. 2–3, Sections 2.1–2.2. Describes post-hoc thresholding, pressure/training adaptation, attention placement, different inference workloads, structured execution, and agent-assisted development as background.
-
-<a id="s04"></a>
-**S04 — Intervention definitions and placement.** p. 3, Section 3.1; p. 5, Figure 1; p. 15, Appendix A.1–A.2; p. 16, Appendix C.1 / Table 2. Supports threshold signs and equality conventions, derivative distinctions, pressure normalization, OL1 update semantics, and exact site definitions.
-
-<a id="s05"></a>
-**S05 — Sparsity accounting and architectural reach.** p. 4, Section 3.2; pp. 15–16, Appendix B; p. 17, Appendix C.2 / Equation (4). Defines model/block counts, dense-head denominator, causal validity, actual operands, zero-propagation rules, and why selected-site reach is not an upper bound on every observation.
-
-<a id="s06"></a>
-**S06 — Experimental setup and training limitations.** p. 4, Section 4 opening; pp. 17–18, Appendix C.3–C.4 / Table 3. Supports dataset and evaluation details, 30/12/12 cohorts, 712 updates, approximately 1.493 billion input tokens, one seed per condition, final-checkpoint evaluation, unequal tokens per parameter, learning-rate differences, and uniform clipping setup.
-
-<a id="s07"></a>
-**S07 — Quality–sparsity and post-hoc evidence.** pp. 4 and 6, Section 4.1 / Figure 2; p. 19, Table 4; pp. 23–25, Appendix D.3 / Figures 8–10. Contains all 54 trained endpoints and describes the complete 540 clipping evaluations, actual p = 0 points, high-loss settings, and restricted comparator scope.
-
-<a id="s08"></a>
-**S08 — Paired intervention effects.** pp. 6–7, Section 4.2 / Figure 3; p. 20, Table 5; p. 15, Appendix A.2 for normalization. Supports the 29 reported contrasts, conditional pressure results, local L1/OL1 reversal, and complete-objective interpretation of differing target sets.
-
-<a id="s09"></a>
-**S09 — Activation distributions and operation explanation.** pp. 7–9, Section 4.3 / Figure 4; p. 18, Appendix D.1; p. 21, Tables 7–8 / Appendix D.2; p. 22, Figure 7. Supports zero-mass pooling, nonlocal distribution changes, h:m weights, Q/K post-RoPE measurement, and operation contributions at κ = 0.5.
-
-<a id="s10"></a>
-**S10 — Cross-size complete-recipe comparisons.** p. 8, Section 4.4 / Table 1; p. 10, Figure 5; pp. 19–20, Tables 4 and 6. Supports the high-threshold A7-OL1 versus A4-OL1 ordering, smaller-threshold reversals, common A7 normalization, block-only interpretation, and scale limitations.
-
-<a id="s11"></a>
-**S11 — Kernel results, controls, and provenance.** p. 11, Section 4.5; p. 12, Figure 6; pp. 26–27, Appendix D.4 / Table 9. Supports search versus final-sweep maxima, 30-checkpoint qualification, matched fusion controls, sparse-path factors, negative attention skipping, MMA instrumentation, precision mismatch, workload, P0's limited subset, and five excluded historical h-only-pressure checkpoints.
-
-<a id="s12"></a>
-**S12 — Discussion and scope.** p. 13, Section 5. Connects conditional pressure, operation accounting, and measured execution, and states dataset/budget, model-size, distribution, workload, and hardware limitations.
-
-<a id="s13"></a>
-**S13 — Evidence package.** p. 27, Appendix D.5. Describes `supplementary-data/`, records, coordinates, hashes, protocol, and repository-relative paths; explicitly distinguishes that directory from a standalone checkpoint or kernel release.
+> Read this task file and `revision-v2/state.md`. Locate the next unfinished task and its declared source blocks. Preserve the author's intervention-centered framing: restore the main cross-size figure, remove the means subplot and winner table, explain method choices, and keep empirical claims tied to verified records. Work in a small batch, regenerate affected assets, build, inspect the diff/render, and update the state. Do not run new training or GPU evaluations without explicit authorization. Do not replace conditional adaptive-direction geometry with an actual-loss guarantee, or a gradient-norm observation with a convergence conclusion.
 
 ---
 
-**End of runbook.** Execute by task ID, preserve the evidence boundary, and optimize for clear scientific understanding rather than stronger-sounding claims.
+## 10. Source register and claim provenance
+
+The repository is the final source of truth for implementation details and unrounded measurements. The references below identify what was available when this task file was prepared. The task-file author has not inspected the repository's training code, raw clipping records, or gradient logs.
+
+### [M] Base revised manuscript
+
+*Activation Sparsification in Transformers: Pressure, Thresholding, and Site Placement*, `main(20260909-211032).pdf`, supplied by the authors.
+
+| Location | Relevant evidence |
+|---|---|
+| §3.1 and Figure 1, pp. 2–3 | Threshold definitions, current pressure explanation, actual one-sided/symmetric site assignments. |
+| Appendix A.2, p. 11 | Implemented OL1 preconditioning, conflict-conditioned projection, cap, and coordinate-system details. |
+| §3.2; Appendix B.2/C.2, pp. 3, 12, 14 | Model-wide accounting, architectural reach, and operation formulas. |
+| Table 1 and §4.1, p. 4 | Retrospective quality-budget presentation to relocate. |
+| Figure 5 and §4.5, pp. 7–8 | Means subplot to remove and native/fused/sparse execution attribution. |
+| Tables 6–8, pp. 16–17 | All endpoints, paired effects, and cross-size recipe contrasts. |
+| Table 10, p. 19 | BF16 all-zero projection-input rows, not a direct context-sensitivity experiment. |
+| Figure 8, p. 20 | Cross-size visual comparison to restore to the main text. |
+| Figures 10–12 and Appendix D.5, pp. 22–24 | Complete post-hoc trajectories; raw per-target records must be inspected for new exact comparisons. |
+| Appendix D.6, p. 25 | Historical h-only pressure audit. |
+| Tables 12–14, pp. 26–28 | Runtime summaries, BF16 losses, and association checks. |
+| Appendix C.4, pp. 14–15 | Realized budget, gradient clipping, optimizer settings, learning-rate differences, and tokens per parameter. |
+
+Selected source citations supporting the main safeguards:
+
+- OL1 implementation and geometry: fileciteturn3file0L1085-L1113
+- Thresholding and actual site assignments: fileciteturn3file0L178-L185 fileciteturn3file0L264-L266
+- Reach formulas and architecture configurations: fileciteturn3file0L1407-L1432
+- Cross-size endpoint values: fileciteturn3file0L1625-L1679
+- Historical pressure comparison: fileciteturn3file0L2519-L2527
+- Clipping protocol and precision: fileciteturn3file0L2272-L2284
+- Runtime summary definitions: fileciteturn3file0L2628-L2641 fileciteturn3file0L2659-L2665
+
+The page/section descriptions remain usable when conversation-specific citation chips are unavailable to the coding agent.
+
+### [O] Earlier manuscript and visual reference
+
+`main(20260909-182851).pdf`, supplied by the authors, 27 pages. Use original Figure 5 on p. 10 as the visual reference, and original §3.1 on p. 3 for the thresholding motivation that was compressed out of the rewrite. Do not restore outdated ceiling terminology or broad dominance/scaling claims.
+
+fileciteturn3file1L276-L292 fileciteturn3file1L1025-L1034
+
+### [Q] Q-Sparse — external primary-source verification
+
+Wang et al. (2024), *Q-Sparse: All Large Language Models can be Fully Sparsely-Activated*, arXiv:2407.10969, §2 and §4.1. Verified source for the method distinctions used in T01; it is not an experimental baseline reproduced by the supplied manuscript. Reuse the repository's existing BibTeX key after checking it.
+
+Source location: `https://arxiv.org/html/2407.10969v1`
+
+### [S] Spark Transformer — external primary-source verification
+
+You et al. (2025), *Spark Transformer: Reactivating Sparsity in FFN and Attention*, arXiv:2506.06644, especially §3, equations 10–11, and §3.2. Verified for the statistical-selection motivation in T01. Do not equate its attention-position mechanism or threshold transformation with the current paper's feature-coordinate maps.
+
+Source location: `https://arxiv.org/html/2506.06644v2`
+
+### [P] Pythia — external primary-source verification
+
+Biderman et al. (2023), *Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling*, ICML/PMLR 202, Appendix E, Table 6, PDF p. 22. The published configuration includes gradient clipping at 1.0. This supports the norm-limiting design lineage, **not** a claim that the manuscript's whole optimizer recipe is unchanged or that OL1 capping is the same operation.
+
+Source location: `https://proceedings.mlr.press/v202/biderman23a/biderman23a.pdf`
+
+### New reasoning versus unavailable evidence
+
+The OL1 idealized saturation/half-space argument and the simplified architectural-reach formulas are mathematical derivations included in this task file for verification. They are not new experimental measurements. The hypothesized ReLU/clipping improvement region and the author's terminal gradient-norm comparison require the repository audits above before stronger empirical wording is approved.
