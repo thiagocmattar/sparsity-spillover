@@ -12,9 +12,9 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | O01 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
 | O02 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
 | O03 | DONE_VERIFIED | ol1-audit.md; Analysis 020 log audit and geometry tests |
-| T01 | TODO | See task.md |
-| T02 | TODO | See task.md |
-| A01 | TODO | See task.md |
+| T01 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
+| T02 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
+| A01 | DONE_VERIFIED | literature-checks.md; Analysis 020 geometry/site tests |
 | R01 | TODO | See task.md |
 | R02 | TODO | See task.md |
 | R03 | TODO | See task.md |

@@ -23,3 +23,11 @@ topology was corrected to the existing A2 identifier; scientific code unchanged.
 One corrupt A1-H log line is documented and excluded from unrelated reductions.
 Build is recorded in tmp/revision-v2-qa/batch1-*.log; page budget/layout finalization
 depends on later figure/prose batches. No new measurement is required.
+
+## Batch 2: T01-T02/A01
+
+Restored selection-to-fixed-cutoff rationale with verified primary citations,
+exact site maps and boundary derivatives. Reach now serves pre-training planning,
+with width/depth/sequence/vocabulary consequences and tested appendix formulas.
+41 tests pass; no new numerical measurements. Build: batch2-*.log.
+Full page-layout review follows cross-size figure restoration.

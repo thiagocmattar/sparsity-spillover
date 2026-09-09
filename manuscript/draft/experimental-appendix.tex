@@ -101,6 +101,31 @@ Links identify immutable configuration revisions; released weights are not used.
 No checkpoint enters this calculation. For example, A0 has zero selected-site
 reach but may have positive observed sparsity from natural zeros.
 
+% Analysis 020: geometry.py and test_geometry.py; observations/O002-reach.md.
+Writing $D=L(12d+T+1)+V_{\!\mathrm{vocab}}$ gives
+$C_{\mathrm{model}}=TdD$ and the planning formulas
+\begin{align}
+\Rarch(\{h\})&=\frac{4Ld}{D}, &
+\Rarch(\{m,h\})&=\frac{8Ld}{D},\\
+\Rarch(\mathrm{A4})&=\frac{12Ld}{D}, &
+\Rarch(\mathrm{A7})&=\frac{L(12d+T+1)}{D}.
+\end{align}
+The extra coverage of A7 is $L(T+1)/D$, precisely the share of $QK+PV$;
+A4 already reaches the attention-output projection. The h-only, A4 and A7
+reaches are respectively 4.278\%, 12.833\% and 29.952\% at 14M;
+12.354\%, 37.063\% and 49.424\% at 70M; and
+24.925\%, 74.776\% and 87.245\% at 410M.
+
+At fixed $L,T,V_{\!\mathrm{vocab}}$, projection work (including attention
+projections) grows as $d^2$, while $QK+PV$ grows as $d$.
+At fixed architecture, projections grow as $T$ and causal attention
+products as $T(T+1)$, increasing internal attention's relative importance
+for long sequences. Increasing depth reduces the head fraction; increasing
+vocabulary enlarges it. Model size therefore combines several geometric
+changes. These formulas describe full uncached sequences, not cached decoding.
+Since A7 reaches all counted block operations, $\Sblock=\Smodel/\Rarch(\mathrm{A7})$;
+every curve within a size uses this same denominator.
+
 \subsection{Evaluation scope}
 \label{app:evaluation}
 

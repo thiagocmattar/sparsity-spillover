@@ -5,6 +5,16 @@
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
+Projection-input selection motivates train-time activation sparsification:
+Q-Sparse uses magnitude top-$k$ with a straight-through training
+rule~\citep{wang2024qsparse}. Spark addresses selection overhead with a
+statistical threshold estimated from each input~\citep{you2025spark}.
+We test a fixed-cutoff alternative, avoiding ranking and per-input threshold
+estimation while leaving the surviving count free to change. Our hypothesis
+is that training, with optional pressure, reshapes activation mass around
+the cutoff. Threshold and pressure are thus separate controls; endpoint
+histograms examine the learned distributions.
+
 An intervention specifies thresholding sites $\mathcal{N}$, their nonlinearities
 and thresholds, and pressure sites $\mathcal{P}$. The sets are independent
 choices, although many evaluated recipes align them
@@ -15,9 +25,8 @@ $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
 The former removes negative values and positives below $\kappa$; the latter
 preserves the signs and values of surviving magnitudes. At zero threshold,
 their forward maps are ReLU and identity. Appendix~\ref{app:interventions}
-gives boundary derivatives. Fixed thresholds require neither ranking nor
-input-dependent moment estimates, but this does not establish a speed
-advantage over selection-based methods.
+gives boundary derivatives. We change both selection and gradient treatment
+relative to Q-Sparse, and do not measure a speed advantage over Spark.
 
 Pressure uses the mean absolute activation in each targeted site--layer
 tensor, after its nonlinearity, then averages these means equally.
@@ -53,11 +62,15 @@ are pooled before division, using actual operands and causally valid pairs
 in full, uncached sequences (Appendix~\ref{app:accounting}). We report
 $100\Smodel\%$; this is multiplication opportunity, not runtime or total FLOPs.
 
-\emph{Architectural reach},
-$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, describes the
+Before training, \emph{architectural reach} estimates how much of this
+workload a proposed placement can structurally affect. Formally,
+$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$ describes the
 work structurally reached if the selected sites were entirely zero, counting
 overlaps once. Architecture, sites and sequence length determine it, not
-checkpoint quality. Natural zeros outside selected-site reach can contribute
-to $\Smodel$, so $\Rarch$ need not bound every observation. Its gap to
-observed sparsity is not sparsity available without quality loss
-(Appendix~\ref{app:ceiling}).
+checkpoint quality. At fixed depth and sequence length, wider Pythia blocks
+increase projection work quadratically in width but internal-attention work
+linearly; longer sequences increase the relative importance of $QK$ and $PV$.
+Greater depth reduces the dense head's share. These analytic consequences
+guide placement before spending training compute (Appendix~\ref{app:architecture-counts});
+they predict neither quality-preserving sparsity nor speedup. Natural zeros
+outside selected-site reach can also contribute to observed $\Smodel$.
