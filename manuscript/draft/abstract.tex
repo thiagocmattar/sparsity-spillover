@@ -1,25 +1,25 @@
-% Evidence: Analysis 019 O001/O002; Analysis 020 O001--O005.
+% Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
+% Evidence: Analysis 018 observations O002/O003/O007/O011; no new measurements.
 \begin{abstract}
-Activation sparsification requires choosing how to induce zeros, which
-operations to target, and when exploiting them improves execution.
-We study pressure, fixed thresholding and site placement through 54 Pythia
-pretraining conditions on MiniPile: extensive 14M comparisons and selected
-recipes at 70M and 410M, with one seed per condition.
-Architectural reach quantifies the multiplication workload structurally
-affected before training; model-wide sparsity measures observed zero-operand
-products using the same full-model denominator.
-Pressure's marginal effect depends on threshold and targets: at 14M and
-$\kappa=0.5$, adding OL1 to seven-site thresholding raises sparsity from
-$15.39\%$ to $27.48\%$ against $29.95\%$ reach, for $+0.1265$ loss.
-This seven-site pressured recipe outperforms its four-site counterpart on
-both quality and sparsity at every tested size, while lower-threshold
-orderings vary.
-Activation distributions and operation counts explain why the broader
-recipe can yield more model-wide sparsity despite fewer FFN zeros.
-On an RTX5090, specialized BF16 full-sequence inference gains
-$1.234\times$ over native execution across all 30 14M checkpoints, while
-sparse paths add $1.043\times$ over matched fusion and attention skipping
-slows every checkpoint.
-These comparisons show why intervention choice should combine paired
-quality cost, architectural reach and execution granularity.
+% Activation sparsity can reduce inference cost, but the value of a
+% sparsification intervention depends on where it acts and what accompanies it.
+% We study pressure toward zero, thresholding and site placement through
+% 54 matched pretraining conditions on MiniPile, using Pythia-14M, 70M and
+% 410M. We measure validation loss, activation
+% distributions and model-wide sparsity: the fraction of counted scalar multiplications
+% with a zero activation operand. Pressure's added value changes with threshold
+% and target sites. A seven-site recipe can yield greater model-wide sparsity
+% than a four-site recipe despite fewer feed-forward (FFN) zeros, because it also sparsifies
+% internal attention products. At the largest tested threshold, the seven-site
+% recipe with pressure improves both loss and sparsity over its four-site
+% counterpart at all three sizes. On one RTX5090, a selected fused implementation
+% achieves a $1.234\times$ geometric mean full-model speedup across the 30
+% 14M checkpoints for uncached, 2,048-token inference. Sparse paths add only
+% $1.043\times$ over the same fusion on average, and attention skipping slows
+% every checkpoint. By connecting matched intervention effects to activation
+% distributions, affected computation and measured execution, the study provides
+% a basis for choosing where and how to induce useful sparsity.
+
+Activation sparsity can accelerate language-model inference when specialized kernels skip computation associated with zero activations. Existing methods obtain sparsity through different combinations of training-time pressure, thresholding, and placement, but their relative and combined effects have not been isolated under a common setup. As a result, it remains unclear which interventions drive the gains, when they are complementary or redundant, and how much model-wide computation they actually expose to sparsification. We study these interventions under matched pretraining conditions across Pythia models. To measure their computational effect, we define model-wide activation sparsity $\Smodel$ as the fraction of forward matrix-multiplication products with a zero activation operand, together with an architecture-dependent sparsity ceiling $\Smax$. We find that broader thresholding produces more model-wide sparsity than local FFN pressure, while combining thresholding with pressure yields the highest sparsity. The combined interventions reaches $27.48\%$, $40.60\%$, and $80.62\%$ $\Smodel$ at 14M, 70M, and 410M parameters, corresponding to $0.918$, $0.822$, and $0.924$ of their respective sparsity ceilings. Trained recipes also dominates uniform post-hoc thresholding in the quality--sparsity frontier accross all model sizes. Finally, specialized kernels achieve a $1.78\times$ full-model speedup on an RTX5090 at 14M, and speedup across 30 model checkpoints is strongly associated with $\Smodel$ ($R^2=0.817$). These results show that activation sparsification is governed by the interaction between how zeros are induced, where they are placed, and how much of that zero structure can be exploited by sparse execution.
+
 \end{abstract}

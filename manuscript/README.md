@@ -37,17 +37,13 @@ ICLR template ZIP is a small provenance exception. The
 [draft README](draft/README.md) documents the build and editing workflow.
 Earlier references below to a local-only draft describe the previous policy.
 
-The current [33-page ICLR draft](draft/main.pdf) incorporates the intervention-centered
-revision and the user-approved name **architectural reach**, `R_arch`. Main text
-occupies pages 1-9. The cross-size figure is restored to the main text, including
-ReLU followed by clipping; runtime figures compare checkpoint-level quality,
-absolute latency and sparse-path attribution. Full supporting results remain in
-the appendix. Analysis 020 owns the new OL1/log, reach and cross-size audits and
-figures; Analysis 019 retains the preceding numerical and execution audits.
-The AI use statement is present for author review. See the
-[current revision record](draft/revision-v2/readiness.md) for verified claims,
-conditional explanations, numerical checks and reproduction commands.
-No new experiment was launched or original run record changed.
+At the author's request, `manuscript/draft/` has been restored exactly to its
+first tracked version, commit `1e14471bd4763dbfef84a162d4429021d2f7e2e6`
+("Track manuscript draft for collaborative editing"). The current
+[27-page ICLR draft](draft/main.pdf), sources, figures and supporting files match
+that snapshot. The later task-driven manuscript revisions remain in Git history;
+their analysis records remain under `analyses/`. The restored
+[draft README](draft/README.md) describes this version and its build commands.
 
 ## Earlier draft revisions
 

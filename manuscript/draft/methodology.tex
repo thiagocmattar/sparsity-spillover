@@ -1,76 +1,71 @@
-% General definitions; unchanged operational contracts: methodology-notes.md.
+% General definitions; study-specific recipes are in experimental-study.tex.
+% Operational provenance: methodology-notes.md. No empirical results.
 \section{Methodology}
 \label{sec:methodology}
 
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
-Projection-input selection motivates train-time activation sparsification:
-Q-Sparse uses magnitude top-$k$ with a straight-through training
-rule~\citep{wang2024qsparse}. Spark addresses selection overhead with a
-statistical threshold estimated from each input~\citep{you2025spark}.
-We test a fixed-cutoff alternative, avoiding ranking and per-input threshold
-estimation while leaving the surviving count free to change. Our hypothesis
-is that training, with optional pressure, reshapes activation mass around
-the cutoff. Threshold and pressure are thus separate controls; endpoint
-histograms examine the learned distributions.
+Q-Sparse selects the top-$k$ activation magnitudes~\citep{wang2024qsparse}.
+Spark Transformer motivates its statistical top-$k$ approximation by the
+overhead of sorting-based selection~\citep{you2025spark}.
+We take a simpler route: extend the FFN design of elementwise nonlinearities
+to the query, key and value operands of self-attention, using a symmetric
+threshold. A fixed cutoff needs neither ranking nor input-dependent moment
+estimates. It leaves the retained activation count free to change as training
+reshapes the distribution, instead of targeting a prescribed count.
 
-An intervention specifies thresholding sites $\mathcal{N}$, their nonlinearities
-and thresholds, and pressure sites $\mathcal{P}$. The sets are independent
-choices, although many evaluated recipes align them
-(Figure~\ref{fig:architecture-sites}; Appendix~\ref{app:sites}).
-We use ReLU and fixed elementwise maps
+A sparsification intervention specifies where to set activations to zero
+(nonlinearity sites $\mathcal{N}$), the nonlinearity and threshold, and where to encourage
+small activations during training (pressure sites $\mathcal{P}$). The two site
+sets need not coincide.
+
+We use ReLU and two thresholding nonlinearities:
 $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
 $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
-The former removes negative values and positives below $\kappa$; the latter
-preserves the signs and values of surviving magnitudes. At zero threshold,
-their forward maps are ReLU and identity. Appendix~\ref{app:interventions}
-gives boundary derivatives. We change both selection and gradient treatment
-relative to Q-Sparse, and do not measure a speed advantage over Spark.
+One-sided thresholding removes negative values and small positive values;
+symmetric thresholding removes small magnitudes while preserving the signs
+and values of survivors. At $\kappa=0$, their forward maps are ReLU and the
+identity, respectively. Appendix~\ref{app:interventions} specifies boundary
+and derivative conventions.
 
-Pressure uses the mean absolute activation in each targeted site--layer
-tensor, after its nonlinearity, then averages these means equally.
-Expanding the targets changes the mixture of site gradients. \emph{Naive L1}
-optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, clipping the
-combined gradient before AdamW.
+The threshold is fixed within each training condition. Our hypothesis is
+that the learned distribution can adapt to this nonlinearity, with activation
+pressure providing an additional way to shape it. We examine that adaptation
+through the quality--sparsity comparisons and signed activation distributions.
 
-\emph{Orthogonal L1} (OL1) keeps task optimization primary. After task-only
-AdamW, it preconditions pressure using the task's second moments, removes
-the component opposing the adaptive task direction under conflict, and
-caps the auxiliary vector relative to that direction's norm. This adapts
-gradient-conflict projection~\citep{yu2020pcgrad,hsieh2024bloop} while
-extending the norm-limiting principle of Pythia's gradient clipping to an
-auxiliary update. The two caps act in different spaces.
-
-Once this relative cap binds, increasing the pressure weight $\lambda$
-no longer increases the ideal correction. We use this conditional property
-to motivate a fixed pressure mechanism, holding budget $b=1$ and multisite
-$\lambda=1$ while varying threshold and placement. Saturation is recipe-dependent:
-retained logs show frequent capping for A7-OL1 at 14M and 70M, but rarely
-at 410M. Appendix~\ref{app:pressure} gives the protected-direction geometry,
-its distinction from task-loss preservation, and the measured cap activity.
+Pressure uses $\mathcal{L}_1$: we take the mean absolute activation in each
+targeted site--layer tensor, after the nonlinearity where one is applied, then average these
+means equally.
+\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
+\emph{Orthogonal L1} (OL1) adapts gradient-conflict
+projection~\citep{yu2020pcgrad,hsieh2024bloop} to this pressure objective.
+It makes a task-only AdamW update, then adds a pressure
+correction preconditioned by the task's second-moment estimates. When this
+correction opposes the adaptive task direction, OL1 projects out its
+conflicting component. A positive trust budget caps its norm relative to that task
+direction. This limits the pressure correction without guaranteeing preserved task
+loss; Appendix~\ref{app:pressure} defines the procedure.
 
 \subsection{Sparsity and architectural reach}
 \label{sec:measurement}
 
-\emph{Activation sparsity} is the exact-zero fraction at a named site.
-\emph{Model-wide activation sparsity}, $\Smodel=N_0/N_{\mathrm{model}}$,
-weights zeros by affected scalar multiplications. Each declared block product
-gets one credit when either activation operand is zero; the denominator
-also includes the dense LM head, which gets no zero credit. Integer counts
-are pooled before division, using actual operands and causally valid pairs
-in full, uncached sequences (Appendix~\ref{app:accounting}). We report
-$100\Smodel\%$; this is multiplication opportunity, not runtime or total FLOPs.
+\emph{Activation sparsity} is the fraction of exactly zero entries at a named site.
+To weight zeros by the work they affect, we define \emph{model-wide sparsity}
+as $\Smodel=N_0/N_{\mathrm{model}}$, reported as $100\Smodel\%$. Here, $N_0$
+counts scalar multiplications with at least one zero activation operand in
+the declared transformer-block matrix products. $N_{\mathrm{model}}$ counts all valid multiplications
+in those operations and the dense language-model head; the head receives no
+zero credit. Counts are pooled before division. The percentage refers to this
+declared multiplication workload, not all operations or elapsed time. We count
+only causally valid pairs in a full, uncached sequence;
+Appendix~\ref{app:accounting} gives the exact counters.
 
-Before training, \emph{architectural reach} estimates how much of this
-workload a proposed placement can structurally affect. Formally,
-$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$ describes the
-work structurally reached if the selected sites were entirely zero, counting
-overlaps once. Architecture, sites and sequence length determine it, not
-checkpoint quality. At fixed depth and sequence length, wider Pythia blocks
-increase projection work quadratically in width but internal-attention work
-linearly; longer sequences increase the relative importance of $QK$ and $PV$.
-Greater depth reduces the dense head's share. These analytic consequences
-guide placement before spending training compute (Appendix~\ref{app:architecture-counts});
-they predict neither quality-preserving sparsity nor speedup. Natural zeros
-outside selected-site reach can also contribute to observed $\Smodel$.
+The \emph{model-wide sparsity ceiling},
+$\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, counts the fraction
+of that workload whose zero operand is guaranteed by setting the selected
+sites to 100\% activation sparsity, crediting each affected multiplication once. It depends on the architecture,
+site set, and sequence length, but not pressure or a checkpoint. The ceiling
+characterizes selected-site reach rather than sparsity achievable at acceptable
+quality: observed $\Smodel$ also includes natural zeros outside that reach.
+Appendix~\ref{app:ceiling} defines the reach accounting.

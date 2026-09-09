@@ -1,37 +1,74 @@
-% Primary-source verification: revision/literature_audit.md.
-\section{Related work}
+% Literature chain: post-hoc, trained and broader interventions; then execution.
+% Source checks and interpretation limits: positioning.md and review reports.
+\section{Related Work}
 \label{sec:related-work}
 
 \subsection{Sparsification interventions}
 \label{sec:related-interventions}
 
-CATS thresholds small FFN activations in training-free and fine-tuning
-settings~\citep{lee2024cats}; TEAL extends magnitude thresholding to attention
-and FFN projections with block-wise greedy allocation~\citep{liu2024teal}.
-Our uniform clipping reference does not test TEAL's optimized allocation.
-Training can also reshape the trade-off: ReLU Strikes Back restores sparse
-activations~\citep{mirzadeh2023relu}; ProSparse combines ReLU, progressive
-$\ell_1$ pressure and threshold shifting, with schedule ablations showing
-different quality at comparable FFN sparsity~\citep{song2024prosparse}.
-Sparsing Law studies data, activation and architecture effects~\citep{luo2025sparsing},
-and \citet{cetin2026sparser} induce sparse FFNs through pretraining regularization.
+Post-hoc thresholding removes activations that a trained model can tolerate
+losing. CATS thresholds small-magnitude activations
+within FFNs, with both training-free and fine-tuning
+settings~\citep{lee2024cats}. TEAL extends magnitude thresholding to attention
+and FFN projections and uses block-wise greedy allocation to account for
+their different sensitivities~\citep{liu2024teal}. These studies show that
+site placement and sparsity allocation affect quality even without retraining.
+Our uniform clipping control holds allocation fixed to provide a simple
+reference for the trained interventions.
 
-Beyond FFNs, Q-Sparse selects projection inputs~\citep{wang2024qsparse},
-whereas Spark combines sparse FFNs with attention-position
-selection~\citep{you2025spark}. Our seven-site intervention also thresholds
-feature coordinates inside attention. Section~\ref{sec:interventions}
-explains the fixed-cutoff choice and its distinct gradient treatment.
-We examine pressure's conditional effect and the resulting operation-weighted
-counts, with and without pressure at 14M.
+Training-time interventions allow the representation to adapt to sparse
+computation. ReLU Strikes Back studies restoring sparse activations in
+language models~\citep{mirzadeh2023relu}; ProSparse combines ReLU, progressive
+$\ell_1$ pressure, and threshold shifting during continued
+training~\citep{song2024prosparse}. ProSparse's schedule ablations show that
+comparable FFN sparsity can carry different quality costs. Sparsing Law
+studies how sparsity changes with training data, activation function and
+model architecture~\citep{luo2025sparsing}, while \citet{cetin2026sparser} demonstrate highly
+sparse FFNs induced by $\ell_1$ regularization during pretraining. Together,
+these studies show that training can reshape the quality--sparsity trade-off.
+We examine how pressure's additional effect changes with the threshold
+and target sites, and weight the resulting zeros by the computation they affect.
+
+Extending sparsification beyond FFNs makes the choice of sites explicit.
+Q-Sparse applies top-$k$ selection to attention and FFN projection inputs,
+reports overall sparsity and activated-parameter budgets, and ablates both
+the sparsifying nonlinearity and the straight-through
+estimator~\citep{wang2024qsparse}. Spark Transformer combines sparse FFNs
+with sparse attention through token-position selection and examines the role
+of its low-cost predictor~\citep{you2025spark}.
+Projection-input sparsity and attention-position sparsity affect different
+work. Our seven-site intervention also thresholds feature coordinates in the
+query, key and value tensors used inside attention. We compare these broader
+nonlinearities with projection-input nonlinearities, both with and without pressure at 14M.
 
 \subsection{Inference speedup}
 \label{sec:related-speedup}
 
-TEAL and Spark report autoregressive decoding gains~\citep{liu2024teal,you2025spark}.
-TwELL targets batched matrix multiplication with packed sparse activations
-and fused FFNs, evaluating full-sequence throughput~\citep{cetin2026sparser}.
-Workload and structure matter: different token masks affect batching savings;
-Block Q-Sparse structures masks for batched execution~\citep{wang2024qsparse}.
-Our case study uses execution and profiling feedback for kernel
-development~\citep{ouyang2025kernelbench,luo2026agentic}, then matched fusion
-and skipping controls to identify what produces full-model acceleration.
+Converting activation sparsity into speedup requires an execution strategy
+suited to the workload. TEAL accelerates batch-one autoregressive decoding,
+where skipping weight accesses is valuable, and reports up to $1.8\times$
+speedup at 50\% sparsity under its projection-based
+accounting~\citep{liu2024teal}.
+\citet{cetin2026sparser} address batched matrix multiplication: their TwELL
+format packs sparse activations as a projection produces them and supports
+fused FFN computation, reducing the overhead of materializing and consuming
+the sparse representation. They evaluate throughput for full-sequence forward
+passes, a different workload from token-by-token decoding. Spark likewise couples its
+sparsity mechanism with an implementation that reports decoding
+gains~\citep{you2025spark}. In each setting, skipped computation and memory
+traffic must repay indexing, packing and launch overheads; operations that
+remain dense limit the full-model gain.
+
+The execution strategy also depends on shape and sparsity structure.
+With larger batches, different token masks
+can reduce the weight-loading savings available from sparsity, as Spark's
+batching analysis illustrates~\citep{you2025spark}. Block Q-Sparse introduces
+structure into the mask to accommodate batched
+execution~\citep{wang2024qsparse}; TwELL instead makes packing and fusion
+compatible with tiled computation~\citep{cetin2026sparser}.
+Iterative kernel generation with execution and profiling feedback offers a
+tool for exploring these
+adaptations~\citep{ouyang2025kernelbench,luo2026agentic}.
+We use this approach in a human-guided kernel case study, requiring numerical
+agreement and full-model timings that include activation-dependent selection
+and conversion costs.
