@@ -1,0 +1,56 @@
+% General definitions; study-specific recipes are in experimental-study.tex.
+% Operational provenance: methodology-notes.md. No empirical results.
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Sparsification interventions}
+\label{sec:interventions}
+
+A sparsification intervention specifies a gate-site set $\mathcal{G}$, a gate
+family and threshold $\kappa$, and a pressure method with target set
+$\mathcal{P}$. Gate and pressure sites are independently specified: the former
+determine where values are set to zero, and the latter where an auxiliary
+objective encourages small activations.
+
+We use ReLU and two fixed-threshold gates:
+$G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
+$G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
+One-sided thresholding removes negative values and small positive values;
+symmetric thresholding removes small magnitudes while preserving the signs
+and values of survivors. At $\kappa=0$, their forward maps are ReLU and the
+identity, respectively. Appendix~\ref{app:interventions} specifies boundary
+and derivative conventions.
+
+Pressure uses $\mathcal{L}_1$, the equally weighted mean of the mean absolute
+activations of each targeted site--layer tensor, measured after gating.
+\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
+\emph{Orthogonal L1} (OL1) makes a task-only AdamW update, then adds a pressure
+correction preconditioned by the task's second-moment estimates. When this
+correction opposes the adaptive task direction, OL1 projects out its
+conflicting component. A positive budget caps its norm relative to that task
+direction. This controls update geometry without guaranteeing preserved task
+loss; Appendix~\ref{app:pressure} defines the procedure.
+
+\subsection{Sparsity and architectural reach}
+\label{sec:measurement}
+
+Local sparsity is the fraction of exactly zero entries at a named site.
+To weight zeros by the work they affect, we define \emph{model-wide sparsity}
+as $\Smodel=N_0/N_{\mathrm{model}}$, reported as $100\Smodel\%$. Here, $N_0$
+counts scalar multiplications with at least one zero activation operand in
+the blocks' QKV, attention-score, probability--value, attention-output, and
+two FFN matrix products. $N_{\mathrm{model}}$ counts all valid multiplications
+in those operations and the dense language-model head; the head receives no
+zero credit. Counts are pooled before division. The percentage refers to this
+declared multiplication workload, not all operations or elapsed time. We count
+only causally valid pairs in a full, uncached sequence;
+Appendix~\ref{app:accounting} gives the exact counters.
+
+The \emph{all-zero reach ceiling},
+$\Smax=N_{\mathrm{reach}}(\mathcal{G})/N_{\mathrm{model}}$, counts the fraction
+of that workload reached if every selected gate site were entirely zero,
+crediting each affected multiplication once. It depends on the architecture,
+site set, and sequence length, but not pressure or a checkpoint. The ceiling
+characterizes selected-site reach rather than sparsity achievable at acceptable
+quality: observed $\Smodel$ also includes natural zeros outside that reach.
+Appendix~\ref{app:ceiling} defines the reach accounting.

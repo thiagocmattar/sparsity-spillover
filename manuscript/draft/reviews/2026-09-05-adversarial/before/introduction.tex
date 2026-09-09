@@ -1,0 +1,90 @@
+% Argument-first working draft, 2026-09-05. Hand-edited.
+% Scope: supplementary.md; research/{DEFINITIONS,METHODS,METRICS}.md;
+% analyses/013-2026-09-04-matched-intervention-manuscript/README.md.
+% Empirical conclusions and contribution claims await the results stage.
+\section{Introduction}
+\label{sec:introduction}
+
+Activation sparsity offers a route to reducing the cost of Transformer inference.
+For a linear transformation $y=xW$, a zero coordinate of $x$ nullifies the
+corresponding products, which a specialized kernel can skip. Because activations
+depend on the input, the available savings can vary across tokens, layers, and
+model components. Training-free methods such as TEAL show that pretrained
+language models can tolerate setting small-magnitude activations to zero and
+that this sparsity can yield measured decoding speedups~\citep{liu2024teal}.
+This establishes a useful starting point: a learned representation already
+contains some capacity for sparse execution. Intervening during pretraining
+raises a further question: can the learning process shape that capacity to
+achieve greater sparsity at the same model quality?
+
+Several approaches establish that adaptation to sparsity is possible.
+ProSparse combines ReLU activations, progressive $\ell_1$ regularization, and
+threshold shifting during continued training~\citep{song2024prosparse}.
+\citet{cetin2026sparser} induce highly sparse FFN activations during training
+and develop kernels that exploit them. Q-Sparse extends training-time
+sparsification to linear projections in both attention and FFNs through
+top-$k$ selection~\citep{wang2024qsparse}. These results motivate studying the
+ingredients of sparsification separately. A successful combination establishes
+an operating point, but explaining that point requires knowing which ingredients
+contribute and how their effects depend on one another.
+
+We study activation sparsification as three separable interventions:
+\emph{pressure}, which encourages selected activations toward zero;
+\emph{thresholding}, which determines which values become exactly zero; and
+\emph{site placement}, which determines where each intervention acts.
+Our central question is: \emph{how does the effect of activation pressure on
+the quality--sparsity trade-off depend on the gate nonlinearity and the sites
+that receive pressure?} Separability here is experimental: pressure targets
+can be changed while gates remain fixed, and gates can be changed without
+adding pressure. Their effects need not be additive. In particular, extending
+the gate set and extending the pressure objective are distinct changes, even
+when a practical recipe applies both at the same sites.
+
+A candidate explanation follows from the different roles of these interventions.
+Pressure reshapes activation magnitudes; the gate converts some of that change
+into exact zeros; and the downstream operation determines the computational
+value of those zeros. Moving an activation toward zero need not remove a
+product until it crosses a gate's threshold. Moreover, a one-sided gate removes
+negative values, whereas a symmetric magnitude gate preserves sufficiently
+large values of either sign. The same pressure can therefore interact with
+different gates in different ways. Its quality cost also depends on how the
+auxiliary update interacts with task learning. This account motivates tracing
+an intervention from optimization, through sitewise activation changes, to
+operation-level sparsity, and testing whether that account predicts behavior
+outside the setting in which it was developed.
+
+To connect local behavior to the complete forward pass, we use
+$R_{\mathrm{model}}$, the fraction of declared model-wide matrix-multiplication
+products with an exactly zero activation operand. The count includes the
+Transformer projections and causally valid attention products, with the dense
+language-model head retained in the denominator. Throughout, \emph{model-wide
+sparsity} refers to this product-weighted quantity; local activation zero
+fractions are reported separately. We also define
+$R_{\mathrm{model}}^{\max}$, the analytic all-zero reach ceiling of a selected
+site topology for a specified architecture and sequence length. It describes
+the work reachable through those sites, independently of learned activation
+values. This separates the opportunity offered by a topology from the sparsity
+realized by a trained model. Neither quantity is a wall-clock measurement.
+
+We organize the study around a \emph{sparsification intervention ladder}
+(Figure~\ref{fig:intervention-ladder}), progressing from a stock GeLU model
+through FFN-local ReLU and pressure to gates at branch inputs, the attention
+context, and query, key, and value operands. The ladder provides a map of
+interventions; attribution comes from matched contrasts within it. Our
+experimental setting uses randomly initialized Pythia-family architectures
+at 14M, 70M, and 410M parameters on MiniPile~\citep{biderman2023pythia,kaddour2023minipile},
+with initialization, data order, and training budget matched within each
+comparison. The detailed small-model contrasts and selected larger-model
+extensions serve different roles: the former examine individual interventions,
+while the latter probe their transfer under a fixed data budget. Model size
+also changes the operation weights in $R_{\mathrm{model}}$, so a larger sparsity
+fraction alone cannot establish a stronger learned response.
+
+The paper is organized around three empirical questions. First, when does
+adding pressure improve the quality--sparsity trade-off, and how does that
+effect change with gate and pressure placement? Second, can activation and
+optimization diagnostics explain the resulting operation-level changes?
+Third, which parts of that explanation transfer across model sizes, and under
+what execution conditions can the resulting zeros be exploited? Together,
+these questions make the interaction, its explanation, and its limits the
+objects of study.

@@ -1,0 +1,61 @@
+\section{Introduction}
+\label{sec:introduction}
+
+The appeal of activation sparsity is immediate: if an operand is exactly zero,
+some multiply--accumulate work is mathematically unnecessary.  The usual
+summary, however, is a zero percentage at a named tensor.  That percentage is
+not a model-level computational quantity.  A zero before a wide MLP projection
+has a different footprint from a zero in a query vector; a value zero can be
+reused over many causal queries; a pre-RoPE query zero need not remain zero
+after rotation; and a dense language-model head can dilute block sparsity.
+Consequently, two methods with similar local sparsity can expose very different
+amounts and locations of avoidable scalar products.
+
+Prior work already recognizes this mismatch.  TEAL aggregates per-matrix
+sparsity with matrix-footprint weights and applies training-free thresholding
+through linear layers \citep{liu2024teal}.  Our question is narrower and
+complementary: \emph{given the actual operands of a declared full-sequence
+causal transformer graph, how many scalar products contain at least one exact
+zero?}  We answer with $\Rmodel$, an integer-counted metric spanning fused QKV,
+causal QK, causal PV, attention output, and both MLP projections, plus a dense
+LM-head denominator.  This refinement matters wherever zeros are transformed
+or reused between named activations and multiplications.  It is deliberately
+agnostic to kernel support and hardware speed.
+
+Measurement also changes the experimental question.  Rather than optimizing a
+single site's sparsity, we compare validation loss against model-wide logical
+opportunity.  We study post-hoc clipping and trained gates in Pythia models
+constructed from architecture configurations with random initialization
+\citep{biderman2023pythia}.  The trained recipes place one-sided gates at the
+parallel attention and MLP branch inputs and MLP hidden state, optionally adding
+post-RoPE query, key, value, and pre-output context gates.  An Adam-aware
+orthogonal $\ell_1$ update encourages small activations while removing the
+component that opposes the preconditioned task direction.
+
+The results are not a simple ``more sparsity is better'' story.  First, the
+operation-weighted composition is explanatory: the seven-site high-dose recipe
+adds 10--17 percentage points from QK and PV alone, and can exceed the
+four-site recipe despite lower zero mass at some local sites.  Second, scale
+changes the observed trained response under our common-token protocol.  At 14M
+and 70M, raising the gate threshold from 0 to 0.5 increases loss; at 410M it
+reduces loss by 0.50 and 0.31 for the four- and seven-site recipes.  The
+evaluation-only curves do not reverse.  Because all scales see the same 1.493B
+tokens, the 410M model receives far less exposure per parameter and has a weak
+baseline.  A focused higher-learning-rate screen does not fix it, but longer
+training remains untested.  We retain this cohort because the disagreement
+between trained and post-hoc behavior exposes an important boundary of the
+current evidence.
+
+Our contributions are:
+\begin{itemize}[leftmargin=*,nosep]
+  \item an exact, pooled-integer definition of model-wide zero-product
+  opportunity for a declared causal transformer workload, including operand
+  placement and reuse that per-matrix summaries can miss;
+  \item a joint accounting of quality, sitewise zero structure, and
+  per-operation contributions for post-hoc and trained sparsification recipes;
+  \item a matched-token Pythia case study through 410M that identifies a
+  reproducible small-model pattern and a scientifically useful boundary result,
+  while explicitly separating logical opportunity from runtime and scaling
+  claims.
+\end{itemize}
+

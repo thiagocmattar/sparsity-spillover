@@ -1,0 +1,46 @@
+% Lightweight reading copy; this is not the ICLR submission template.
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage[letterpaper,textwidth=5.5in,textheight=9in,centering]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[authoryear,round]{natbib}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\bibsep}{4pt}
+\clubpenalty=10000
+\widowpenalty=10000
+\urlstyle{same}
+\begin{document}
+\begin{center}
+{\large\bfseries Activation Sparsification in Transformers:\\
+Pressure, Thresholding, and Site Placement}\par
+\small Working title --- introduction and related work --- 5 September 2026
+\end{center}
+\input{introduction}
+\input{related-work}
+\clearpage
+% Existing setup artifact, reproduced for review; not a results section.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{../artifacts/pythia-architecture-sparsification-ladder.pdf}
+\caption{Sparsification intervention ladder and the shared Pythia block.
+The map distinguishes gate placement, gate family, and pressure method.
+The ceiling columns are analytic all-zero reach fractions at $T=2{,}048$;
+they are neither observed sparsity nor speedup. The diagram defines candidate
+conditions, not a claim that every condition was evaluated at every size.
+In the corrected A4-OL1 and A7-OL1 recipes, pressure covers the four and seven
+gated sites, respectively; comparing these recipes changes both sets.
+Query and key gates are after RoPE, and $z$ is the context before the attention
+output projection.}
+\label{fig:intervention-ladder}
+\end{figure}
+\clearpage
+\begingroup
+\raggedright
+\bibliographystyle{plainnat}
+\bibliography{references}
+\endgroup
+\end{document}

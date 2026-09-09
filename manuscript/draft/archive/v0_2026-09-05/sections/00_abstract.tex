@@ -1,0 +1,22 @@
+\begin{abstract}
+Activation sparsity offers a route to efficient inference, but its value depends
+on where zeros occur and how training accommodates them. We study these
+choices through matched interventions in transformer architecture and
+optimization: post-hoc clipping, feed-forward activation pressure, broader
+gating, and pressure at the gated sites. A detailed 14M-parameter study and
+selected 70M experiments compare validation loss with model-wide activation
+sparsity opportunity, the fraction of counted multiplications with an exact-zero
+operand. At 14M, expanding pressure from the feed-forward hidden state to four
+sites increases loss at every tested threshold. Adding gates to attention
+queries, keys, and values changes the response to pressure: at the largest
+threshold, seven-site pressure adds 12.10 percentage points of opportunity
+with a 0.127 loss increase, compared with 2.50 points and 0.378 for four-site
+pressure. Trained interventions extend the evaluated uniform-clipping frontier
+at both sizes, with benefits depending on the allowed loss increase.
+Operation-level counts explain the contribution of attention sparsity and
+the effect of architecture on cross-size comparisons. A correctness-checked
+70M implementation study yields slower sparse execution in all tested settings.
+These single-seed results identify site selection and optimization as coupled
+design choices, and motivate interventions that also control the structure
+required for efficient execution.
+\end{abstract}

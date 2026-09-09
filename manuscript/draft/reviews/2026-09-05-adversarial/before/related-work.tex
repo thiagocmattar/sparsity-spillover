@@ -1,0 +1,73 @@
+% Hand-edited. Sources and claim boundaries are recorded in positioning.md.
+\section{Related Work}
+\label{sec:related-work}
+
+\paragraph{Post-hoc activation sparsification.}
+CATS applies magnitude thresholding within gated FFNs and studies both
+training-free use and subsequent fine-tuning~\citep{lee2024cats}.
+TEAL applies magnitude thresholding across attention and FFN projections,
+studies input versus output sparsity, and uses block-wise greedy allocation to
+accommodate heterogeneous sensitivity~\citep{liu2024teal}. Thus, both the
+placement of sparsity and its allocation across projections have precedents.
+Our question concerns how those choices interact with activation pressure
+during pretraining. Post-hoc thresholding provides a reference for the
+trade-off available without changing the learned weights. Uniform
+TEAL-style thresholding is a restricted reference and does not reproduce
+TEAL's optimized allocation procedure.
+
+\paragraph{Learning sparse representations.}
+ReLU Strikes Back studies restoring sparse activations in language
+models~\citep{mirzadeh2023relu}. ProSparse adds progressive $\ell_1$ pressure
+and threshold shifting, including ablations showing that the regularization
+schedule affects the quality obtained at comparable FFN
+sparsity~\citep{song2024prosparse}. Sparsing Law further studies the dependence
+of activation sparsity on model size, training data, and regularization
+strength~\citep{luo2025sparsing}.
+\citet{cetin2026sparser} combine FFN activation regularization with sparse
+execution for training and inference. These works establish that sparsity
+depends on the training procedure as well as the activation function. Their
+FFN activation fractions, however, measure a different quantity from a product
+count that includes attention and the dense output head. We build on this
+literature by separating pressure from the gates and sites through which it
+affects the complete forward pass.
+
+\paragraph{Sparsity across attention and FFNs.}
+Q-Sparse trains with top-$k$ selection on inputs to attention and FFN linear
+projections, using a straight-through estimator and squared ReLU; it studies
+training from scratch, continued training, and fine-tuning, and reports overall
+sparsity and activated-parameter budgets~\citep{wang2024qsparse}. It therefore
+already establishes training-time sparsification beyond FFNs. Its projection
+input masks should be distinguished from masks on the query, key, and value
+operands inside attention. Spark Transformer combines sparse FFNs with
+top-$k$ attention~\citep{you2025spark}; selecting attention positions is also
+different from zeroing feature coordinates in those operands. Our focus is
+the marginal effect of pressure and gate placement under a shared training
+protocol. The contribution sought is an explanation of that interaction,
+including its dependence on the operation being sparsified.
+
+\paragraph{Task and regularization gradients.}
+PCGrad projects away conflicting gradient components in multi-task
+learning~\citep{yu2020pcgrad}. Bloop treats an auxiliary objective as secondary
+to the training objective and uses a moving average to improve gradient
+surgery~\citep{hsieh2024bloop}. These methods motivate examining optimization
+interference when activation pressure is added. Our orthogonal $\ell_1$
+variant (OL1) keeps AdamW moments task-only, preconditions the pressure
+direction, projects its conflicting component relative to the adaptive task
+direction, and caps the correction with a relative trust budget. This makes
+the handling of pressure an explicit intervention. It does not guarantee
+unchanged task-loss convergence or remove the need to specify pressure
+strength and the trust budget.
+
+\paragraph{From zeros to execution.}
+TEAL's decoding kernels and the TwELL format and fused kernels of
+\citet{cetin2026sparser} demonstrate that activation sparsity can yield
+wall-clock gains in specified workloads~\citep{liu2024teal}. Their execution
+designs make packing, memory access, and fusion part of the sparsity problem.
+KernelBench evaluates correctness and speed in generated GPU
+kernels~\citep{ouyang2025kernelbench}, while recent agentic kernel optimization
+also studies irregular workloads such as mixture-of-experts and sparse
+attention~\citep{luo2026agentic}. These results motivate kernel adaptation as
+a separate test of whether a learned zero pattern is useful on a target
+device. They do not supply a universal conversion from
+$R_{\mathrm{model}}$ to speedup. For this study, logical sparsity and measured
+execution performance therefore answer complementary questions.

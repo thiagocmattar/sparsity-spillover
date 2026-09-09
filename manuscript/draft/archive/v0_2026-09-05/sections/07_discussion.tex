@@ -1,0 +1,42 @@
+\section{Discussion}
+\label{sec:discussion}
+\paragraph{Implication for sparse model design.}
+The matched branches favor evaluating gate location and optimization together.
+Pressure on $h$ can improve the local quality--sparsity trade-off, while
+spreading the same type of pressure to four sites can increase its quality
+cost. Adding attention-operand gates opens a different source of opportunity
+and changes the response to pressure at the expanded site set.
+This motivates architectures and objectives that specify both
+\emph{which representations should be sparse} and \emph{which operations
+will consume them}.
+
+\paragraph{From elementwise zeros to executable structure.}
+Our measurements suggest two directions for future interventions. Joint
+activation and weight pressure could target the union of their zero operands,
+with overlap explicitly accounted for. Grouped or blockwise activation
+pressure could encourage channels shared across tokens, improving the
+regularity available to an implementation. Such constraints introduce a
+new representation trade-off: shared paths may be easier to execute but can
+restrict token-specific computation. Testing them requires matched quality,
+structure, and runtime measurements. The current negative execution result
+provides a concrete motivation for these extensions.
+
+\paragraph{Scope of the evidence.}
+One seed, one corpus, and a fixed token budget support descriptive matched
+comparisons. The threshold sweep characterizes sensitivity within this
+setup; independent seeds would establish how reproducible the effects are.
+The most direct next controls are A7 gates with four-site pressure and
+matched Q-Sparse-style top-$k$ and optimized clipping baselines.
+Downstream tasks, continued training, supervised adaptation, and
+reinforcement-learning post-training would test whether the observed
+trade-offs persist beyond this pretraining setting.
+
+The 410M cohort is reported in full in Appendix~\ref{app:410m}, including
+its different within-family loss response. At a common 1.493-billion-token
+budget, exposure declines from 106.1 to 21.2 to 3.7 tokens per parameter
+across 14M, 70M, and 410M. Compute-optimal training research motivates
+increasing data together with model size \citep{hoffmann2022training};
+larger, adequately budgeted comparisons therefore require more resources.
+The current results leave the cause of the 410M behavior open. Data-budget
+and optimization controls are needed to distinguish limited training
+exposure from other explanations.

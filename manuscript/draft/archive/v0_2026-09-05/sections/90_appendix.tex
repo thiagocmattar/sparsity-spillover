@@ -1,0 +1,360 @@
+\section{Methods and reproducibility}
+\label{app:methods}
+\subsection{Exact activation locations and counting}
+\label{app:counting}
+Pythia uses parallel attention and feed-forward residual branches. Their
+normalization outputs $a$ and $m$ are distinct tensors.
+Table~\ref{tab:sites} specifies the operands used by the interventions and
+counters. The attention output after $W_o$ is a separate diagnostic tensor.
+
+\begin{table}[h]
+\centering
+\caption{Activation locations. $B$ is batch size, $H$ the number of heads,
+$d_h=d/H$, and $d_f$ the feed-forward width. Pressure captures the selected
+site's output after its gate.}
+\label{tab:sites}
+\small
+\begin{tabular}{llll}
+\toprule
+Site & Tensor location & Shape & Consuming product \\
+\midrule
+$a$ & attention-branch norm/gate output & $[B,T,d]$ & fused QKV \\
+$m$ & feed-forward-branch norm/gate output & $[B,T,d]$ & $W_1$ \\
+$h$ & feed-forward activation/gate output & $[B,T,d_f]$ & $W_2$ \\
+$q,k$ & immediately after partial RoPE/gate & $[B,H,T,d_h]$ & $QK^\top$ \\
+$v$ & values from fused QKV/gate & $[B,H,T,d_h]$ & $PV$ \\
+$z$ & concatenated context/gate before $W_o$ & $[B,T,d]$ & $W_o$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For one sequence and $L$ layers, the denominator is
+\begin{equation}
+ N_{\rm model}
+ =L\left[T(4d^2+2dd_f)+dT(T+1)\right]+TdV ,
+ \label{eq:denominator}
+\end{equation}
+where $V$ is vocabulary size. The six block counts per layer are
+$3Td^2$ (QKV), $Td^2$ ($W_o$), $Tdd_f$ each ($W_1,W_2$), and
+$dT(T+1)/2$ each ($QK^\top,PV$).
+For $QK^\top$, a multiplication is zero when
+$q_{i,r}=0$ or $k_{j,r}=0$ with $j\leq i$.
+For $PV$, the corresponding event is $p_{i,j}=0$ or $v_{j,r}=0$.
+Future-token pairs are excluded from both numerator and denominator.
+Projection counters evaluate the actual activation and weight operands.
+Exact zero means equality to zero in the evaluation dtype.
+All counts are summed over the 338 sequences before division.
+
+The denominator credits one scalar multiplication per operand pair.
+Its full-sequence causal convention is held constant across conditions;
+implementation arithmetic can differ, including fused dense attention.
+The dense vocabulary head is included in full with zero credited opportunity.
+Appendix~\ref{app:runtime} separately reports the subset of model-wide
+opportunity covered by the evaluated sparse linear implementation.
+
+\subsection{Optimization}
+\label{app:optimization}
+The joint-loss L1 baseline differentiates
+$\mathcal{L}_{\rm CE}+\lambda\mathcal{P}$, clips the combined gradient to
+global norm one, and performs an AdamW update. OL1 accumulates task and
+pressure gradients separately across the effective batch. It clips the task
+gradient to norm one and updates AdamW's moments using that gradient.
+With bias-corrected task moments $\widehat m,\widehat v$, it forms
+\begin{equation}
+ d_t=\frac{\widehat m}{\sqrt{\widehat v}+\epsilon_{\rm Adam}},
+ \qquad
+ d_p=\frac{\nabla_\theta\mathcal{P}}
+ {\sqrt{\widehat v}+\epsilon_{\rm Adam}} .
+\end{equation}
+The inner product and norms below are global over trainable parameters.
+With $\epsilon=10^{-12}$, when $\langle d_t,d_p\rangle<0$ and
+$\|d_t\|_2^2>\epsilon$, the pressure direction is replaced by
+\begin{equation}
+ d_s=d_p-\frac{\langle d_t,d_p\rangle}
+ {\|d_t\|_2^2+\epsilon}d_t;
+\end{equation}
+otherwise $d_s=d_p$. With step budget $b=1$,
+\begin{equation}
+ \rho=\frac{\lambda\|d_s\|_2}{\|d_t\|_2+\epsilon},
+ \qquad c=\min\left(1,\frac{b}{\rho+\epsilon}\right).
+\end{equation}
+After AdamW's task update, each parameter group receives
+$-\eta\lambda c\,d_s$, using its current learning rate $\eta$.
+Weight decay remains part of AdamW. This procedure bounds the auxiliary
+direction relative to the task direction at the current step. Its geometric
+constraint leaves finite-step task-loss improvement as an empirical question.
+
+\subsection{Data and execution identities}
+The dataset is \texttt{JeanKaddour/minipile} at revision
+\begin{quote}\small\texttt{18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0}.\end{quote}
+The tokenizer is \texttt{EleutherAI/pythia-14m-deduped} at revision
+\begin{quote}\small\texttt{7386d9a4ae45aef494a6e704910394def3037fc5}.\end{quote}
+Encoding adds no special tokens and appends EOS per document.
+The training cache has 1,491,711,416 tokens and 728,374 complete blocks,
+with a 1,464-token tail. The 712 full batches schedule 729,088 blocks, so the
+final batch wraps into the same seeded order for 714 blocks.
+The validation cache has 693,668 tokens, 338 complete blocks, and the
+reported 1,444-token excluded tail. Its complete-block coverage is shared
+by every comparison. The cache SHA-256 identities are:
+\par\smallskip\noindent Training:\par
+{\scriptsize\noindent\texttt{da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c}\par}
+\smallskip\noindent Validation:\par
+{\scriptsize\noindent\texttt{51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451}\par}
+\smallskip
+
+The parameter counts are 14,067,712, 70,426,624, and 405,334,016.
+The 410M configuration has 24 layers, width 1,024, feed-forward width 4,096,
+and 16 heads. All configurations use vocabulary size 50,304 and zero
+hidden/attention dropout. The learning-rate schedule warms up for eight
+optimizer steps, reaches its peak on step nine, and decays toward one tenth
+of the peak. Initialization is random from pinned architecture
+configurations. The 14M cohorts share verified initialization and data-order
+identities; the larger cohorts load a canonical initialization within size.
+Training uses FP16 autocast with dynamic loss scaling and FP32 parameters
+and optimizer states. Different GPU executions can introduce residual
+numerical variation.
+
+The source artifacts retain terminal training-time validation losses and
+same-pass eager counting losses separately. We consistently use the latter
+for quality--opportunity comparisons. This produces small last-decimal
+differences from earlier draft tables that used terminal losses.
+The accompanying reduction records source paths and hashes for every trained
+checkpoint and the upstream clipping summaries. The reduction uses retained
+evaluation artifacts throughout.
+
+\subsection{Clipping calibration and selection}
+For each control, the calibration pass uses ten complete training-cache
+blocks. At every selected layer/site, the target $p$ specifies a quantile of
+absolute activation magnitude. The resulting fixed thresholds are reused
+throughout validation. A0 and A1-H have separate calibration and zero-target
+evaluations. The target $p$ is shared across sites; achieved exact-zero
+fractions can differ because of the activation distributions and native
+zeros. Each path is reported in full in Appendix~\ref{app:clipping}.
+The common-loss table uses the best discrete point satisfying the stated
+allowance relative to that size's zero-clipped A0 loss. The allowances are
+descriptive summaries chosen for this analysis; a held-out downstream
+evaluation would be needed to assess selected operating points independently.
+
+\clearpage
+\section{Complete trained results and paired contrasts}
+\label{app:full-results}
+Table~\ref{tab:all14} includes every 14M condition used in the main analysis,
+including the realized $h$-only pressure cohort.
+Dose means $\lambda$ for A1-H+L1/OL1 and $\kappa$ for A4/A7.
+The A4/A7 pressure coefficient is fixed at one.
+No independent-seed uncertainty is available.
+
+\begin{table}[h]
+\centering
+\caption{Complete 14M training grid. Loss and opportunity are paired in the
+same complete-validation counting pass.}
+\label{tab:all14}
+\small
+\input{tables/trained-14M.tex}
+\end{table}
+% Evidence: analysis 013, observations/O001-matched-interventions.md; 01_build.py.
+
+\clearpage
+\begin{table}[t]
+\centering
+\caption{Complete selected 70M training grid. The 70M study repeats the
+pressured recipes; it has no unpressured A4/A7 or $h$-only-pressure branches.}
+\label{tab:all70}
+\small
+\input{tables/trained-70M.tex}
+\end{table}
+% Evidence: analysis 013, observations/O002-quality-frontiers.md; 01_build.py.
+
+The different pressure responses can be summarized by
+\begin{align}
+ D_{\mathcal L}(\kappa)
+ &= [\mathcal L_{\rm A7+OL1@7}-\mathcal L_{\rm A7}]
+   -[\mathcal L_{\rm A4+OL1@4}-\mathcal L_{\rm A4}],\\
+ D_R(\kappa)
+ &= [R_{\rm A7+OL1@7}-R_{\rm A7}]
+   -[R_{\rm A4+OL1@4}-R_{\rm A4}].
+\end{align}
+Table~\ref{tab:response-difference} exposes the full dose dependence.
+At $\kappa=.5$, the difference favors the A7-conditioned recipe on both
+axes. At the other thresholds the opportunity difference favors the A4
+pressure response. Because pressure sites differ, this is a contrast of
+two configuration-specific treatment effects.
+
+\begin{table}[h]
+\centering
+\caption{Difference between seven-site and four-site pressure effects at
+14M. Each row compares the two matched pressure contrasts at one threshold.}
+\label{tab:response-difference}
+\small
+\input{tables/pressure-differences.tex}
+\end{table}
+% Evidence: analysis 013, observations/O001-matched-interventions.md; 01_build.py.
+
+\begin{table}[h]
+\centering
+\caption{Architecture and exposure context. The last two columns use
+A7+OL1@7 at $\kappa=.5$. Block share is fixed by the architecture and
+full-sequence workload. All conditions use 1.493 billion scheduled tokens.}
+\label{tab:architecture}
+\small
+\input{tables/architecture.tex}
+\end{table}
+% Evidence: analysis 013, observations/O003-operation-decomposition.md; 01_build.py.
+
+\clearpage
+\section{Complete uniform-clipping results}
+\label{app:clipping}
+Each table contains ten common target quantiles for both controls.
+All rows use the same full validation coverage as the trained endpoints.
+The complete range includes high-loss points to expose the limits of
+clipping. The zero-target rows serve as the matched fixed-checkpoint
+references.
+
+\begin{table}[h]
+\centering
+\caption{Uniform clipping at 14M. $p$ is the calibration target quantile.}
+\small
+\input{tables/clipping-14M.tex}
+\end{table}
+\begin{table}[h]
+\centering
+\caption{Uniform clipping at 70M.}
+\small
+\input{tables/clipping-70M.tex}
+\end{table}
+\begin{table}[h]
+\centering
+\caption{Uniform clipping at 410M.}
+\small
+\input{tables/clipping-410M.tex}
+\end{table}
+% Evidence: analysis 013, observations/O002-quality-frontiers.md and
+% O004-fixed-budget-410m.md; 01_build.py.
+
+\clearpage
+\section{Fixed-budget 410M extension}
+\label{app:410m}
+The 410M cohort receives the same token exposure and number of updates as
+the smaller models, with peak learning rate $3\times10^{-4}$.
+It extends the two pressured recipes and both controls
+(Table~\ref{tab:all410}). Its trained families differ from the smaller
+models: increasing the gate threshold can improve loss while increasing
+opportunity (Figures~\ref{fig:410} and~\ref{fig:doses}).
+At $\kappa=.5$, A7+OL1@7 has loss 5.1207 and opportunity 80.62\%;
+the A0 control has substantially lower loss, 4.5475.
+Thus a within-family improvement leaves a considerable gap to the
+unmodified model.
+
+The exposure is 3.7 tokens per parameter, compared with 21.2 at 70M and
+106.1 at 14M. This difference motivates a larger-data control before
+interpreting the result as a model-size effect.
+Compute-optimal allocations provide a rationale for scaling the data budget
+\citep{hoffmann2022training}; they leave the cause of this cohort's
+behavior unresolved.
+The learning-rate screen in Table~\ref{tab:lr} supports the selected A0
+learning rate within its tested grid. The remaining design differences
+include architecture, exposure per parameter, and optimization trajectory.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.9\linewidth]{figures/04-410m-complete-frontier.pdf}
+\caption{Complete 410M fixed-budget training and clipping paths. The trained
+threshold response and the quality gap to A0 are both retained.}
+\label{fig:410}
+\end{figure}
+% Evidence: analysis 013, observations/O004-fixed-budget-410m.md; 01_build.py.
+
+\begin{table}[h]
+\centering
+\caption{410M A0 learning-rate screen. Selection used the predeclared mean
+task loss over steps 649--712. Validation loss is shown as a separate
+diagnostic.}
+\label{tab:lr}
+\small
+\input{tables/lr-screen.tex}
+\end{table}
+% Evidence: run 021 artifacts/selection.json; analysis 013,
+% observations/O004-fixed-budget-410m.md; 01_build.py.
+
+\clearpage
+\begin{table}[t]
+\centering
+\caption{Complete selected 410M training grid.}
+\label{tab:all410}
+\small
+\input{tables/trained-410M.tex}
+\end{table}
+% Evidence: analysis 013, observations/O004-fixed-budget-410m.md; 01_build.py.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/05-dose-response-by-size.pdf}
+\caption{Changes from the zero-threshold point within each pressured
+family. Lines order increasing gate threshold. The axes show both
+improvements and deteriorations in validation loss. The 410M response
+differs from the 14M/70M responses under the common token budget.}
+\label{fig:doses}
+\end{figure}
+% Evidence: analysis 013, observations/O005-within-family-dose-response.md; 01_build.py.
+
+\clearpage
+\section{Correctness and execution study at 70M}
+\label{app:runtime}
+The execution study uses six checkpoints: A0, A1-H, and
+A4+OL1@4/A7+OL1@7 at $\kappa=0,.5$.
+The linear implementation is adapted from the sparse-kernel path released
+with \citet{cetin2026sparser}. Exact signed packing preserves all nonzero
+values; the original positive-input predicate would discard negative
+activations in these models.
+The hardware is an NVIDIA H100 NVL. Full-model comparisons use BF16,
+sequence length 2,048, batch sizes 1 and 32, and uncached full-sequence
+prefill with native dense scaled-dot-product attention.
+They include packing and downstream linear execution, with compilation
+and CUDA graphs disabled.
+
+For A4/A7, the sparse path covers QKV, $W_1$, $W_2$, and $W_o$.
+For A0/A1-H it covers only $W_2$. We report the covered opportunity as
+$R_{\rm covered}=\sum_{o\in{\rm replaced}} Z_o/N_{\rm model}$,
+using the same complete denominator as \Rmodel.
+In particular, the A7 $\kappa=.5$ checkpoint has 40.60\% total opportunity
+but 30.18\% covered by these linear replacements.
+
+\begin{table}[h]
+\centering
+\caption{Complete 70M full-model execution results. Batch columns are
+median paired ratios of dense latency to sparse latency; values above one
+indicate a speedup. $R_{\rm covered}$ credits only the replaced linear
+operations. All six sparse paths are slower at both batch sizes.}
+\label{tab:runtime}
+\small
+\input{tables/runtime.tex}
+\end{table}
+% Evidence: run 023 observations/001-pythia70m-sentinel-sparse-kernel-feasibility.md;
+% analysis 013, observations/O006-runtime-boundary.md; 01_build.py.
+
+Seven paired timing blocks provide each reported full-model ratio.
+The best case, A4+OL1@4 at $\kappa=.5$ and batch size 1, has median
+$0.983496\times$ and 10th--90th percentile range
+$[0.982588,0.985447]\times$ across timing blocks.
+This range describes timing dispersion in the measured process.
+An official SparseLM-0.5B positive control reaches $1.2876\times$,
+showing that the environment can reproduce a benefit for the source
+model/path.
+
+Verification covers all seven tested linear shapes and every sentinel
+checkpoint. Source-checkpoint FP16 validation losses reproduce exactly.
+The largest full-validation BF16 dense--sparse loss discrepancy is
+0.0006854, below the declared 0.001 tolerance.
+BF16 runtime validation and the canonical counting pass have separate
+precision provenance; the manuscript's quality frontiers use the canonical
+same-pass counting losses.
+
+The study also tests 108 representative linear cases. Both pack-plus-kernel
+and kernel-only timing remain below parity; the best kernel-only ratio is
+$0.8359\times$. Separate Q-only or V-only sparse-attention compositions
+preserve the selected computation but use unfused per-head execution.
+Their best tested ratio is $0.3612\times$.
+These checks help locate the limitation beyond full-model packing alone,
+while leaving open alternative kernels, fused attention, decoding workloads,
+batching policies, hardware, and explicitly structured training.
+The result is specific to the implemented path and measured workload.

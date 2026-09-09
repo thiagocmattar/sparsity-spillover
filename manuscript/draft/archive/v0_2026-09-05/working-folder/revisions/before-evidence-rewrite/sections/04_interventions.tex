@@ -1,0 +1,49 @@
+\section{Interventions}
+\label{sec:interventions}
+
+\paragraph{Sites and gates.}
+Pythia uses parallel attention and MLP residual branches.  We denote their
+separate LayerNorm outputs by $a$ and $m$, the MLP nonlinear output by $h$,
+post-RoPE query and key by $q$ and $k$, value by $v$, and concatenated attention
+context immediately before $W_o$ by $z$.  The one-sided and symmetric gates are
+\begin{equation}
+ \Gplus(x)=x\,\mathbf{1}[x\geq\kappa],\qquad
+ \Gpm(x)=x\,\mathbf{1}[|x|\geq\kappa].
+ \label{eq:gates}
+\end{equation}
+The comparison is detached: surviving values receive identity input gradient
+and rejected values zero gradient.  At $h$, the gate replaces GELU.
+
+The four-site recipe \Afour{} gates and pressures $\{a,m,h,z\}$ with $\Gplus$.
+The seven-site recipe \Aseven{} uses the same gates there and adds $\Gpm$ at
+$\{q,k,v\}$.  The shared gate threshold is
+$\kappa\in\{0,.01,.05,.1,.5\}$.  Because the topologies change both gate and
+pressure sites, \Afour{} versus \Aseven{} is a comparison between complete
+recipes, not a clean causal ablation of attention gating.
+
+\paragraph{Orthogonal activation pressure.}
+For captured tensors $A_j$, the auxiliary loss first averages within a tensor
+and then weights tensors equally:
+$L_1=J^{-1}\sum_j\operatorname{mean}|A_j|$.  At each accumulated optimizer
+boundary we separately form the task and pressure gradients.  AdamW consumes
+the globally clipped task gradient and updates its task-only moments.  With the
+bias-corrected task moment $\hat m$ and task second moment $\hat v$, define
+\begin{equation}
+ d_t=\frac{\hat m}{\sqrt{\hat v}+\epsilon},\qquad
+ d_p=\frac{g_p}{\sqrt{\hat v}+\epsilon}.
+\end{equation}
+If $\langle d_t,d_p\rangle<0$, we remove the conflicting component from $d_p$;
+otherwise it is unchanged.  The resulting direction is scaled so
+$\lambda\|d_p\|/(\|d_t\|+\epsilon)\leq b$ and applied after AdamW with the same
+learning rate.  We set pressure weight $\lambda=1$ and relative budget $b=1$.
+This ``OL1'' construction constrains the instantaneous preconditioned
+directions, not the finite-step loss.
+
+\paragraph{Controls and post-hoc clipping.}
+A0 retains stock GELU and no gates; A1-H replaces GELU with ReLU at $h$.  From
+each trained control checkpoint, a TEAL-like evaluation-only sweep jointly
+clips $\{a,m,h,z\}$ at ten target sparsities from 0 to .9.  Absolute-value
+thresholds are calibrated on the first ten complete training blocks, then held
+fixed for complete validation.  These sweeps answer how a fixed model responds
+to removal; they are not trained sparse models.
+

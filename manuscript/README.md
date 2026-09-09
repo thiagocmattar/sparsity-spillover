@@ -28,6 +28,15 @@ variant.
 
 ## V2 workspace
 
+On 9 September 2026, the user enabled Git tracking for `manuscript/draft/`
+to collaborate on the paper. The current TeX, bibliography, ICLR template,
+figure PDFs, tables, supplementary measurements and compiled `main.pdf` are
+tracked, together with manuscript history and review records. Rebuildable
+LaTeX files, backup ZIPs and raster QA previews remain ignored; the official
+ICLR template ZIP is a small provenance exception. The
+[draft README](draft/README.md) documents the build and editing workflow.
+Earlier references below to a local-only draft describe the previous policy.
+
 The [27-page ICLR 2027 draft](draft/main.pdf) now contains the reviewed paper:
 abstract, introduction, related work, methodology, experimental results,
 discussion and complete appendices, including the user's revised abstract and
@@ -47,8 +56,8 @@ references pages 13-14 and appendices pages 15-27. Before submission, the main
 text needs shortening to the template's nine-page limit and the authors must
 add its required AI use statement. The
 [conversion record](draft/reviews/2026-09-09-iclr2027-template/README.md) retains
-the downloaded template, hashes, source wrapper and verified PDF. The existing
-local-only Git policy for draft files is unchanged.
+the downloaded template, hashes, source wrapper and verified PDF. This format
+conversion preceded the Git-tracking change described above.
 
 The 8 September revision added the fixed-threshold rationale and the kernel
 specialization argument requested by the user. It distinguishes early search
@@ -82,7 +91,7 @@ for the quality--sparsity overview, now Figure 2. The reading copy embeds all 30
 its caption and source comments now follow Analysis 018
 [O013](../analyses/018-2026-09-08-results-materials/observations/O013-overview-all-variants.md)
 and `04_overview_v2.py`; the original overview is retained. The build and affected
-pages were checked. Draft sources and the PDF retain the local-only Git policy. Seven
+pages were checked. Draft sources and the PDF were local-only at that point. Seven
 generated tables preserve every numerical row. The supplementary directory
 retains all 540 clipping evaluations, seven signed histograms and a newly
 sourced preparation/environment protocol.
@@ -113,7 +122,7 @@ change in A4-OL1 versus A7-OL1, OL1's lack of a loss-convergence guarantee, and
 the separation between logical sparsity and measured execution. The earlier
 spillover claim is not reused as the paper's central argument. The existing
 architecture/ladder artifact is included as a setup reference. Draft
-sources and the reading copy retain the local-only ignore policy.
+sources and the reading copy were local-only at that point.
 
 The subsequent user-requested adversarial review used three independent
 sub-agents with explicit five-criterion scoring rubrics for writing, scientific
@@ -170,7 +179,7 @@ fixed-budget 410M appendix results, and negative 70M execution evidence.
 
 [Analysis 013](../analyses/013-2026-09-04-matched-intervention-manuscript/README.md)
 owns its five figures, generated tables, verified reduction, and observations.
-The draft remains under the existing local-only ignore rule. The older TeX
+The draft was local-only at that point. The older TeX
 and report files below preserve earlier proposals and evidence cutoffs; their
 410M-unobserved descriptions predate the completed cohorts.
 
@@ -186,7 +195,8 @@ the archive date; `draft/` is the clean workspace for the next manuscript.
 
 Each snapshot preserves the PDF, manuscript sources, bundled figures/tables,
 style files, review notes, and a SHA-256 inventory. The archive retains the
-draft's existing local-only Git policy. This tracked index records its location
+draft's former local-only Git policy at creation; manuscript sources and PDFs
+are now tracked, while temporary outputs remain local. This index records its location
 and framing. v0 precedes the proposed pressure-allocation-by-nonlinearity study.
 Its `working-folder/` preserves all 102 files moved out of `draft/`, including
 earlier revisions, QA renders, and build outputs, with verified hashes recorded
@@ -305,7 +315,7 @@ actually needs it.
   realizable sparse-path contribution, not universal monotonic scaling,
   equal-quality gains, or autonomous/model-specific agent superiority.
   Run029 Observation06 and `19_audit_evidence.py` own the audit evidence.
-  The existing draft remains local-only; run-owned provenance snapshots
+  The draft was local-only at that point; run-owned provenance snapshots
   retain the requested new section and companion without changing that policy.
 
 - On 4 September 2026, the user requested the full manuscript rewrite using

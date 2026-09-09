@@ -1,0 +1,83 @@
+% Revised literature chain. Exactly three intervention and two speedup paragraphs.
+% Source checks and interpretation limits: positioning.md and review reports.
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{Sparsification interventions}
+\label{sec:related-interventions}
+
+Post-hoc thresholding reveals sparsity that an already learned
+representation can tolerate. CATS thresholds small-magnitude activations
+within gated FFNs, with both training-free and fine-tuning
+settings~\citep{lee2024cats}. TEAL extends magnitude thresholding to attention
+and FFN projections and uses block-wise greedy allocation to account for
+their different sensitivities~\citep{liu2024teal}. Its placement and allocation
+studies show why a uniform sparsity target need not be equally appropriate
+throughout a model. These methods provide a reference for sparsity available
+without retraining, while motivating the question of how training can change
+that tolerance.
+
+Training-time interventions allow the representation to adapt to sparse
+computation. ReLU Strikes Back studies restoring sparse activations in
+language models~\citep{mirzadeh2023relu}; ProSparse combines ReLU, progressive
+$\ell_1$ pressure, and threshold shifting during continued
+training~\citep{song2024prosparse}. ProSparse's schedule ablations show that
+comparable FFN sparsity can carry different quality costs. Sparsing Law
+examines how sparsity depends on regularization, data, and model
+size~\citep{luo2025sparsing}, while \citet{cetin2026sparser} demonstrate highly
+sparse FFNs induced by $\ell_1$ regularization during pretraining. Together,
+these studies establish pressure as a way to reshape the quality--sparsity
+trade-off. A local FFN zero fraction alone leaves a further accounting question:
+how much of the complete model's computation do those zeros affect?
+
+Extending sparsification beyond FFNs makes the choice of sites explicit.
+Q-Sparse applies top-$k$ selection to attention and FFN projection inputs,
+reports overall sparsity and activated-parameter budgets, and ablates both
+the sparsifying nonlinearity and the straight-through
+estimator~\citep{wang2024qsparse}. Spark Transformer combines sparse FFNs
+with sparse attention through token-position selection and examines the role
+of its low-cost predictor~\citep{you2025spark}.
+Projection-input sparsity and attention-position sparsity affect different
+work; our intervention ladder also considers feature coordinates in the
+internal attention operands. Building on the existing
+component studies, we examine how the additional effect of activation pressure
+depends on thresholding and placement. Relating those effects to model-wide
+product counts and topology-dependent reach connects the quality cost of an
+intervention to the computation its zeros can affect.
+
+\subsection{Inference speedup}
+\label{sec:related-speedup}
+
+Converting activation sparsity into speedup requires an execution strategy
+suited to the workload. TEAL accelerates batch-one autoregressive decoding,
+where skipping weight accesses is valuable, and reports up to $1.8\times$
+speedup at 50\% sparsity under its projection-based
+accounting~\citep{liu2024teal}.
+\citet{cetin2026sparser} address batched matrix multiplication: their TwELL
+format packs sparse activations as a projection produces them and supports
+fused FFN computation, reducing the overhead of materializing and consuming
+the sparse representation. They evaluate throughput for full-sequence forward
+passes, a different workload from token-by-token decoding. Spark likewise couples its
+sparsity mechanism with an implementation that reports decoding
+gains~\citep{you2025spark}. These results show why the location and execution
+of sparsity matter together. Skipped products and memory traffic must repay
+indexing, packing, and launch overheads, while operations that remain dense
+limit the gain of the complete model. A sparsity percentage alone does not
+specify this balance.
+
+This dependence makes kernel adaptation part of evaluating whether a
+sparsification method transfers. With larger batches, different token masks
+can reduce the weight-loading savings available from sparsity, as Spark's
+batching analysis illustrates~\citep{you2025spark}. Block Q-Sparse introduces
+structure into the mask to accommodate batched
+execution~\citep{wang2024qsparse}; TwELL instead makes packing and fusion
+compatible with tiled computation~\citep{cetin2026sparser}. Tensor shape,
+sparsity structure, and data layout therefore matter alongside the zero
+fraction. Iterative kernel generation with execution and profiling feedback
+offers an emerging tool for exploring such
+adaptations~\citep{ouyang2025kernelbench,luo2026agentic}.
+Establishing a benefit still requires numerical correctness and complete-model
+timings that include selection and conversion costs on the target workload.
+These measurements test whether intervention-induced zero-product
+opportunities translate into reduced execution time after sparse-execution
+overheads are included.

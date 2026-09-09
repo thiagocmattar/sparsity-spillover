@@ -1,0 +1,120 @@
+% General definitions and counters. Concrete graph and protocol: experimental-appendix.tex.
+\section{Intervention definitions}
+\label{app:interventions}
+
+\subsection{Gate semantics}
+
+For finite $\kappa\geq0$, both threshold gates retain equality and leave retained values unchanged.
+The comparison mask is detached: the derivative with respect to the input
+is one for retained entries and zero for rejected entries. Consequently,
+$G_{+,0}$ and ReLU have identical forward values but differ at zero, where
+their derivatives are one and zero, respectively. $G_{\pm,0}$ is exactly the
+identity in both values and gradients. The gates use neither a straight-through
+estimator nor a top-$k$ selection rule. Unselected sites retain their original transformations.
+
+\subsection{Activation pressure and OL1}
+\label{app:pressure}
+
+For the $J$ targeted site--layer tensors $A_j$, containing $n_j$ entries each,
+the pressure objective is
+$\mathcal{L}_1=J^{-1}\sum_{j=1}^{J}n_j^{-1}\sum_{i=1}^{n_j}|A_{j,i}|$.
+Absolute values and means are evaluated in float32 on post-gate activations.
+Each tensor receives equal weight regardless of its size; adding pressure
+sites changes both the objective and the weight of existing targets.
+Task and pressure losses are averaged over the same accumulation microbatches.
+For naive L1, the accumulated gradient of
+$\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$ is globally norm-clipped
+before AdamW~\citep{loshchilov2019adamw}.
+
+For OL1, let $g_t$ and $g_1$ be the accumulated task and unweighted pressure
+gradients. We first clip $g_t$ by its global norm and perform AdamW using only
+that clipped task gradient. Let $\widehat m_t$ and $\widehat v_t$ be its newly
+updated, bias-corrected moments. On parameters having both gradients and
+initialized optimizer state, define the adaptive task and pressure vectors
+$u=\widehat m_t/(\sqrt{\widehat v_t}+\epsilon_A)$ and
+$w=g_1/(\sqrt{\widehat v_t}+\epsilon_A)$. The pressure gradient is unclipped
+and has no first-moment buffer. Inner products and norms below pool all these
+eligible parameters. With $c=\langle u,w\rangle$, $q=\|u\|_2^2$, and numerical
+stabilizer $\epsilon>0$, the conflict-conditioned projection is
+\begin{equation}
+\widetilde w=
+\begin{cases}
+w-\dfrac{c}{q+\epsilon}u, & c<0\ \text{and}\ q>\epsilon,\\[3pt]
+w, & \text{otherwise}.
+\end{cases}
+\label{eq:ol1-projection}
+\end{equation}
+For pressure weight $\lambda\geq0$ and required budget $b>0$, define the norm ratio
+$r=\lambda\|\widetilde w\|_2/(\|u\|_2+\epsilon)$. Set
+$s=\min\{1,b/(r+\epsilon)\}$ when $r>0$, or $s=1$ otherwise. After AdamW,
+each eligible parameter group $p$, with learning rate $\alpha_p$, receives
+$\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
+The experiments' clipping thresholds, $b$, and $\lambda$ are condition
+parameters.
+
+This procedure is related to gradient-conflict projection~\citep{yu2020pcgrad}
+and the use of smoothed primary directions~\citep{hsieh2024bloop}, but defines
+a particular correction in AdamW-preconditioned coordinates. The stabilized
+projection is only approximately orthogonal under conflict. Its geometry and
+budget precede multiplication by group learning rates and exclude decoupled
+weight decay. They therefore do not guarantee task-loss descent or preservation.
+
+\section{Sparsity accounting}
+\label{app:accounting}
+
+\subsection{Exact counters}
+
+Local exact sparsity at site $s$ is
+$\mathcal{Z}_s=\sum_{\ell,e,i}\mathbf{1}\{A^{(\ell,e)}_{s,i}=0\}/
+\sum_{\ell,e}|A_s^{(\ell,e)}|$, where $\ell$ indexes layers, $e$ evaluation
+batches, $i$ tensor entries, and $|A|$ the number of elements in tensor $A$. Near-zero mass replaces equality by
+$|A_{s,i}|\leq\varepsilon$ for a stated tolerance; it does not contribute to
+exact-zero counts unless the value is zero. All aggregate fractions pool
+integer numerators and denominators across batches and layers before division.
+
+The atomic unit of model-wide accounting is one scalar multiplication in a
+matrix product. If $X\in\mathbb{R}^{n\times p}$ feeds a linear projection with
+$q$ outputs, the count is $N=npq$, with $N_0=q\sum_{i,j}\mathbf{1}\{X_{ij}=0\}$.
+Zero weights receive no credit. For the multihead attention graph specified in Appendix~\ref{app:sites},
+both operands are activations,
+so a product is credited once if either is zero. Within one block and
+evaluation batch, for query position $t$,
+key position $u\leq t$, and within-head coordinate $j$,
+\begin{align}
+N_{0,QK}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
+\mathbf{1}\{Q_{bhtj}=0\ \lor\ K_{bhuj}=0\},\label{eq:qk-count}\\
+N_{0,PV}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
+\mathbf{1}\{P_{bhtu}=0\ \lor\ V_{bhuj}=0\}.\label{eq:pv-count}
+\end{align}
+Here $P$ is the causal softmax probability tensor; the model numerator sums
+these counts over blocks and evaluation batches. Future masked positions
+are excluded from both counts, while zeros on valid positions, including
+floating-point underflow, are included. Query and key counts use actual
+post-RoPE operands: rotation can repopulate an individual zero coordinate.
+Likewise, the output projection uses actual post-gate context $z$, rather than
+inferring its zeros from the value mask. Earlier value positions participate
+in more causal pairs, so local value sparsity alone does not determine $PV$
+sparsity.
+
+\subsection{Reach accounting and normalization}
+\label{app:ceiling}
+
+For a specified graph and workload, let $N_o$ count the valid scalar
+multiplications in block operation family $o$, pooled over layers and
+examples. Then $N_{\mathrm{model}}=\sum_o N_o+N_{\mathrm{head}}$, while $N_0$
+sums the corresponding zero-operand counts only in block operations.
+The block-only view is $\Sblock=N_0/\sum_o N_o$. Both sparsities are fractions;
+percentages multiply them by 100. Embedding lookup, normalization,
+nonlinearities, softmax, RoPE, bias and residual additions, and data movement
+are outside this accounting.
+
+To construct the reach numerator, take the union of products that have a
+zero activation operand when the selected sites are all zero, including
+exact propagation through the declared graph. Products reached through more
+than one site receive one credit. The resulting count is
+$N_{\mathrm{reach}}(\mathcal{G})$. Division by the same $N_{\mathrm{model}}$
+gives $\Smax$. Natural zeros outside this selected-site reach can contribute
+to observed $\Smodel$, so the ceiling is not an upper bound on every
+observation. Its gap to an observation does not measure sparsity available
+without quality loss. Appendix~\ref{app:architecture-counts} specializes
+the denominator and reach rules to the Pythia graph used in the experiments.

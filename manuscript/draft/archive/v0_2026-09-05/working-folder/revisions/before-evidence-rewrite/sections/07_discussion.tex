@@ -1,0 +1,52 @@
+\section{Discussion and limitations}
+\label{sec:discussion}
+
+\paragraph{What $\Rmodel$ adds.}
+The metric is most useful as a common accounting layer.  It makes the workload,
+operation set, causal mask, transformed operands, and dense head explicit; it
+then permits sitewise and operationwise diagnoses below the scalar summary.
+The \Afour/\Aseven{} comparison shows why this hierarchy matters: local zero
+percentages identify where representations collapse, while per-operation counts
+identify why the graph-level opportunity changes.  A single number without
+those decompositions would hide the mechanism; local plots without the common
+denominator would not reveal its computational footprint.
+
+\paragraph{How we use 410M.}
+Excluding the cohort would produce a cleaner but misleading scale-persistence
+narrative.  Including it as ordinary replication would overstate the design.
+We instead use it as a stress test: the high-dose topological advantage
+persists, but the trained loss response reverses under sharply lower exposure.
+The disagreement with post-hoc clipping suggests that learned adaptation to a
+gate can matter more than instantaneous deletion.  It does not distinguish
+beneficial regularization, altered optimization geometry, capacity effects, or
+undertraining.  A matched tokens-per-parameter or loss-matched study and
+replicate seeds are required before any scaling statement.
+
+\paragraph{Sitewise redistribution is selective.}
+The cross-scale endpoint heatmap shows that broader pressure does not induce a
+uniform attention response.  An earlier matched 14M diagnostic reinforces this
+point: as near-zero mass at directly pressured $h$ rose from 63.5\% to 92.4\%,
+$v$ moved only from .133\% to .185\%; $q$, $k$, and $m$ remained tiny and
+non-monotone, while the post-$W_o$ attention output rose through the middle
+doses and then fell.  We treat ``spillover'' as this site-specific descriptive
+redistribution, not a causal propagation mechanism (Appendix
+Figure~\ref{fig:spillover}).
+
+\paragraph{Limits of the intervention evidence.}
+Each endpoint has one seed.  \Afour{} and \Aseven{} differ jointly in gates and
+pressure sites.  The pressure weight and trust budget were not broadly tuned.
+A matched 14M comparison of naive and orthogonal $\ell_1$ pressure produced
+small, mixed loss differences, so the present data do not establish OL1 as
+superior (Appendix~\ref{app:ol1}).  Post-hoc thresholds are calibrated on ten
+training blocks, not fit to validation, but they remain a particular clipping
+rule rather than a universal comparator.
+
+\paragraph{Limits of the computational claim.}
+Our denominator describes complete length-2,048 sequences with uncached causal
+attention.  It resembles prefill or training accounting, not cached
+autoregressive decoding, whose KV reuse changes operation footprints.  Exact
+zeros alone do not create sparse execution.  We report no removed FLOPs,
+latency, energy, memory-traffic benefit, or end-to-end speedup.  Establishing
+those outcomes requires kernels whose format and scheduling match the measured
+site structure.
+

@@ -1,0 +1,40 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Sparse activations and training.}
+Replacing smooth MLP nonlinearities with ReLU can yield high activation
+sparsity while preserving language-model quality \citep{mirzadeh2023relu}.
+ProSparse stages regularization and thresholding during pretraining
+\citep{song2024prosparse}; the Sparsing Law studies scaling behavior under
+sparsity-inducing training \citep{liu2024sparsing}; and recent work examines
+sparsity-aware pretraining recipes at larger scales \citep{cetin2026sparser}.
+Conditional-computation and activation-sparsity studies likewise motivate
+training models whose dense weights are selectively exercised
+\citep{zhang2024exploring}.  Our study is smaller and diagnostic: it holds a
+one-pass data budget fixed, reports exact product counts, and does not claim a
+compute-optimal sparse training recipe.
+
+\paragraph{Post-training activation sparsification.}
+TEAL selects activation thresholds without retraining and evaluates a
+model-level, matrix-footprint-weighted configuration \citep{liu2024teal}.
+CATS and CHESS introduce contextual or structured activation selection
+\citep{lee2024cats,zhang2024chess}, while R-Sparse combines rotations and
+thresholds to increase inference-time activation sparsity
+\citep{sun2025rsparse}.  These works make efficiency concrete through kernels
+or latency measurements.  We use a TEAL-like evaluation-only clipping family
+as a reference, but our central object is different: zero-containing scalar
+products reconstructed from actual operands, including causal attention reuse
+and a dense output head.  Our metric is useful before kernel engineering, but
+cannot replace it.
+
+\paragraph{Gradient interaction.}
+Projecting conflicting auxiliary gradients has precedents in multi-task
+optimization, including PCGrad \citep{yu2020pcgrad} and Adam-aware approaches
+such as Bloop \citep{mitrevski2024bloop}.  Our orthogonal $\ell_1$ update uses
+the task optimizer's second moment and a relative direction budget.  It enforces
+a local non-opposition condition on the reconstructed directions; it does not
+guarantee that a finite parameter step improves task loss.  The present
+comparison also does not isolate this optimizer from every topology and gate
+choice, so we treat it as part of a complete recipe rather than a standalone
+algorithmic contribution.
+

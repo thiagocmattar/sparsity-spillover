@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "locally_composed_reproducibility_protocol",
+  "date": "2026-09-08",
+  "scope": "Manuscript cohort: 54 retained trained checkpoints and corrected 30-checkpoint Pythia-14M kernel cohort. This file assembles retained records; it is not a new experiment or a public-availability claim.",
+  "path_base": "repository root",
+  "dataset": {
+    "name": "JeanKaddour/minipile",
+    "revision": "18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0",
+    "text_column": "text",
+    "tokenizer": "EleutherAI/pythia-14m-deduped",
+    "tokenizer_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+    "encode_add_special_tokens": false,
+    "append_eos_after_each_document": true,
+    "packing": "Concatenate each split in deterministic source order, then form complete non-overlapping 2048-token blocks; exclude the final incomplete block.",
+    "sequence_length": 2048,
+    "caches": {
+      "train": {
+        "documents": 1000000,
+        "tokens": 1491711416,
+        "tokens_bytes": 5966845664,
+        "tokens_sha256": "da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c",
+        "complete_blocks": 728374,
+        "evaluated_complete_block_tokens": 1491709952,
+        "excluded_tail_tokens": 1464,
+        "dtype": "int32",
+        "token_file_path": "data/tokenized/minipile-pythia-14m-full/train/tokens.int32.bin"
+      },
+      "validation": {
+        "documents": 500,
+        "tokens": 693668,
+        "tokens_bytes": 2774672,
+        "tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+        "complete_blocks": 338,
+        "evaluated_complete_block_tokens": 692224,
+        "excluded_tail_tokens": 1444,
+        "dtype": "int32",
+        "token_file_path": "data/tokenized/minipile-pythia-14m-full/validation/tokens.int32.bin"
+      }
+    },
+    "source_ids": [
+      "data_preparation_source",
+      "train_cache_metadata",
+      "validation_cache_metadata"
+    ]
+  },
+  "training": {
+    "initialization": "Random pretraining from pinned architecture configurations; no released pretrained weights. Same-size conditions share initial parameter content and data order.",
+    "model_seed": 1234,
+    "data_order_seed": 1234,
+    "training_seed_count_per_condition": 1,
+    "optimizer_updates": 712,
+    "global_batch_sequences": 1024,
+    "input_tokens_per_sequence": 2048,
+    "total_input_tokens": 1493172224,
+    "scheduled_blocks": 729088,
+    "wrapped_training_blocks": 714,
+    "schedule_scheme": "seeded_complete_block_permutation_wrap_v1",
+    "endpoint_selection": "Final update 712; no validation-based checkpoint selection.",
+    "parameter_and_optimizer_dtype": "float32",
+    "forward_precision": "float16 autocast with dynamic loss scaling",
+    "optimizer": {
+      "name": "AdamW",
+      "betas": [
+        0.9,
+        0.95
+      ],
+      "epsilon": 1e-08,
+      "weight_decay": 0.1,
+      "global_gradient_clip_norm": 1.0,
+      "clipping_scope": "Task gradient for OL1; combined task-plus-pressure gradient for naive L1.",
+      "warmup_updates": 8,
+      "decay": "Cosine to one tenth of peak learning rate."
+    },
+    "scales": {
+      "14M": {
+        "trained_conditions": 30,
+        "architecture": "EleutherAI/pythia-14m-deduped",
+        "architecture_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+        "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+        "schedule_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+        "microbatch_sequences": 32,
+        "gradient_accumulation_steps": 32,
+        "peak_learning_rate": 0.001,
+        "minimum_learning_rate": 0.0001
+      },
+      "70M": {
+        "trained_conditions": 12,
+        "architecture": "EleutherAI/pythia-70m-deduped",
+        "architecture_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+        "initial_parameter_sha256": "e8b8d8e48880f8ff25e421ed29b04a81eb417300f2b4a01a8c4d56f2591a1062",
+        "schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+        "microbatch_sequences": 4,
+        "gradient_accumulation_steps": 256,
+        "peak_learning_rate": 0.001,
+        "minimum_learning_rate": 0.0001
+      },
+      "410M": {
+        "trained_conditions": 12,
+        "architecture": "EleutherAI/pythia-410m-deduped",
+        "architecture_revision": "b5e8535141902c0e985cea61fd02afe7fe86af32",
+        "initial_parameter_sha256": "76217bf2ef13de2377c7750515a559cb71f574c274476e08408a5f7749ea9cff",
+        "schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e",
+        "microbatch_sequences": 4,
+        "gradient_accumulation_steps": 256,
+        "peak_learning_rate": 0.0003,
+        "minimum_learning_rate": 3e-05
+      }
+    }
+  },
+  "ol1": {
+    "numerical_stabilizer_epsilon": 1e-12,
+    "step_budget": 1.0,
+    "pressure_weights_local": [
+      0.05,
+      0.1,
+      0.5,
+      1.0
+    ],
+    "pressure_weight_multisite": 1.0,
+    "objective": "Unweighted mean of per-site/layer mean absolute activations, in float32; post-gate where present.",
+    "projection": "Only if the global adaptive task-pressure dot is negative and squared task norm exceeds epsilon; use dot/(squared task norm + epsilon).",
+    "geometry": "Task-only newly updated bias-corrected AdamW moments; pre-learning-rate direction geometry excludes decoupled weight decay.",
+    "source_ids": [
+      "ol1_source",
+      "analysis_evidence"
+    ]
+  },
+  "validation": {
+    "documents": 500,
+    "complete_blocks": 338,
+    "input_tokens": 692224,
+    "prediction_tokens": 691886,
+    "excluded_tail_tokens": 1444,
+    "loss": "Mean next-token cross-entropy over 2047 targets per complete block.",
+    "sparsity": "Pool integer zero-product counts before division; canonical measurement uses FP32 parameters and FP16 autocast.",
+    "split_usage": "One common validation split for all reported quality comparisons; no independent confirmation split."
+  },
+  "kernel": {
+    "cohort_conditions": 30,
+    "model": "Pythia-14M",
+    "hardware": "NVIDIA GeForce RTX 5090",
+    "batch_size": 1,
+    "sequence_length": 2048,
+    "parameter_and_forward_dtype": "bfloat16",
+    "kv_cache": false,
+    "outputs": "All 50304 vocabulary logits at every input position.",
+    "baseline": "Same-checkpoint native PyTorch SDPA in the matched CUDA-graph scaffold.",
+    "timing_inputs": 64,
+    "paired_passes": 7,
+    "fresh_processes_per_checkpoint": 3,
+    "ratios_per_checkpoint": 1344,
+    "aggregation": "Geometric mean of paired native/candidate host-latency ratios; equal checkpoint weighting for cohort summaries.",
+    "software": {
+      "python": "3.12.3",
+      "torch": "2.11.0+cu128",
+      "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+      "cuda": "12.8",
+      "transformers": "5.12.1",
+      "numpy": "2.5.0",
+      "nvcc": "12.8.93"
+    },
+    "environment_checked_final_k050_processes": 90,
+    "frozen_archive_repository_commit": "057ceededff3a39b26a8564201bff5307fb50bbe",
+    "archive_scope": "The archive manifest identifies the complete frozen inherited dependency tree; direct candidate files below are not a standalone implementation.",
+    "candidates": {
+      "k049": {
+        "historical_iteration": 49,
+        "paper_iteration": 41,
+        "settings": {
+          "round_p": false,
+          "shortcut": false
+        },
+        "direct_source_ids": [
+          "k049_candidate_py",
+          "k049_joint_cu"
+        ],
+        "dependency_closure_source": "kernel_archive_manifest",
+        "definition": "K042 a/m projection paths with hybrid h/z output projections: short rows use exact SIMT, other rows use native-order MMA fallback with empty-tile skips."
+      },
+      "k050": {
+        "historical_iteration": 50,
+        "paper_iteration": 42,
+        "settings": {
+          "round_p": false,
+          "shortcut": false
+        },
+        "direct_source_ids": [
+          "k050_candidate_py",
+          "k050_LICENSE_PYTORCH",
+          "k050_norm_cu"
+        ],
+        "dependency_closure_source": "kernel_archive_manifest",
+        "definition": "K049 matrix products plus a fused pair of shared-input width-128 LayerNorms with distinct affine parameters and existing a/m gates."
+      },
+      "p0": {
+        "definition": "Existing signed-exact, non-truncating, shape-adapted Sakana TwELL descendant applied to topology-active linear projections; no attention rewrite and not the unchanged upstream fused-FFN benchmark.",
+        "settings": {
+          "sites": "active"
+        },
+        "direct_source_ids": [
+          "p0_adapter",
+          "p0_cuda"
+        ],
+        "upstream_commit": "661f1fc841ed84d92f3fca5e5a94cffc5bf00ee5",
+        "upstream_source_id": "kernel_upstream_provenance"
+      }
+    },
+    "source_ids": [
+      "kernel_final_process",
+      "kernel_dependency_lock",
+      "kernel_setup",
+      "kernel_nvcc",
+      "kernel_catalog",
+      "kernel_archive_manifest",
+      "kernel_replay",
+      "kernel_benchmark",
+      "kernel_source_audit"
+    ],
+    "known_limits": {
+      "cohort_thresholds": [
+        0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
+      "off_cohort_threshold_rounding": {
+        "threshold": 0.7,
+        "bf16_value": 0.69921875,
+        "native_behavior": "Retains the value because native PyTorch rounds the scalar threshold to BF16.",
+        "inherited_fused_behavior": "Drops the value when its BF16 input is promoted and compared with an FP32 threshold.",
+        "affected_paths": "Inherited K019 Q/K/V RoPE-threshold comparisons and K049 h/z comparisons, also used by K050.",
+        "unaffected_path": "K050 a/m fused normalization explicitly rounds thresholds to BF16.",
+        "cohort_effect": "Exhaustive CPU comparison across all 65280 finite BF16 values found no mask mismatch at any actual cohort threshold. The known counterexample does not change reported cohort measurements.",
+        "status": "Frozen kernels were not patched. Arbitrary-threshold correctness is not established; changing this path requires new GPU qualification.",
+        "source_ids": [
+          "kernel_claim_audit",
+          "kernel_threshold_tests"
+        ]
+      },
+      "execution_scope": "Frozen weights, fixed shape/device and non-overlapping persistent buffers; no claim for training, concurrent serving, arbitrary masks, cached decoding, other sizes or devices.",
+      "qualification_scope": "Numerical agreement on the recorded 338 validation blocks in three processes; not a proof for arbitrary inputs, bitwise equality, or a new GPU/sanitizer audit.",
+      "agent_identity": "Recorded configured default gpt-6-astra does not attest the model served for each request."
+    }
+  },
+  "verification": {
+    "all_54_training_records_agree_on_data_identity_seeds_budget": true,
+    "cache_bytes_and_sha256_recomputed_locally": true,
+    "all_OL1_conditions_have_stabilizer_1e_minus_12_and_budget_1": true,
+    "all_90_final_K050_processes_agree_on_selected_environment_versions": true,
+    "all_source_paths_resolve_and_hashes_recomputed": true,
+    "new_measurements_performed": false
+  },
+  "sources": {
+    "analysis_evidence": {
+      "path": "analyses/018-2026-09-08-results-materials/figure_data.json",
+      "sha256": "76a2b2d52944cb4aa652a1c4a2d2b4250fc4e478291c05a7851f40004a020144",
+      "bytes": 3296336
+    },
+    "data_preparation_source": {
+      "path": "src/sparsity_research/data.py",
+      "sha256": "3f5de7b561df68320d65f58be27551cc66a77d4f435a46d6b39b5a813469131b",
+      "bytes": 8773
+    },
+    "ol1_source": {
+      "path": "src/sparsity_research/pressure.py",
+      "sha256": "d67dd1a032505e7f603e2808058adc5a311b6270735f40dbe0409d996bdde4ee",
+      "bytes": 8509
+    },
+    "train_cache_metadata": {
+      "path": "data/tokenized/minipile-pythia-14m-full/train/metadata.json",
+      "sha256": "bf4a2a7a96891191fdbe627e60f39be2b51f9c50024bccdc30cf10988a140693",
+      "bytes": 653
+    },
+    "validation_cache_metadata": {
+      "path": "data/tokenized/minipile-pythia-14m-full/validation/metadata.json",
+      "sha256": "70a2e1d487405ab1c9ba38e299a52d07066157e21ec1b8cb965706899274f451",
+      "bytes": 640
+    },
+    "14M_training_manifest": {
+      "path": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8/manifest.json",
+      "sha256": "2637bf988456e746ff66affb35a35fb6eec460ef2d4c5bec0a03b15f69104d4e",
+      "bytes": 8829
+    },
+    "14M_training_config": {
+      "path": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8/config.yaml",
+      "sha256": "f97924ee2841cf8d1f80326f43068d3dcebd673a052b433cedfca66213c0d13f",
+      "bytes": 3806
+    },
+    "70M_training_manifest": {
+      "path": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/001-20260901-133016-4e43b254/manifest.json",
+      "sha256": "a9a947e76fd43e013e587d80a98a49840f6201e2f8af1d9898b59c20aecf3a46",
+      "bytes": 14467
+    },
+    "70M_training_config": {
+      "path": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/001-20260901-133016-4e43b254/config.yaml",
+      "sha256": "60777e36c8f59a874ac30bbdf3c2366188a349ed5f7f12b7dc4887b989b89c34",
+      "bytes": 6415
+    },
+    "410M_training_manifest": {
+      "path": "runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/artifacts/attempts/001-20260902-141527-bcb97fb1/manifest.json",
+      "sha256": "320aeac7ecc90970ee92be508bf172f64b1e06b60b87e2e8eb5c6537ae3d3758",
+      "bytes": 14729
+    },
+    "410M_training_config": {
+      "path": "runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/artifacts/attempts/001-20260902-141527-bcb97fb1/config.yaml",
+      "sha256": "e28c1f86f78e965fc2e48db33d6d6c7e368ae1044530a222030d7396e912ea7f",
+      "bytes": 7494
+    },
+    "kernel_final_process": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c01-r1-a01/result.json",
+      "sha256": "6a8dc7164ead891479e37e52f814f474f36af179619ea8343eb4f17c029df0f4",
+      "bytes": 12700
+    },
+    "kernel_dependency_lock": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/provenance/pip-freeze.txt",
+      "sha256": "d99e5b9251633e7f6733ba11900b7043173efccf42095cc223b3e705f03543d1",
+      "bytes": 1160
+    },
+    "kernel_setup": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/05_setup.sh",
+      "sha256": "8c2dfb7c085140b11b3f5155ee70c6cbf702fef161198cffb6be9abaf6b6928b",
+      "bytes": 1025
+    },
+    "kernel_nvcc": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/runtime/nvcc.txt",
+      "sha256": "68f8b0a1301428031e307cf5260142a517bff25cc232a09eae2734be475d721f",
+      "bytes": 208
+    },
+    "kernel_catalog": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/provenance/candidates.json",
+      "sha256": "5091d97b66a39f3547d413b9046a8fbe8d2bebd843c78b97bd434152ff967c44",
+      "bytes": 82690
+    },
+    "kernel_archive_manifest": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/provenance/archive.json",
+      "sha256": "72a208aa78447f0265a7a2bf17162042b09002f3036f0fbcdcd4c8c4a6c57fe4",
+      "bytes": 814876
+    },
+    "kernel_replay": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/replay.py",
+      "sha256": "95faafc056781291d2a777dbd992de865350421ada82fac9f613b30fcdcb8805",
+      "bytes": 2572
+    },
+    "kernel_benchmark": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/02_benchmark.py",
+      "sha256": "6e519dd8487ea920deb66be743e3c908b8a9e7ebef287a2be5530a47891885e7",
+      "bytes": 9128
+    },
+    "kernel_source_audit": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/implementation-audit-001.json",
+      "sha256": "f4980a0a1643e63642d075e668739e9683707330c807c93d02bbf073d758cee4",
+      "bytes": 16808
+    },
+    "kernel_upstream_provenance": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/provenance/sakana-upstream.json",
+      "sha256": "4463291e296360e271865441ffdf026f6fe259613182cd6cb3c64f8d40fb6000",
+      "bytes": 3472
+    },
+    "k049_candidate_py": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k049/candidate.py",
+      "sha256": "6040bf9f9c25e0e0718dc33ea44c462d4d05c0fc7ace083f2a48e63c156daea8",
+      "bytes": 2540
+    },
+    "k049_joint_cu": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k049/joint.cu",
+      "sha256": "011cb394517ddc3459cea0d0c924da2b6325e2ff543447dac13a09c950bf1d51",
+      "bytes": 9459
+    },
+    "k050_candidate_py": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k050/candidate.py",
+      "sha256": "207e5c30685515f07a399ecfb84c096cba5ebf846c189bfd22e20fc17c872949",
+      "bytes": 4072
+    },
+    "k050_LICENSE_PYTORCH": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k050/LICENSE-PYTORCH",
+      "sha256": "bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43",
+      "bytes": 3464
+    },
+    "k050_norm_cu": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k050/norm.cu",
+      "sha256": "a78415cba25b21c50350294dafa815d09a9464cc96b7712f7dc2f3f9f7d3ecdb",
+      "bytes": 3824
+    },
+    "p0_adapter": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/p0.py",
+      "sha256": "4e55aaf6711076c4df7c1a053a6346ec7a62e0a330fa2ba147ff03a3439c5c8e",
+      "bytes": 5334
+    },
+    "p0_cuda": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/archive/root/runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/kernels/twell_pythia.cu",
+      "sha256": "08dc5f26a08410879bbbb7f8cd26265333846d4412a89877a4290809b016f5dc",
+      "bytes": 5148
+    },
+    "kernel_claim_audit": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/observations/06-implementation-and-claim-audit.md",
+      "sha256": "356b4179336b28d1c04482b244a68716e977abac0ab4eb74baeb3ef7b3c063d6",
+      "bytes": 10381
+    },
+    "kernel_threshold_tests": {
+      "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/tests/test_audit.py",
+      "sha256": "58b58fc66f1cd36d04e85f3f61b9c33f7cfc19b747048b31a2acdade19ff0408",
+      "bytes": 3679
+    }
+  }
+}

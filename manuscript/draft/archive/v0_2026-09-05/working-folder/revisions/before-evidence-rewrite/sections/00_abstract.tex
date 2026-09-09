@@ -1,0 +1,24 @@
+\begin{abstract}
+Activation sparsity is often reported at one tensor, yet its computational
+meaning depends on where zero operands enter the entire transformer graph.  We
+define \emph{model-wide zero-product opportunity}, $\Rmodel$: the fraction of
+scalar products in six declared transformer-block operations whose measured
+operands contain an exact zero, with a dense language-model head retained in
+the denominator.  The metric includes post-RoPE query--key and causal
+probability--value products and is a logical count, not a runtime claim.  We
+apply it to randomly initialized Pythia 14M, 70M, and 410M models trained for
+one matched 1.493B-token MiniPile pass.  We compare evaluation-only clipping
+with two trained gate topologies using an Adam-aware orthogonal $\ell_1$
+pressure.  The same local zero rate can imply very different $\Rmodel$ because
+operations have unequal footprints and zeros can be reused across attention
+products.  At high gate threshold, the seven-site recipe reaches 27.5\%,
+40.6\%, and 80.6\% measured opportunity at 14M, 70M, and 410M, respectively.
+The 410M cohort also reverses the small-model trained loss response: stronger
+gating improves rather than degrades validation loss, even though matched
+post-hoc clipping still degrades it monotonically.  A learning-rate screen
+does not repair its weak baseline, while its token exposure is only 3.7
+tokens per parameter.  We therefore treat 410M as a boundary result, not a
+scaling claim.  These results support model-wide accounting as the comparison
+layer for sparse interventions and show why local sparsity, logical
+opportunity, and realized acceleration must remain separate quantities.
+\end{abstract}

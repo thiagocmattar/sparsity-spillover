@@ -1,0 +1,178 @@
+% Exact definitions for the compact methodology. See methodology-notes.md.
+% No new experimental protocol or result is asserted in this appendix.
+\section{Intervention definitions}
+\label{app:interventions}
+
+\subsection{Sites and gate semantics}
+
+Pythia uses parallel attention and FFN branches with separate LayerNorms.
+For batch size $B$, sequence length $T$, residual width $d$, FFN width $d_f$,
+and $H$ heads, let $d_h=d/H$. Table~\ref{tab:sites} identifies the actual
+operands recorded after any selected gate. The same site mapping is applied
+in every layer. A0 retains the stock block; A1-H replaces GELU at $h$ with
+ReLU. A4 and A7 use the mappings in Section~\ref{sec:interventions}, with one
+common threshold per condition. Pressure targets are specified separately;
+the ladder's L1/OL1 suffixes apply pressure to all gated sites in that row.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lllX@{}}
+\toprule
+Site & Shape & Consuming operation & Placement \\
+\midrule
+$a$ & $B\!\times\!T\!\times\!d$ & QKV projection & After attention LayerNorm \\
+$m$ & $B\!\times\!T\!\times\!d$ & FFN up projection & After FFN LayerNorm \\
+$h$ & $B\!\times\!T\!\times\!d_f$ & FFN down projection & Nonlinearity output \\
+$q,k$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Attention scores & After partial RoPE \\
+$v$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Probability--value & After the QKV split \\
+$z$ & $B\!\times\!T\!\times\!d$ & Attention output & Concatenated context, before output projection \\
+\bottomrule
+\end{tabularx}
+\caption{Intervention sites and the matrix products that consume them directly.}
+\label{tab:sites}
+\end{table}
+
+Both threshold gates retain equality and leave retained values unchanged.
+The comparison mask is detached: the derivative with respect to the input
+is one for retained entries and zero for rejected entries. Consequently,
+$G_{+,0}$ and ReLU have identical forward values but differ at zero, where
+their derivatives are one and zero, respectively. $G_{\pm,0}$ is exactly the
+identity in both values and gradients. The gates use neither a straight-through
+estimator nor a top-$k$ selection rule. At an ungated $h$, the activation is
+GELU; at other ungated sites it is the identity applied to that port's input.
+
+\subsection{Activation pressure and OL1}
+\label{app:pressure}
+
+For the $J$ targeted site--layer tensors $A_j$, containing $n_j$ entries each,
+the pressure objective is
+$\mathcal{L}_1=J^{-1}\sum_{j=1}^{J}n_j^{-1}\sum_{i=1}^{n_j}|A_{j,i}|$.
+Absolute values and means are evaluated in float32 on post-gate activations.
+Each tensor receives equal weight regardless of its size; adding pressure
+sites changes both the objective and the weight of existing targets.
+Task and pressure losses are averaged over the same accumulation microbatches.
+For naive L1, the accumulated gradient of
+$\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$ is globally norm-clipped
+before AdamW~\citep{loshchilov2019adamw}.
+
+For OL1, let $g_t$ and $g_1$ be the accumulated task and unweighted pressure
+gradients. We first clip $g_t$ by its global norm and perform AdamW using only
+that clipped task gradient. Let $\widehat m_t$ and $\widehat v_t$ be its newly
+updated, bias-corrected moments. On parameters having both gradients and
+initialized optimizer state, define the adaptive task and pressure vectors
+$u=\widehat m_t/(\sqrt{\widehat v_t}+\epsilon_A)$ and
+$w=g_1/(\sqrt{\widehat v_t}+\epsilon_A)$. The pressure gradient is unclipped
+and has no first-moment buffer. Inner products and norms below pool all these
+eligible parameters. With $c=\langle u,w\rangle$, $q=\|u\|_2^2$, and numerical
+stabilizer $\epsilon>0$, the conflict-conditioned projection is
+\begin{equation}
+\widetilde w=
+\begin{cases}
+w-\dfrac{c}{q+\epsilon}u, & c<0\ \text{and}\ q>\epsilon,\\[3pt]
+w, & \text{otherwise}.
+\end{cases}
+\label{eq:ol1-projection}
+\end{equation}
+For pressure weight $\lambda\geq0$ and required budget $b>0$, set
+$r=\lambda\|\widetilde w\|_2/(\|u\|_2+\epsilon)$ and
+$s=\min\{1,b/(r+\epsilon)\}$ when $r>0$, or $s=1$ otherwise. After AdamW,
+each eligible parameter group $p$, with learning rate $\alpha_p$, receives
+$\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
+The experiments' clipping thresholds, $b$, and $\lambda$ are condition
+parameters; the reference clipping norm is one.
+
+This procedure is related to gradient-conflict projection~\citep{yu2020pcgrad}
+and the use of smoothed primary directions~\citep{hsieh2024bloop}, but defines
+a particular correction in AdamW-preconditioned coordinates. The stabilized
+projection is only approximately orthogonal under conflict. Its geometry and
+budget precede multiplication by group learning rates and exclude decoupled
+weight decay. They therefore do not guarantee task-loss descent or preservation.
+
+\section{Sparsity accounting and architectural reach}
+\label{app:accounting}
+
+\subsection{Exact counters}
+
+Local exact sparsity at site $s$ is
+$\mathcal{Z}_s=\sum_{\ell,b,i}\mathbf{1}\{A^{(\ell,b)}_{s,i}=0\}/
+\sum_{\ell,b}|A_s^{(\ell,b)}|$, where $\ell$ indexes layers, $b$ evaluation
+batches, and $i$ tensor entries. Near-zero mass replaces equality by
+$|A_{s,i}|\leq\varepsilon$ for a stated tolerance; it does not contribute to
+exact-zero counts unless the value is zero. All aggregate fractions pool
+integer numerators and denominators across batches and layers before division.
+
+The atomic unit of model-wide accounting is one scalar multiplication in a
+matrix product. If $X\in\mathbb{R}^{n\times p}$ feeds a linear projection with
+$q$ outputs, the count is $N=npq$, with $N_0=q\sum_{i,j}\mathbf{1}\{X_{ij}=0\}$.
+Zero weights receive no credit. In attention, both operands are activations,
+so a product is credited once if either is zero. For query position $t$,
+key position $u\leq t$, and within-head coordinate $j$,
+\begin{align}
+N_{0,QK}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
+\mathbf{1}\{Q_{bhtj}=0\ \lor\ K_{bhuj}=0\},\label{eq:qk-count}\\
+N_{0,PV}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
+\mathbf{1}\{P_{bhtu}=0\ \lor\ V_{bhuj}=0\}.\label{eq:pv-count}
+\end{align}
+Here $P$ is the causal softmax probability tensor. Future masked positions
+are excluded from both counts, while zeros on valid positions, including
+floating-point underflow, are included. Query and key counts use actual
+post-RoPE operands: rotation can repopulate an individual zero coordinate.
+Likewise, the output projection uses actual post-gate context $z$, rather than
+inferring its zeros from the value mask. Earlier value positions participate
+in more causal pairs, so local value sparsity alone does not determine $PV$
+sparsity.
+
+\subsection{Denominator and ceiling derivation}
+\label{app:ceiling}
+
+For one uncached, unpadded sequence, each block contributes $3Td^2$ products
+from QKV projection, $Td^2$ from the attention-output projection, $Td d_f$ from
+each FFN projection, and $dT(T+1)/2$ from each of $QK$ and $PV$.
+Thus, for $L$ blocks and vocabulary size $V_{\!\mathrm{vocab}}$,
+\begin{equation}
+\begin{split}
+C_{\mathrm{block}}&=T(4d^2+2dd_f)+dT(T+1),\\
+C_{\mathrm{model}}&=LC_{\mathrm{block}}+TdV_{\!\mathrm{vocab}}.
+\end{split}
+\label{eq:denominator}
+\end{equation}
+Over $B$ sequences, $N_{\mathrm{model}}=BC_{\mathrm{model}}$. The numerator
+$N_0$ sums the six block families above, whereas the dense head contributes
+only to the denominator. Embedding lookup, normalization, nonlinearities,
+softmax, RoPE, bias and residual additions, and data movement are outside this
+accounting. For a block-only view, $\Sblock=N_0/(BLC_{\mathrm{block}})$.
+Both sparsities are fractions; percentages multiply them by 100.
+
+Let $\mathcal{O}(\mathcal{G})$ be the union of operations reachable when the
+selected sites are all zero: $a$ reaches QKV; $m$ reaches FFN up; $h$ reaches
+FFN down; either $q$ or $k$ reaches $QK$; $v$ reaches $PV$ and attention output;
+and $z$ reaches attention output. Each operation is counted once.
+The $v$ rule includes the exact closure $V=0\Rightarrow PV=0$. No further
+propagation is assumed: QKV biases can survive $a=0$, and zero scores do not
+imply zero softmax probabilities. For the same site set in every layer,
+$N_{\mathrm{reach}}=BL\sum_{o\in\mathcal{O}(\mathcal{G})}C_o$, where $C_o$
+is that operation's per-sequence count. Division by $N_{\mathrm{model}}$ gives
+$\Smax$.
+
+With Pythia's $d_f=4d$, the per-block reachable counts for A0, A1-H, A4, and A7
+are $0$, $4Td^2$, $12Td^2$, and $C_{\mathrm{block}}$, respectively. The ladder
+evaluates these formulas at $T=2{,}048$, $V_{\!\mathrm{vocab}}=50{,}304$, and
+the pinned $(L,d)$ configurations $(6,128)$, $(6,512)$, and $(24,1{,}024)$.
+No checkpoint enters this calculation. In particular, A0 has zero selected-site
+reach but may have positive observed sparsity from natural zeros. The ceiling
+is consequently not an upper bound on every observed $\Smodel$, nor does its
+gap to an observation measure sparsity available without quality loss.
+
+\subsection{Evaluation scope}
+\label{app:evaluation}
+
+Quality and logical counts are paired in the same eager-attention evaluation
+of a checkpoint, with its declared gates and evaluation precision. The complete
+MiniPile validation split contains 500 documents. Concatenation and packing
+produce 338 complete blocks of 2,048 tokens (692,224 input tokens); the final
+1,444-token tail is excluded. Each block contributes 2,047 next-token targets
+to cross-entropy, while product accounting includes all 2,048 input positions.
+Loss is averaged over the equally sized blocks, and sparsity is count-pooled.
+This workload uses no key--value cache. Condition-specific training budgets,
+optimizer settings, seeds, and checkpoint selection accompany their results;
+they are not implied by the ladder's list of candidate conditions.

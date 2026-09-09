@@ -1,0 +1,2263 @@
+000
+001
+002
+003
+004
+005
+006
+007
+008
+009
+010
+011
+012
+013
+
+B EYOND L OCAL ACTIVATION S PARSITY:
+M ODEL -W IDE Z ERO -P RODUCT O PPORTUNITY
+IN T RANSFORMERS
+Anonymous authors
+Paper under double-blind review
+
+A BSTRACT
+Activation sparsity is often reported at one tensor, yet its computational meaning
+depends on where zero operands enter the entire transformer graph. We define
+model-wide zero-product opportunity, Rmodel : the fraction of scalar products in
+six declared transformer-block operations whose measured operands contain an
+exact zero, with a dense language-model head retained in the denominator. The
+metric includes post-RoPE query–key and causal probability–value products and
+is a logical count, not a runtime claim. We apply it to randomly initialized Pythia
+14M, 70M, and 410M models trained for one matched 1.493B-token MiniPile
+pass. We compare evaluation-only clipping with two trained gate topologies using
+an Adam-aware orthogonal ℓ1 pressure. The same local zero rate can imply very
+different Rmodel because operations have unequal footprints and zeros can be
+reused across attention products. At high gate threshold, the seven-site recipe
+reaches 27.5%, 40.6%, and 80.6% measured opportunity at 14M, 70M, and 410M,
+respectively. The 410M cohort also reverses the small-model trained loss response:
+stronger gating improves rather than degrades validation loss, even though matched
+post-hoc clipping still degrades it monotonically. A learning-rate screen does not
+repair its weak baseline, while its token exposure is only 3.7 tokens per parameter.
+We therefore treat 410M as a boundary result, not a scaling claim. These results
+support model-wide accounting as the comparison layer for sparse interventions
+and show why local sparsity, logical opportunity, and realized acceleration must
+remain separate quantities.
+
+014
+015
+016
+017
+018
+019
+020
+021
+022
+023
+024
+025
+026
+027
+028
+029
+030
+031
+032
+033
+034
+035
+036
+037
+038
+039
+040
+041
+042
+043
+044
+045
+046
+047
+048
+049
+050
+051
+052
+053
+
+1
+
+I NTRODUCTION
+
+The appeal of activation sparsity is immediate: if an operand is exactly zero, some multiply–
+accumulate work is mathematically unnecessary. The usual summary, however, is a zero percentage
+at a named tensor. That percentage is not a model-level computational quantity. A zero before a wide
+MLP projection has a different footprint from a zero in a query vector; a value zero can be reused
+over many causal queries; a pre-RoPE query zero need not remain zero after rotation; and a dense
+language-model head can dilute block sparsity. Consequently, two methods with similar local sparsity
+can expose very different amounts and locations of avoidable scalar products.
+Prior work already recognizes this mismatch. TEAL aggregates per-matrix sparsity with matrixfootprint weights and applies training-free thresholding through linear layers (Liu et al., 2025). Our
+question is narrower and complementary: given the actual operands of a declared full-sequence
+causal transformer graph, how many scalar products contain at least one exact zero? We answer
+with Rmodel , an integer-counted metric spanning fused QKV, causal QK, causal PV, attention output,
+and both MLP projections, plus a dense LM-head denominator. This refinement matters wherever
+zeros are transformed or reused between named activations and multiplications. It is deliberately
+agnostic to kernel support and hardware speed.
+Measurement also changes the experimental question. Rather than optimizing a single site’s sparsity,
+we compare validation loss against model-wide logical opportunity. We study post-hoc clipping and
+trained gates in Pythia models constructed from architecture configurations with random initialization
+(Biderman et al., 2023). The trained recipes place one-sided gates at the parallel attention and MLP
+1
+
+054
+055
+056
+057
+058
+059
+060
+061
+062
+063
+064
+065
+066
+067
+068
+069
+070
+071
+072
+073
+074
+075
+076
+077
+078
+079
+080
+081
+082
+083
+084
+085
+086
+087
+088
+089
+090
+091
+092
+093
+094
+095
+096
+097
+098
+099
+100
+101
+102
+103
+104
+105
+106
+107
+
+branch inputs and MLP hidden state, optionally adding post-RoPE query, key, value, and pre-output
+context gates. An Adam-aware orthogonal ℓ1 update encourages small activations while removing
+the component that opposes the preconditioned task direction.
+The results are not a simple “more sparsity is better” story. First, the operation-weighted composition
+is explanatory: the seven-site high-dose recipe adds 10–17 percentage points from QK and PV alone,
+and can exceed the four-site recipe despite lower zero mass at some local sites. Second, scale changes
+the observed trained response under our common-token protocol. At 14M and 70M, raising the gate
+threshold from 0 to 0.5 increases loss; at 410M it reduces loss by 0.50 and 0.31 for the four- and
+seven-site recipes. The evaluation-only curves do not reverse. Because all scales see the same 1.493B
+tokens, the 410M model receives far less exposure per parameter and has a weak baseline. A focused
+higher-learning-rate screen does not fix it, but longer training remains untested. We retain this cohort
+because the disagreement between trained and post-hoc behavior exposes an important boundary of
+the current evidence.
+Our contributions are:
+• an exact, pooled-integer definition of model-wide zero-product opportunity for a declared causal
+transformer workload, including operand placement and reuse that per-matrix summaries can miss;
+• a joint accounting of quality, sitewise zero structure, and per-operation contributions for post-hoc
+and trained sparsification recipes;
+• a matched-token Pythia case study through 410M that identifies a reproducible small-model pattern
+and a scientifically useful boundary result, while explicitly separating logical opportunity from
+runtime and scaling claims.
+
+2
+
+R ELATED WORK
+
+Sparse activations and training. Replacing smooth MLP nonlinearities with ReLU can yield high
+activation sparsity while preserving language-model quality (Mirzadeh et al., 2023). ProSparse stages
+regularization and thresholding during pretraining (Song et al., 2024); the Sparsing Law studies
+scaling behavior under sparsity-inducing training (Luo et al., 2024); and recent work examines
+sparsity-aware pretraining recipes at larger scales (Cetin et al., 2026). Conditional-computation and
+activation-sparsity studies likewise motivate training models whose dense weights are selectively
+exercised (Zhang et al., 2024). Our study is smaller and diagnostic: it holds a one-pass data budget
+fixed, reports exact product counts, and does not claim a compute-optimal sparse training recipe.
+Post-training activation sparsification. TEAL selects activation thresholds without retraining
+and evaluates a model-level, matrix-footprint-weighted configuration (Liu et al., 2025). CATS and
+CHESS introduce contextual or structured activation selection (Lee et al., 2024; He et al., 2024), while
+R-Sparse combines rotations and thresholds to increase inference-time activation sparsity (Zhang
+et al., 2025). These works make efficiency concrete through kernels or latency measurements. We
+use a TEAL-like evaluation-only clipping family as a reference, but our central object is different:
+zero-containing scalar products reconstructed from actual operands, including causal attention reuse
+and a dense output head. Our metric is useful before kernel engineering, but cannot replace it.
+Gradient interaction. Projecting conflicting auxiliary gradients has precedents in multi-task optimization, including PCGrad (Yu et al., 2020) and Adam-aware approaches such as Bloop (Hsieh
+et al., 2024). Our orthogonal ℓ1 update uses the task optimizer’s second moment and a relative
+direction budget. It enforces a local non-opposition condition on the reconstructed directions; it does
+not guarantee that a finite parameter step improves task loss. The present comparison also does not
+isolate this optimizer from every topology and gate choice, so we treat it as part of a complete recipe
+rather than a standalone algorithmic contribution.
+
+3
+
+M ODEL - WIDE ZERO - PRODUCT ACCOUNTING
+
+Let a scalar product be a multiplication between two scalar operands within a declared matrix product.
+For operation o, let No be the number of such products in the evaluated workload and Zo the number
+for which at least one measured operand is exactly zero. We count six operations in each Pythia
+2
+
+108
+109
+
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+
+Validation loss (lower is better)
+
+110
+111
+112
+113
+114
+115
+
+A0 post-hoc
+
+6.0
+
+0.5
+
+5.5
+
+00 0.1
+0.1
+
+A1-H post-hoc
+
+Pythia-14M
+106.1 tokens/parameter
+
+A4-OL1 trained
+
+A7-OL1 trained
+
+Pythia-70M
+21.2 tokens/parameter
+
+Pythia-410M
+3.7 tokens/parameter
+
+0.5
+
+0
+0.5
+
+5.0
+
+0
+
+0.1
+0.1
+
+0.5
+
+0.5
+
+0.5
+
+0.1
+0 0.1
+0
+
+4.5
+4.0
+0
+
+20
+
+40
+60
+Rmodel (\%)
+
+80
+
+0
+
+20
+
+40
+60
+Rmodel (\%)
+
+80
+
+0
+
+20
+
+40
+60
+Rmodel (\%)
+
+80
+
+Figure 1: Validation loss versus measured model-wide zero-product opportunity. Lines connect gate
+thresholds (trained) or clipping targets (post-hoc); they are not fitted scaling curves. Upward triangles
+at the plot boundary mark post-hoc points whose losses exceed the displayed range. All points use
+one seed and complete validation.
+block: fused QKV projection, causal QK scores, causal probability–value (PV) products, attention
+output projection, and the MLP up and down projections. Future positions are excluded from both
+QK and PV denominators. The language-model head is declared dense and contributes Nhead only to
+the denominator:
+PL P
+ℓ=1
+o Zℓ,o
+Rmodel = PL P
+.
+(1)
+ℓ=1
+o Nℓ,o + Nhead
+Counts are accumulated as integers over all sequences and layers before the division. We use “modelwide” to mean this declared graph and workload, not all possible implementations of a language
+model.
+For sequence length T , hidden width d, and MLP width df , the dense per-block denominator is
+Nblock = T (4d2 + 2ddf ) + dT (T + 1),
+
+(2)
+
+where the final term combines the two valid-causal attention products. The model denominator is
+LNblock + T dV for vocabulary size V . The metric is evaluated under eager attention so that the
+operands immediately before each product are observable.
+This definition resolves three ambiguities in local sparsity. First, it weights zeros by exact operation
+footprints rather than by tensor size alone. Second, it counts reuse: one key or value coordinate can
+zero products at many valid query positions. Third, it places the observation after any intervening
+transformation. In particular, query and key are measured after partial RoPE; a zero before RoPE
+is not credited merely because it was once zero. Conversely, Rmodel does not estimate wall-clock
+acceleration. A dense kernel may execute every counted product, and sparse kernels face indexing,
+load balance, and shape-dependent overheads.
+For descriptive context we also compute a topology-conditioned analytic reach Rmodel,max : the share
+of the same denominator belonging to operations that would become all-zero if the topology’s selected
+sites were all zero. It is neither an observed zero rate nor a universal upper bound on measured
+Rmodel , since the latter includes natural zeros at unselected operands. We therefore do not use its
+normalization as a primary result.
+
+4
+
+I NTERVENTIONS
+
+Sites and gates. Pythia uses parallel attention and MLP residual branches. We denote their separate
+LayerNorm outputs by a and m, the MLP nonlinear output by h, post-RoPE query and key by q and
+k, value by v, and concatenated attention context immediately before Wo by z. The one-sided and
+symmetric gates are
+G±
+κ (x) = x 1[|x| ≥ κ].
+
+G+
+κ (x) = x 1[x ≥ κ],
+3
+
+(3)
+
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+
+Table 1: Matched one-pass exposure and A0 optimization context. Every model sees the same total
+tokens, not the same tokens per parameter. Validation loss is paired with the eager logical-product
+pass.
+Model
+
+Params
+
+Tok./param.
+
+Peak LR
+
+Late train
+
+Val.
+
+Clip
+
+14M
+70M
+410M
+
+14.1M
+70.4M
+405.3M
+
+106.1
+21.2
+3.7
+
+1e-03
+1e-03
+3e-04
+
+5.249
+4.009
+4.494
+
+5.209
+4.100
+4.547
+
+5/712
+8/712
+56/712
+
+The comparison is detached: surviving values receive identity input gradient and rejected values zero
+gradient. At h, the gate replaces GELU.
+The four-site recipe A4 gates and pressures {a, m, h, z} with G+
+κ . The seven-site recipe A7 uses
+the same gates there and adds G±
+κ at {q, k, v}. The shared gate threshold is κ ∈ {0, .01, .05, .1, .5}.
+Because the topologies change both gate and pressure sites, A4 versus A7 is a comparison between
+complete recipes, not a clean causal ablation of attention gating.
+Orthogonal activation pressure. For captured tensors
+P Aj , the auxiliary loss first averages within a
+tensor and then weights tensors equally: L1 = J −1 j mean |Aj |. At each accumulated optimizer
+boundary we separately form the task and pressure gradients. AdamW consumes the globally clipped
+task gradient and updates its task-only moments. With the bias-corrected task moment m̂ and task
+second moment v̂, define
+m̂
+gp
+dt = √
+,
+dp = √
+.
+(4)
+v̂ + ϵ
+v̂ + ϵ
+If ⟨dt , dp ⟩ < 0, we remove the conflicting component from dp ; otherwise it is unchanged. The
+resulting direction is scaled so λ∥dp ∥/(∥dt ∥ + ϵ) ≤ b and applied after AdamW with the same
+learning rate. We set pressure weight λ = 1 and relative budget b = 1. This “OL1” construction
+constrains the instantaneous preconditioned directions, not the finite-step loss.
+Controls and post-hoc clipping. A0 retains stock GELU and no gates; A1-H replaces GELU with
+ReLU at h. From each trained control checkpoint, a TEAL-like evaluation-only sweep jointly clips
+{a, m, h, z} at ten target sparsities from 0 to .9. Absolute-value thresholds are calibrated on the first
+ten complete training blocks, then held fixed for complete validation. These sweeps answer how a
+fixed model responds to removal; they are not trained sparse models.
+
+5
+
+E XPERIMENTAL PROTOCOL
+
+Models, initialization, and data. We construct Pythia 14M, 70M, and 410M causal language
+models from pinned architecture configurations, never released weights. They have respectively
+6/6/24 layers, hidden widths 128/512/1024, MLP widths 512/2048/4096, and 4/8/16 heads. Every
+condition within a scale strict-loads one seed-1234 FP32 initialization and consumes the same seed1234 permutation. MiniPile (Kaddour, 2023) is tokenized with the pinned Pythia tokenizer, appending
+EOS per document and concatenating into non-overlapping 2,048-token blocks.
+Each run has 712 optimizer boundaries, global batch 1,024 sequences, and 1,493,172,224 scheduled
+tokens: essentially one common MiniPile pass. This matches tokens, not optimization maturity.
+The resulting exposures are 106.1, 21.2, and 3.7 tokens per parameter (Table 1). All models use
+AdamW (β1 , β2 ) = (.9, .95), ϵ = 10−8 , weight decay .1 excluding bias and normalization, global
+task-gradient clipping at 1, one-percent linear warmup, cosine decay to one tenth of peak, and zero
+dropout. Peak learning rate is 10−3 at 14M/70M and 3 × 10−4 at 410M. Training uses mixed
+precision with FP32 parameters and optimizer state.
+Evaluation and diagnostics. Every canonical endpoint pairs cross-entropy loss and logical counts
+in the same eager forward pass over all 500 MiniPile validation documents: 338 complete sequences
+(692,224 input tokens), with the 1,444-token tail excluded. We pool exact-zero and near-zero counts
+at all seven intervention sites and the attention output, plus RMS and ℓ2 accumulators. We also retain
+4
+
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+
+Table 2: Low- and high-dose trained endpoints. Each cell is validation loss / Rmodel (%). A4-OL1
+and A7-OL1 are complete recipes, not an isolated topology contrast.
+A4-OL1
+
+A7-OL1
+
+Model
+
+κ=0
+
+κ = .5
+
+κ=0
+
+κ = .5
+
+14M
+70M
+410M
+
+5.458 / 7.8
+4.805 / 25.7
+5.692 / 38.3
+
+6.038 / 12.7
+5.389 / 35.6
+5.191 / 71.6
+
+5.480 / 7.1
+4.941 / 23.6
+5.426 / 41.1
+
+5.829 / 27.5
+5.216 / 40.6
+5.121 / 80.6
+
+per-layer weight norms, the six operation counts in Eq. 1, and boundary-level task/pressure gradient
+interaction. The post-hoc controls use identical validation coverage.
+Scope. There is one seed, corpus, pass, and threshold ladder per scale. The study contains 30
+trained endpoints (A0, A1-H, and ten A4/A7 conditions at each scale) and 60 post-hoc endpoints.
+Lines across them are evaluated paths; only nondominated points deserve the word Pareto frontier.
+Our primary comparisons are descriptive within scale. Cross-scale differences conflate architecture,
+exposure per parameter, and the selected peak learning rate.
+
+6
+
+R ESULTS
+
+6.1
+
+Q UALITY– OPPORTUNITY PATHS DIFFER BY INTERVENTION AND SCALE
+
+Figure 1 shows all 90 evaluated points. The post-hoc A0 and A1-H paths initially buy opportunity at
+modest loss cost, then exit the plotted loss range as clipping approaches .9. The trained paths occupy
+different regions: their gates create substantial exact zeros already at κ = 0, while higher thresholds
+move them farther right. No one family dominates the entire evaluated set.
+The endpoint ordering is consistent at high dose. At κ = .5, A7 has both lower loss and higher
+Rmodel than A4 at every scale (Table 2). Its opportunity advantage is large: 14.8, 5.0, and 9.0
+percentage points at 14M, 70M, and 410M. At κ = 0, by contrast, A4 is better on both axes at 14M
+and 70M, whereas A7 is better at 410M. Thus the high-dose ordering replicates descriptively across
+the three cohorts; the zero-threshold ordering does not.
+6.2
+
+L OCAL ZERO MASS DOES NOT DETERMINE MODEL - WIDE OPPORTUNITY
+
+Figure 2 resolves the low- and high-dose endpoints by activation site. One-sided gates yield broad
+exact-zero mass at a, m, h, z even when κ = 0. At κ = .5, A4 drives h and z to essentially
+100% zeros, but leaves q, k, v dense. A7 instead creates large exact-zero mass throughout attention. Its high-dose (q, k, v) rates are (93.5, 94.5, 98.7)% at 14M, (71.5, 72.1, 86.9)% at 70M, and
+(77.8, 80.6, 94.0)% at 410M. This non-monotone cross-scale pattern already argues against a scalar
+“sparsity level” as the full explanation.
+The operation decomposition in Figure 3 turns this local structure into its graph-level consequence.
+At 410M/κ = .5, A4 has more zero mass than A7 at a (94.0 vs. 90.9%) and m (92.0 vs. 86.3%), yet
+A7 has higher Rmodel (80.6 vs. 71.6%). QK and PV contribute 11.1 percentage points available only
+to the seven-site recipe, overcoming its local deficit. Their combined contributions are 16.8, 10.4,
+and 11.1 points at 14M, 70M, and 410M. This is a direct example of topology and operand reuse
+changing a model-wide conclusion.
+6.3
+
+T HE 410M COHORT IS A BOUNDARY RESULT
+
+Within both trained 410M recipes, raising κ from 0 to .5 moves down and right: A4 changes by
+−0.501 loss and +33.25 opportunity points; A7 by −0.306 and +39.49 points. At 14M and 70M
+the corresponding loss changes are positive: +0.580/ + 0.584 for A4 and +0.349/ + 0.275 for A7.
+This is not a claim that high-dose sparse 410M beats its dense control—it does not. It is a reversal
+within the trained threshold ladders. The post-hoc paths at 410M continue to worsen monotonically,
+5
+
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+
+Activation site
+
+Pythia-70M
+
+Pythia-410M
+
+100
+
+68.9
+
+98.9
+
+48.6
+
+75.7
+
+56.6
+
+95.2
+
+49.7
+
+67.2
+
+52.5
+
+94.0
+
+47.0
+
+90.9
+
+m
+
+39.3
+
+96.8
+
+49.5
+
+68.7
+
+49.4
+
+91.7
+
+50.3
+
+69.0
+
+38.1
+
+92.0
+
+39.1
+
+86.3
+
+h
+
+74.2
+
+99.9
+
+68.3
+
+99.9
+
+92.6
+
+100.0
+
+86.0
+
+99.9
+
+62.9
+
+99.9
+
+74.7
+
+99.8
+
+z
+
+69.6
+
+100.0
+
+42.8
+
+99.9
+
+93.4
+
+99.9
+
+68.6
+
+99.8
+
+53.8
+
+99.3
+
+63.6
+
+99.3
+
+q
+
+<.01
+
+<.01
+
+<.01
+
+93.5
+
+<.01
+
+<.01
+
+<.01
+
+71.5
+
+<.01
+
+<.01
+
+<.01
+
+77.8
+
+40
+
+k
+
+<.01
+
+<.01
+
+<.01
+
+94.5
+
+<.01
+
+<.01
+
+<.01
+
+72.1
+
+<.01
+
+<.01
+
+<.01
+
+80.6
+
+20
+
+v
+
+<.01
+
+0.7
+
+<.01
+
+98.7
+
+<.01
+
+0.2
+
+<.01
+
+86.9
+
+<.01
+
+0.1
+
+<.01
+
+94.0
+
+0
+
+A4
+0
+
+A4
+.5
+
+A7
+0
+
+A7
+.5
+
+A4
+0
+
+A4
+.5
+
+A7
+0
+
+A7
+.5
+
+A4
+0
+
+A4
+.5
+
+A7
+0
+
+A7
+.5
+
+Recipe and κ
+
+Recipe and κ
+
+Recipe and κ
+
+80
+60
+
+Figure 2: Integer-pooled exact-zero mass at seven activation sites for the trained low- and high-dose
+endpoints. q and k are measured after RoPE; columns are complete recipes. Values below .01% are
+printed as < .01.
+QKV
+
+Rmodel (percentage points)
+
+278
+279
+280
+281
+282
+283
+
+Contribution to
+
+272
+273
+274
+275
+276
+277
+
+Pythia-14M
+a
+
+Exact-zero mass (\%)
+
+270
+271
+
+QK
+
+Pythia-14M
+
+Wo
+
+PV
+
+W1
+
+W2
+
+Pythia-70M
+
+Pythia-410M
+80.6
+
+80
+
+71.6
+
+60
+40.6
+
+40
+
+35.6
+
+20
+
+27.5
+
+25.7
+
+A7
+.5
+
+A4
+0
+
+41.1
+
+38.3
+
+23.6
+
+12.7
+7.8
+
+7.1
+
+0
+A4
+0
+
+A4
+.5
+
+A7
+0
+
+Recipe and κ
+
+A4
+.5
+
+A7
+0
+
+Recipe and κ
+
+A7
+.5
+
+A4
+0
+
+A4
+.5
+
+A7
+0
+
+A7
+.5
+
+Recipe and κ
+
+Figure 3: Contribution of each measured operation to Rmodel at trained endpoints. Segment heights
+use the common model denominator, so each stack sums to the labeled total. QK and PV use only
+valid causal positions.
+separating an effect of training with the gates from robustness to evaluation-only deletion (Appendix
+Figure 4).
+The shared-token design makes a scale-only interpretation untenable. Although 410M has six times
+the parameters of 70M, it receives the same tokens and only 3.7 tokens per parameter. Its A0
+validation loss (4.547) is worse than 70M (4.100), it clips the global task gradient at 56 rather than
+8 of 712 boundaries, and its maximum pre-clip norm is 26.96 rather than 3.51. These raw norms
+are not parameter-normalized, but they document a materially different optimization trajectory. A
+predeclared learning-rate screen selects the original 3 × 10−4 arm: mean late training loss is 4.494 at
+that rate, 4.513 at 6 × 10−4 , and 6.851 at 10−3 ; validation losses are 4.547, 4.552, and 6.787. The
+grid therefore rejects a simple upward-LR repair, while leaving training horizon unresolved.
+
+7
+
+D ISCUSSION AND LIMITATIONS
+
+What Rmodel adds. The metric is most useful as a common accounting layer. It makes the
+workload, operation set, causal mask, transformed operands, and dense head explicit; it then permits
+sitewise and operationwise diagnoses below the scalar summary. The A4/A7 comparison shows
+why this hierarchy matters: local zero percentages identify where representations collapse, while
+per-operation counts identify why the graph-level opportunity changes. A single number without
+those decompositions would hide the mechanism; local plots without the common denominator would
+not reveal its computational footprint.
+6
+
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+
+How we use 410M. Excluding the cohort would produce a cleaner but misleading scale-persistence
+narrative. Including it as ordinary replication would overstate the design. We instead use it as a
+stress test: the high-dose topological advantage persists, but the trained loss response reverses under
+sharply lower exposure. The disagreement with post-hoc clipping suggests that learned adaptation to
+a gate can matter more than instantaneous deletion. It does not distinguish beneficial regularization,
+altered optimization geometry, capacity effects, or undertraining. A matched tokens-per-parameter or
+loss-matched study and replicate seeds are required before any scaling statement.
+Sitewise redistribution is selective. The cross-scale endpoint heatmap shows that broader pressure
+does not induce a uniform attention response. An earlier matched 14M diagnostic reinforces this
+point: as near-zero mass at directly pressured h rose from 63.5% to 92.4%, v moved only from
+.133% to .185%; q, k, and m remained tiny and non-monotone, while the post-Wo attention output
+rose through the middle doses and then fell. We treat “spillover” as this site-specific descriptive
+redistribution, not a causal propagation mechanism (Appendix Figure 6).
+Limits of the intervention evidence. Each endpoint has one seed. A4 and A7 differ jointly in
+gates and pressure sites. The pressure weight and trust budget were not broadly tuned. A matched
+14M comparison of naive and orthogonal ℓ1 pressure produced small, mixed loss differences, so the
+present data do not establish OL1 as superior (Appendix E). Post-hoc thresholds are calibrated on ten
+training blocks, not fit to validation, but they remain a particular clipping rule rather than a universal
+comparator.
+Limits of the computational claim. Our denominator describes complete length-2,048 sequences
+with uncached causal attention. It resembles prefill or training accounting, not cached autoregressive
+decoding, whose KV reuse changes operation footprints. Exact zeros alone do not create sparse
+execution. We report no removed FLOPs, latency, energy, memory-traffic benefit, or end-to-end
+speedup. Establishing those outcomes requires kernels whose format and scheduling match the
+measured site structure.
+
+8
+
+C ONCLUSION
+
+Activation sparsity becomes scientifically comparable only after declaring where zeros meet products.
+Rmodel counts that opportunity across the causal transformer graph while keeping local sites and
+operation contributions inspectable. Across three Pythia scales, broad attention gating can create
+substantially more logical opportunity than highly sparse MLP-adjacent sites, but quality responses
+depend on intervention and training regime. The 410M reversal prevents a premature scaling story
+and sharpens the next empirical question: whether trained quality–opportunity behavior persists
+under matched optimization maturity. Until sparse kernels are measured, the result remains a map of
+exact-zero products, not a speed claim.
+R EPRODUCIBILITY STATEMENT
+The appendix specifies the model, data, initialization, optimization, gate, pressure, coverage, and
+count-aggregation contracts. The supplementary material includes machine-readable source identities,
+a claim ledger, figure observations, and a clean-repository handoff. Every reported validation point
+covers the same 338 complete sequences, and every reported fraction is rebuilt from pooled integer
+counts. Code and immutable artifact manifests will be released with the submission.
+AI USE DISCLOSURE
+Generative AI tools assisted with methodological criticism, literature search, implementation and test
+review, figure code, result interpretation, and prose drafting and editing. The authors selected the
+research questions and experimental designs and are responsible for independently checking every
+claim, citation, computation, and artifact before submission.
+7
+
+378
+379
+
+R EFERENCES
+
+380
+381
+382
+383
+384
+385
+
+Stella Biderman, Hailey Schoelkopf, Quentin Anthony, Herbie Bradley, Kyle O’Brien, Eric Hallahan,
+Mohammad Aflah Khan, Shivanshu Purohit, USVSN Sai Prashanth, Edward Raff, Aviya Skowron,
+Lintang Sutawika, and Oskar van der Wal. Pythia: A suite for analyzing large language models
+across training and scaling. Proceedings of the 40th International Conference on Machine Learning,
+2023. URL https://arxiv.org/abs/2304.01373.
+
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+
+Edoardo Cetin, Stefano Peluchetti, Emilio Castillo, Akira Naruse, Mana Murakami, and Llion Jones.
+Sparser, faster, lighter transformer language models. arXiv preprint arXiv:2603.23198, 2026. URL
+https://arxiv.org/abs/2603.23198.
+Junhui He, Shangyu Wu, Weidong Wen, Chun Jason Xue, and Qingan Li. CHESS: Optimizing LLM inference via channel-wise thresholding and selective sparsification. arXiv preprint
+arXiv:2409.01366, 2024. URL https://arxiv.org/abs/2409.01366.
+Yu-Guan Hsieh, James Thornton, Eugene Ndiaye, Michal Klein, Marco Cuturi, and Pierre Ablin. Careful with that scalpel: Improving gradient surgery with an EMA. arXiv preprint arXiv:2402.02998,
+2024. URL https://arxiv.org/abs/2402.02998.
+Jean Kaddour. The minipile challenge for data-efficient language models. arXiv preprint
+arXiv:2304.08442, 2023. URL https://arxiv.org/abs/2304.08442.
+Donghyun Lee, Je-Yong Lee, Genghan Zhang, Mo Tiwari, and Azalia Mirhoseini. CATS:
+Contextually-aware thresholding for sparsity in large language models. arXiv preprint
+arXiv:2404.08763, 2024. URL https://arxiv.org/abs/2404.08763.
+James Liu, Pragaash Ponnusamy, Tianle Cai, Han Guo, Yoon Kim, and Ben Athiwaratkun. Trainingfree activation sparsity in large language models. International Conference on Learning Representations, 2025. URL https://arxiv.org/abs/2408.14690.
+Yuqi Luo, Chenyang Song, Xu Han, Yingfa Chen, Chaojun Xiao, Xiaojun Meng, Liqun Deng,
+Jiansheng Wei, Zhiyuan Liu, and Maosong Sun. Sparsing law: Towards large language models
+with greater activation sparsity. arXiv preprint arXiv:2411.02335, 2024. URL https://arxiv.
+org/abs/2411.02335.
+Iman Mirzadeh, Keivan Alizadeh, Sachin Mehta, Carlo C. Del Mundo, Oncel Tuzel, Golnoosh Samei,
+Mohammad Rastegari, and Mehrdad Farajtabar. ReLU strikes back: Exploiting activation sparsity
+in large language models. arXiv preprint arXiv:2310.04564, 2023. URL https://arxiv.
+org/abs/2310.04564.
+Chenyang Song, Xu Han, Zhengyan Zhang, Shengding Hu, Xiyu Shi, Kuai Li, Chen Chen, Zhiyuan
+Liu, Guangli Li, Tao Yang, and Maosong Sun. Prosparse: Introducing and enhancing intrinsic
+activation sparsity within large language models. arXiv preprint arXiv:2402.13516, 2024. URL
+https://arxiv.org/abs/2402.13516.
+Tianhe Yu, Saurabh Kumar, Abhishek Gupta, Sergey Levine, Karol Hausman, and Chelsea Finn.
+Gradient surgery for multi-task learning. In Advances in Neural Information Processing Systems,
+2020. URL https://arxiv.org/abs/2001.06782.
+Zhengyan Zhang, Chaojun Xiao, Qiujieli Qin, Yankai Lin, Zhiyuan Zeng, Xu Han, Zhiyuan Liu,
+Ruobing Xie, Maosong Sun, and Jie Zhou. Exploring the benefit of activation sparsity in pretraining. In Proceedings of the 41st International Conference on Machine Learning, volume
+235 of Proceedings of Machine Learning Research, pp. 60040–60056, 2024. URL https:
+//proceedings.mlr.press/v235/zhang24bq.html.
+Zhenyu Zhang, Zechun Liu, Yuandong Tian, Harshit Khaitan, Zhangyang Wang, and Steven Li.
+R-Sparse: Rank-aware activation sparsity for efficient LLM inference. International Conference
+on Learning Representations, 2025. URL https://arxiv.org/abs/2504.19449.
+
+8
+
+432
+433
+
+A
+
+O PERATIONAL DETAILS
+
+434
+435
+436
+437
+438
+439
+
+A.1
+
+ACTIVATION PORTS
+
+440
+441
+442
+443
+444
+445
+
+Table 3 fixes each symbol to the tensor consumed by a downstream product. Pythia’s a and m are
+distinct LayerNorm outputs on parallel residual branches. “Attention output” in the diagnostics is
+after Wo and is distinct from z.
+
+446
+447
+448
+449
+450
+
+Table 3: Canonical activation ports.
+
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+
+Site
+
+Exact port
+
+Shape
+
+Downstream product
+
+a
+m
+h
+q, k
+v
+z
+
+attention-branch norm/gate output
+MLP-branch norm/gate output
+MLP nonlinearity/gate output
+immediately after partial RoPE
+value from fused QKV
+concatenated context before Wo
+
+[B, T, d]
+[B, T, d]
+[B, T, df ]
+[B, H, T, dh ]
+[B, H, T, dh ]
+[B, T, d]
+
+fused QKV
+MLP up/W1
+MLP down/W2
+causal QK
+causal PV
+attention output/Wo
+
+For QK, a coordinate product at valid pair (i, j) is counted zero if qi,r = 0 or kj,r = 0. For PV,
+it is counted zero if the causal attention probability pi,j = 0 or vj,r = 0. Masked future pairs are
+absent, rather than credited as zeros. Projection products use the corresponding activation and weight
+operands. Exact zero means floating-point equality to zero; the 10−3 and 10−2 near-zero diagnostics
+are separate metrics.
+
+A.2
+
+T OPOLOGY- CONDITIONED ANALYTIC REACH
+
+Table 4: Analytic selected-site reach Rmodel,max for full length-2,048 sequences. It is not an observed
+sparsity or speedup.
+Topology
+A4 (a, m, h, z)
+A7 (a, m, h, q, k, v, z)
+
+Pythia-14M
+
+Pythia-70M
+
+Pythia-410M
+
+12.833%
+29.952%
+
+37.063%
+49.424%
+
+74.776%
+87.245%
+
+The reach numerator credits a selected site to the operation it can null: a →QKV, m → W1 , h → W2 ,
+q or k →QK once, v →PV and (if all values vanish) Wo , and z → Wo . The denominator is exactly
+that of Eq. 1. Since measured Rmodel counts natural zeros everywhere, it is not required to lie below
+this selected-site analytic quantity.
+9
+
+486
+487
+
+B
+
+A DDITIONAL QUALITY– OPPORTUNITY VIEWS
+
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+
+A0 post-hoc
+
+Pythia-14M
+
+A1-H post-hoc
+
+Pythia-70M
+
+Pythia-410M
+
+0.5
+
+0.5
+0.5
+
+0.25
+
+0.1
+
+0.1
+
+Δ
+
+Trained loss
+relative to κ = 0
+
+0.50
+
+0.00
+
+0.1
+0.1
+
+0.1
+
+0.1
+
+−0.25
+
+0.5
+
+−0.50
+
+0.5
+
+0
+
+10
+
+20
+
+30
+
+40
+
+0
+
+10
+
+20
+
+30
+
+40
+
+0
+
+10
+
+20
+
+30
+
+40
+
+5
+
+Δ
+p
+
+505
+506
+507
+508
+509
+510
+
+A7-OL1
+
+0.5
+
+Post-hoc loss
+relative to = 0
+
+500
+501
+502
+503
+504
+
+A4-OL1
+
+4
+3
+2
+1
+0
+0
+
+20
+
+40
+
+60
+
+ΔRmodel (percentage points)
+
+0
+
+20
+
+40
+
+60
+
+ΔRmodel (percentage points)
+
+0
+
+20
+
+40
+
+60
+
+ΔRmodel (percentage points)
+
+Figure 4: Within-family change relative to each zero-dose point. Top: trained threshold ladders.
+Bottom: evaluation-only clipping paths. The trained 410M direction reverses while both post-hoc
+families retain positive loss cost.
+
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+
+Table 5: Pythia-410M A0 learning-rate screen. Selection was predeclared on the mean task loss over
+boundaries 649–712, not validation loss.
+Peak LR
+
+Late train loss
+
+Validation loss
+
+Selected
+
+−4
+
+4.493717
+4.513309
+6.851160
+
+4.547456
+4.552068
+6.786663
+
+yes
+no
+no
+
+3 × 10
+6 × 10−4
+1 × 10−3
+
+10
+
+540
+541
+
+C
+
+T RAINING DYNAMICS
+
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+
+Learning rate
+
+Before clipping
+
+After clipping
+
+Global clip threshold = 1
+
+Pythia-70M
+
+Pythia-410M
+
+final loss 5.244
+
+final loss 3.983
+
+final loss 4.448
+
+clipped 5/712 (0.7%)
+
+clipped 8/712 (1.1%)
+
+clipped 56/712 (7.9%)
+
+peak 1.0e-03; final 1.0e-04
+
+peak 1.0e-03; final 1.0e-04
+
+peak 3.0e-04; final 3.0e-05
+
+Training task loss
+
+10
+9
+8
+7
+6
+5
+4
+
+Global task-gradient L2 norm (log scale)
+
+565
+566
+567
+568
+569
+570
+
+Training task loss
+
+Pythia-14M
+11
+
+20
+10
+5
+2
+1
+0.5
+0.2
+
+1.00
+
+Learning rate (×10−3)
+
+559
+560
+561
+562
+563
+564
+
+A0 optimization trajectories through one MiniPile pass
+Training task loss, global full-model L2 gradient norm, and learning rate at every optimizer boundary
+
+0.75
+
+0.50
+
+0.25
+
+0.00
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+Training tokens seen (billions)
+Raw boundary values; no smoothing. Each boundary contains 2,097,152 tokens. All 712 updates completed without overflow or skipping.
+Learning rates use a shared absolute scale. The gradient norm is not parameter-count normalized.
+
+Figure 5: A0 training loss, global task-gradient norm before and after clipping, and learning rate
+over the matched token budget. These are unnormalized global norms, so cross-scale magnitude is
+descriptive rather than a parameter-size-controlled comparison.
+
+All streams contain 712 finite boundaries and no skipped update. A0 has 5/8/56 clipped boundaries
+and maximum pre-clip norms 2.002/3.513/26.962 at 14M/70M/410M. The figure is included to
+expose the executed optimization regime, not to diagnose the 410M reversal from one scalar trace.
+11
+
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+
+ReLU trajectory
+
+Near-zero mass at k_post (%)
+
+GeLU control
+
+q_post
+0.20
+
+0.15
+
+0.10
+0.5
+
+0.05
+
+0.05
+
+ctrl
+
+0.1
+
+ctrl
+
+1
+
+k_post
+
+0.1
+0.05
+ctrl
+
+1
+0.5
+
+ctrl
+
+0.00
+
+v
+
+m
+
+0.20
+
+Near-zero mass at m (%)
+
+608
+609
+610
+611
+612
+
+Pythia-14M full-pass L1N sitewise near-zero mass
+
+0.5
+0.05
+
+1
+
+0.15
+0.1
+ctrl
+
+ctrl
+
+0.10
+
+0.05
+
+ctrl
+
+0.05
+0.1
+
+ctrl
+
+0.5
+
+1
+
+0.00
+0
+
+25
+
+50
+
+75
+
+100
+
+0
+
+25
+
+Near-zero mass at h (%)
+
+50
+
+75
+
+100
+
+Near-zero mass at h (%)
+
+Seed 1234; |x| <= 1e-3; 712 updates; all 338 validation blocks; labels are control or lambda
+
+Figure 6: Pooled near-zero mass (|x| ≤ 10−3 ) at unpressured sites versus directly pressured h
+in a separate Pythia-14M ReLU/naive-ℓ1 cohort. Lines order pressure dose and are not temporal
+trajectories.
+
+Pythia-14M full-pass attention output before residual addition
+GeLU control
+
+1.0
+
+ReLU trajectory
+
+Near-zero mass after W_o (%)
+
+602
+603
+604
+605
+606
+607
+
+E XPLORATORY SITEWISE REDISTRIBUTION
+
+Near-zero mass at q_post (%)
+
+596
+597
+598
+599
+600
+601
+
+D
+
+Near-zero mass at v (%)
+
+594
+595
+
+0.8
+
+lambda=0.5
+lambda=0.1
+
+control
+
+lambda=0.05
+lambda=1
+
+0.6
+
+control
+
+0.4
+
+0.2
+
+0.0
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Near-zero mass at h, |x| <= 1e-3 (%)
+Seed 1234; 712 updates; all 338 validation blocks; GeLU is a standalone control
+
+Figure 7: Near-zero mass after Wo versus at h in the same exploratory cohort. The output response
+rises through the middle doses and falls at the largest pressure.
+12
+
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+
+O RTHOGONAL - PRESSURE DIAGNOSTIC
+
+In a matched Pythia-14M A1-H cohort, OL1 minus naive-ℓ1 validation loss was −0.0081 and −0.0061
+at λ = .05 and .1, then −0.0025 and +0.0188 at λ = .5 and 1. Exact-zero mass and Rmodel were
+nearly matched. Along naive-ℓ1 trajectories, negative raw task–pressure dot products occurred at 49.2–
+70.9% of boundaries as dose increased. OL1 projected its own negative Adam-relative interactions to
+the orthogonal boundary, but this geometric guarantee did not yield a consistently better endpoint.
+
+λ = 0.05
+
+OL1 removes Adam-relative gradient conflict
+λ = 0.1
+
+λ = 0.5
+
+λ=1
+
+0.00
+
+fl
+
+656
+657
+658
+659
+660
+661
+
+E
+
+fl
+
+650
+651
+652
+653
+654
+655
+
+All points in Figures 6–7 cover the same complete validation set. They use near-zero rather than
+exact-zero mass and a different pressure recipe from the main ladder; they support only the descriptive
+statement that redistribution is site-specific and non-monotone.
+
+Gradient-con ict cosine
+(negative = con ict)
+
+648
+649
+
+−0.06
+−0.12
+−0.18
+0.0
+
+0.5
+
+1.0
+
+1.5 0.0
+
+0.5
+
+1.0
+
+1.5 0.0
+
+0.5
+
+1.0
+
+1.5 0.0
+
+0.5
+
+1.0
+
+1.5
+
+Training input tokens (billions)
+Before projection
+
+After projection
+
+Figure 8: OL1 Adam-relative task–pressure interaction before and after the operational projection
+in the separate 14M diagnostic. Rolling summaries describe temporally dependent boundaries, not
+replicate uncertainty.
+
+F
+
+R EPRODUCIBILITY IDENTITIES
+
+The dataset is JeanKaddour/minipile at revision
+18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0.
+
+The tokenizer is EleutherAI/pythia-14m-deduped at revision
+7386d9a4ae45aef494a6e704910394def3037fc5.
+
+Encoding adds no special tokens and appends EOS per document. The training cache contains
+1,491,711,416 tokens and 728,374 complete blocks (tail 1,464); the validation cache contains 693,668
+tokens and 338 complete blocks (tail 1,444). Their SHA-256 values are:
+Training cache:
+da82a2ea2e0080c7fd681c7a93b07d3d9ff3d5357a8640895a82d536a1eaf97c
+
+Validation cache:
+51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451.
+
+The 410M cohort uses 24 layers, d = 1024, df = 4096, 16 heads, vocabulary 50,304, and
+405,334,016 parameters. Its canonical initialization has parameter SHA-256
+76217bf2ef13de2377c7750515a559cb71f574c274476e08408a5f7749ea9cff.
+
+Mixed GPU models were used for this cohort; condition assignment is execution provenance and not
+an intended scientific factor. Each retrieved archive was hash-verified before cloud teardown.
+
+13
+
+

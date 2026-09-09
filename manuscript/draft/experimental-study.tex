@@ -1,0 +1,62 @@
+% Experimental setup/comparison logic and the user-authorized kernel case study.
+% Provenance and scope: experimental-notes.md.
+\section{Experimental study}
+\label{sec:experiments}
+
+We pretrain randomly initialized Pythia-14M, 70M, and 410M
+models~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}.
+Detailed comparisons use 14M; the larger models cover selected recipes.
+Quality is next-token validation cross-entropy, where lower is better.
+We measure loss and $\Smodel$ in the same forward pass over all 338 complete
+2,048-token blocks from the 500 MiniPile validation documents, excluding the
+1,444-token tail. All training-result figures and tables use this evaluation.
+
+Figure~\ref{fig:intervention-ladder} locates the activation sites in the shared
+Pythia block and maps the eight recipes onto them. Each recipe is pretrained
+separately. Appendix~\ref{app:sites} gives exact site definitions and tensor shapes.
+
+% Source: manuscript/artifacts/pythia-architecture-sparsification-ladder.md and .tex.
+% Panels: manuscript/artifacts/pythia-architecture-map.pdf; sparsification-ladder.pdf.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/pythia-architecture-sparsification-ladder.pdf}
+\caption{\textbf{Pythia architecture and sparsification recipes.}
+Top: the shared block and activation sites; $q,k$ follow RoPE and $z$ precedes
+the attention-output projection. Bottom: nonlinearity placement, pressure and
+analytic sparsity ceilings for the eight recipes. Selected nonlinearities
+replace GELU at $h$ and act on existing activations elsewhere. L1N denotes
+naive L1; pressure targets every site with a selected nonlinearity in its row.
+The ceiling columns report $100\Smax\%$ for $T=2{,}048$, rather than measured
+sparsity or speedup. All recipes are evaluated at 14M; 70M and 410M use A0,
+A1-H, A4-OL1 and A7-OL1. Rows identify separately trained recipes, not curriculum stages.}
+\label{fig:intervention-ladder}
+\end{figure}
+
+Within each size, matched contrasts share initialization, data order, and
+training budget. Adding pressure at fixed nonlinearities measures its additional
+quality and sparsity effects; repeating the contrast across thresholds tests
+how those effects depend on thresholding. Comparing A4 with A7 without
+pressure examines broader nonlinearity placement. A4-OL1 versus A7-OL1 changes both
+nonlinearity and pressure sites, so it compares complete recipes rather than isolating
+nonlinearity placement at a fixed pressure objective.
+
+The cohort contains 30 conditions at 14M and 12 at each larger size.
+Each trains for 712 updates and 1.493 billion
+input tokens; we evaluate the final checkpoint. Local pressure varies
+$\lambda\in\{0.05,0.1,0.5,1\}$; A4/A7 vary
+$\kappa\in\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$,
+and all OL1 conditions use trust budget 1. Sweeping these settings tests
+whether an added intervention has a consistent effect or depends on the
+strength of the existing intervention. Appendix~\ref{app:training-protocol} gives the
+optimizer, precision and learning-rate settings.
+
+For the evaluation-only reference, we apply uniform magnitude-clipping targets
+$p=0,0.1,\ldots,0.9$ at $a,m,h,z$ without updating weights. Site--layer
+thresholds are calibrated separately on ten training blocks. This is a
+uniform TEAL-style control~\citep{liu2024teal}, not a reproduction of an
+optimized allocation across sites. The main figures show A0 clipping;
+Appendix~\ref{app:clipping-results} includes all 540 evaluations across the
+54 trained checkpoints.
+
+\input{training-results}
+\input{kernel-autoresearch}

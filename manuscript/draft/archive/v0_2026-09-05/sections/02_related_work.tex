@@ -1,0 +1,38 @@
+\section{Related work}
+\label{sec:related}
+\paragraph{Training-free and trained sparsity.}
+TEAL removes low-magnitude activations and allocates sparsity across a model
+using a blockwise procedure \citep{liu2024teal}. CATS studies activation
+thresholding \citep{lee2024cats}. ReLU-based models, progressive regularization,
+and sparse pretraining establish that training can accommodate substantial
+feed-forward sparsity
+\citep{mirzadeh2023relu,song2024prosparse,zhang2024exploring}.
+The Sparsing Law studies how activation sparsity relates to model size, data,
+and quality \citep{liu2024sparsing}. Our uniform, calibrated clipping baseline
+provides a fixed-model reference for the same checkpoints and validation
+coverage. TEAL's optimized allocation and the full training recipes of these
+methods remain important comparisons.
+
+\paragraph{Sparsity across operations.}
+Q-Sparse is a close precedent: it applies top-$k$ sparsification to linear
+inputs in attention and feed-forward blocks, supports block sparsity, and
+uses a straight-through estimator during training \citep{wang2024qsparse}.
+Spark introduces top-$k$ feed-forward and attention sparsity and evaluates
+execution \citep{you2025spark}; recent work also combines sparse model design
+with inference kernels \citep{cetin2026sparser}. Our study examines a
+different set of matched interventions: fixed-threshold gates with their
+ordinary masked gradients, explicit magnitude pressure, and additional gates
+on the actual query, key, and value operands. Queries and keys are gated
+after rotary position encoding. The evidence addresses these design choices
+in Pythia pretraining; direct comparisons with top-$k$ and structured
+training are needed to establish their relative advantages.
+
+\paragraph{Task-aware auxiliary optimization.}
+Gradient surgery modifies auxiliary updates when objectives conflict
+\citep{yu2020pcgrad,mitrevski2024bloop}. We use a task-aware magnitude-pressure
+rule, denoted OL1, alongside a conventional joint-loss L1 baseline.
+The OL1 recipe maintains task-only Adam moments, projects conflicting
+preconditioned pressure updates, and bounds their norm. Its role is to supply
+a consistent optimization intervention across gate configurations.
+The matched comparisons evaluate the complete rule; its individual
+components would require separate ablations.

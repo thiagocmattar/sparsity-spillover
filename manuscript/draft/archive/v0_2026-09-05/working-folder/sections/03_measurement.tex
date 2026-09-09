@@ -1,0 +1,43 @@
+\section{What sparsity makes available}
+\label{sec:measurement}
+We consider full-sequence causal inference at sequence length $T$. For each
+matrix-product operation $o$, let $N_o$ count scalar multiplications and let
+$Z_o$ count those for which at least one operand is exactly zero. We count a
+multiplication once when both operands are zero. The transformer-block
+operations are the query/key/value projections, attention output projection,
+two feed-forward projections, and the attention products $QK^\top$ and $PV$.
+The vocabulary projection contributes its full dense count, $N_{\rm head}$.
+We define the \emph{model-wide activation sparsity opportunity} as
+\begin{equation}
+ \Rmodel =
+ \frac{\sum_{o\in{\rm blocks}} Z_o}
+      {\sum_{o\in{\rm blocks}} N_o+N_{\rm head}},
+ \qquad
+ \Rblock =
+ \frac{\sum_{o\in{\rm blocks}} Z_o}{\sum_{o\in{\rm blocks}} N_o}.
+ \label{eq:opportunity}
+\end{equation}
+The reported interventions act on activations; the counter uses the actual
+operands, including any naturally occurring zeros. Integer counts are pooled
+over all layers, batches, and validation sequences before division.
+
+This definition connects local zeros to the operations that use them.
+For example, a zero feed-forward hidden activation affects the following
+projection. A zero key component can participate in multiple causal
+query--key pairs. For attention products, we count the union of zero-operand
+events over valid causal positions using the post-rotation queries and keys.
+Appendix~\ref{app:counting} gives the counts and denominator explicitly.
+Layer normalization, softmax, elementwise transformations, data movement, and
+kernel-launch costs fall outside this multiplication accounting.
+
+Cross-architecture comparisons additionally depend on the block share
+$s_{\rm block}$ of the counted work:
+\begin{equation}
+  \Rmodel = s_{\rm block}\Rblock,\qquad
+  s_{\rm block}=\frac{\sum_{o\in{\rm blocks}}N_o}
+  {\sum_{o\in{\rm blocks}}N_o+N_{\rm head}}.
+  \label{eq:block-share}
+\end{equation}
+This identity helps separate learned block sparsity from architectural
+differences. Runtime measurements then test how much of the opportunity a
+particular implementation realizes.

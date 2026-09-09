@@ -1,0 +1,45 @@
+\section{Experimental protocol}
+\label{sec:experiments}
+\paragraph{Matched pretraining.}
+We train Pythia-configured transformers \citep{biderman2023pythia} from random
+initialization on MiniPile \citep{kaddour2023minipile}.
+Within each size, the conditions share seed-1234 initialization, seed-1234
+data order, and the training schedule. The 14M study uses six layers,
+width 128, and four heads; 70M uses six layers, width 512, and eight heads.
+All feed-forward widths are four times the hidden width.
+Each condition receives 712 optimizer steps with a global batch of 1,024
+length-2,048 sequences: 1.493 billion scheduled tokens, approximately one
+training-cache pass. The 14M and 70M peak learning rates are $10^{-3}$.
+AdamW uses $(\beta_1,\beta_2)=(.9,.95)$, $\epsilon=10^{-8}$,
+weight decay .1 excluding biases and normalization, norm-1 gradient clipping,
+one-percent warmup, and cosine decay to ten percent of the peak rate.
+Parameters and optimizer state remain FP32 during mixed-precision training.
+
+\paragraph{Evaluated conditions.}
+The local 14M pressure coefficients are
+$\lambda\in\{.05,.1,.5,1\}$. The A4/A7 gate thresholds are
+$\kappa\in\{0,.01,.05,.1,.5\}$, with pressure coefficient and OL1 step budget
+both equal to one. The detailed 14M study contains 35 trained checkpoints.
+The selected 70M study contains 12: two controls and the two pressured
+five-threshold recipes. A fixed-budget 410M cohort contributes another 12
+checkpoints in Appendix~\ref{app:410m}. These are one-seed comparisons;
+matched doses characterize sensitivity within one training realization.
+
+\paragraph{Uniform clipping reference.}
+For the trained A0 and A1-H controls, we calibrate fixed, per-layer/site
+magnitude thresholds on ten training-cache blocks and apply them only at
+evaluation to $a,m,h,z$. A common target quantile
+$p\in\{0,.1,\ldots,.9\}$ controls clipping intensity. Each size therefore has
+20 clipping evaluations. This uniform allocation is a reproducible
+training-free reference; optimized layer allocation and jointly selected
+site-specific thresholds could improve it.
+
+\paragraph{Common quality and counting pass.}
+We evaluate all 500 MiniPile validation documents after tokenization and
+concatenation: 338 complete blocks, or 692,224 input tokens, with a
+1,444-token tail excluded. Each plotted trained endpoint pairs cross-entropy
+loss (nats per predicted token) and multiplication counts from the same eager forward pass.
+All comparisons use this common coverage. Tables report the complete
+evaluated grids; lines in figures indicate dose order. We use
+\emph{frontier} for the nondominated evaluated points, where improving
+opportunity requires accepting higher loss.

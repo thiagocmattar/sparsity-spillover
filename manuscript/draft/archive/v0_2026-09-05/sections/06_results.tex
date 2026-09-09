@@ -1,0 +1,161 @@
+\section{Results}
+\label{sec:results}
+\subsection{Expanding pressure is a consequential intervention}
+\label{sec:pressure-results}
+The local 14M comparison establishes that pressure can improve quality and
+sparsity together in this training regime (Figure~\ref{fig:matched}, left).
+Relative to the ReLU control, ordinary L1 at $\lambda=1$ reduces loss from
+5.2696 to 5.1023 and raises \Rmodel{} from 2.71\% to 3.95\%.
+OL1 produces similar local opportunities: its loss advantage over ordinary
+L1 at the first three coefficients reverses at $\lambda=1$.
+This comparison gives limited support for preferring either complete
+optimization recipe at the feed-forward hidden state.
+
+The effect changes when pressure reaches more sites
+(Figure~\ref{fig:matched}, middle). With A4 gates fixed, moving from $h$-only
+pressure to four-site pressure raises loss at all five thresholds.
+At $\kappa=.01$, opportunity is essentially unchanged
+(8.5858\% versus 8.5867\%), while loss rises from 5.2045 to 5.4583.
+At $\kappa=.5$, the expansion adds 2.49 percentage points of opportunity
+and raises loss by 0.3153. Broader pressure therefore has an identifiable
+quality cost even when more operations are directly targeted.
+
+\subsection{Attention-operand gates change the pressure response}
+\label{sec:attention-results}
+Without pressure, adding $q,k,v$ gates raises opportunity increasingly with
+threshold (Table~\ref{tab:paired}). At $\kappa=.5$, A7 gains 5.17 percentage
+points over A4 with a loss increase of 0.0432. The $\kappa=0$ comparison,
+where the added gates are identities, differs by only 0.006 percentage points
+and $-0.0021$ loss, exposing the scale of residual numerical variation
+between these separately executed controls.
+
+\begin{table}[t]
+\centering
+\caption{Matched 14M effects: child minus parent at the same threshold.
+The first pair of columns is A7 minus A4 without pressure; the other
+columns add OL1 at each configuration's respective sites. Positive
+$\Delta R$ means more model-wide opportunity; negative
+$\Delta\mathcal{L}$ means lower loss. The columns evaluate different
+interventions under one seed.}
+\label{tab:paired}
+\small
+\input{tables/paired-effects.tex}
+\end{table}
+% Evidence: analysis 013, observations/O001-matched-interventions.md; 01_build.py.
+
+The pressure response differs between the configurations. At $\kappa=.1$,
+adding seven-site pressure raises opportunity by 1.37 points with a loss
+change of 0.0008; four-site pressure adds 2.44 points with a loss increase of
+0.1286. At $\kappa=.5$, seven-site pressure adds 12.10 points with a
+0.1265 loss increase, compared with 2.50 points and 0.3783 for four-site
+pressure. Low-threshold effects are smaller and mixed.
+The largest-threshold pressured A7 endpoint has both lower loss and higher
+opportunity than its pressured A4 counterpart. These results support the
+combined gate-and-pressure recipe and locate the threshold range in which
+its benefit is most pronounced. Attribution to an interaction at a fixed
+pressure set requires the additional condition described in
+Section~\ref{sec:interventions}.
+
+\subsection{Training extends the evaluated frontier, with quality-dependent gains}
+\label{sec:frontier-results}
+Figure~\ref{fig:frontiers} compares all main-study training conditions with
+the complete uniform-clipping paths. At 14M, the trained conditions offer
+better opportunity at several quality levels. At 70M, the selected training
+grid reaches larger opportunities, while clipping is stronger near the
+unmodified model's quality.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/02-training-and-clipping.pdf}
+\caption{Training and uniform clipping at 14M and 70M. All evaluated clipping
+quantiles are shown. Curves join tested doses; their nondominated portions
+define the empirical frontiers. The 14M panel includes the full intervention
+study, while 70M includes the two selected pressured recipes and controls.
+Opportunity gains must be read together with the corresponding loss.}
+\label{fig:frontiers}
+\end{figure}
+% Evidence: analysis 013, observations/O002-quality-frontiers.md; 01_build.py.
+
+To compare at common quality allowances, Table~\ref{tab:budgets} takes the
+largest evaluated opportunity among points whose loss is at most
+$\mathcal{L}_{A0}+\delta$. Selection uses the discrete tested grid.
+At 14M, training exceeds clipping at each reported
+allowance. At 70M, clipping reaches 19.99\% opportunity at $\delta=.25$,
+versus 10.07\% for the selected trained grid. At $\delta=1$, training reaches
+30.57\%, versus 25.11\% for clipping. Thus the 70M results support a frontier
+extension at larger loss allowances; the preferred intervention depends
+on the quality requirement.
+
+The tighter $\delta=.05$ allowance permits approximately 5.1\% higher
+perplexity. At this allowance, the 14M trained grid reaches 9.34\%
+opportunity versus 2.55\% for clipping; at 70M the selected trained
+interventions exceed the allowance and the control remains the best eligible
+trained point. The $\delta=1$ row permits a $2.72\times$ perplexity increase
+and describes a substantially more permissive quality target.
+
+\begin{table}[t]
+\centering
+\caption{Maximum evaluated \Rmodel{} (\%) within an added cross-entropy
+allowance $\delta$ relative to each size's A0 control. Trained includes the
+available training conditions and controls; clipped includes both uniform
+clipping paths. These are descriptive operating-point selections on one
+validation set.}
+\label{tab:budgets}
+\small
+\input{tables/loss-budgets.tex}
+\end{table}
+% Evidence: analysis 013, observations/O002-quality-frontiers.md; 01_build.py.
+
+\subsection{Where the added opportunity occurs}
+\label{sec:operation-results}
+The high-threshold A7 recipe changes the actual attention operands
+(Figure~\ref{fig:operations}). At 14M, the $QK^\top$ and $PV$ products
+contribute 16.77 percentage points to its 27.48\% model-wide opportunity.
+For the corresponding A4 recipe, these products contribute only 0.057
+points to a total of 12.71\%. At 70M the attention contribution is
+10.42 points for A7 and 0.011 for A4. The operation decomposition therefore
+explains the additional opportunity opened by gating $q,k,v$.
+At these endpoints, $h$ and $z$ are more than 99.8\% zero at both sizes.
+This concentration also motivates a capacity-matched comparison with
+statically reduced branches. The endpoint measurements describe where zeros occur; intermediate training
+measurements would be needed to explain how those representations develop.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/03-sites-and-operations.pdf}
+\caption{High-threshold ($\kappa=.5$) pressured recipes. Left: pooled exact-zero
+fractions at the seven activation sites. Right: contributions of each
+operation to \Rmodel{}, using the complete model denominator. A7 creates
+substantial attention-product opportunity. Different block/head proportions
+also affect the totals across sizes.}
+\label{fig:operations}
+\end{figure}
+% Evidence: analysis 013, observations/O003-operation-decomposition.md; 01_build.py.
+
+The total opportunity rises from 27.48\% at 14M to 40.60\% at 70M for the
+high-threshold A7 recipe. However, its block-level opportunity falls from
+91.75\% to 82.15\%. The larger model allocates 49.42\% of counted work to
+transformer blocks, compared with 29.95\% at 14M
+(Equation~\ref{eq:block-share}). This architectural difference accounts for
+the higher model-wide fraction despite lower block sparsity.
+The two sizes establish that the selected recipe can produce substantial
+opportunity in both architectures; a scaling law would require broader
+size, data-budget, and seed coverage.
+
+\subsection{An implementation test bounds the efficiency claim}
+\label{sec:runtime-results}
+We evaluated six 70M checkpoints with a sparse linear path adapted from
+\citet{cetin2026sparser} on an H100 NVL. The implementation preserves signed
+nonzero values, passes shape-level correctness checks, and matches the
+corresponding dense BF16 validation loss within $10^{-3}$. Its full-model
+scope replaces downstream linear projections and retains dense attention.
+An official sparse-model positive control achieves a $1.288\times$ speedup.
+
+For our checkpoints, every tested full-model sparse configuration is slower
+than its dense reference at batch sizes 1 and 32 with $T=2048$.
+The best median ratio, dense latency divided by sparse latency, is
+$0.983\times$ for A4+OL1@4 at $\kappa=.5$ and batch size 1.
+Separate unfused sparse-attention compositions also remain slower.
+Appendix~\ref{app:runtime} gives all six results, correctness coverage,
+and implementation limits. The learned zeros expose multiplication
+opportunity, while execution with this implementation remains slower.

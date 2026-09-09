@@ -1,0 +1,38 @@
+% Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
+% Evidence: Analysis 018 observations O001/O002/O003/O004/O007/O011.
+\section{Discussion and conclusion}
+\label{sec:conclusion}
+
+Pressure, thresholds and site placement need to be evaluated together.
+In the matched 14M comparisons, adding pressure ranges from improving both
+loss and sparsity to exchanging quality for additional zeros. Extending the
+intervention to internal attention can increase model-wide sparsity even
+when FFN sparsity falls. The high-threshold seven-site recipe with pressure
+improves both axes over the four-site recipe at all three sizes, but the
+zero-threshold ordering changes. These results favor evaluating each
+addition against its matched recipe, rather than choosing interventions
+from activation sparsity alone.
+
+The interpretation is supported by a connected pattern across experiments.
+Matched comparisons identify how pressure's added effect changes with the
+threshold; distribution measurements reveal which activations change; and
+product counts explain their model-wide consequence. The high-threshold
+A7-OL1 advantage recurs at all three sizes, while the zero-threshold reversals
+identify where that relationship stops holding. Agreement across these
+comparisons makes the result more informative than a favorable checkpoint
+or an isolated sparsity percentage.
+
+Product accounting and kernel timing answer different questions. Counting
+zero-operand products shows where an intervention affects computation;
+the sparsity ceiling explains how architecture changes that opportunity.
+The kernel study confirms that some of it can reduce full-model latency,
+but also shows that skipping attention work can cost more than executing it.
+Fusion and sparse-path ablations are therefore necessary to attribute a
+measured speedup.
+
+These conclusions concern MiniPile pretraining at a fixed token budget,
+with a lower learning rate at 410M. Larger models test complete recipes;
+the distribution diagnostics cover 14M and describe responses rather than
+isolating a causal spillover mechanism. The kernel results use one RTX5090,
+full-sequence inference, native SDPA and matched fusion controls. Transfer
+to cached decoding, larger models and other hardware remains untested.

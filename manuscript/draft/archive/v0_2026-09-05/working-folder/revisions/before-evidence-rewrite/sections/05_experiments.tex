@@ -1,0 +1,43 @@
+\section{Experimental protocol}
+\label{sec:experiments}
+
+\paragraph{Models, initialization, and data.}
+We construct Pythia 14M, 70M, and 410M causal language models from pinned
+architecture configurations, never released weights.  They have respectively
+6/6/24 layers, hidden widths 128/512/1024, MLP widths 512/2048/4096, and
+4/8/16 heads.  Every condition within a scale strict-loads one seed-1234 FP32
+initialization and consumes the same seed-1234 permutation.  MiniPile
+\citep{kaddour2023minipile} is tokenized with the pinned Pythia tokenizer,
+appending EOS per document and concatenating into non-overlapping 2,048-token
+blocks.
+
+Each run has 712 optimizer boundaries, global batch 1,024 sequences, and
+1,493,172,224 scheduled tokens: essentially one common MiniPile pass.  This
+matches tokens, not optimization maturity.  The resulting exposures are 106.1,
+21.2, and 3.7 tokens per parameter (Table~\ref{tab:baseline-exposure}).  All
+models use AdamW $(\beta_1,\beta_2)=(.9,.95)$, $\epsilon=10^{-8}$, weight decay
+.1 excluding bias and normalization, global task-gradient clipping at 1,
+one-percent linear warmup, cosine decay to one tenth of peak, and zero dropout.
+Peak learning rate is $10^{-3}$ at 14M/70M and $3\times10^{-4}$ at 410M.
+Training uses mixed precision with FP32 parameters and optimizer state.
+
+\input{tables/baseline-exposure.tex}
+
+\paragraph{Evaluation and diagnostics.}
+Every canonical endpoint pairs cross-entropy loss and logical counts in the
+same eager forward pass over all 500 MiniPile validation documents: 338
+complete sequences (692,224 input tokens), with the 1,444-token tail excluded.
+We pool exact-zero and near-zero counts at all seven intervention sites and the
+attention output, plus RMS and $\ell_2$ accumulators.  We also retain per-layer
+weight norms, the six operation counts in Eq.~\ref{eq:rmodel}, and boundary-level
+task/pressure gradient interaction.  The post-hoc controls use identical
+validation coverage.
+
+\paragraph{Scope.}
+There is one seed, corpus, pass, and threshold ladder per scale.  The study
+contains 30 trained endpoints (A0, A1-H, and ten \Afour/\Aseven{} conditions at
+each scale) and 60 post-hoc endpoints.  Lines across them are evaluated paths;
+only nondominated points deserve the word Pareto frontier.  Our primary
+comparisons are descriptive within scale.  Cross-scale differences conflate
+architecture, exposure per parameter, and the selected peak learning rate.
+

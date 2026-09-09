@@ -1,0 +1,74 @@
+\section{A matched intervention ladder}
+\label{sec:interventions}
+We distinguish three choices: where gates create exact zeros, where
+training penalizes activation magnitudes, and how the optimizer incorporates
+that pressure. Table~\ref{tab:design} names the combinations.
+The feed-forward hidden state is $h$. Four-site gating (\Afour) additionally
+acts on attention-branch normalization output $a$, feed-forward-branch
+normalization output $m$, and the concatenated attention context $z$ before
+the output projection. Seven-site gating (\Aseven) adds the post-rotation
+queries $q$, post-rotation keys $k$, and values $v$.
+
+\begin{table}[t]
+\centering
+\caption{Intervention design. The 14M study includes every row. The selected
+70M and appendix 410M studies include A0, A1-H, A4+OL1@4, and A7+OL1@7.
+For local pressure, dose is $\lambda$; for A4/A7, dose is $\kappa$ with
+$\lambda=1$ whenever pressure is present.}
+\label{tab:design}
+\small
+\begin{tabular}{llll}
+\toprule
+Condition & Gated sites & Pressure sites & Update rule \\
+\midrule
+A0 & native GELU at $h$ & none & task only \\
+A1-H & ReLU at $h$ & none & task only \\
+A1-H+L1 & ReLU at $h$ & $h$ & joint-loss L1 \\
+A1-H+OL1 & ReLU at $h$ & $h$ & OL1 \\
+A4 & $a,m,h,z$ & none & task only \\
+A4+OL1@h & $a,m,h,z$ & $h$ & OL1 \\
+A4+OL1@4 & $a,m,h,z$ & $a,m,h,z$ & OL1 \\
+A7 & $a,m,h,q,k,v,z$ & none & task only \\
+A7+OL1@7 & $a,m,h,q,k,v,z$ & all seven & OL1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Gate operators.}
+For $\kappa\geq0$, the four common sites use a one-sided threshold and the
+additional attention sites use a sign-preserving threshold:
+\begin{equation}
+  \Gplus(x)=x\,\mathbf{1}[x\geq\kappa],
+  \qquad
+  \Gpm(x)=x\,\mathbf{1}[|x|\geq\kappa].
+  \label{eq:gates}
+\end{equation}
+At $h$, the gate replaces GELU. Elsewhere it acts on the named tensor.
+Gradients pass through retained values. At $\kappa=0$, the added $q,k,v$
+gates are identities in both values and gradients, providing a
+same-architecture control for the unpressured A4/A7 comparison.
+The common one-sided gates remain active at this threshold.
+
+\paragraph{Activation pressure.}
+For the tensors captured at the selected layers and sites, the penalty is
+$\mathcal{P}=J^{-1}\sum_{j=1}^{J}|A_j|^{-1}\|A_j\|_1$.
+Thus each tensor contributes its mean magnitude with equal weight.
+The joint-loss baseline applies AdamW to
+$\mathcal{L}_{\rm CE}+\lambda\mathcal{P}$. OL1 instead maintains task-only
+Adam moments, preconditions the pressure gradient with the task second moment,
+removes its component opposing the task update when their dot product is
+negative, and caps the weighted pressure-direction norm at the task-direction
+norm. Appendix~\ref{app:optimization} specifies the update.
+
+\paragraph{What the contrasts isolate.}
+A4 versus A4+OL1@h tests hidden-state pressure under fixed four-site gates.
+A4+OL1@h versus A4+OL1@4 expands the pressure sites with the gate set fixed.
+A4 versus A7 adds the three attention-operand gates with pressure absent.
+Within each of A4 and A7, adding OL1 tests pressure at that configuration's
+sites. Comparing these last two effects is descriptive because the pressure
+set expands together with the gate set. A7 gates with pressure confined to
+$a,m,h,z$ would complete the fixed-pressure comparison.
+
+The A4+OL1@h cohort was originally labeled more broadly in its run metadata.
+Artifact inspection established the executed $h$-only pressure set; we use that
+operational identity throughout and preserve the original files.
