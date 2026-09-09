@@ -5,7 +5,8 @@
 
 We pretrain randomly initialized Pythia-14M, 70M, and 410M
 models~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}.
-Detailed comparisons use 14M; the larger models cover selected recipes.
+The shared architecture family permits detailed comparisons at 14M and
+selected-recipe comparisons at the larger sizes.
 Quality is next-token validation cross-entropy, where lower is better.
 We measure loss and $\Smodel$ in the same forward pass over all 338 complete
 2,048-token blocks from the 500 MiniPile validation documents, excluding the
@@ -23,26 +24,31 @@ separately. Appendix~\ref{app:sites} gives exact site definitions and tensor sha
 \caption{\textbf{Pythia architecture and sparsification recipes.}
 Top: the shared block and activation sites; $q,k$ follow RoPE and $z$ precedes
 the attention-output projection. Bottom: nonlinearity placement, pressure and
-analytic sparsity ceilings for the eight recipes. Selected nonlinearities
+architectural reach for the eight recipes. Selected nonlinearities
 replace GELU at $h$ and act on existing activations elsewhere. L1N denotes
 naive L1; pressure targets every site with a selected nonlinearity in its row.
-The ceiling columns report $100\Smax\%$ for $T=2{,}048$, rather than measured
+The reach columns report $100\Rarch\%$ for $T=2{,}048$, rather than measured
 sparsity or speedup. All recipes are evaluated at 14M; 70M and 410M use A0,
 A1-H, A4-OL1 and A7-OL1. Rows identify separately trained recipes, not curriculum stages.}
 \label{fig:intervention-ladder}
 \end{figure}
 
 Within each size, matched contrasts share initialization, data order, and
-training budget. Adding pressure at fixed nonlinearities measures its additional
-quality and sparsity effects; repeating the contrast across thresholds tests
-how those effects depend on thresholding. Comparing A4 with A7 without
-pressure examines broader nonlinearity placement. A4-OL1 versus A7-OL1 changes both
-nonlinearity and pressure sites, so it compares complete recipes rather than isolating
-nonlinearity placement at a fixed pressure objective.
+training budget. Pressure on/off contrasts hold the nonlinearities and
+threshold fixed. Unpressured A7 versus A4 at the same $\kappa$ adds symmetric
+query/key/value thresholding. A7-OL1 versus A4-OL1 instead changes both
+nonlinearity and pressure sites, including the weights of existing pressure
+terms; it compares complete recipes. A4 versus A1-H changes the additional
+sites and, for $\kappa>0$, the threshold at $h$. At $\kappa=0$,
+$h$ has the same forward map but a different derivative at zero
+(Appendix~\ref{app:interventions}). These distinctions determine which
+intervention each later paired difference can identify.
 
 The cohort contains 30 conditions at 14M and 12 at each larger size.
 Each trains for 712 updates and 1.493 billion
-input tokens; we evaluate the final checkpoint. Local pressure varies
+input tokens; we evaluate the final checkpoint. Each condition has one
+training seed. Reusing initialization supports pairing, not independent
+replication. Local pressure varies
 $\lambda\in\{0.05,0.1,0.5,1\}$; A4/A7 vary
 $\kappa\in\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$,
 and all OL1 conditions use trust budget 1. Sweeping these settings tests
@@ -50,11 +56,15 @@ whether an added intervention has a consistent effect or depends on the
 strength of the existing intervention. Appendix~\ref{app:training-protocol} gives the
 optimizer, precision and learning-rate settings.
 
-For the evaluation-only reference, we apply uniform magnitude-clipping targets
+For the evaluation-only reference, we apply uniform post-hoc magnitude clipping with targets
 $p=0,0.1,\ldots,0.9$ at $a,m,h,z$ without updating weights. Site--layer
 thresholds are calibrated separately on ten training blocks. This is a
-uniform TEAL-style control~\citep{liu2024teal}, not a reproduction of an
-optimized allocation across sites. The main figures show A0 clipping;
+uniform TEAL-style control~\citep{liu2024teal}; it does not optimize allocation
+across sites. Target $p$ is a calibration quantile, not achieved model-wide
+sparsity. Clipping acts after the trained transformation at $h$, preserving
+A0's GELU, whereas A7 replaces GELU and additionally thresholds $q,k,v$.
+The comparison therefore changes reach and the final transformation as well
+as when sparsification is applied. The main figures show A0 clipping;
 Appendix~\ref{app:clipping-results} includes all 540 evaluations across the
 54 trained checkpoints.
 

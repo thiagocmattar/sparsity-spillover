@@ -6,38 +6,45 @@
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
-Q-Sparse selects the top-$k$ activation magnitudes~\citep{wang2024qsparse}.
-Spark Transformer motivates its statistical top-$k$ approximation by the
-overhead of sorting-based selection~\citep{you2025spark}.
-We take a simpler route: extend the FFN design of elementwise nonlinearities
-to the query, key and value operands of self-attention, using a symmetric
-threshold. A fixed cutoff needs neither ranking nor input-dependent moment
-estimates. It leaves the retained activation count free to change as training
-reshapes the distribution, instead of targeting a prescribed count.
+We study fixed elementwise thresholds that leave the number of surviving
+activations free to vary with the learned representation. Unlike top-$k$
+selection or its statistical approximation~\citep{wang2024qsparse,you2025spark},
+a fixed cutoff does not target a prescribed activation count. It requires
+neither ranking nor input-dependent moment estimates. This motivates the
+design choice; an end-to-end speed advantage over selection-based methods
+would require a separate implementation comparison.
 
-A sparsification intervention specifies where to set activations to zero
-(nonlinearity sites $\mathcal{N}$), the nonlinearity and threshold, and where to encourage
-small activations during training (pressure sites $\mathcal{P}$). The two site
-sets need not coincide.
+A sparsification intervention specifies thresholding sites $\mathcal{N}$,
+their nonlinearities and thresholds, and pressure sites $\mathcal{P}$ at which
+training encourages smaller activation magnitudes. Choosing where to apply a
+threshold and where to apply pressure are separate decisions, although many
+evaluated recipes align the two sets. Figure~\ref{fig:intervention-ladder}
+gives the assignments; the cohort does not cross every possible combination.
 
 We use ReLU and two thresholding nonlinearities:
 $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
 $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
-One-sided thresholding removes negative values and small positive values;
+One-sided thresholding removes all negative values and positive values below $\kappa$;
 symmetric thresholding removes small magnitudes while preserving the signs
 and values of survivors. At $\kappa=0$, their forward maps are ReLU and the
 identity, respectively. Appendix~\ref{app:interventions} specifies boundary
 and derivative conventions.
 
-The threshold is fixed within each training condition. Our hypothesis is
-that the learned distribution can adapt to this nonlinearity, with activation
-pressure providing an additional way to shape it. We examine that adaptation
-through the quality--sparsity comparisons and signed activation distributions.
+The threshold is fixed within each training condition. We hypothesize that
+training can reshape the activation distribution around this nonlinearity,
+with pressure providing an additional influence. We examine quality and
+sparsity at the final checkpoints and compare their signed activation
+distributions. These endpoint measurements describe the resulting
+representations; they do not identify the adaptation process during training.
 
 Pressure uses $\mathcal{L}_1$: we take the mean absolute activation in each
 targeted site--layer tensor, after the nonlinearity where one is applied, then average these
-means equally.
-\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
+means equally. Adding target sites therefore changes the objective and reduces
+the weight of each existing site--layer term. Equal $\lambda$ across target
+sets does not mean equal per-site pressure.
+
+\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$,
+clipping the combined gradient before AdamW.
 \emph{Orthogonal L1} (OL1) adapts gradient-conflict
 projection~\citep{yu2020pcgrad,hsieh2024bloop} to this pressure objective.
 It makes a task-only AdamW update, then adds a pressure
@@ -51,21 +58,24 @@ loss; Appendix~\ref{app:pressure} defines the procedure.
 \label{sec:measurement}
 
 \emph{Activation sparsity} is the fraction of exactly zero entries at a named site.
-To weight zeros by the work they affect, we define \emph{model-wide sparsity}
-as $\Smodel=N_0/N_{\mathrm{model}}$, reported as $100\Smodel\%$. Here, $N_0$
-counts scalar multiplications with at least one zero activation operand in
-the declared transformer-block matrix products. $N_{\mathrm{model}}$ counts all valid multiplications
-in those operations and the dense language-model head; the head receives no
-zero credit. Counts are pooled before division. The percentage refers to this
-declared multiplication workload, not all operations or elapsed time. We count
-only causally valid pairs in a full, uncached sequence;
-Appendix~\ref{app:accounting} gives the exact counters.
+We weight zeros by their affected work using \emph{model-wide activation sparsity},
+$\Smodel=N_0/N_{\mathrm{model}}$, reported as $100\Smodel\%$.
+One scalar multiplication in a declared transformer-block matrix product
+receives one zero credit if either activation operand is zero, including when
+both are zero. The denominator also includes the dense language-model (LM)
+head, which receives no zero credit. We pool integer counts before dividing
+and count only causally valid pairs in full, uncached sequences.
+Appendix~\ref{app:accounting} specifies the operations and actual operands.
+This fraction measures a declared multiplication opportunity, not total
+FLOPs, memory traffic or elapsed time.
 
-The \emph{model-wide sparsity ceiling},
-$\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, counts the fraction
-of that workload whose zero operand is guaranteed by setting the selected
-sites to 100\% activation sparsity, crediting each affected multiplication once. It depends on the architecture,
-site set, and sequence length, but not pressure or a checkpoint. The ceiling
-characterizes selected-site reach rather than sparsity achievable at acceptable
-quality: observed $\Smodel$ also includes natural zeros outside that reach.
-Appendix~\ref{app:ceiling} defines the reach accounting.
+The \emph{architectural reach},
+$\Rarch=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, is the fraction
+of the declared workload structurally reached when the selected sites are
+entirely zero, counting overlapping effects once. It depends on the
+architecture, site set and sequence length, but not on a checkpoint, pressure
+objective or quality constraint. Observed $\Smodel$ also includes natural
+zeros outside the selected-site reach, so $\Rarch$ need not bound every
+observation. Its gap to measured sparsity does not quantify further sparsity
+available at acceptable quality. Appendix~\ref{app:ceiling} defines the
+reach accounting.

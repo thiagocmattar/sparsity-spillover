@@ -37,27 +37,23 @@ ICLR template ZIP is a small provenance exception. The
 [draft README](draft/README.md) documents the build and editing workflow.
 Earlier references below to a local-only draft describe the previous policy.
 
-The [27-page ICLR 2027 draft](draft/main.pdf) now contains the reviewed paper:
-abstract, introduction, related work, methodology, experimental results,
-discussion and complete appendices, including the user's revised abstract and
-introduction. The five-part results argument is preserved and
-sharpened around matched effects, distributions, product counts, scale transfer
-and measured execution. Terminology consistently uses thresholds/nonlinearities,
-activation sparsity, model-wide sparsity and sparsity ceiling.
+The current [30-page ICLR reading draft](draft/main.pdf) incorporates the
+existing-results rewrite and the user-approved name **architectural reach**,
+`R_arch`. Analysis 019 owns the quality-budget and execution-attribution audits,
+revised displays and historical-control checks. The main text occupies pages
+1?14 and still needs shortening for the nine-page submission limit. Its AI use
+statement is present for author review. See the [revision record](draft/revision/README.md)
+for verified claims, numerical checks, remaining decisions and readiness.
+No new experiment was launched or original run record changed.
 
-On 9 September, the user requested the official ICLR 2027 template. The draft
-now uses its unmodified conference and bibliography styles, anonymous author
-block, review header and line numbers. The section sources, bibliography data,
-figure artwork and numerical tables are unchanged. All 27 pages were visually
-checked; all 52 labels and 15 citations resolve, all fonts are embedded, and
-there are no overfull boxes. One minor underfull vertical box on page 3 remains
-under the template's standard page stretching. Main text occupies pages 1-13,
-references pages 13-14 and appendices pages 15-27. Before submission, the main
-text needs shortening to the template's nine-page limit and the authors must
-add its required AI use statement. The
-[conversion record](draft/reviews/2026-09-09-iclr2027-template/README.md) retains
-the downloaded template, hashes, source wrapper and verified PDF. This format
-conversion preceded the Git-tracking change described above.
+## Earlier draft revisions
+
+The official ICLR 2027 conversion used unmodified conference and bibliography
+styles, anonymous authors, review headers and line numbers. Its then-current
+27-page layout and verification are preserved in the
+[conversion record](draft/reviews/2026-09-09-iclr2027-template/README.md).
+The entries below describe earlier versions; their page counts, unchanged-asset
+statements and terminology do not describe the current reading draft.
 
 The 8 September revision added the fixed-threshold rationale and the kernel
 specialization argument requested by the user. It distinguishes early search

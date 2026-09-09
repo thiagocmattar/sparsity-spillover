@@ -1,3 +1,11 @@
+# Current notation update (9 September 2026)
+
+The author approved **architectural reach**, $R_{\mathrm{arch}}$, for the
+unchanged selected-site all-zero reach fraction. Raw `R_model_max` identifiers
+and historical derivations retain their original names. The active cross-size
+normalization is labeled block-only sparsity because the common A7 reference
+reaches every counted block operation. See `revision/glossary.md` and Analysis 019.
+
 # Methodology provenance and editorial scope
 
 5 September 2026. The compact main methodology defines interventions,
@@ -38,7 +46,7 @@ The old source and immutable scientific artifacts remain intact.
 | --- | --- |
 | `\mathcal{S}_{\mathrm{model}}` | `R_model`: pooled block zero products divided by block products plus dense LM-head products |
 | `\mathcal{S}_{\mathrm{block}}` | `R_block`: same numerator divided by block products |
-| `\mathcal{S}_{\mathrm{model}}^{\max}` | `R_model_max_fraction`: all-zero selected-site reach divided by the same model denominator |
+| `R_{\mathrm{arch}}` | `R_model_max_fraction`: all-zero selected-site reach divided by the same model denominator |
 
 All three are fractions; printed percentages multiply by 100. The metric's
 atomic unit is a scalar multiplication, not a dot product or total FLOPs.

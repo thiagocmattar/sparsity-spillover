@@ -72,9 +72,9 @@ The following tables report every selected trained endpoint, all 29 paired
 14M contrasts and all 15 cross-scale recipe comparisons. They retain
 dominated settings as well as favorable ones. Each entry summarizes one
 trained model on complete validation. Sparsity percentages are formed from pooled integer
-product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
+product counts. The endpoint table uses the common A7 architectural-reach denominator
 from Figure~\ref{fig:scale-transfer}, rather than a different denominator
-for each recipe. The notation $U_{\mathrm{arch}}$ is shared with the main text.
+for each recipe. This common normalization equals $\Sblock$.
 
 \input{tables/trained-endpoints}
 \input{tables/paired-effects}
@@ -121,6 +121,34 @@ listed once although it is repeated in each figure row. These 14 groups
 come from seven checkpoints.}
 \label{tab:density-mass}
 \input{tables/density-mass}
+\end{table}
+
+\FloatBarrier
+\subsection{Projection-input vectors in the BF16 kernel diagnostic}
+\label{app:projection-inputs}
+% Analysis 019 / 02_audit_runtime.py and observations/O002-runtime.md;
+% Run 029 scientific-final-k050-c20/c30-r1-a01/diagnostics.json.
+
+An untimed diagnostic pass retained the distribution of nonzero counts per
+token row at each site and layer for all 30 K050 checkpoints. These are BF16
+kernel operands on all 338 validation blocks, separate from the FP16
+histogram reruns above. Every layer contributes 692,224 rows; $h$ has 512
+coordinates per row and $z$ has 128. Table~\ref{tab:projection-input-rows}
+reports the two $\kappa=0.5$ pressured recipes. Summing the row histograms
+recovers the captured sitewise zero counts. Pooling rows across layers gives
+the all-zero-vector rates reported in Section~\ref{sec:activation-reshaping}.
+The records do not retain token identities or context perturbations, and
+zero projection inputs can still produce bias outputs. They therefore do
+not establish whether a branch has lost its function.
+
+\begin{table}[htbp]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{Entirely zero projection-input rows and mean nonzero coordinates
+per row (NNZ), separately at $h$ and $z$, for the 14M $\kappa=0.5$ endpoints.
+Layer indices start at zero. All entries use actual BF16 operands in the
+untimed K050 diagnostic; they are not the pooled FP16 $h,m$ histograms.}
+\label{tab:projection-input-rows}
+\input{tables/projection-input-rows}
 \end{table}
 
 \FloatBarrier
@@ -179,7 +207,13 @@ Figures~\ref{fig:clipping-14m}--\ref{fig:clipping-410m} retain the full
 loss range and every target, including dominated points and ties. Each
 path begins at its actually measured $p=0$ evaluation. Small numerical
 differences from the canonical training endpoint can change strict
-nondominance without implying a substantive improvement. Numerical
+nondominance without implying a substantive improvement. Across all checkpoints,
+the absolute $p=0$ discrepancy is at most $1.81\times10^{-4}$ in loss and
+$0.000908$ sparsity percentage points. Checking dominance beyond the observed
+same-size drift on both axes still finds a trained endpoint with lower loss
+and higher sparsity than each A0 clipping evaluation at $p\geq0.5$, for
+every size. This is a numerical
+sensitivity check, not a confidence interval or an estimate of training variability. Numerical
 frontier memberships are stored separately from the lines connecting
 evaluated settings. All evaluations use complete validation with FP32
 parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
@@ -238,10 +272,31 @@ Historical proposals are replayed on four representative checkpoints; the
 plotted incumbent uses fixed A7-OL1, $\kappa=0.5$. Final implementation and
 ablation summaries retain the 30-checkpoint manuscript cohort from the
 historical 35-checkpoint sweep. Five A4 checkpoints with pressure only at $h$
-are excluded because they do not implement the four-site pressure objective
-studied here. Search progress and the
+remain outside the main cohort because they implement a distinct objective.
+Their original configurations, inherited capture code, initialization,
+schedule and checkpoint identities were reconciled against the corrected
+four-site runs. Across the five matched thresholds, four-site pressure
+raises diagnostic loss by $0.2425$--$0.3196$ relative to $h$-only pressure.
+Its sparsity change is $-0.599$ pp at zero threshold, $+0.001$ pp at 0.01,
+and $+1.421$--$+2.486$ pp at larger thresholds. Adding pressure sites changes
+each old site--layer coefficient from $1/6$ to $1/24$, so this historical
+comparison does not hold per-site pressure fixed. Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/08-search-history-and-association.pdf}
+\caption{Retained development history and descriptive native-relative association.
+(a) Best qualified incumbent on the fixed A7-OL1, $\kappa=0.5$ search
+checkpoint: $1.6024\times$ by iteration 11 and $1.7830\times$ at iteration 42.
+The later attention-dense ablation is not substituted into this history.
+(b) Selected K050 on all 30 canonical checkpoints, with an OLS fit and
+intercept ($R^2=0.8167$). Sparsity uses FP16 counts and timing uses BF16;
+the axes have restricted ranges. Both panels use the matched RTX5090,
+batch-one, full-sequence native reference specified in the text.}
+\label{fig:kernel-history}
+\end{figure}
 
 The coding-agent configuration records \emph{gpt-6-astra} as the default
 model, not the model served for every request. This is one human-guided
@@ -306,6 +361,52 @@ four-checkpoint subset is shown only to document its limited qualification.}
 \input{tables/kernel-ablations}
 \end{table}
 
+\subsubsection{Absolute latencies and association checks}
+\label{app:runtime-sensitivity}
+% Analysis 019 / 02_audit_runtime.py and observations/O002-runtime.md.
+
+Table~\ref{tab:runtime-latencies} retains actual host latencies: for each
+implementation and checkpoint, the geometric mean of the three process
+medians, each over 448 timed sequences. The native column uses K050's paired
+native measurements; the ablation columns have their own native-paired
+processes. A ratio of these median summaries need not equal the reported
+geometric mean of paired ratios. The last column instead divides K050's
+native-relative speedup by all-skips-off's native-relative speedup. BF16
+validation losses accompany these timings; canonical training tables retain
+their original FP16 loss/count pass.
+
+\begin{table}[p]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{Matched 14M host latency summaries in milliseconds, BF16 validation
+loss and incremental sparse-path factor. Dose is $\lambda$ for local pressure
+and $\kappa$ for A4/A7. All four implementations qualify on every row.
+These are unmodified trained checkpoints; clipped endpoints have no corresponding
+latency measurements. The sparse factor is defined in the text, not computed
+by dividing the displayed rounded latency columns.}
+\label{tab:runtime-latencies}
+\input{tables/runtime-latencies}
+\end{table}
+
+The association checks in Table~\ref{tab:runtime-sensitivity} fit an
+unweighted checkpoint-level line with an intercept. Removing the searched
+checkpoint or a recipe family tests descriptive sensitivity; it does not
+create a held-out prediction study. Within-family fits use only four or five
+points, and their larger $R^2$ values do not remove the differences among
+recipes. All fits compare canonical FP16 $\Smodel$ with BF16 timing. The
+retained BF16 scalar counter excludes probability-underflow zeros and is
+only a lower bound, so it cannot replace the canonical counter to resolve
+that precision mismatch.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Descriptive association sensitivity. Each column regresses its
+timing ratio on canonical FP16 model-wide sparsity with an intercept. Native
+relative uses K050/native; sparse factor uses the incremental definition above.
+Subsets are retrospective and overlapping, with no independent training seeds.}
+\label{tab:runtime-sensitivity}
+\input{tables/runtime-sensitivity}
+\end{table}
+
 \FloatBarrier
 \subsection{Evidence and data accompanying the draft}
 \label{app:result-data}
@@ -318,3 +419,18 @@ defines fields and units. Copy hashes are recorded in \texttt{SOURCES.json};
 \texttt{protocol.json} gives data preparation, training settings and
 implementation identities. Paths refer to the accompanying repository;
 the supplementary directory is not a standalone checkpoint or kernel release.
+The \path{revision-audit/} subdirectory adds the retrospective quality-budget
+reduction, absolute runtime summaries and sensitivity checks, per-layer
+projection-input row statistics, and historical-pressure identity audit.
+Raw identifiers remain unchanged: $\Smodel$ corresponds to
+\texttt{R\_model}, $\Sblock$ to \texttt{R\_block}, and architectural reach
+$\Rarch$ to the existing \texttt{R\_model\_max} fields.
+
+The accompanying repository includes the figure and table scripts. The
+Analysis 019 README gives
+commands for regenerating the revised visuals from the retained numerical
+records, separate from commands that require the original raw run artifacts.
+The draft README gives the LaTeX build commands. Checkpoint weights and
+runtime compilation dependencies are not bundled in the supplementary
+measurement directory; these commands do not claim to reproduce training
+or GPU measurements from that directory alone.

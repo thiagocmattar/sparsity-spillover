@@ -1,38 +1,38 @@
-% Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
-% Evidence: Analysis 018 observations O001/O002/O003/O004/O007/O011.
+% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md;
+% canonical sources remain Analysis 018 and the original run records.
 \section{Discussion and conclusion}
 \label{sec:conclusion}
 
-Pressure, thresholds and site placement need to be evaluated together.
-In the matched 14M comparisons, adding pressure ranges from improving both
-loss and sparsity to exchanging quality for additional zeros. Extending the
-intervention to internal attention can increase model-wide sparsity even
-when FFN sparsity falls. The high-threshold seven-site recipe with pressure
-improves both axes over the four-site recipe at all three sizes, but the
-zero-threshold ordering changes. These results favor evaluating each
-addition against its matched recipe, rather than choosing interventions
-from activation sparsity alone.
+An intervention should be evaluated against the recipe to which it is added.
+In the matched 14M comparisons, pressure can improve both observed loss and
+sparsity at one threshold, then exchange quality for additional zeros at
+another. Broader intervention at internal attention can also increase
+model-wide zero-product counts while reducing pooled FFN sparsity. Assessing
+an addition therefore requires its paired quality change and the operations
+affected, alongside the number of zero activations.
 
-The interpretation is supported by a connected pattern across experiments.
-Matched comparisons identify how pressure's added effect changes with the
-threshold; distribution measurements reveal which activations change; and
-product counts explain their model-wide consequence. The high-threshold
-A7-OL1 advantage recurs at all three sizes, while the zero-threshold reversals
-identify where that relationship stops holding. Agreement across these
-comparisons makes the result more informative than a favorable checkpoint
-or an isolated sparsity percentage.
+Recipe comparisons, model selection under a loss budget, and kernel selection
+require different references. The high-threshold seven-site pressured recipe
+improves on its four-site counterpart at all three sizes, yet neither recipe
+supplies the best point under the smallest tested A0-relative loss budgets.
+Similarly, a kernel can accelerate a sparse checkpoint relative to native
+execution while some of its skipping paths make it slower. A favorable paired
+recipe result or a high sparsity percentage alone does not settle the other
+selection decisions.
 
-Product accounting and kernel timing answer different questions. Counting
-zero-operand products shows where an intervention affects computation;
-the sparsity ceiling explains how architecture changes that opportunity.
-The kernel study confirms that some of it can reduce full-model latency,
-but also shows that skipping attention work can cost more than executing it.
-Fusion and sparse-path ablations are therefore necessary to attribute a
-measured speedup.
+Architectural reach identifies which products the selected sites can affect;
+actual-operand counts measure zeros in the learned model; kernel instrumentation
+measures skipped instructions; and timing determines whether skipping pays.
+The attention ablation separates these quantities concretely: many eligible
+instructions are skipped, but dense attention is faster on every checkpoint.
+Reporting native, matched-fusion and sparse-path controls is necessary to
+identify where the observed acceleration comes from.
 
-These conclusions concern MiniPile pretraining at a fixed token budget,
-with a lower learning rate at 410M. Larger models test complete recipes;
-the distribution diagnostics cover 14M and describe responses rather than
-isolating a causal spillover mechanism. The kernel results use one RTX5090,
-full-sequence inference, native SDPA and matched fusion controls. Transfer
-to cached decoding, larger models and other hardware remains untested.
+These conclusions concern one-seed MiniPile pretraining at a fixed token
+budget, with a lower learning rate at 410M and selected complete recipes at
+the larger sizes. Uniform four-site clipping is a limited post-hoc comparator.
+Distribution diagnostics cover 14M; the kernel study uses one RTX5090 and
+full-sequence inference, with canonical FP16 counts and BF16 timing. Two
+high-value questions remain: whether the placement relationships replicate
+when existing pressure coefficients are held fixed, and whether the same
+execution trade-off persists at larger widths.

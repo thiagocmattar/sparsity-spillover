@@ -6,27 +6,52 @@
 % Evidence chain: results-argument-map.md. Sources: Analysis 018 O013/O002/O003/O004/O011.
 % Figures: Analysis 018 04_overview_v2.py; plots.py:{effects,scaling}; 02_activation_density_v3.py.
 % Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
+% Additional audit and derived summaries: Analysis 019 / 01_audit_training.py,
+% 02_audit_runtime.py, 04_make_tables.py; observations/O001-training.md and O002-runtime.md.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
 
 Local pressure and broader nonlinearities offer different quality--sparsity trade-offs
-(Figure~\ref{fig:quality-sparsity-overview}). With OL1 at $h$, the model can
-improve validation loss while introducing modest model-wide sparsity:
-at $\lambda=0.5$, A1-H-OL1 reaches $3.768\%$ sparsity at loss 5.1102,
-compared with A0's loss of 5.2086. A0 post-hoc clipping reaches a similar
+(Figure~\ref{fig:quality-sparsity-overview}). The lowest-loss local endpoint
+uses naive L1 at $h$: at $\lambda=1$, A1-H-L1 reaches $3.949\%$ sparsity
+at loss 5.1023, compared with A0's 5.2086. OL1 at $\lambda=0.5$ also
+has lower observed loss, 5.1102, with $3.768\%$ sparsity.
+A0 post-hoc clipping reaches a similar
 sparsity level, $3.832\%$ at target $p=0.3$, but with loss 5.3619. Thus,
 similar aggregate sparsity can carry different quality costs depending on
 the trained recipe and evaluation-time intervention.
 
 Broader interventions reach much greater sparsity. A7-OL1 at $\kappa=0.5$
-attains $27.483\%$ model-wide sparsity at loss 5.8294, accepting a quality
-cost relative to A0. This comparison also changes computational reach:
+attains $27.483\%$ model-wide sparsity at loss 5.8294, an increase of
+$0.6208$ over A0. This comparison also changes computational reach:
 the A0 clipping reference acts at $a,m,h,z$, whereas A7 additionally thresholds
-the internal attention operands. At 14M, these site sets have analytic sparsity
-ceilings of $12.833\%$ and $29.952\%$, respectively. This comparison changes
+the internal attention operands. At 14M, these site sets have architectural
+reach of $12.833\%$ and $29.952\%$, respectively. This comparison changes
 both the trained representation and the computation the selected sites can
-affect. Paired comparisons separate the additions that produce the trade-off. Full endpoints
-and clipping trajectories are given in Appendix~\ref{app:complete-results}.
+affect. The practical question is how much of the observed opportunity remains
+within a specified quality budget.
+
+Table~\ref{tab:quality-budgets} answers that question retrospectively across
+all 54 trained and 540 clipped evaluations. Under a $+0.05$ loss allowance
+relative to same-size A0, the greatest observed sparsities are $6.490\%$,
+$7.410\%$ and $14.883\%$ at 14M, 70M and 410M. All three use post-hoc
+clipping, including clipping of a pressure-trained checkpoint at 14M.
+No sparsified training recipe in the larger cohorts meets the two smallest
+budgets. These are selected evaluated points, not interpolated operating
+points; the maximum-sparsity recipe and a recipe suitable for a small loss
+budget need not coincide.
+
+\begin{table}[tbp]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{Greatest observed sparsity with loss no greater than same-size
+A0 plus the stated budget. The trained column excludes A0 when identifying a
+sparsified recipe; ``none'' means no such endpoint qualifies. The last columns
+also consider all actual post-hoc evaluations. Budgets with identical winners
+are grouped. These budgets were chosen retrospectively. No kernel latency
+was measured for the clipped winners.}
+\label{tab:quality-budgets}
+\input{tables/quality-budgets}
+\end{table}
 
 \begin{figure}[tbp]
 \centering
@@ -53,22 +78,27 @@ protocol in Section~\ref{sec:experiments}.}
 Pressure's additional value depends on the threshold and target set
 (Figure~\ref{fig:paired-intervention-effects}). Replacing GELU with ReLU
 alone increases model-wide sparsity by 2.714 percentage points (pp), but
-raises loss by 0.0611. Adding local pressure improves loss relative to this
+raises loss by 0.0611. Adding local pressure lowers observed loss relative to this
 ReLU control. Changing naive L1 to OL1 lowers loss at three of the four
 matched weights, but reverses that improvement at $\lambda=1$; the update
-rule is not uniformly better across the sweep.
+rule is not uniformly better across the sweep. These are single-seed
+comparisons of complete update rules, including their clipping and optimizer
+state, rather than an isolated test of conflict projection.
 
 For A4, adding OL1 improves both loss and sparsity at $\kappa=0$ and 0.01.
 At larger thresholds it adds sparsity at increasing quality cost. At
 $\kappa=0.5$, the increment is 2.498 pp for $+0.3783$ loss. The corresponding
 A7 pressure addition yields 12.096 pp for $+0.1265$ loss, while at
 $\kappa=0.1$ it yields 1.372 pp for a much smaller $+0.0008$ loss change.
+That small difference does not establish loss equivalence.
 Broader thresholding also contributes without pressure: A7 minus A4 at
 $\kappa=0.5$ adds 5.171 pp for $+0.0432$ loss.
 
 Pressure therefore needs to be evaluated at its actual threshold and sites.
-Its larger gain under A7 also involves more pressure targets and a different
-objective normalization; it cannot be assigned to nonlinearity placement alone.
+The on/off comparisons establish threshold-dependent effects within each
+defined objective. The larger gain under A7 involves more pressure targets
+and a different objective normalization; it cannot be assigned solely to
+broader nonlinearity placement or to pressure at $q,k,v$.
 We next examine the distributions learned by these complete recipes.
 
 \begin{figure}[tbp]
@@ -83,8 +113,10 @@ Labels give $\lambda$ or $\kappa$ in increasing order with ordinal spacing;
 the dash denotes the unswept ReLU replacement. L1-to-OL1 comparisons share
 $\lambda$; A4/A7 pressure additions and the Q/K/V thresholding addition share
 $\kappa$. Other comparisons use the fixed A0 or A1-H control. Pairs share
-initialization, data order and budget. These are trained endpoint differences,
-not successive training updates.}
+initialization, data order and budget, with one training seed and reused
+controls. Pressure additions hold the nonlinearities fixed; A4 versus A1-H
+also changes the $h$ threshold above zero. These are trained endpoint differences,
+not independent replicates or successive training updates.}
 \label{fig:paired-intervention-effects}
 \end{figure}
 
@@ -93,41 +125,61 @@ not successive training updates.}
 
 More FFN zeros need not mean more model-wide sparsity
 (Figure~\ref{fig:activation-reshaping}). At
-$\kappa=0.5$, A4-OL1 places $99.31\%$ of pooled FFN elements exactly at
+$\kappa=0.5$, A4-OL1 places $99.31\%$ of pooled FFN elements at $h,m$ exactly at
 zero, compared with $93.64\%$ for A7-OL1. Their attention distributions
 differ more sharply: A4-OL1 has a narrow nonzero peak and only $0.22\%$
 exact zeros, whereas A7-OL1 has $95.60\%$ exact zeros and nonzero density
-outside the symmetric threshold gap. The omitted zero masses are reported
-in Table~\ref{tab:density-mass}; a narrow density peak is not itself a large
+outside the symmetric threshold gap. Each panel reports these zero masses
+beside the nonzero density curves; Table~\ref{tab:density-mass} also gives
+the tails. A narrow nonzero density peak is not itself a large
 exact-zero probability.
 
 A4 does not directly threshold or pressure $q,k,v$, yet their distributions
-change substantially. This is a nonlocal response under the complete A4-OL1
-intervention, consistent with spillover. The comparison with A0 does not
+change substantially under the complete A4-OL1 intervention.
+The comparison with A0 does not
 isolate pressure's contribution from the other training changes. A7 directly
 intervenes at these attention sites, so its reshaping there has a different
 interpretation.
 
 The operation counts show why this distinction matters model-wide. At the
 same threshold, $QK$ and $PV$ contribute 16.77 sparsity points under A7-OL1,
-versus 0.06 under A4-OL1 (Appendix~\ref{app:operation-results}). Several
-projection contributions are smaller under A7-OL1, but its attention
-contribution more than offsets them. Greater model-wide sparsity can
-therefore coexist with less pooled FFN sparsity. The scale comparison below
-tests whether the A7-OL1 advantage over A4-OL1 persists in larger models.
+versus 0.06 under A4-OL1 (Table~\ref{tab:operation-summary}). Projection
+contributions together fall from 12.66 to 10.71 points, but the additional
+16.72 attention points more than offset that reduction. Local FFN sparsity
+therefore cannot rank these recipes by their counted model-wide opportunity.
+
+\begin{table}[tbp]
+\centering\small
+\caption{Why local and model-wide sparsity rank the 14M recipes differently
+at $\kappa=0.5$. Every contribution uses the same full-model denominator,
+including the dense LM head with no zero credit. Projection contributions
+sum QKV, attention output and both FFN projections; these are counted
+scalar products, not time or FLOPs saved. Full operation entries are in
+Appendix~\ref{app:operation-results}.}
+\label{tab:operation-summary}
+\input{tables/operation-summary}
+\end{table}
+
+Separate BF16 kernel diagnostics also reveal entirely zero projection-input
+vectors. At $\kappa=0.5$, the all-zero row fractions at $h$ and $z$ are
+$83.72\%$ and $97.15\%$ for A4-OL1, versus $63.12\%$ and $91.20\%$ for
+A7-OL1. Appendix~\ref{app:projection-inputs} reports per-layer nonzero
+counts and this measurement's precision. Zero inputs do not imply zero
+residual-branch outputs, because biases may remain; these aggregate records
+also cannot establish context sensitivity or loss of branch function.
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/05-v3-activation-density-grid.pdf}
+\includegraphics[width=\linewidth]{figures/05-v4-activation-density-grid.pdf}
 \caption{\textbf{Interventions reshape FFN and attention distributions differently.}
-\textbf{Exact zeros are omitted from the curves and reported in
-Table~\ref{tab:density-mass}.} Columns pool FFN $(h,m)$ and attention
+\textbf{Exact zeros are reported above each panel and excluded from the
+nonzero curves.} Columns pool FFN $(h,m)$ and attention
 $(q,k,v)$ activations; rows use trained thresholds $\kappa=0,0.05,0.5$.
 A0 is repeated across rows. Counts are pooled across all layers and validation
 blocks, weighting $h:m$ by 80:20 and $q:k:v$ equally. Density divides nonzero
 bin counts by all captured elements and bin width, without renormalizing
-the visible range. The vertical scale is symlog, linear below 0.01; filled
-areas on this scale do not represent probability mass. Dashed lines mark
+the visible range. The vertical scale is symlog, linear below 0.01 and
+logarithmic above it; plotted areas do not represent probability mass. Dotted lines mark
 $+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
 Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
 A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
@@ -145,13 +197,13 @@ does not transfer unchanged: A4-OL1 is better on both axes at 14M and 70M,
 whereas A7-OL1 is better at 410M. Persistence concerns a specific recipe
 relationship, not the entire threshold response.
 
-Raw sparsity must also be read against the changing workload. The A7 sparsity
-ceiling rises from $29.95\%$ to $49.42\%$ and $87.25\%$ as the dense LM
+Raw sparsity must also be read against the changing workload. A7's architectural
+reach rises from $29.95\%$ to $49.42\%$ and $87.25\%$ as the dense LM
 head accounts for a smaller share of counted products. The bottom row uses
 the same A7 denominator for every curve within a size:
-$U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$. Because A7 reaches all
-counted block operations, this ratio equals the block zero-product fraction
-$\Sblock$. It removes the dense-head share while retaining the different
+$\Sblock=\Smodel/\Rarch(\mathrm{A7})$. This identity holds because A7
+reaches all counted block operations. Block-only sparsity removes the
+dense-head share while retaining the different
 weights of operations within the blocks.
 
 This is transfer of a complete-recipe comparison. The larger cohorts lack
@@ -162,22 +214,22 @@ budget; the plot should not be read as a quality scaling law.
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/03-scale-transfer-and-ceilings.pdf}
+\includegraphics[width=\linewidth]{figures/03-scale-transfer-and-reach.pdf}
 \caption{\textbf{The high-threshold A7-OL1 advantage persists across model sizes.} Columns compare
 14M, 70M and 410M. Solid curves connect separately trained A4-OL1 and A7-OL1
 checkpoints at $\kappa=0,0.01,0.05,0.1,0.5$; dotted open-marker curves show
 A0 post-hoc clipping at $a,m,h,z$ for targets $p=0,0.1,\ldots,0.9$.
 The 60 evaluations appear in both rows. Top: validation loss versus
 $100\mathcal{S}_{\mathrm{model}}$; vertical guides indicate A4/clipping-site
-and A7 analytic sparsity ceilings. Bottom: loss minus unmodified same-size A0
-versus $100U_{\mathrm{arch}}$, where
-$U_{\mathrm{arch}}=\mathcal{S}_{\mathrm{model}}/
-\mathcal{S}_{\mathrm{model}}^{\max}(\mathrm{A7})$ for \textbf{every curve}.
-The A7 reference ceilings are 29.95\%, 49.42\% and 87.25\%; the A4 guide is
+and A7 architectural reach. Bottom: loss minus unmodified same-size A0
+versus $100\Sblock$, where
+$\Sblock=\Smodel/\Rarch(\mathrm{A7})$ for \textbf{every curve}.
+The A7 reference reach values are 29.95\%, 49.42\% and 87.25\%; the A4 guide is
 not the normalization denominator. At $\kappa=0.5$, A7-OL1 improves both
 axes over A4-OL1 at all sizes; the ordering at smaller thresholds varies.
 Table~\ref{tab:cross-scale-recipe-contrasts} gives the boundary-threshold
-comparisons. Training-token budgets are matched across sizes.}
+comparisons. These are complete-recipe comparisons with matched token
+budgets, unequal tokens per parameter and a lower 410M learning rate.}
 \label{fig:scale-transfer}
 \end{figure}
 

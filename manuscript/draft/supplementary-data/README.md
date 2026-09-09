@@ -1,6 +1,7 @@
 # Manuscript results data
 
-This local release accompanies the 8 September 2026 manuscript results.
+This local release retains the 8 September 2026 measurements and adds the
+9 September existing-results audit.
 The 14 copied measurement files are byte-identical to retained evidence;
 SOURCES.json records the original repository path, SHA-256 and byte size.
 The additional protocol.json is a locally composed record with its own
@@ -43,7 +44,10 @@ quantile, not achieved model-wide sparsity. It takes 0,.1,...,.9 with fixed
 checkpoint weights. `delta_loss_from_p0` uses that sweep's measured p=0.
 The stored `U_arch` uses recipe/site-union reach and is NOT the common A7
 normalization used in the manuscript's cross-scale figure and endpoint table.
-For the latter compute R_model / the same-size A7 ceiling explicitly.
+For the latter compute R_model / the same-size A7 architectural reach explicitly;
+this equals block-only sparsity S_block in the declared Pythia graph.
+Architectural reach R_arch is the manuscript alias for the unchanged
+R_model_max fields. It is not a quality-constrained upper bound on measured sparsity.
 
 Histogram exact zeros are separate from nonzero bins. Divide bin counts by
 all captured elements and actual bin width; do not normalize the nonzero
@@ -51,3 +55,28 @@ curve to unit area. Runtime speedups are separate BF16 measurements against
 each checkpoint's native SDPA CUDA-graph baseline; canonical logical sparsity
 is measured in FP16. Neither logical sparsity nor frontier membership is a
 measured runtime gain. Threshold targets are not independent training seeds.
+
+## Existing-results audit added on 9 September
+
+- `revision-audit/training-audit.json`: all 54 canonical endpoints with exact
+  A0-relative losses, 29 paired and 15 cross-size differences, operation sums,
+  actual-p=0 sensitivity and retrospective .05/.10/.20 quality budgets over
+  all 594 evaluated trained/clipped points. Empty sparse-trained regimes remain
+  explicit. No interpolated endpoints or imputed clipped-checkpoint latencies.
+- `revision-audit/runtime-audit.json`: 30-checkpoint raw-timing reconciliation,
+  actual BF16 losses and host-millisecond summaries, native-normalized ratios,
+  incremental sparse-path factors, all leave-family/within-family regressions,
+  and retained BF16 h/z row-NNZ summaries by layer. Absolute latency is the
+  geometric mean of process medians; the reported speedup instead averages
+  raw paired ratios geometrically. The BF16 scalar counter is only a lower
+  bound and does not replace canonical FP16 counts.
+- `revision-audit/historical-audit.json`: the five verified h-only-pressure
+  controls, their exact identities and matched four-site differences. They
+  remain outside the main 30-checkpoint cohort and are not fixed-coefficient
+  placement controls.
+
+These are reductions of existing measurements. The accompanying repository's
+Analysis 019 README distinguishes regenerating visuals from re-auditing raw
+run artifacts. This directory alone does not include training checkpoints,
+executable GPU kernels or every original timing sample. No anonymous public
+code or checkpoint URL is asserted here.

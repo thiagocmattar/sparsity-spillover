@@ -1,5 +1,5 @@
 % Literature chain: post-hoc, trained and broader interventions; then execution.
-% Source checks and interpretation limits: positioning.md and review reports.
+% Primary-source verification: revision/literature_audit.md.
 \section{Related Work}
 \label{sec:related-work}
 
@@ -13,11 +13,12 @@ settings~\citep{lee2024cats}. TEAL extends magnitude thresholding to attention
 and FFN projections and uses block-wise greedy allocation to account for
 their different sensitivities~\citep{liu2024teal}. These studies show that
 site placement and sparsity allocation affect quality even without retraining.
-Our uniform clipping control holds allocation fixed to provide a simple
-reference for the trained interventions.
+Our uniform clipping control provides a reference for asking how a trained
+recipe compares with fixed allocation at evaluation time; it does not test
+superiority over TEAL's optimized allocation.
 
-Training-time interventions allow the representation to adapt to sparse
-computation. ReLU Strikes Back studies restoring sparse activations in
+Training-time interventions alter the nonlinearity and the incentive to
+produce sparse activations. ReLU Strikes Back studies restoring sparse activations in
 language models~\citep{mirzadeh2023relu}; ProSparse combines ReLU, progressive
 $\ell_1$ pressure, and threshold shifting during continued
 training~\citep{song2024prosparse}. ProSparse's schedule ablations show that
@@ -27,7 +28,8 @@ model architecture~\citep{luo2025sparsing}, while \citet{cetin2026sparser} demon
 sparse FFNs induced by $\ell_1$ regularization during pretraining. Together,
 these studies show that training can reshape the quality--sparsity trade-off.
 We examine how pressure's additional effect changes with the threshold
-and target sites, and weight the resulting zeros by the computation they affect.
+and target sites, and how weighting zeros by their affected computation changes
+the comparison between recipes.
 
 Extending sparsification beyond FFNs makes the choice of sites explicit.
 Q-Sparse applies top-$k$ selection to attention and FFN projection inputs,
@@ -46,9 +48,7 @@ nonlinearities with projection-input nonlinearities, both with and without press
 
 Converting activation sparsity into speedup requires an execution strategy
 suited to the workload. TEAL accelerates batch-one autoregressive decoding,
-where skipping weight accesses is valuable, and reports up to $1.8\times$
-speedup at 50\% sparsity under its projection-based
-accounting~\citep{liu2024teal}.
+where skipping weight accesses is valuable~\citep{liu2024teal}.
 \citet{cetin2026sparser} address batched matrix multiplication: their TwELL
 format packs sparse activations as a projection produces them and supports
 fused FFN computation, reducing the overhead of materializing and consuming
@@ -69,6 +69,5 @@ compatible with tiled computation~\citep{cetin2026sparser}.
 Iterative kernel generation with execution and profiling feedback offers a
 tool for exploring these
 adaptations~\citep{ouyang2025kernelbench,luo2026agentic}.
-We use this approach in a human-guided kernel case study, requiring numerical
-agreement and full-model timings that include activation-dependent selection
-and conversion costs.
+Our human-guided case study uses matched fusion and skipping controls to
+test when such overhead is repaid in full-model execution.

@@ -45,7 +45,7 @@ post-RoPE operands: rotation can repopulate an individual zero coordinate.
 Likewise, the output projection uses actual post-nonlinearity context $z$, rather than
 inferring its zeros from the value mask.
 \FloatBarrier
-\subsection{Architecture-specific counts and sparsity ceilings}
+\subsection{Architecture-specific counts and architectural reach}
 \label{app:architecture-counts}
 
 The operation inventory comprises QKV projection, attention scores ($QK$),
@@ -73,7 +73,7 @@ propagation is assumed: QKV biases can survive $a=0$, and zero scores do not
 imply zero softmax probabilities. For the same site set in every layer,
 $N_{\mathrm{reach}}=BL\sum_{o\in\mathcal{O}(\mathcal{N})}C_o$, where $C_o$
 is that operation's per-sequence count. Division by $N_{\mathrm{model}}$ gives
-$\Smax$.
+$\Rarch$.
 
 With Pythia's $d_f=4d$, the per-block reachable counts for A0, A1-H, A4, and A7
 are $0$, $4Td^2$, $12Td^2$, and $C_{\mathrm{block}}$, respectively. The ladder

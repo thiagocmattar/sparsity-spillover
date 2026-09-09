@@ -5,6 +5,12 @@
 
 ## Current status
 
+Analysis 019 audits retained records for the current manuscript rewrite:
+quality budgets, runtime attribution, historical controls and revised displays.
+The draft adopts architectural reach (`R_arch`) without changing raw metric
+identifiers. No new experiment or finding promotion. See
+`analyses/019-2026-09-09-manuscript-rewrite-audit/README.md`.
+
 Run 031 completed seven full-validation signed activation-density passes for
 Analysis 018 Figure 05-v3. FFN/attention overlays, exact-zero mass, trained gate
 thresholds and lossless per-layer/site counts are retained. All checks passed;
@@ -194,7 +200,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `032`. Next analysis number: `019`. Next finding number: `F003`.
+Next run number: `032`. Next analysis number: `020`. Next finding number: `F003`.
 
 ## Where we stopped
 
