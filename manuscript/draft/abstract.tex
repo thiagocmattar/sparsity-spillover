@@ -1,23 +1,25 @@
-% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md.
+% Evidence: Analysis 019 O001/O002; Analysis 020 O001--O005.
 \begin{abstract}
-Useful activation sparsity depends on how zeros are induced, which operations
-they affect, and whether exploiting them repays execution overhead. We study
-pressure, thresholding and site placement through 54 matched Pythia pretraining
-conditions on MiniPile: detailed comparisons at 14M and selected complete
-recipes at 70M and 410M. Model-wide activation sparsity, $\Smodel$, counts
-zero-operand scalar multiplications in a declared workload; architectural
-reach, $\Rarch$, describes the portion structurally affected by the selected
-sites. Pressure's marginal quality--sparsity effect changes with the threshold
-and target objective, from improving both observed axes to exchanging quality
-for additional zeros. Distribution measurements and operation counts also show
-that the seven-site recipe can produce greater model-wide sparsity despite
-fewer pooled FFN zeros, because its attention contribution outweighs reduced
-projection contributions. The high-threshold complete-recipe advantage
-persists across the three sizes, but lower-threshold orderings vary. On one
-RTX5090, a selected implementation achieves a $1.234\times$ geometric mean
-speedup over native execution across the 30 14M checkpoints for BF16,
-uncached 2,048-token inference. Sparse paths add $1.043\times$ over matched
-fusion, helping 14 checkpoints; attention skipping slows every checkpoint.
-These single-seed comparisons motivate evaluating an intervention's paired
-quality cost, affected operations and execution granularity together.
+Activation sparsification requires choosing how to induce zeros, which
+operations to target, and when exploiting them improves execution.
+We study pressure, fixed thresholding and site placement through 54 Pythia
+pretraining conditions on MiniPile: extensive 14M comparisons and selected
+recipes at 70M and 410M, with one seed per condition.
+Architectural reach quantifies the multiplication workload structurally
+affected before training; model-wide sparsity measures observed zero-operand
+products using the same full-model denominator.
+Pressure's marginal effect depends on threshold and targets: at 14M and
+$\kappa=0.5$, adding OL1 to seven-site thresholding raises sparsity from
+$15.39\%$ to $27.48\%$ against $29.95\%$ reach, for $+0.1265$ loss.
+This seven-site pressured recipe outperforms its four-site counterpart on
+both quality and sparsity at every tested size, while lower-threshold
+orderings vary.
+Activation distributions and operation counts explain why the broader
+recipe can yield more model-wide sparsity despite fewer FFN zeros.
+On an RTX5090, specialized BF16 full-sequence inference gains
+$1.234\times$ over native execution across all 30 14M checkpoints, while
+sparse paths add $1.043\times$ over matched fusion and attention skipping
+slows every checkpoint.
+These comparisons show why intervention choice should combine paired
+quality cost, architectural reach and execution granularity.
 \end{abstract}

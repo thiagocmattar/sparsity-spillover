@@ -58,3 +58,18 @@ All numeric geometry derives from audited files; no original measurement changes
 Figure-level renders were inspected; an overlapping runtime note was repositioned.
 Build:batch4-*.log,34 pages,no undefined references/overfull boxes;main currently
 spills a short conclusion paragraph onto page10, to be resolved by W07-W10/Q02.
+
+## Batch 5: W07-W10 and figure placement
+
+Rewrote the introduction after the result analyses,then the eight-sentence
+abstract; conclusion now states three intervention/architecture/execution
+lessons. Related work keeps selection details in the method rationale.
+Moved each main figure immediately after its first explanatory paragraph and
+removed float-page placement from main figures. This avoids isolated figure
+pages without changing fonts,figure scale,spacing commands or official styles.
+The current33-page PDF has main text1-9,AI/references10-11,appendices12-33;
+cross-size and runtime figures are on7/8. No undefined/overfull warnings.
+The official2027 author guide was rechecked:initial submission limit9 pages.
+A follow-up join check directly matches all36 canonical training-manifest
+final checkpoint hashes to the clipping records,independent of display labels.
+Next:final numerical/source-copy verification,clean build and full visual review.

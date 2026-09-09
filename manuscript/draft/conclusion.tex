@@ -1,21 +1,25 @@
-% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md.
+% Evidence: Analysis 019 O001/O002; Analysis 020 O001--O005.
 \section{Discussion and conclusion}
 \label{sec:conclusion}
 
-Pressure's additional value depends on the threshold and target objective:
-it can improve both observed axes at one setting and exchange quality for
-zeros at another. Broader attention intervention can also raise model-wide
-sparsity while reducing pooled FFN sparsity. Recipe comparisons therefore
-require paired quality changes and operation-weighted counts. Selecting a
-model under a loss budget and selecting its execution kernel require further
-comparisons: neither a high sparsity percentage nor a same-checkpoint
-native-relative speedup establishes a quality-matched model advantage.
+Pressure's marginal effect depends on threshold and target mixture: it can
+improve both quality and sparsity or exchange quality for further zeros.
+ReLU pretraining likewise changes the response to later clipping, with a
+favorable intermediate region that need not extend to extreme targets.
+These interactions make paired quality changes more informative than a
+recipe's maximum sparsity alone.
 
-Architectural reach, observed zero products, skipped instructions and runtime
-are distinct quantities. Here, fusion and sparse paths both contribute, but
-attention skipping loses despite bypassing many instructions. These findings
-concern one-seed MiniPile pretraining, selected larger-size recipes, a limited
-uniform-clipping reference and one 14M kernel workload, with FP16 counts and
-BF16 timing. The next questions are whether the pressure relationships
-replicate with existing coefficients held fixed, and whether the execution
-trade-off persists at larger widths.
+Architectural reach helps choose placement before training by identifying
+the affected work. Observed counts then explain why fewer FFN zeros can
+coexist with greater model-wide sparsity. The high-threshold A7-OL1 advantage
+over A4-OL1 recurs beyond 14M, while lower-threshold orderings change.
+Width, depth and sequence length affect the accounting differently, so
+larger raw sparsity is not itself evidence of better adaptation.
+
+Execution adds another decision: whole-fragment skips can lose despite
+substantial scalar zero opportunity. The evidence covers one-seed pretraining,
+selected larger-size recipes, uniform clipping and one 14M runtime workload.
+The retained trajectories motivate testing training-budget sensitivity;
+the cap audit motivates varying relative pressure targets rather than merely
+rescaling a saturated vector. Both would sharpen which intervention to train,
+while larger-width kernels would test when its counted zeros become profitable.

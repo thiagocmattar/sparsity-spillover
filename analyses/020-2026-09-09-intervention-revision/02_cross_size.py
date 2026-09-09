@@ -24,9 +24,15 @@ def main():
     baseline={r['scale']:r['loss'] for r in bundle['trained'] if r['family']=='A0'}
     a7={r['scale']:r['R_model_max_fraction'] for r in bundle['ceilings'] if r['family']=='A7'}
     rows=[]
+    manifests={}
     for r in bundle['trained']:
         if r['family'] not in FAMILIES: continue
         endpoint=endpoints[r['id']]
+        manifest_path=ROOT/r['source']/'manifest.json'
+        manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+        assert manifest['checkpoints']['final']['content_sha256']==endpoint['checkpoint_content_sha256']
+        manifests[r['id']]=dict(path=manifest_path.relative_to(ROOT).as_posix(),sha256=sha(manifest_path),
+                               final_checkpoint_content_sha256=manifest['checkpoints']['final']['content_sha256'])
         assert endpoint['evaluation_precision']=='FP16'
         assert all(endpoint[k]==r[k] for k in ['id','source','scale','family','dose','loss'])
         rows.append(dict(id=r['id'], checkpoint_id=r['id'], checkpoint_sha256=endpoint['checkpoint_content_sha256'],
@@ -83,7 +89,7 @@ def main():
         relu.append(dict(scale=scale,base_relu_cost=originals[f'{scale}:A1-H:None']['loss']-baseline[scale],
                          matched_policy=paired,observed_pairs_within_one_pp=close))
     result=dict(sources={p.relative_to(ROOT).as_posix():sha(p) for p in paths},rows=len(rows),trained=36,clipped=360,
-                p0_discrepancies=discrepancies,relu=relu,
+                p0_discrepancies=discrepancies,relu=relu,canonical_manifest_identities=manifests,
                 precision_provenance='Analysis 019 endpoint audit and Analysis 018 source reconstruction verify canonical and clipping FP16 coverage. p=0 is measured independently; differences are preserved.',
                 p0_implementation='Canonical endpoints use eager exact-site evaluation; older clipping records use calibration wrappers and separate evaluations. Same checkpoint bytes, dtype and full validation coverage do not imply bitwise identical execution.')
     (DATA/'cross-size-audit.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')

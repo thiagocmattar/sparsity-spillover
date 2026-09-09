@@ -11,18 +11,7 @@ specified tolerances on all 338 validation blocks. The selected K050
 qualifies on all 30 checkpoints; Appendix~\ref{app:kernel-results} retains
 the development history, TwELL compatibility and numerical contract.
 
-Speedup is native latency divided by candidate latency in paired timing
-samples. K050 achieves a $1.2340\times$ equal-checkpoint geometric mean;
-the same implementation with all skipping disabled gives $1.1829\times$.
-The ratio of these separately measured native-relative speedups defines
-the sparse-path factor: $1.0432\times$ geometrically, benefiting 14 of 30
-checkpoints. At the fixed A7-OL1, $\kappa=0.5$ search checkpoint, the
-retrospective reaches $1.7830\times$ over native and sparse paths add
-$1.311\times$ over the matched control. This factor is not a direct paired
-latency ratio between implementations; Appendix~\ref{app:runtime-sensitivity}
-retains the separate final sweep and descriptive association checks.
-
-\begin{figure}[tbp]
+\begin{figure}[!ht]
 \centering
 \includegraphics[width=\linewidth]{figures/07-v2-kernel-quality-latency.pdf}
 \caption{\textbf{More sparsity need not select a better quality--latency point.}
@@ -34,6 +23,18 @@ The dashed OLS fit is descriptive. BF16 timing/quality and FP16 counts are
 distinct measurements; connections pair implementations on the same weights.}
 \label{fig:kernel-autoresearch}
 \end{figure}
+
+Speedup is native latency divided by candidate latency in paired timing
+samples. K050 achieves a $1.2340\times$ equal-checkpoint geometric mean;
+the same implementation with all skipping disabled gives $1.1829\times$.
+The ratio of these separately measured native-relative speedups defines
+the sparse-path factor: $1.0432\times$ geometrically, benefiting 14 of 30
+checkpoints. At the fixed A7-OL1, $\kappa=0.5$ search checkpoint, the
+retrospective reaches $1.7830\times$ over native and sparse paths add
+$1.311\times$ over the matched control. This factor is not a direct paired
+latency ratio between implementations; Appendix~\ref{app:runtime-sensitivity}
+retains the separate final sweep and descriptive association checks.
+
 
 For example, unpressured A4 and A7 at $\kappa=0.5$ have specialized
 latencies of 0.4790 and 0.4789\,ms, but BF16 losses of 5.6623 and 5.7076.

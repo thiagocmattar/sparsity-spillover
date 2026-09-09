@@ -1,42 +1,38 @@
-% Evidence: Analysis 019 observations/O001-training.md and O002-runtime.md.
-% Literature boundaries: revision/literature_audit.md.
+% Evidence: Analysis 019 O001/O002; Analysis 020 O001--O005.
 \section{Introduction}
 \label{sec:introduction}
 
 Activation sparsity can reduce inference cost when specialized kernels exploit
 zero activations~\citep{liu2024teal,cetin2026sparser}. Choosing how to create
-those zeros requires more than a local sparsity percentage: their sites
-determine the affected multiplication work, and skipping that work adds
-overhead. We ask how pressure, thresholding and placement change the quality
-cost of sparsification, and which opportunities translate into faster execution.
+those zeros requires knowing which operations their sites affect and whether
+skipping that work repays its overhead. We ask how pressure, thresholding
+and placement change sparsification's quality cost and its useful computation.
 
 Existing recipes combine these choices differently: TEAL uses post-hoc
-thresholding with allocation across projections; ProSparse combines ReLU,
-progressive pressure and threshold shifting; Q-Sparse selects top-$k$
-projection inputs~\citep{liu2024teal,song2024prosparse,wang2024qsparse}.
-Their ablations motivate examining the additional value of pressure as the
-threshold and sites change. We distinguish \emph{pressure}, which encourages
-small magnitudes, from \emph{thresholding}, which applies specified zeroing
-maps, and \emph{placement}, which selects where each acts.
+thresholding, ProSparse combines ReLU with progressive pressure, and
+Q-Sparse selects projection inputs~\citep{liu2024teal,song2024prosparse,wang2024qsparse}.
+We distinguish \emph{pressure}, which encourages small magnitudes,
+\emph{thresholding}, which applies a zeroing map, and \emph{placement},
+which selects where each acts. Fixed cutoffs let us examine their interactions
+while training determines how many activations survive.
 
 We pretrain Pythia-family models from scratch for controlled comparisons
 across sizes~\citep{biderman2023pythia}. At 14M, 30 conditions and 29 paired
-comparisons show that pressure's marginal effect depends on the threshold.
-At the largest threshold, adding orthogonal pressure to seven-site
-thresholding raises model-wide sparsity from $15.39\%$ to $27.48\%$, against
-$29.95\%$ architectural reach, for $+0.1265$ loss relative to the unpressured
-recipe and $+0.6208$ relative to unmodified A0. This recipe has greater
-model-wide sparsity than its four-site counterpart despite fewer pooled FFN
-zeros; operation counts explain the reversal. Selected recipes extend to
-70M and 410M, where the high-threshold seven-site advantage persists but
-lower-threshold orderings vary. Uniform post-hoc clipping provides a
-supporting comparison: small quality budgets can favor clipped endpoints.
+contrasts show pressure's threshold-dependent effect: at $\kappa=0.5$,
+adding OL1 to seven-site thresholding raises model-wide sparsity from
+$15.39\%$ to $27.48\%$ for $+0.1265$ loss. Architectural reach, computed
+before training from the graph and workload, puts this result against
+$29.95\%$ structurally reachable work. A7-OL1 also improves over A4-OL1
+by 14.77 sparsity pp and 0.2086 loss, despite fewer pooled FFN zeros.
+Selected recipes extend to 70M and 410M, where that high-threshold comparison
+again improves both axes, adding 5.01 and 9.02 pp; lower-threshold orderings
+vary. ReLU pretraining also improves the response to subsequent clipping
+at intermediate targets across all sizes, while retaining an initial quality
+cost and extreme-target reversals.
 
-A human-guided coding-agent case study then measures execution on one
-RTX5090, using BF16, batch-one, uncached 2,048-token inference. The selected
-implementation is $1.234\times$ faster than native PyTorch/SDPA geometrically
-across all 30 14M checkpoints. Sparse paths add $1.043\times$ over matched
-fusion with skipping disabled, helping 14 checkpoints; disabling attention
-skipping improves every checkpoint. These comparisons connect an
-intervention's quality cost and affected operations to the instruction
-granularity and overhead that determine whether its zeros are useful.
+An execution case study tests which counted opportunities become useful.
+For BF16, batch-one, uncached 2,048-token inference on an RTX5090, the
+selected implementation gains $1.234\times$ geometrically over native execution across
+30 checkpoints, but sparse paths add only $1.043\times$ over matched fusion.
+Disabling attention skipping improves every checkpoint. These controls connect
+intervention choices to the granularity and overhead that determine latency.

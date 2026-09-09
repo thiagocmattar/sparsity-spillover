@@ -29,10 +29,10 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | W04 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
 | W05 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
 | W06 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W07 | TODO | See task.md |
-| W08 | TODO | See task.md |
-| W09 | TODO | See task.md |
-| W10 | TODO | See task.md |
+| W07 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
+| W08 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
+| W09 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
+| W10 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
 | Q01 | TODO | See task.md |
 | Q02 | TODO | See task.md |
 | Q03 | TODO | See task.md |
