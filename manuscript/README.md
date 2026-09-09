@@ -28,22 +28,22 @@ variant.
 
 ## V2 workspace
 
-The [27-page reading copy](draft/main.pdf) now contains the reviewed paper:
+The [26-page reading copy](draft/main.pdf) now contains the reviewed paper:
 abstract, introduction, related work, methodology, experimental results,
-discussion and complete appendices. The user's first two introduction
-paragraphs are unchanged. The five-part results argument is preserved and
+discussion and complete appendices, including the user's revised abstract and
+introduction. The five-part results argument is preserved and
 sharpened around matched effects, distributions, product counts, scale transfer
 and measured execution. Terminology consistently uses thresholds/nonlinearities,
 activation sparsity, model-wide sparsity and sparsity ceiling.
 
-The latest revision adds the fixed-threshold rationale and the kernel
+The 8 September revision added the fixed-threshold rationale and the kernel
 specialization argument requested by the user. It distinguishes early search
 gains from convergence, a descriptive sparsity-speedup association from a
 scaling law, and zero-fragment skipping from profitable execution. The
 [argument review](draft/reviews/2026-09-08-kernel-argument/revision-log.md) and
 [O015 snapshot](../analyses/018-2026-09-08-results-materials/provenance/manuscript-20260908-threshold-kernel/README.md)
-retain the source checks and verified reading copy. Figures, numerical tables,
-bibliography and introduction remain unchanged.
+retain that revision's source checks and verified reading copy. Figures,
+numerical tables, bibliography and introduction were unchanged in that revision.
 
 Technical-reader, scientific-reviewer and literature sub-agents reviewed every
 figure, table and result. The [revision log](draft/reviews/2026-09-08-polish/revision-log.md)
@@ -51,9 +51,20 @@ records their resolutions and the [verification](draft/reviews/2026-09-08-polish
 All 26 pages of that earlier revision were inspected, all citations and labels resolve, and all fonts
 are embedded. Template fitting remains outside this revision.
 
-Five main and five appendix figures retain their source artwork. On 9 September,
+Six main and four appendix figures retain their source artwork. On 9 September,
+the user replaced the experimental setup's recipe table with the combined
+[Pythia architecture map and sparsification ladder](artifacts/pythia-architecture-sparsification-ladder.pdf).
+It is now Figure 1 on page 5, with the architecture above the eight-recipe
+site/pressure map and analytic ceilings. The former appendix occurrence was
+removed, its cross-reference updated, and all figure/table numbers resolved.
+The caption preserves pressure targets and model-size coverage; the artwork
+is byte-identical to the source composite. The scale-contrast table now stays
+with its discussion after the reflow. The 26-page PDF builds without LaTeX
+or box warnings, and the revised layout was visually checked.
+
+Earlier on 9 September,
 the user selected the [all-variant overview](draft/figures/01-v2-14m-overview.pdf)
-for Figure 1. The rebuilt reading copy embeds all 30 trained checkpoints, and
+for the quality--sparsity overview, now Figure 2. The reading copy embeds all 30 trained checkpoints, and
 its caption and source comments now follow Analysis 018
 [O013](../analyses/018-2026-09-08-results-materials/observations/O013-overview-all-variants.md)
 and `04_overview_v2.py`; the original overview is retained. The build and affected
