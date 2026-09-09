@@ -447,3 +447,15 @@ which contains 12 figures including the separately generated overview v2.
 Six manuscript-source fingerprints were refreshed after the user's draft
 edits and figure relocation; all numerical fields and measurement-source
 hashes remain unchanged. Earlier source/PDF snapshots remain historical.
+
+## ICLR template conversion, 9 September 2026
+
+The user subsequently requested the official ICLR 2027 format for the live
+draft. Only its wrapper and compiled PDF changed; all section TeX, bibliography
+entries and measurement artifacts are unchanged. The two corresponding live
+manuscript-source fingerprints in `figure_data.json` were refreshed, with no
+changes to numerical fields or other source hashes. The focused evidence suite
+passes 19/19 tests. The [manuscript conversion record](../../manuscript/draft/reviews/2026-09-09-iclr2027-template/README.md)
+retains the official template hashes and checked 27-page PDF. Main text still
+occupies 13 pages, and the required AI use statement remains author work before
+submission. Earlier source/PDF snapshots remain unchanged.

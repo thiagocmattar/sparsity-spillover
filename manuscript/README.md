@@ -28,13 +28,27 @@ variant.
 
 ## V2 workspace
 
-The [26-page reading copy](draft/main.pdf) now contains the reviewed paper:
+The [27-page ICLR 2027 draft](draft/main.pdf) now contains the reviewed paper:
 abstract, introduction, related work, methodology, experimental results,
 discussion and complete appendices, including the user's revised abstract and
 introduction. The five-part results argument is preserved and
 sharpened around matched effects, distributions, product counts, scale transfer
 and measured execution. Terminology consistently uses thresholds/nonlinearities,
 activation sparsity, model-wide sparsity and sparsity ceiling.
+
+On 9 September, the user requested the official ICLR 2027 template. The draft
+now uses its unmodified conference and bibliography styles, anonymous author
+block, review header and line numbers. The section sources, bibliography data,
+figure artwork and numerical tables are unchanged. All 27 pages were visually
+checked; all 52 labels and 15 citations resolve, all fonts are embedded, and
+there are no overfull boxes. One minor underfull vertical box on page 3 remains
+under the template's standard page stretching. Main text occupies pages 1-13,
+references pages 13-14 and appendices pages 15-27. Before submission, the main
+text needs shortening to the template's nine-page limit and the authors must
+add its required AI use statement. The
+[conversion record](draft/reviews/2026-09-09-iclr2027-template/README.md) retains
+the downloaded template, hashes, source wrapper and verified PDF. The existing
+local-only Git policy for draft files is unchanged.
 
 The 8 September revision added the fixed-threshold rationale and the kernel
 specialization argument requested by the user. It distinguishes early search
@@ -49,7 +63,7 @@ Technical-reader, scientific-reviewer and literature sub-agents reviewed every
 figure, table and result. The [revision log](draft/reviews/2026-09-08-polish/revision-log.md)
 records their resolutions and the [verification](draft/reviews/2026-09-08-polish/verification.json).
 All 26 pages of that earlier revision were inspected, all citations and labels resolve, and all fonts
-are embedded. Template fitting remains outside this revision.
+are embedded. That review preceded the ICLR template conversion above.
 
 Six main and four appendix figures retain their source artwork. On 9 September,
 the user replaced the experimental setup's recipe table with the combined

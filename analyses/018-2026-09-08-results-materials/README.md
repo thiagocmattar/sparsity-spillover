@@ -1,9 +1,10 @@
 # Analysis 018 — Results materials for the revised argument
 
-The current 26-page manuscript uses the all-variant overview v2 and places the
+The current 27-page ICLR 2027 manuscript uses the all-variant overview v2 and places the
 architecture/recipe diagram in the main experimental setup. See the
 [manuscript record](../../manuscript/README.md). The snapshots below preserve
-the earlier revisions; the 9 September closeout checks are in [VERIFICATION.md](VERIFICATION.md).
+the earlier revisions; the 9 September closeout and template-conversion checks
+are in [VERIFICATION.md](VERIFICATION.md).
 
 The 8 September manuscript revision added the fixed-threshold motivation and kernel
 specialization argument. [O015](observations/O015-threshold-kernel-argument.md)
