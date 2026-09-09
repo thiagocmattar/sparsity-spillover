@@ -7,6 +7,7 @@ from pathlib import Path
 import csv
 import hashlib
 import json
+import shutil
 import statistics
 
 HERE = Path(__file__).resolve().parent
@@ -122,6 +123,16 @@ def main():
                  late_window="Steps 570..712, final 20% of 712 boundaries; fixed before reading outcomes.",
                  norm_scope="Accumulated, AMP-unscaled pre-clip global gradient norm over all trainable parameters; task-only for the nine selected curves. OL1 direction/cap norms are pre-learning-rate over eligible parameters.")
     (OUT / "log-audit.json").write_text(json.dumps(audit, indent=2)+"\n", encoding="utf-8")
+    table = [r"% Analysis 020 / 01_audit_logs.py; fixed steps 570--712.",
+             r"\begin{tabular}{@{}llrr@{}}", r"\toprule",
+             r"Size & Recipe & Median pre-clip norm & Loss slope / billion tokens \\", r"\midrule"]
+    for r in sorted(dynamics, key=lambda r: (["A0","A4-OL1","A7-OL1"].index(r["family"]),["14M","70M","410M"].index(r["scale"]))):
+        table.append(f"{r['scale']} & {r['family']} & {r['late_preclip_norm']['median']:.4f} & ${r['late_loss_slope_per_billion_tokens']:+.4f}$ " + r"\\")
+    table += [r"\bottomrule", r"\end{tabular}"]
+    (HERE / "tables").mkdir(exist_ok=True)
+    table_path = HERE / "tables/training-dynamics.tex"
+    table_path.write_text("\n".join(table)+"\n", encoding="utf-8", newline="\n")
+    shutil.copyfile(table_path, ROOT / "manuscript/draft/tables/training-dynamics.tex")
     print(json.dumps(dict(conditions=len(sources), boundaries=sum(s["boundaries"] for s in sources),
                           skipped=sum(s["skipped"] for s in sources), ol1_boundaries=len(ol1_steps),
                           cap_active=sum(r["cap_active"] for r in ol1_steps), dynamics=dynamics), indent=2))

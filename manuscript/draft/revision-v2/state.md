@@ -18,28 +18,30 @@ Existing nine-page main-text budget remains; cross-size evidence has priority.
 | R01 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
 | R02 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
 | R03 | DONE_VERIFIED | relu_clipping_findings.md; cross_size_interventions.csv; Analysis 020 join |
-| G01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| G02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| V01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| V02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| V03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W04 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W05 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
-| W06 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout Q02 pending |
+| G01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| G02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| V01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| V02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| V03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W01 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W02 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W03 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W04 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W05 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
+| W06 | DONE_VERIFIED | Analysis 020 figures/observations; revised results and appendices; final layout and clean build verified in verification.json |
 | W07 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
 | W08 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
 | W09 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
 | W10 | DONE_VERIFIED | related-work, conclusion, introduction and abstract revised after results |
-| Q01 | TODO | See task.md |
-| Q02 | TODO | See task.md |
-| Q03 | TODO | See task.md |
+| Q01 | DONE_VERIFIED | readiness.md, verification.json and Analysis 020 claim checks |
+| Q02 | DONE_VERIFIED | readiness.md, verification.json and Analysis 020 claim checks |
+| Q03 | DONE_VERIFIED | readiness.md, verification.json and Analysis 020 claim checks |
 | E01 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
-| E02 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
+| E02 | NOT_APPLICABLE | All 24,208 OL1 boundary records exist; missing-log trigger is false |
 | E03 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 | E04 | NEEDS_AUTHORIZATION | Optional; not launched or required for conditional wording |
 
-Next batch: W07-W10 framing; Q01-Q03 final verification and nine-page layout.
+Authorized revision complete. No unfinished existing-evidence task remains.
+Optional E01/E03/E04 are separate unlaunched requests in optional-evidence.md.
+Final PDF: 33 pages; main text 1-9. Handoff and commands: readiness.md.
 Historical revision/ records describe the prior completed rewrite; revision-v2/ owns this task.

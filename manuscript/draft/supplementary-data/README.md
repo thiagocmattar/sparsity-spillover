@@ -80,3 +80,13 @@ Analysis 019 README distinguishes regenerating visuals from re-auditing raw
 run artifacts. This directory alone does not include training checkpoints,
 executable GPU kernels or every original timing sample. No anonymous public
 code or checkpoint URL is asserted here.
+
+## Intervention revision v2
+
+The current [revision record](../revision-v2/readiness.md) adds a 396-record
+identity-checked cross-size CSV and 6,408 raw training-trajectory records under
+`../revision-v2/data/`. Analysis 020 owns their reductions, the OL1 cap audit,
+mathematical checks and new figures. These are derived from retained measurements.
+Existing copies here retain the same scientific values; the two live source
+inventories in `figure-data.json` and `revision-audit/training-audit.json` are
+refreshed to fingerprint the current manuscript. Original run records are unchanged.

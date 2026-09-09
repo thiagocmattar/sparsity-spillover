@@ -37,14 +37,16 @@ ICLR template ZIP is a small provenance exception. The
 [draft README](draft/README.md) documents the build and editing workflow.
 Earlier references below to a local-only draft describe the previous policy.
 
-The current [28-page ICLR draft](draft/main.pdf) incorporates the existing-results
-rewrite and the user-approved name **architectural reach**, `R_arch`. The author
-confirmed the empirical-design framing and requested condensation: main text now
-occupies pages 1-8, within the nine-page budget. Full supporting figures and results
-remain in the appendix. Analysis 019 owns the quality-budget and execution-attribution
-audits, revised displays and historical-control checks. The AI use statement is
-present for author review. See the [revision record](draft/revision/README.md)
-for verified claims, numerical checks, author decisions and readiness.
+The current [33-page ICLR draft](draft/main.pdf) incorporates the intervention-centered
+revision and the user-approved name **architectural reach**, `R_arch`. Main text
+occupies pages 1-9. The cross-size figure is restored to the main text, including
+ReLU followed by clipping; runtime figures compare checkpoint-level quality,
+absolute latency and sparse-path attribution. Full supporting results remain in
+the appendix. Analysis 020 owns the new OL1/log, reach and cross-size audits and
+figures; Analysis 019 retains the preceding numerical and execution audits.
+The AI use statement is present for author review. See the
+[current revision record](draft/revision-v2/readiness.md) for verified claims,
+conditional explanations, numerical checks and reproduction commands.
 No new experiment was launched or original run record changed.
 
 ## Earlier draft revisions

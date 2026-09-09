@@ -6,7 +6,10 @@ all pages in text and pixels; preserved PDF and logs are under ignored
 `tmp/revision-v2-baseline/`. Only the author's edited `task.md` was initially dirty.
 `baseline.json` records the exact task, PDF and TeX identities.
 
-| Target | Editable source | Numerical / implementation authority |
+The following table records the baseline source locations; final replacements
+and their new owner are listed below.
+
+| Target | Editable source at baseline | Numerical / implementation authority |
 |---|---|---|
 | Root and template | `manuscript/draft/main.tex`, existing ICLR 2027 styles | Official styles unchanged; draft README build command |
 | Method rationale and formulas | `methodology.tex`, `methodology-appendix.tex` | `src/sparsity_research/pressure.py`, `optimization.py`, `sites.py`; executed run-local implementations and configs |
@@ -41,3 +44,30 @@ Scientific invariants: 54 primary trained conditions (30/12/12), one seed,
 validation blocks and the reported 1,444-token tail. FP16 endpoint/count and
 BF16 timing/quality measurements remain separate. Pressure/gate sites, maps,
 normalization, checkpoint identities and raw metric keys are preserved.
+
+## Final additions and replacements
+
+- Analysis 020 `01_audit_logs.py` → `data/log-audit.json`, `ol1-steps.csv`,
+  `training-curves.csv`, `tables/training-dynamics.tex`; draft C.5, Figure 8,
+  Table 4 and the OL1 appendix. Exact implementation/log fields are in
+  `ol1-audit.md` and `training-dynamics.md`.
+- Analysis 020 `02_cross_size.py` → 396-record `cross_size_interventions.csv`
+  and `cross-size-audit.json`; all selected final-checkpoint manifest hashes,
+  calibrated targets and measured p=0 comparisons are verified.
+- Analysis 020 `03_figures.py` → `03-v4-cross-size-interventions.pdf` (main
+  Figure 5), `09-cross-size-full.pdf` (Figure 10), `10-training-dynamics.pdf`
+  (Figure 8) and `07-v2-kernel-quality-latency.pdf` (Figure 6). Source hashes
+  and all omitted point IDs are in its `figures/SOURCES.json`.
+- `tables/quality-budgets.tex` is now used only by `results-appendix.tex`,
+  Table 11. The boundary-only main table is removed; all 15 pairs remain
+  in `tables/scale-contrasts-full.tex`, Table 7.
+- Historical h-only pressure is now a dedicated D.1 subsection in
+  `results-appendix.tex`, outside the primary cohort and runtime discussion.
+- Analysis 020 `04_verify_claims.py` → `data/claim-checks.json`; final
+  manuscript verification and task/paragraph mapping are in this directory's
+  `verification.json`, `readiness.md` and `changes.md`.
+
+Existing Analysis 018/019 source fingerprints referencing the live manuscript
+were refreshed after the final build. Their scientific records and existing
+numerical displays did not change. Manuscript copy inventories were checked
+against their sources; no run-owned input or measurement was rewritten.

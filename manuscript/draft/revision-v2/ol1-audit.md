@@ -26,7 +26,7 @@ orthogonal, conflicting, opposing and zero vectors, cap boundary, positive globa
 rescaling, the true-task-gradient counterexample and the small-norm safeguard.
 No loss-preservation theorem or empirical robustness sweep is claimed.
 
-All 24,208 OL1 boundaries are retained, no steps skipped. 7,283 caps bind (30.0843%).
+All 24,208 OL1 boundaries are retained, no steps skipped. 7,283 caps bind (30.0851%).
 The test uses the actual condition r>0 and b/(r+eps)<1 and verifies logged s and
 final ratio. Norms are pre-learning-rate on eligible tensors. norm(w_tilde) was
 not stored directly; it is recoverable as r*(norm(u)+eps)/lambda, a derived value.
