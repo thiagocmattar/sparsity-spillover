@@ -3,23 +3,14 @@
 \section{Experimental study}
 \label{sec:experiments}
 
-We pretrain randomly initialized Pythia-14M, 70M, and 410M
-models~\citep{biderman2023pythia}. To fit our compute budget, we adapt
-Pythia's training recipe to MiniPile~\citep{kaddour2023minipile}, using
-1.493 billion input tokens per model. We conduct extensive comparisons at 14M and promote the sparsest recipes
-to 70M and 410M, alongside their baselines.
-We measure validation cross-entropy and $\Smodel$ in the same forward passes
-over all complete sequences from MiniPile's 500 validation documents.
-All training-result figures and tables use this evaluation.
-Table~\ref{tab:interventions} maps the eight recipes onto the sites in
-Figure~\ref{fig:pythia-block}.
+We pretrain randomly initialized Pythia-14M, 70M, and 410M models~\citep{biderman2023pythia}. To fit our compute budget, we adapt Pythia's training recipe to MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model. We conduct extensive comparisons at 14M and promote the sparsest recipes to 70M and 410M, alongside their baselines. We measure validation cross-entropy loss and $\Smodel$ over all complete sequences from MiniPile's validation documents. Table~\ref{tab:interventions} maps the eight recipes onto the sites in Figure~\ref{fig:pythia-block}.
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
 \begin{table}[!htbp]
 \centering\small
 \caption{\textbf{Sparsification recipes and architectural reach.}
-Ceilings are $100\Smax\%$ at $T=2{,}048$. A1-H recipes use ReLU at $h$;
+Ceilings are $100\cdot\Smax\%$ at $T=2{,}048$. A1-H recipes use ReLU at $h$;
 A4/A7 use the thresholding functions in Section~\ref{sec:interventions}.
 A1-H-L1 uses L1N; the OL1 suffix denotes orthogonal pressure.
 All recipes are evaluated at 14M; 70M and 410M use A0, A1-H, A4-OL1 and A7-OL1.}
@@ -44,19 +35,9 @@ A7-OL1   & $a,m,h,z,q,k,v$ & $a,m,h,z,q,k,v$ & 29.95 & 49.42 & 87.25 \\
 \end{tabular}
 \end{table}
 
-The experimental setup contains 30 training runs at 14M and 12 at each larger
-model size. Within each size, runs share initialization, data order and
-training budget. We vary local pressure for A1-H using L1N and OL1 with
-$\lambda\in\{0.05,0.1,0.5,1\}$. For A4/A7, we sweep
-$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, both without pressure and with OL1 at
-$\lambda=1$. These sweeps test which interventions yield the largest
-sparsification gains. Appendix~\ref{app:training-protocol} details the
-training settings.
+The experimental setup contains 30 training runs at 14M and 12 at each larger model size. Within each size, runs share initialization, data order and training budget. We vary local pressure for A1-H using L1N and OL1 with $\lambda\in\{0.05,0.1,0.5,1\}$. For A4/A7, we sweep $\kappa\in\{0,0.01,0.05,0.1,0.5\}$, both without pressure and with OL1 at $\lambda=1$. These sweeps test which interventions yield the largest sparsification gains. Appendix~\ref{app:training-protocol} details the training settings.
 
-To compare the interventions with post-hoc clipping, we apply uniform
-percentile magnitude-clipping targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$
-as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are
-calibrated separately on ten training blocks.
+To compare the interventions with post-hoc clipping, we apply uniform percentile magnitude-clipping targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$ as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are calibrated separately on ten training blocks.
 
 \input{training-results}
 \input{kernel-autoresearch}

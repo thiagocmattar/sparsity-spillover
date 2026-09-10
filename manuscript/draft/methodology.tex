@@ -6,27 +6,11 @@
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
-A sparsification intervention specifies (i) where to set activations to zero
-(thresholding sites $\mathcal{N}$), (ii) the thresholding function $G$, and
-(iii) where to apply activation regularization pressure (pressure sites
-$\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide,
-and different sites may use different functions $G$. These choices give a
-combinatorial set of interventions during training.
+A sparsification intervention specifies (i) where to threshold activations (thresholding sites $\mathcal{N}$), (ii) the thresholding function $G(.)$, and (iii) where to apply activation pressure (pressure sites $\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide, and different sites may use different functions $G$. These choices give a combinatorial set of interventions during training.
 
-To avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark},
-we extend ReLU to one-sided and symmetric thresholding:
-$G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
-$G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
-The threshold $\kappa$ controls thresholding strength and is fixed within each
-training condition. Appendix~\ref{app:interventions} gives boundary and derivative conventions.
+To avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark}, we extend ReLU to one-sided and symmetric thresholding: $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$. The threshold $\kappa$ controls thresholding strength and is fixed within each training condition. Appendix~\ref{app:interventions} gives boundary and derivative conventions.
 
-Figure~\ref{fig:pythia-block} locates the intervention sites: $a$ and $m$ are
-the normalized inputs to the attention and FFN branches; $h$ is the FFN hidden
-activation; $z$ is the concatenated attention context before output projection;
-and $q,k,v$ are the query, key and value operands, with $q,k$ taken after RoPE.
-The attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at
-selected sites among $a,m,h,z$ and $G_{\pm,\kappa}$ at $q,k,v$.
-At $h$, the selected nonlinearity replaces GELU.
+Figure~\ref{fig:pythia-block} locates the intervention sites on the Pythia architecture: $a$ and $m$ are the normalized inputs to the attention and FFN branches; $h$ is the FFN hidden activation; $z$ is the concatenated attention context before output projection; and $q,k,v$ are the query, key and value operands, with $q,k$ taken after RoPE. The attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at selected sites among $a,m,h,z$ and $G_{\pm,\kappa}$ at $q,k,v$. At $h$, the selected nonlinearity replaces GELU.
 
 % Source artwork and observation: figures/pythia-architecture-map.tex and .md.
 \begin{figure}[!htbp]
@@ -39,37 +23,13 @@ Table~\ref{tab:interventions} specifies thresholding and pressure assignments.}
 \label{fig:pythia-block}
 \end{figure}
 
-For optimization pressure, $\mathcal{L}_1$ averages mean absolute activations
-across targeted sites and layers, after any thresholding. \emph{Naive L1}
-(L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, introducing
-a weight $\lambda$ that affects sparsity and quality~\citep{song2024prosparse,cetin2026sparser}.
-To reduce this additional tuning dimension, we propose \emph{orthogonal L1}
-(OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}.
-In its ideal capped form, OL1 chooses the step that maximizes alignment with
-the preconditioned pressure direction, within a unit norm budget relative to
-the adaptive Adam direction and without opposing it. Once the budget is
-saturated, increasing $\lambda$ leaves this correction unchanged. This
-motivates fixing $\lambda$ in our multisite ablations, removing one sweep
-dimension from the combinatorial intervention design.
-Appendix~\ref{app:pressure} gives the formulation.
+For optimization pressure, $\mathcal{L}_1$ averages mean absolute activations across targeted sites and layers, after any thresholding. \emph{Naive L1} (L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, introducing a weight $\lambda$ that affects sparsity and quality~\citep{song2024prosparse,cetin2026sparser}. To reduce this additional tuning dimension, we propose \emph{orthogonal L1} (OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}. OL1 chooses the step that maximizes alignment with the preconditioned pressure direction, within a unit norm budget relative to the adaptive Adam direction and without opposing it. Once the budget is saturated, increasing $\lambda$ leaves this correction unchanged. This motivates fixing a saturated $\lambda$ in our multisite ablations, removing one sweep dimension from the combinatorial intervention design. Appendix~\ref{app:pressure} gives the formulation.
 
 \subsection{Sparsity measure and architectural reach}
 \label{sec:measurement}
 
-\emph{Activation sparsity} is the fraction of zero activations at a site.
-To report \emph{model-wide sparsity}, we define $\Smodel=N_0/N_{\mathrm{model}}$,
-where $N_0$ counts scalar multiplications with a zero activation operand in
-the Pythia-block matrix products. $N_{\mathrm{model}}$ counts all scalar
-multiplications in those products and the final output projection to
-vocabulary logits. We pool validation counts, excluding masked attention
-pairs (Appendix~\ref{app:accounting}).
+\emph{Activation sparsity} is the fraction of zero activations at a site. To report \emph{model-wide sparsity}, we define $\Smodel=N_0/N_{\mathrm{model}}$, where $N_0$ counts scalar multiplications with a zero activation operand in the Pythia-block matrix products. $N_{\mathrm{model}}$ counts all scalar multiplications within those blocks and the final output projection. We pool validation counts, excluding masked attention pairs (Appendix~\ref{app:accounting}).
 
 To quantify intervention potential a priori, we define the
-\emph{model-wide sparsity ceiling} as
-$\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$.
-It measures the fraction of scalar multiplications guaranteed a zero operand
-when all selected sites are 100\% sparse. It depends on architecture, sites,
-and sequence length. Table~\ref{tab:interventions} illustrates the higher
-ceilings of larger models at fixed sequence length. Natural zeros outside
-this reach can make $\Smodel$ exceed $\Smax$.
-Appendix~\ref{app:ceiling} gives the precise accounting.
+\emph{model-wide sparsity ceiling} as $\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$. It measures the fraction of scalar multiplications guaranteed a zero operand when all selected sites are 100\% sparse. It depends on architecture, sites,
+and sequence length. Table~\ref{tab:interventions} illustrates the higher ceilings of larger models at fixed sequence length. Natural zeros outside this reach can make $\Smodel$ exceed $\Smax$. Appendix~\ref{app:ceiling} gives the precise accounting.
