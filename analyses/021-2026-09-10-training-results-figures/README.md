@@ -40,11 +40,12 @@ Eight clipping evaluations lie above the displayed loss range; their measured
 coordinates remain in the figure paths and data. Earlier analysis artwork and
 the manuscript's full recipe-level PDF are preserved.
 
-The manuscript retains the first version from commit `56d4ec6`, shown as
-Figure 2 on page 5 of its 26-page PDF. At the author's request, this compact
-revision changes only Analysis 021; the draft copy, caption and `main.pdf`
-have not been updated. The current analysis PDF therefore differs from the
-manuscript copy until a later adoption.
+After approving the figure polish, the author requested its adoption in the
+introduction. The draft now embeds the approved PDF byte-for-byte as Figure 1
+on page 2. The Pythia paragraph cites it, and the experimental section refers
+back to the same figure. Its caption identifies both clipping paths and the
+91.8% utilization. The rebuilt `main.pdf` has 26 pages. The earlier figure
+adoption remains in commit `56d4ec6`.
 
 ## Reproduction and checks
 

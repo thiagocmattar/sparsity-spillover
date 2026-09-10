@@ -25,12 +25,15 @@ missing and no overfull boxes occur.
 
 ## Current format
 
-On 10 September, the quality-sparsity overview was replaced with the
+On 10 September, the quality-sparsity overview was moved into the introduction
+using the approved polished
 [Analysis 021 figure](../../analyses/021-2026-09-10-training-results-figures/figures/01-14m-quality-sparsity.pdf):
 short labels, 26 trained checkpoints (naive L1 omitted), baseline and ReLU
-clipping, and 12.83%/29.95% reach guides. Its caption and source manifest were
-updated; the earlier all-recipe overview is retained. The entries below record
-earlier revisions.
+clipping, and 12.83%/29.95% ceiling guides. It is Figure 1 on page 2, directly
+above the Pythia paragraph that cites it. The caption and source manifest were
+updated, and the experimental section refers back to it without repeating the
+figure. Earlier overview PDFs remain retained. The entries below record earlier
+revisions.
 
 The 9 September 2026 format conversion uses the official ICLR 2027 styles in
 anonymous review mode, including the review header and line numbers. The title,
@@ -52,8 +55,8 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 
 ## Reading copy and sources
 
-- [main.pdf](main.pdf): 27-page ICLR 2027 draft; main text pages 1-13,
-  references pages 13-14, appendices pages 15-27. Before submission, shorten the
+- [main.pdf](main.pdf): 26-page ICLR 2027 draft; main text pages 1-12,
+  references pages 12-13, appendices pages 14-26. Before submission, shorten the
   main text to nine pages and add the required author-reviewed AI use statement.
 - [abstract.tex](abstract.tex), [introduction.tex](introduction.tex),
   [related-work.tex](related-work.tex), [methodology.tex](methodology.tex):
@@ -79,9 +82,15 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 
 The paper uses activation sparsity, model-wide sparsity, sparsity ceiling,
 thresholding and nonlinearities consistently. Operational data keys retain
-their original names. Figure artwork and numerical measurements are unchanged.
+their original names. Figure revisions are recorded above; numerical measurements are unchanged.
 
 ## Review and verification
+
+The introduction-figure adoption was rebuilt with resolved references and no
+overfull boxes. Page 1 is pixel-identical to the preceding draft; pages 2-7
+were rendered and checked after the reflow. The figure copy matches the approved
+Analysis 021 PDF and its recorded SHA-256. Two underfull vertical boxes remain
+on pages 3 and 7; both pages were visually checked.
 
 The ICLR conversion was compiled with the official, byte-identical conference
 and bibliography styles and their bundled `natbib.sty` and `fancyhdr.sty`.

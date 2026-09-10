@@ -23,8 +23,8 @@ x-axis uses the manuscript's calligraphic S_model notation. One post-hoc
 clipping label sits at the upper left near the gray path; the caption identifies
 both dotted paths and reports the 91.8% utilization. The comparison
 arrow and all leaders except the pressure-label leader are removed. Markers
-remain 5.3 points, with thinner and lighter sweep lines. The manuscript retains
-the first layout from commit `56d4ec6`; this revision is confined to Analysis 021.
+remain 5.3 points, with thinner and lighter sweep lines. Polishing was confined
+to Analysis 021 until the author approved introduction adoption, recorded below.
 
 Validation uses all 500 MiniPile documents, 338 complete 2048-token sequences,
 692224 input tokens and 691886 prediction tokens, excluding the 1444-token
@@ -115,4 +115,20 @@ Run 030. No new finding is promoted.
   the page, and the page dimensions are 5.5 by 3.35 inches. The legend sits
   outside the axes. The annotation values and caption's 91.8% utilization
   were checked against the source endpoints.
-  No manuscript file changed during this revision.
+  No measurements changed during figure polishing or manuscript adoption.
+
+## Manuscript adoption
+
+The author approved the polished figure and requested its placement in the
+introduction. `manuscript/draft/introduction.tex` now contains the figure and a
+brief reference in the Pythia pretraining paragraph. Its caption condenses the
+caption above while retaining the site definitions, clipping colors, pressure
+encoding, ceilings and 91.8% utilization. The experimental section refers back
+to it; the former duplicate figure block was removed.
+
+The manuscript copy is byte-identical to the approved analysis PDF, with its
+hash recorded in `manuscript/draft/figures/SOURCES.json`. The rebuilt draft has
+26 pages; this is Figure 1 on page 2. References resolve, and page 1 is
+pixel-identical to the preceding draft. Pages 2-7 were rendered and visually
+checked. No overfull boxes occur; underfull vertical boxes on pages 3 and 7
+were inspected. The standalone figure and measurements remain unchanged.

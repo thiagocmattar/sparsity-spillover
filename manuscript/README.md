@@ -3,8 +3,10 @@
 The 10 September quality-sparsity overview now uses
 [Analysis 021](../analyses/021-2026-09-10-training-results-figures/README.md):
 short intervention labels, both baseline and ReLU clipping, and explicit
-projection/attention reach guides. Its figure and caption replace the earlier
-overview in `draft/training-results.tex`; earlier artwork is retained.
+four-/seven-site ceiling guides. The approved polished figure is now Figure 1
+on page 2, in `draft/introduction.tex`, with a brief reference in the Pythia
+paragraph. The experimental section refers back to it. The current draft has
+26 pages; earlier artwork is retained.
 The revision records below describe their historical snapshots.
 
 This directory is the paper-facing scientific layer shipped inside the
