@@ -39,21 +39,19 @@ Table~\ref{tab:interventions} specifies thresholding and pressure assignments.}
 \label{fig:pythia-block}
 \end{figure}
 
-For optimization pressure, $\mathcal{L}_1$ averages the mean absolute activation
-equally across targeted site--layer tensors, after any thresholding.
-\emph{Naive L1} (L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
-The weight $\lambda$ adds a tuning dimension that affects sparsity and quality,
-as reported by ProSparse~\citep{song2024prosparse} and \citet{cetin2026sparser}.
-To limit this sensitivity, \emph{orthogonal L1} (OL1) adapts gradient-conflict
-projection~\citep{yu2020pcgrad,hsieh2024bloop} to the AdamW update.
-After a task-only AdamW step, it preconditions the pressure gradient using the
-task's second-moment estimates
-and removes its conflicting component when it opposes the adaptive task direction.
-A unit norm budget caps the pressure correction at that direction's norm,
-before applying the learning rate. For a fixed optimizer state, the ideal
-capped correction no longer grows with $\lambda$, motivating fixed-budget
-comparisons across interventions. This bounds pressure without guaranteeing
-preserved task loss; Appendix~\ref{app:pressure} defines the procedure.
+For optimization pressure, $\mathcal{L}_1$ averages mean absolute activations
+across targeted sites and layers, after any thresholding. \emph{Naive L1}
+(L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, introducing
+a weight $\lambda$ that affects sparsity and quality~\citep{song2024prosparse,cetin2026sparser}.
+To reduce this additional tuning dimension, we propose \emph{orthogonal L1}
+(OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}.
+In its ideal capped form, OL1 chooses the step that maximizes alignment with
+the preconditioned pressure direction, within a unit norm budget relative to
+the adaptive Adam direction and without opposing it. Once the budget is
+saturated, increasing $\lambda$ leaves this correction unchanged. This
+motivates fixing $\lambda$ in our multisite ablations, removing one sweep
+dimension from the combinatorial intervention design.
+Appendix~\ref{app:pressure} gives the formulation.
 
 \subsection{Sparsity and architectural reach}
 \label{sec:measurement}
