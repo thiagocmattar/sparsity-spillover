@@ -11,15 +11,16 @@ checkpoint evaluation, or measurement is required.
 26 trained checkpoints, omits naive L1, and shows both baseline and ReLU
 post-hoc clipping. Direct annotations highlight the local-pressure regime and
 the matched high-threshold pressure addition. Vertical guides expose the
-12.83% and 29.95% architectural reach.
+12.83% and 29.95% model-wide sparsity ceilings.
 
 The compact revision is 5.5 by 3.35 inches (1.64:1), 34% shorter than the first
 version. The one-row legend sits below the axes, preserving the preceding
 version's data-region height. Inside the plot, labels identify baseline, ReLU,
-ReLU plus pressure, the two reach guides and the 27.48% endpoint; the only
-prose annotation reports the matched pressure effect. There is no internal
-title, clipping text, comparison arrow or utilization callout. Only the local
-pressure label retains a leader line.
+ReLU plus pressure, the two ceiling guides and the 27.48% endpoint. A single
+post-hoc clipping label sits near the upper gray path, and the orange statement
+reports the matched pressure effect. The x-axis uses the manuscript's
+calligraphic S_model notation. There is no internal title, comparison arrow
+or utilization callout. Only the local pressure label retains a leader line.
 Four-site thresholds act at a,m,h,z; seven-site thresholds add Q/K/V.
 The caption defines these sites. Solid, dashed and dotted paths respectively
 denote training without pressure, training with pressure and post-hoc clipping.

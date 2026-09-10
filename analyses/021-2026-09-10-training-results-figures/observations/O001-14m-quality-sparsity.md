@@ -17,9 +17,11 @@ continuing above the panel. All trained points are visible.
 
 The compact layout, refined on 10 September, is 5.5 by 3.35 inches rather than
 5.5 by 5.1. The legend occupies one row below the axes; the data-region height
-is preserved. The plot retains three condition labels, two single-line reach
-labels, the matched pressure statement and the 27.48% endpoint label. Clipping
-descriptions and the 91.8% utilization move to the caption. The comparison
+is preserved. The plot retains three condition labels, two single-line ceiling
+labels, the matched pressure statement and the 27.48% endpoint label. The
+x-axis uses the manuscript's calligraphic S_model notation. One post-hoc
+clipping label sits at the upper left near the gray path; the caption identifies
+both dotted paths and reports the 91.8% utilization. The comparison
 arrow and all leaders except the pressure-label leader are removed. Markers
 remain 5.3 points, with thinner and lighter sweep lines. The manuscript retains
 the first layout from commit `56d4ec6`; this revision is confined to Analysis 021.
@@ -76,7 +78,7 @@ act at a,m,h,z, which feed FFN and attention projections; seven-site thresholds
 also act at Q/K/V, with Q/K after RoPE. Pressure denotes orthogonal L1.
 Solid and dashed paths connect trained settings without and with pressure;
 gray and green dotted paths show post-hoc clipping of baseline and ReLU,
-respectively. Vertical guides mark architectural reach for the selected sites;
+respectively. Vertical guides mark model-wide sparsity ceilings for the selected sites;
 both clipping paths share the four-site reach. The orange annotation reports
 the matched seven-site pressure addition at threshold 0.5:
 +12.1 percentage points of sparsity for +0.13 loss. The resulting 27.48%

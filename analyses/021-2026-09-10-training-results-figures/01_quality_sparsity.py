@@ -86,7 +86,7 @@ def make_figure(data):
     fig, ax = plt.subplots(figsize=(5.5, 3.35))
     fig.subplots_adjust(left=0.12, right=0.985, bottom=0.195, top=0.985)
     ax.set(xlim=(-0.65, 31.3), ylim=YLIM,
-           xlabel="Model-wide sparsity (%)",
+           xlabel=r"Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)",
            ylabel="Validation loss (lower is better)")
     ax.set_xticks([0, 5, 10, 15, 20, 25, 30])
     ax.set_yticks([5.2, 5.4, 5.6, 5.8, 6.0, 6.2])
@@ -94,14 +94,14 @@ def make_figure(data):
     ax.set_axisbelow(True)
 
     for ceiling, label, color in zip(data["ceilings"],
-                                    ["4-site reach", "7-site reach"],
+                                    ["4-site ceiling", "7-site ceiling"],
                                     [COLORS["projection"], COLORS["attention"]]):
         x = 100 * ceiling["reachable_product_count"] / ceiling["model_product_count"]
         ax.axvline(x, color=color, alpha=0.5, linewidth=0.75,
                    gid=f"ceiling:{ceiling['family']}")
         suffix = " (+Q/K/V)" if ceiling["family"] == "A7" else ""
-        ax.text(x + (0.35 if ceiling["family"] == "A4" else -0.35), 6.205,
-                f"{label}: {x:.2f}%{suffix}", ha="left" if ceiling["family"] == "A4" else "right",
+        ax.text(x if ceiling["family"] == "A4" else x - 0.35, 6.205,
+                f"{label}: {x:.2f}%{suffix}", ha="center" if ceiling["family"] == "A4" else "right",
                 va="top", color=color, fontsize=6.7,
                 bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.7})
 
@@ -142,6 +142,8 @@ def make_figure(data):
     ax.annotate("ReLU + pressure", xy(best_local), xytext=(5.4, 5.13),
                 color=COLORS["relu"], fontsize=7.5, va="center",
                 arrowprops={"arrowstyle": "-", "color": COLORS["relu"], "lw": 0.6})
+    ax.text(0.15, 6.105, "Post-hoc clipping", color=COLORS["baseline"],
+            fontsize=7.1, ha="left", va="center")
 
     plain = series(data, "A7")[-1]
     pressured = series(data, "A7-OL1")[-1]
