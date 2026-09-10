@@ -4,16 +4,15 @@
 \label{sec:experiments}
 
 We pretrain randomly initialized Pythia-14M, 70M, and 410M
-models~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}.
-Detailed comparisons use 14M; the larger models cover selected recipes.
-Quality is next-token validation cross-entropy, where lower is better.
-We measure loss and $\Smodel$ in the same forward pass over all 338 complete
-2,048-token blocks from the 500 MiniPile validation documents, excluding the
-1,444-token tail. All training-result figures and tables use this evaluation.
-
+models~\citep{biderman2023pythia}. To fit our compute budget, we adapt
+Pythia's training recipe to MiniPile~\citep{kaddour2023minipile}, using
+1.493 billion input tokens per model. We conduct extensive comparisons
+at 14M; the larger models cover selected sparse recipes and their baselines.
+We measure validation cross-entropy and $\Smodel$ in the same forward passes
+over all complete sequences from MiniPile's 500 validation documents.
+All training-result figures and tables use this evaluation.
 Table~\ref{tab:interventions} maps the eight recipes onto the sites in
-Figure~\ref{fig:pythia-block}. Each recipe is pretrained separately.
-Appendix~\ref{app:sites} gives exact site definitions and tensor shapes.
+Figure~\ref{fig:pythia-block}.
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
