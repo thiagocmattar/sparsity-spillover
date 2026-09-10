@@ -15,11 +15,13 @@ for each of baseline and ReLU (p=0, 0.1, ..., 0.9). The focused loss range is
 5.03-6.23; six of ten clipping points per checkpoint are visible, with paths
 continuing above the panel. All trained points are visible.
 
-The compact layout, refined on 10 September, is 5.5 by 3.15 inches rather than
-5.5 by 5.1. The final pass removes the title while preserving the data region's
-height from the 3.5-inch preview. Reach labels and the legend sit inside the
-axes, while the caption defines the sites. Markers are 5.3 points (10% larger
-than the preview); sweep lines are thinner and lighter. The manuscript retains
+The compact layout, refined on 10 September, is 5.5 by 3.35 inches rather than
+5.5 by 5.1. The legend occupies one row below the axes; the data-region height
+is preserved. The plot retains three condition labels, two single-line reach
+labels, the matched pressure statement and the 27.48% endpoint label. Clipping
+descriptions and the 91.8% utilization move to the caption. The comparison
+arrow and all leaders except the pressure-label leader are removed. Markers
+remain 5.3 points, with thinner and lighter sweep lines. The manuscript retains
 the first layout from commit `56d4ec6`; this revision is confined to Analysis 021.
 
 Validation uses all 500 MiniPile documents, 338 complete 2048-token sequences,
@@ -35,10 +37,10 @@ of the trained-endpoint losses.
 | --- | --- | --- |
 | A0 | Baseline | Stock GELU |
 | A1-H | ReLU | h |
-| A1-H-OL1 | Local pressure | h, with ReLU |
-| A4 | 4-site thresholds | a, m, h, z |
+| A1-H-OL1 | ReLU + pressure | h, with ReLU |
+| A4 | 4-site | a, m, h, z |
 | A4-OL1 | 4-site + pressure | a, m, h, z |
-| A7 | 7-site thresholds (+Q/K/V) | a, m, h, q_post, k_post, v, z |
+| A7 | 7-site (+Q/K/V) | a, m, h, q_post, k_post, v, z |
 | A7-OL1 | 7-site + pressure | a, m, h, q_post, k_post, v, z |
 
 Pressure is orthogonal L1, not naive L1. Projection sites include the FFN and
@@ -47,9 +49,8 @@ FFN-only. All clipping uses a,m,h,z. Blue denotes projection-site thresholds;
 orange adds attention operands. Open diamonds/triangles and solid lines denote
 thresholds without pressure; filled markers and dashed lines add pressure.
 Gray/green open circles on dotted paths denote baseline/ReLU post-hoc clipping.
-The thin double-headed arrow compares the two matched threshold-0.5 endpoints.
-Clipping leaders attach between measured markers on the dotted paths; these
-leader locations are not extra observations.
+The orange statement compares the matched threshold-0.5 endpoints. The curves
+connect settings within each recipe; they do not depict this paired difference.
 
 ## Results
 
@@ -64,8 +65,8 @@ leader locations are not extra observations.
   projection in the denominator and excluding future-masked attention pairs.
   The 27.4827% endpoint is 91.8% of the 29.9524% seven-site reach.
 - At clipping target 0.5, the ReLU checkpoint reaches 6.9945% sparsity at loss
-  5.9763, compared with baseline clipping at 6.4419% and loss 6.0777. This
-  stronger clipping reference is now directly labeled.
+  5.9763, compared with baseline clipping at 6.4419% and loss 6.0777. Both
+  clipping references remain visible and are identified in the caption.
 
 ## Caption
 
@@ -74,11 +75,12 @@ checkpoints and post-hoc clipping of baseline and ReLU. Four-site thresholds
 act at a,m,h,z, which feed FFN and attention projections; seven-site thresholds
 also act at Q/K/V, with Q/K after RoPE. Pressure denotes orthogonal L1.
 Solid and dashed paths connect trained settings without and with pressure;
-dotted paths show post-hoc clipping. Vertical guides mark architectural reach
-for the selected sites; both clipping paths share the four-site reach. The
-double-headed arrow shows the matched seven-site pressure addition at threshold 0.5:
+gray and green dotted paths show post-hoc clipping of baseline and ReLU,
+respectively. Vertical guides mark architectural reach for the selected sites;
+both clipping paths share the four-site reach. The orange annotation reports
+the matched seven-site pressure addition at threshold 0.5:
 +12.1 percentage points of sparsity for +0.13 loss. The resulting 27.48%
-sparsity is 91.8% of seven-site reach. Lines connect evaluated settings, not
+sparsity is 91.8% of seven-site reach. Lines connect settings within each recipe, not
 fitted frontiers. Six of ten points on each clipping path lie in the displayed
 loss range; the complete trajectories remain in the clipping appendix.
 
@@ -108,6 +110,7 @@ Run 030. No new finding is promoted.
 - Focused verification: `test_overview.py`, all three tests passed. All 46
   measurements match the preceding version. The final compact PDF was
   inspected with Poppler. All figure fonts are embedded, text stays within
-  the page, and the page dimensions are 5.5 by 3.15 inches. The matched arrow
-  and displayed 91.8% utilization were checked against the source endpoints.
+  the page, and the page dimensions are 5.5 by 3.35 inches. The legend sits
+  outside the axes. The annotation values and caption's 91.8% utilization
+  were checked against the source endpoints.
   No manuscript file changed during this revision.

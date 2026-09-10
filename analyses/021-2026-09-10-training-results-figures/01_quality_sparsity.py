@@ -19,10 +19,10 @@ CLIPPING_SOURCE = ROOT / "runs/030-2026-09-08-all-models-posthoc-clipping/result
 FAMILIES = {
     "A0": "Baseline",
     "A1-H": "ReLU",
-    "A1-H-OL1": "ReLU + local pressure",
-    "A4": "4-site thresholds",
+    "A1-H-OL1": "ReLU + pressure",
+    "A4": "4-site",
     "A4-OL1": "4-site + pressure",
-    "A7": "7-site thresholds (+Q/K/V)",
+    "A7": "7-site (+Q/K/V)",
     "A7-OL1": "7-site + pressure",
 }
 COLORS = {"baseline": "#60656C", "relu": "#22836D", "projection": "#2878B5", "attention": "#C96024"}
@@ -83,8 +83,8 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": 0.6, "pdf.fonttype": 42,
     })
-    fig, ax = plt.subplots(figsize=(5.5, 3.15))
-    fig.subplots_adjust(left=0.12, right=0.985, bottom=0.145, top=0.985)
+    fig, ax = plt.subplots(figsize=(5.5, 3.35))
+    fig.subplots_adjust(left=0.12, right=0.985, bottom=0.195, top=0.985)
     ax.set(xlim=(-0.65, 31.3), ylim=YLIM,
            xlabel="Model-wide sparsity (%)",
            ylabel="Validation loss (lower is better)")
@@ -94,14 +94,15 @@ def make_figure(data):
     ax.set_axisbelow(True)
 
     for ceiling, label, color in zip(data["ceilings"],
-                                    ["4-site reach", "7-site reach (+Q/K/V)"],
+                                    ["4-site reach", "7-site reach"],
                                     [COLORS["projection"], COLORS["attention"]]):
         x = 100 * ceiling["reachable_product_count"] / ceiling["model_product_count"]
         ax.axvline(x, color=color, alpha=0.5, linewidth=0.75,
                    gid=f"ceiling:{ceiling['family']}")
+        suffix = " (+Q/K/V)" if ceiling["family"] == "A7" else ""
         ax.text(x + (0.35 if ceiling["family"] == "A4" else -0.35), 6.205,
-                f"{label}\n{x:.2f}%", ha="left" if ceiling["family"] == "A4" else "right",
-                va="top", color=color, fontsize=7.3, linespacing=1.25,
+                f"{label}: {x:.2f}%{suffix}", ha="left" if ceiling["family"] == "A4" else "right",
+                va="top", color=color, fontsize=6.7,
                 bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.7})
 
     for family, color in [("A0", COLORS["baseline"]), ("A1-H", COLORS["relu"])]:
@@ -131,45 +132,31 @@ def make_figure(data):
         if family.startswith(("A4", "A7")):
             handles.append(line)
 
-    def label(text, target, location, color, fontsize=7.5, **kwargs):
-        return ax.annotate(text, xy=target, xytext=location, color=color,
-                           fontsize=fontsize, va="center", linespacing=1.2,
-                           arrowprops={"arrowstyle": "-", "color": color, "lw": 0.65},
-                           bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.2},
-                           **kwargs)
-
-    label("Baseline", xy(series(data, "A0")[0]), (0.35, 5.09), COLORS["baseline"])
-    label("ReLU", xy(series(data, "A1-H")[0]), (0.3, 5.43), COLORS["relu"])
+    ax.annotate("Baseline", xy(series(data, "A0")[0]), xytext=(3, -13),
+                textcoords="offset points", ha="left", va="top",
+                color=COLORS["baseline"], fontsize=7.5)
+    ax.annotate("ReLU", xy(series(data, "A1-H")[0]), xytext=(-6, 6),
+                textcoords="offset points", ha="right", va="bottom",
+                color=COLORS["relu"], fontsize=7.5)
     best_local = min(series(data, "A1-H-OL1"), key=lambda row: row["loss"])
-    label("Local pressure", xy(best_local), (5.4, 5.14), COLORS["relu"])
-    for family, color, location in [("A0", COLORS["baseline"], (0.15, 6.015)),
-                                    ("A1-H", COLORS["relu"], (8.0, 6.03))]:
-        rows = series(data, family, "clipped")
-        # Attach to the drawn path between p=.4 and p=.5, not to a measured marker.
-        path_target = tuple((a + b) / 2 for a, b in zip(xy(rows[4]), xy(rows[5])))
-        label(FAMILIES[family] + " +\npost-hoc\nclipping", path_target, location, color)
+    ax.annotate("ReLU + pressure", xy(best_local), xytext=(5.4, 5.13),
+                color=COLORS["relu"], fontsize=7.5, va="center",
+                arrowprops={"arrowstyle": "-", "color": COLORS["relu"], "lw": 0.6})
 
     plain = series(data, "A7")[-1]
     pressured = series(data, "A7-OL1")[-1]
-    reach = next(row for row in data["ceilings"] if row["family"] == "A7")["R_model_max_fraction"]
-    utilization = 100 * pressured["R_model"] / reach
-    label(f"{xy(pressured)[0]:.2f}% ({utilization:.1f}% of reach)", xy(pressured),
-          (19.3, 5.41), COLORS["attention"], fontsize=7.1)
+    ax.annotate(f"{xy(pressured)[0]:.2f}%", xy(pressured), xytext=(-3, 3),
+                textcoords="offset points", ha="right", va="bottom",
+                color=COLORS["attention"], fontsize=7.1,
+                bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.4})
     ax.text(21.35, 6.005, r"At $\kappa = 0.5$, pressure adds",
             fontsize=7.5, color=COLORS["attention"], ha="center", va="center")
     ax.text(21.35, 5.94,
             f"+{xy(pressured)[0] - xy(plain)[0]:.1f} pp sparsity / +{pressured['loss'] - plain['loss']:.2f} loss",
             fontsize=7.5, fontweight="bold", color=COLORS["attention"], ha="center", va="center")
-    # Double heads distinguish the matched comparison from the ordered sweep paths.
-    ax.annotate("", xy=xy(pressured), xytext=xy(plain),
-                arrowprops={"arrowstyle": "<->", "color": "#9A7060",
-                            "lw": 0.65, "mutation_scale": 8, "shrinkA": 4, "shrinkB": 5},
-                gid="matched-pressure-arrow")
-
-    ax.legend(handles=handles, ncol=2, loc="lower right", bbox_to_anchor=(1, 0.045),
-              frameon=True, facecolor="white", edgecolor="none", framealpha=1,
-              fontsize=7.1, handlelength=1.5, columnspacing=0.75, borderpad=0.25,
-              labelspacing=0.7, handletextpad=0.4, borderaxespad=0.2)
+    fig.legend(handles=handles, ncol=4, loc="lower center", bbox_to_anchor=(0.5525, 0.012),
+               frameon=False, fontsize=6.6, handlelength=1.5, columnspacing=1.2,
+               handletextpad=0.4, borderaxespad=0)
     return fig, ax
 
 
