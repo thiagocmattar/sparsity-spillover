@@ -64,3 +64,36 @@ all fonts are embedded. The annotation values, page dimensions, text bounds
 and placement of the legend outside the axes were also verified.
 See [O001](observations/O001-14m-quality-sparsity.md) for the caption,
 results and interpretation limits.
+
+## Figure 02
+
+[OL1 task-pressure geometry and budget saturation](figures/02-14m-ol1-geometry.pdf)
+is a compact two-panel mechanism diagnostic, requested on 10 September 2026.
+It uses every optimizer-boundary record from the five corrected four-site
+Run 015 conditions and five seven-site Run 014 conditions: 7,120 observations,
+with lambda = budget = 1. Panel (a) plots the recorded global adaptive-direction
+cosines before and after projection. Panel (b) shows ten pre-cap norm-ratio
+traces and their unsmoothed median; subtle solid/dashed traces distinguish the
+four-/seven-site cohorts. No checkpoints or retrospective gradients are used.
+
+Conflict occurs on 99.9% of steps, with median conflicting cosine -0.017.
+The cap is active on 48.8% overall, but on only 0.5% of four-site steps versus
+97.0% of seven-site steps. The figure therefore supports frequent conflict
+and seven-site budget saturation, not saturation throughout both cohorts.
+The manuscript is unchanged by this analysis.
+
+```powershell
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_ol1_geometry.py -q
+```
+
+All ten source event logs and manifests are tracked. The script verifies their
+complete step coverage, the logged stabilized geometry, cap scaling, pressure
+sites, and historical optimizer/pressure code hashes before plotting.
+[The summary](data/14m-ol1-geometry.json) retains exact counts, per-condition
+statistics and source hashes; the original logs retain each plotted scalar.
+Four focused checks cover coverage and pooling, the stabilized cap boundary,
+rejection of inconsistent geometry, and exact plotted coordinates and traces.
+All seven Analysis 021 tests passed. The 5.9-by-2.85-inch PDF was rendered and
+visually checked; all text is inside the page and all fonts are embedded.
+See [O002](observations/O002-ol1-geometry.md) for the caption and limitations.
