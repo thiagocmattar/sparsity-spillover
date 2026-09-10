@@ -5,6 +5,11 @@
 
 ## Current status
 
+Analysis 021 revises the manuscript's 14M quality-sparsity overview with short
+labels, baseline/ReLU clipping and both architectural reach guides, using
+retained measurements. See
+`analyses/021-2026-09-10-training-results-figures/README.md`.
+
 Analysis 019 audits retained records for the current manuscript rewrite:
 quality budgets, runtime attribution, historical controls and revised displays.
 The draft adopts architectural reach (`R_arch`) without changing raw metric

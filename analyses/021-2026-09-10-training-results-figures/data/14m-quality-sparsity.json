@@ -1,0 +1,1279 @@
+{
+  "sources": {
+    "analyses/018-2026-09-08-results-materials/figure_data.json": "d1dfd326bde98ab88a827f3f72c46ded9c904128c0cc803128c322f6de398a05",
+    "runs/030-2026-09-08-all-models-posthoc-clipping/results/clipping-points.json": "a6a9b58692ef164ce2a7f939d5b63efcbb0905c91ae209ec0c4a611f66e7d78c"
+  },
+  "coverage": {
+    "documents": 500,
+    "excluded_tail_tokens": 1444,
+    "input_tokens": 692224,
+    "prediction_tokens": 691886,
+    "seed_count": 1,
+    "sequences": 338
+  },
+  "label_note": "Thresholds act at FFN and attention projections; + attention adds Q/K/V. Pressure is orthogonal L1.",
+  "omitted_training_family": "A1-H-L1",
+  "display_loss_limits": [
+    5.03,
+    6.23
+  ],
+  "ceilings": [
+    {
+      "R_model_max_fraction": 0.12833152310134513,
+      "R_model_max_percent": 12.833152310134514,
+      "active_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ],
+      "block_product_count": 5638717440,
+      "family": "A4",
+      "ffn_size": 512,
+      "hidden_size": 128,
+      "layers": 6,
+      "lm_head_product_count": 13186891776,
+      "model_product_count": 18825609216,
+      "parameters": 14067712,
+      "per_block_operation_products": {
+        "attention_output_projection": 33554432,
+        "mlp_w1": 134217728,
+        "mlp_w2": 134217728,
+        "probability_value": 268566528,
+        "qk_scores": 268566528,
+        "qkv_projection": 100663296
+      },
+      "reachable_operations": [
+        "qkv_projection",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2"
+      ],
+      "reachable_product_count": 2415919104,
+      "scale": "14M",
+      "sequence_length": 2048,
+      "topology_id": "A4-Z",
+      "unit": "logical scalar products per one uncached 2048-token sequence",
+      "valid_causal_pairs_per_sequence": 2098176,
+      "vocabulary_size": 50304
+    },
+    {
+      "R_model_max_fraction": 0.2995237697384911,
+      "R_model_max_percent": 29.95237697384911,
+      "active_sites": [
+        "a",
+        "m",
+        "h",
+        "q_post",
+        "k_post",
+        "v",
+        "z"
+      ],
+      "block_product_count": 5638717440,
+      "family": "A7",
+      "ffn_size": 512,
+      "hidden_size": 128,
+      "layers": 6,
+      "lm_head_product_count": 13186891776,
+      "model_product_count": 18825609216,
+      "parameters": 14067712,
+      "per_block_operation_products": {
+        "attention_output_projection": 33554432,
+        "mlp_w1": 134217728,
+        "mlp_w2": 134217728,
+        "probability_value": 268566528,
+        "qk_scores": 268566528,
+        "qkv_projection": 100663296
+      },
+      "reachable_operations": [
+        "qkv_projection",
+        "qk_scores",
+        "probability_value",
+        "attention_output_projection",
+        "mlp_w1",
+        "mlp_w2"
+      ],
+      "reachable_product_count": 5638717440,
+      "scale": "14M",
+      "sequence_length": 2048,
+      "topology_id": "A7-Z-POST",
+      "unit": "logical scalar products per one uncached 2048-token sequence",
+      "valid_causal_pairs_per_sequence": 2098176,
+      "vocabulary_size": 50304
+    }
+  ],
+  "points": [
+    {
+      "id": "14M:A0:None",
+      "kind": "trained",
+      "family": "A0",
+      "dose": null,
+      "loss": 5.2085730123096665,
+      "R_model": 1.1415112639303073e-08,
+      "source": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8",
+      "label": "Baseline",
+      "counts": {
+        "block_zero_product_count": 72635,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A1-H:None",
+      "kind": "trained",
+      "family": "A1-H",
+      "dose": null,
+      "loss": 5.26963426093378,
+      "R_model": 0.027141299328466276,
+      "source": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/002-20260829-231305-195b22c6",
+      "label": "ReLU",
+      "counts": {
+        "block_zero_product_count": 172701605233,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A1-H-OL1:0.05",
+      "kind": "trained",
+      "family": "A1-H-OL1",
+      "dose": 0.05,
+      "loss": 5.198063326305186,
+      "R_model": 0.0314522677294041,
+      "source": "runs/009-2026-08-30-pythia14m-full-pass-ol1/artifacts/attempts/001-20260830-120005-d3003910",
+      "label": "ReLU + pressure",
+      "counts": {
+        "block_zero_product_count": 200132538216,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A1-H-OL1:0.1",
+      "kind": "trained",
+      "family": "A1-H-OL1",
+      "dose": 0.1,
+      "loss": 5.159397419387772,
+      "R_model": 0.03338578566957837,
+      "source": "runs/009-2026-08-30-pythia14m-full-pass-ol1/artifacts/attempts/002-20260830-123426-c5b8515f",
+      "label": "ReLU + pressure",
+      "counts": {
+        "block_zero_product_count": 212435620982,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A1-H-OL1:0.5",
+      "kind": "trained",
+      "family": "A1-H-OL1",
+      "dose": 0.5,
+      "loss": 5.1102359397171515,
+      "R_model": 0.03767997558790878,
+      "source": "runs/009-2026-08-30-pythia14m-full-pass-ol1/artifacts/attempts/003-20260830-115346-94d4aa8a",
+      "label": "ReLU + pressure",
+      "counts": {
+        "block_zero_product_count": 239759791542,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A1-H-OL1:1.0",
+      "kind": "trained",
+      "family": "A1-H-OL1",
+      "dose": 1.0,
+      "loss": 5.121185236428616,
+      "R_model": 0.03938363148105149,
+      "source": "runs/009-2026-08-30-pythia14m-full-pass-ol1/artifacts/attempts/004-20260830-112819-e750c51a",
+      "label": "ReLU + pressure",
+      "counts": {
+        "block_zero_product_count": 250600249250,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4:0.0",
+      "kind": "trained",
+      "family": "A4",
+      "dose": 0.0,
+      "loss": 5.470515694138566,
+      "R_model": 0.07212018636951158,
+      "source": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/001-20260830-174350-716db646",
+      "label": "Thresholds",
+      "counts": {
+        "block_zero_product_count": 458904778470,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4:0.01",
+      "kind": "trained",
+      "family": "A4",
+      "dose": 0.01,
+      "loss": 5.4664884410666295,
+      "R_model": 0.07413704224307557,
+      "source": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/002-20260830-174353-bad92c8a",
+      "label": "Thresholds",
+      "counts": {
+        "block_zero_product_count": 471738145166,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4:0.05",
+      "kind": "trained",
+      "family": "A4",
+      "dose": 0.05,
+      "loss": 5.43411524902434,
+      "R_model": 0.08205892926203266,
+      "source": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/003-20260830-174407-dec7abf0",
+      "label": "Thresholds",
+      "counts": {
+        "block_zero_product_count": 522145555220,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4:0.1",
+      "kind": "trained",
+      "family": "A4",
+      "dose": 0.1,
+      "loss": 5.419673250271724,
+      "R_model": 0.08953004995419465,
+      "source": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/004-20260830-174521-6819b5a6",
+      "label": "Thresholds",
+      "counts": {
+        "block_zero_product_count": 569684713932,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4:0.5",
+      "kind": "trained",
+      "family": "A4",
+      "dose": 0.5,
+      "loss": 5.659678203819771,
+      "R_model": 0.10215537061773293,
+      "source": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/005-20260830-174409-0df99a05",
+      "label": "Thresholds",
+      "counts": {
+        "block_zero_product_count": 650020335259,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4-OL1:0.0",
+      "kind": "trained",
+      "family": "A4-OL1",
+      "dose": 0.0,
+      "loss": 5.458276166718387,
+      "R_model": 0.0781004229286857,
+      "source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85",
+      "label": "Thresholds + pressure",
+      "counts": {
+        "block_zero_product_count": 496957358081,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4-OL1:0.01",
+      "kind": "trained",
+      "family": "A4-OL1",
+      "dose": 0.01,
+      "loss": 5.458309076241488,
+      "R_model": 0.08586708994090508,
+      "source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae",
+      "label": "Thresholds + pressure",
+      "counts": {
+        "block_zero_product_count": 546377094553,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4-OL1:0.05",
+      "kind": "trained",
+      "family": "A4-OL1",
+      "dose": 0.05,
+      "loss": 5.489760381230236,
+      "R_model": 0.1045644512413755,
+      "source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f",
+      "label": "Thresholds + pressure",
+      "counts": {
+        "block_zero_product_count": 665349449971,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4-OL1:0.1",
+      "kind": "trained",
+      "family": "A4-OL1",
+      "dose": 0.1,
+      "loss": 5.548253721739414,
+      "R_model": 0.11394280537892908,
+      "source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728",
+      "label": "Thresholds + pressure",
+      "counts": {
+        "block_zero_product_count": 725024441739,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A4-OL1:0.5",
+      "kind": "trained",
+      "family": "A4-OL1",
+      "dose": 0.5,
+      "loss": 6.037982463131289,
+      "R_model": 0.12713448684742273,
+      "source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68",
+      "label": "Thresholds + pressure",
+      "counts": {
+        "block_zero_product_count": 808963848536,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7:0.0",
+      "kind": "trained",
+      "family": "A7",
+      "dose": 0.0,
+      "loss": 5.468392646524328,
+      "R_model": 0.07217650871804772,
+      "source": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/001-20260831-005745-6f0b05f1",
+      "label": "Thresholds + attention",
+      "counts": {
+        "block_zero_product_count": 459263160723,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7:0.01",
+      "kind": "trained",
+      "family": "A7",
+      "dose": 0.01,
+      "loss": 5.458819536767768,
+      "R_model": 0.07617648872497619,
+      "source": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/002-20260831-005744-1a6c84bc",
+      "label": "Thresholds + attention",
+      "counts": {
+        "block_zero_product_count": 484715257166,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7:0.05",
+      "kind": "trained",
+      "family": "A7",
+      "dose": 0.05,
+      "loss": 5.4378748673659105,
+      "R_model": 0.09126923722094463,
+      "source": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/003-20260831-005747-b39b4dc0",
+      "label": "Thresholds + attention",
+      "counts": {
+        "block_zero_product_count": 580751259757,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7:0.1",
+      "kind": "trained",
+      "family": "A7",
+      "dose": 0.1,
+      "loss": 5.428668321237057,
+      "R_model": 0.10425018105347987,
+      "source": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/004-20260831-005745-4358dc28",
+      "label": "Thresholds + attention",
+      "counts": {
+        "block_zero_product_count": 663349731193,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7:0.5",
+      "kind": "trained",
+      "family": "A7",
+      "dose": 0.5,
+      "loss": 5.702894850595463,
+      "R_model": 0.15386813064155969,
+      "source": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/005-20260831-005744-c27e6b75",
+      "label": "Thresholds + attention",
+      "counts": {
+        "block_zero_product_count": 979071518810,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7-OL1:0.0",
+      "kind": "trained",
+      "family": "A7-OL1",
+      "dose": 0.0,
+      "loss": 5.480180751642532,
+      "R_model": 0.0705422917861371,
+      "source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/001-20260831-122537-35dd4889",
+      "label": "Thresholds + attention + pressure",
+      "counts": {
+        "block_zero_product_count": 448864547008,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7-OL1:0.01",
+      "kind": "trained",
+      "family": "A7-OL1",
+      "dose": 0.01,
+      "loss": 5.475800738532162,
+      "R_model": 0.07723392871636932,
+      "source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/002-20260831-120213-d99dacb3",
+      "label": "Thresholds + attention + pressure",
+      "counts": {
+        "block_zero_product_count": 491443806958,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7-OL1:0.05",
+      "kind": "trained",
+      "family": "A7-OL1",
+      "dose": 0.05,
+      "loss": 5.462799572380336,
+      "R_model": 0.09863031588136074,
+      "source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/003-20260831-120427-8f1cb9f2",
+      "label": "Thresholds + attention + pressure",
+      "counts": {
+        "block_zero_product_count": 627590214868,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7-OL1:0.1",
+      "kind": "trained",
+      "family": "A7-OL1",
+      "dose": 0.1,
+      "loss": 5.429487593075227,
+      "R_model": 0.11796760377518327,
+      "source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/004-20260831-120424-d743fe3d",
+      "label": "Thresholds + attention + pressure",
+      "counts": {
+        "block_zero_product_count": 750634458981,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A7-OL1:0.5",
+      "kind": "trained",
+      "family": "A7-OL1",
+      "dose": 0.5,
+      "loss": 5.829406580981418,
+      "R_model": 0.27482684296304843,
+      "source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca",
+      "label": "Thresholds + attention + pressure",
+      "counts": {
+        "block_zero_product_count": 1748738568719,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "documents": 500,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "prediction_tokens": 691886,
+        "seed_count": 1,
+        "sequences": 338
+      }
+    },
+    {
+      "id": "14M:A0:None:clip:0.0",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.0,
+      "loss": 5.208594059803077,
+      "R_model": 1.2144636324463738e-08,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 77277,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.208594059803077,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.1",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.1,
+      "loss": 5.214452560131367,
+      "R_model": 0.012787059225755319,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 81364772842,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.214452560131367,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.2",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.2,
+      "loss": 5.250270307416747,
+      "R_model": 0.025547861885604005,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 162562473687,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.250270307416747,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.3",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.3,
+      "loss": 5.361901215547641,
+      "R_model": 0.03831640852502134,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 243809449907,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.361901215547641,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.4",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.4,
+      "loss": 5.605384225676046,
+      "R_model": 0.05125544468338841,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 326141260469,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.605384225676046,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.5",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.5,
+      "loss": 6.077730602766636,
+      "R_model": 0.06441923193637135,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 409903174813,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.077730602766636,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.6",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.6,
+      "loss": 6.821172901864588,
+      "R_model": 0.07764415459051939,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 494054097133,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.821172901864588,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.7",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.7,
+      "loss": 7.766948343028684,
+      "R_model": 0.09123470793282666,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 580531547966,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 7.766948343028684,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.8",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.8,
+      "loss": 8.336117610423523,
+      "R_model": 0.10585958231881311,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 673590441434,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 8.336117610423523,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A0:None:clip:0.9",
+      "kind": "clipped",
+      "family": "A0",
+      "dose": 0.9,
+      "loss": 8.825610324475893,
+      "R_model": 0.119418809381631,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "Baseline + clipping",
+      "counts": {
+        "block_zero_product_count": 759868561399,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 8.825610324475893,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A0:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.0",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.0,
+      "loss": 5.269633448335546,
+      "R_model": 0.02714133462785748,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 172701829845,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.269633448335546,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.1",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.1,
+      "loss": 5.2740728580034695,
+      "R_model": 0.035684028579955444,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 227059469127,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.2740728580034695,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.2",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.2,
+      "loss": 5.307940479566359,
+      "R_model": 0.04418365092044717,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 281143041336,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.307940479566359,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.3",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.3,
+      "loss": 5.405055693620761,
+      "R_model": 0.05271870665002293,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 335452078181,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.405055693620761,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.4",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.4,
+      "loss": 5.602964821651843,
+      "R_model": 0.061293247394087945,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 390012360381,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.602964821651843,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.5",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.5,
+      "loss": 5.976274115799447,
+      "R_model": 0.0699445131206961,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 445060847935,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.976274115799447,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.6",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.6,
+      "loss": 6.5214737124696995,
+      "R_model": 0.07892903987664684,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 502229894053,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.5214737124696995,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.7",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.7,
+      "loss": 7.30617527707794,
+      "R_model": 0.09051786975696816,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 575970266571,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 7.30617527707794,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.8",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.8,
+      "loss": 8.107618275478746,
+      "R_model": 0.10558519250701183,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 671844483719,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 8.107618275478746,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    },
+    {
+      "id": "14M:A1-H:None:clip:0.9",
+      "kind": "clipped",
+      "family": "A1-H",
+      "dose": 0.9,
+      "loss": 8.869450109244804,
+      "R_model": 0.11878925318261166,
+      "source": "analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/teal_all_variants.json",
+      "label": "ReLU + clipping",
+      "counts": {
+        "block_zero_product_count": 755862660103,
+        "model_product_count": 6363055915008
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 8.869450109244804,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "source_checkpoint_id": "14M:A1-H:None",
+      "clipping_sites": [
+        "a",
+        "m",
+        "h",
+        "z"
+      ]
+    }
+  ]
+}

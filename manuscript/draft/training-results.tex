@@ -1,10 +1,10 @@
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O013-overview-all-variants.md
+% Source observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
-% Evidence chain: results-argument-map.md. Sources: Analysis 018 O013/O002/O003/O004/O011.
-% Figures: Analysis 018 04_overview_v2.py; plots.py:{effects,scaling}; 02_activation_density_v3.py.
+% Evidence chain: results-argument-map.md. Overview: Analysis 021 O001; other sources: Analysis 018 O002/O003/O004/O011.
+% Figures: Analysis 021 01_quality_sparsity.py; Analysis 018 plots.py:{effects,scaling}; 02_activation_density_v3.py.
 % Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
@@ -30,20 +30,19 @@ and clipping trajectories are given in Appendix~\ref{app:complete-results}.
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/01-v2-14m-overview.pdf}
+\includegraphics[width=\linewidth]{figures/01-14m-quality-sparsity.pdf}
 \caption{\textbf{Quality-sparsity trade-offs from training interventions and post-hoc clipping.}
 Validation loss versus model-wide sparsity $\Smodel$ for Pythia-14M.
-Filled markers show all 30 separately trained checkpoints: A0, A1-H,
-and the A1-H-L1, A1-H-OL1, A4, A4-OL1, A7 and A7-OL1 sweeps.
-Solid colored curves denote unpressured variants; dashed colored curves denote pressure variants.
-The gray dashed path with open markers applies
-evaluation-only magnitude clipping at $a,m,h,z$ to A0, with calibration
-targets $p=0,0.1,\ldots,0.9$. Six of its ten evaluations lie inside the
-displayed loss range; Appendix~\ref{app:clipping-results} supplies the full-range view.
-Lines connect evaluated settings, not fitted Pareto envelopes. Local pressure
-reaches lower loss with modest sparsity; A7-OL1 reaches greater sparsity at a
-quality cost and with broader computational reach. All points use the matched
-protocol in Section~\ref{sec:experiments}.}
+Markers show 26 trained checkpoints, omitting naive L1.
+Thresholds act at FFN and attention projections; adding attention includes
+Q/K/V operands. Pressure denotes orthogonal L1.
+Vertical guides show the corresponding $12.83\%$ and $29.95\%$ ceilings.
+Baseline and ReLU clipping share the projection-site reach; six of ten
+evaluations per path lie in the displayed loss range.
+Annotations highlight lower loss with local pressure and the broader recipe's
+matched pressure addition. Lines connect evaluated settings.
+Section~\ref{sec:experiments} gives the protocol;
+Appendix~\ref{app:clipping-results} supplies the full clipping trajectories.}
 \label{fig:quality-sparsity-overview}
 \end{figure}
 

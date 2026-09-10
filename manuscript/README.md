@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+The 10 September quality-sparsity overview now uses
+[Analysis 021](../analyses/021-2026-09-10-training-results-figures/README.md):
+short intervention labels, both baseline and ReLU clipping, and explicit
+projection/attention reach guides. Its figure and caption replace the earlier
+overview in `draft/training-results.tex`; earlier artwork is retained.
+The revision records below describe their historical snapshots.
+
 This directory is the paper-facing scientific layer shipped inside the
 bootstrap at its final `manuscript/` path. Copying the bootstrap into a new
 repository therefore carries the manuscript and its workflow integration in

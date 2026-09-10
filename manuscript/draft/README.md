@@ -25,6 +25,13 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+On 10 September, the quality-sparsity overview was replaced with the
+[Analysis 021 figure](../../analyses/021-2026-09-10-training-results-figures/figures/01-14m-quality-sparsity.pdf):
+short labels, 26 trained checkpoints (naive L1 omitted), baseline and ReLU
+clipping, and 12.83%/29.95% reach guides. Its caption and source manifest were
+updated; the earlier all-recipe overview is retained. The entries below record
+earlier revisions.
+
 The 9 September 2026 format conversion uses the official ICLR 2027 styles in
 anonymous review mode, including the review header and line numbers. The title,
 section headings, paragraph spacing, captions and bibliography now follow the
@@ -61,10 +68,9 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
   [experimental-appendix.tex](experimental-appendix.tex),
   [results-appendix.tex](results-appendix.tex): definitions, complete results,
   diagnostics, clipping, kernel qualification and data provenance.
-- [figures/SOURCES.json](figures/SOURCES.json): eleven unchanged figure copies.
-  Ten are embedded. Figure 1 is the combined architecture map and sparsification
-  ladder. Figure 2 uses the all-variant overview v2, with all 30 trained
-  checkpoints and a matching caption; the original overview is retained.
+- [figures/SOURCES.json](figures/SOURCES.json): figure-copy provenance.
+  The quality-sparsity overview uses Analysis 021's short-label view, with 26
+  trained checkpoints and both clipping controls; earlier overviews are retained.
 - [tables/](tables/): seven reproducible analysis-owned tables. Numerical rows
   are unchanged; terminology uses threshold, activation sparsity and U_arch.
 - [supplementary-data/README.md](supplementary-data/README.md): fourteen unchanged
