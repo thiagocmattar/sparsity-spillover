@@ -71,21 +71,33 @@ results and interpretation limits.
 is a compact two-panel mechanism diagnostic, requested on 10 September 2026.
 It uses every optimizer-boundary record from the five corrected four-site
 Run 015 conditions and five seven-site Run 014 conditions: 7,120 observations,
-with lambda = budget = 1. Panel (a) shows separate empirical cumulative
-distributions of the recorded pre-projection cosines. Panel (b) shows five
+with lambda = budget = 1. Panel (a) shows pre-projection cosine medians and
+interquartile ranges over training steps at each of the five categorical
+thresholds. Blue circles and orange diamonds distinguish the target sets.
+Panel (b) shows five
 thin traces and one unsmoothed median per target set: blue for four sites and
 orange for seven. Direct labels identify each cap rate and the budget boundary.
 There is no pooled trajectory, pooled cap annotation, legend or super-title.
 No checkpoints or retrospective gradients are used.
 
-Conflict occurs on 99.9% of steps in each group, with median cosines of -0.035
-at four sites and -0.012 at seven. Thus angular conflict is weaker at seven
-sites by this measure, while the cap is active on 97.0% of seven-site steps
-versus 0.5% of four-site steps. The figure supports frequent weak conflict
-and sharply different budget regimes. Saturation's mathematical independence
+Conflict occurs on 99.9% of steps in each group. Seven-site median cosines are
+less negative at every matched threshold, while the cap is active on 97.0%
+of seven-site steps versus 0.5% of four-site steps. The directions are nearly
+orthogonal in magnitude but systematically negatively aligned; cosine alone
+does not establish weak practical conflict. Saturation's mathematical independence
 from lambda remains conditional on the cap binding. Post-projection
 orthogonality is retained as a caption-level implementation check.
 The manuscript is unchanged by this analysis.
+
+The additional rho_opp diagnostic uses the retained pre-projection dot product
+and squared task norm to measure the raw component removed along the task
+direction, relative to its norm. Pooled medians are 0.009503 at four sites and
+0.588006 at seven sites (about 62-fold separation). Seven-site medians are
+higher at every threshold, and rho_opp exceeds one on 21.15% of seven-site
+steps versus none at four sites. These are pre-cap, pre-learning-rate quantities,
+not the magnitude of the applied update or measured loss effects.
+[O002](observations/O002-ol1-geometry.md) gives the per-threshold medians and
+IQRs. The former pooled ECDF figure remains in rollback commit `b2f46d0`.
 
 ```powershell
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
@@ -97,9 +109,9 @@ complete step coverage, the logged stabilized geometry, cap scaling, pressure
 sites, and historical optimizer/pressure code hashes before plotting.
 [The summary](data/14m-ol1-geometry.json) retains exact counts, per-condition
 statistics and source hashes; the original logs retain each plotted scalar.
-Four focused checks cover coverage and pooling, the stabilized cap boundary,
-rejection of inconsistent geometry, complete empirical distributions, and
-exact per-family traces and medians.
-All seven Analysis 021 tests passed. The 5.9-by-2.45-inch PDF was rendered and
+Five focused checks cover coverage and pooling, the stabilized cap boundary,
+rejection of inconsistent geometry, the opposing-component formula against a
+vector projection, per-threshold medians and IQRs, and exact per-family traces.
+All eight Analysis 021 tests passed. The 5.9-by-2.45-inch PDF was rendered and
 visually checked; all text is inside the page and all fonts are embedded.
 See [O002](observations/O002-ol1-geometry.md) for the caption and limitations.

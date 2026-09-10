@@ -21,6 +21,7 @@ THRESHOLDS = (0.0, 0.01, 0.05, 0.1, 0.5)
 STEPS = 712
 CODE_NAMES = {"pressure.py", "optimization.py", "optimizer_boundary.py", "training.py"}
 COLORS = {"A4-OL1": "#2878B5", "A7-OL1": "#C96024"}
+PROJECTION_EPS = 1e-12
 
 
 def sha256(path):
@@ -68,7 +69,7 @@ def read_evidence():
         assert pressure == item["identity"]["pressure"]
         assert pressure["method"] == "orthogonal_l1"
         assert pressure["weight"] == pressure["step_budget"] == 1.0
-        assert pressure["eps"] == 1e-12
+        assert pressure["eps"] == PROJECTION_EPS
         sites = ["a", "m", "h", "z"] if item["family"] == "A4-OL1" else [
             "a", "m", "h", "q_post", "k_post", "v", "z"
         ]
@@ -96,6 +97,7 @@ def read_evidence():
         assert len({r["condition_id"] for r in rows}) == 1
         for row in rows:
             audit_step(row, pressure)
+            assert row["task_direction_norm"]**2 > pressure["eps"]
             assert row["eligible_parameter_tensors"] == 69
             assert row["skipped_parameter_tensors"] == 7
             assert row["pressure_capture_tensor_count"] == 6 * len(sites)
@@ -106,13 +108,21 @@ def read_evidence():
     return conditions, {"source_sha256": sources, "verified_historical_code": code_sources}
 
 
+def opposing_component_ratio(row, eps=PROJECTION_EPS):
+    """Raw pressure component removed along u, relative to ||u||, before the cap."""
+    return max(0.0, -row["task_pressure_dot_before"]) / (row["task_direction_norm"]**2 + eps)
+
+
 def summarize(rows):
     conflicts = [r for r in rows if r["task_pressure_dot_before"] < 0]
     caps = sum(r["trust_scale"] < 1 for r in rows)
+    cosines = [r["task_pressure_cosine_before"] for r in rows]
+    rho = [opposing_component_ratio(r) for r in rows]
     return {
         "observations": len(rows), "conflict_steps": len(conflicts),
         "conflict_percent": 100 * len(conflicts) / len(rows),
-        "median_pre_cosine": float(np.median([r["task_pressure_cosine_before"] for r in rows])),
+        "median_pre_cosine": float(np.median(cosines)),
+        "pre_cosine_iqr": np.quantile(cosines, [.25, .75]).tolist(),
         "median_conflicting_pre_cosine": float(np.median([
             r["task_pressure_cosine_before"] for r in conflicts])),
         "p99_abs_conflicting_post_cosine": float(np.quantile([
@@ -121,6 +131,12 @@ def summarize(rows):
         "cap_active_steps": caps, "cap_active_percent": 100 * caps / len(rows),
         "median_pre_cap_ratio": float(np.median([r["pressure_to_task_ratio_raw"] for r in rows])),
         "zero_learning_rate_steps": sum(r["learning_rate"] == 0 for r in rows),
+        "rho_opp": {
+            **dict(zip(("p10", "p25", "median", "p75", "p90"),
+                       np.quantile(rho, [.1, .25, .5, .75, .9]).tolist())),
+            "above_one_steps": sum(value > 1 for value in rho),
+            "above_one_percent": 100 * sum(value > 1 for value in rho) / len(rows),
+        },
     }
 
 
@@ -128,11 +144,14 @@ def summary_document(conditions, provenance):
     return {
         "scope": "Pythia-14M A4-OL1/A7-OL1; all five thresholds; 712 optimizer steps each",
         "unit": "one optimizer step x one training condition; global eligible-parameter geometry",
-        "lambda": 1, "budget": 1, "eps": 1e-12,
+        "lambda": 1, "budget": 1, "eps": PROJECTION_EPS,
         "conflict_rule": "task_pressure_dot_before < 0",
         "cap_active_rule": "trust_scale < 1",
         "cosines": "logged stabilized global adaptive-direction cosines, unchanged",
-        "distribution": "empirical CDF of every logged pre-projection cosine, separately by family; no bins or smoothing",
+        "cosine_panel": "median and 25th-75th percentiles over all 712 steps within each family and kappa; five categorical positions",
+        "interval_note": "empirical variation over training steps, not confidence intervals or seed uncertainty",
+        "rho_opp_definition": "max(0, -task_pressure_dot_before) / (task_direction_norm**2 + eps); raw pressure, before cap and learning rate",
+        "rho_opp_scope": "all steps including aligned zeros; all task norms pass the implementation's projection guard; lambda=1",
         "median_traces": "median of r/b across five conditions within each family at each step; no pooled trace or smoothing",
         **provenance,
         "pooled": summarize([r for c in conditions for r in c["rows"]]),
@@ -151,27 +170,27 @@ def make_figure(conditions, summary):
     })
     fig, (left, right) = plt.subplots(1, 2, figsize=(5.9, 2.45),
                                      gridspec_kw={"width_ratios": [1, 1.15]})
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.23, top=0.85, wspace=0.42)
-    left.set_title("(a) Task–pressure conflict", fontsize=7.7, pad=10, loc="left")
+    fig.subplots_adjust(left=0.125, right=0.985, bottom=0.23, top=0.85, wspace=0.42)
+    left.set_title("(a) Conflict across thresholds", fontsize=7.7, pad=10, loc="left")
     right.set_title("(b) Budget regime depends on target set", fontsize=7.7, pad=10, loc="left")
-    left.axvline(0, color="#30373D", linewidth=0.6, linestyle=":", zorder=0)
+    left.axhline(0, color="#30373D", linewidth=0.6, linestyle=":", zorder=0)
     split = summary["by_family"]
-    for family in FAMILIES:
-        values = np.sort([r["task_pressure_cosine_before"] for c in conditions
-                          if c["family"] == family for r in c["rows"]])
-        left.step(np.r_[-.15, values, .004], np.r_[0, np.arange(1, len(values) + 1) / len(values), 1],
-                  where="post", color=COLORS[family], linewidth=1.2)
-    left.set(xlim=(-.15, .004), ylim=(0, 1.10),
-             xlabel=r"Pre-projection cosine $\cos(u,w)$",
-             ylabel="Cumulative fraction")
-    left.set_xticks([-.15, -.10, -.05, 0])
-    left.set_yticks([0, .5, 1])
-    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of steps conflicting",
-              transform=left.transAxes, va="top", fontsize=7.2)
-    for family, n, y in zip(FAMILIES, (4, 7), (.77, .64)):
-        median = f"{split[family]['median_pre_cosine']:.3f}".replace("-", "−")
-        left.text(.045, y, f"{n}-site median: {median}",
-                  transform=left.transAxes, fontsize=7.2, color=COLORS[family])
+    for family, marker, offset in zip(FAMILIES, ("o", "D"), (-.055, .055)):
+        records = sorted((c for c in summary["conditions"] if c["family"] == family),
+                         key=lambda c: c["kappa"])
+        medians = np.array([c["median_pre_cosine"] for c in records])
+        intervals = np.array([c["pre_cosine_iqr"] for c in records])
+        left.errorbar(np.arange(5) + offset, medians,
+                      yerr=np.array([medians - intervals[:, 0], intervals[:, 1] - medians]),
+                      marker=marker, markersize=3.6, color=COLORS[family], linewidth=.9,
+                      elinewidth=.65, capsize=2, capthick=.65)
+    left.set(xlim=(-.35, 4.35), ylim=(-.068, .026),
+             xlabel=r"Threshold $\kappa$",
+             ylabel=r"Pre-projection cosine $\cos(u,w)$")
+    left.set_xticks(range(5), ["0", "0.01", "0.05", "0.1", "0.5"])
+    left.set_yticks([-.06, -.04, -.02, 0])
+    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of step-level\nalignments are negative",
+              transform=left.transAxes, va="top", fontsize=7.2, linespacing=1.3)
 
     for family in FAMILIES:
         ratios = []
