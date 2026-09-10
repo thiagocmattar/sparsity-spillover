@@ -30,6 +30,9 @@ def test_complete_cohort_and_pooled_counts(evidence):
     assert summary["pooled"]["cap_active_steps"] == 3471
     assert summary["by_family"]["A4-OL1"]["cap_active_steps"] == 18
     assert summary["by_family"]["A7-OL1"]["cap_active_steps"] == 3453
+    assert summary["by_family"]["A4-OL1"]["median_pre_cosine"] == pytest.approx(-.034589598296058524)
+    assert summary["by_family"]["A7-OL1"]["median_pre_cosine"] == pytest.approx(-.011574692682206221)
+    assert summary["pooled"]["p99_abs_conflicting_post_cosine"] == pytest.approx(7.387589453976291e-9)
     rows = [row for condition in conditions for row in condition["rows"]]
     aligned = [r for r in rows if r["task_pressure_dot_before"] >= 0]
     assert len(aligned) == 9
@@ -58,20 +61,26 @@ def test_audit_rejects_wrong_geometry_or_skipped_boundary(evidence):
             geometry.audit_step(corrupt, condition["pressure"])
 
 
-def test_figure_retains_each_logged_pair_and_unsmoothed_traces(evidence):
+def test_figure_retains_full_distributions_and_separate_family_traces(evidence):
     conditions, provenance = evidence
     fig = geometry.make_figure(conditions, geometry.summary_document(conditions, provenance))
     left, right = fig.axes
-    rows = [r for c in conditions for r in c["rows"]]
-    expected = np.array([[r["task_pressure_cosine_before"], r["task_pressure_cosine_after"]]
-                         for r in rows])
-    np.testing.assert_array_equal(left.collections[0].get_offsets(), expected)
-    assert np.any(expected[:, 1] != 0)  # Keep measured residuals, not imposed orthogonality.
-    ratios = np.array([[r["pressure_to_task_ratio_raw"] / c["pressure"]["step_budget"]
-                        for r in c["rows"]] for c in conditions])
-    for line, values in zip(right.lines[:10], ratios):
-        np.testing.assert_array_equal(line.get_xdata(), np.arange(1, 713))
-        np.testing.assert_array_equal(line.get_ydata(), values)
-    np.testing.assert_array_equal(right.lines[10].get_ydata(), np.median(ratios, axis=0))
+    assert len(left.lines) == 3  # Zero reference and two complete empirical CDFs.
+    assert len(right.lines) == 13  # Ten runs, two family medians, one budget reference.
+    for i, family in enumerate(geometry.FAMILIES):
+        cohort = [c for c in conditions if c["family"] == family]
+        values = np.sort([r["task_pressure_cosine_before"] for c in cohort for r in c["rows"]])
+        cdf = left.lines[i + 1]
+        np.testing.assert_array_equal(cdf.get_xdata()[1:-1], values)
+        np.testing.assert_array_equal(cdf.get_ydata()[1:-1], np.arange(1, 3561) / 3560)
+        assert list(cdf.get_ydata()[[0, -1]]) == [0, 1]
+        ratios = np.array([[r["pressure_to_task_ratio_raw"] / c["pressure"]["step_budget"]
+                            for r in c["rows"]] for c in cohort])
+        lines = right.lines[6 * i:6 * i + 6]
+        for line, values in zip(lines[:5], ratios):
+            np.testing.assert_array_equal(line.get_xdata(), np.arange(1, 713))
+            np.testing.assert_array_equal(line.get_ydata(), values)
+        np.testing.assert_array_equal(lines[5].get_ydata(), np.median(ratios, axis=0))
+        assert all(line.get_color() == cdf.get_color() == geometry.COLORS[family] for line in lines)
     assert right.get_yscale() == "log"
     geometry.plt.close(fig)

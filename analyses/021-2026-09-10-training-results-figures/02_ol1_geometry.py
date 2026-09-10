@@ -11,7 +11,6 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
@@ -21,6 +20,7 @@ FAMILIES = ("A4-OL1", "A7-OL1")
 THRESHOLDS = (0.0, 0.01, 0.05, 0.1, 0.5)
 STEPS = 712
 CODE_NAMES = {"pressure.py", "optimization.py", "optimizer_boundary.py", "training.py"}
+COLORS = {"A4-OL1": "#2878B5", "A7-OL1": "#C96024"}
 
 
 def sha256(path):
@@ -112,8 +112,11 @@ def summarize(rows):
     return {
         "observations": len(rows), "conflict_steps": len(conflicts),
         "conflict_percent": 100 * len(conflicts) / len(rows),
+        "median_pre_cosine": float(np.median([r["task_pressure_cosine_before"] for r in rows])),
         "median_conflicting_pre_cosine": float(np.median([
             r["task_pressure_cosine_before"] for r in conflicts])),
+        "p99_abs_conflicting_post_cosine": float(np.quantile([
+            abs(r["task_pressure_cosine_after"]) for r in conflicts], .99)),
         "max_abs_conflicting_post_cosine": max(abs(r["task_pressure_cosine_after"]) for r in conflicts),
         "cap_active_steps": caps, "cap_active_percent": 100 * caps / len(rows),
         "median_pre_cap_ratio": float(np.median([r["pressure_to_task_ratio_raw"] for r in rows])),
@@ -129,7 +132,8 @@ def summary_document(conditions, provenance):
         "conflict_rule": "task_pressure_dot_before < 0",
         "cap_active_rule": "trust_scale < 1",
         "cosines": "logged stabilized global adaptive-direction cosines, unchanged",
-        "median_trace": "arithmetic median of r/b across all ten conditions at each step; no smoothing",
+        "distribution": "empirical CDF of every logged pre-projection cosine, separately by family; no bins or smoothing",
+        "median_traces": "median of r/b across five conditions within each family at each step; no pooled trace or smoothing",
         **provenance,
         "pooled": summarize([r for c in conditions for r in c["rows"]]),
         "by_family": {family: summarize([r for c in conditions if c["family"] == family
@@ -145,61 +149,51 @@ def make_figure(conditions, summary):
         "xtick.labelsize": 7, "ytick.labelsize": 7, "pdf.fonttype": 42,
         "axes.spines.top": False, "axes.spines.right": False, "axes.linewidth": 0.6,
     })
-    fig, (left, right) = plt.subplots(1, 2, figsize=(5.9, 2.85))
-    fig.subplots_adjust(left=0.125, right=0.985, bottom=0.18, top=0.76, wspace=0.45)
-    fig.suptitle("OL1 task–pressure geometry and budget saturation", fontsize=9.2, y=0.965)
-    left.set_title("(a) Conflict-conditioned projection", fontsize=7.6, pad=10, loc="left")
-    right.set_title(r"(b) Norm-budget saturation at $\lambda = 1$", fontsize=7.6, pad=10, loc="left")
-    rows = [r for c in conditions for r in c["rows"]]
-    left.axvline(0, color="#B1B6BC", linewidth=0.6, zorder=0)
-    left.axhline(0, color="#B1B6BC", linewidth=0.6, zorder=0)
-    left.plot([-.15, .015], [-.15, .015], color="#D1D5D9", linewidth=0.6, zorder=0)
-    left.scatter([r["task_pressure_cosine_before"] for r in rows],
-                 [r["task_pressure_cosine_after"] for r in rows],
-                 s=5, alpha=0.15, color="#337887", edgecolors="none", zorder=2)
-    left.set(xlim=(-.15, .015), ylim=(-.15, .015),
+    fig, (left, right) = plt.subplots(1, 2, figsize=(5.9, 2.45),
+                                     gridspec_kw={"width_ratios": [1, 1.15]})
+    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.23, top=0.85, wspace=0.42)
+    left.set_title("(a) Task–pressure conflict", fontsize=7.7, pad=10, loc="left")
+    right.set_title("(b) Budget regime depends on target set", fontsize=7.7, pad=10, loc="left")
+    left.axvline(0, color="#30373D", linewidth=0.6, linestyle=":", zorder=0)
+    split = summary["by_family"]
+    for family in FAMILIES:
+        values = np.sort([r["task_pressure_cosine_before"] for c in conditions
+                          if c["family"] == family for r in c["rows"]])
+        left.step(np.r_[-.15, values, .004], np.r_[0, np.arange(1, len(values) + 1) / len(values), 1],
+                  where="post", color=COLORS[family], linewidth=1.2)
+    left.set(xlim=(-.15, .004), ylim=(0, 1.10),
              xlabel=r"Pre-projection cosine $\cos(u,w)$",
-             ylabel=r"Post-projection cosine $\cos(u,\widetilde{w})$")
+             ylabel="Cumulative fraction")
     left.set_xticks([-.15, -.10, -.05, 0])
-    left.set_yticks([-.15, -.10, -.05, 0])
-    pooled = summary["pooled"]
-    left.text(.045, .42, f"Conflict: {pooled['conflict_percent']:.1f}% of steps",
-              transform=left.transAxes, fontsize=7.5,
-              bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.5})
-    left.text(.045, .26, "Median pre-proj. cosine\nwhen conflicting: "
-              + f"{pooled['median_conflicting_pre_cosine']:.3f}".replace("-", "−"),
-              transform=left.transAxes, fontsize=7.2, linespacing=1.4,
-              bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.5})
+    left.set_yticks([0, .5, 1])
+    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of steps conflicting",
+              transform=left.transAxes, va="top", fontsize=7.2)
+    for family, n, y in zip(FAMILIES, (4, 7), (.77, .64)):
+        median = f"{split[family]['median_pre_cosine']:.3f}".replace("-", "−")
+        left.text(.045, y, f"{n}-site median: {median}",
+                  transform=left.transAxes, fontsize=7.2, color=COLORS[family])
 
-    ratios = []
-    styles = {"A4-OL1": "-", "A7-OL1": (0, (3, 2))}
-    colors = {"A4-OL1": "#7E929E", "A7-OL1": "#8B827C"}
-    for condition in conditions:
-        values = [r["pressure_to_task_ratio_raw"] / condition["pressure"]["step_budget"]
-                  for r in condition["rows"]]
-        ratios.append(values)
-        right.plot(range(1, STEPS + 1), values, color=colors[condition["family"]],
-                   linestyle=styles[condition["family"]], alpha=.52, linewidth=.55)
-    right.plot(range(1, STEPS + 1), np.median(ratios, axis=0), color="#222B32", linewidth=1.2)
-    right.axhline(1, color="#555D63", linewidth=.65, linestyle=(0, (1.5, 2.5)), zorder=0)
-    right.set(yscale="log", xlim=(1, STEPS), ylim=(.055, 6500),
+    for family in FAMILIES:
+        ratios = []
+        for condition in conditions:
+            if condition["family"] != family:
+                continue
+            values = [r["pressure_to_task_ratio_raw"] / condition["pressure"]["step_budget"]
+                      for r in condition["rows"]]
+            ratios.append(values)
+            right.plot(range(1, STEPS + 1), values, color=COLORS[family], alpha=.28, linewidth=.5)
+        right.plot(range(1, STEPS + 1), np.median(ratios, axis=0),
+                   color=COLORS[family], linewidth=1.5)
+    right.axhline(1, color="#30373D", linewidth=.65, linestyle=(0, (1.5, 2.5)), zorder=0)
+    right.text(355, 1.35, "budget binds", fontsize=6.8, ha="center", va="bottom")
+    right.set(yscale="log", xlim=(1, STEPS), ylim=(.025, 3500),
               xlabel="Optimizer step", ylabel=r"Pre-cap norm ratio $r/b$")
     right.set_xticks([1, 200, 400, 600])
     right.set_yticks([.1, 1, 10, 100, 1000])
     right.minorticks_off()
-    right.text(.98, .965, f"Cap active: {pooled['cap_active_percent']:.1f}% of steps",
-               transform=right.transAxes, ha="right", va="top", fontsize=7.5)
-    split = summary["by_family"]
-    right.text(.98, .86,
-               f"4-site: {split['A4-OL1']['cap_active_percent']:.1f}%  |  "
-               f"7-site: {split['A7-OL1']['cap_active_percent']:.1f}%",
-               transform=right.transAxes, ha="right", va="top", fontsize=6.5)
-    handles = [Line2D([], [], color=colors[f], linestyle=styles[f], linewidth=.9,
-                       label=f"{n}-site") for f, n in zip(FAMILIES, (4, 7))]
-    handles.append(Line2D([], [], color="#222B32", linewidth=1.2, label="Median"))
-    right.legend(handles=handles, frameon=False, ncol=3, loc="lower center",
-                 bbox_to_anchor=(.5, -.30), fontsize=6.8, handlelength=1.5,
-                 handletextpad=.4, columnspacing=.8, borderaxespad=0)
+    for family, n, x, y in (("A4-OL1", 4, .27, .035), ("A7-OL1", 7, .42, .93)):
+        right.text(x, y, f"{n}-site: {split[family]['cap_active_percent']:.1f}% capped",
+                   transform=right.transAxes, color=COLORS[family], fontsize=7.3)
     return fig
 
 
@@ -210,7 +204,7 @@ def main():
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     figure = make_figure(conditions, summary)
     figure.savefig(HERE / "figures/02-14m-ol1-geometry.pdf", metadata={
-        "Title": "OL1 task-pressure geometry and budget saturation", "CreationDate": None,
+        "Title": "OL1 conflict geometry and target-set-dependent saturation", "CreationDate": None,
         "ModDate": None,
     })
     plt.close(figure)
