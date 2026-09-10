@@ -44,31 +44,19 @@ A7-OL1   & $a,m,h,z,q,k,v$ & $a,m,h,z,q,k,v$ & 29.95 & 49.42 & 87.25 \\
 \end{tabular}
 \end{table}
 
-Within each size, matched contrasts share initialization, data order, and
-training budget. Adding pressure at fixed nonlinearities measures its additional
-quality and sparsity effects; repeating the contrast across thresholds tests
-how those effects depend on thresholding. Comparing A4 with A7 without
-pressure examines broader nonlinearity placement. A4-OL1 versus A7-OL1 changes both
-nonlinearity and pressure sites, so it compares complete recipes rather than isolating
-nonlinearity placement at a fixed pressure objective.
+The experimental setup contains 30 training runs at 14M and 12 at each larger
+model size. Within each size, runs share initialization, data order and
+training budget. We vary local pressure for A1-H using L1N and OL1 with
+$\lambda\in\{0.05,0.1,0.5,1\}$. For A4/A7, we sweep
+$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, both without pressure and with OL1 at
+$\lambda=1$. These sweeps test which interventions yield the largest
+sparsification gains. Appendix~\ref{app:training-protocol} details the
+training settings.
 
-The cohort contains 30 conditions at 14M and 12 at each larger size.
-Each trains for 712 updates and 1.493 billion
-input tokens; we evaluate the final checkpoint. Local pressure varies
-$\lambda\in\{0.05,0.1,0.5,1\}$; A4/A7 vary
-$\kappa\in\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$,
-and all OL1 conditions use trust budget 1. Sweeping these settings tests
-whether an added intervention has a consistent effect or depends on the
-strength of the existing intervention. Appendix~\ref{app:training-protocol} gives the
-optimizer, precision and learning-rate settings.
-
-For the evaluation-only reference, we apply uniform magnitude-clipping targets
-$p=0,0.1,\ldots,0.9$ at $a,m,h,z$ without updating weights. Site--layer
-thresholds are calibrated separately on ten training blocks. This is a
-uniform TEAL-style control~\citep{liu2024teal}, not a reproduction of an
-optimized allocation across sites. The main figures show A0 clipping;
-Appendix~\ref{app:clipping-results} includes all 540 evaluations across the
-54 trained checkpoints.
+To compare the interventions with post-hoc clipping, we apply uniform
+percentile magnitude-clipping targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$
+as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are
+calibrated separately on ten training blocks.
 
 \input{training-results}
 \input{kernel-autoresearch}
