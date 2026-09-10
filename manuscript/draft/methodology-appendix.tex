@@ -53,6 +53,11 @@ $\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
 The experiments' clipping thresholds, $b$, and $\lambda$ are condition
 parameters.
 
+Ignoring numerical stabilizers, the correction norm before the learning rate is
+$\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$.
+For a fixed optimizer state, once the cap binds, further increases in
+$\lambda$ leave this ideal correction unchanged.
+
 This procedure is related to gradient-conflict projection~\citep{yu2020pcgrad}
 and the use of smoothed primary directions~\citep{hsieh2024bloop}, but defines
 a particular correction in AdamW-preconditioned coordinates. The stabilized

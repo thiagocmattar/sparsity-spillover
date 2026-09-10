@@ -11,26 +11,39 @@ We measure loss and $\Smodel$ in the same forward pass over all 338 complete
 2,048-token blocks from the 500 MiniPile validation documents, excluding the
 1,444-token tail. All training-result figures and tables use this evaluation.
 
-Figure~\ref{fig:intervention-ladder} locates the activation sites in the shared
-Pythia block and maps the eight recipes onto them. Each recipe is pretrained
-separately. Appendix~\ref{app:sites} gives exact site definitions and tensor shapes.
+Table~\ref{tab:interventions} maps the eight recipes onto the sites in
+Figure~\ref{fig:pythia-block}. Each recipe is pretrained separately.
+Appendix~\ref{app:sites} gives exact site definitions and tensor shapes.
 
-% Source: manuscript/artifacts/pythia-architecture-sparsification-ladder.md and .tex.
-% Panels: manuscript/artifacts/pythia-architecture-map.pdf; sparsification-ladder.pdf.
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/pythia-architecture-sparsification-ladder.pdf}
-\caption{\textbf{Pythia architecture and sparsification recipes.}
-Top: the shared block and activation sites; $q,k$ follow RoPE and $z$ precedes
-the attention-output projection. Bottom: nonlinearity placement, pressure and
-analytic sparsity ceilings for the eight recipes. Selected nonlinearities
-replace GELU at $h$ and act on existing activations elsewhere. L1N denotes
-naive L1; pressure targets every site with a selected nonlinearity in its row.
-The ceiling columns report $100\Smax\%$ for $T=2{,}048$, rather than measured
-sparsity or speedup. All recipes are evaluated at 14M; 70M and 410M use A0,
-A1-H, A4-OL1 and A7-OL1. Rows identify separately trained recipes, not curriculum stages.}
-\label{fig:intervention-ladder}
-\end{figure}
+% Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
+% Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{Sparsification recipes and architectural reach.}
+Ceilings are $100\Smax\%$ at $T=2{,}048$. A1-H recipes use ReLU at $h$;
+A4/A7 use the thresholding functions in Section~\ref{sec:interventions}.
+A1-H-L1 uses L1N; the OL1 suffix denotes orthogonal pressure.
+All recipes are evaluated at 14M; 70M and 410M use A0, A1-H, A4-OL1 and A7-OL1.}
+\label{tab:interventions}
+\vspace{4pt}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lllrrr@{}}
+\toprule
+ID & Thresholding sites $\mathcal{N}$ & Pressure sites $\mathcal{P}$ & \multicolumn{3}{c}{Ceiling (\%)} \\
+\cmidrule(l){4-6}
+ & & & 14M & 70M & 410M \\
+\midrule
+A0       & $\varnothing$ & $\varnothing$ & 0.00 & 0.00 & 0.00 \\
+A1-H     & $h$ & $\varnothing$ & 4.28 & 12.35 & 24.93 \\
+A1-H-L1  & $h$ & $h$ & 4.28 & 12.35 & 24.93 \\
+A1-H-OL1 & $h$ & $h$ & 4.28 & 12.35 & 24.93 \\
+A4       & $a,m,h,z$ & $\varnothing$ & 12.83 & 37.06 & 74.78 \\
+A4-OL1   & $a,m,h,z$ & $a,m,h,z$ & 12.83 & 37.06 & 74.78 \\
+A7       & $a,m,h,z,q,k,v$ & $\varnothing$ & 29.95 & 49.42 & 87.25 \\
+A7-OL1   & $a,m,h,z,q,k,v$ & $a,m,h,z,q,k,v$ & 29.95 & 49.42 & 87.25 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 Within each size, matched contrasts share initialization, data order, and
 training budget. Adding pressure at fixed nonlinearities measures its additional

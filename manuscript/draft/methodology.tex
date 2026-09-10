@@ -6,46 +6,54 @@
 \subsection{Sparsification interventions}
 \label{sec:interventions}
 
-Q-Sparse selects the top-$k$ activation magnitudes~\citep{wang2024qsparse}.
-Spark Transformer motivates its statistical top-$k$ approximation by the
-overhead of sorting-based selection~\citep{you2025spark}.
-We take a simpler route: extend the FFN design of elementwise nonlinearities
-to the query, key and value operands of self-attention, using a symmetric
-threshold. A fixed cutoff needs neither ranking nor input-dependent moment
-estimates. It leaves the retained activation count free to change as training
-reshapes the distribution, instead of targeting a prescribed count.
+A sparsification intervention specifies (i) where to set activations to zero
+(thresholding sites $\mathcal{N}$), (ii) the thresholding function $G$, and
+(iii) where to apply activation regularization pressure (pressure sites
+$\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide,
+and different sites may use different functions $G$. These choices give a
+combinatorial set of interventions during training.
 
-A sparsification intervention specifies where to set activations to zero
-(nonlinearity sites $\mathcal{N}$), the nonlinearity and threshold, and where to encourage
-small activations during training (pressure sites $\mathcal{P}$). The two site
-sets need not coincide.
-
-We use ReLU and two thresholding nonlinearities:
+To avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark},
+we extend ReLU to one-sided and symmetric thresholding:
 $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and
 $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$.
-One-sided thresholding removes negative values and small positive values;
-symmetric thresholding removes small magnitudes while preserving the signs
-and values of survivors. At $\kappa=0$, their forward maps are ReLU and the
-identity, respectively. Appendix~\ref{app:interventions} specifies boundary
-and derivative conventions.
+The threshold $\kappa$ controls thresholding strength and is fixed within each
+training condition. Appendix~\ref{app:interventions} gives boundary and derivative conventions.
 
-The threshold is fixed within each training condition. Our hypothesis is
-that the learned distribution can adapt to this nonlinearity, with activation
-pressure providing an additional way to shape it. We examine that adaptation
-through the quality--sparsity comparisons and signed activation distributions.
+Figure~\ref{fig:pythia-block} locates the intervention sites: $a$ and $m$ are
+the normalized inputs to the attention and FFN branches; $h$ is the FFN hidden
+activation; $z$ is the concatenated attention context before output projection;
+and $q,k,v$ are the query, key and value operands, with $q,k$ taken after RoPE.
+The attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at
+selected sites among $a,m,h,z$ and $G_{\pm,\kappa}$ at $q,k,v$.
+At $h$, the selected nonlinearity replaces GELU.
 
-Pressure uses $\mathcal{L}_1$: we take the mean absolute activation in each
-targeted site--layer tensor, after the nonlinearity where one is applied, then average these
-means equally.
-\emph{Naive L1} optimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
-\emph{Orthogonal L1} (OL1) adapts gradient-conflict
-projection~\citep{yu2020pcgrad,hsieh2024bloop} to this pressure objective.
-It makes a task-only AdamW update, then adds a pressure
-correction preconditioned by the task's second-moment estimates. When this
-correction opposes the adaptive task direction, OL1 projects out its
-conflicting component. A positive trust budget caps its norm relative to that task
-direction. This limits the pressure correction without guaranteeing preserved task
-loss; Appendix~\ref{app:pressure} defines the procedure.
+% Source artwork and observation: figures/pythia-architecture-map.tex and .md.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/pythia-architecture-map.pdf}
+\caption{\textbf{Intervention sites in a shared Pythia block.}
+Attention and FFN branches use separate LayerNorms and join the residual path.
+Green nodes identify activation sites; purple nodes identify learned weights.
+Table~\ref{tab:interventions} specifies thresholding and pressure assignments.}
+\label{fig:pythia-block}
+\end{figure}
+
+For optimization pressure, $\mathcal{L}_1$ averages the mean absolute activation
+equally across targeted site--layer tensors, after any thresholding.
+\emph{Naive L1} (L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$.
+The weight $\lambda$ adds a tuning dimension that affects sparsity and quality,
+as reported by ProSparse~\citep{song2024prosparse} and \citet{cetin2026sparser}.
+To limit this sensitivity, \emph{orthogonal L1} (OL1) adapts gradient-conflict
+projection~\citep{yu2020pcgrad,hsieh2024bloop} to the AdamW update.
+After a task-only AdamW step, it preconditions the pressure gradient using the
+task's second-moment estimates
+and removes its conflicting component when it opposes the adaptive task direction.
+A unit norm budget caps the pressure correction at that direction's norm,
+before applying the learning rate. For a fixed optimizer state, the ideal
+capped correction no longer grows with $\lambda$, motivating fixed-budget
+comparisons across interventions. This bounds pressure without guaranteeing
+preserved task loss; Appendix~\ref{app:pressure} defines the procedure.
 
 \subsection{Sparsity and architectural reach}
 \label{sec:measurement}

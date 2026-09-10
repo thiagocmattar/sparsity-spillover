@@ -106,3 +106,23 @@ Pythia-specific counts and configuration links now appear in
 their labels. [Experimental notes](experimental-notes.md) record coverage and
 comparison provenance. The four existing numbered equations, figure artwork,
 ceiling values, introduction, related work, and bibliography are unchanged.
+
+## 10 September 2026: focused intervention revision
+
+The author's edits now introduce the intervention choices before thresholding
+and pressure. Site definitions and the existing standalone architecture figure
+move into Methodology; the experimental section replaces the combined ladder
+with a recipe table. Its ceilings use the existing exact counts in
+[ceiling-verification.json](reviews/2026-09-05-methodology/ceiling-verification.json),
+rounded to two decimal places. The measurement subsection is outside this edit.
+
+The OL1 motivation distinguishes an ideal capped correction at a fixed
+optimizer state from empirical hyperparameter robustness or task-loss
+preservation. Its norm formula follows the existing appendix and
+[pressure.py](../../src/sparsity_research/pressure.py) and
+[optimization.py](../../src/sparsity_research/optimization.py).
+[ProSparse](https://arxiv.org/html/2402.13516v4) and
+[Cetin et al.](https://arxiv.org/html/2603.23198v1) support the motivation that
+L1 strength affects sparsity and quality. The exact top-k cost motivation is
+also discussed by [Spark](https://arxiv.org/html/2506.06644v2); Spark itself
+uses a statistical approximation that avoids sorting.
