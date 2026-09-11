@@ -104,7 +104,7 @@ def make_figure(data):
     # Boundary labels identify evaluated settings; no labels on intermediate kappa.
     offsets = {
         "14M": {"A4-OL1": ((3, -14), (5, 7)), "A7-OL1": ((-3, 14), (10, 8))},
-        "70M": {"A4-OL1": ((-3, -13), (-4, -12)), "A7-OL1": ((-4, 10), (12, -9))},
+        "70M": {"A4-OL1": ((-3, -13), (-9, 3)), "A7-OL1": ((-4, 10), (17, -9))},
         "410M": {"A4-OL1": (None, (-5, 18)), "A7-OL1": ((-4, -13), (12, 7))},
     }
     for index, (ax, panel) in enumerate(zip(axes, data["panels"])):
@@ -137,7 +137,8 @@ def make_figure(data):
                             (row["sparsity_percent"], row["loss"]),
                             xytext=offset, textcoords="offset points", fontsize=7, color=color,
                             ha="right" if offset[0] < 0 or family == "A7-OL1" and row["dose"] == .5 else "left",
-                            va="center",
+                            va="center", zorder=5,
+                            bbox={"facecolor": "white", "edgecolor": "none", "pad": .6},
                             arrowprops=({"arrowstyle": "-", "color": color, "lw": .45,
                                          "alpha": .5, "shrinkA": 2, "shrinkB": 4}
                                         if size == "14M" and row["dose"] == 0 else None))
@@ -147,11 +148,13 @@ def make_figure(data):
                 markerfacecolor="white", markeredgewidth=.6, zorder=1, gid=f"{size}:clipping")
         endpoint = next(r for r in panel["trained"] if r["family"] == "A7-OL1" and r["dose"] == .5)
         # The common A7 normalization replaces the old second row.
-        ax.annotate(f'{endpoint["A7_ceiling_used_percent"]:.1f}% of ceiling',
+        ax.annotate(f'{endpoint["A7_ceiling_used_percent"]:.1f}%\nof ceiling',
                     (endpoint["sparsity_percent"], endpoint["loss"]),
-                    xytext=(12 if size != "14M" else 10, {"14M": -16, "70M": 14, "410M": -11}[size]),
-                    textcoords="offset points", ha="right", va="bottom" if size == "70M" else "top",
-                    fontsize=7, color=STYLE["A7-OL1"][1])
+                    xytext={"14M": (-18, -16), "70M": (-6, 14), "410M": (-16, -11)}[size],
+                    textcoords="offset points", ha="center", multialignment="center",
+                    va="bottom" if size == "70M" else "top", linespacing=1.1,
+                    fontsize=7, color=STYLE["A7-OL1"][1], zorder=5,
+                    bbox={"facecolor": "white", "edgecolor": "none", "pad": .6})
     axes[0].set_ylabel("Validation loss")
     handles = [Line2D([], [], color=color, marker=marker, linewidth=.9, markersize=4.3, label=label)
                for label, color, marker in STYLE.values()]

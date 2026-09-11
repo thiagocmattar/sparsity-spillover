@@ -244,6 +244,9 @@ ceiling used. The table is omitted from the PDF. A0 clipping remains a faint
 dotted reference, clipped to the displayed loss range without dropping its
 retained off-scale coordinates. The shared legend sits below the three panels.
 The main figure is frozen after the author's final spacing/annotation polish.
+Utilization labels use two centered lines with white backgrounds; threshold
+labels also have white backgrounds to remain legible over lines. The 70M
+high-threshold labels and utilization note have the author's adjusted positions.
 
 This figure is **analysis-only**, as requested on 11 September 2026. The
 manuscript and the previous full-range figure are unchanged. At kappa = 0.5,

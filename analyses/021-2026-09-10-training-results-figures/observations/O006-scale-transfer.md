@@ -64,6 +64,12 @@ Only the seven-site kappa = 0 label is kept in the 410M cluster. Both high-
 threshold endpoints remain labeled, and ceiling-utilization text is placed
 close to the corresponding orange endpoint. The 410M ceiling labels are
 separated horizontally and the vertical guides are lighter than the data.
+The subsequent author-requested annotation polish centers each utilization
+label on two lines (percentage above "of ceiling"), with a borderless white
+background on in-plot threshold and utilization text. At 70M, utilization
+moves slightly right, the four-site kappa = 0.5 label moves up and left, and
+the seven-site kappa = 0.5 label moves right. Data, axes and normalization
+are unchanged.
 
 ## Figure and proposed caption
 
