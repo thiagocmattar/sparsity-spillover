@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+Section 4.4 now states "Local sparsity does not determine model-wide sparsity,"
+using the approved composite as Figure 5 on page 9. The full threshold density
+grid is Figure 8 in Appendix D.1; three-size operation accounting remains in
+Appendix D.2 as Figure 9. The Q/K/V comparison remains Section 4.3.
+[Analysis 021 O005](../analyses/021-2026-09-10-training-results-figures/observations/O005-distributions-and-operations.md)
+records the adoption and source evidence. The rebuilt draft has 28 pages.
+
 Section 4.3 now isolates adding Q/K/V thresholding without pressure at matched
 thresholds. Table 2 on page 7 reports the ten raw A4/A7 endpoints; the text
 highlights +5.17 pp sparsity for +0.043 loss at kappa = 0.5. Evidence and

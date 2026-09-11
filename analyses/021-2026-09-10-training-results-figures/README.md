@@ -194,9 +194,11 @@ Two stacked bars show the six measured operation contributions and totals.
 A4-OL1 has more FFN zeros (99.31% versus 93.64%) but less model-wide sparsity
 (12.71% versus 27.48%); QK/PV supply 0.06 versus 16.77 pp.
 
-The author requested this analysis-only figure on 11 September. No manuscript
-files are changed. The full threshold distribution grid and three-size operation
-figure remain available in Analysis 018 for later appendix use. The new figure
+The author initially requested this analysis-only figure on 11 September,
+then approved manuscript adoption. It is now Figure 5, with Section 4.4
+"Local sparsity does not determine model-wide sparsity." The full threshold
+density grid is in Appendix D.1; three-size operation accounting remains in
+Appendix D.2. The approved artwork is copied byte-for-byte. The figure
 is 7.1 by 3.35 inches, without density fills, a baseline curve or a super-title.
 Blue/orange identify the recipes in the densities and bar labels; stack colors
 identify operations using the existing accounting palette.

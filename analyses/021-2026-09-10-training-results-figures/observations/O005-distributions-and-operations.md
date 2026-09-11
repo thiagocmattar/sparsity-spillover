@@ -5,7 +5,8 @@
 Can a recipe have more FFN zeros yet less model-wide sparsity because its
 attention products remain effectively dense? The author requested this composite
 figure on 11 September 2026. It combines existing Pythia-14M evidence at
-kappa = 0.5, with no new measurements. **Analysis only; no manuscript edits.**
+kappa = 0.5, with no new measurements. Initially analysis-only, the figure and
+its interpretation were subsequently approved for manuscript adoption.
 
 ## Method, sources and coverage
 
@@ -74,22 +75,18 @@ Both density plots have faint horizontal and vertical major-grid lines, matching
 the bars' horizontal guides. The legend has three
 columns and two rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
 
-**FFN sparsity alone can misrank recipes; operation accounting explains the
-reversal.** Both panels compare 4-site + OL1 and 7-site + OL1 at kappa = 0.5
-in Pythia-14M.
-**(a)** Nonzero activation densities, with exact-zero masses labeled separately.
-FFN pools h,m in an 80:20 element ratio; attention pools post-RoPE q,k and v
-equally. Densities divide counts by all captured elements and bin width, without
-renormalizing the nonzero mass or displayed range; both vertical axes are
-symlog, linear below 0.01. The four-site recipe has more FFN zeros (99.3% versus
-93.6%) but far fewer attention zeros (0.2% versus 95.6%). **(b)** Stacked measured
-zero-product contributions from six operation families, each divided by all
-model products including the dense final output projection. QK and PV supply
-0.1 pp under 4-site + OL1 and 16.8 pp under 7-site + OL1, explaining the reversal
-in model-wide sparsity: 12.7% versus 27.5%. The seven-site recipe also has lower
-validation loss, 5.8294 versus 6.0380. All quantities cover the full 338-block validation
-set. These are complete-recipe comparisons and logical sparsity opportunities,
-not isolated causal effects of attention pressure or measured speedups.
+**Local activation sparsity does not determine model-wide sparsity.**
+**(a)** Nonzero activation densities for four-site and seven-site OL1 at
+kappa = 0.5 in Pythia-14M; exact-zero mass is reported below each panel.
+Four-site OL1 has a larger pooled FFN zero fraction than seven-site OL1
+(99.31% versus 93.64%), whereas seven-site OL1 has a much larger pooled Q/K/V
+zero fraction (95.60% versus 0.22%). **(b)** Contribution of each matrix-product
+family to model-wide sparsity S_model, using the common full-model denominator.
+Despite its larger FFN zero fraction, four-site OL1 reaches only S_model =
+12.71%, compared with 27.48% for seven-site OL1. QK and PV contribute 16.77
+percentage points under seven-site OL1 but only 0.06 under four-site OL1.
+Bars report zero-operand multiplication opportunities, not runtime savings.
+Density pooling and normalization are detailed in Appendix D.1.
 
 ## Results
 
@@ -126,8 +123,8 @@ recipes differently from model-wide operation accounting.
 - The existing
   [full threshold density grid](../../018-2026-09-08-results-materials/figures/05-v3-activation-density-grid.pdf)
   and [three-size operation figure](../../018-2026-09-08-results-materials/figures/04-operation-accounting.pdf)
-  are retained unchanged. They can support a later appendix revision; no figures
-  or text have yet been moved in the manuscript.
+  are retained unchanged. The full grid is now shown in Appendix D.1 and the
+  three-size accounting remains in Appendix D.2.
 
 ## Reproduction
 
@@ -150,6 +147,27 @@ hashes and observation links resolve. The polish also verifies the revised
 visible labels, one-decimal rounding, bottom-note placement, grid placement and
 three-column legend order. The QK/PV note is positioned at x = 0.12, y = 20.5,
 slightly to the right of the four-site bar center.
-The figure data
-are identical to the preceding version, and the manuscript diff is empty.
+The figure data are identical to the preceding version. The initial figure
+polish did not change the manuscript; adoption is recorded below.
 Figure SHA-256: `75a4a591a09efd1a9bca0dbcb24b8fbccf9c510fa61b06bb599ecb99ed36fc4a`.
+
+## Manuscript adoption
+
+The author approved the composite and five paragraphs on local versus
+model-wide sparsity, operation accounting, near-zero density, nonlocal response
+and the FFN change under seven-site OL1. The section is numbered 4.4 because
+the recently added pressure-free Q/K/V comparison occupies 4.3. The composite
+is Figure 5 on page 9, copied without alteration into the draft and recorded
+in its figure-source manifest. The caption uses the approved two-decimal values;
+the frozen artwork keeps its one-decimal labels.
+
+The untreated-reference statement links directly to the full density grid,
+now Figure 8 on page 22 in Appendix D.1. Appendix accounting retains the
+three-size figure, now Figure 9 on page 23. The appendix distinguishes the
+two-checkpoint main view and its FFN limits from the full seven-checkpoint grid.
+No source measurement, analysis figure or unrelated manuscript section changed.
+
+The 28-page draft builds with resolved references and no overfull boxes.
+Four underfull vertical-box warnings remain. The main section, composite and
+appendix support were rendered and visually checked; all copied figure hashes
+and reported values reconcile to their retained sources.

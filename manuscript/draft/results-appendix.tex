@@ -2,6 +2,7 @@
 % Evidence: Analysis 018 O001--O004/O007/O011, figure_data.json and tables/training-protocol.md.
 % Complete clipping: Run 030 observations/O001--O003 and results/*.
 % Signed distributions: Run 031 results/histograms/*.json.gz.
+% Composite density/accounting figure: Analysis 021 observations/O005-distributions-and-operations.md; 04_distributions_and_operations.py.
 % Kernel contract: Run 029 observations/06-implementation-and-claim-audit.md.
 % Kernel compatibility/predicate revision: Analysis 018 O015; Run 022 README, Run 025 SOURCE_AUDIT.md.
 % Generated tables: Analysis 018 / 03_manuscript_tables.py.
@@ -83,8 +84,8 @@ for each recipe. The notation $U_{\mathrm{arch}}$ is shared with the main text.
 \subsection{Activation sparsity and signed-density coverage}
 \label{app:density-results}
 
-The seven frozen-checkpoint evaluations underlying
-Figure~\ref{fig:activation-reshaping} record signed values after the trained
+The seven frozen-checkpoint evaluations in
+Figure~\ref{fig:activation-density-full} record signed values after the trained
 nonlinearities, with Q/K measured after RoPE. Each checkpoint contributes
 2,658,140,160 FFN elements and 1,594,884,096 attention elements across the
 complete validation set. Summing integer counts gives the 80:20 weighting
@@ -99,8 +100,11 @@ integral is the recorded nonzero mass inside that grid, not one. Table~\ref{tab:
 reports the zero mass and the fractions outside the displayed and native
 ranges. Underflow and overflow counts are retained rather than folded into
 edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
-attention. The largest omitted display tail is $6.6719\%$; the native-grid
-tail is at most $0.7607\%$.
+attention in Figure~\ref{fig:activation-density-full}. The largest omitted
+display tail is $6.6719\%$; the native-grid tail is at most $0.7607\%$.
+Figure~\ref{fig:activation-reshaping} selects the two OL1 checkpoints at
+$\kappa=0.5$, using the same density normalization and symlog scale, with
+FFN limits $[0,3]$ and attention limits $[-4,4]$.
 
 The diagnostic reruns use FP32 parameters with FP16 autocast and no
 additional clipping. Their maximum absolute validation-loss difference
@@ -109,6 +113,25 @@ $5\times10^{-4}$ tolerance; all 108 threshold-consistency checks pass. Small
 rounding differences in exact-zero counts between evaluation passes do not
 change the displayed conclusions. Complete per-site and pooled histograms,
 counts and checkpoint hashes accompany the data release.
+
+% Full threshold grid moved from the main text; original Analysis 018 PDF unchanged.
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/05-v3-activation-density-grid.pdf}
+\caption{\textbf{Interventions reshape FFN and attention distributions differently.}
+\textbf{Exact zeros are omitted from the curves and reported in
+Table~\ref{tab:density-mass}.} Columns pool FFN $(h,m)$ and attention
+$(q,k,v)$ activations; rows use trained thresholds $\kappa=0,0.05,0.5$.
+A0 is repeated across rows. Counts are pooled across all layers and validation
+blocks, weighting $h:m$ by 80:20 and $q:k:v$ equally. Density divides nonzero
+bin counts by all captured elements and bin width, without renormalizing
+the visible range. The vertical scale is symlog, linear below 0.01; filled
+areas on this scale do not represent probability mass. Dashed lines mark
+$+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
+Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
+A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
+\label{fig:activation-density-full}
+\end{figure}
 
 \begin{table}[htbp]
 \centering\small

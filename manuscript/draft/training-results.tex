@@ -5,12 +5,14 @@
 % Generating analysis: analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
 % Matched Q/K/V threshold additions without pressure: analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md
 % Table evidence: analyses/018-2026-09-08-results-materials/figure_data.json (trained endpoints; A4 to A7 gates contrasts).
+% Local/model-wide sparsity: analyses/021-2026-09-10-training-results-figures/observations/O005-distributions-and-operations.md
+% Generating analysis: analyses/021-2026-09-10-training-results-figures/04_distributions_and_operations.py
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
 % Historical evidence chain: results-argument-map.md. Current overview/geometry/pressure effects: Analysis 021 O001/O002/O003.
-% Overview is in introduction.tex. Remaining figures: Analysis 018 plots.py:scaling; 02_activation_density_v3.py.
+% Overview is in introduction.tex. Scale figure: Analysis 018 plots.py:scaling. Full density grid: results-appendix.tex.
 % Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
@@ -163,49 +165,68 @@ validation losses 5.7029 and 5.6597, respectively.}
 We next examine how the resulting
 four- and seven-site recipes differ in their activation structure.
 
-\subsection{Reshaping activation distributions}
+\subsection{Local sparsity does not determine model-wide sparsity}
 \label{sec:activation-reshaping}
 
-More FFN zeros need not mean more model-wide sparsity
-(Figure~\ref{fig:activation-reshaping}). At
-$\kappa=0.5$, A4-OL1 places $99.31\%$ of pooled FFN elements exactly at
-zero, compared with $93.64\%$ for A7-OL1. Their attention distributions
-differ more sharply: A4-OL1 has a narrow nonzero peak and only $0.22\%$
-exact zeros, whereas A7-OL1 has $95.60\%$ exact zeros and nonzero density
-outside the symmetric threshold gap. The omitted zero masses are reported
-in Table~\ref{tab:density-mass}; a narrow density peak is not itself a large
-exact-zero probability.
+\textbf{FFN sparsity alone does not determine which recipe exposes more
+model-wide sparse computation} (Figure~\ref{fig:activation-reshaping}).
+At $\kappa=0.5$, four-site OL1 has $99.31\%$ exact zeros in the pooled FFN
+activations, compared with $93.64\%$ for seven-site OL1. However, seven-site
+OL1 has the larger model-wide sparsity: $27.48\%$ versus $12.71\%$. It also
+has lower validation loss at this operating point, 5.8294 versus 6.0380.
+\textbf{Thus, the recipe with the larger FFN zero fraction is not the recipe
+with the larger $\Smodel$.}
 
-A4 does not directly threshold or pressure $q,k,v$, yet their distributions
-change substantially. This is a nonlocal response under the complete A4-OL1
-intervention, consistent with spillover. The comparison with A0 does not
-isolate pressure's contribution from the other training changes. A7 directly
-intervenes at these attention sites, so its reshaping there has a different
-interpretation.
+The operation decomposition explains the difference. Under four-site OL1,
+$QK$ and $PV$ together contribute only 0.06 percentage points to $\Smodel$;
+under seven-site OL1 they contribute 16.77 points. This increase more than
+offsets the smaller seven-site contributions from QKV and FFN-up projections.
+\textbf{Model-wide sparsity therefore depends on both the zero fraction at
+each activation site and the amount of matrix-product work that consumes
+those zeros.}
 
-The operation counts show why this distinction matters model-wide. At the
-same threshold, $QK$ and $PV$ contribute 16.77 sparsity points under A7-OL1,
-versus 0.06 under A4-OL1 (Appendix~\ref{app:operation-results}). Several
-projection contributions are smaller under A7-OL1, but its attention
-contribution more than offsets them. Greater model-wide sparsity can
-therefore coexist with less pooled FFN sparsity. The scale comparison below
-tests whether the A7-OL1 advantage over A4-OL1 persists in larger models.
+The nonzero density also shows why concentration near zero should not be
+interpreted as exact sparsity. Under four-site OL1, the pooled Q/K/V
+distribution is sharply concentrated near zero, but only $0.22\%$ of those
+activations are exactly zero. Under seven-site OL1, $95.60\%$ are exactly
+zero. \textbf{A narrow near-zero distribution therefore need not correspond
+to a large amount of zero-skippable computation.}
 
+Q/K/V receive neither direct thresholding nor direct pressure in the
+four-site recipe, yet their distributions differ substantially from the
+untreated reference (Appendix~\ref{app:density-results},
+Figure~\ref{fig:activation-density-full}). This shows that changing the
+four-site recipe is associated with changes at activation sites that are
+not directly targeted. We refer to this as a \textbf{nonlocal response of
+the trained network}. The comparison does not isolate whether that response
+is caused by pressure, thresholding, or their interaction.
+
+Expanding the intervention to Q/K/V also changes the FFN distribution:
+pooled FFN exact-zero mass decreases from $99.31\%$ under four-site OL1
+to $93.64\%$ under seven-site OL1. This shows that adding intervention sites
+does not simply add sparsity independently at those sites; the activation
+distributions elsewhere in the network also change. Because the seven-site
+recipe changes both the pressure target set and the normalization of the
+pressure objective, this comparison does not identify which component
+causes the FFN change.
+
+% Approved Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/05-v3-activation-density-grid.pdf}
-\caption{\textbf{Interventions reshape FFN and attention distributions differently.}
-\textbf{Exact zeros are omitted from the curves and reported in
-Table~\ref{tab:density-mass}.} Columns pool FFN $(h,m)$ and attention
-$(q,k,v)$ activations; rows use trained thresholds $\kappa=0,0.05,0.5$.
-A0 is repeated across rows. Counts are pooled across all layers and validation
-blocks, weighting $h:m$ by 80:20 and $q:k:v$ equally. Density divides nonzero
-bin counts by all captured elements and bin width, without renormalizing
-the visible range. The vertical scale is symlog, linear below 0.01; filled
-areas on this scale do not represent probability mass. Dashed lines mark
-$+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
-Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
-A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
+\includegraphics[width=\linewidth]{figures/04-14m-distributions-and-operations.pdf}
+\caption{\textbf{Local activation sparsity does not determine model-wide sparsity.}
+\textbf{(a)} Nonzero activation densities for four-site and seven-site OL1 at
+$\kappa=0.5$ in Pythia-14M; exact-zero mass is reported below each panel.
+Four-site OL1 has a larger pooled FFN zero fraction than seven-site OL1
+($99.31\%$ versus $93.64\%$), whereas seven-site OL1 has a much larger pooled
+Q/K/V zero fraction ($95.60\%$ versus $0.22\%$).
+\textbf{(b)} Contribution of each matrix-product family to model-wide sparsity
+$\Smodel$, using the common full-model denominator. Despite its larger FFN
+zero fraction, four-site OL1 reaches only $\Smodel=12.71\%$, compared with
+$27.48\%$ for seven-site OL1. $QK$ and $PV$ contribute 16.77 percentage points
+under seven-site OL1 but only 0.06 under four-site OL1. Bars report zero-operand
+multiplication opportunities, not runtime savings. Density pooling and
+normalization are detailed in Appendix~\ref{app:density-results}.}
 \label{fig:activation-reshaping}
 \end{figure}
 

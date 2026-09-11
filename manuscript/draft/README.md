@@ -25,6 +25,18 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+On 11 September, the approved Analysis 021 composite replaced the main-text
+distribution grid as Figure 5 on page 9. Section 4.4, "Local sparsity does not
+determine model-wide sparsity," now uses the approved five paragraphs and
+caption. The recent Q/K/V comparison retains Section 4.3. The full density
+grid is Figure 8 on page 22 in Appendix D.1, explicitly supporting the
+untreated-reference comparison; the three-size operation figure remains in
+Appendix D.2 as Figure 9. The copied composite is byte-identical to Analysis 021,
+with its hash in `figures/SOURCES.json`. The 28-page PDF builds with resolved
+references and no overfull boxes; four underfull vertical-box warnings remain.
+The affected pages were rendered and checked. See
+[O005](../../analyses/021-2026-09-10-training-results-figures/observations/O005-distributions-and-operations.md).
+
 On 11 September, Section 4.3 and Table 2 added the matched A7-versus-A4
 comparison without pressure. The table reports raw losses and model-wide
 sparsities at all five thresholds, highlighting kappa = 0.5. The text reports
