@@ -1,0 +1,77 @@
+# Figure 07 v2 - Model-wide sparsity and projection-skipping gain
+
+## Question
+
+How does model-wide sparsity relate to the full-model speedup from enabling
+projection skipping? The author requested a separate v2 of Figure 07 with
+S_model replacing projection MMA bypass on panel (b)'s x-axis. The original
+PDF and its data are preserved; the manuscript is unchanged.
+
+## Method, coverage and source
+
+[07_kernel_realization_v2.py](../07_kernel_realization_v2.py) reuses the
+original figure's [verified reduction and plotting code](../07_kernel_realization.py).
+It joins canonical S_model to each of the same 30 projection-gain observations
+by checkpoint identity, then recomputes unweighted OLS with an intercept.
+Panel (a), the four legend groups, 55:45 layout and reference lines are retained.
+Panel (b) uses the same 0–30% displayed sparsity range as panel (a).
+
+The gain remains the geometric-mean all-skips-off K050 latency divided by the
+geometric-mean attention-dense/projection-on K050 latency. It is a full-model
+timing ratio with the same fusion and attention skipping disabled in both
+controls, not a projection-only timing or a native-normalized speedup ratio.
+
+Sources and protocol are unchanged from [O008](O008-kernel-realization.md):
+Analysis 018 canonical FP16 logical counts, Run 029's qualified 30-checkpoint
+timings, and the [investigation](../investigation/README.md)'s reconstruction
+of raw latency geometric means. Logical measurements cover all 338 complete
+validation blocks from 500 documents, excluding the 1,444-token tail. BF16
+timings use the original 64 inputs, seven paired passes and three fresh
+processes per implementation on RTX5090, at batch one and sequence length
+2,048 with full-vocabulary output. No new model execution is performed.
+
+## Figure and caption
+
+[Figure 07 v2](../figures/07-kernel-realization-v2.pdf).
+
+**Model-wide sparsity relates differently to native-relative speedup and the
+gain from projection skipping.** Both panels show the same 30 Pythia-14M
+checkpoints against canonical model-wide sparsity. (a) Full K050 speedup
+relative to each checkpoint's native PyTorch/SDPA implementation.
+(b) Projection-skipping gain: all-skips-off latency divided by
+projection-on/attention-dense latency, retaining identical fusion and disabled
+attention skipping. Dashed lines are descriptive OLS fits with intercepts
+(R² = 0.817 and 0.496); dotted lines mark 1×. Black squares identify A0,
+gray circles identify nine 1-site checkpoints (ReLU and local L1/OL1), and
+blue diamonds/orange triangles identify the ten four-site/seven-site
+checkpoints. The labeled seven-site + OL1, κ = 0.5 endpoint in panel (a)
+reaches 1.78× native-relative speedup. Canonical sparsity uses FP16 and full
+validation coverage; timings use BF16 and the matched 64-input subset.
+These associations across different checkpoints do not isolate causal effects.
+
+## Result and limitations
+
+Panel (b): Pearson r = 0.704083, OLS R² = 0.495733; slope is
+0.016199614 gain units per sparsity percentage point, with intercept 0.934545121.
+Panel (a) remains R² = 0.816718. The previous panel (b), using projection MMA
+bypass, has R² = 0.946105 on exactly the same projection-gain outcomes.
+Model-wide sparsity counts scalar zero-product opportunities across all six
+operation families, including attention; it is not projection structure or
+work eliminated by the kernel. The new fit must not inherit the earlier
+instruction-bypass interpretation. Native costs, recipe, threshold, weights
+and quality vary across checkpoints, and neither fit is a causal estimate.
+
+## Reproduction and verification
+
+[kernel-realization-v2.json](../data/kernel-realization-v2.json) retains source
+hashes, all qualified comparisons, the 30 matched panel-(b) points, both
+regressions and the original PDF's SHA-256. The original figure is untouched.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v2.py -q
+```
+
+Two v2 tests check checkpoint/count joins, unchanged gains and original PDF,
+independent regression, and all plotted x/y values. The three original tests
+also pass. The PDF was rendered and visually inspected.

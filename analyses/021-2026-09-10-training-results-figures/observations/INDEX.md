@@ -43,3 +43,6 @@
   the same 30 checkpoints in both panels, with descriptive OLS R² = 0.817
   and 0.946. The projection gain uses matched raw candidate latencies, and
   bypass counts retain the SIMT/padding qualification. Analysis-only.
+- [O009 - Figure 07 v2: model-wide sparsity versus projection-skipping gain](O009-kernel-realization-v2.md):
+  a separate version with S_model on both x-axes; panel (b) is refitted over
+  the same 30 checkpoints, giving R² = 0.496. Original Figure 07 is preserved.

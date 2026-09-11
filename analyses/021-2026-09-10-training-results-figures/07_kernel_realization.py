@@ -129,7 +129,17 @@ def read_evidence():
     }
 
 
-def make_figure(data):
+def make_figure(data, *, projection_x="bypass_percent"):
+    if projection_x == "bypass_percent":
+        projection_title = "(b) Projection MMA bypass and sparse-path gain"
+        projection_xlabel = "Projection MMA bypass (%)"
+        projection_xlim, projection_ticks, reference_x = (-1.5, 85), [0, 20, 40, 60, 80], 83
+    elif projection_x == "sparsity_percent":
+        projection_title = "(b) Model-wide sparsity and sparse-path gain"
+        projection_xlabel = r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)'
+        projection_xlim, projection_ticks, reference_x = (-.5, 30), list(range(0, 31, 5)), 29
+    else:
+        raise ValueError(f"Unsupported projection x-axis: {projection_x}")
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8,
                          "axes.labelsize": 9, "axes.titlesize": 8,
                          "xtick.labelsize": 8, "ytick.labelsize": 8,
@@ -139,7 +149,7 @@ def make_figure(data):
                                 gridspec_kw={"width_ratios": (55, 45)})
     fig.subplots_adjust(left=.085, right=.985, bottom=.23, top=.86, wspace=.28)
     ax.set_title("(a) Model-wide sparsity and realized speedup", loc="left", pad=11)
-    ab.set_title("(b) Projection MMA bypass and sparse-path gain", loc="left", pad=11)
+    ab.set_title(projection_title, loc="left", pad=11)
     selected = [p for p in data["points"] if p["candidate"] == "k050"]
     for family, (color, marker) in STYLE.items():
         rows = [p for p in selected if p["visual_family"] == family]
@@ -175,20 +185,20 @@ def make_figure(data):
 
     for family, (color, marker) in STYLE.items():
         rows = [p for p in data["projection_points"] if p["visual_family"] == family]
-        ab.scatter([p["bypass_percent"] for p in rows], [p["projection_sparse_gain"] for p in rows],
+        ab.scatter([p[projection_x] for p in rows], [p["projection_sparse_gain"] for p in rows],
                    s=27, c=color, marker=marker, linewidths=.35, edgecolors="white", zorder=3, gid=family)
     projection_fit = data["projection_regression"]
-    xx = np.linspace(min(p["bypass_percent"] for p in data["projection_points"]),
-                     max(p["bypass_percent"] for p in data["projection_points"]), 100)
+    xx = np.linspace(min(p[projection_x] for p in data["projection_points"]),
+                     max(p[projection_x] for p in data["projection_points"]), 100)
     ab.plot(xx, projection_fit["intercept"] + projection_fit["slope_per_percentage_point"] * xx,
             color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
     ab.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
-    ab.text(83, 1.008, "1×: no skipping benefit", ha="right", va="bottom", fontsize=6.5, color=".45")
+    ab.text(reference_x, 1.008, "1×: no skipping benefit", ha="right", va="bottom", fontsize=6.5, color=".45")
     ab.text(.06, .90, rf'$R^2 = {projection_fit["r2"]:.3f}$', transform=ab.transAxes, fontsize=9,
             color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
-    ab.set(xlim=(-1.5, 85), ylim=(.95, 1.40),
-           xlabel="Projection MMA bypass (%)", ylabel="Projection-skipping gain (×)")
-    ab.set_xticks([0, 20, 40, 60, 80])
+    ab.set(xlim=projection_xlim, ylim=(.95, 1.40),
+           xlabel=projection_xlabel, ylabel="Projection-skipping gain (×)")
+    ab.set_xticks(projection_ticks)
     ab.set_yticks([1., 1.1, 1.2, 1.3, 1.4])
     ab.set_axisbelow(True)
     ab.grid(axis="y", color=".93", lw=.5)

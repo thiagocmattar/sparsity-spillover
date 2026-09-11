@@ -348,3 +348,18 @@ visually checked; the manuscript is unchanged.
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py -q
 ```
+
+## Figure 07 v2
+
+[The separate v2](figures/07-kernel-realization-v2.pdf) puts model-wide sparsity
+on both x-axes. Panel (a) is unchanged; panel (b) retains the same projection-
+skipping gains and refits the new predictor over all 30 checkpoints, yielding
+Pearson r = 0.704 and R² = 0.496. The previous MMA-bypass figure is preserved.
+[O009](observations/O009-kernel-realization-v2.md) records the caption, provenance
+and limits; [the v2 reduction](data/kernel-realization-v2.json) retains both fits
+and the original PDF hash. No manuscript changes or new measurements were made.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v2.py -q
+```
