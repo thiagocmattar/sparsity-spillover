@@ -1,5 +1,10 @@
 # Living Manuscript Draft
 
+The redundant main-text boundary-contrast table (formerly Table 3) is removed.
+Section 4.5 states the high-threshold ordering and zero-threshold reversal
+directly, referring to Appendix Table 7 for all 15 matched contrasts. Figure 6
+and the appendix evidence are unchanged. The rebuilt draft remains 28 pages.
+
 The frozen Analysis 021 cross-size figure is now Figure 6 on page 9, with
 Section 4.5 focused on the recurring high-threshold complete-recipe ordering
 and architectural ceilings. A0 optimization histories are Figure 8 on page 18

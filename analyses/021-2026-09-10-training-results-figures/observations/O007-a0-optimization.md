@@ -8,7 +8,7 @@ over the common training-token budget for Pythia-14M, 70M and 410M?
 The author requested this two-panel diagnostic on 11 September 2026 and
 subsequently approved manuscript adoption. The unchanged artwork is now
 Figure 8 on page 18 in Appendix C.4, following the realized-training-protocol
-table (Table 5 on page 17).
+table (now Table 4 on page 17, after removal of the main-text contrast table).
 
 ## Sources and coverage
 

@@ -100,6 +100,10 @@ not measured runtime savings.
 
 The adopted caption and transfer discussion are in
 [training-results.tex](../../../manuscript/draft/training-results.tex).
+At the author's request, the redundant main-text boundary-contrast table
+(formerly Table 3) is removed without replacement. Section 4.5 now refers
+directly to Appendix Table 7 for all 15 matched A7-OL1 minus A4-OL1 contrasts.
+The complete appendix table and frozen figure are unchanged.
 They distinguish the recurring high-threshold complete-recipe ordering from
 the size-dependent zero-threshold ordering. Ceiling utilization is reported
 at the seven-site endpoints; the old normalized-row explanation is removed

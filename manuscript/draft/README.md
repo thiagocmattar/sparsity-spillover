@@ -25,6 +25,13 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+The main-text boundary-contrast table (formerly Table 3) is removed without
+replacement. Section 4.5 now states the two boundary-threshold conclusions
+directly and refers to Appendix Table 7 for all five thresholds at each size.
+The figure and numerical evidence are unchanged. The rebuilt 28-page PDF has
+resolved references and no overfull boxes; the affected pages were visually
+checked. The four underfull vertical-box warnings remain.
+
 The frozen Analysis 021 cross-size figure is now Figure 6 on page 9.
 Section 4.5 retains "Transfer across model sizes," narrows the claim to the
 high-threshold complete-recipe ordering, and replaces the old normalized-row

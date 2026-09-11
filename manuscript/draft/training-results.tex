@@ -235,16 +235,16 @@ normalization are detailed in Appendix~\ref{app:density-results}.}
 \subsection{Transfer across model sizes}
 \label{sec:scale-results}
 
-\textbf{The high-threshold seven-site advantage recurs across all three
-model sizes (Figure~\ref{fig:scale-transfer}).} At $\kappa=0.5$, seven-site
-+ OL1 has both lower validation loss and greater model-wide sparsity than
-four-site + OL1 at 14M, 70M, and 410M. The relationship is specific to the
-high-threshold regime: at $\kappa=0$, four-site + OL1 is better on both axes
-at 14M and 70M, whereas seven-site + OL1 is better on both axes at 410M
-(Table~\ref{tab:cross-scale-recipe-contrasts}). \textbf{Thus, what transfers
-across size is the high-threshold complete-recipe ordering, not the entire
-threshold response.} The larger cohorts lack the pressure-free A4/A7
-controls needed to isolate pressure's contribution.
+\textbf{At $\kappa=0.5$, seven-site + OL1 has both lower validation loss
+and greater model-wide sparsity than four-site + OL1 at all three model
+sizes (Figure~\ref{fig:scale-transfer}).} The same ordering does not hold
+at $\kappa=0$: four-site + OL1 is better on both axes at 14M and 70M,
+whereas seven-site + OL1 is better on both axes at 410M. Thus, the cross-size
+result is recurrence of the \textbf{high-threshold complete-recipe
+relationship}, not transfer of the entire threshold response. The larger
+cohorts lack the pressure-free A4/A7 controls needed to isolate pressure's
+contribution. Exact matched seven-site minus four-site OL1 contrasts at all
+five thresholds are reported in Appendix Table~\ref{tab:scale-pairs-full}.
 
 Raw $\Smodel$ must be interpreted relative to the computation reachable by
 each architecture. The seven-site sparsity ceiling increases from $29.95\%$
@@ -289,14 +289,4 @@ Appendix~\ref{app:clipping-results}.}
 \label{fig:scale-transfer}
 \end{figure}
 
-\begin{table}[htbp]
-\centering\small
-\caption{Complete-recipe contrasts at the boundary thresholds. Entries are
-A7-OL1 minus A4-OL1 at the same size and trained threshold. Negative loss
-changes and positive sparsity changes favor A7-OL1. All entries use complete
-validation. Table~\ref{tab:scale-pairs-full}
-reports all five thresholds.}
-\label{tab:cross-scale-recipe-contrasts}
-\input{tables/scale-contrasts-compact}
-\end{table}
 \FloatBarrier
