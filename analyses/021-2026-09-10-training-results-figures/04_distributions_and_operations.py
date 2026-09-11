@@ -131,12 +131,11 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": .6, "axes.axisbelow": True, "pdf.fonttype": 42})
     fig = plt.figure(figsize=(7.1, 3.35))
-    ffn = fig.add_axes((.075, .24, .183, .54))
-    attention = fig.add_axes((.297, .24, .183, .54), sharey=ffn)
-    bars = fig.add_axes((.59, .24, .385, .54))
+    ffn = fig.add_axes((.075, .24, .183, .585))
+    attention = fig.add_axes((.297, .24, .183, .585), sharey=ffn)
+    bars = fig.add_axes((.59, .24, .385, .585))
     fig.text(.075, .975, r"(a) Local sparsity at $\kappa=0.5$ (14M)", va="top", fontsize=9)
-    fig.text(.59, .975, "(b) Operation-weighted sparsity accounting", va="top", fontsize=9)
-    fig.text(.59, .90, r"More FFN zeros does not imply higher $\mathcal{S}_{\mathrm{model}}$", fontsize=7.2)
+    fig.text(.59, .975, "(b) Decomposed model-wide sparsity", va="top", fontsize=9)
     edges = np.asarray(data["display_bin_edges"])
     for ax, (name, sites), limits in zip((ffn, attention), GROUPS.items(), XLIMS):
         for record, color in zip(data["records"], COLORS):
@@ -152,11 +151,11 @@ def make_figure(data):
         ax.set_xlabel(r"Activation $x$", labelpad=4)
         left, _, width, _ = ax.get_position().bounds
         title = r"FFN $(h,m)$" if name == "FFN activations" else r"Attention $(q,k,v)$"
-        fig.text(left + width / 2, .90, title, ha="center", fontsize=8)
+        fig.text(left + width / 2, .865, title, ha="center", fontsize=8)
         for row, (record, color) in enumerate(zip(data["records"], COLORS)):
             zero = record["groups"][name]["exact_zero_percent"]
-            fig.text(left, .85 - row * .045,
-                     f"{LABELS[record['family']]}: {zero:.2f}% exact zeros",
+            fig.text(left, .08 - row * .045,
+                     f"{LABELS[record['family']]}: {zero:.1f}% zeros",
                      color=color, fontsize=6.3)
     attention.tick_params(labelleft=False)
     ffn.set_ylabel("Nonzero density", labelpad=5)
@@ -170,7 +169,7 @@ def make_figure(data):
         bottoms += heights
     for xx, record in zip(x, data["records"]):
         bars.text(xx, record["S_model_percent"] + .65,
-                  f"{record['S_model_percent']:.2f}% total", ha="center", fontsize=8.5, fontweight="bold")
+                  f"{record['S_model_percent']:.1f}%", ha="center", fontsize=8.5, fontweight="bold")
     bars.set_ylim(0, 32)
     bars.set_xlim(-.55, 1.55)
     bars.set_yticks([0, 10, 20, 30])
@@ -180,7 +179,8 @@ def make_figure(data):
     bars.set_ylabel(r"Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)", labelpad=5)
     bars.grid(axis="y", color=".92", linewidth=.45)
     a4, a7 = (row["attention_contribution_pp"] for row in data["records"])
-    fig.text(.59, .825, f"QK + PV: {a4:.2f} → {a7:.2f} pp", fontsize=7.2)
+    bars.text(.12, 20.5, f"QK + PV: {a4:.1f} → {a7:.1f} pp",
+              ha="center", va="bottom", fontsize=7.2)
     handles, labels = bars.get_legend_handles_labels()
     # Rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
     order = [0, 4, 1, 3, 2, 5]

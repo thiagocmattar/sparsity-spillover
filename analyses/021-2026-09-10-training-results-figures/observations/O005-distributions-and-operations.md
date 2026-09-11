@@ -59,12 +59,17 @@ and 7-site + OL1 (A4-OL1/A7-OL1 in the source records).
 There are no density fills or baseline curve. Bar colors identify operations,
 retaining the earlier accounting palette; QK/PV are the two warm segments at
 the top. The polished titles read "Local sparsity at kappa = 0.5 (14M)" and
-"Operation-weighted sparsity accounting." A short takeaway states that more FFN
-zeros does not imply higher model-wide sparsity. Bar totals explicitly say
-"total," and the note reads "QK + PV: 0.06 -> 16.77 pp."
+"Decomposed model-wide sparsity." The bars are labeled 12.7% and 27.5%, without
+"total" or an extra takeaway sentence. The note "QK + PV: 0.1 -> 16.8 pp"
+sits above the four-site bar at approximately 20% on the vertical axis.
 
-The 11 September polish keeps the same figure dimensions and all data, enlarges
-the density axes vertically by 17%, and specifies "exact zeros" in each label.
+The 11 September decluttering keeps the same figure dimensions and all data.
+Exact-zero labels sit below their respective density axes, using the available
+bottom whitespace, and read simply "zeros." Additional vertical space separates
+the main headings from the FFN/attention subplot titles. All percentage and
+percentage-point annotations have one decimal place; coordinates and retained
+data keep full precision. Moving labels
+below the plots frees the top area to enlarge the three aligned axes.
 Only the bars have faint horizontal major-grid lines. The legend has three
 columns and two rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
 
@@ -75,13 +80,13 @@ in Pythia-14M.
 FFN pools h,m in an 80:20 element ratio; attention pools post-RoPE q,k and v
 equally. Densities divide counts by all captured elements and bin width, without
 renormalizing the nonzero mass or displayed range; both vertical axes are
-symlog, linear below 0.01. The four-site recipe has more FFN zeros (99.31% versus 93.64%)
-but far fewer attention zeros (0.22% versus 95.60%). **(b)** Stacked measured
+symlog, linear below 0.01. The four-site recipe has more FFN zeros (99.3% versus
+93.6%) but far fewer attention zeros (0.2% versus 95.6%). **(b)** Stacked measured
 zero-product contributions from six operation families, each divided by all
 model products including the dense final output projection. QK and PV supply
-0.06 pp under 4-site + OL1 and 16.77 pp under 7-site + OL1, explaining the reversal in
-model-wide sparsity: 12.71% versus 27.48%. The seven-site recipe also has lower validation
-loss, 5.8294 versus 6.0380. All quantities cover the full 338-block validation
+0.1 pp under 4-site + OL1 and 16.8 pp under 7-site + OL1, explaining the reversal
+in model-wide sparsity: 12.7% versus 27.5%. The seven-site recipe also has lower
+validation loss, 5.8294 versus 6.0380. All quantities cover the full 338-block validation
 set. These are complete-recipe comparisons and logical sparsity opportunities,
 not isolated causal effects of attention pressure or measured speedups.
 
@@ -141,6 +146,9 @@ two-checkpoint evidence with all plotted counts. The 7.1-by-3.35-inch PDF was
 rendered with Poppler and visually checked. All numeric labels are present,
 all text lies within page bounds, and fonts are embedded. The retained source
 hashes and observation links resolve. The polish also verifies the revised
-visible labels, grid placement and three-column legend order. The figure data
+visible labels, one-decimal rounding, bottom-note placement, grid placement and
+three-column legend order. The QK/PV note is positioned at x = 0.12, y = 20.5,
+slightly to the right of the four-site bar center.
+The figure data
 are identical to the preceding version, and the manuscript diff is empty.
-Figure SHA-256: `13259bdf520a3540b81953b6088a72acec44ee2c68f534c0010cda8f55b53a33`.
+Figure SHA-256: `2e3b1ae01d6822434824e15775b79b98a8ea3123ec4a3deb23b7adc3c4f34b90`.
