@@ -6,6 +6,8 @@
 % Kernel contract: Run 029 observations/06-implementation-and-claim-audit.md.
 % Kernel compatibility/predicate revision: Analysis 018 O015; Run 022 README, Run 025 SOURCE_AUDIT.md.
 % Generated tables: Analysis 018 / 03_manuscript_tables.py.
+% A0 histories: analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py;
+% observations/O007-a0-optimization.md; data/a0-optimization.json.
 \subsection{Realized training protocol}
 \label{app:training-protocol}
 
@@ -65,6 +67,39 @@ Tokens per parameter & 106.14 & 21.20 & 3.68 \\
 \end{tabular}
 \end{table}
 
+Figure~\ref{fig:a0-optimization} shows the A0 optimization trajectories under
+the common token budget. Training loss trends downward across the runs,
+but the three sizes finish in different optimization regimes: 70M reaches
+the lowest training loss under the realized schedule, while 410M finishes
+above it and exhibits a larger pre-clipping task-gradient norm late in
+training. These observations are \textbf{consistent with different degrees
+of optimization under the fixed-token protocol}, but they do not establish
+whether any run has or has not converged. The trajectories therefore provide
+context for the non-monotonic A0 validation losses in
+Figure~\ref{fig:scale-transfer} rather than a basis for extrapolating
+performance with additional training.
+
+% Approved Analysis 021 artwork copied unchanged; hash in figures/SOURCES.json.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/06-a0-optimization.pdf}
+\caption{\textbf{A0 optimization trajectories under the common training-token
+budget.} \textbf{(a)} Training loss as a function of consumed input tokens
+for the 14M, 70M, and 410M A0 runs. \textbf{(b)} Pre-clipping global
+task-gradient norm over the same token budget; the logarithmic y-axis shows
+the large initial gradient transient and subsequent training regime.
+Faint traces show all 712 logged optimizer steps per size; opaque curves
+show a centered nine-step arithmetic moving mean, with partial windows at
+the edges. Norms are measured after loss unscaling and gradient accumulation,
+before clipping; smoothing is applied in the original units. All three
+sizes receive approximately 1.493B input tokens, but this corresponds to
+progressively fewer tokens per parameter as model size increases; the 410M
+run also uses a lower peak learning rate. Global norms are not normalized
+by parameter count. These trajectories characterize the realized
+optimization regimes and are not used as a convergence criterion.}
+\label{fig:a0-optimization}
+\end{figure}
+
 \FloatBarrier
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
@@ -75,7 +110,8 @@ dominated settings as well as favorable ones. Each entry summarizes one
 trained model on complete validation. Sparsity percentages are formed from pooled integer
 product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
 from Figure~\ref{fig:scale-transfer}, rather than a different denominator
-for each recipe. The notation $U_{\mathrm{arch}}$ is shared with the main text.
+for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
+this common-reference ratio, retained for the complete endpoint table.
 
 \input{tables/trained-endpoints}
 \input{tables/paired-effects}

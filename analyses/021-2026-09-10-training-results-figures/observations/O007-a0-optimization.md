@@ -5,8 +5,10 @@
 How do untreated A0 training loss and pre-clipping global gradient norms evolve
 over the common training-token budget for Pythia-14M, 70M and 410M?
 
-The author requested this two-panel appendix diagnostic on 11 September 2026.
-It is generated in Analysis 021 only; no manuscript files are changed.
+The author requested this two-panel diagnostic on 11 September 2026 and
+subsequently approved manuscript adoption. The unchanged artwork is now
+Figure 8 on page 18 in Appendix C.4, following the realized-training-protocol
+table (Table 5 on page 17).
 
 ## Sources and coverage
 
@@ -63,7 +65,7 @@ norm", labels the norm axis "Pre-clipping global task-gradient norm", and
 reduces raw-trace opacity to 0.12 while keeping the smoothed curves dominant.
 The longer norm label wraps across two lines for legibility.
 
-## Figure and proposed caption
+## Figure and analysis caption
 
 [Publication PDF](../figures/06-a0-optimization.pdf)
 
@@ -78,6 +80,14 @@ in both panels. Global norms are not normalized by parameter count. The 410M
 run uses a lower peak learning rate than the smaller runs, so these diagnostics
 describe the executed training protocols rather than isolating a model-size
 effect or identifying an optimization defect.
+
+The final caption and accompanying paragraph are in
+[results-appendix.tex](../../../manuscript/draft/results-appendix.tex).
+The caption specifies raw versus smoothed traces, the centered nine-step
+arithmetic mean with partial edge windows, and smoothing in original units.
+The paragraph contextualizes the non-monotonic A0 validation losses in main
+Figure 6. Neither the caption nor the text treats these trajectories as a
+convergence criterion or extrapolates performance with additional training.
 
 ## Results and limits
 
@@ -113,3 +123,8 @@ Source script: [06_a0_optimization.py](../06_a0_optimization.py).
 Three focused tests verify complete step/token coverage, the exact pre-clipping
 metric and raw trajectories, source-reconciled final losses, and moving-mean
 edge behavior. The 7.4-by-2.95-inch PDF was rendered and visually checked.
+
+The manuscript copy matches the frozen source byte-for-byte, with its SHA-256
+in `manuscript/draft/figures/SOURCES.json`. The 28-page manuscript builds with
+resolved references and no overfull boxes. Appendix C.4 and the figure page
+were rendered and visually checked; four underfull vertical-box warnings remain.

@@ -25,6 +25,21 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+The frozen Analysis 021 cross-size figure is now Figure 6 on page 9.
+Section 4.5 retains "Transfer across model sizes," narrows the claim to the
+high-threshold complete-recipe ordering, and replaces the old normalized-row
+explanation with endpoint fractions of the seven-site ceiling. The A0
+optimization diagnostic is Figure 8 on page 18 in Appendix C.4, following
+Table 5 on page 17. Its caption specifies centered nine-step arithmetic moving
+means with partial edge windows. The appendix and Discussion describe realized
+optimization regimes without asserting convergence or failure to converge.
+Both copies match their approved source PDFs; hashes are in `figures/SOURCES.json`.
+The 28-page build has resolved references and no overfull boxes; four underfull
+vertical-box warnings remain. Affected pages were rendered and checked. See
+[O006](../../analyses/021-2026-09-10-training-results-figures/observations/O006-scale-transfer.md)
+and [O007](../../analyses/021-2026-09-10-training-results-figures/observations/O007-a0-optimization.md).
+The following entries record earlier revisions.
+
 On 11 September, the approved Analysis 021 composite replaced the main-text
 distribution grid as Figure 5 on page 9. Section 4.4, "Local sparsity does not
 determine model-wide sparsity," now uses the approved five paragraphs and
@@ -101,8 +116,8 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 
 ## Reading copy and sources
 
-- [main.pdf](main.pdf): 26-page ICLR 2027 draft; main text pages 1-12,
-  references pages 12-13, appendices pages 14-26. Before submission, shorten the
+- [main.pdf](main.pdf): 28-page ICLR 2027 draft; main text pages 1-12,
+  references pages 12-13, appendices pages 14-28. Before submission, shorten the
   main text to nine pages and add the required author-reviewed AI use statement.
 - [abstract.tex](abstract.tex), [introduction.tex](introduction.tex),
   [related-work.tex](related-work.tex), [methodology.tex](methodology.tex):

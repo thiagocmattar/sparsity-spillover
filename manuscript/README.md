@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+The frozen Analysis 021 cross-size figure is now Figure 6 on page 9, with
+Section 4.5 focused on the recurring high-threshold complete-recipe ordering
+and architectural ceilings. A0 optimization histories are Figure 8 on page 18
+in Appendix C.4, following the realized-protocol table. The caption specifies
+nine-step smoothing; the text and Discussion describe realized optimization
+regimes without judging convergence. Sources and adoption checks are in
+[O006](../analyses/021-2026-09-10-training-results-figures/observations/O006-scale-transfer.md)
+and [O007](../analyses/021-2026-09-10-training-results-figures/observations/O007-a0-optimization.md).
+The rebuilt draft remains 28 pages. Entries below describe earlier revisions.
+
 Section 4.4 now states "Local sparsity does not determine model-wide sparsity,"
 using the approved composite as Figure 5 on page 9. The full threshold density
 grid is Figure 8 in Appendix D.1; three-size operation accounting remains in

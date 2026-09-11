@@ -12,7 +12,9 @@
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
 % Historical evidence chain: results-argument-map.md. Current overview/geometry/pressure effects: Analysis 021 O001/O002/O003.
-% Overview is in introduction.tex. Scale figure: Analysis 018 plots.py:scaling. Full density grid: results-appendix.tex.
+% Overview is in introduction.tex. Full density grid: results-appendix.tex.
+% Scale figure: analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py;
+% observations/O006-scale-transfer.md. A0 histories: 06_a0_optimization.py; observations/O007-a0-optimization.md.
 % Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
@@ -233,47 +235,57 @@ normalization are detailed in Appendix~\ref{app:density-results}.}
 \subsection{Transfer across model sizes}
 \label{sec:scale-results}
 
-The high-threshold A7-OL1 advantage persists at all three model sizes
-(Figure~\ref{fig:scale-transfer}). At $\kappa=0.5$, A7-OL1 has both lower
-loss and greater model-wide sparsity than A4-OL1 at 14M, 70M and 410M
-(Table~\ref{tab:cross-scale-recipe-contrasts}). The zero-threshold ordering
-does not transfer unchanged: A4-OL1 is better on both axes at 14M and 70M,
-whereas A7-OL1 is better at 410M. Persistence concerns a specific recipe
-relationship, not the entire threshold response.
+\textbf{The high-threshold seven-site advantage recurs across all three
+model sizes (Figure~\ref{fig:scale-transfer}).} At $\kappa=0.5$, seven-site
++ OL1 has both lower validation loss and greater model-wide sparsity than
+four-site + OL1 at 14M, 70M, and 410M. The relationship is specific to the
+high-threshold regime: at $\kappa=0$, four-site + OL1 is better on both axes
+at 14M and 70M, whereas seven-site + OL1 is better on both axes at 410M
+(Table~\ref{tab:cross-scale-recipe-contrasts}). \textbf{Thus, what transfers
+across size is the high-threshold complete-recipe ordering, not the entire
+threshold response.} The larger cohorts lack the pressure-free A4/A7
+controls needed to isolate pressure's contribution.
 
-Raw sparsity must also be read against the changing workload. The A7 sparsity
-ceiling rises from $29.95\%$ to $49.42\%$ and $87.25\%$ as the dense LM
-head accounts for a smaller share of counted products. The bottom row uses
-the same A7 denominator for every curve within a size:
-$U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$. Because A7 reaches all
-counted block operations, this ratio equals the block zero-product fraction
-$\Sblock$. It removes the dense-head share while retaining the different
-weights of operations within the blocks.
+Raw $\Smodel$ must be interpreted relative to the computation reachable by
+each architecture. The seven-site sparsity ceiling increases from $29.95\%$
+at 14M to $49.42\%$ at 70M and $87.25\%$ at 410M, largely because the dense
+output projection accounts for a smaller fraction of the counted products
+as model width and depth increase. At $\kappa=0.5$, seven-site + OL1 reaches
+$27.48\%$, $40.60\%$, and $80.62\%$ $\Smodel$, corresponding to
+\textbf{91.8\%, 82.2\%, and 92.4\% of the respective seven-site ceilings}.
+The much larger raw sparsity at 410M therefore reflects in part a larger
+architectural opportunity for the selected intervention sites, rather than
+an isolated effect of model size on learned zero fractions.
 
-This is transfer of a complete-recipe comparison. The larger cohorts lack
-the no-pressure A4/A7 controls needed to isolate pressure's contribution.
-They share a token budget rather than tokens per parameter, and 410M uses
-a lower peak learning rate. Its A0 loss is also higher than 70M's under this
-budget; the plot should not be read as a quality scaling law.
+Absolute validation loss is not monotonic with model size under the realized
+protocol: the A0 endpoints are 5.2086, 4.0998, and 4.5475 for 14M, 70M, and
+410M. This experiment holds the input-token budget fixed rather than tokens
+per parameter; the resulting budgets are 106.14, 21.20, and 3.68 tokens per
+parameter, and 410M also uses a lower peak learning rate. Appendix
+Figure~\ref{fig:a0-optimization} reports the corresponding A0 optimization
+trajectories. \textbf{We therefore use the size sweep to test whether
+within-size recipe relationships recur, not as a language-model quality
+scaling law.}
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/03-scale-transfer-and-ceilings.pdf}
-\caption{\textbf{The high-threshold A7-OL1 advantage persists across model sizes.} Columns compare
-14M, 70M and 410M. Solid curves connect separately trained A4-OL1 and A7-OL1
-checkpoints at $\kappa=0,0.01,0.05,0.1,0.5$; dotted open-marker curves show
-A0 post-hoc clipping at $a,m,h,z$ for targets $p=0,0.1,\ldots,0.9$.
-The 60 evaluations appear in both rows. Top: validation loss versus
-$100\mathcal{S}_{\mathrm{model}}$; vertical guides indicate A4/clipping-site
-and A7 analytic sparsity ceilings. Bottom: loss minus unmodified same-size A0
-versus $100U_{\mathrm{arch}}$, where
-$U_{\mathrm{arch}}=\mathcal{S}_{\mathrm{model}}/
-\mathcal{S}_{\mathrm{model}}^{\max}(\mathrm{A7})$ for \textbf{every curve}.
-The A7 reference ceilings are 29.95\%, 49.42\% and 87.25\%; the A4 guide is
-not the normalization denominator. At $\kappa=0.5$, A7-OL1 improves both
-axes over A4-OL1 at all sizes; the ordering at smaller thresholds varies.
-Table~\ref{tab:cross-scale-recipe-contrasts} gives the boundary-threshold
-comparisons. Training-token budgets are matched across sizes.}
+\includegraphics[width=\linewidth]{figures/05-scale-transfer.pdf}
+\caption{\textbf{The high-threshold seven-site recipe remains better on both
+quality and model-wide sparsity across model sizes.} Absolute validation
+loss versus model-wide sparsity $\Smodel$ for Pythia-14M, 70M, and 410M.
+Blue and orange curves connect separately trained four-site + OL1 and
+seven-site + OL1 checkpoints at $\kappa\in\{0,0.01,0.05,0.1,0.5\}$; the gray
+dotted curves apply post-hoc clipping at $a,m,h,z$ to the corresponding A0
+checkpoints. Vertical guides mark the analytic four-site and seven-site
+sparsity ceilings, and annotations at the seven-site $\kappa=0.5$ endpoints
+report the fraction of the seven-site ceiling reached. \textbf{At
+$\kappa=0.5$, seven-site + OL1 has both lower validation loss and greater
+$\Smodel$ than four-site + OL1 at all three sizes, reaching 91.8\%, 82.2\%,
+and 92.4\% of the respective seven-site ceilings.} The ordering at
+$\kappa=0$ changes with size. Lines connect evaluated settings rather than
+interpolated models; full post-hoc clipping trajectories, including
+higher-loss evaluations outside the displayed range, are reported in
+Appendix~\ref{app:clipping-results}.}
 \label{fig:scale-transfer}
 \end{figure}
 

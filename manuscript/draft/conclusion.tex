@@ -1,6 +1,8 @@
 % Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
 % Evidence: Analysis 018 observations O001/O002/O003/O004/O007/O011.
 % OL1 budget regimes: Analysis 021 observations/O002-ol1-geometry.md; 02_ol1_geometry.py.
+% Cross-size scope and A0 histories: Analysis 021 observations/O006-scale-transfer.md
+% and O007-a0-optimization.md; 05_scale_transfer.py and 06_a0_optimization.py.
 \section{Discussion and conclusion}
 \label{sec:conclusion}
 
@@ -34,9 +36,14 @@ but also shows that skipping attention work can cost more than executing it.
 Fusion and sparse-path ablations are therefore necessary to attribute a
 measured speedup.
 
-These conclusions concern MiniPile pretraining at a fixed token budget,
-with a lower learning rate at 410M. Larger models test complete recipes;
-the distribution diagnostics cover 14M and describe responses rather than
-isolating a causal spillover mechanism. The kernel results use one RTX5090,
+Cross-size comparisons use a common token budget rather than equal tokens
+per parameter, and 410M also uses a lower peak learning rate; the A0
+optimization trajectories in Appendix Figure~\ref{fig:a0-optimization}
+show that the three sizes finish in different realized optimization regimes.
+Accordingly, the scale experiment tests recurrence of within-size recipe
+relationships rather than quality scaling with parameter count.
+These conclusions concern MiniPile pretraining and complete recipes at the
+larger sizes. The distribution diagnostics cover 14M and describe responses
+rather than isolating a causal spillover mechanism. The kernel results use one RTX5090,
 full-sequence inference, native SDPA and matched fusion controls. Transfer
 to cached decoding, larger models and other hardware remains untested.

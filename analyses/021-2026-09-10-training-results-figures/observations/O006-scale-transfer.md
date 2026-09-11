@@ -5,10 +5,10 @@
 Does the high-threshold seven-site OL1 recipe remain favorable across model
 sizes when both quality cost and architectural ceiling are explicit?
 
-The author requested this analysis-only redesign on 11 September 2026.
-The manuscript and the previous two-row scale figure remain unchanged.
-The main figure is frozen after the author's final label-spacing and
-endpoint-annotation polish in this analysis.
+The author requested this redesign on 11 September 2026 and subsequently
+approved manuscript adoption. The frozen artwork is now Figure 6 on page 9,
+supporting Section 4.5, "Transfer across model sizes." Its final label-spacing
+and endpoint annotations are unchanged.
 
 ## Sources and coverage
 
@@ -75,7 +75,7 @@ at 14M/410M. At 410M, the seven-site kappa = 0.5 label moves upward, while the
 four-site label sits in the empty space below/left of its marker. The 410M
 utilization note is lowered slightly further to keep the two annotations apart.
 
-## Figure and proposed caption
+## Figure and analysis caption
 
 [Publication PDF](../figures/05-scale-transfer.pdf)
 
@@ -98,8 +98,15 @@ size for initialization, data order and training budget, with one seed and
 complete validation. Sparsity counts zero-operand multiplication opportunities,
 not measured runtime savings.
 
-For eventual manuscript adoption, the full clipping trajectories are already
-available in the draft appendix; this task adds no manuscript reference.
+The adopted caption and transfer discussion are in
+[training-results.tex](../../../manuscript/draft/training-results.tex).
+They distinguish the recurring high-threshold complete-recipe ordering from
+the size-dependent zero-threshold ordering. Ceiling utilization is reported
+at the seven-site endpoints; the old normalized-row explanation is removed
+from the main text, while the common-reference ratio remains in the appendix
+endpoint table. The caption refers to Appendix D.3 for full clipping curves.
+The fixed-token limitation and Discussion refer to the A0 histories in
+[O007](O007-a0-optimization.md), without treating them as a convergence test.
 The retained analysis counterpart is Analysis 018
 [full-range scale figure](../../018-2026-09-08-results-materials/figures/03-scale-transfer-and-ceilings.pdf).
 
@@ -151,3 +158,8 @@ absolute plotted losses, retained within-size loss differences, common A7
 normalization and preservation of off-scale clipping coordinates.
 The one-page 7.4-by-2.95-inch PDF was rendered
 and visually checked; fonts are embedded and text remains inside the page.
+
+The manuscript copy matches the frozen source byte-for-byte, with its SHA-256
+in `manuscript/draft/figures/SOURCES.json`. The adopted draft builds to 28 pages
+with resolved references and no overfull boxes. The affected pages were
+rendered and visually checked; four underfull vertical-box warnings remain.

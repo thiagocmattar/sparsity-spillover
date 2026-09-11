@@ -248,8 +248,11 @@ Utilization labels use two centered lines with white backgrounds; threshold
 labels also have white backgrounds to remain legible over lines. The 70M
 high-threshold labels and utilization note have the author's adjusted positions.
 
-This figure is **analysis-only**, as requested on 11 September 2026. The
-manuscript and the previous full-range figure are unchanged. At kappa = 0.5,
+The author approved manuscript adoption after the analysis-only polish.
+The unchanged artwork is now Figure 6 on page 9, supporting Section 4.5,
+"Transfer across model sizes." Full clipping trajectories remain in the
+appendix. The text removes the old normalized-row explanation and retains
+the common-reference ratio in the appendix endpoint table. At kappa = 0.5,
 seven-site OL1 has more sparsity and lower loss than four-site OL1 at all three
 sizes. Its endpoints use 91.8%, 82.2% and 92.4% of the respective seven-site
 ceilings, at total loss costs +0.621, +1.116 and +0.573 relative to A0.
@@ -279,11 +282,19 @@ task-gradient norm. Short panel titles and very faint raw traces keep the
 smoothed curves dominant. These are global norms after loss unscaling,
 before the common norm-1 clip, rather than norms of AdamW update directions.
 
-The figure remains **analysis-only**. [O007](observations/O007-a0-optimization.md)
-records the proposed caption, source definitions, smoothing and limitations.
+The unchanged figure is now manuscript Figure 8 on page 18 in Appendix C.4,
+following the realized-protocol table. Its caption specifies the smoothing;
+the surrounding text, transfer section and Discussion use the trajectories
+to describe the realized optimization regimes, without a convergence claim.
+[O007](observations/O007-a0-optimization.md) records the caption, source
+definitions, smoothing and limitations.
 The [reduction](data/a0-optimization.json) preserves all 2,136 records, source
 hashes and plotted smoothing values. Three focused tests pass; the
 7.4-by-2.95-inch PDF was rendered and visually checked.
+
+Both adopted PDFs are byte-identical to their Analysis 021 sources, with hashes
+in the draft's `figures/SOURCES.json`. The draft compiles to 28 pages with
+resolved references and no overfull boxes; affected pages were visually checked.
 
 ```powershell
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py

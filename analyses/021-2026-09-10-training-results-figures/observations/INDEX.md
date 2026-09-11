@@ -27,8 +27,10 @@
   four-/seven-site ceiling guides, and common A7 utilization at kappa = 0.5.
   A separate Markdown table retains loss costs relative to A0; no table is
   embedded in the figure.
-  Analysis-only; the manuscript is unchanged.
+  Adopted as manuscript Figure 6, supporting Section 4.5's high-threshold
+  complete-recipe comparison and architectural-ceiling interpretation.
 - [O007 - A0 training loss and pre-clipping norms](O007-a0-optimization.md):
   two horizontal panels, all 712 training steps at each size, and consistent
   nine-step smoothing over faint raw trajectories. The gradient panel uses
-  logged unscaled global L2 norms before clipping. Analysis-only appendix figure.
+  logged unscaled global L2 norms before clipping. Adopted as Figure 8 in
+  Appendix C.4, after the realized-protocol table; no convergence claim.
