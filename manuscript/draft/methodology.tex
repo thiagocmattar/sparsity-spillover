@@ -1,5 +1,6 @@
 % General definitions; study-specific recipes are in experimental-study.tex.
-% Operational provenance: methodology-notes.md. No empirical results.
+% Operational provenance: methodology-notes.md.
+% OL1 budget motivation: Analysis 021 observations/O002-ol1-geometry.md; 02_ol1_geometry.py.
 \section{Methodology}
 \label{sec:methodology}
 
@@ -23,7 +24,7 @@ Table~\ref{tab:interventions} specifies thresholding and pressure assignments.}
 \label{fig:pythia-block}
 \end{figure}
 
-For optimization pressure, $\mathcal{L}_1$ averages mean absolute activations across targeted sites and layers, after any thresholding. \emph{Naive L1} (L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, introducing a weight $\lambda$ that affects sparsity and quality~\citep{song2024prosparse,cetin2026sparser}. To reduce this additional tuning dimension, we propose \emph{orthogonal L1} (OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}. OL1 chooses the step that maximizes alignment with the preconditioned pressure direction, within a unit norm budget relative to the adaptive Adam direction and without opposing it. Once the budget is saturated, increasing $\lambda$ leaves this correction unchanged. This motivates fixing a saturated $\lambda$ in our multisite ablations, removing one sweep dimension from the combinatorial intervention design. Appendix~\ref{app:pressure} gives the formulation.
+For optimization pressure, $\mathcal{L}_1$ averages mean absolute activations across targeted sites and layers, after any thresholding. \emph{Naive L1} (L1N) minimizes $\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$, introducing a weight $\lambda$ that affects sparsity and quality~\citep{song2024prosparse,cetin2026sparser}. To reduce this additional tuning dimension, we propose \emph{orthogonal L1} (OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}. OL1 chooses the step that maximizes alignment with the preconditioned pressure direction, within a unit norm budget relative to the adaptive Adam direction and without opposing it. Once the norm budget binds, further increasing $\lambda$ leaves the ideal correction unchanged at a fixed optimizer state. To keep the multisite intervention study tractable, we use a common $\lambda=1$ and budget $b=1$, and directly measure whether this budget is active during training. Section~\ref{sec:paired-results} shows that budget saturation is strongly target-set dependent rather than universal. Appendix~\ref{app:pressure} gives the formulation.
 
 \subsection{Sparsity measure and architectural reach}
 \label{sec:measurement}

@@ -45,6 +45,16 @@ w, & \text{otherwise}.
 \end{cases}
 \label{eq:ol1-projection}
 \end{equation}
+% Diagnostic and guard audit: Analysis 021 O002 and 02_ol1_geometry.py.
+For diagnostics, we define the task-relative opposing component
+\[
+\rho_{\mathrm{opp}}=\frac{\max(0,-c)}{q+\epsilon}.
+\]
+When projection is active, this equals the norm of the component removed
+from $w$, divided by $\|u\|_2$; it is zero when $c\geq0$.
+All reported steps satisfy the guard $q>\epsilon$.
+It is therefore not the fraction of the pressure norm removed.
+
 For pressure weight $\lambda\geq0$ and required budget $b>0$, define the norm ratio
 $r=\lambda\|\widetilde w\|_2/(\|u\|_2+\epsilon)$. Set
 $s=\min\{1,b/(r+\epsilon)\}$ when $r>0$, or $s=1$ otherwise. After AdamW,
@@ -52,6 +62,7 @@ each eligible parameter group $p$, with learning rate $\alpha_p$, receives
 $\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
 The experiments' clipping thresholds, $b$, and $\lambda$ are condition
 parameters.
+We report the norm budget as active when the implemented scale satisfies $s<1$.
 
 Ignoring numerical stabilizers, the correction norm before the learning rate is
 $\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$.

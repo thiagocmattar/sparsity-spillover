@@ -158,10 +158,10 @@ These results support frequent adaptive-direction conflict and frequent
 seven-site saturation. They do **not** support the proposed blanket statement
 that lambda = 1 saturates all multisite conditions. This new qualification was
 reported to the author. The ideal correction is independent of further
-increases in lambda only while the cap binds. Thus the draft's statement
-motivating a globally "saturated lambda" needs qualification; conditional
-mathematical saturation and the guaranteed relative norm budget remain valid.
-This figure revision does not edit manuscript wording or consolidated findings.
+increases in lambda only while the cap binds. The author subsequently approved
+qualifying the draft's globally "saturated lambda" motivation in the manuscript
+adoption below; conditional mathematical saturation and the guaranteed relative
+norm budget remain valid. Consolidated findings are unchanged.
 
 ## Opposing-component diagnostic
 
@@ -196,22 +196,44 @@ their observed separation does not by itself isolate why the cap binds.
 
 ## Caption
 
-**Seven-site pressure has a larger task-relative opposing component and
-operates predominantly at its norm budget.** (a) The component removed by
-OL1's projection is rho_opp = max(0, -<u,w>) / (norm(u)^2 + epsilon), plotted
-as 100 * rho_opp percent of the adaptive task-direction norm. Blue circles/orange
-diamonds denote four-/seven-site conditions. Points show medians across
-712 optimizer steps at each categorical threshold; whiskers span the empirical
-25th-75th percentiles, not confidence intervals. Lines connect evaluated
-settings. Across the cohort, 99.9% of steps have <u,w> < 0.
-(b) Pre-cap norm ratio r/b at lambda = b = 1. Faint lines show individual
-kappa conditions; each thick line is the per-step median across the five
-kappa conditions within its target set. The cap is active on 0.5% of four-site
-steps and 97.0% of seven-site steps. All 7,120 Pythia-14M step-condition observations
-are included. Panel (a) describes the raw component removed; panel (b) describes
-the projected direction before capping. Quantities pool OL1's eligible
-parameters before group learning rates and exclude decoupled weight decay;
-they do not guarantee task-loss descent or preservation.
+**OL1 pressure geometry depends strongly on the pressure target set.**
+(a) Task-relative magnitude of the opposing pressure component removed by
+conflict-conditioned projection. For each trained threshold kappa, points
+show the median over 712 optimizer steps of 100 * rho_opp, where
+rho_opp = max(0, -<u,w>) / (norm(u)^2 + epsilon); whiskers show the
+25th-75th percentiles. Across all 7,120 logged multisite OL1 steps, 99.9%
+have <u,w> < 0. (b) Pre-cap pressure-to-task norm ratio r/b at lambda = b = 1.
+Faint curves show the five kappa conditions within each target set, and thick
+curves show their per-step median. The dotted line marks the nominal cap
+boundary r/b = 1; cap-active fractions use the implemented condition s < 1.
+The cap is active on 0.5% of four-site steps and 97.0% of seven-site steps.
+All quantities are measured in the AdamW-preconditioned coordinates used by
+OL1, before group learning rates and decoupled weight decay. Thus, expanding
+the pressure target set changes not only where pressure is applied but also
+the task-relative magnitude and budget regime of the pressure correction.
+
+## Manuscript adoption (11 September 2026)
+
+The author approved this caption and adoption in
+[`training-results.tex`](../../../manuscript/draft/training-results.tex).
+The frozen PDF is Figure 4 on page 7; its manuscript copy has SHA-256
+`0a98137b19f6bf12c06cc1ae67220efc3d01048c73f6429b21b64d3d52cbbe16`,
+matching the analysis original and `manuscript/draft/figures/SOURCES.json`.
+
+Section 3.1 now states lambda invariance only once the ideal cap binds.
+Section 4.2 reports pooled rho_opp medians 0.0095/0.588 and cap activity
+0.5%/97.0%, retaining the pressure-objective normalization caveat.
+Appendix A.2 defines rho_opp and cap activity via s < 1; the setup records
+lambda = b = 1, and the discussion adds the target-set distinction at 14M.
+The text accurately describes the retained scalar logs, not full direction
+vectors. It also distinguishes c >= 0 (rho_opp is zero) from the projection's
+additional q > epsilon guard, which all reported steps satisfy.
+Neither the abstract nor the frozen figure was changed.
+
+The draft was rebuilt with pdfLaTeX/BibTeX: 26 pages, all references resolved,
+no overfull boxes. Three underfull vertical-box warnings remain. The figure,
+caption and affected text pages were rendered with Poppler and visually
+checked. No experiments or new scientific code were run for this adoption.
 
 ## Caveats and verification
 

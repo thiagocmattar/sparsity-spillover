@@ -91,8 +91,15 @@ of seven-site steps versus 0.5% of four-site steps. The directions are nearly
 orthogonal in magnitude but systematically negatively aligned; cosine alone
 does not establish weak practical conflict. Saturation's mathematical independence
 from lambda remains conditional on the cap binding. Post-projection
-orthogonality is retained as a caption-level implementation check.
-The manuscript is unchanged by this analysis.
+orthogonality is retained in O002 as an implementation check.
+
+On 11 September, the author approved manuscript adoption. The frozen PDF
+is copied without alteration into `manuscript/draft/figures/` and appears as
+Figure 4 on page 7. Its caption defines the 25th-75th percentile whiskers,
+per-step medians and implemented cap condition. The methods, Section 4.2,
+Appendix A.2 and discussion now distinguish the target-set regimes instead
+of treating lambda = 1 as universally saturated. The rebuilt draft has
+26 pages; O002 records the adoption and verification.
 
 The rho_opp diagnostic uses the retained pre-projection dot product
 and squared task norm to measure the raw component removed along the task

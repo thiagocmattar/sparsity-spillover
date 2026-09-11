@@ -1,4 +1,6 @@
 % Source observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
+% OL1 geometry: analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md
+% Generating analysis: analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
@@ -50,7 +52,6 @@ $\kappa=0.5$ adds 5.171 pp for $+0.0432$ loss.
 Pressure therefore needs to be evaluated at its actual threshold and sites.
 Its larger gain under A7 also involves more pressure targets and a different
 objective normalization; it cannot be assigned to nonlinearity placement alone.
-We next examine the distributions learned by these complete recipes.
 
 \begin{figure}[tbp]
 \centering
@@ -67,6 +68,50 @@ $\kappa$. Other comparisons use the fixed A0 or A1-H control. Pairs share
 initialization, data order and budget. These are trained endpoint differences,
 not successive training updates.}
 \label{fig:paired-intervention-effects}
+\end{figure}
+
+\textbf{The same pressure weight produces very different optimization regimes
+across target sets} (Figure~\ref{fig:ol1-geometry}). We log global dot products
+and norms of the AdamW-preconditioned task direction $u$ and pressure direction
+$w$ at every optimizer step of the ten Pythia-14M multisite OL1 runs.
+Pre-projection alignment is negative on $99.9\%$ of the resulting 7,120 step
+records. We quantify the task-relative opposing component as
+\[
+\rho_{\mathrm{opp}}=
+\frac{\max(0,-\langle u,w\rangle)}{\|u\|_2^2+\epsilon},
+\]
+which expresses the removed opposing component relative to the task-direction
+norm. Pooled across thresholds, its median is $0.0095$ for four-site pressure
+and $0.588$ for seven-site pressure. Consistently, at $\lambda=b=1$, the norm
+cap is active on only $0.5\%$ of four-site steps but $97.0\%$ of seven-site
+steps. Thus, seven-site OL1 operates almost entirely in a budget-limited
+regime, whereas four-site OL1 is almost entirely uncapped. Because expanding
+to seven sites also changes the pressure objective and its equal-tensor
+normalization, these diagnostics characterize the complete target sets rather
+than isolating the contribution of $q,k,v$ alone.
+
+% Frozen Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/02-14m-ol1-geometry.pdf}
+\caption{\textbf{OL1 pressure geometry depends strongly on the pressure target set.}
+\textbf{(a)} Task-relative magnitude of the opposing pressure component removed
+by conflict-conditioned projection. For each trained threshold $\kappa$,
+points show the median over 712 optimizer steps of $100\rho_{\mathrm{opp}}$,
+where $\rho_{\mathrm{opp}}=\max(0,-\langle u,w\rangle)/(\|u\|_2^2+\epsilon)$;
+whiskers show the 25th--75th percentiles. Across all 7,120 logged multisite
+OL1 steps, $99.9\%$ have $\langle u,w\rangle<0$.
+\textbf{(b)} Pre-cap pressure-to-task norm ratio $r/b$ at $\lambda=b=1$.
+Faint curves show the five $\kappa$ conditions within each target set, and
+thick curves show their per-step median. The dotted line marks the nominal
+cap boundary $r/b=1$; cap-active fractions use the implemented condition
+$s<1$. The cap is active on $0.5\%$ of four-site steps and $97.0\%$ of
+seven-site steps. All quantities are measured in the AdamW-preconditioned
+coordinates used by OL1, before group learning rates and decoupled weight
+decay. Thus, expanding the pressure target set changes not only where
+pressure is applied but also the task-relative magnitude and budget regime
+of the pressure correction.}
+\label{fig:ol1-geometry}
 \end{figure}
 
 \subsection{Reshaping activation distributions}

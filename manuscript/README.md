@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+On 11 September, the frozen OL1 mechanism figure from
+[Analysis 021 O002](../analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md)
+was adopted as Figure 4 on page 7. The methods, paired-effect discussion,
+appendix and conclusion now distinguish the four-/seven-site cap regimes;
+the ideal invariance to increasing lambda is conditional on the cap binding.
+The rebuilt draft has 26 pages.
+
 The 10 September quality-sparsity overview now uses
 [Analysis 021](../analyses/021-2026-09-10-training-results-figures/README.md):
 short intervention labels, both baseline and ReLU clipping, and explicit

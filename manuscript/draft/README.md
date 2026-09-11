@@ -25,6 +25,18 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+On 11 September, the frozen
+[Analysis 021 OL1 figure](../../analyses/021-2026-09-10-training-results-figures/figures/02-14m-ol1-geometry.pdf)
+was added as Figure 4 on page 7, with its approved caption and source hash.
+Section 4.2 reports the task-relative opposing component and cap activity;
+Section 3.1 makes saturation conditional, Appendix A.2 defines the diagnostic
+and implemented cap condition, and the setup and discussion reflect the
+target-set distinction. Evidence and scope are recorded in
+[O002](../../analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md).
+The 26-page draft builds with resolved references and no overfull boxes;
+the affected pages were rendered and visually checked. Three underfull
+vertical-box warnings remain. The frozen artwork is unchanged.
+
 On 10 September, the quality-sparsity overview was moved into the introduction
 using the approved polished
 [Analysis 021 figure](../../analyses/021-2026-09-10-training-results-figures/figures/01-14m-quality-sparsity.pdf):
