@@ -139,9 +139,11 @@ See [O002](observations/O002-ol1-geometry.md) for the caption and limitations.
 
 [Paired pressure additions](figures/03-14m-paired-interventions.pdf) answers
 one question: at a fixed threshold, what changes when OL1 is added, and how
-does that differ between four-site and seven-site recipes? The author requested
-this analysis-only redesign on 11 September 2026. The draft manuscript is
-unchanged; adoption awaits a separate instruction.
+does that differ between four-site and seven-site recipes? The author initially
+requested an analysis-only redesign on 11 September 2026, then approved its
+manuscript adoption. The frozen PDF is copied without alteration as Figure 3
+on page 6 of the 26-page draft. Section 4.2 now focuses on the marginal effect
+of adding pressure; O003 records the caption, narrative changes and verification.
 
 The 5.5-by-3.5-inch PDF contains two stacked panels sharing five equally
 spaced threshold positions, with ticks on both panels and one bottom x-axis

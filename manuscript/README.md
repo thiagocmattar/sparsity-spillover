@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+The frozen paired-pressure figure from
+[Analysis 021 O003](../analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md)
+is now Figure 3 on page 6. Section 4.2, "Paired effect of adding pressure,"
+focuses on OL1 minus no pressure at matched thresholds. It preserves the
+target-set normalization caveat and geometry diagnostic; the local L1N/OL1
+comparison is one sentence in Section 4.1 with an Appendix D table reference.
+The rebuilt draft remains 26 pages.
+
 On 11 September, the frozen OL1 mechanism figure from
 [Analysis 021 O002](../analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md)
 was adopted as Figure 4 on page 7. The methods, paired-effect discussion,

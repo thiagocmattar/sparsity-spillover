@@ -1,12 +1,14 @@
 % Source observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
 % OL1 geometry: analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md
 % Generating analysis: analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
+% Matched OL1 additions: analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md
+% Generating analysis: analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
-% Evidence chain: results-argument-map.md. Overview: Analysis 021 O001; other sources: Analysis 018 O002/O003/O004/O011.
-% Overview figure is in introduction.tex. Other figures: Analysis 018 plots.py:{effects,scaling}; 02_activation_density_v3.py.
+% Historical evidence chain: results-argument-map.md. Current overview/geometry/pressure effects: Analysis 021 O001/O002/O003.
+% Overview is in introduction.tex. Remaining figures: Analysis 018 plots.py:scaling; 02_activation_density_v3.py.
 % Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
@@ -27,49 +29,65 @@ the A0 clipping reference acts at $a,m,h,z$, whereas A7 additionally thresholds
 the internal attention operands. At 14M, these site sets have analytic sparsity
 ceilings of $12.833\%$ and $29.952\%$, respectively. This comparison changes
 both the trained representation and the computation the selected sites can
-affect. Paired comparisons separate the additions that produce the trade-off. Full endpoints
+affect. Matched pressure-on/off comparisons isolate pressure's contribution. Full endpoints
 and clipping trajectories are given in Appendix~\ref{app:complete-results}.
 
-\subsection{Paired intervention effects}
+In the local $h$-only sweep, OL1 is not uniformly better than naive L1:
+their validation-loss differences are small, and the ordering reverses at
+$\lambda=1$; the complete matched sweep is reported in
+Appendix~\ref{app:complete-results}, Table~\ref{tab:paired-effects-full}.
+
+\subsection{Paired effect of adding pressure}
 \label{sec:paired-results}
 
-Pressure's additional value depends on the threshold and target set
-(Figure~\ref{fig:paired-intervention-effects}). Replacing GELU with ReLU
-alone increases model-wide sparsity by 2.714 percentage points (pp), but
-raises loss by 0.0611. Adding local pressure improves loss relative to this
-ReLU control. Changing naive L1 to OL1 lowers loss at three of the four
-matched weights, but reverses that improvement at $\lambda=1$; the update
-rule is not uniformly better across the sweep.
+To isolate the marginal contribution of pressure from threshold strength,
+we compare each OL1 recipe with its pressure-free counterpart at the
+\emph{same} trained threshold $\kappa$
+(Figure~\ref{fig:paired-intervention-effects}). Thus, the four-site contrasts
+are A4-OL1 minus A4 and the seven-site contrasts are A7-OL1 minus A7;
+changing $\kappa$ changes the operating point at which pressure is evaluated,
+while retaining a pressure-free reference at each threshold.
 
-For A4, adding OL1 improves both loss and sparsity at $\kappa=0$ and 0.01.
-At larger thresholds it adds sparsity at increasing quality cost. At
-$\kappa=0.5$, the increment is 2.498 pp for $+0.3783$ loss. The corresponding
-A7 pressure addition yields 12.096 pp for $+0.1265$ loss, while at
-$\kappa=0.1$ it yields 1.372 pp for a much smaller $+0.0008$ loss change.
-Broader thresholding also contributes without pressure: A7 minus A4 at
-$\kappa=0.5$ adds 5.171 pp for $+0.0432$ loss.
+\textbf{The added value of pressure changes sharply with both threshold and
+target set.} For the four-site recipe, OL1 slightly improves validation loss
+at $\kappa=0$ and $0.01$, while adding $0.598$ and $1.173$ percentage points
+(pp) of model-wide sparsity. At larger thresholds, the sparsity increment
+approaches $2.5$ pp but carries increasing quality cost, reaching $+2.498$ pp
+for $+0.3783$ validation loss at $\kappa=0.5$. For the seven-site recipe, the
+pressure effect remains modest through $\kappa=0.1$, where it adds $1.372$ pp
+for only $+0.0008$ loss. At $\kappa=0.5$, however, the increment rises to
+$+12.096$ pp for $+0.1265$ loss.
 
-Pressure therefore needs to be evaluated at its actual threshold and sites.
-Its larger gain under A7 also involves more pressure targets and a different
-objective normalization; it cannot be assigned to nonlinearity placement alone.
+\textbf{At the highest threshold, seven-site pressure therefore produces
+nearly five times the additional model-wide sparsity of four-site pressure,
+while incurring roughly one third of its validation-loss increase.}
 
-\begin{figure}[tbp]
+This difference characterizes the complete pressure target sets, not an
+isolated effect of adding $q,k,v$. Seven-site OL1 introduces additional
+pressure targets, and because the pressure objective equally averages
+targeted site--layer tensors, expanding the target set also changes the
+normalization and relative weighting of the existing targets. The larger
+seven-site effect therefore cannot be attributed to attention placement alone.
+
+% Frozen Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
+\begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{figures/02-blocked-intervention-effects.pdf}
-\caption{\textbf{Pressure's added value depends on the threshold and target sites.}
-Changes in validation loss (top; negative is better) and $100\Smodel$
-(bottom; percentage points) for 29 matched Pythia-14M comparisons.
-Each delta is treatment minus reference, as specified in the \textbf{Paired:}
-row; the \textbf{Intervention:} row gives the operation and sites.
-Labels give $\lambda$ or $\kappa$ in increasing order with ordinal spacing;
-the dash denotes the unswept ReLU replacement. L1-to-OL1 comparisons share
-$\lambda$; A4/A7 pressure additions and the Q/K/V thresholding addition share
-$\kappa$. Other comparisons use the fixed A0 or A1-H control. Pairs share
-initialization, data order and budget. These are trained endpoint differences,
-not successive training updates.}
+\includegraphics[width=\linewidth]{figures/03-14m-paired-interventions.pdf}
+\caption{\textbf{The marginal effect of adding OL1 depends strongly on threshold
+and pressure target set.} Each point is a matched comparison at the same
+trained threshold $\kappa$: $\Delta=(+\mathrm{OL1})-(\mathrm{no\ pressure})$,
+using A4-OL1 $-$ A4 for the four-site recipe and A7-OL1 $-$ A7 for the
+seven-site recipe. \textbf{(a)} Change in validation loss; negative values
+indicate improved quality. \textbf{(b)} Change in model-wide sparsity
+$\Smodel$, in percentage points. \textbf{At $\kappa=0.5$, four-site pressure
+adds $2.50$ pp sparsity for $+0.38$ loss, whereas seven-site pressure adds
+$12.10$ pp for only $+0.13$ loss.} Lines connect matched threshold settings
+and do not represent training trajectories. All comparisons use matched
+initialization, data order, and training budget.}
 \label{fig:paired-intervention-effects}
 \end{figure}
 
+\begin{samepage}
 \textbf{The same pressure weight produces very different optimization regimes
 across target sets} (Figure~\ref{fig:ol1-geometry}). We log global dot products
 and norms of the AdamW-preconditioned task direction $u$ and pressure direction
@@ -89,6 +107,7 @@ regime, whereas four-site OL1 is almost entirely uncapped. Because expanding
 to seven sites also changes the pressure objective and its equal-tensor
 normalization, these diagnostics characterize the complete target sets rather
 than isolating the contribution of $q,k,v$ alone.
+\end{samepage}
 
 % Frozen Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
 \begin{figure}[tbp]
@@ -113,6 +132,11 @@ pressure is applied but also the task-relative magnitude and budget regime
 of the pressure correction.}
 \label{fig:ol1-geometry}
 \end{figure}
+
+Pressure therefore cannot be assigned a single context-independent
+sparsity--quality effect: its marginal contribution depends on the thresholded
+representation and pressure target set. We next examine how the resulting
+four- and seven-site recipes differ in their activation structure.
 
 \subsection{Reshaping activation distributions}
 \label{sec:activation-reshaping}

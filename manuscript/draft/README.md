@@ -26,6 +26,18 @@ missing and no overfull boxes occur.
 ## Current format
 
 On 11 September, the frozen
+[Analysis 021 paired-pressure figure](../../analyses/021-2026-09-10-training-results-figures/figures/03-14m-paired-interventions.pdf)
+replaced the old 29-contrast overview as Figure 3 on page 6. Section 4.2 is
+now "Paired effect of adding pressure," with the approved matched-threshold
+caption, results, comparative summary and normalization caveat. Section 4.1
+retains one local L1N/OL1 sentence linked to Appendix D, Table 6. The geometry
+diagnostic remains, followed by the transition to activation distributions.
+[O003](../../analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md)
+records the adoption. The 26-page PDF builds with resolved references and no
+overfull boxes; three underfull vertical-box warnings remain. The affected
+pages were rendered and checked. Earlier artwork and appendix tables are retained.
+
+On 11 September, the frozen
 [Analysis 021 OL1 figure](../../analyses/021-2026-09-10-training-results-figures/figures/02-14m-ol1-geometry.pdf)
 was added as Figure 4 on page 7, with its approved caption and source hash.
 Section 4.2 reports the task-relative opposing component and cap activity;

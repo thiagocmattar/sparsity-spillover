@@ -12,4 +12,4 @@
   four-/seven-site pressure additions at matched thresholds; stacked loss and
   model-wide sparsity differences. At kappa = 0.5, +2.50 pp / +0.38 loss versus
   +12.10 pp / +0.13 loss. Frozen after the final decluttering pass;
-  analysis only, manuscript adoption is pending.
+  adopted as manuscript Figure 3 with Section 4.2 focused on adding pressure.

@@ -7,8 +7,8 @@
 At a fixed threshold, what changes when OL1 pressure is added, and how does
 that differ between the four-site and seven-site recipes?
 
-The author requested this focused redesign on 11 September 2026, restricted
-to Analysis 021. No manuscript source, figure copy or compiled draft is changed.
+The author requested this focused redesign on 11 September 2026, initially
+restricted to Analysis 021, then approved adoption in the manuscript.
 This is a replot of retained measurements, not a new experiment or promoted finding.
 
 ## Method, sources and coverage
@@ -59,19 +59,16 @@ S_model (pp); lower-/higher-is-better labels are removed. The figure is
 5.5 by 3.5 inches. The contrasts and source data are unchanged; the reference
 remains no pressure at the same threshold.
 
-**The incremental effect of pressure depends on threshold and target set.**
-Matched changes from adding OL1 to four-site (blue diamonds) and seven-site
-(orange triangles) Pythia-14M recipes at each threshold kappa. Every point is
-pressure-on minus pressure-off at the same threshold: A4-OL1 minus A4 or
-A7-OL1 minus A7, with lambda = b = 1. (a) Validation-loss change; negative
-values indicate improvement. (b) Model-wide sparsity change in percentage
-points; positive values indicate more sparsity. Dotted lines mark zero change.
-Annotations report both changes at kappa = 0.5. Four-site recipes target
-a,m,h,z; seven-site recipes additionally target post-RoPE q,k and v. The ten
-pairs share initialization, data order and training budget, and use full
-338-sequence validation. Thresholds are equally spaced categories; connecting
-lines organize separately trained endpoints. These are one-seed contrasts,
-without estimates of variation across seeds.
+**The marginal effect of adding OL1 depends strongly on threshold and pressure
+target set.** Each point is a matched comparison at the same trained threshold
+kappa: Delta = (+OL1) - (no pressure), using A4-OL1 minus A4 for the four-site
+recipe and A7-OL1 minus A7 for the seven-site recipe. **(a)** Change in validation
+loss; negative values indicate improved quality. **(b)** Change in model-wide
+sparsity S_model, in percentage points. **At kappa = 0.5, four-site pressure
+adds 2.50 pp sparsity for +0.38 loss, whereas seven-site pressure adds 12.10 pp
+for only +0.13 loss.** Lines connect matched threshold settings and do not
+represent training trajectories. All comparisons use matched initialization,
+data order, and training budget.
 
 ## Results
 
@@ -121,10 +118,42 @@ order; rejection of mismatched initialization or a missing threshold.
 The 5.5-by-3.5-inch PDF was rendered with Poppler and visually checked.
 All fonts are embedded, all text is inside the page, and the ten pairs appear
 at the requested categorical positions in both panels. Existing analysis
-figures and the entire manuscript draft remain unchanged.
+figures and source measurements remain unchanged by the replot.
 
 Final checks confirm the shared two-entry legend below the panels, both
 two-line endpoint callouts, one x-axis title, both sets of categorical tick
 labels, and all ten exact contrasts in both panels.
 Frozen PDF SHA-256:
 `68848db125449b16befa526377d4fda9e57a0166983552ba8792d7c2c93cb46f`.
+
+## Manuscript adoption (11 September 2026)
+
+At the author's request, the frozen figure and caption above replace the old
+29-contrast main-text display in
+[`training-results.tex`](../../../manuscript/draft/training-results.tex).
+The manuscript copy has the same SHA-256 as the analysis original, recorded
+in `manuscript/draft/figures/SOURCES.json`. It appears as Figure 3 on page 6.
+Earlier artwork and all 29 appendix contrast rows are retained.
+
+Section 4.2 is renamed "Paired effect of adding pressure" and now defines
+the same-threshold pressure-on/off comparison, describes all five thresholds,
+and emphasizes the complete target-set and equal-tensor normalization caveat.
+At kappa = 0.5, the unrounded seven-site/four-site ratios are 4.84239359 for
+the sparsity increment and 0.33441794 for the loss increment, supporting
+"nearly five times" and "roughly one third" in the approved prose. These
+ratios compare the two observed increments, not absolute endpoint performance.
+
+The one-sentence local L1N/OL1 result is at the end of Section 4.1, linked to
+Appendix D, Table 6. Analysis 018's retained local contrasts give loss changes
+-0.0080803, -0.0060852, -0.0024516 and +0.0189099 at lambda = 0.05, 0.1,
+0.5 and 1. The geometry diagnostic's wording and data remain intact. Its
+paragraph is kept together below Figure 3, followed by the approved transition
+to activation distributions. The opening specifies a pressure-free reference
+at each threshold: the reference checkpoint changes with kappa, while the
+comparison rule remains the same.
+
+The rebuilt draft has 26 pages, resolved cross-references and no overfull
+boxes. Three underfull vertical-box warnings remain. Figure placement and the
+affected pages were rendered with Poppler and visually checked. The frozen
+analysis PDF, source script, reduced data and all other manuscript section
+sources are unchanged by this adoption.
