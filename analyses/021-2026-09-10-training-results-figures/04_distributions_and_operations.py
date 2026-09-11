@@ -18,6 +18,7 @@ ROOT = HERE.parents[1]
 ENDPOINTS = ROOT / "analyses/018-2026-09-08-results-materials/figure_data.json"
 DENSITIES = ROOT / "runs/031-2026-09-08-signed-activation-density/results"
 FAMILIES = ("A4-OL1", "A7-OL1")
+LABELS = {"A4-OL1": "4-site + OL1", "A7-OL1": "7-site + OL1"}
 COLORS = ("#2878B5", "#C96024")
 GROUPS = {"FFN activations": ("h", "m"),
           "Attention activations": ("q_post", "k_post", "v")}
@@ -130,11 +131,12 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": .6, "axes.axisbelow": True, "pdf.fonttype": 42})
     fig = plt.figure(figsize=(7.1, 3.35))
-    ffn = fig.add_axes((.075, .285, .183, .46))
-    attention = fig.add_axes((.297, .285, .183, .46), sharey=ffn)
-    bars = fig.add_axes((.59, .285, .385, .56))
-    fig.text(.075, .975, r"(a) Activations at $\kappa=0.5$ (14M)", va="top", fontsize=9)
-    fig.text(.59, .975, "(b) Model-wide consequence", va="top", fontsize=9)
+    ffn = fig.add_axes((.075, .24, .183, .54))
+    attention = fig.add_axes((.297, .24, .183, .54), sharey=ffn)
+    bars = fig.add_axes((.59, .24, .385, .54))
+    fig.text(.075, .975, r"(a) Local sparsity at $\kappa=0.5$ (14M)", va="top", fontsize=9)
+    fig.text(.59, .975, "(b) Operation-weighted sparsity accounting", va="top", fontsize=9)
+    fig.text(.59, .90, r"More FFN zeros does not imply higher $\mathcal{S}_{\mathrm{model}}$", fontsize=7.2)
     edges = np.asarray(data["display_bin_edges"])
     for ax, (name, sites), limits in zip((ffn, attention), GROUPS.items(), XLIMS):
         for record, color in zip(data["records"], COLORS):
@@ -150,11 +152,12 @@ def make_figure(data):
         ax.set_xlabel(r"Activation $x$", labelpad=4)
         left, _, width, _ = ax.get_position().bounds
         title = r"FFN $(h,m)$" if name == "FFN activations" else r"Attention $(q,k,v)$"
-        fig.text(left + width / 2, .887, title, ha="center", fontsize=8)
+        fig.text(left + width / 2, .90, title, ha="center", fontsize=8)
         for row, (record, color) in enumerate(zip(data["records"], COLORS)):
             zero = record["groups"][name]["exact_zero_percent"]
-            fig.text(left, .835 - row * .052, f"{record['family']}: {zero:.2f}% zeros",
-                     color=color, fontsize=7)
+            fig.text(left, .85 - row * .045,
+                     f"{LABELS[record['family']]}: {zero:.2f}% exact zeros",
+                     color=color, fontsize=6.3)
     attention.tick_params(labelleft=False)
     ffn.set_ylabel("Nonzero density", labelpad=5)
 
@@ -167,24 +170,23 @@ def make_figure(data):
         bottoms += heights
     for xx, record in zip(x, data["records"]):
         bars.text(xx, record["S_model_percent"] + .65,
-                  f"{record['S_model_percent']:.2f}%", ha="center", fontsize=9, fontweight="bold")
+                  f"{record['S_model_percent']:.2f}% total", ha="center", fontsize=8.5, fontweight="bold")
     bars.set_ylim(0, 32)
     bars.set_xlim(-.55, 1.55)
     bars.set_yticks([0, 10, 20, 30])
-    bars.set_xticks(x, FAMILIES)
+    bars.set_xticks(x, [LABELS[family] for family in FAMILIES])
     for label, color in zip(bars.get_xticklabels(), COLORS):
         label.set_color(color)
     bars.set_ylabel(r"Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)", labelpad=5)
-    bars.grid(axis="y", color=".93", linewidth=.4)
+    bars.grid(axis="y", color=".92", linewidth=.45)
     a4, a7 = (row["attention_contribution_pp"] for row in data["records"])
-    bars.text(.015, .935, f"QK + PV contributions\n{a4:.2f} → {a7:.2f} pp",
-              transform=bars.transAxes, ha="left", va="top", fontsize=7.2)
+    fig.text(.59, .825, f"QK + PV: {a4:.2f} → {a7:.2f} pp", fontsize=7.2)
     handles, labels = bars.get_legend_handles_labels()
-    # Read the two-column legend row by row in stack order.
-    order = [0, 2, 4, 1, 3, 5]
+    # Rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
+    order = [0, 4, 1, 3, 2, 5]
     fig.legend([handles[i] for i in order], [labels[i] for i in order],
-        bbox_to_anchor=(.79, .035), loc="lower center", ncol=2, frameon=False,
-        fontsize=7, handlelength=1.05, handletextpad=.4, columnspacing=1.15, labelspacing=.35)
+        bbox_to_anchor=(.7825, .015), loc="lower center", ncol=3, frameon=False,
+        fontsize=7, handlelength=1.05, handletextpad=.4, columnspacing=.9, labelspacing=.35)
     return fig
 
 

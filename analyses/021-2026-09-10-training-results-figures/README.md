@@ -201,6 +201,13 @@ is 7.1 by 3.35 inches, without density fills, a baseline curve or a super-title.
 Blue/orange identify the recipes in the densities and bar labels; stack colors
 identify operations using the existing accounting palette.
 
+The targeted polish uses "4-site + OL1" / "7-site + OL1" throughout the visible
+labels, names panel (b) "Operation-weighted sparsity accounting," and states
+the FFN/model-wide ranking reversal in one line. Exact-zero labels are explicit;
+density axes gain 17% in height and remain grid-free. Bar totals say "total,"
+the QK/PV note is one line, and the operation legend is three columns by two
+rows. Figure dimensions, measurements, curves and bars are unchanged.
+
 The sources are Run 031 signed histograms and Analysis 018 integer operation
 counts from the same two trained checkpoints, covering complete validation.
 [O005](observations/O005-distributions-and-operations.md) records the caption,

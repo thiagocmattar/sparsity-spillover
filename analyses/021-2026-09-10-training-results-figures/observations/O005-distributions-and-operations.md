@@ -54,23 +54,33 @@ model-wide sparsity. Projection segments sit below the adjacent QK/PV segments.
 
 [Figure PDF](../figures/04-14m-distributions-and-operations.pdf).
 Two conceptual panels: two aligned density axes on the left, two stacked bars
-on the right. Blue/orange curves and exact-zero labels identify A4-OL1/A7-OL1.
+on the right. Blue/orange curves and exact-zero labels identify 4-site + OL1
+and 7-site + OL1 (A4-OL1/A7-OL1 in the source records).
 There are no density fills or baseline curve. Bar colors identify operations,
 retaining the earlier accounting palette; QK/PV are the two warm segments at
-the top. The only bar callouts are the totals and the paired QK/PV contributions.
+the top. The polished titles read "Local sparsity at kappa = 0.5 (14M)" and
+"Operation-weighted sparsity accounting." A short takeaway states that more FFN
+zeros does not imply higher model-wide sparsity. Bar totals explicitly say
+"total," and the note reads "QK + PV: 0.06 -> 16.77 pp."
+
+The 11 September polish keeps the same figure dimensions and all data, enlarges
+the density axes vertically by 17%, and specifies "exact zeros" in each label.
+Only the bars have faint horizontal major-grid lines. The legend has three
+columns and two rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
 
 **FFN sparsity alone can misrank recipes; operation accounting explains the
-reversal.** Both panels compare A4-OL1 and A7-OL1 at kappa = 0.5 in Pythia-14M.
+reversal.** Both panels compare 4-site + OL1 and 7-site + OL1 at kappa = 0.5
+in Pythia-14M.
 **(a)** Nonzero activation densities, with exact-zero masses labeled separately.
 FFN pools h,m in an 80:20 element ratio; attention pools post-RoPE q,k and v
 equally. Densities divide counts by all captured elements and bin width, without
 renormalizing the nonzero mass or displayed range; both vertical axes are
-symlog, linear below 0.01. A4-OL1 has more FFN zeros (99.31% versus 93.64%)
+symlog, linear below 0.01. The four-site recipe has more FFN zeros (99.31% versus 93.64%)
 but far fewer attention zeros (0.22% versus 95.60%). **(b)** Stacked measured
 zero-product contributions from six operation families, each divided by all
 model products including the dense final output projection. QK and PV supply
-0.06 pp under A4-OL1 and 16.77 pp under A7-OL1, explaining the reversal in
-model-wide sparsity: 12.71% versus 27.48%. A7-OL1 also has lower validation
+0.06 pp under 4-site + OL1 and 16.77 pp under 7-site + OL1, explaining the reversal in
+model-wide sparsity: 12.71% versus 27.48%. The seven-site recipe also has lower validation
 loss, 5.8294 versus 6.0380. All quantities cover the full 338-block validation
 set. These are complete-recipe comparisons and logical sparsity opportunities,
 not isolated causal effects of attention pressure or measured speedups.
@@ -130,5 +140,7 @@ operation contributions using the full model denominator, and the joined
 two-checkpoint evidence with all plotted counts. The 7.1-by-3.35-inch PDF was
 rendered with Poppler and visually checked. All numeric labels are present,
 all text lies within page bounds, and fonts are embedded. The retained source
-hashes and observation links resolve. The manuscript diff is empty.
-Figure SHA-256: `d0e80a38f0557141ccdddf232d129ddc27a12d366c619d11b80bb00892ac9551`.
+hashes and observation links resolve. The polish also verifies the revised
+visible labels, grid placement and three-column legend order. The figure data
+are identical to the preceding version, and the manuscript diff is empty.
+Figure SHA-256: `13259bdf520a3540b81953b6088a72acec44ee2c68f534c0010cda8f55b53a33`.
