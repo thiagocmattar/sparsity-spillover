@@ -92,14 +92,16 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": 0.6, "pdf.fonttype": 42,
     })
-    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.25))
-    fig.subplots_adjust(left=.135, right=.75, bottom=.14, top=.93, hspace=.36)
+    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.5))
+    fig.subplots_adjust(left=.135, right=.75, bottom=.13, top=.93, hspace=.78)
     panels = (("delta_loss", "(a) Validation-loss change", r"$\Delta$ validation loss", (-.05, .42)),
               ("delta_sparsity_pp", "(b) Model-wide sparsity gain", r"$\Delta\mathcal{S}_{\mathrm{model}}$ (pp)", (-1, 13)))
     for ax, (key, title, ylabel, limits) in zip(axes, panels):
         ax.set(ylabel=ylabel, ylim=limits, xlim=(-.15, 4.2))
         ax.set_title(title, loc="left", pad=6)
         ax.axhline(0, color="#80858B", linestyle=":", linewidth=.75, zorder=0)
+        ax.set_axisbelow(True)
+        ax.grid(color="#E8E9EC", linewidth=.45)
         ax.tick_params(length=3, width=.6)
         for family, (label, color, marker) in STYLE.items():
             rows = [r for r in data["pairs"] if r["family"] == family]
@@ -108,12 +110,14 @@ def make_figure(data):
                     markeredgewidth=.6, zorder=3, gid=f"{key}:{family}")
     axes[0].set_yticks([0, .1, .2, .3, .4], ["0", "+0.1", "+0.2", "+0.3", "+0.4"])
     axes[1].set_yticks([0, 4, 8, 12])
-    axes[0].tick_params(axis="x", bottom=False)
-    axes[0].spines["bottom"].set_visible(False)
-    axes[0].annotate("lower is better", (3.95, 0), xytext=(0, -4), textcoords="offset points",
-                     ha="right", va="top", color="#656A70", fontsize=7)
+    axes[0].tick_params(axis="x", bottom=True, labelbottom=True)
     axes[1].set_xticks(range(5), [f"{k:g}" for k in KAPPAS])
-    axes[1].set_xlabel(r"Threshold $\kappa$", labelpad=4)
+    for ax in axes:
+        ax.set_xlabel(r"Threshold $\kappa$", labelpad=4)
+    for ax, direction in zip(axes, ("lower is better", "higher is better")):
+        ax.annotate(direction, (1.015, 0), xycoords=("axes fraction", "data"),
+                    ha="left", va="center", color="#656A70", fontsize=7,
+                    annotation_clip=False)
     for ax, family, key in ((axes[0], "A4", "delta_loss"), (axes[1], "A7", "delta_sparsity_pp")):
         endpoint = next(r for r in data["pairs"] if r["family"] == family and r["kappa"] == .5)
         label, color, _ = STYLE[family]

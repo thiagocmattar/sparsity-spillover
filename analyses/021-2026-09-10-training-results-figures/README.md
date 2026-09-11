@@ -141,8 +141,10 @@ does that differ between four-site and seven-site recipes? The author requested
 this analysis-only redesign on 11 September 2026. The draft manuscript is
 unchanged; adoption awaits a separate instruction.
 
-The 5.5-by-3.25-inch PDF contains two stacked panels sharing five equally
-spaced threshold positions. Both show the same ten matched pairs:
+The 5.5-by-3.5-inch PDF contains two stacked panels sharing five equally
+spaced threshold positions, with ticks and the threshold label repeated on
+both panels. A light grid and lower-/higher-is-better labels aid reading.
+Both show the same ten matched pairs:
 A4-OL1 minus A4 and A7-OL1 minus A7. Blue diamonds and orange triangles match
 the quality-sparsity overview. Top: validation-loss change; bottom: model-wide
 sparsity change in percentage points. Only the two complete effects at
