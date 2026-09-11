@@ -42,18 +42,22 @@ products and squared norms over all eligible parameters. Projection occurs
 only if the global dot product is negative and the squared task norm exceeds
 epsilon. All negative-dot observations in this cohort satisfy that guard.
 
-Panel (a) plots median logged `task_pressure_cosine_before` at each kappa,
-separately for four- and seven-site conditions. Each point summarizes all 712
-training steps in that condition; thin bars span the 25th to 75th percentiles.
+Panel (a) plots 100 times the median task-relative removed opposing component
+rho_opp at each kappa, separately for four- and seven-site conditions. Each
+point summarizes all 712 training steps in that condition; thin bars span
+100 times the 25th to 75th percentiles. The y-axis is logarithmic, with ticks
+at 0.1, 1, 10 and 100 percent. Its upper limit extends to 400 percent to retain
+the full IQRs (two extend beyond 100 percent) and separate the annotation.
+Zero values at non-conflicting steps remain included when computing quantiles;
+no zero is replaced by a positive plotting value.
 These are empirical training-step intervals, not confidence intervals or
 uncertainty across seeds. The five thresholds occupy equally spaced categorical
 positions, with slight horizontal offsets to keep overlapping bars readable.
 Connecting lines organize evaluated settings without interpolating models.
 There is no binning, smoothing, layer averaging or subsampling. Conflict is counted
 using `task_pressure_dot_before < 0`, not the separate raw-gradient conflict
-diagnostic. The logged cosines use the implementation's stabilized denominators.
-Post-projection cosines remain in the numerical audit and caption rather than
-occupying a plot dimension.
+diagnostic. Pre- and post-projection cosines remain in the numerical audit
+and this observation rather than occupying a plot dimension.
 
 Panel (b) plots `pressure_to_task_ratio_raw / step_budget`, where
 r = lambda * norm(w_tilde) / (norm(u) + epsilon). Cap activity is counted
@@ -82,13 +86,17 @@ are retained by family and threshold in the machine-readable summary.
 Blue denotes four-site conditions and orange denotes seven-site conditions
 throughout. In panel (b), five thin traces show the individual conditions
 within each family; a thick line shows their median at each optimizer step,
-without smoothing. The y=1 dotted reference is directly labeled "budget binds."
-Panel (a) uses blue circles and orange diamonds and marks zero cosine with a
-horizontal dotted reference. There is no
+without smoothing. The individual traces have opacity 0.14, leaving the two
+thick median curves prominent. The y=1 dotted reference is directly labeled
+"cap binds." Panel (a) uses blue circles and orange diamonds with direct
+curve labels at the rightmost points. It has no reference line. There is no
 pooled trajectory or cap annotation, uncertainty band, threshold-specific
-color, legend or super-title. The revised 5.9-by-2.45-inch layout gives slightly
-more width to the budget panel. The former pooled ECDF figure is preserved
-in commit `b2f46d0`, the author-requested rollback point.
+color, legend or super-title. The 6.4-by-2.8-inch layout gives the budget panel
+15 percent more width; panel heights match. Font sizes and blue/orange hues
+match the quality-sparsity overview. The former pooled ECDF figure is preserved
+in commit `b2f46d0`, the author-requested rollback point; the per-threshold
+cosine figure is preserved in `c2a2780`. The author requested the current
+opposing-component panel on 11 September 2026.
 
 Before reduction, the script verifies complete step coverage, pressure identity,
 and eight distinct historical optimizer/training source files against the run
@@ -108,7 +116,7 @@ Conflict occurs on 99.89% of four-site observations and 99.86% of seven-site
 observations (both round to 99.9%). The median pre-projection cosines are
 -0.03459 and -0.01157, respectively; their interquartile ranges are
 [-0.05155, -0.02009] and [-0.01548, -0.00731]. These pooled statistics do not
-describe the threshold dependence now exposed by panel (a):
+describe the threshold dependence retained below as a secondary diagnostic:
 
 | Kappa | Four-site median cosine | Seven-site median cosine |
 | ---: | ---: | ---: |
@@ -180,29 +188,30 @@ This establishes a substantial difference in the raw opposing component
 removed by projection. It does not quantify the opposing component of the
 applied, capped update, nor the validation benefit of projection. A hypothetical
 update without projection would also change the norm supplied to the cap.
-The requested primary figure keeps cosine versus threshold and budget versus
-step; rho_opp is retained here for the author's next choice of presentation.
+Panel (a) now shows this diagnostic in percent. Four-site medians range from
+0.25% to 1.21% of the task norm, versus 19.78% to 84.78% for seven sites.
+Panel (b) measures the remaining post-projection pressure norm before the cap.
+The removed component and the norm supplied to the cap are distinct quantities;
+their observed separation does not by itself isolate why the cap binds.
 
 ## Caption
 
-**Task and pressure directions are systematically negatively aligned;
-their angular relationship varies with threshold and their norm-budget
-regime differs sharply by target set.** (a) Median pre-projection cosine
-between adaptive task direction u and preconditioned pressure direction w
-across all 712 steps at each threshold. Blue circles/orange diamonds denote
-four-/seven-site conditions; bars show the empirical 25th-75th percentiles
-over training steps, not confidence intervals. Thresholds occupy categorical
-positions; lines connect evaluated settings. Seven-site medians are less
-negative at every matched threshold, while 99.9% of step-level alignments
-are negative. Under conflict, projection reduces the task-aligned component
-to numerical tolerance (99th-percentile absolute post-projection cosine 7.39e-9).
-(b) Pre-cap norm ratio r/b at lambda = b = 1. Thin lines show individual
-conditions; thick lines show the median within each target set at each step.
-The cap is active on 0.5% of four-site steps and 97.0% of seven-site steps.
-All 712 steps from each of five thresholds per target set are included
-(7,120 observations, Pythia-14M). Quantities pool OL1's eligible parameters
-before group learning rates and exclude decoupled weight decay; they do not
-guarantee task-loss descent or preservation.
+**Seven-site pressure has a larger task-relative opposing component and
+operates predominantly at its norm budget.** (a) The component removed by
+OL1's projection, rho_opp = max(0, -<u,w>) / (norm(u)^2 + epsilon), expressed
+as a percentage of the adaptive task-direction norm. Blue circles/orange
+diamonds denote four-/seven-site conditions. Points show medians across
+712 training steps at each categorical threshold; whiskers span the empirical
+25th-75th percentiles, not confidence intervals. Lines connect evaluated
+settings. Across the cohort, 99.9% of step-level alignments are negative.
+(b) Pre-cap norm ratio r/b at lambda = b = 1. Faint lines show the five
+individual thresholds within each target set; thick lines show their median
+at each optimizer step. The cap is active on 0.5% of four-site steps and
+97.0% of seven-site steps. All 7,120 Pythia-14M step-condition observations
+are included. Panel (a) describes the raw component removed; panel (b) describes
+the projected direction before capping. Quantities pool OL1's eligible
+parameters before group learning rates and exclude decoupled weight decay;
+they do not guarantee task-loss descent or preservation.
 
 ## Caveats and verification
 

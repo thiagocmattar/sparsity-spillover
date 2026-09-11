@@ -71,12 +71,13 @@ results and interpretation limits.
 is a compact two-panel mechanism diagnostic, requested on 10 September 2026.
 It uses every optimizer-boundary record from the five corrected four-site
 Run 015 conditions and five seven-site Run 014 conditions: 7,120 observations,
-with lambda = budget = 1. Panel (a) shows pre-projection cosine medians and
-interquartile ranges over training steps at each of the five categorical
-thresholds. Blue circles and orange diamonds distinguish the target sets.
-Panel (b) shows five
-thin traces and one unsmoothed median per target set: blue for four sites and
-orange for seven. Direct labels identify each cap rate and the budget boundary.
+with lambda = budget = 1. The 11 September revision makes the task-relative
+opposing component rho_opp the primary diagnostic. Panel (a) shows its median
+and interquartile range over 712 steps at each categorical threshold, multiplied
+by 100 and plotted on a log percent axis. Blue circles and orange diamonds
+distinguish the directly labeled target sets. Panel (b) shows five very faint
+traces and one unsmoothed median per target set in the same colors. Direct
+labels report each cap-active fraction, with "cap binds" at r/b=1.
 There is no pooled trajectory, pooled cap annotation, legend or super-title.
 No checkpoints or retrospective gradients are used.
 
@@ -89,7 +90,7 @@ from lambda remains conditional on the cap binding. Post-projection
 orthogonality is retained as a caption-level implementation check.
 The manuscript is unchanged by this analysis.
 
-The additional rho_opp diagnostic uses the retained pre-projection dot product
+The rho_opp diagnostic uses the retained pre-projection dot product
 and squared task norm to measure the raw component removed along the task
 direction, relative to its norm. Pooled medians are 0.009503 at four sites and
 0.588006 at seven sites (about 62-fold separation). Seven-site medians are
@@ -97,7 +98,11 @@ higher at every threshold, and rho_opp exceeds one on 21.15% of seven-site
 steps versus none at four sites. These are pre-cap, pre-learning-rate quantities,
 not the magnitude of the applied update or measured loss effects.
 [O002](observations/O002-ol1-geometry.md) gives the per-threshold medians and
-IQRs. The former pooled ECDF figure remains in rollback commit `b2f46d0`.
+IQRs. Across thresholds, medians span 0.25-1.21% of norm(u) at four sites and
+19.78-84.78% at seven sites. The upper y-limit allows IQRs above 100% to remain
+visible. No cosine or pooled fold-ratio annotation is plotted. The former
+pooled ECDF figure remains in rollback commit `b2f46d0`; the per-threshold
+cosine figure is preserved in `c2a2780`.
 
 ```powershell
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
@@ -111,7 +116,8 @@ sites, and historical optimizer/pressure code hashes before plotting.
 statistics and source hashes; the original logs retain each plotted scalar.
 Five focused checks cover coverage and pooling, the stabilized cap boundary,
 rejection of inconsistent geometry, the opposing-component formula against a
-vector projection, per-threshold medians and IQRs, and exact per-family traces.
-All eight Analysis 021 tests passed. The 5.9-by-2.45-inch PDF was rendered and
+vector projection, percent conversion and full per-threshold IQRs, and exact
+per-family traces. All eight Analysis 021 tests passed. The 6.4-by-2.8-inch PDF
+uses the overview's fonts, font sizes and blue/orange colors. It was rendered and
 visually checked; all text is inside the page and all fonts are embedded.
 See [O002](observations/O002-ol1-geometry.md) for the caption and limitations.

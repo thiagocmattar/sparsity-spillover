@@ -87,15 +87,18 @@ def test_figure_retains_per_threshold_quantiles_and_separate_family_traces(evide
     assert len(right.lines) == 13  # Ten runs, two family medians, one budget reference.
     for i, family in enumerate(geometry.FAMILIES):
         cohort = [c for c in conditions if c["family"] == family]
-        cosine_quantiles = np.array([np.quantile([r["task_pressure_cosine_before"] for r in c["rows"]],
-                                                [.25, .5, .75]) for c in cohort])
+        rho_percent_quantiles = 100 * np.array([np.quantile([
+            max(0, -r["task_pressure_dot_before"]) / (r["task_direction_norm"]**2 + c["pressure"]["eps"])
+            for r in c["rows"]], [.25, .5, .75]) for c in cohort])
         dots, caps, bars = left.containers[i].lines
         positions = np.arange(5) + (-.055 if i == 0 else .055)
         np.testing.assert_array_equal(dots.get_xdata(), positions)
-        np.testing.assert_array_equal(dots.get_ydata(), cosine_quantiles[:, 1])
+        np.testing.assert_array_equal(dots.get_ydata(), rho_percent_quantiles[:, 1])
         segments = np.asarray(bars[0].get_segments())
         np.testing.assert_array_equal(segments[:, 0, 0], positions)
-        np.testing.assert_allclose(segments[:, :, 1], cosine_quantiles[:, [0, 2]], rtol=1e-14)
+        np.testing.assert_allclose(segments[:, :, 1], rho_percent_quantiles[:, [0, 2]], rtol=1e-14)
+        assert np.min(segments[:, :, 1]) >= left.get_ylim()[0]
+        assert np.max(segments[:, :, 1]) <= left.get_ylim()[1]
         ratios = np.array([[r["pressure_to_task_ratio_raw"] / c["pressure"]["step_budget"]
                             for r in c["rows"]] for c in cohort])
         lines = right.lines[6 * i:6 * i + 6]
@@ -104,5 +107,5 @@ def test_figure_retains_per_threshold_quantiles_and_separate_family_traces(evide
             np.testing.assert_array_equal(line.get_ydata(), values)
         np.testing.assert_array_equal(lines[5].get_ydata(), np.median(ratios, axis=0))
         assert all(line.get_color() == dots.get_color() == geometry.COLORS[family] for line in lines)
-    assert right.get_yscale() == "log"
+    assert left.get_yscale() == right.get_yscale() == "log"
     geometry.plt.close(fig)

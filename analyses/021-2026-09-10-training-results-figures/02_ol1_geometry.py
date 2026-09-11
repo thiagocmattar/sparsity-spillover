@@ -148,7 +148,7 @@ def summary_document(conditions, provenance):
         "conflict_rule": "task_pressure_dot_before < 0",
         "cap_active_rule": "trust_scale < 1",
         "cosines": "logged stabilized global adaptive-direction cosines, unchanged",
-        "cosine_panel": "median and 25th-75th percentiles over all 712 steps within each family and kappa; five categorical positions",
+        "opposing_component_panel": "100 times median and 25th-75th percentiles of rho_opp over all 712 steps within each family and kappa; five categorical positions; log percent axis",
         "interval_note": "empirical variation over training steps, not confidence intervals or seed uncertainty",
         "rho_opp_definition": "max(0, -task_pressure_dot_before) / (task_direction_norm**2 + eps); raw pressure, before cap and learning rate",
         "rho_opp_scope": "all steps including aligned zeros; all task norms pass the implementation's projection guard; lambda=1",
@@ -164,33 +164,36 @@ def summary_document(conditions, provenance):
 
 def make_figure(conditions, summary):
     plt.rcParams.update({
-        "font.family": "DejaVu Sans", "font.size": 7.5, "axes.labelsize": 8,
-        "xtick.labelsize": 7, "ytick.labelsize": 7, "pdf.fonttype": 42,
+        "font.family": "DejaVu Sans", "font.size": 8, "axes.labelsize": 9,
+        "xtick.labelsize": 8, "ytick.labelsize": 8, "pdf.fonttype": 42,
         "axes.spines.top": False, "axes.spines.right": False, "axes.linewidth": 0.6,
     })
-    fig, (left, right) = plt.subplots(1, 2, figsize=(5.9, 2.45),
+    fig, (left, right) = plt.subplots(1, 2, figsize=(6.4, 2.8),
                                      gridspec_kw={"width_ratios": [1, 1.15]})
-    fig.subplots_adjust(left=0.125, right=0.985, bottom=0.23, top=0.85, wspace=0.42)
-    left.set_title("(a) Conflict across thresholds", fontsize=7.7, pad=10, loc="left")
-    right.set_title("(b) Budget regime depends on target set", fontsize=7.7, pad=10, loc="left")
-    left.axhline(0, color="#30373D", linewidth=0.6, linestyle=":", zorder=0)
+    fig.subplots_adjust(left=0.125, right=0.985, bottom=0.20, top=0.85, wspace=0.38)
+    left.set_title("(a) Opposing component across thresholds", fontsize=8, pad=10, loc="left")
+    right.set_title("(b) Budget regime depends on target set", fontsize=8, pad=10, loc="left")
     split = summary["by_family"]
     for family, marker, offset in zip(FAMILIES, ("o", "D"), (-.055, .055)):
         records = sorted((c for c in summary["conditions"] if c["family"] == family),
                          key=lambda c: c["kappa"])
-        medians = np.array([c["median_pre_cosine"] for c in records])
-        intervals = np.array([c["pre_cosine_iqr"] for c in records])
+        medians = 100 * np.array([c["rho_opp"]["median"] for c in records])
+        intervals = 100 * np.array([[c["rho_opp"]["p25"], c["rho_opp"]["p75"]] for c in records])
         left.errorbar(np.arange(5) + offset, medians,
                       yerr=np.array([medians - intervals[:, 0], intervals[:, 1] - medians]),
-                      marker=marker, markersize=3.6, color=COLORS[family], linewidth=.9,
+                      marker=marker, markersize=4, color=COLORS[family], linewidth=.9,
                       elinewidth=.65, capsize=2, capthick=.65)
-    left.set(xlim=(-.35, 4.35), ylim=(-.068, .026),
+        left.annotate("4-site" if family == "A4-OL1" else "7-site",
+                      xy=(4 + offset, medians[-1]), xytext=(6, 0),
+                      textcoords="offset points", va="center", color=COLORS[family], fontsize=7.5)
+    left.set(xlim=(-.35, 4.95), ylim=(.1, 400), yscale="log",
              xlabel=r"Threshold $\kappa$",
-             ylabel=r"Pre-projection cosine $\cos(u,w)$")
+             ylabel="Removed opposing component\n" + r"$\rho_{\mathrm{opp}}$ (% of $\Vert u\Vert$)")
     left.set_xticks(range(5), ["0", "0.01", "0.05", "0.1", "0.5"])
-    left.set_yticks([-.06, -.04, -.02, 0])
-    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of step-level\nalignments are negative",
-              transform=left.transAxes, va="top", fontsize=7.2, linespacing=1.3)
+    left.set_yticks([.1, 1, 10, 100], ["0.1", "1", "10", "100"])
+    left.minorticks_off()
+    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of step-level alignments\nare negative",
+              transform=left.transAxes, va="top", fontsize=7.5, linespacing=1.3)
 
     for family in FAMILIES:
         ratios = []
@@ -200,19 +203,19 @@ def make_figure(conditions, summary):
             values = [r["pressure_to_task_ratio_raw"] / condition["pressure"]["step_budget"]
                       for r in condition["rows"]]
             ratios.append(values)
-            right.plot(range(1, STEPS + 1), values, color=COLORS[family], alpha=.28, linewidth=.5)
+            right.plot(range(1, STEPS + 1), values, color=COLORS[family], alpha=.14, linewidth=.5)
         right.plot(range(1, STEPS + 1), np.median(ratios, axis=0),
                    color=COLORS[family], linewidth=1.5)
     right.axhline(1, color="#30373D", linewidth=.65, linestyle=(0, (1.5, 2.5)), zorder=0)
-    right.text(355, 1.35, "budget binds", fontsize=6.8, ha="center", va="bottom")
+    right.text(355, 1.35, "cap binds", fontsize=7.5, ha="center", va="bottom")
     right.set(yscale="log", xlim=(1, STEPS), ylim=(.025, 3500),
               xlabel="Optimizer step", ylabel=r"Pre-cap norm ratio $r/b$")
     right.set_xticks([1, 200, 400, 600])
     right.set_yticks([.1, 1, 10, 100, 1000])
     right.minorticks_off()
-    for family, n, x, y in (("A4-OL1", 4, .27, .035), ("A7-OL1", 7, .42, .93)):
-        right.text(x, y, f"{n}-site: {split[family]['cap_active_percent']:.1f}% capped",
-                   transform=right.transAxes, color=COLORS[family], fontsize=7.3)
+    for family, n, y in (("A4-OL1", 4, .035), ("A7-OL1", 7, .96)):
+        right.text(.99, y, f"{n}-site: cap active on {split[family]['cap_active_percent']:.1f}% of steps",
+                   transform=right.transAxes, color=COLORS[family], fontsize=7.5, ha="right")
     return fig
 
 
