@@ -67,6 +67,10 @@ results and interpretation limits.
 
 ## Figure 02
 
+**Frozen by the author on 11 September 2026.** Final edits clarify the percent
+axis, shorten the negative-dot annotation, and define both panels' summaries
+in the caption. Layout and data remain unchanged from `444ad84`.
+
 [OL1 conflict geometry and target-set-dependent saturation](figures/02-14m-ol1-geometry.pdf)
 is a compact two-panel mechanism diagnostic, requested on 10 September 2026.
 It uses every optimizer-boundary record from the five corrected four-site

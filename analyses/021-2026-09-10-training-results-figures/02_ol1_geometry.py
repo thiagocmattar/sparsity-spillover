@@ -188,11 +188,11 @@ def make_figure(conditions, summary):
                       textcoords="offset points", va="center", color=COLORS[family], fontsize=7.5)
     left.set(xlim=(-.35, 4.95), ylim=(.1, 400), yscale="log",
              xlabel=r"Threshold $\kappa$",
-             ylabel="Removed opposing component\n" + r"$\rho_{\mathrm{opp}}$ (% of $\Vert u\Vert$)")
+             ylabel="Removed opposing component\n" + r"(% of $\Vert u\Vert$)")
     left.set_xticks(range(5), ["0", "0.01", "0.05", "0.1", "0.5"])
     left.set_yticks([.1, 1, 10, 100], ["0.1", "1", "10", "100"])
     left.minorticks_off()
-    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of step-level alignments\nare negative",
+    left.text(.045, .97, f"{summary['pooled']['conflict_percent']:.1f}% of steps: " + r"$\langle u,w\rangle < 0$",
               transform=left.transAxes, va="top", fontsize=7.5, linespacing=1.3)
 
     for family in FAMILIES:

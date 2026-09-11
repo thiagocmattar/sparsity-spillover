@@ -198,22 +198,26 @@ their observed separation does not by itself isolate why the cap binds.
 
 **Seven-site pressure has a larger task-relative opposing component and
 operates predominantly at its norm budget.** (a) The component removed by
-OL1's projection, rho_opp = max(0, -<u,w>) / (norm(u)^2 + epsilon), expressed
-as a percentage of the adaptive task-direction norm. Blue circles/orange
+OL1's projection is rho_opp = max(0, -<u,w>) / (norm(u)^2 + epsilon), plotted
+as 100 * rho_opp percent of the adaptive task-direction norm. Blue circles/orange
 diamonds denote four-/seven-site conditions. Points show medians across
-712 training steps at each categorical threshold; whiskers span the empirical
+712 optimizer steps at each categorical threshold; whiskers span the empirical
 25th-75th percentiles, not confidence intervals. Lines connect evaluated
-settings. Across the cohort, 99.9% of step-level alignments are negative.
-(b) Pre-cap norm ratio r/b at lambda = b = 1. Faint lines show the five
-individual thresholds within each target set; thick lines show their median
-at each optimizer step. The cap is active on 0.5% of four-site steps and
-97.0% of seven-site steps. All 7,120 Pythia-14M step-condition observations
+settings. Across the cohort, 99.9% of steps have <u,w> < 0.
+(b) Pre-cap norm ratio r/b at lambda = b = 1. Faint lines show individual
+kappa conditions; each thick line is the per-step median across the five
+kappa conditions within its target set. The cap is active on 0.5% of four-site
+steps and 97.0% of seven-site steps. All 7,120 Pythia-14M step-condition observations
 are included. Panel (a) describes the raw component removed; panel (b) describes
 the projected direction before capping. Quantities pool OL1's eligible
 parameters before group learning rates and exclude decoupled weight decay;
 they do not guarantee task-loss descent or preservation.
 
 ## Caveats and verification
+
+The author froze the figure on 11 September 2026 after the y-axis notation,
+conflict annotation and caption definitions were finalized. Its layout and
+data are unchanged from `444ad84`; no pooled fold-ratio annotation is present.
 
 - This is one training seed with correlated adjacent steps, not 7,120
   independent experimental replicates. Percentages describe observed steps.
