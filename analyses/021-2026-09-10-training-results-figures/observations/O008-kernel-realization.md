@@ -78,9 +78,10 @@ and one shared legend. Both titles fit on one line. Panel (a) uses the shorter
 y-axis title "Full-model speedup (×)"; its native reference remains defined
 in the caption and 1× guide. The R² annotation is in the empty upper-left
 region and the endpoint callout is below/right of the data, raised slightly
-in this revision. Panel (b) uses "Speedup from projection skipping (×)" to
-describe the matched full-model latency ratio. Its "no sparse-path benefit"
-note is removed; the dotted 1× reference remains. The extra
+in this revision. Panel (b) is titled "Projection MMA bypass and sparse-path
+gain" and uses "Projection-skipping gain (×)" for the matched full-model
+latency ratio defined in the caption. Its dotted 1× reference is labeled
+"1×: no skipping benefit" in small gray text. The extra
 projection-axis note is removed. Only the highest-sparsity checkpoint is
 labeled; regression equations, recipe-level legends, lollipops and additional
 diagnostics are absent. Small left margins keep zero-valued markers visible.

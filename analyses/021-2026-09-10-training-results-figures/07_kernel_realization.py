@@ -139,7 +139,7 @@ def make_figure(data):
                                 gridspec_kw={"width_ratios": (55, 45)})
     fig.subplots_adjust(left=.085, right=.985, bottom=.23, top=.86, wspace=.28)
     ax.set_title("(a) Model-wide sparsity and realized speedup", loc="left", pad=11)
-    ab.set_title("(b) Kernel-exploitable projection sparsity", loc="left", pad=11)
+    ab.set_title("(b) Projection MMA bypass and sparse-path gain", loc="left", pad=11)
     selected = [p for p in data["points"] if p["candidate"] == "k050"]
     for family, (color, marker) in STYLE.items():
         rows = [p for p in selected if p["visual_family"] == family]
@@ -183,10 +183,11 @@ def make_figure(data):
     ab.plot(xx, projection_fit["intercept"] + projection_fit["slope_per_percentage_point"] * xx,
             color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
     ab.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
+    ab.text(83, 1.008, "1×: no skipping benefit", ha="right", va="bottom", fontsize=6.5, color=".45")
     ab.text(.06, .90, rf'$R^2 = {projection_fit["r2"]:.3f}$', transform=ab.transAxes, fontsize=9,
             color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
     ab.set(xlim=(-1.5, 85), ylim=(.95, 1.40),
-           xlabel="Projection MMA bypass (%)", ylabel="Speedup from projection skipping (×)")
+           xlabel="Projection MMA bypass (%)", ylabel="Projection-skipping gain (×)")
     ab.set_xticks([0, 20, 40, 60, 80])
     ab.set_yticks([1., 1.1, 1.2, 1.3, 1.4])
     ab.set_axisbelow(True)

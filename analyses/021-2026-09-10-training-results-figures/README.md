@@ -324,16 +324,16 @@ The highest-sparsity seven-site + OL1 endpoint is labeled 1.78×; dotted
 references mark 1×. One compact shared legend sits below the 55:45 panels.
 The gap is tighter, both titles fit on one line,
 and panel (a) annotations occupy open space away from the observations and fit.
-The orange endpoint annotation is raised, and panel (b)'s reference-line note
-is removed while its dotted 1× line remains.
+The orange endpoint annotation is raised. Panel (b) is titled "Projection MMA
+bypass and sparse-path gain" and labels its dotted 1× line "1×: no skipping benefit".
 
 The right panel replaces the previous ablation lollipop using the
 [investigation](investigation/README.md). Its gain is the raw geometric-mean
 all-skips-off latency divided by attention-dense/projection-on latency.
 Its MMA bypass fraction includes hybrid SIMT substitution and padded h/z
 instruction work. The extra axis note is removed, and panel (a) uses the short
-label "Full-model speedup (×)". Panel (b) now says "Speedup from projection
-skipping (×)": a full-model latency ratio with attention skipping disabled
+label "Full-model speedup (×)". Panel (b) now says "Projection-skipping gain
+(×)": a full-model latency ratio with attention skipping disabled
 in both controls. These definitions and the
 separate 338-block counter/64-input timing coverage
 are defined in [O008](observations/O008-kernel-realization.md).
