@@ -21,7 +21,7 @@ RETROSPECTIVE = ROOT / "runs/029-2026-09-07-pythia14m-matched-kernel-retrospecti
 INVESTIGATION = HERE / "investigation/data/checkpoints.json"
 INVESTIGATION_FITS = HERE / "investigation/data/analysis.json"
 CANDIDATES = ("k050-no-skip", "k050-attention-dense", "k050")
-STYLE = {"Baseline / local": ("#777777", "o"),
+STYLE = {"Baseline": ("#303438", "s"), "1-site": ("#777777", "o"),
          "4-site": ("#2878B5", "D"), "7-site": ("#C96024", "^")}
 
 
@@ -72,8 +72,9 @@ def read_evidence():
             checkpoint = trained[point["evidence_id"]]
             assert checkpoint["family"] == point["family"]
             assert math.isclose(checkpoint["R_model"], sparsity, abs_tol=1e-10)
-            family = ("4-site" if point["family"].startswith("A4") else
-                      "7-site" if point["family"].startswith("A7") else "Baseline / local")
+            family = ("Baseline" if point["family"] == "A0" else
+                      "4-site" if point["family"].startswith("A4") else
+                      "7-site" if point["family"].startswith("A7") else "1-site")
             points.append({**point, "sparsity_percent": 100 * sparsity,
                            "dose": checkpoint["dose"], "visual_family": family})
     groups = {candidate: [p for p in points if p["candidate"] == candidate]
@@ -110,7 +111,7 @@ def read_evidence():
     assert math.isclose(projection_fit["r2"], saved_fit["ols_r2"], abs_tol=1e-12)
     assert math.isclose(projection_fit["pearson_r"], saved_fit["pearson_r"], abs_tol=1e-12)
     return {
-        "question": "How does model-wide sparsity relate to native-relative K050 speedup, and how does projection MMA bypass relate to projection-path gain?",
+        "question": "How does model-wide sparsity relate to native-relative K050 speedup, and how does projection MMA bypass relate to speedup from projection skipping?",
         "source_sha256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in (SOURCE, RETROSPECTIVE, INVESTIGATION, INVESTIGATION_FITS)},
         "coverage": source["coverage"], "timing_block_indices": runtime["timing_block_indices"],
@@ -156,7 +157,7 @@ def make_figure(data):
     endpoint, = [p for p in selected if p["condition"] == data["highlight_condition"]]
     ax.annotate('7-site + OL1, $\\kappa = 0.5$\n' + f'{endpoint["speedup"]:.2f}' + r'$\times$',
                 xy=(endpoint["sparsity_percent"], endpoint["speedup"]),
-                xytext=(28.5, 1.47), textcoords="data", ha="right", va="top",
+                xytext=(28.5, 1.55), textcoords="data", ha="right", va="top",
                 color=STYLE["7-site"][0], fontsize=7.6,
                 arrowprops={"arrowstyle": "-", "lw": .6, "color": STYLE["7-site"][0], "shrinkA": 2, "shrinkB": 5},
                 bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.2})
@@ -170,7 +171,7 @@ def make_figure(data):
     handles = [Line2D([], [], color=color, marker=marker, ls="none", markersize=4.5, label=family)
                for family, (color, marker) in STYLE.items()]
     fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(.5, .025),
-               ncol=3, frameon=False, fontsize=7.5, handletextpad=.4, columnspacing=1.8)
+               ncol=4, frameon=False, fontsize=7.5, handletextpad=.4, columnspacing=1.8)
 
     for family, (color, marker) in STYLE.items():
         rows = [p for p in data["projection_points"] if p["visual_family"] == family]
@@ -182,11 +183,10 @@ def make_figure(data):
     ab.plot(xx, projection_fit["intercept"] + projection_fit["slope_per_percentage_point"] * xx,
             color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
     ab.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
-    ab.text(83, 1.008, "no sparse-path benefit", ha="right", va="bottom", fontsize=6.5, color=".45")
     ab.text(.06, .90, rf'$R^2 = {projection_fit["r2"]:.3f}$', transform=ab.transAxes, fontsize=9,
             color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
     ab.set(xlim=(-1.5, 85), ylim=(.95, 1.40),
-           xlabel="Projection MMA bypass (%)", ylabel="Projection-path gain (×)")
+           xlabel="Projection MMA bypass (%)", ylabel="Speedup from projection skipping (×)")
     ab.set_xticks([0, 20, 40, 60, 80])
     ab.set_yticks([1., 1.1, 1.2, 1.3, 1.4])
     ab.set_axisbelow(True)

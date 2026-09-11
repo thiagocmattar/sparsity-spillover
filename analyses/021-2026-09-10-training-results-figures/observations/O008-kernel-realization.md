@@ -3,8 +3,8 @@
 ## Question and scope
 
 How does model-wide sparsity relate to native-relative full-model speedup, and
-how does projection MMA bypass relate to the gain from enabling projection
-sparse paths? This author-approved revision replaces the cohort-ablation
+how does projection MMA bypass relate to the speedup from enabling projection
+skipping? This author-approved revision replaces the cohort-ablation
 lollipop with a second 30-checkpoint scatter after the
 [investigation](../investigation/README.md). It remains **analysis-only**;
 no manuscript changes, model evaluation or benchmarking were performed.
@@ -22,10 +22,11 @@ no manuscript changes, model evaluation or benchmarking were performed.
   projection regression. The figure reduction matches checkpoint identities,
   full speedups, all-skips-off and attention-dense paired speedups, then derives
   the projection ratio from the raw candidate latencies.
-- Both panels contain the same 30 Pythia-14M checkpoints, ten per visual family.
-  Baseline/local comprises A0, ReLU (A1-H), four local naive-L1 checkpoints
-  and four local OL1 checkpoints (pressure weights 0.05, 0.1, 0.5 and 1). It
-  does not denote A0 alone. Historical h-only A4 pressure checkpoints are
+- Both panels contain the same 30 Pythia-14M checkpoints: one baseline (A0),
+  nine 1-site checkpoints and ten each at four and seven sites. The 1-site
+  group comprises ReLU (A1-H), four local naive-L1 checkpoints and four local
+  OL1 checkpoints (pressure weights 0.05, 0.1, 0.5 and 1). Historical h-only
+  A4 pressure checkpoints are
   excluded. All 90 underlying
   implementation/checkpoint comparisons qualify with three complete processes.
 - Timings use RTX5090, BF16, batch one, uncached 2,048-token inference with all
@@ -57,12 +58,14 @@ no manuscript changes, model evaluation or benchmarking were performed.
 instruction bypass tracks projection-path gain.** (a) Full K050 speedup
 relative to each checkpoint's native PyTorch/SDPA implementation versus
 model-wide sparsity for all 30 Pythia-14M checkpoints. The labeled seven-site
-+ OL1 checkpoint at κ = 0.5 achieves 1.78× speedup. (b) Gain from enabling
-projection sparse paths versus the fraction of projection matrix-multiply-
++ OL1 checkpoint at κ = 0.5 achieves 1.78× speedup. (b) Full-model speedup from
+enabling projection skipping versus the fraction of projection matrix-multiply-
 accumulate (MMA) instructions bypassed: gain is all-skips-off latency divided
-by projection-on/attention-dense latency, with identical fusion. Gray circles,
-blue diamonds and orange triangles identify baseline/local, four-site and
-seven-site recipes in both panels. Dashed lines are descriptive OLS fits
+by projection-on/attention-dense latency, with identical fusion and attention
+skipping disabled in both controls. Black squares identify A0; gray circles
+identify the nine 1-site checkpoints (ReLU and local L1/OL1); blue diamonds and
+orange triangles identify four-site and seven-site recipes in both panels.
+Dashed lines are descriptive OLS fits
 (R² = 0.817 and 0.946); dotted lines mark gain 1×. Projection bypass includes
 SIMT substitution and padded h/z instruction work, so it is not a fraction
 of arithmetic eliminated. Canonical sparsity uses FP16, whereas the kernel
@@ -74,7 +77,10 @@ The 7.4-by-3.4-inch PDF uses a 55:45 horizontal layout, a tighter panel gap
 and one shared legend. Both titles fit on one line. Panel (a) uses the shorter
 y-axis title "Full-model speedup (×)"; its native reference remains defined
 in the caption and 1× guide. The R² annotation is in the empty upper-left
-region and the endpoint callout is below/right of the data. The extra
+region and the endpoint callout is below/right of the data, raised slightly
+in this revision. Panel (b) uses "Speedup from projection skipping (×)" to
+describe the matched full-model latency ratio. Its "no sparse-path benefit"
+note is removed; the dotted 1× reference remains. The extra
 projection-axis note is removed. Only the highest-sparsity checkpoint is
 labeled; regression equations, recipe-level legends, lollipops and additional
 diagnostics are absent. Small left margins keep zero-valued markers visible.

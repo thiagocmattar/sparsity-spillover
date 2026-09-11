@@ -25,6 +25,10 @@ def test_complete_qualified_cohort_and_canonical_counts():
         assert {p["condition"] for p in points} == {f"c{i:02d}" for i in range(1, 31)}
         assert len({p["evidence_id"] for p in points}) == 30
         assert all(p["qualified"] and len(p["replicates"]) == 3 for p in points)
+        assert {name: sum(p["visual_family"] == name for p in points) for name in kernels.STYLE} == {
+            "Baseline": 1, "1-site": 9, "4-site": 10, "7-site": 10}
+        assert all(p["family"] == "A0" for p in points if p["visual_family"] == "Baseline")
+        assert all(p["family"].startswith("A1-H") for p in points if p["visual_family"] == "1-site")
         for p in points:
             counts = p["canonical_counts"]
             zeros = sum(op["zero_product_count"] for op in counts["per_operation"].values())
