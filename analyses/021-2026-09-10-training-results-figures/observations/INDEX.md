@@ -40,6 +40,6 @@
   logged unscaled global L2 norms before clipping. Adopted as Figure 8 in
   Appendix C.4, after the realized-protocol table; no convergence claim.
 - [O008 - K050 native-relative speedup and projection bypass](O008-kernel-realization.md):
-  the same 30 checkpoints in both panels, with descriptive OLS R? = 0.817
+  the same 30 checkpoints in both panels, with descriptive OLS R² = 0.817
   and 0.946. The projection gain uses matched raw candidate latencies, and
   bypass counts retain the SIMT/padding qualification. Analysis-only.

@@ -318,16 +318,20 @@ resolved references and no overfull boxes; affected pages were visually checked.
 native-relative full-model speedup to S_model, then projection-path gain to
 projection MMA bypass. Both panels retain the same 30 checkpoints and three
 visual families: gray baseline/local circles, blue four-site diamonds and
-orange seven-site triangles. Descriptive OLS fits have R? = 0.817 and 0.946.
-The highest-sparsity seven-site + OL1 endpoint is labeled 1.78?; dotted
-references mark 1?. One compact shared legend sits below the 60:40 panels.
+orange seven-site triangles. Descriptive OLS fits have R² = 0.817 and 0.946.
+The highest-sparsity seven-site + OL1 endpoint is labeled 1.78×; dotted
+references mark 1×. One compact shared legend sits below the 55:45 panels.
+The gap is tighter, both titles fit on one line,
+and panel (a) annotations occupy open space away from the observations and fit.
 
 The right panel replaces the previous ablation lollipop using the
 [investigation](investigation/README.md). Its gain is the raw geometric-mean
 all-skips-off latency divided by attention-dense/projection-on latency.
 Its MMA bypass fraction includes hybrid SIMT substitution and padded h/z
-instruction work; the small axis explanation says instructions bypassed.
-Those distinctions and the separate 338-block counter/64-input timing coverage
+instruction work. The extra axis note is removed, and panel (a) uses the short
+label "Full-model speedup (×)". Baseline/local includes A0, ReLU and eight
+local-pressure checkpoints; it is not A0 alone. These definitions and the
+separate 338-block counter/64-input timing coverage
 are defined in [O008](observations/O008-kernel-realization.md).
 
 This figure remains **analysis-only**. The [reduction](data/kernel-realization.json)

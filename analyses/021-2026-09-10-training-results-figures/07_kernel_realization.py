@@ -135,10 +135,10 @@ def make_figure(data):
                          "axes.spines.top": False, "axes.spines.right": False,
                          "axes.linewidth": .6, "pdf.fonttype": 42, "mathtext.fontset": "dejavusans"})
     fig, (ax, ab) = plt.subplots(1, 2, figsize=(7.4, 3.4),
-                                gridspec_kw={"width_ratios": (60, 40)})
-    fig.subplots_adjust(left=.09, right=.985, bottom=.28, top=.83, wspace=.40)
+                                gridspec_kw={"width_ratios": (55, 45)})
+    fig.subplots_adjust(left=.085, right=.985, bottom=.23, top=.86, wspace=.28)
     ax.set_title("(a) Model-wide sparsity and realized speedup", loc="left", pad=11)
-    ab.set_title("(b) Kernel-exploitable\nprojection sparsity", loc="left", pad=11)
+    ab.set_title("(b) Kernel-exploitable projection sparsity", loc="left", pad=11)
     selected = [p for p in data["points"] if p["candidate"] == "k050"]
     for family, (color, marker) in STYLE.items():
         rows = [p for p in selected if p["visual_family"] == family]
@@ -151,18 +151,18 @@ def make_figure(data):
             color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
     ax.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
     ax.text(29, 1.012, "1× native", ha="right", va="bottom", fontsize=6.8, color=".45")
-    ax.text(12.4, 1.52, rf'$R^2 = {fit["r2"]:.3f}$', fontsize=9,
+    ax.text(.06, .87, rf'$R^2 = {fit["r2"]:.3f}$', transform=ax.transAxes, fontsize=9,
             color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
     endpoint, = [p for p in selected if p["condition"] == data["highlight_condition"]]
     ax.annotate('7-site + OL1, $\\kappa = 0.5$\n' + f'{endpoint["speedup"]:.2f}' + r'$\times$',
                 xy=(endpoint["sparsity_percent"], endpoint["speedup"]),
-                xytext=(-6, -15), textcoords="offset points", ha="right", va="top",
+                xytext=(28.5, 1.47), textcoords="data", ha="right", va="top",
                 color=STYLE["7-site"][0], fontsize=7.6,
                 arrowprops={"arrowstyle": "-", "lw": .6, "color": STYLE["7-site"][0], "shrinkA": 2, "shrinkB": 5},
                 bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.2})
     ax.set(xlim=(-.5, 30), ylim=(.95, 1.85),
            xlabel=r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)',
-           ylabel="Native-relative full-model speedup (×)")
+           ylabel="Full-model speedup (×)")
     ax.set_xticks(range(0, 31, 5))
     ax.set_yticks(np.arange(1., 1.81, .2))
     ax.set_axisbelow(True)
@@ -189,8 +189,6 @@ def make_figure(data):
            xlabel="Projection MMA bypass (%)", ylabel="Projection-path gain (×)")
     ab.set_xticks([0, 20, 40, 60, 80])
     ab.set_yticks([1., 1.1, 1.2, 1.3, 1.4])
-    ab.text(.5, -.29, "tensor-core instructions bypassed", transform=ab.transAxes,
-            fontsize=6.5, ha="center", va="top", color=".4")
     ab.set_axisbelow(True)
     ab.grid(axis="y", color=".93", lw=.5)
     return fig

@@ -57,8 +57,8 @@ def test_unweighted_ols_has_intercept_and_uses_all_30_points():
     assert data["regression"]["intercept"] == pytest.approx(.9512951279669726)
     assert data["regression"]["r2"] == pytest.approx(.8167176697920289)
     assert data["projection_regression"]["r2"] == pytest.approx(.946105)
-    assert fig.axes[0].get_position().width / fig.axes[1].get_position().width == pytest.approx(1.5)
-    assert "Native-relative" in fig.axes[0].get_ylabel()
+    assert fig.axes[0].get_position().width / fig.axes[1].get_position().width == pytest.approx(55 / 45)
+    assert fig.axes[0].get_ylabel() == "Full-model speedup (×)"
     assert len(fig.legends) == 1 and [t.get_text() for t in fig.legends[0].get_texts()] == list(kernels.STYLE)
     kernels.plt.close(fig)
 
