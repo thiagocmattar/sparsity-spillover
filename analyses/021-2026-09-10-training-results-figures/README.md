@@ -184,3 +184,35 @@ results and interpretation limits.
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_paired_interventions.py -q
 ```
+
+## Figure 04
+
+[Activation distributions and operation accounting](figures/04-14m-distributions-and-operations.pdf)
+combines the two explanations at Pythia-14M, kappa = 0.5. Two density axes show
+FFN and attention nonzero shapes, with exact-zero percentages labeled directly.
+Two stacked bars show the six measured operation contributions and totals.
+A4-OL1 has more FFN zeros (99.31% versus 93.64%) but less model-wide sparsity
+(12.71% versus 27.48%); QK/PV supply 0.06 versus 16.77 pp.
+
+The author requested this analysis-only figure on 11 September. No manuscript
+files are changed. The full threshold distribution grid and three-size operation
+figure remain available in Analysis 018 for later appendix use. The new figure
+is 7.1 by 3.35 inches, without density fills, a baseline curve or a super-title.
+Blue/orange identify the recipes in the densities and bar labels; stack colors
+identify operations using the existing accounting palette.
+
+The sources are Run 031 signed histograms and Analysis 018 integer operation
+counts from the same two trained checkpoints, covering complete validation.
+[O005](observations/O005-distributions-and-operations.md) records the caption,
+pooling, separate evaluation-pass reconciliation, results and limitations.
+[The reduction](data/14m-distributions-and-operations.json) retains source hashes,
+display counts and complete operation counters.
+
+```powershell
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/04_distributions_and_operations.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_distributions_and_operations.py -q
+```
+
+All three focused tests pass, covering density mass conservation, the common
+operation denominator and exact retained evidence. The PDF was rendered and
+visually checked; labels fit inside the page and fonts are embedded.

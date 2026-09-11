@@ -17,3 +17,7 @@
   five matched A7-minus-A4 threshold comparisons, shown as raw endpoints in a
   manuscript table. At kappa = 0.5, adding Q/K/V thresholds gives +5.17 pp
   model-wide sparsity for +0.043 validation loss.
+- [O005 - Activation structure and operation accounting](O005-distributions-and-operations.md):
+  the 14M kappa = 0.5 reversal in one composite figure. A4-OL1 has more FFN
+  zeros but less model-wide sparsity; QK/PV contribute 0.06 versus 16.77 pp.
+  Analysis only; full threshold and cross-size supporting figures are retained.
