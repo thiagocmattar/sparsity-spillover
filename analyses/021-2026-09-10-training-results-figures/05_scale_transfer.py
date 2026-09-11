@@ -105,7 +105,7 @@ def make_figure(data):
     offsets = {
         "14M": {"A4-OL1": ((3, -14), (5, 7)), "A7-OL1": ((-3, 14), (10, 8))},
         "70M": {"A4-OL1": ((-3, -13), (-9, 3)), "A7-OL1": ((-4, 10), (17, -9))},
-        "410M": {"A4-OL1": (None, (2, -12)), "A7-OL1": ((-4, -13), (12, 13))},
+        "410M": {"A4-OL1": (None, (-3, -12)), "A7-OL1": ((-4, -13), (12, 13))},
     }
     for index, (ax, panel) in enumerate(zip(axes, data["panels"])):
         size = panel["scale"]
@@ -150,7 +150,7 @@ def make_figure(data):
         # The common A7 normalization replaces the old second row.
         ax.annotate(f'{endpoint["A7_ceiling_used_percent"]:.1f}%\nof ceiling',
                     (endpoint["sparsity_percent"], endpoint["loss"]),
-                    xytext={"14M": (-12, -21), "70M": (5, 20), "410M": (-9, -17)}[size],
+                    xytext={"14M": (-12, -21), "70M": (5, 20), "410M": (-9, -22)}[size],
                     textcoords="offset points", ha="center", multialignment="center",
                     va="bottom" if size == "70M" else "top", linespacing=1.1,
                     fontsize=7, color=STYLE["A7-OL1"][1], zorder=5,
