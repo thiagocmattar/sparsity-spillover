@@ -147,12 +147,14 @@ The 5.5-by-3.5-inch PDF contains two stacked panels sharing five equally
 spaced threshold positions, with ticks on both panels and one bottom x-axis
 title. A light grid and dotted zero references aid reading. Short y-axis
 labels give delta validation loss and delta S_model (pp); a small shared
-4-site / 7-site legend identifies both curves.
+4-site / 7-site legend below the panels identifies both curves.
 Both show the same ten matched pairs:
 A4-OL1 minus A4 and A7-OL1 minus A7. Blue diamonds and orange triangles match
 the quality-sparsity overview. Top: validation-loss change; bottom: model-wide
 sparsity change in percentage points. Only the two complete effects at
 kappa = 0.5 are annotated: +2.50 pp / +0.38 loss and +12.10 pp / +0.13 loss.
+Each callout stacks loss below sparsity, leaving more horizontal space for
+the data within the same figure dimensions.
 A subtitle above the panels defines "Delta = (+OL1) - (no pressure), at matched
 kappa". Both panel titles explicitly name the effect of adding OL1. Direction
 labels, other intervention contrasts and confidence bands are omitted.

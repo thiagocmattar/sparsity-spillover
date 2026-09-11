@@ -49,7 +49,10 @@ panel spans -0.05 to +0.42 loss; the bottom spans -1 to +13 pp, retaining all
 ten contrasts. Only the two complete highest-threshold effects are annotated.
 The frozen layout has a light grid, repeated threshold ticks, and one bottom
 x-axis title. The definition "Delta = (+OL1) - (no pressure), at matched
-kappa" appears as a small subtitle above a shared 4-site / 7-site legend.
+kappa" appears as a small subtitle above the panels. The shared 4-site /
+7-site legend sits below the bottom x-axis title. Each endpoint callout places
+the loss value below the sparsity gain; the narrower callouts allow wider
+plotting areas without changing the overall figure dimensions.
 Panel titles name the effect of adding OL1 on validation loss and model-wide
 sparsity. Y-axis labels are shortened to delta validation loss and delta
 S_model (pp); lower-/higher-is-better labels are removed. The figure is
@@ -120,7 +123,8 @@ All fonts are embedded, all text is inside the page, and the ten pairs appear
 at the requested categorical positions in both panels. Existing analysis
 figures and the entire manuscript draft remain unchanged.
 
-Final checks confirm the shared two-entry legend, one x-axis title, both sets
-of categorical tick labels, and all ten exact contrasts in both panels.
+Final checks confirm the shared two-entry legend below the panels, both
+two-line endpoint callouts, one x-axis title, both sets of categorical tick
+labels, and all ten exact contrasts in both panels.
 Frozen PDF SHA-256:
-`28281173c886081a6a47d119b4dcd88a0586fcd390452930a62436bed2d8f6da`.
+`68848db125449b16befa526377d4fda9e57a0166983552ba8792d7c2c93cb46f`.

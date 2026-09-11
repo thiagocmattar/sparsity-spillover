@@ -93,8 +93,8 @@ def make_figure(data):
         "axes.linewidth": 0.6, "pdf.fonttype": 42,
     })
     fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.5))
-    fig.subplots_adjust(left=.135, right=.75, bottom=.13, top=.81, hspace=.5)
-    fig.text(.54, .992, r"$\Delta = (+\mathrm{OL1}) - (\mathrm{no\ pressure}),$ at matched $\kappa$",
+    fig.subplots_adjust(left=.135, right=.865, bottom=.2, top=.88, hspace=.5)
+    fig.text(.5, .992, r"$\Delta = (+\mathrm{OL1}) - (\mathrm{no\ pressure}),$ at matched $\kappa$",
              ha="center", va="top", fontsize=8)
     panels = (("delta_loss", "(a) Effect of adding OL1 on validation loss",
                r"$\Delta$ validation loss", (-.05, .42)),
@@ -112,7 +112,7 @@ def make_figure(data):
             ax.plot(range(5), [r[key] for r in rows], color=to_rgba(color, .72), linewidth=.9,
                     marker=marker, markersize=4.5, markerfacecolor=color, markeredgecolor=color,
                     markeredgewidth=.6, zorder=3, label=label, gid=f"{key}:{family}")
-    fig.legend(*axes[0].get_legend_handles_labels(), loc="upper center", bbox_to_anchor=(.54, .938),
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", bbox_to_anchor=(.5, .009),
                ncol=2, frameon=False, fontsize=7.3, handlelength=1.4, markerscale=.85,
                columnspacing=1.4, handletextpad=.5, borderaxespad=0)
     axes[0].set_yticks([0, .1, .2, .3, .4], ["0", "+0.1", "+0.2", "+0.3", "+0.4"])
@@ -123,9 +123,9 @@ def make_figure(data):
     for ax, family, key in ((axes[0], "A4", "delta_loss"), (axes[1], "A7", "delta_sparsity_pp")):
         endpoint = next(r for r in data["pairs"] if r["family"] == family and r["kappa"] == .5)
         _, color, _ = STYLE[family]
-        ax.annotate(f"{endpoint['delta_sparsity_pp']:+.2f} pp / {endpoint['delta_loss']:+.2f} loss",
+        ax.annotate(f"{endpoint['delta_sparsity_pp']:+.2f} pp\n{endpoint['delta_loss']:+.2f} loss",
                     (4, endpoint[key]), xytext=(9, -1), textcoords="offset points",
-                    fontsize=7.5, color=color, va="center", annotation_clip=False)
+                    fontsize=7.5, color=color, va="center", annotation_clip=False, linespacing=1.25)
     fig.align_ylabels(axes)
     return fig, axes
 
