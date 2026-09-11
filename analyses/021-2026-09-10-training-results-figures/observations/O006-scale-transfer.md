@@ -70,6 +70,9 @@ background on in-plot threshold and utilization text. At 70M, utilization
 moves slightly right, the four-site kappa = 0.5 label moves up and left, and
 the seven-site kappa = 0.5 label moves right. Data, axes and normalization
 are unchanged.
+The final position adjustment moves utilization up/right at 70M and down/right
+at 14M/410M. At 410M, the seven-site kappa = 0.5 label moves upward, while the
+four-site label sits below/right of its marker, above the utilization note.
 
 ## Figure and proposed caption
 
