@@ -1,8 +1,10 @@
 {
-  "question": "How does model-wide sparsity relate to K050 speedup, and what do matched skip ablations contribute?",
+  "question": "How does model-wide sparsity relate to native-relative K050 speedup, and how does projection MMA bypass relate to projection-path gain?",
   "source_sha256": {
     "analyses/018-2026-09-08-results-materials/figure_data.json": "d1dfd326bde98ab88a827f3f72c46ded9c904128c0cc803128c322f6de398a05",
-    "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/matched-retrospective-001.json": "ba9425f33ccc8a836d953582638a745dc673324be45604324dc6bbac690746f8"
+    "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/matched-retrospective-001.json": "ba9425f33ccc8a836d953582638a745dc673324be45604324dc6bbac690746f8",
+    "analyses/021-2026-09-10-training-results-figures/investigation/data/checkpoints.json": "93615263b186fd9854103d3be58f33e7ac0c6b0b17278851ca32bbd7d42d347d",
+    "analyses/021-2026-09-10-training-results-figures/investigation/data/analysis.json": "1557fb3a5184984a059bcc4716663938f2178ccca28351882dbf208da4cd611a"
   },
   "coverage": {
     "documents": 500,
@@ -91,7 +93,8 @@
     "passes_per_process": 7,
     "processes": 3,
     "baseline": "same-checkpoint native PyTorch/SDPA CUDA graph",
-    "ablation_comparison": "ratios of separately measured native-normalized speedups; equal checkpoint weighting"
+    "projection_comparison": "GM host latency of all-skips-off / GM host latency of attention-dense; same checkpoint and matched timing protocol",
+    "counter_coverage": "338 validation blocks, actual BF16 operands; includes h/z padding and SIMT substitution"
   },
   "points": [
     {
@@ -11707,291 +11710,440 @@
   ],
   "regression": {
     "n": 30,
+    "pearson_r": 0.9037243328537906,
     "slope_per_percentage_point": 0.03770390864456065,
     "intercept": 0.9512951279669727,
     "r2": 0.816717669792029
   },
-  "ablations": [
+  "projection_points": [
     {
-      "candidate": "k050-no-skip",
-      "label": "Fusion only",
-      "detail": "(all sparse skips off)",
-      "n": 30,
-      "geomean_speedup": 1.182857976961071
+      "condition": "c01",
+      "evidence_id": "14M:A0:None",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.0,
+      "projection_sparse_gain": 0.9654206160335259,
+      "projection_mma_bypassed": 0,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6214739796330282,
+      "projection_on_candidate_gm_ms": 0.6437339013811224,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c01-r1-a01/diagnostics.json"
     },
     {
-      "candidate": "k050-attention-dense",
-      "label": "+ projection skipping",
-      "detail": "(attention dense)",
-      "n": 30,
-      "geomean_speedup": 1.2505587528850488
+      "condition": "c02",
+      "evidence_id": "14M:A1-H:None",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 4.2488796554124605e-05,
+      "projection_sparse_gain": 0.9969671214683997,
+      "projection_mma_bypassed": 240,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6223023892593381,
+      "projection_on_candidate_gm_ms": 0.6241954983859143,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c02-r1-a01/diagnostics.json"
     },
     {
-      "candidate": "k050",
-      "label": "+ attention skipping",
-      "detail": "(full K050)",
-      "n": 30,
-      "geomean_speedup": 1.2339917065809438
+      "condition": "c03",
+      "evidence_id": "14M:A1-H-L1:0.05",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.0003002541623158139,
+      "projection_sparse_gain": 0.9970395544506306,
+      "projection_mma_bypassed": 1696,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6219040829099306,
+      "projection_on_candidate_gm_ms": 0.6237506627834841,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c03-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c04",
+      "evidence_id": "14M:A1-H-L1:0.1",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.0015154337437637778,
+      "projection_sparse_gain": 0.9972680360384348,
+      "projection_mma_bypassed": 8560,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6223796399564852,
+      "projection_on_candidate_gm_ms": 0.6240846166381077,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c04-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c05",
+      "evidence_id": "14M:A1-H-L1:0.5",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.22857839511544262,
+      "projection_sparse_gain": 1.0291237563269533,
+      "projection_mma_bypassed": 1291136,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 311808,
+      "all_skips_off_candidate_gm_ms": 0.6220880410232754,
+      "projection_on_candidate_gm_ms": 0.6044832190479894,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c05-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c06",
+      "evidence_id": "14M:A1-H-L1:1.0",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 1.382135058627741,
+      "projection_sparse_gain": 1.066205742055711,
+      "projection_mma_bypassed": 7807056,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 6197120,
+      "all_skips_off_candidate_gm_ms": 0.6229640690629443,
+      "projection_on_candidate_gm_ms": 0.5842812925222395,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c06-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c07",
+      "evidence_id": "14M:A1-H-OL1:0.05",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.00041922279266736276,
+      "projection_sparse_gain": 0.994828447273148,
+      "projection_mma_bypassed": 2368,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6223384226431771,
+      "projection_on_candidate_gm_ms": 0.6255736095494894,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c07-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c08",
+      "evidence_id": "14M:A1-H-OL1:0.1",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.0009715771478709827,
+      "projection_sparse_gain": 0.9960985813783344,
+      "projection_mma_bypassed": 5488,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6222376488674697,
+      "projection_on_candidate_gm_ms": 0.6246747666345022,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c08-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c09",
+      "evidence_id": "14M:A1-H-OL1:0.5",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.13614260191872607,
+      "projection_sparse_gain": 1.023983167983076,
+      "projection_mma_bypassed": 769008,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 25856,
+      "all_skips_off_candidate_gm_ms": 0.6228997288468445,
+      "projection_on_candidate_gm_ms": 0.60831051556615,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c09-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c10",
+      "evidence_id": "14M:A1-H-OL1:1.0",
+      "visual_family": "Baseline / local",
+      "bypass_percent": 0.6810642503118111,
+      "projection_sparse_gain": 1.0509428953955748,
+      "projection_mma_bypassed": 3847024,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 1339520,
+      "all_skips_off_candidate_gm_ms": 0.6218097206978523,
+      "projection_on_candidate_gm_ms": 0.5916684183528385,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c10-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c11",
+      "evidence_id": "14M:A4:0.0",
+      "visual_family": "4-site",
+      "bypass_percent": 0.0007761286837220096,
+      "projection_sparse_gain": 0.9973114865801385,
+      "projection_mma_bypassed": 4384,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6232661152898312,
+      "projection_on_candidate_gm_ms": 0.6249462917819798,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c11-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c12",
+      "evidence_id": "14M:A4:0.01",
+      "visual_family": "4-site",
+      "bypass_percent": 0.014579322390938626,
+      "projection_sparse_gain": 0.9969370560803583,
+      "projection_mma_bypassed": 82352,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6234386997519206,
+      "projection_on_candidate_gm_ms": 0.6253541243647665,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c12-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c13",
+      "evidence_id": "14M:A4:0.05",
+      "visual_family": "4-site",
+      "bypass_percent": 0.17814419360569672,
+      "projection_sparse_gain": 1.0026513910642099,
+      "projection_mma_bypassed": 1006256,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.623128779652771,
+      "projection_on_candidate_gm_ms": 0.6214809905079619,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c13-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c14",
+      "evidence_id": "14M:A4:0.1",
+      "visual_family": "4-site",
+      "bypass_percent": 2.707819502153672,
+      "projection_sparse_gain": 1.0658471797323135,
+      "projection_mma_bypassed": 15295248,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 768,
+      "all_skips_off_candidate_gm_ms": 0.6229423852672121,
+      "projection_on_candidate_gm_ms": 0.584457506772841,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c14-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c15",
+      "evidence_id": "14M:A4:0.5",
+      "visual_family": "4-site",
+      "bypass_percent": 55.82988211001856,
+      "projection_sparse_gain": 1.3241394398957997,
+      "projection_mma_bypassed": 315357760,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 240356352,
+      "all_skips_off_candidate_gm_ms": 0.6238866173858557,
+      "projection_on_candidate_gm_ms": 0.47116383561156605,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c15-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c16",
+      "evidence_id": "14M:A4-OL1:0.0",
+      "visual_family": "4-site",
+      "bypass_percent": 0.03224899658458057,
+      "projection_sparse_gain": 0.9970334316941644,
+      "projection_mma_bypassed": 182160,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6229405118441884,
+      "projection_on_candidate_gm_ms": 0.6247940059398858,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c16-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c17",
+      "evidence_id": "14M:A4-OL1:0.01",
+      "visual_family": "4-site",
+      "bypass_percent": 2.773674304226128,
+      "projection_sparse_gain": 1.019696002546025,
+      "projection_mma_bypassed": 15667232,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 50644224,
+      "all_skips_off_candidate_gm_ms": 0.6239369116957334,
+      "projection_on_candidate_gm_ms": 0.6118852188670528,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c17-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c18",
+      "evidence_id": "14M:A4-OL1:0.05",
+      "visual_family": "4-site",
+      "bypass_percent": 17.894244478949123,
+      "projection_sparse_gain": 1.103297402806446,
+      "projection_mma_bypassed": 101076496,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 157293952,
+      "all_skips_off_candidate_gm_ms": 0.6233988009661003,
+      "projection_on_candidate_gm_ms": 0.5650324195274705,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c18-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c19",
+      "evidence_id": "14M:A4-OL1:0.1",
+      "visual_family": "4-site",
+      "bypass_percent": 44.069832999767954,
+      "projection_sparse_gain": 1.1840998533476426,
+      "projection_mma_bypassed": 248930560,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 239262208,
+      "all_skips_off_candidate_gm_ms": 0.6229599498832676,
+      "projection_on_candidate_gm_ms": 0.5261042370050623,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c19-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c20",
+      "evidence_id": "14M:A4-OL1:0.5",
+      "visual_family": "4-site",
+      "bypass_percent": 82.29771990388241,
+      "projection_sparse_gain": 1.3782512496444377,
+      "projection_mma_bypassed": 464862608,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 116305664,
+      "all_skips_off_candidate_gm_ms": 0.6226253925525124,
+      "projection_on_candidate_gm_ms": 0.45175028334865486,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c20-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c21",
+      "evidence_id": "14M:A7:0.0",
+      "visual_family": "7-site",
+      "bypass_percent": 0.0007931242023436593,
+      "projection_sparse_gain": 0.9945861846396292,
+      "projection_mma_bypassed": 4480,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6226625128908986,
+      "projection_on_candidate_gm_ms": 0.6260518419693406,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c21-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c22",
+      "evidence_id": "14M:A7:0.01",
+      "visual_family": "7-site",
+      "bypass_percent": 0.0037645073746954403,
+      "projection_sparse_gain": 0.9850169779908315,
+      "projection_mma_bypassed": 21264,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6211660417416949,
+      "projection_on_candidate_gm_ms": 0.6306145534757236,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c22-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c23",
+      "evidence_id": "14M:A7:0.05",
+      "visual_family": "7-site",
+      "bypass_percent": 0.1388250612745098,
+      "projection_sparse_gain": 0.9903411444459108,
+      "projection_mma_bypassed": 784160,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6206370365333838,
+      "projection_on_candidate_gm_ms": 0.6266901461320442,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c23-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c24",
+      "evidence_id": "14M:A7:0.1",
+      "visual_family": "7-site",
+      "bypass_percent": 2.914496338938682,
+      "projection_sparse_gain": 1.0582717897595701,
+      "projection_mma_bypassed": 16462672,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 256,
+      "all_skips_off_candidate_gm_ms": 0.620646768104513,
+      "projection_on_candidate_gm_ms": 0.5864719952948177,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c24-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c25",
+      "evidence_id": "14M:A7:0.5",
+      "visual_family": "7-site",
+      "bypass_percent": 55.507547936426796,
+      "projection_sparse_gain": 1.3161339450888063,
+      "projection_mma_bypassed": 313537040,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 270029312,
+      "all_skips_off_candidate_gm_ms": 0.6212116279952675,
+      "projection_on_candidate_gm_ms": 0.47199726920906304,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c25-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c26",
+      "evidence_id": "14M:A7-OL1:0.0",
+      "visual_family": "7-site",
+      "bypass_percent": 0.0,
+      "projection_sparse_gain": 0.9965201187818972,
+      "projection_mma_bypassed": 0,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6234281196903516,
+      "projection_on_candidate_gm_ms": 0.6256051513063309,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c26-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c27",
+      "evidence_id": "14M:A7-OL1:0.01",
+      "visual_family": "7-site",
+      "bypass_percent": 0.00021810915564450634,
+      "projection_sparse_gain": 0.9844969929039329,
+      "projection_mma_bypassed": 1232,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6211100638598814,
+      "projection_on_candidate_gm_ms": 0.6308907679116591,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c27-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c28",
+      "evidence_id": "14M:A7-OL1:0.05",
+      "visual_family": "7-site",
+      "bypass_percent": 0.1023300176209537,
+      "projection_sparse_gain": 0.9903103169867541,
+      "projection_mma_bypassed": 578016,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 0,
+      "all_skips_off_candidate_gm_ms": 0.6214716806223192,
+      "projection_on_candidate_gm_ms": 0.627552465083156,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c28-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c29",
+      "evidence_id": "14M:A7-OL1:0.1",
+      "visual_family": "7-site",
+      "bypass_percent": 1.8852392334522565,
+      "projection_sparse_gain": 1.0601174619942313,
+      "projection_mma_bypassed": 10648864,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 2458880,
+      "all_skips_off_candidate_gm_ms": 0.6210472415780035,
+      "projection_on_candidate_gm_ms": 0.5858287065753314,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c29-r1-a01/diagnostics.json"
+    },
+    {
+      "condition": "c30",
+      "evidence_id": "14M:A7-OL1:0.5",
+      "visual_family": "7-site",
+      "bypass_percent": 57.681495709877886,
+      "projection_sparse_gain": 1.3252689545927567,
+      "projection_mma_bypassed": 325816688,
+      "projection_mma_potential": 564854784,
+      "projection_simt_products": 241605760,
+      "all_skips_off_candidate_gm_ms": 0.6207102332355124,
+      "projection_on_candidate_gm_ms": 0.46836548240598536,
+      "projection_mma_counter_method": "qkv/up: BF16 operand reconstruction; down/out: instrumented; includes SIMT substitution",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c30-r1-a01/diagnostics.json"
     }
   ],
-  "increments": [
-    {
-      "reference": "k050-no-skip",
-      "treatment": "k050-attention-dense",
-      "pairs": [
-        {
-          "condition": "c01",
-          "ratio": 0.9654244048652981
-        },
-        {
-          "condition": "c02",
-          "ratio": 0.99718145267593
-        },
-        {
-          "condition": "c03",
-          "ratio": 0.9967402223161113
-        },
-        {
-          "condition": "c04",
-          "ratio": 0.9978644887430426
-        },
-        {
-          "condition": "c05",
-          "ratio": 1.029343173581253
-        },
-        {
-          "condition": "c06",
-          "ratio": 1.065915122018885
-        },
-        {
-          "condition": "c07",
-          "ratio": 0.9959181128598829
-        },
-        {
-          "condition": "c08",
-          "ratio": 0.9964997669199017
-        },
-        {
-          "condition": "c09",
-          "ratio": 1.0237252118087388
-        },
-        {
-          "condition": "c10",
-          "ratio": 1.0514057241814674
-        },
-        {
-          "condition": "c11",
-          "ratio": 0.9962967490123888
-        },
-        {
-          "condition": "c12",
-          "ratio": 0.9970719213235335
-        },
-        {
-          "condition": "c13",
-          "ratio": 1.002348183080134
-        },
-        {
-          "condition": "c14",
-          "ratio": 1.0656940083008044
-        },
-        {
-          "condition": "c15",
-          "ratio": 1.3238602710984992
-        },
-        {
-          "condition": "c16",
-          "ratio": 0.9970061206323539
-        },
-        {
-          "condition": "c17",
-          "ratio": 1.0187314571674002
-        },
-        {
-          "condition": "c18",
-          "ratio": 1.103124682880645
-        },
-        {
-          "condition": "c19",
-          "ratio": 1.1843791784162387
-        },
-        {
-          "condition": "c20",
-          "ratio": 1.3777864829692779
-        },
-        {
-          "condition": "c21",
-          "ratio": 0.9947246995563381
-        },
-        {
-          "condition": "c22",
-          "ratio": 0.9851005447818999
-        },
-        {
-          "condition": "c23",
-          "ratio": 0.9909094914181538
-        },
-        {
-          "condition": "c24",
-          "ratio": 1.0581084487962726
-        },
-        {
-          "condition": "c25",
-          "ratio": 1.315893153384673
-        },
-        {
-          "condition": "c26",
-          "ratio": 0.9962165464624863
-        },
-        {
-          "condition": "c27",
-          "ratio": 0.9843665310862367
-        },
-        {
-          "condition": "c28",
-          "ratio": 0.9890919399264892
-        },
-        {
-          "condition": "c29",
-          "ratio": 1.0602671897642644
-        },
-        {
-          "condition": "c30",
-          "ratio": 1.3251571336647259
-        }
-      ],
-      "geomean_ratio": 1.0572349151314944,
-      "relative_change_percent": 5.723491513149437
-    },
-    {
-      "reference": "k050-attention-dense",
-      "treatment": "k050",
-      "pairs": [
-        {
-          "condition": "c01",
-          "ratio": 0.9876869873688127
-        },
-        {
-          "condition": "c02",
-          "ratio": 0.9862352976637836
-        },
-        {
-          "condition": "c03",
-          "ratio": 0.9860319871466875
-        },
-        {
-          "condition": "c04",
-          "ratio": 0.986424589599391
-        },
-        {
-          "condition": "c05",
-          "ratio": 0.9872796043622971
-        },
-        {
-          "condition": "c06",
-          "ratio": 0.9862159452528959
-        },
-        {
-          "condition": "c07",
-          "ratio": 0.988323117121886
-        },
-        {
-          "condition": "c08",
-          "ratio": 0.9867980106480934
-        },
-        {
-          "condition": "c09",
-          "ratio": 0.9872053716209853
-        },
-        {
-          "condition": "c10",
-          "ratio": 0.9865189440506814
-        },
-        {
-          "condition": "c11",
-          "ratio": 0.9856467886972394
-        },
-        {
-          "condition": "c12",
-          "ratio": 0.986756162551217
-        },
-        {
-          "condition": "c13",
-          "ratio": 0.9874644715394771
-        },
-        {
-          "condition": "c14",
-          "ratio": 0.9863503703391794
-        },
-        {
-          "condition": "c15",
-          "ratio": 0.9836290976536978
-        },
-        {
-          "condition": "c16",
-          "ratio": 0.9871337958615047
-        },
-        {
-          "condition": "c17",
-          "ratio": 0.9869378403086888
-        },
-        {
-          "condition": "c18",
-          "ratio": 0.9867639072325743
-        },
-        {
-          "condition": "c19",
-          "ratio": 0.9856999277273291
-        },
-        {
-          "condition": "c20",
-          "ratio": 0.9828997767626483
-        },
-        {
-          "condition": "c21",
-          "ratio": 0.9876073677750947
-        },
-        {
-          "condition": "c22",
-          "ratio": 0.9881548053503979
-        },
-        {
-          "condition": "c23",
-          "ratio": 0.9862934637205247
-        },
-        {
-          "condition": "c24",
-          "ratio": 0.9869625783962995
-        },
-        {
-          "condition": "c25",
-          "ratio": 0.9845194030663611
-        },
-        {
-          "condition": "c26",
-          "ratio": 0.9868812530735513
-        },
-        {
-          "condition": "c27",
-          "ratio": 0.9879013347240366
-        },
-        {
-          "condition": "c28",
-          "ratio": 0.9890310572645798
-        },
-        {
-          "condition": "c29",
-          "ratio": 0.9878113960332011
-        },
-        {
-          "condition": "c30",
-          "ratio": 0.9894320865496633
-        }
-      ],
-      "geomean_ratio": 0.986752284716024,
-      "relative_change_percent": -1.3247715283975947
-    }
-  ],
+  "projection_regression": {
+    "n": 30,
+    "pearson_r": 0.9726792898363456,
+    "slope_per_percentage_point": 0.005027440185013156,
+    "intercept": 1.0082308012708912,
+    "r2": 0.9461050008765369
+  },
   "highlight_condition": "c30",
   "interpretation": "Descriptive in-sample fit across distinct trained checkpoints; no causal or held-out prediction claim"
 }

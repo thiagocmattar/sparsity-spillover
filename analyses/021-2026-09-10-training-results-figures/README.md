@@ -314,22 +314,27 @@ resolved references and no overfull boxes; affected pages were visually checked.
 
 ## Figure 07
 
-[K050 speedup and matched ablations](figures/07-kernel-realization.pdf) replaces
-the search-progress panel with three native-relative cohort GM comparisons.
-The wider left panel plots all 30 K050 checkpoints, a dashed OLS fit
-(R² = 0.817), and the 1.78× seven-site + OL1 endpoint. Three visual families
-replace the recipe legend: baseline/local, four-site and seven-site.
-The neutral right panel shows fusion only (1.183×), projection skipping
-(1.251×) and full K050 with attention skipping (1.234×). Arrows label the
-matched relative changes, +5.7% and -1.3%, rather than additive contributions.
+[K050 speedup and projection bypass](figures/07-kernel-realization.pdf) connects
+native-relative full-model speedup to S_model, then projection-path gain to
+projection MMA bypass. Both panels retain the same 30 checkpoints and three
+visual families: gray baseline/local circles, blue four-site diamonds and
+orange seven-site triangles. Descriptive OLS fits have R? = 0.817 and 0.946.
+The highest-sparsity seven-site + OL1 endpoint is labeled 1.78?; dotted
+references mark 1?. One compact shared legend sits below the 60:40 panels.
 
-This figure is **analysis-only**, as requested. The manuscript is unchanged.
-[O008](observations/O008-kernel-realization.md) records the caption, source
-identities, timing/qualification coverage and interpretation limits. The
-[reduction](data/kernel-realization.json) reconciles all 90 comparisons to
-Analysis 018 and Run 029, retaining integer counts and replicate records.
-Three focused tests pass. The 7.4-by-3.4-inch PDF uses 65:35 panel widths;
-it was rendered and visually checked, with embedded fonts and no clipped text.
+The right panel replaces the previous ablation lollipop using the
+[investigation](investigation/README.md). Its gain is the raw geometric-mean
+all-skips-off latency divided by attention-dense/projection-on latency.
+Its MMA bypass fraction includes hybrid SIMT substitution and padded h/z
+instruction work; the small axis explanation says instructions bypassed.
+Those distinctions and the separate 338-block counter/64-input timing coverage
+are defined in [O008](observations/O008-kernel-realization.md).
+
+This figure remains **analysis-only**. The [reduction](data/kernel-realization.json)
+retains source hashes, 90 qualified implementation/checkpoint comparisons,
+30 projection points with pooled counters and raw latency denominators, and
+both fits. Three focused tests pass. The 7.4-by-3.4-inch PDF was rendered and
+visually checked; the manuscript is unchanged.
 
 ```powershell
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization.py

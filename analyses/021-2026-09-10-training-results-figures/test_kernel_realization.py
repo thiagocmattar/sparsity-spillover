@@ -1,4 +1,4 @@
-"""Guard cohort identity, count pooling, regression and matched GM estimands."""
+"""Guard cohort identity, both regressions and the projection-gain estimand."""
 
 import importlib.util
 import json
@@ -37,32 +37,46 @@ def test_complete_qualified_cohort_and_canonical_counts():
 
 def test_unweighted_ols_has_intercept_and_uses_all_30_points():
     data = kernels.read_evidence()
-    points = [p for p in data["points"] if p["candidate"] == "k050"]
-    x = np.array([p["sparsity_percent"] for p in points])
-    y = np.array([p["speedup"] for p in points])
-    design = np.column_stack([np.ones(30), x])
-    coefficients = np.linalg.lstsq(design, y, rcond=None)[0]
-    fit = data["regression"]
-    assert [fit["intercept"], fit["slope_per_percentage_point"]] == pytest.approx(coefficients)
-    assert fit["intercept"] == pytest.approx(.9512951279669726)
-    assert fit["r2"] == pytest.approx(.8167176697920289)
     fig = kernels.make_figure(data)
     assert len(fig.axes) == 2
-    plotted = np.concatenate([c.get_offsets() for c in fig.axes[0].collections])
-    assert sorted(map(tuple, plotted)) == sorted(zip(x, y))
-    assert {c.get_gid() for c in fig.axes[1].collections} == set(kernels.CANDIDATES)
+    cases = (([p for p in data["points"] if p["candidate"] == "k050"], "sparsity_percent", "speedup", "regression"),
+             (data["projection_points"], "bypass_percent", "projection_sparse_gain", "projection_regression"))
+    for ax, (points, x_key, y_key, fit_key) in zip(fig.axes, cases):
+        x = np.array([p[x_key] for p in points])
+        y = np.array([p[y_key] for p in points])
+        design = np.column_stack([np.ones(30), x])
+        coefficients = np.linalg.lstsq(design, y, rcond=None)[0]
+        fit = data[fit_key]
+        assert [fit["intercept"], fit["slope_per_percentage_point"]] == pytest.approx(coefficients)
+        assert fit["r2"] == pytest.approx(np.corrcoef(x, y)[0, 1] ** 2)
+        plotted = np.concatenate([c.get_offsets() for c in ax.collections])
+        assert sorted(map(tuple, plotted)) == sorted(zip(x, y))
+        assert {c.get_gid() for c in ax.collections} == set(kernels.STYLE)
+        assert ax.get_xlim()[0] <= x.min() and x.max() <= ax.get_xlim()[1]
+        assert ax.get_ylim()[0] <= y.min() and y.max() <= ax.get_ylim()[1]
+    assert data["regression"]["intercept"] == pytest.approx(.9512951279669726)
+    assert data["regression"]["r2"] == pytest.approx(.8167176697920289)
+    assert data["projection_regression"]["r2"] == pytest.approx(.946105)
+    assert fig.axes[0].get_position().width / fig.axes[1].get_position().width == pytest.approx(1.5)
+    assert "Native-relative" in fig.axes[0].get_ylabel()
+    assert len(fig.legends) == 1 and [t.get_text() for t in fig.legends[0].get_texts()] == list(kernels.STYLE)
     kernels.plt.close(fig)
 
 
-def test_ablation_ratios_are_matched_multiplicative_changes():
+def test_projection_gain_uses_raw_matched_latencies_and_pooled_instruction_counts():
     data = kernels.read_evidence()
-    expected = [1.182857976961071, 1.2505587528850488, 1.2339917065809438]
-    assert [r["geomean_speedup"] for r in data["ablations"]] == pytest.approx(expected)
-    for ref, trt, increment in zip(expected[:-1], expected[1:], data["increments"]):
-        ratios = np.array([p["ratio"] for p in increment["pairs"]])
-        assert len(ratios) == 30
-        assert np.exp(np.log(ratios).mean()) == pytest.approx(trt / ref)
-        assert increment["relative_change_percent"] == pytest.approx(100 * (trt / ref - 1))
-        assert not np.isclose(increment["relative_change_percent"], 100 * (trt - ref))
-    assert [f'{r["relative_change_percent"]:+.1f}%' for r in data["increments"]] == ["+5.7%", "-1.3%"]
-    assert all(p["ratio"] < 1 for p in data["increments"][1]["pairs"])
+    investigated = {p["condition"]: p for p in json.loads(kernels.INVESTIGATION.read_text())}
+    points = data["projection_points"]
+    assert [p["condition"] for p in points] == [f"c{i:02d}" for i in range(1, 31)]
+    for p in points:
+        record = investigated[p["condition"]]
+        assert p["evidence_id"] == record["checkpoint_evidence_id"]
+        bypassed = sum(record[f"{op}_mma_bypassed"] for op in ("qkv", "attn_out", "ffn_up", "ffn_down"))
+        potential = sum(record[f"{op}_mma_potential"] for op in ("qkv", "attn_out", "ffn_up", "ffn_down"))
+        assert p["bypass_percent"] == pytest.approx(100 * bypassed / potential)
+        assert p["projection_sparse_gain"] == pytest.approx(record["all_skips_off_candidate_gm_ms"] / record["projection_on_candidate_gm_ms"])
+    assert any(not np.isclose(p["projection_sparse_gain"], investigated[p["condition"]]["projection_sparse_gain_native_normalized"])
+               for p in points)
+    endpoint, = [p for p in points if p["condition"] == "c20"]
+    assert endpoint["bypass_percent"] == pytest.approx(82.29771990388242)
+    assert endpoint["projection_sparse_gain"] == pytest.approx(1.3782512496444377)

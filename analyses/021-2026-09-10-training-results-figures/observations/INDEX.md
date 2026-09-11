@@ -39,7 +39,7 @@
   nine-step smoothing over faint raw trajectories. The gradient panel uses
   logged unscaled global L2 norms before clipping. Adopted as Figure 8 in
   Appendix C.4, after the realized-protocol table; no convergence claim.
-- [O008 - K050 speedup and matched kernel ablations](O008-kernel-realization.md):
-  all 30 K050 checkpoints, OLS R² = 0.817, and the same-cohort fusion,
-  projection-skipping and attention-skipping GMs. Relative matched changes
-  are +5.7% and -1.3%. Analysis-only; the manuscript is unchanged.
+- [O008 - K050 native-relative speedup and projection bypass](O008-kernel-realization.md):
+  the same 30 checkpoints in both panels, with descriptive OLS R? = 0.817
+  and 0.946. The projection gain uses matched raw candidate latencies, and
+  bypass counts retain the SIMT/padding qualification. Analysis-only.

@@ -1,4 +1,4 @@
-"""K050 sparsity/speedup and matched ablations for the 30-checkpoint cohort."""
+"""K050 native-relative speedup and projection bypass for 30 checkpoints."""
 
 from __future__ import annotations
 
@@ -18,11 +18,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCE = ROOT / "analyses/018-2026-09-08-results-materials/figure_data.json"
 RETROSPECTIVE = ROOT / "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/matched-retrospective-001.json"
+INVESTIGATION = HERE / "investigation/data/checkpoints.json"
+INVESTIGATION_FITS = HERE / "investigation/data/analysis.json"
 CANDIDATES = ("k050-no-skip", "k050-attention-dense", "k050")
-ROW_LABELS = (("Fusion only", "(all sparse skips off)"),
-              ("+ projection skipping", "(attention dense)"),
-              ("+ attention skipping", "(full K050)"))
-STYLE = {"Baseline / local": ("#687570", "o"),
+STYLE = {"Baseline / local": ("#777777", "o"),
          "4-site": ("#2878B5", "D"), "7-site": ("#C96024", "^")}
 
 
@@ -30,13 +29,13 @@ def geometric_mean(values):
     return math.exp(math.fsum(math.log(v) for v in values) / len(values))
 
 
-def regression(points):
-    """Unweighted OLS with intercept; x is in sparsity percentage points."""
-    x = np.array([p["sparsity_percent"] for p in points])
-    y = np.array([p["speedup"] for p in points])
+def regression(points, x_key="sparsity_percent", y_key="speedup"):
+    """Unweighted OLS with intercept; both plotted x variables are percentages."""
+    x = np.array([p[x_key] for p in points])
+    y = np.array([p[y_key] for p in points])
     slope, intercept = np.polyfit(x, y, 1)
     r2 = 1 - np.sum((y - intercept - slope * x) ** 2) / np.sum((y - y.mean()) ** 2)
-    return {"n": len(x), "slope_per_percentage_point": float(slope),
+    return {"n": len(x), "pearson_r": float(np.corrcoef(x, y)[0, 1]), "slope_per_percentage_point": float(slope),
             "intercept": float(intercept), "r2": float(r2)}
 
 
@@ -79,36 +78,51 @@ def read_evidence():
                            "dose": checkpoint["dose"], "visual_family": family})
     groups = {candidate: [p for p in points if p["candidate"] == candidate]
               for candidate in CANDIDATES}
-    summaries = []
-    for candidate, (label, detail) in zip(CANDIDATES, ROW_LABELS):
-        gm = geometric_mean([p["speedup"] for p in groups[candidate]])
-        assert math.isclose(gm, runtime["final_candidates"][candidate]["geomean"], rel_tol=1e-12)
-        summaries.append({"candidate": candidate, "label": label, "detail": detail,
-                          "n": len(groups[candidate]), "geomean_speedup": gm})
-    increments = []
-    for reference, treatment in zip(CANDIDATES[:-1], CANDIDATES[1:]):
-        pairs = []
-        for ref, trt in zip(groups[reference], groups[treatment]):
-            assert ref["condition"] == trt["condition"] and ref["evidence_id"] == trt["evidence_id"]
-            pairs.append({"condition": ref["condition"], "ratio": trt["speedup"] / ref["speedup"]})
-        ratio = geometric_mean([p["ratio"] for p in pairs])
-        increments.append({"reference": reference, "treatment": treatment,
-                           "pairs": pairs, "geomean_ratio": ratio,
-                           "relative_change_percent": 100 * (ratio - 1)})
+    investigated = json.loads(INVESTIGATION.read_text(encoding="utf-8"))
+    assert len(investigated) == 30 and {p["condition"] for p in investigated} == conditions
+    by_condition = {p["condition"]: p for p in investigated}
+    projection_points = []
+    for point in groups["k050"]:
+        record = by_condition[point["condition"]]
+        assert record["checkpoint_evidence_id"] == point["evidence_id"]
+        assert record["recipe"] == point["family"]
+        assert math.isclose(record["s_model_percent"], point["sparsity_percent"], abs_tol=1e-12)
+        assert math.isclose(record["full_speedup"], point["speedup"], rel_tol=1e-12)
+        for prefix, candidate in (("all_skips_off", "k050-no-skip"), ("projection_on", "k050-attention-dense")):
+            original = next(p for p in groups[candidate] if p["condition"] == point["condition"])
+            assert math.isclose(record[f"{prefix}_paired_speedup"], original["speedup"], rel_tol=1e-12)
+        bypass = record["projection_mma_bypassed"] / record["projection_mma_potential"]
+        gain = record["all_skips_off_candidate_gm_ms"] / record["projection_on_candidate_gm_ms"]
+        assert math.isclose(bypass, record["projection_mma_bypass_fraction"], rel_tol=1e-12)
+        assert math.isclose(gain, record["projection_sparse_gain"], rel_tol=1e-12)
+        projection_points.append({"condition": point["condition"], "evidence_id": point["evidence_id"],
+                                  "visual_family": point["visual_family"], "bypass_percent": 100 * bypass,
+                                  "projection_sparse_gain": gain,
+                                  **{key: record[key] for key in ("projection_mma_bypassed", "projection_mma_potential",
+                                      "projection_simt_products", "all_skips_off_candidate_gm_ms",
+                                      "projection_on_candidate_gm_ms", "projection_mma_counter_method", "diagnostic_source")}})
     fit = regression(groups["k050"])
     assert math.isclose(fit["r2"], runtime["k050_regression"]["r2"], abs_tol=1e-12)
+    projection_fit = regression(projection_points, "bypass_percent", "projection_sparse_gain")
+    saved_fit, = [r for r in json.loads(INVESTIGATION_FITS.read_text())["associations"]
+                  if r["family"] == "all" and r["predictor"] == "projection_mma_bypass_fraction"
+                  and r["outcome"] == "projection_sparse_gain"]
+    assert math.isclose(projection_fit["r2"], saved_fit["ols_r2"], abs_tol=1e-12)
+    assert math.isclose(projection_fit["pearson_r"], saved_fit["pearson_r"], abs_tol=1e-12)
     return {
-        "question": "How does model-wide sparsity relate to K050 speedup, and what do matched skip ablations contribute?",
+        "question": "How does model-wide sparsity relate to native-relative K050 speedup, and how does projection MMA bypass relate to projection-path gain?",
         "source_sha256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                          for p in (SOURCE, RETROSPECTIVE)},
+                          for p in (SOURCE, RETROSPECTIVE, INVESTIGATION, INVESTIGATION_FITS)},
         "coverage": source["coverage"], "timing_block_indices": runtime["timing_block_indices"],
         "timing_metric": runtime["metric"], "physical_gpu_uuid": runtime["physical_gpu_uuid"],
         "protocol": {"gpu": "RTX5090", "execution_dtype": "BF16", "sparsity_dtype": "FP16",
                      "batch_size": 1, "sequence_length": 2048, "output_vocabulary": 50304,
                      "timing_inputs": 64, "passes_per_process": 7, "processes": 3,
                      "baseline": "same-checkpoint native PyTorch/SDPA CUDA graph",
-                     "ablation_comparison": "ratios of separately measured native-normalized speedups; equal checkpoint weighting"},
-        "points": points, "regression": fit, "ablations": summaries, "increments": increments,
+                     "projection_comparison": "GM host latency of all-skips-off / GM host latency of attention-dense; same checkpoint and matched timing protocol",
+                     "counter_coverage": "338 validation blocks, actual BF16 operands; includes h/z padding and SIMT substitution"},
+        "points": points, "regression": fit,
+        "projection_points": projection_points, "projection_regression": projection_fit,
         "highlight_condition": "c30",
         "interpretation": "Descriptive in-sample fit across distinct trained checkpoints; no causal or held-out prediction claim",
     }
@@ -121,10 +135,10 @@ def make_figure(data):
                          "axes.spines.top": False, "axes.spines.right": False,
                          "axes.linewidth": .6, "pdf.fonttype": 42, "mathtext.fontset": "dejavusans"})
     fig, (ax, ab) = plt.subplots(1, 2, figsize=(7.4, 3.4),
-                                gridspec_kw={"width_ratios": (65, 35)})
-    fig.subplots_adjust(left=.085, right=.985, bottom=.22, top=.88, wspace=.32)
-    ax.set_title("(a) Model-wide sparsity predicts realized speedup", loc="left", pad=11)
-    ab.set_title("(b) Matched kernel ablations", loc="left", pad=11)
+                                gridspec_kw={"width_ratios": (60, 40)})
+    fig.subplots_adjust(left=.09, right=.985, bottom=.28, top=.83, wspace=.40)
+    ax.set_title("(a) Model-wide sparsity and realized speedup", loc="left", pad=11)
+    ab.set_title("(b) Kernel-exploitable\nprojection sparsity", loc="left", pad=11)
     selected = [p for p in data["points"] if p["candidate"] == "k050"]
     for family, (color, marker) in STYLE.items():
         rows = [p for p in selected if p["visual_family"] == family]
@@ -135,7 +149,8 @@ def make_figure(data):
     xx = np.linspace(min(p["sparsity_percent"] for p in selected), max(p["sparsity_percent"] for p in selected), 100)
     ax.plot(xx, fit["intercept"] + fit["slope_per_percentage_point"] * xx,
             color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
-    ax.axhline(1, color=".6", ls=":", lw=.8, zorder=1)
+    ax.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
+    ax.text(29, 1.012, "1× native", ha="right", va="bottom", fontsize=6.8, color=".45")
     ax.text(12.4, 1.52, rf'$R^2 = {fit["r2"]:.3f}$', fontsize=9,
             color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
     endpoint, = [p for p in selected if p["condition"] == data["highlight_condition"]]
@@ -143,42 +158,41 @@ def make_figure(data):
                 xy=(endpoint["sparsity_percent"], endpoint["speedup"]),
                 xytext=(-6, -15), textcoords="offset points", ha="right", va="top",
                 color=STYLE["7-site"][0], fontsize=7.6,
+                arrowprops={"arrowstyle": "-", "lw": .6, "color": STYLE["7-site"][0], "shrinkA": 2, "shrinkB": 5},
                 bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.2})
-    ax.set(xlim=(-.5, 30), ylim=(.8, 1.85),
+    ax.set(xlim=(-.5, 30), ylim=(.95, 1.85),
            xlabel=r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)',
-           ylabel="Full-model speedup (×)")
+           ylabel="Native-relative full-model speedup (×)")
     ax.set_xticks(range(0, 31, 5))
-    ax.set_yticks(np.arange(.8, 1.81, .2))
+    ax.set_yticks(np.arange(1., 1.81, .2))
     ax.set_axisbelow(True)
     ax.grid(axis="y", color=".93", lw=.5)
     handles = [Line2D([], [], color=color, marker=marker, ls="none", markersize=4.5, label=family)
                for family, (color, marker) in STYLE.items()]
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(.5, -.23),
-              ncol=3, frameon=False, fontsize=7, handletextpad=.3, columnspacing=1.0)
+    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(.5, .025),
+               ncol=3, frameon=False, fontsize=7.5, handletextpad=.4, columnspacing=1.8)
 
-    ab.set(xlim=(.995, 1.29), ylim=(-.55, 2.65), yticks=[],
-           xlabel="Geometric-mean speedup (×)")
-    ab.set_xticks([1.00, 1.10, 1.20])
-    ab.spines["left"].set_visible(False)
-    ab.tick_params(axis="y", left=False)
-    ab.axvline(1, color=".55", ls=":", lw=.8)
-    ab.text(1.008, 2.61, "1× native", fontsize=6.8, color=".4", va="top")
-    values = [r["geomean_speedup"] for r in data["ablations"]]
-    for y, row, value in zip((2, 1, 0), data["ablations"], values):
-        ab.text(1.008, y + .36, row["label"], fontsize=8, va="center")
-        ab.text(1.008, y + .16, row["detail"], fontsize=6.8, color=".42", va="center")
-        ab.plot([1, value], [y, y], color=".76", lw=1.2, zorder=1)
-        ab.scatter([value], [y], s=33, color="#41484C", zorder=3, gid=row["candidate"])
-        ab.annotate(f"{value:.3f}×", xy=(value, y), xytext=(0, -10),
-                    textcoords="offset points", ha="center", va="top", fontsize=8,
-                    bbox={"facecolor": "white", "edgecolor": "none", "pad": .5})
-    for y, first, second, increment in zip((2, 1), values[:-1], values[1:], data["increments"]):
-        ab.annotate("", xy=(second, y - .75), xytext=(first, y - .32),
-                    arrowprops={"arrowstyle": "->", "color": ".45", "lw": .8,
-                                "mutation_scale": 7, "shrinkA": 0, "shrinkB": 0})
-        change = f'{increment["relative_change_percent"]:+.1f}%'.replace("-", "−")
-        ab.text(min(first, second) - .013, y - .43, change,
-                ha="right", va="center", fontsize=8, color="#41484C")
+    for family, (color, marker) in STYLE.items():
+        rows = [p for p in data["projection_points"] if p["visual_family"] == family]
+        ab.scatter([p["bypass_percent"] for p in rows], [p["projection_sparse_gain"] for p in rows],
+                   s=27, c=color, marker=marker, linewidths=.35, edgecolors="white", zorder=3, gid=family)
+    projection_fit = data["projection_regression"]
+    xx = np.linspace(min(p["bypass_percent"] for p in data["projection_points"]),
+                     max(p["bypass_percent"] for p in data["projection_points"]), 100)
+    ab.plot(xx, projection_fit["intercept"] + projection_fit["slope_per_percentage_point"] * xx,
+            color="#4E5355", ls="--", lw=1.1, zorder=2, gid="OLS")
+    ab.axhline(1, color=".6", ls=":", lw=.8, zorder=1, gid="reference")
+    ab.text(83, 1.008, "no sparse-path benefit", ha="right", va="bottom", fontsize=6.5, color=".45")
+    ab.text(.06, .90, rf'$R^2 = {projection_fit["r2"]:.3f}$', transform=ab.transAxes, fontsize=9,
+            color="#363A3C", bbox={"facecolor": "white", "edgecolor": "none", "pad": 1})
+    ab.set(xlim=(-1.5, 85), ylim=(.95, 1.40),
+           xlabel="Projection MMA bypass (%)", ylabel="Projection-path gain (×)")
+    ab.set_xticks([0, 20, 40, 60, 80])
+    ab.set_yticks([1., 1.1, 1.2, 1.3, 1.4])
+    ab.text(.5, -.29, "tensor-core instructions bypassed", transform=ab.transAxes,
+            fontsize=6.5, ha="center", va="top", color=".4")
+    ab.set_axisbelow(True)
+    ab.grid(axis="y", color=".93", lw=.5)
     return fig
 
 
@@ -188,12 +202,11 @@ def main():
         json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     fig = make_figure(data)
     fig.savefig(HERE / "figures/07-kernel-realization.pdf",
-                metadata={"Title": "Model-wide sparsity, K050 speedup and matched kernel ablations",
+                metadata={"Title": "K050 native-relative speedup and kernel-exploitable projection sparsity",
                           "Creator": "Analysis 021 / 07_kernel_realization.py", "CreationDate": None})
     plt.close(fig)
     print(f'30 K050 checkpoints; R²={data["regression"]["r2"]:.6f}')
-    for row in data["ablations"]:
-        print(f'{row["label"]}: {row["geomean_speedup"]:.6f}×')
+    print(f'30 matched projection points; R²={data["projection_regression"]["r2"]:.6f}')
 
 
 if __name__ == "__main__":

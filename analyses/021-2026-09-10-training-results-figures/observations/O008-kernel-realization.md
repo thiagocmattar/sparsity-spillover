@@ -1,108 +1,107 @@
-# K050 sparsity, realized speedup and matched kernel ablations
+# K050 native-relative speedup and exploitable projection sparsity
 
 ## Question and scope
 
-How does model-wide sparsity relate to speedup under the same K050
-implementation, and how do projection and attention skipping change the
-cohort result relative to the fused implementation with skips disabled?
-
-The author approved this redesign on 11 September 2026. It remains
-**analysis-only**: no manuscript changes, new kernel development, training or
-benchmarking. Search history is omitted from this figure; retained historical
-artifacts are unchanged.
+How does model-wide sparsity relate to native-relative full-model speedup, and
+how does projection MMA bypass relate to the gain from enabling projection
+sparse paths? This author-approved revision replaces the cohort-ablation
+lollipop with a second 30-checkpoint scatter after the
+[investigation](../investigation/README.md). It remains **analysis-only**;
+no manuscript changes, model evaluation or benchmarking were performed.
 
 ## Sources, method and coverage
 
-- Immediate source: Analysis 018 [figure_data.json](../../018-2026-09-08-results-materials/figure_data.json),
-  using its corrected 30-checkpoint runtime cohort.
-- Underlying source: Run 029
-  [matched-retrospective-001.json](../../../runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/matched-retrospective-001.json).
-  The reduction verifies its hash against Analysis 018, and reconciles each
-  retained speedup, count record and replicate with the source.
-- Exactly c01-c30, final phase: 30 K050 checkpoints plus the same 30 for each
-  of `k050-no-skip` and `k050-attention-dense`. All 90 comparisons qualify,
-  with three complete fresh-process replicates each. Historical h-only A4
-  pressure checkpoints are outside this manuscript cohort.
-- One physical RTX5090; BF16, batch one, uncached 2,048-token inference with
-  all 50,304 output logits. Each candidate is paired with its same-checkpoint
-  native PyTorch/SDPA CUDA-graph reference on 64 fixed validation inputs,
-  seven paired passes and three fresh processes. Checkpoint speedup equally
-  pools the 448 host-latency ratios per process geometrically.
-- Numerical qualification covers all 500 validation documents packed into
-  338 complete blocks: 692,224 input tokens, 691,886 prediction tokens and a
-  1,444-token excluded tail. These are existing randomly pretrained models
-  with seed 1234; no new validation pass is performed here.
-- Sparsity uses retained canonical FP16 integer counts: block zero-operand
-  products divided by all counted block products plus the dense output
-  projection. Operation counts are pooled before division; future-masked
-  attention pairs are excluded. Each runtime point is reconciled to its
-  corresponding trained endpoint.
-- The fit is unweighted OLS with an intercept over all 30 K050 points.
-  Each ablation GM weights those same 30 checkpoints equally. Increment
-  labels use `100 * (GM(treatment_speedup / reference_speedup) - 1)` with
-  checkpoint identities matched before taking ratios. They are relative
-  percentages, not additive native-relative speedup components.
+- [Analysis 018 figure data](../../018-2026-09-08-results-materials/figure_data.json)
+  and [Run 029 retrospective](../../../runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/results/matched-retrospective-001.json)
+  provide the qualified c01-c30 cohort, canonical integer sparsity counters and
+  all three implementations' replicate identities. Their counts, speedups and
+  source hashes are reconciled as before.
+- The [investigation checkpoint table](../investigation/data/checkpoints.json)
+  supplies projection counters and raw geometric-mean latencies; its
+  [analysis](../investigation/data/analysis.json) independently supplies the
+  projection regression. The figure reduction matches checkpoint identities,
+  full speedups, all-skips-off and attention-dense paired speedups, then derives
+  the projection ratio from the raw candidate latencies.
+- Both panels contain the same 30 Pythia-14M checkpoints, ten per visual family.
+  Historical h-only A4 pressure checkpoints are excluded. All 90 underlying
+  implementation/checkpoint comparisons qualify with three complete processes.
+- Timings use RTX5090, BF16, batch one, uncached 2,048-token inference with all
+  50,304 output logits. Each process times the same 64 validation inputs with
+  seven paired native/candidate passes; three fresh processes are geometrically
+  pooled. Native-relative speedup is native PyTorch/SDPA CUDA-graph latency
+  divided by full K050 latency for that checkpoint.
+- Canonical S_model uses FP16 integer zero-product counts divided by the common
+  block-plus-output-head denominator, excluding future-masked attention pairs.
+  Qualification and counters cover all 338 complete validation blocks from 500
+  documents, with 692,224 input tokens and the 1,444-token tail excluded.
+- Projection bypass pools bypassed/potential MMA instructions over QKV,
+  attention output, FFN-up and FFN-down. The underlying full-validation BF16
+  diagnostics reconstruct QKV/FFN-up A-fragment decisions and instrument the
+  FFN-down/output hybrid kernels. The latter include padded instruction work
+  and replacement by scalar/SIMT products. MMA bypass is not eliminated FLOPs.
+- Projection-path gain is the all-skips-off candidate geometric-mean latency
+  divided by the attention-dense/projection-on candidate geometric-mean latency.
+  The implementations retain the same fusion and use the matched input/timing
+  protocol in separate processes. This is the investigation's raw-latency
+  ratio, not the ratio of separately native-normalized speedups formerly used
+  for the lollipop increments. Both fits are unweighted OLS with intercepts.
 
 ## Figure and proposed caption
 
 [Publication PDF](../figures/07-kernel-realization.pdf)
 
-**Model-wide sparsity relates to realized acceleration, while matched
-ablations separate the effects of sparse skipping.** (a) Full-model K050
-speedup versus model-wide sparsity for all 30 Pythia-14M checkpoints. Gray-green
-circles denote baseline/local recipes, blue diamonds four-site recipes and
-orange triangles seven-site recipes. The dashed line is an unweighted OLS fit
-with intercept (R² = 0.817); the dotted line marks native speed. The labeled
-seven-site + OL1 checkpoint at kappa = 0.5 reaches 1.78×. (b) Cohort
-geometric-mean speedups for the fused implementation with all sparse skips
-off (1.183×), projection skipping with attention dense (1.251×), and full
-K050 with attention skipping (1.234×). All use the same 30 checkpoints and
-native reference protocol. Arrows report relative matched changes between
-implementations: +5.7% and -1.3%, rather than an additive decomposition.
-Timings use one RTX5090 and BF16 execution; sparsity uses canonical FP16
-counts. The regression is descriptive across different trained checkpoints.
+**Model-wide sparsity tracks native-relative speedup, while projection
+instruction bypass tracks projection-path gain.** (a) Full K050 speedup
+relative to each checkpoint's native PyTorch/SDPA implementation versus
+model-wide sparsity for all 30 Pythia-14M checkpoints. The labeled seven-site
++ OL1 checkpoint at ? = 0.5 achieves 1.78? speedup. (b) Gain from enabling
+projection sparse paths versus the fraction of projection matrix-multiply-
+accumulate (MMA) instructions bypassed: gain is all-skips-off latency divided
+by projection-on/attention-dense latency, with identical fusion. Gray circles,
+blue diamonds and orange triangles identify baseline/local, four-site and
+seven-site recipes in both panels. Dashed lines are descriptive OLS fits
+(R? = 0.817 and 0.946); dotted lines mark gain 1?. Projection bypass includes
+SIMT substitution and padded h/z instruction work, so it is not a fraction
+of arithmetic eliminated. Canonical sparsity uses FP16, whereas the kernel
+counters and timings use BF16. Counters cover 338 validation blocks; timings
+use the matched 64-input subset. Associations across distinct trained
+checkpoints do not identify causal effects or equal-quality acceleration.
 
-The 7.4-by-3.4-inch figure uses two horizontal panels in a 65:35 width ratio.
-Panel (a) retains only three recipe families, with no separate pressure
-encoding; panel (b) uses neutral implementation colors. Only the high-sparsity
-search checkpoint is annotated individually. Both speedup axes have restricted
-ranges. The requested word "predicts" in panel (a)'s title refers to the
-in-sample linear fit, not a held-out prediction test.
+The 7.4-by-3.4-inch PDF uses a 60:40 horizontal layout and one shared legend
+below both panels. Only the highest-sparsity checkpoint is labeled; regression
+equations, recipe-level legends, lollipops and additional diagnostics are absent.
+Axes show all points, with small left margins so zero-valued markers remain
+visible. The small projection-axis explanation names instructions bypassed,
+rather than implying that all bypassed work disappears.
 
-## Results and limits
+## Results and interpretation limits
 
-| Implementation | Qualified checkpoints | Native-relative speedup GM |
-| --- | ---: | ---: |
-| Fusion only / all skips off | 30 | 1.182858× |
-| Projection skipping / attention dense | 30 | 1.250559× |
-| Full K050 / attention skipping | 30 | 1.233992× |
+Panel (a): Pearson r = 0.903724 and R? = 0.816718. Panel (b): r = 0.972679 and
+R? = 0.946105. All checkpoint values remain unchanged from the investigation.
+The c30 endpoint is 27.482684% S_model and 1.783175? native-relative speedup.
 
-OLS R² is 0.8167176698. The labeled c30 checkpoint has 27.482684% model-wide
-sparsity and 1.783174564× speedup. Projection skipping increases the cohort
-GM by 5.7235%; adding attention skipping decreases it by 1.3248% and is slower
-at every matched checkpoint in this cohort.
-
-"Fusion only" names the retained fused/no-skip control; it does not isolate
-every non-sparse optimization individually. Ablations were measured in
-separate randomized fresh processes against native, so their normalized-speedup
-ratios are not direct within-process toggle measurements. Checkpoint quality,
-topology and weights vary in panel (a); the fit does not identify a causal
-sparsity effect, a universal speed law or equal-quality acceleration. No
-cached-decoding, other-hardware or larger-model inference claim follows.
+Native references differ across recipes. In the matched positive-? pairs,
+seven-site has a larger native-relative speedup but a higher absolute K050 latency. The figure's explicit native-relative label
+preserves that distinction; the investigation retains absolute latencies,
+within-family fits, scalar-projection comparisons and attention diagnostics.
+Projection instruction bypass combines different sparse execution paths,
+including SIMT substitution. Its correlation with gain is implementation- and
+cohort-specific, not a general causal law or an inference claim for other
+model sizes, hardware or cached decoding.
 
 ## Reproduction and verification
 
 Source script: [07_kernel_realization.py](../07_kernel_realization.py).
-The [reduction](../data/kernel-realization.json) retains source hashes, all
-90 qualified comparisons and their replicate records, pooled integer counts,
-the fitted coefficients, cohort summaries and all matched ablation ratios.
+The [reduction](../data/kernel-realization.json) retains source hashes, all 90
+qualified timing comparisons, the 30 projection points with integer counters
+and raw latency denominators, and both fitted coefficient sets.
 
 ```powershell
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py -q
 ```
 
-All three focused tests pass: cohort/count coverage, independent OLS with
-intercept and plotted-point coverage, and multiplicative matched GM changes.
-The PDF was rendered and visually checked; all fonts are embedded and all
-text lies within the page. The manuscript remains unchanged.
+Three focused tests pass: complete cohort/count reconciliation, independent
+OLS and all 30 plotted points in each panel, and projection gain from matched
+raw latencies with integer-pooled instruction counts. The PDF was rendered
+and visually checked. The manuscript remains unchanged.
