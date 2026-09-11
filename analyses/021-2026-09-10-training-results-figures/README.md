@@ -228,3 +228,33 @@ display counts and complete operation counters.
 All three focused tests pass, covering density mass conservation, the common
 operation denominator and exact retained evidence. The PDF was rendered and
 visually checked; labels fit inside the page and fonts are embedded.
+
+## Figure 05
+
+[Across-size quality costs and ceilings](figures/05-scale-transfer.pdf) uses
+one horizontal row for 14M, 70M and 410M. Every panel plots model-wide sparsity
+against validation loss minus same-size A0, with the same loss range and
+size-specific sparsity ranges. Blue four-site and orange seven-site OL1 curves
+retain all five trained thresholds; only kappa = 0 and 0.5 are labeled.
+Four-/seven-site ceiling guides and seven-site endpoint utilization annotations
+replace the previous second normalized row. A small endpoint table sits beneath
+the panels; A0 clipping remains a thin dotted reference, clipped to the displayed
+loss range without dropping its retained off-scale coordinates.
+
+This figure is **analysis-only**, as requested on 11 September 2026. The
+manuscript and the previous full-range figure are unchanged. At kappa = 0.5,
+seven-site OL1 has more sparsity and lower loss than four-site OL1 at all three
+sizes. Its endpoints use 91.8%, 82.2% and 92.4% of the respective seven-site
+ceilings, at total loss costs +0.621, +1.116 and +0.573 relative to A0.
+
+[O006](observations/O006-scale-transfer.md) records the caption, provenance,
+coverage, normalization and limitations. The
+[reduction](data/scale-transfer.json) retains the 30 trained endpoints,
+30 clipping evaluations and three A0 references from Analysis 018.
+The [companion table](tables/scale-transfer-endpoints.md) is also available as
+Markdown. Three focused tests pass; the PDF was rendered and visually checked.
+
+```powershell
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_scale_transfer.py -q
+```

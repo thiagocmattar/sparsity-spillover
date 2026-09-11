@@ -22,3 +22,8 @@
   zeros but less model-wide sparsity; QK/PV contribute 0.06 versus 16.77 pp.
   Adopted as manuscript Figure 5; full threshold distributions and cross-size
   operation accounting are retained in Appendix D.1/D.2.
+- [O006 - Quality costs and ceilings across sizes](O006-scale-transfer.md):
+  one row of 14M/70M/410M panels with loss relative to same-size A0,
+  four-/seven-site ceiling guides, and common A7 utilization at kappa = 0.5.
+  The companion table separates total loss cost from pressure-only contrasts.
+  Analysis-only; the manuscript is unchanged.
