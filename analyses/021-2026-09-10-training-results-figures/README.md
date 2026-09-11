@@ -300,3 +300,27 @@ resolved references and no overfull boxes; affected pages were visually checked.
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_a0_optimization.py -q
 ```
+
+## Figure 07
+
+[K050 speedup and matched ablations](figures/07-kernel-realization.pdf) replaces
+the search-progress panel with three native-relative cohort GM comparisons.
+The wider left panel plots all 30 K050 checkpoints, a dashed OLS fit
+(R² = 0.817), and the 1.78× seven-site + OL1 endpoint. Three visual families
+replace the recipe legend: baseline/local, four-site and seven-site.
+The neutral right panel shows fusion only (1.183×), projection skipping
+(1.251×) and full K050 with attention skipping (1.234×). Arrows label the
+matched relative changes, +5.7% and -1.3%, rather than additive contributions.
+
+This figure is **analysis-only**, as requested. The manuscript is unchanged.
+[O008](observations/O008-kernel-realization.md) records the caption, source
+identities, timing/qualification coverage and interpretation limits. The
+[reduction](data/kernel-realization.json) reconciles all 90 comparisons to
+Analysis 018 and Run 029, retaining integer counts and replicate records.
+Three focused tests pass. The 7.4-by-3.4-inch PDF uses 65:35 panel widths;
+it was rendered and visually checked, with embedded fonts and no clipped text.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py -q
+```
