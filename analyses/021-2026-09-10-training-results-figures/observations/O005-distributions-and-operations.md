@@ -70,7 +70,8 @@ the main headings from the FFN/attention subplot titles. All percentage and
 percentage-point annotations have one decimal place; coordinates and retained
 data keep full precision. Moving labels
 below the plots frees the top area to enlarge the three aligned axes.
-Only the bars have faint horizontal major-grid lines. The legend has three
+Both density plots have faint horizontal and vertical major-grid lines, matching
+the bars' horizontal guides. The legend has three
 columns and two rows: QKV / FFN up / FFN down, then QK / Attention output / PV.
 
 **FFN sparsity alone can misrank recipes; operation accounting explains the
@@ -151,4 +152,4 @@ three-column legend order. The QK/PV note is positioned at x = 0.12, y = 20.5,
 slightly to the right of the four-site bar center.
 The figure data
 are identical to the preceding version, and the manuscript diff is empty.
-Figure SHA-256: `2e3b1ae01d6822434824e15775b79b98a8ea3123ec4a3deb23b7adc3c4f34b90`.
+Figure SHA-256: `75a4a591a09efd1a9bca0dbcb24b8fbccf9c510fa61b06bb599ecb99ed36fc4a`.

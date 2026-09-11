@@ -147,6 +147,7 @@ def make_figure(data):
         ax.set_xlim(limits)
         ax.set_yticks([0, .01, .1, 1, 10], ["0", ".01", ".1", "1", "10"])
         ax.set_xticks([0, 1, 2, 3] if name == "FFN activations" else [-4, -2, 0, 2, 4])
+        ax.grid(axis="both", which="major", color=".92", linewidth=.45)
         ax.tick_params(length=3, width=.6)
         ax.set_xlabel(r"Activation $x$", labelpad=4)
         left, _, width, _ = ax.get_position().bounds

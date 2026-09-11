@@ -206,8 +206,9 @@ labels and names panel (b) "Decomposed model-wide sparsity." Zero-mass labels
 read "zeros" and sit below each density plot; the subplot titles have more space
 below the main headings. All percentage annotations use
 one decimal place. Bar labels read 12.7% and 27.5%, and the QK/PV note sits above
-the four-site bar near 20%. The extra takeaway sentence is removed. Only the
-bars have horizontal grid lines; the legend remains three columns by two rows.
+the four-site bar near 20%. The extra takeaway sentence is removed. Density
+plots have faint horizontal and vertical major-grid lines; bars have horizontal
+guides. The legend remains three columns by two rows.
 The plots use the freed top space. Figure dimensions and measurements are unchanged.
 
 The sources are Run 031 signed histograms and Analysis 018 integer operation
