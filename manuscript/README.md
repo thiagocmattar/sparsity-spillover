@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+Section 4.3 now isolates adding Q/K/V thresholding without pressure at matched
+thresholds. Table 2 on page 7 reports the ten raw A4/A7 endpoints; the text
+highlights +5.17 pp sparsity for +0.043 loss at kappa = 0.5. Evidence and
+verification are recorded in
+[Analysis 021 O004](../analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md).
+The rebuilt draft has 27 pages. The entries below record earlier revisions.
+
 The frozen paired-pressure figure from
 [Analysis 021 O003](../analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md)
 is now Figure 3 on page 6. Section 4.2, "Paired effect of adding pressure,"

@@ -3,6 +3,8 @@
 % Generating analysis: analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
 % Matched OL1 additions: analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md
 % Generating analysis: analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
+% Matched Q/K/V threshold additions without pressure: analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md
+% Table evidence: analyses/018-2026-09-08-results-materials/figure_data.json (trained endpoints; A4 to A7 gates contrasts).
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
 % Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
@@ -135,7 +137,30 @@ of the pressure correction.}
 
 Pressure therefore cannot be assigned a single context-independent
 sparsity--quality effect: its marginal contribution depends on the thresholded
-representation and pressure target set. We next examine how the resulting
+representation and pressure target set.
+
+\subsection{Broader threshold placement without pressure}
+\label{sec:qkv-thresholding-results}
+
+To isolate the effect of adding Q/K/V thresholding, we compare A7 with A4
+at matched $\kappa$ without pressure (Table~\ref{tab:qkv-thresholding}).
+\textbf{At $\kappa=0.5$, adding Q/K/V thresholding raises model-wide sparsity
+by $5.17$ pp for only $+0.043$ validation loss.}
+
+\begin{table}[htbp]
+\centering\small
+\caption{\textbf{Broader threshold placement increases model-wide sparsity
+at matched threshold without pressure.} A4 thresholds $a,m,h,z$, whereas
+A7 additionally thresholds $q,k,v$. At $\kappa=0$, the additional Q/K/V
+nonlinearities are identities, and the two recipes are nearly identical.
+As $\kappa$ increases, their sparsity difference grows; at $\kappa=0.5$,
+A7 reaches $15.39\%$ model-wide sparsity versus $10.22\%$ for A4, with
+validation losses 5.7029 and 5.6597, respectively.}
+\label{tab:qkv-thresholding}
+\input{tables/qkv-thresholding-no-pressure}
+\end{table}
+
+We next examine how the resulting
 four- and seven-site recipes differ in their activation structure.
 
 \subsection{Reshaping activation distributions}

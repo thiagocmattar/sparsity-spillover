@@ -5,6 +5,16 @@ introduction-facing Pythia-14M quality-sparsity overview. The author approved
 this new analysis and the first figure on 10 September 2026. No new training,
 checkpoint evaluation, or measurement is required.
 
+## Matched Q/K/V thresholding table
+
+On 11 September, the author requested the pressure-free A7-minus-A4 comparison
+in the manuscript. [O004](observations/O004-qkv-thresholding.md) records the five
+matched thresholds and evidence checks. Section 4.3 and Table 2 now report the
+raw endpoints, with the high-threshold difference in prose: +5.17 pp model-wide
+sparsity for +0.043 validation loss. The table uses the existing Analysis 018
+reduction; no new measurement or figure is added. The 27-page draft was rebuilt
+and the affected pages visually checked.
+
 ## Figure 01
 
 [Quality-sparsity trade-offs](figures/01-14m-quality-sparsity.pdf) retains

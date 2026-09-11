@@ -13,3 +13,7 @@
   model-wide sparsity differences. At kappa = 0.5, +2.50 pp / +0.38 loss versus
   +12.10 pp / +0.13 loss. Frozen after the final decluttering pass;
   adopted as manuscript Figure 3 with Section 4.2 focused on adding pressure.
+- [O004 - Adding Q/K/V thresholding without pressure](O004-qkv-thresholding.md):
+  five matched A7-minus-A4 threshold comparisons, shown as raw endpoints in a
+  manuscript table. At kappa = 0.5, adding Q/K/V thresholds gives +5.17 pp
+  model-wide sparsity for +0.043 validation loss.

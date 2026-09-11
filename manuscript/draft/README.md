@@ -25,6 +25,16 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+On 11 September, Section 4.3 and Table 2 added the matched A7-versus-A4
+comparison without pressure. The table reports raw losses and model-wide
+sparsities at all five thresholds, highlighting kappa = 0.5. The text reports
+the difference only in prose: +5.17 pp sparsity for +0.043 validation loss.
+[Analysis 021 O004](../../analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md)
+records the retained evidence and checks. The 27-page PDF builds with resolved
+references and no overfull boxes; the same three underfull vertical-box warnings
+remain. Pages 6-8, including Table 2 on page 7, were rendered and checked.
+The frozen figures are unchanged. Subsequent entries describe earlier revisions.
+
 On 11 September, the frozen
 [Analysis 021 paired-pressure figure](../../analyses/021-2026-09-10-training-results-figures/figures/03-14m-paired-interventions.pdf)
 replaced the old 29-contrast overview as Figure 3 on page 6. Section 4.2 is
