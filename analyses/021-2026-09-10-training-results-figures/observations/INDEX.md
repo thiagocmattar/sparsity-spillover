@@ -11,4 +11,5 @@
 - [O003 - Matched effects of adding OL1](O003-paired-interventions.md): ten
   four-/seven-site pressure additions at matched thresholds; stacked loss and
   model-wide sparsity differences. At kappa = 0.5, +2.50 pp / +0.38 loss versus
-  +12.10 pp / +0.13 loss. Analysis only; manuscript adoption is pending.
+  +12.10 pp / +0.13 loss. Frozen after the final decluttering pass;
+  analysis only, manuscript adoption is pending.

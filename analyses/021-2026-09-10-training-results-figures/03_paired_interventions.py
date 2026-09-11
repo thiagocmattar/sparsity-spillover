@@ -92,14 +92,14 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": 0.6, "pdf.fonttype": 42,
     })
-    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.75))
-    fig.subplots_adjust(left=.145, right=.75, bottom=.12, top=.865, hspace=.78)
-    fig.text(.54, .985, r"$\Delta =$ (+OL1) $-$ (no pressure), at matched $\kappa$",
-             ha="center", va="top", fontsize=9.5, fontweight="bold")
+    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.5))
+    fig.subplots_adjust(left=.135, right=.75, bottom=.13, top=.81, hspace=.5)
+    fig.text(.54, .992, r"$\Delta = (+\mathrm{OL1}) - (\mathrm{no\ pressure}),$ at matched $\kappa$",
+             ha="center", va="top", fontsize=8)
     panels = (("delta_loss", "(a) Effect of adding OL1 on validation loss",
-               "Loss change from\nadding OL1", (-.05, .42)),
+               r"$\Delta$ validation loss", (-.05, .42)),
               ("delta_sparsity_pp", "(b) Effect of adding OL1 on model-wide sparsity",
-               "Sparsity change from\nadding OL1 (pp)", (-1, 13)))
+               r"$\Delta\mathcal{S}_{\mathrm{model}}$ (pp)", (-1, 13)))
     for ax, (key, title, ylabel, limits) in zip(axes, panels):
         ax.set(ylabel=ylabel, ylim=limits, xlim=(-.15, 4.2))
         ax.set_title(title, loc="left", pad=6)
@@ -111,23 +111,21 @@ def make_figure(data):
             rows = [r for r in data["pairs"] if r["family"] == family]
             ax.plot(range(5), [r[key] for r in rows], color=to_rgba(color, .72), linewidth=.9,
                     marker=marker, markersize=4.5, markerfacecolor=color, markeredgecolor=color,
-                    markeredgewidth=.6, zorder=3, gid=f"{key}:{family}")
+                    markeredgewidth=.6, zorder=3, label=label, gid=f"{key}:{family}")
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="upper center", bbox_to_anchor=(.54, .938),
+               ncol=2, frameon=False, fontsize=7.3, handlelength=1.4, markerscale=.85,
+               columnspacing=1.4, handletextpad=.5, borderaxespad=0)
     axes[0].set_yticks([0, .1, .2, .3, .4], ["0", "+0.1", "+0.2", "+0.3", "+0.4"])
     axes[1].set_yticks([0, 4, 8, 12])
     axes[0].tick_params(axis="x", bottom=True, labelbottom=True)
     axes[1].set_xticks(range(5), [f"{k:g}" for k in KAPPAS])
-    for ax in axes:
-        ax.set_xlabel(r"Threshold $\kappa$", labelpad=4)
-    for ax, direction in zip(axes, ("lower is better", "higher is better")):
-        ax.annotate(direction, (1.015, 0), xycoords=("axes fraction", "data"),
-                    ha="left", va="center", color="#656A70", fontsize=7,
-                    annotation_clip=False)
+    axes[1].set_xlabel(r"Threshold $\kappa$", labelpad=4)
     for ax, family, key in ((axes[0], "A4", "delta_loss"), (axes[1], "A7", "delta_sparsity_pp")):
         endpoint = next(r for r in data["pairs"] if r["family"] == family and r["kappa"] == .5)
-        label, color, _ = STYLE[family]
-        ax.annotate(f"{label}\n{endpoint['delta_sparsity_pp']:+.2f} pp / {endpoint['delta_loss']:+.2f} loss",
+        _, color, _ = STYLE[family]
+        ax.annotate(f"{endpoint['delta_sparsity_pp']:+.2f} pp / {endpoint['delta_loss']:+.2f} loss",
                     (4, endpoint[key]), xytext=(9, -1), textcoords="offset points",
-                    fontsize=7.5, color=color, va="center", annotation_clip=False, linespacing=1.4)
+                    fontsize=7.5, color=color, va="center", annotation_clip=False)
     fig.align_ylabels(axes)
     return fig, axes
 

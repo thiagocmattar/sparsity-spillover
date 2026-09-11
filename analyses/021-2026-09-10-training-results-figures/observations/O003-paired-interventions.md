@@ -1,5 +1,7 @@
 # O003 - Matched effects of adding OL1
 
+**Frozen by the author after the final decluttering pass on 11 September 2026.**
+
 ## Question and status
 
 At a fixed threshold, what changes when OL1 pressure is added, and how does
@@ -45,16 +47,14 @@ denote four-site recipes and orange triangles seven-site recipes, matching the
 quality-sparsity overview. Thin lines connect the measured endpoints. The top
 panel spans -0.05 to +0.42 loss; the bottom spans -1 to +13 pp, retaining all
 ten contrasts. Only the two complete highest-threshold effects are annotated.
-The subsequent readability pass adds a light grid, repeats the threshold
-ticks and axis label on the top panel, and labels the zero references
-"lower is better" and "higher is better". Height increases from 3.25 to
-3.5 inches to fit the repeated axis. The final wording pass adds the prominent
-definition "Delta = (+OL1) - (no pressure), at matched kappa" above both
-panels. Titles read "Effect of adding OL1 on validation loss" and "Effect of
-adding OL1 on model-wide sparsity"; y-axes likewise specify changes from
-adding OL1. The figure is now 5.5 by 3.75 inches, preserving the data-region
-height while accommodating the definition. The contrasts and source data
-are unchanged; the reference remains no pressure at the same threshold.
+The frozen layout has a light grid, repeated threshold ticks, and one bottom
+x-axis title. The definition "Delta = (+OL1) - (no pressure), at matched
+kappa" appears as a small subtitle above a shared 4-site / 7-site legend.
+Panel titles name the effect of adding OL1 on validation loss and model-wide
+sparsity. Y-axis labels are shortened to delta validation loss and delta
+S_model (pp); lower-/higher-is-better labels are removed. The figure is
+5.5 by 3.5 inches. The contrasts and source data are unchanged; the reference
+remains no pressure at the same threshold.
 
 **The incremental effect of pressure depends on threshold and target set.**
 Matched changes from adding OL1 to four-site (blue diamonds) and seven-site
@@ -115,7 +115,12 @@ matched identities, and reconciles the calculated differences to Analysis 018.
 Three focused tests in [`test_paired_interventions.py`](../test_paired_interventions.py)
 pass: approved numerical values and coverage; pairing independent of source
 order; rejection of mismatched initialization or a missing threshold.
-The 5.5-by-3.75-inch PDF was rendered with Poppler and visually checked.
+The 5.5-by-3.5-inch PDF was rendered with Poppler and visually checked.
 All fonts are embedded, all text is inside the page, and the ten pairs appear
 at the requested categorical positions in both panels. Existing analysis
 figures and the entire manuscript draft remain unchanged.
+
+Final checks confirm the shared two-entry legend, one x-axis title, both sets
+of categorical tick labels, and all ten exact contrasts in both panels.
+Frozen PDF SHA-256:
+`28281173c886081a6a47d119b4dcd88a0586fcd390452930a62436bed2d8f6da`.
