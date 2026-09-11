@@ -5,6 +5,17 @@ introduction-facing Pythia-14M quality-sparsity overview. The author approved
 this new analysis and the first figure on 10 September 2026. No new training,
 checkpoint evaluation, or measurement is required.
 
+## K050 investigation
+
+The author's follow-up [investigation](investigation/README.md) reconciles all
+30 K050 checkpoints with operation accounting, projection/attention counters
+and raw matched timing ablations. It finds that seven-site's larger relative
+speedup accompanies a slower native reference, while matched four-site OL1
+bypasses more projection MMAs and has lower absolute K050 latency. The folder
+contains the 30-row CSV, code trace, all ten matched pairs, stratified fits and
+a five-page diagnostic PDF. This remains analysis-only; no new runs or
+manuscript changes were made. See its [observation](investigation/observations/O001-kernel-investigation.md).
+
 ## Matched Q/K/V thresholding table
 
 On 11 September, the author requested the pressure-free A7-minus-A4 comparison

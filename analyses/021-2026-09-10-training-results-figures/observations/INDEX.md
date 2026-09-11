@@ -1,5 +1,10 @@
 # Observations
 
+- [Investigation O001 - K050 structured sparsity and native-reference cost](../investigation/observations/O001-kernel-investigation.md):
+  all 30 checkpoints and ten matched target-set pairs; distinguishes logical
+  zeros, MMA bypass/SIMT substitution, attention skips and absolute versus
+  native-relative runtime. Includes raw timing reconstruction and source trace.
+
 - [O001 - 14M quality-sparsity overview](O001-14m-quality-sparsity.md): short
   labels, both clipping controls, architectural reach guides, and direct
   annotations of the local and broader pressure regimes.
