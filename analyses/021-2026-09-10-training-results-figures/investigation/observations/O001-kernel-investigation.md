@@ -4,7 +4,9 @@
 
 Why can seven-site checkpoints have larger full-model speedup despite a lower
 projection contribution to S_model? The author requested this retained-data
-investigation on 11 September 2026; no manuscript adoption is requested.
+investigation on 11 September 2026. The original investigation was analysis-only;
+[O010](../../observations/O010-kernel-manuscript-adoption.md) records the later
+approved manuscript adoption and supplementary-manifest provenance refresh.
 
 ## Method and coverage
 

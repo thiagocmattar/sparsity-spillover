@@ -13,8 +13,10 @@ and raw matched timing ablations. It finds that seven-site's larger relative
 speedup accompanies a slower native reference, while matched four-site OL1
 bypasses more projection MMAs and has lower absolute K050 latency. The folder
 contains the 30-row CSV, code trace, all ten matched pairs, stratified fits and
-a five-page diagnostic PDF. This remains analysis-only; no new runs or
-manuscript changes were made. See its [observation](investigation/observations/O001-kernel-investigation.md).
+a five-page diagnostic PDF. The author subsequently approved manuscript
+integration through Figure 07 v2; [O010](observations/O010-kernel-manuscript-adoption.md)
+records the adoption and appendix support. No new runs were launched.
+See the source [observation](investigation/observations/O001-kernel-investigation.md).
 
 ## Matched Q/K/V thresholding table
 
@@ -365,7 +367,11 @@ These are ordered trained settings, not training trajectories. The
 unconnected v2 is retained in commit `7be29da`.
 [O009](observations/O009-kernel-realization-v2.md) records the caption, provenance
 and limits; [the v2 reduction](data/kernel-realization-v2.json) retains both fits
-and the original PDF hash. No manuscript changes or new measurements were made.
+and the original PDF hash. [O010](observations/O010-kernel-manuscript-adoption.md)
+records its approved adoption as manuscript Figure 7 and the matching
+representation-centered section, Discussion and appendix. The small
+`08_kernel_manuscript_table.py` formats the retained 30-checkpoint latency table.
+No new measurements were made.
 
 ```powershell
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py

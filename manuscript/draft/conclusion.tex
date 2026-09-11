@@ -28,13 +28,18 @@ identify where that relationship stops holding. Agreement across these
 comparisons makes the result more informative than a favorable checkpoint
 or an isolated sparsity percentage.
 
-Product accounting and kernel timing answer different questions. Counting
-zero-operand products shows where an intervention affects computation;
-the sparsity ceiling explains how architecture changes that opportunity.
-The kernel study confirms that some of it can reduce full-model latency,
-but also shows that skipping attention work can cost more than executing it.
-Fusion and sparse-path ablations are therefore necessary to attribute a
-measured speedup.
+% Kernel evidence: Analysis 021 observations/O009-kernel-realization-v2.md
+% and investigation/observations/O001-kernel-investigation.md.
+Product accounting and kernel timing answer different questions.
+$\Smodel$ measures how much matrix-product work is logically exposed to zero
+operands; the kernel study asks how much of that opportunity can be
+profitably realized. The distinction matters across sites: high-threshold
+projection sparsity produces structured work that K050 can skip with a net
+latency benefit, while additional Q/K/V sparsity increases the logical
+opportunity without producing profitable attention skipping at the tested
+14M shapes. The computational value of a sparse representation therefore
+depends not only on how many zeros it contains, but also on where they occur
+and the granularity at which the implementation can exploit them.
 
 Cross-size comparisons use a common token budget rather than equal tokens
 per parameter, and 410M also uses a lower peak learning rate; the A0

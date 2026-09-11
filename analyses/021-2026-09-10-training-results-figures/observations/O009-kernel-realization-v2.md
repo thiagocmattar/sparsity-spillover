@@ -5,7 +5,9 @@
 How does model-wide sparsity relate to the full-model speedup from enabling
 projection skipping? The author requested a separate v2 of Figure 07 with
 S_model replacing projection MMA bypass on panel (b)'s x-axis. The original
-PDF and its data are preserved; the manuscript is unchanged.
+PDF and its data are preserved. The initial revisions were analysis-only;
+[O010](O010-kernel-manuscript-adoption.md) records the subsequent approved
+manuscript adoption without changing this artwork.
 
 ## Method, coverage and source
 

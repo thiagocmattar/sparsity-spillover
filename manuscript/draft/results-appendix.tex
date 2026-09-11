@@ -5,6 +5,9 @@
 % Composite density/accounting figure: Analysis 021 observations/O005-distributions-and-operations.md; 04_distributions_and_operations.py.
 % Kernel contract: Run 029 observations/06-implementation-and-claim-audit.md.
 % Kernel compatibility/predicate revision: Analysis 018 O015; Run 022 README, Run 025 SOURCE_AUDIT.md.
+% Kernel adoption: Analysis 021 observations/O009-kernel-realization-v2.md;
+% investigation/observations/O001-kernel-investigation.md and 01_extract.py--03_plot.py.
+% Per-checkpoint latency table: Analysis 021 / 08_kernel_manuscript_table.py.
 % Generated tables: Analysis 018 / 03_manuscript_tables.py.
 % A0 histories: analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py;
 % observations/O007-a0-optimization.md; data/a0-optimization.json.
@@ -294,13 +297,30 @@ handling for Pythia. It retains dense attention and uses native projection
 fallback on A0. Table~\ref{tab:kernel-ablations} reports this adapted baseline.
 
 Historical proposals are replayed on four representative checkpoints; the
-plotted incumbent uses fixed A7-OL1, $\kappa=0.5$. Final implementation and
+incumbent in Figure~\ref{fig:kernel-search-history} uses fixed A7-OL1,
+$\kappa=0.5$. It reaches $1.6024\times$ by iteration 11 and $1.7830\times$
+at iteration 42. Final implementation and
 ablation summaries retain the 30-checkpoint manuscript cohort from the
 historical 35-checkpoint sweep. Five A4 checkpoints with pressure only at $h$
 are excluded because they do not implement the four-site pressure objective
 studied here. Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
+
+% Previous main figure, retained unchanged from Analysis 018.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/07-kernel-realization.pdf}
+\caption{\textbf{Kernel-search history and the final checkpoint sweep.}
+(a) Best qualified incumbent across 42 eligible retrospective proposals on
+the fixed seven-site + OL1, $\kappa=0.5$ checkpoint. (b) Final K050 speedup
+across the 30-checkpoint cohort; this historical view distinguishes individual
+recipes. Both use the same native PyTorch/SDPA CUDA-graph reference and
+BF16, batch-one, 2,048-token protocol on one RTX5090. Search replay and final
+evaluation are separate timing measurements. The history describes one
+human-guided development trajectory, not a comparison of coding agents.}
+\label{fig:kernel-search-history}
+\end{figure}
 
 The coding-agent configuration records \emph{gpt-6-astra} as the default
 model, not the model served for every request. This is one human-guided
@@ -335,8 +355,10 @@ FlashAttention and PyTorch components. K049 is its searched predecessor;
 K050 adds fusion of the two input LayerNorms while preserving their separate
 affine parameters and thresholds. The all-skips-off control retains
 fusion while disabling both attention and projection skips; the
-attention-dense control retains projection skips. Their ratios are formed
-from separately measured, native-normalized timings. K050's sparse paths
+attention-dense control retains projection skips. The historical ablation
+summary forms ratios from separately measured, native-normalized timings.
+Figure~\ref{fig:kernel-autoresearch}b instead directly divides candidate
+latency geometric means, as defined below. K050's sparse paths
 improve 14 of 30 checkpoints relative to all-skips-off, with geometric
 mean ratio $1.0432\times$. Disabling attention skipping improves all 30:
 at the search checkpoint, instrumentation confirms that skipping bypasses
@@ -366,13 +388,126 @@ four-checkpoint subset is shown only to document its limited qualification.}
 \end{table}
 
 \FloatBarrier
+\subsection{Structured sparsity and matched runtime diagnostics}
+\label{app:kernel-diagnostics}
+
+We reconcile the same 30 checkpoints with their canonical logical-product
+counts, retained kernel diagnostics, and raw matched timing pairs.
+Table~\ref{tab:kernel-checkpoint-latencies} separates native and optimized
+latencies for each checkpoint. Let $t_N,t_0,t_P,t_K$ denote the geometric-mean
+latencies of native execution, all-skips-off K050, projection-only K050,
+and full K050. The gains from enabling projection and attention skipping
+are $t_0/t_P$ and $t_P/t_K$, respectively. Both controls retain K050's fusion;
+the former disables attention skipping in both implementations. These are
+full-model latency ratios, not timings of the projection operations alone.
+$t_N/t_0$ compares native execution with the optimized all-skips-off control,
+which also changes dense kernels and layouts, so it does not isolate fusion.
+Native-relative full speedup is $t_N/t_K$; $t_N$ uses the native measurements
+paired with full K050. Each geometric mean uses 64 inputs, seven paired
+passes, and three processes, matching the original timing protocol.
+
+\paragraph{Execution units.}
+QKV and FFN-up omit a $16\!\times\!8\!\times\!16$ MMA when the entire
+$16$-token by $16$-feature activation fragment is zero. Their counters are
+reconstructed from the actual BF16 operands using the implemented predicate.
+FFN-down and attention output process eight real token rows per padded
+16-row MMA. Rows with at most two nonzeros may use scalar operations under
+the kernel's numerical safety checks; remaining empty feature fragments
+bypass MMAs. These latter counters are instrumented and independently
+checked against operand-derived counts. Their bypass totals include
+replacement by scalar work as well as empty fragments, so they are not
+counts of eliminated arithmetic. We pool bypassed and eligible MMA counts
+across the four projection families before dividing, retaining the padding
+and scalar-work distinctions in the supplementary data.
+
+Attention omits an MMA when either complete operand fragment is zero.
+In 29 checkpoints, QK skips $0\%$ and PV skips $10.42\%$ of eligible
+instructions; the PV baseline includes masked or padded probability work.
+Only seven-site + OL1 at $\kappa=0.5$ has additional skipping, reaching
+$58.00\%$ for QK and $67.21\%$ for PV. Attention-skipping gain nevertheless
+remains below one for every checkpoint ($0.9832$--$0.9894\times$).
+These instruction counts include tiled causal padding, unlike the unmasked
+scalar logical-product denominator.
+
+\paragraph{Associations and matched recipes.}
+Figure~\ref{fig:kernel-diagnostics} compares scalar and instruction-level
+predictors. Projection-skipping gain has Pearson $r=0.973$, $R^2=0.946$
+against projection MMA bypass, versus $r=0.643$, $R^2=0.413$ against the
+projection scalar zero-product fraction. The within-family $\Smodel$ versus
+native-relative speedup fits have $R^2=0.542$, $0.784$, and $0.762$ for the
+baseline/one-site, four-site, and seven-site groups (ten checkpoints each).
+Centering both variables within family gives $R^2=0.660$. The global relation
+is therefore not solely separation between family means; all fits remain
+descriptive and do not control for threshold, pressure, quality, or native cost.
+Attention MMA skipping has only two distinct predictor values, with one
+checkpoint at the larger value, limiting its correlation to that contrast.
+
+Across all five matched OL1 thresholds, four-site recipes have greater
+projection scalar contribution, more projection MMA bypass, and larger
+projection-skipping gains than seven-site recipes. Without pressure, small
+bypass differences change sign, although four-site has the larger gain at
+each threshold. At $\kappa=0.5$ with OL1, four-site bypasses $82.30\%$ of
+projection MMAs versus $57.68\%$ for seven-site. Its full K050 latency is
+also lower: $0.45948$ versus $0.47337$ ms. Seven-site nevertheless reports
+the larger native-relative speedup ($1.783\times$ versus $1.609\times$),
+because its native baseline is slower ($0.84409$ versus $0.73944$ ms).
+This relative-speedup/absolute-latency reversal holds in all eight
+positive-threshold four-/seven-site pairs, with and without OL1.
+
+The native implementation executes Q/K/V gates separately at nonzero
+thresholds; K050 fuses them with layout conversion and RoPE, including in
+the all-skips-off control. Similar all-skips-off latencies support native
+gate overhead as an explanation for the denominator difference, but do
+not isolate each operation's timing contribution.
+
+\paragraph{Coverage and unavailable quantities.}
+Logical sparsity uses retained FP16 counts. Kernel counters use actual BF16
+operands over all 338 validation blocks; timing uses the original 64-input
+subset. Pure-zero-only versus scalar-replacement bypass counts, counters
+restricted to the timed inputs, unmasked-only attention MMA counts, and
+isolated per-operation latency attribution are unavailable. No such values
+are inferred from $\Smodel$. Supplementary \path{kernel/checkpoints.csv}
+retains all 30 records with operation counts, skip counters, latencies,
+and explicit missing fields; \path{kernel/associations.csv} and
+\path{kernel/matched-pairs.csv} retain the complete fits and matched contrasts.
+
+\begin{table}[p]
+\centering\small
+\caption{\textbf{Matched K050 latency ablations for every 14M checkpoint.}
+Entries are geometric-mean full-model latencies in milliseconds. Native
+uses the reference paired with full K050. All-skips-off retains the optimized
+implementation but disables both sparse paths; projection-only enables
+projection skipping with attention skipping disabled. The dose is $\lambda$
+for local L1/OL1 and $\kappa$ for four-/seven-site recipes; multisite OL1 fixes
+$\lambda=1$. Ratios should be computed from the unrounded supplementary
+values. Differences across checkpoints are not independent-seed estimates.}
+\label{tab:kernel-checkpoint-latencies}
+\input{tables/kernel-checkpoint-latencies}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\includegraphics[page=1,width=\linewidth]{figures/appendix/kernel-investigation.pdf}
+\caption{\textbf{Scalar sparsity, skipped instructions, and matched runtime gains.}
+The 30 checkpoints share colors and shapes by family. Projection and attention
+gains are $t_0/t_P$ and $t_P/t_K$; lines are descriptive OLS fits with intercepts.
+Projection bypass includes scalar substitution and padded MMA rows. Attention
+skip fractions include masked/padded work and take only two distinct values.
+The remaining pages of the accompanying diagnostic PDF show within-family
+fits, matched threshold comparisons, and absolute latency traces. Counters
+cover 338 validation blocks, while timings cover 64 matched inputs.}
+\label{fig:kernel-diagnostics}
+\end{figure}
+
 \subsection{Evidence and data accompanying the draft}
 \label{app:result-data}
 
 The supplementary directory \path{supplementary-data/} contains all 54 training records with
 integer operation counts, all 540 clipping evaluations and frontier
 memberships, seven signed histograms with zero and tail counts, figure
-coordinates, and the 30-checkpoint runtime reduction. The included README
+coordinates, and the 30-checkpoint runtime reduction, with the kernel
+investigation's per-checkpoint counters, raw-latency reductions, and stratified
+fits. The included README
 defines fields and units. Copy hashes are recorded in \texttt{SOURCES.json};
 \texttt{protocol.json} gives data preparation, training settings and
 implementation identities. Paths refer to the accompanying repository;

@@ -1,7 +1,7 @@
 # Manuscript results data
 
-This local release accompanies the 8 September 2026 manuscript results.
-The 14 copied measurement files are byte-identical to retained evidence;
+This release accompanies the manuscript results, including the 11 September
+kernel revision. The 18 copied measurement files are byte-identical to retained evidence;
 SOURCES.json records the original repository path, SHA-256 and byte size.
 The additional protocol.json is a locally composed record with its own
 hashed source map. No evaluation
@@ -27,6 +27,20 @@ was launched for manuscript assembly.
   training settings, implementation/environment identities and known kernel
   limits. Its source paths are repository-relative and refer to retained
   records, not to files packaged inside this measurement directory.
+- `kernel/checkpoints.csv` and `kernel/checkpoints.json`: the same 30 K050
+  checkpoints, with 140 fields covering scalar operation counts, structural
+  counters, raw-latency geometric means, matched gains, and missing quantities.
+- `kernel/associations.csv`: pooled and within-family descriptive Pearson/OLS
+  fits, including constant-predictor cases marked undefined.
+- `kernel/matched-pairs.csv`: all ten four-/seven-site comparisons at matched
+  thresholds, with and without OL1.
+
+The kernel files come from
+[Analysis 021's investigation](../../../analyses/021-2026-09-10-training-results-figures/investigation/README.md).
+Its [field guide](../../../analyses/021-2026-09-10-training-results-figures/investigation/METHODS.md)
+defines counters and traces the actual implementation. The complete five-page
+[diagnostic PDF](../figures/appendix/kernel-investigation.pdf) is included with
+the manuscript figures; its first page appears in the appendix.
 
 ## Fields and interpretation
 
@@ -51,3 +65,14 @@ curve to unit area. Runtime speedups are separate BF16 measurements against
 each checkpoint's native SDPA CUDA-graph baseline; canonical logical sparsity
 is measured in FP16. Neither logical sparsity nor frontier membership is a
 measured runtime gain. Threshold targets are not independent training seeds.
+
+Kernel `*_model_contribution_pp` fields use the common model denominator;
+`*_scalar_zero_fraction` fields use their operation or operation-group denominator.
+MMA bypass counts instructions, including padded projection rows and scalar
+substitution; it is not eliminated arithmetic. Attention MMA counts include
+masked/padded probability work. Counters cover 338 validation blocks using BF16
+operands, while timing covers 64 inputs with seven passes in three processes.
+`projection_sparse_gain` divides all-skips-off by projection-on candidate
+latencies; `attention_sparse_gain` divides projection-on by full-K050 latency.
+Both are full-model ratios with other implementation choices retained.
+Blank CSV fields/null JSON fields denote unavailable measurements, not zeros.

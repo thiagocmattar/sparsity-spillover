@@ -25,6 +25,19 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+On 11 September, the frozen Analysis 021 kernel v2 became Figure 7 on page 10.
+Section 4.6 is now "When model-wide sparsity translates to speedup," with
+Astra as the implementation tool. The section and Discussion distinguish
+projection benefit, attention overhead, execution granularity and the native
+denominator. Appendix D.4 retains the search history (Figure 14); D.5 adds
+kernel diagnostics, all 30 checkpoint latencies (Table 11) and Figure 15.
+Four kernel measurement exports accompany the draft with source hashes.
+The 31-page build has resolved references, no overfull boxes, and five
+underfull vertical-box warnings; affected pages were visually checked.
+[Analysis 021 O010](../../analyses/021-2026-09-10-training-results-figures/observations/O010-kernel-manuscript-adoption.md)
+records the evidence checks, unchanged first nine pages and interpretation
+limits. Entries below describe earlier revisions.
+
 The main-text boundary-contrast table (formerly Table 3) is removed without
 replacement. Section 4.5 now states the two boundary-threshold conclusions
 directly and refers to Appendix Table 7 for all five thresholds at each size.
@@ -123,8 +136,8 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 
 ## Reading copy and sources
 
-- [main.pdf](main.pdf): 28-page ICLR 2027 draft; main text pages 1-12,
-  references pages 12-13, appendices pages 14-28. Before submission, shorten the
+- [main.pdf](main.pdf): 31-page ICLR 2027 draft; main text pages 1-12,
+  references pages 12-13, appendices pages 14-31. Before submission, shorten the
   main text to nine pages and add the required author-reviewed AI use statement.
 - [abstract.tex](abstract.tex), [introduction.tex](introduction.tex),
   [related-work.tex](related-work.tex), [methodology.tex](methodology.tex):
@@ -132,7 +145,7 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 - [experimental-study.tex](experimental-study.tex),
   [training-results.tex](training-results.tex),
   [kernel-autoresearch.tex](kernel-autoresearch.tex): matched protocol,
-  six main figures, including the architecture/recipe diagram, and the scale-contrast table.
+  seven main figures, including the architecture/recipe diagram, and matched comparisons.
 - [conclusion.tex](conclusion.tex): scientific contribution, agreement across
   evidence, execution implications and study scope.
 - [methodology-appendix.tex](methodology-appendix.tex),
@@ -142,9 +155,9 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 - [figures/SOURCES.json](figures/SOURCES.json): figure-copy provenance.
   The quality-sparsity overview uses Analysis 021's short-label view, with 26
   trained checkpoints and both clipping controls; earlier overviews are retained.
-- [tables/](tables/): seven reproducible analysis-owned tables. Numerical rows
-  are unchanged; terminology uses threshold, activation sparsity and U_arch.
-- [supplementary-data/README.md](supplementary-data/README.md): fourteen unchanged
+- [tables/](tables/): analysis-owned tables, including the complete kernel
+  latency ablations. Terminology uses threshold, activation sparsity and U_arch.
+- [supplementary-data/README.md](supplementary-data/README.md): eighteen
   measurement copies plus a separately sourced [protocol](supplementary-data/protocol.json).
   Includes all 540 clipping evaluations, seven signed histograms, and source hashes.
 

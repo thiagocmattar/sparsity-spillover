@@ -8,7 +8,8 @@ OL1 bypasses more projection MMAs and benefits more from projection skipping at
 every matched threshold.
 
 This analysis uses the existing 30-checkpoint cohort, c01–c30. No training,
-evaluation, benchmarking, or manuscript modification was performed.
+evaluation or benchmarking was performed. The subsequent approved manuscript
+adoption is recorded in [O010](../observations/O010-kernel-manuscript-adoption.md).
 
 ## The decisive pair
 

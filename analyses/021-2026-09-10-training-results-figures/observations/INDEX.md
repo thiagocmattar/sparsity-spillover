@@ -48,3 +48,7 @@
   four multisite threshold sweeps and two muted one-site pressure-weight
   sweeps, with one κ = 0.5 label per color and no displayed regression.
   Original Figure 07 is preserved.
+- [O010 - Kernel manuscript adoption](O010-kernel-manuscript-adoption.md):
+  frozen v2 becomes Figure 7 in Section 4.6. The section and Discussion focus
+  on sparsity location and execution structure; the appendix retains search
+  history, counter definitions, all 30 latency ablations and diagnostics.

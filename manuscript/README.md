@@ -343,6 +343,15 @@ actually needs it.
 
 ## Result evidence crosswalk
 
+- On 11 September 2026, the user approved Analysis 021's frozen kernel v2
+  figure and a rewrite around where sparsity becomes useful computation.
+  Draft Section 4.6 and Figure 7 now separate native-relative speedup from
+  matched projection-skipping gain; Discussion follows the same argument.
+  Appendix D.4 retains search/compatibility evidence and D.5 adds the kernel
+  predicates, stratified fits and all 30 native/control/optimized latencies.
+  [O010](../analyses/021-2026-09-10-training-results-figures/observations/O010-kernel-manuscript-adoption.md)
+  records sources, qualifications and verification. No new measurement was made.
+
 - On 8 September 2026, the user requested an explicit attention-skipping
   discussion in the new kernel subsection. It now reports the executed QK/PV
   skips and their negative runtime contribution at T=2048. Longer sequences
