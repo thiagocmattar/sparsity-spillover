@@ -22,16 +22,55 @@ def read_evidence():
     data["projection_x_metric"] = "sparsity_percent"
     data["question"] = "How does model-wide sparsity relate to native-relative full K050 speedup and the matched gain from projection skipping?"
     data["variant"] = "v2; model-wide sparsity replaces projection MMA bypass on panel (b)"
+    data["projection_sweeps"] = []
+    for recipe in ("A4", "A4-OL1", "A7", "A7-OL1"):
+        points = sorted([p for p in full.values() if p["family"] == recipe], key=lambda p: p["dose"])
+        assert [p["dose"] for p in points] == [0, .01, .05, .1, .5]
+        data["projection_sweeps"].append({"recipe": recipe, "visual_family": points[0]["visual_family"],
+                                          "with_ol1": recipe.endswith("-OL1"),
+                                          "kappas": [p["dose"] for p in points],
+                                          "conditions": [p["condition"] for p in points]})
     original = HERE / "figures/07-kernel-realization.pdf"
     data["original_figure_sha256"] = hashlib.sha256(original.read_bytes()).hexdigest()
     return data
+
+
+def make_figure(data):
+    fig = base.make_figure(data, projection_x=data["projection_x_metric"])
+    ax = fig.axes[1]
+    points = {p["condition"]: p for p in data["projection_points"]}
+    pressured = set()
+    for sweep in data["projection_sweeps"]:
+        selected = [points[condition] for condition in sweep["conditions"]]
+        color = base.STYLE[sweep["visual_family"]][0]
+        ax.plot([p["sparsity_percent"] for p in selected], [p["projection_sparse_gain"] for p in selected],
+                color=color, ls="--" if sweep["with_ol1"] else "-", lw=.95, alpha=.85,
+                zorder=2, gid=sweep["recipe"])
+        if sweep["with_ol1"]:
+            pressured.update(sweep["conditions"])
+    for collection in ax.collections:
+        family = collection.get_gid()
+        if family not in ("4-site", "7-site"):
+            continue
+        selected = [p for p in data["projection_points"] if p["visual_family"] == family]
+        color = base.STYLE[family][0]
+        collection.set_facecolors([color if p["condition"] in pressured else "white" for p in selected])
+        collection.set_edgecolors(["white" if p["condition"] in pressured else color for p in selected])
+        collection.set_linewidths([.35 if p["condition"] in pressured else .8 for p in selected])
+    handles = [base.Line2D([], [], color=".4", ls=style, lw=.95, marker="o", ms=3.5,
+                           markerfacecolor=face, markeredgewidth=.7, label=label)
+               for style, face, label in (("-", "white", "No OL1"), ("--", ".4", "+ OL1"))]
+    ax.legend(handles=handles, loc="lower right", bbox_to_anchor=(.99, .20), fontsize=6.8,
+              frameon=True, facecolor="white", edgecolor="none", framealpha=.95,
+              borderpad=.25, handlelength=2.2, labelspacing=.4)
+    return fig
 
 
 def main():
     data = read_evidence()
     (HERE / "data/kernel-realization-v2.json").write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
-    fig = base.make_figure(data, projection_x=data["projection_x_metric"])
+    fig = make_figure(data)
     fig.savefig(HERE / "figures/07-kernel-realization-v2.pdf",
                 metadata={"Title": "Model-wide sparsity and K050 full-model and projection-skipping gains",
                           "Creator": "Analysis 021 / 07_kernel_realization_v2.py", "CreationDate": None})

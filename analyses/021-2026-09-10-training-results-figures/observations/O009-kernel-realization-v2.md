@@ -15,6 +15,13 @@ It joins canonical S_model to each of the same 30 projection-gain observations
 by checkpoint identity, then recomputes unweighted OLS with an intercept.
 Panel (a), the four legend groups, 55:45 layout and reference lines are retained.
 Panel (b) uses the same 0–30% displayed sparsity range as panel (a).
+The author's follow-up adds four connected threshold sweeps to panel (b):
+four-/seven-site recipes, each with and without OL1. Each connects the five
+separately trained thresholds 0, 0.01, 0.05, 0.1 and 0.5 in that order.
+Solid curves/open markers denote no OL1; dashed curves/filled markers denote
+OL1. A small panel-specific key defines that encoding. Panel (a)'s markers
+and annotations remain unchanged. The unconnected v2 is retained in commit
+`7be29da` for rollback.
 
 The gain remains the geometric-mean all-skips-off K050 latency divided by the
 geometric-mean attention-dense/projection-on K050 latency. It is a full-model
@@ -44,7 +51,12 @@ attention skipping. Dashed lines are descriptive OLS fits with intercepts
 (R² = 0.817 and 0.496); dotted lines mark 1×. Black squares identify A0,
 gray circles identify nine 1-site checkpoints (ReLU and local L1/OL1), and
 blue diamonds/orange triangles identify the ten four-site/seven-site
-checkpoints. The labeled seven-site + OL1, κ = 0.5 endpoint in panel (a)
+checkpoints. In panel (b), colored solid lines/open markers denote recipes
+without OL1 and colored dashed lines/filled markers denote recipes with OL1.
+Lines connect separately trained settings in increasing κ = 0, 0.01, 0.05,
+0.1 and 0.5; they are not training trajectories or interpolated models.
+The dark-gray dashed line remains the global OLS fit. The labeled
+seven-site + OL1, κ = 0.5 endpoint in panel (a)
 reaches 1.78× native-relative speedup. Canonical sparsity uses FP16 and full
 validation coverage; timings use BF16 and the matched 64-input subset.
 These associations across different checkpoints do not isolate causal effects.
@@ -61,17 +73,32 @@ work eliminated by the kernel. The new fit must not inherit the earlier
 instruction-bypass interpretation. Native costs, recipe, threshold, weights
 and quality vary across checkpoints, and neither fit is a causal estimate.
 
+The high-threshold endpoints in panel (b) all have κ = 0.5:
+
+| Recipe | Checkpoint | S_model (%) | Projection-skipping gain |
+|---|---|---:|---:|
+| 4-site | c15 | 10.215537 | 1.324139× |
+| 4-site + OL1 | c20 | 12.713449 | 1.378251× |
+| 7-site | c25 | 15.386813 | 1.316134× |
+| 7-site + OL1 | c30 | 27.482684 | 1.325269× |
+
+These are the upper endpoints of the four connected curves. The gain compares
+implementations of the same checkpoint; connecting the curves does not turn
+the between-checkpoint threshold changes into matched runtime ablations.
+
 ## Reproduction and verification
 
 [kernel-realization-v2.json](../data/kernel-realization-v2.json) retains source
 hashes, all qualified comparisons, the 30 matched panel-(b) points, both
-regressions and the original PDF's SHA-256. The original figure is untouched.
+regressions, four ordered sweep identities and the original PDF's SHA-256.
+The original Figure 07 is untouched.
 
 ```powershell
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v2.py -q
 ```
 
-Two v2 tests check checkpoint/count joins, unchanged gains and original PDF,
-independent regression, and all plotted x/y values. The three original tests
-also pass. The PDF was rendered and visually inspected.
+Three v2 tests check checkpoint/count joins, unchanged gains and original PDF,
+independent regression, all plotted x/y values, and the four ordered sweeps
+with the correct pressure encodings. The three original tests also pass.
+The PDF was rendered and visually inspected.

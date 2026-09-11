@@ -40,7 +40,7 @@ def test_both_panels_use_smodel_and_projection_fit_is_recomputed():
     assert [fit["intercept"], fit["slope_per_percentage_point"]] == pytest.approx(coefficients)
     assert fit["r2"] == pytest.approx(np.corrcoef(x, y)[0, 1] ** 2)
     assert fit["r2"] == pytest.approx(.4957330004096926)
-    fig = v2.base.make_figure(data, projection_x=data["projection_x_metric"])
+    fig = v2.make_figure(data)
     assert fig.axes[0].get_xlabel() == fig.axes[1].get_xlabel()
     for ax in fig.axes:
         plotted = np.concatenate([collection.get_offsets() for collection in ax.collections])
@@ -49,4 +49,28 @@ def test_both_panels_use_smodel_and_projection_fit_is_recomputed():
     assert sorted(map(tuple, plotted)) == sorted(zip(x, y))
     line, = [line for line in fig.axes[1].lines if line.get_gid() == "OLS"]
     assert line.get_ydata() == pytest.approx(coefficients[0] + coefficients[1] * line.get_xdata())
+    v2.base.plt.close(fig)
+
+
+def test_four_trajectories_follow_matched_thresholds_with_separate_pressure_styles():
+    data = v2.read_evidence()
+    fig = v2.make_figure(data)
+    by_condition = {p["condition"]: p for p in data["projection_points"]}
+    assert len(data["projection_sweeps"]) == 4
+    conditions = []
+    for sweep in data["projection_sweeps"]:
+        assert sweep["kappas"] == [0, .01, .05, .1, .5]
+        conditions.extend(sweep["conditions"])
+        line, = [line for line in fig.axes[1].lines if line.get_gid() == sweep["recipe"]]
+        selected = [by_condition[c] for c in sweep["conditions"]]
+        assert line.get_xdata() == pytest.approx([p["sparsity_percent"] for p in selected])
+        assert line.get_ydata() == pytest.approx([p["projection_sparse_gain"] for p in selected])
+        assert line.get_linestyle() == ("--" if sweep["with_ol1"] else "-")
+        assert not any(line.get_gid() == sweep["recipe"] for line in fig.axes[0].lines)
+    assert len(conditions) == len(set(conditions)) == 20
+    for collection in fig.axes[1].collections:
+        if collection.get_gid() in ("4-site", "7-site"):
+            faces = collection.get_facecolors()
+            assert np.allclose(faces[:5, :3], 1)
+            assert not np.any(np.all(np.isclose(faces[5:, :3], 1), axis=1))
     v2.base.plt.close(fig)
