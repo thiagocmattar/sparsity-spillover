@@ -7,6 +7,8 @@ sizes when both quality cost and architectural ceiling are explicit?
 
 The author requested this analysis-only redesign on 11 September 2026.
 The manuscript and the previous two-row scale figure remain unchanged.
+The main figure is frozen after the author's final label-spacing and
+endpoint-annotation polish in this analysis.
 
 ## Sources and coverage
 
@@ -35,25 +37,33 @@ Model-wide sparsity is `100 * block_zero_product_count / model_product_count`.
 The denominator includes dense block matrix products and the final output
 projection. The analytic ceilings use the same workload and denominator.
 
-Every vertical coordinate is `loss - same_size_A0_loss`, calculated before
-rounding. The A0 losses are 5.2085730123096665, 4.09976596627715 and
-4.547456437666741. The last rounds directly to **4.547**, rather than the
-double-rounded 4.548 in the proposed subtitle. The measured 14M clipping p=0
-is retained with its small positive loss difference, 0.000021047493410364382;
-it is not forced to the unmodified A0 origin.
+Every vertical coordinate is the **absolute validation loss** from its paired
+loss/count evaluation. The retained sidecar table still computes
+`loss - same_size_A0_loss` before rounding; these differences are not plotted.
+The A0 losses are 5.2085730123096665, 4.09976596627715 and 4.547456437666741.
+The measured 14M clipping p=0 remains at its actual loss 5.208594059803077,
+rather than being replaced by the separately evaluated untreated A0 loss.
 
-All panels share the displayed loss range [-0.05, 1.35], with separate sparsity
+All panels share the displayed loss range [4.0, 6.4], with separate sparsity
 ranges [0, 32], [0, 52] and [0, 90]. All thirty trained endpoints fit. Four
-clipping evaluations per size lie above the displayed range (p = 0.6 to 0.9).
-Their coordinates remain in the reduction and plotted paths; the axes clip
+clipping evaluations at 14M/410M lie above the displayed range (p = 0.6 to 0.9),
+as do three at 70M (p = 0.7 to 0.9). Their coordinates remain in the reduction
+and plotted paths; the axes clip
 them at the display boundary. No values are dropped and reconnected.
 
 Endpoint utilization always uses the **same-size A7 ceiling**:
 `100 * pooled_zero_products / (338 * A7.reachable_product_count)`.
 It does not normalize A4 by its own narrower ceiling. These annotations replace
 the old second normalized row. Only boundary trained thresholds are labeled.
-The companion table beneath the panels reports the seven-site kappa = 0.5
-endpoints and their total loss cost relative to A0.
+The figure has no embedded table, raw-sparsity endpoint annotation or repeated
+ceiling text blocks. Colored percentages at the tops of the vertical guides
+identify the ceilings. The separate Markdown table retains endpoint sparsity
+and total loss cost relative to A0. Only the tightly clustered 14M kappa = 0
+labels retain short leaders; other labels sit directly beside their markers.
+Only the seven-site kappa = 0 label is kept in the 410M cluster. Both high-
+threshold endpoints remain labeled, and ceiling-utilization text is placed
+close to the corresponding orange endpoint. The 410M ceiling labels are
+separated horizontally and the vertical guides are lighter than the data.
 
 ## Figure and proposed caption
 
@@ -63,11 +73,11 @@ endpoints and their total loss cost relative to A0.
 across model sizes when architectural ceilings are explicit.** Panels show
 Pythia-14M, 70M and 410M. Blue diamonds and orange triangles denote four-site
 and seven-site OL1, respectively, at trained thresholds kappa = 0, 0.01, 0.05,
-0.1, 0.5. The vertical axis is validation loss minus the untreated same-size A0
-loss; all panels share its scale, while horizontal ranges differ for readability.
+0.1, 0.5. All panels share the absolute validation-loss scale, while horizontal
+ranges differ for readability.
 Vertical blue and orange guides mark the four-site and seven-site architectural
-ceilings. Endpoint labels and the companion table report seven-site kappa = 0.5
-sparsity and the fraction of the same-size seven-site ceiling used. At that
+ceilings. Seven-site kappa = 0.5 annotations report the fraction of the same-size
+seven-site ceiling used: 91.8%, 82.2% and 92.4%, respectively. At that
 threshold, seven-site OL1 has both greater sparsity and lower loss than four-site
 OL1 at all three sizes. Thin gray dotted curves with open circles show A0
 post-hoc clipping at the four projection-input sites. Higher-loss clipping
@@ -118,8 +128,8 @@ at kappa = 0 it holds only at 410M. The 14M and 410M endpoints both use about
 ## Reproduction and verification
 
 Source script: [05_scale_transfer.py](../05_scale_transfer.py).
-The [companion table](../tables/scale-transfer-endpoints.md) is generated from
-the same unrounded endpoint reduction as the embedded PDF table.
+The separate [companion table](../tables/scale-transfer-endpoints.md) is generated
+from the same unrounded endpoint reduction; it is not embedded in the PDF.
 
 ```powershell
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py
@@ -127,6 +137,7 @@ the same unrounded endpoint reduction as the embedded PDF table.
 ```
 
 Three focused tests cover the approved endpoint values, complete validation,
-within-size loss references, common A7 normalization and preservation of
-off-scale clipping coordinates. The one-page 7.4-by-4.2-inch PDF was rendered
+absolute plotted losses, retained within-size loss differences, common A7
+normalization and preservation of off-scale clipping coordinates.
+The one-page 7.4-by-2.95-inch PDF was rendered
 and visually checked; fonts are embedded and text remains inside the page.

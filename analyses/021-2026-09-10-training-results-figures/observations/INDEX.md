@@ -23,7 +23,12 @@
   Adopted as manuscript Figure 5; full threshold distributions and cross-size
   operation accounting are retained in Appendix D.1/D.2.
 - [O006 - Quality costs and ceilings across sizes](O006-scale-transfer.md):
-  one row of 14M/70M/410M panels with loss relative to same-size A0,
+  one row of 14M/70M/410M panels with absolute validation loss,
   four-/seven-site ceiling guides, and common A7 utilization at kappa = 0.5.
-  The companion table separates total loss cost from pressure-only contrasts.
+  A separate Markdown table retains loss costs relative to A0; no table is
+  embedded in the figure.
   Analysis-only; the manuscript is unchanged.
+- [O007 - A0 training loss and pre-clipping norms](O007-a0-optimization.md):
+  two horizontal panels, all 712 training steps at each size, and consistent
+  nine-step smoothing over faint raw trajectories. The gradient panel uses
+  logged unscaled global L2 norms before clipping. Analysis-only appendix figure.

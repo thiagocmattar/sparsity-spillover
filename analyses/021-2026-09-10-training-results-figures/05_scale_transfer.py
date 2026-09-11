@@ -21,7 +21,7 @@ SIZES = ("14M", "70M", "410M")
 KAPPAS = (0, .01, .05, .1, .5)
 STYLE = {"A4-OL1": ("4-site + OL1", "#2878B5", "D"),
          "A7-OL1": ("7-site + OL1", "#C96024", "^")}
-YLIM = (-.05, 1.35)
+YLIM = (4.0, 6.4)
 XLIM = {"14M": 32, "70M": 52, "410M": 90}
 
 
@@ -66,15 +66,15 @@ def read_evidence():
                     for r in sorted(clipping, key=lambda r: r["dose"])]
         panels.append({"scale": size, "baseline": baseline, "ceilings": ceilings,
                        "trained": trained, "clipping": clipping,
-                       "clipping_points_above_display": sum(r["delta_loss_vs_A0"] > YLIM[1] for r in clipping)})
+                       "clipping_points_above_display": sum(r["loss"] > YLIM[1] for r in clipping)})
     return {
         "question": "Does high-threshold seven-site OL1 remain favorable across sizes when quality cost and architectural ceiling are explicit?",
         "source_sha256": {SOURCE.relative_to(ROOT).as_posix(): hashlib.sha256(SOURCE.read_bytes()).hexdigest()},
         "coverage": source["coverage"],
-        "loss_reference": "Full-precision same-size untreated A0 evaluation, including for the measured clipping p=0 point",
+        "delta_loss_reference": "Retained sidecar deltas use full-precision same-size untreated A0, including for measured clipping p=0; figure shows absolute loss",
         "sparsity_unit": "100 * pooled block zero products / (block + dense output projection products)",
         "utilization_reference": "Same-size A7 architectural ceiling, for every recipe; not each recipe's own ceiling",
-        "display": {"delta_loss_limits": list(YLIM), "sparsity_max_percent": XLIM,
+        "display": {"absolute_loss_limits": list(YLIM), "sparsity_max_percent": XLIM,
                     "clipping": "All coordinates retained; axes clip the off-scale portion of the dotted paths"},
         "panels": panels,
     }
@@ -99,78 +99,66 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": .6, "pdf.fonttype": 42,
     })
-    fig, axes = plt.subplots(1, 3, sharey=True, figsize=(7.4, 4.2))
-    fig.subplots_adjust(left=.08, right=.986, bottom=.405, top=.815, wspace=.19)
+    fig, axes = plt.subplots(1, 3, sharey=True, figsize=(7.4, 2.95))
+    fig.subplots_adjust(left=.08, right=.986, bottom=.245, top=.84, wspace=.19)
     # Boundary labels identify evaluated settings; no labels on intermediate kappa.
     offsets = {
-        "14M": {"A4-OL1": ((4, -15), (5, 6)), "A7-OL1": ((-3, 16), None)},
-        "70M": {"A4-OL1": ((-7, -15), (-10, -15)), "A7-OL1": ((-10, 10), None)},
-        "410M": {"A4-OL1": ((-12, 8), (-8, -10)), "A7-OL1": ((-7, -16), None)},
+        "14M": {"A4-OL1": ((3, -14), (5, 7)), "A7-OL1": ((-3, 14), (10, 8))},
+        "70M": {"A4-OL1": ((-3, -13), (-4, -12)), "A7-OL1": ((-4, 10), (12, -9))},
+        "410M": {"A4-OL1": (None, (-5, 18)), "A7-OL1": ((-4, -13), (12, 7))},
     }
     for index, (ax, panel) in enumerate(zip(axes, data["panels"])):
         size = panel["scale"]
         ax.set(xlim=(0, XLIM[size]), ylim=YLIM, xlabel=r"$\mathcal{S}_{\mathrm{model}}$ (%)")
-        ax.set_yticks([0, .3, .6, .9, 1.2])
+        ax.set_yticks([4, 4.5, 5, 5.5, 6])
         ax.set_xticks({"14M": [0, 10, 20, 30], "70M": [0, 10, 20, 30, 40, 50],
                        "410M": [0, 30, 60, 90]}[size])
         ax.tick_params(length=3, width=.6)
-        ax.axhline(0, color="#93979C", linewidth=.65, linestyle=":", zorder=0)
-        ax.set_title(f'({"abc"[index]}) {size} · A0 loss {panel["baseline"]["loss"]:.3f}',
-                     loc="left", pad=44)
+        ax.set_axisbelow(True)
+        ax.grid(axis="y", color="#ECEDEF", linewidth=.45)
+        ax.set_title(f'({"abc"[index]}) {size}', loc="left", pad=24)
         for j, family in enumerate(STYLE):
             label, color, marker = STYLE[family]
             ceiling = 100 * panel["ceilings"][family[:2]]["R_model_max_fraction"]
-            ax.axvline(ceiling, color=color, alpha=.4, linewidth=.85, zorder=0)
-            ax.text(0, 1.17 - j * .105, f'{label[:6]} ceiling: {ceiling:.2f}%',
-                    transform=ax.transAxes, color=color, fontsize=7.5, va="center")
+            ax.axvline(ceiling, color=color, alpha=.25, linewidth=.8, zorder=0)
+            ax.annotate(f'{ceiling:.2f}%', (ceiling, 1), xycoords=("data", "axes fraction"),
+                        xytext=((-9 if j == 0 else 6) if size == "410M" else (-3 if j == 0 else 3), 4),
+                        textcoords="offset points",
+                        color=color, fontsize=7, ha="right", va="bottom")
             rows = [r for r in panel["trained"] if r["family"] == family]
-            ax.plot([r["sparsity_percent"] for r in rows], [r["delta_loss_vs_A0"] for r in rows],
-                    color=to_rgba(color, .72), linewidth=.9, marker=marker, markersize=4.3,
+            ax.plot([r["sparsity_percent"] for r in rows], [r["loss"] for r in rows],
+                    color=to_rgba(color, .72), linewidth=.85, marker=marker, markersize=4.5,
                     markerfacecolor=color, markeredgecolor=color, markeredgewidth=.5,
                     zorder=3, gid=f"{size}:{family}")
             for row, offset in zip((rows[0], rows[-1]), offsets[size][family]):
                 if offset is None:
-                    continue  # Combine the orange endpoint threshold and utilization below.
+                    continue  # Only seven-site kappa=0 is labeled in the 410M cluster.
                 ax.annotate(rf'$\kappa = {row["dose"]:g}$',
-                            (row["sparsity_percent"], row["delta_loss_vs_A0"]),
+                            (row["sparsity_percent"], row["loss"]),
                             xytext=offset, textcoords="offset points", fontsize=7, color=color,
-                            ha="right" if offset[0] < 0 else "left", va="center",
-                            arrowprops={"arrowstyle": "-", "color": color, "lw": .5,
-                                        "alpha": .6, "shrinkA": 2, "shrinkB": 4})
+                            ha="right" if offset[0] < 0 or family == "A7-OL1" and row["dose"] == .5 else "left",
+                            va="center",
+                            arrowprops=({"arrowstyle": "-", "color": color, "lw": .45,
+                                         "alpha": .5, "shrinkA": 2, "shrinkB": 4}
+                                        if size == "14M" and row["dose"] == 0 else None))
         rows = panel["clipping"]
-        ax.plot([r["sparsity_percent"] for r in rows], [r["delta_loss_vs_A0"] for r in rows],
-                color="#999DA2", linestyle=":", linewidth=.8, marker="o", markersize=2.9,
+        ax.plot([r["sparsity_percent"] for r in rows], [r["loss"] for r in rows],
+                color="#999DA2", alpha=.6, linestyle=":", linewidth=.7, marker="o", markersize=2.7,
                 markerfacecolor="white", markeredgewidth=.6, zorder=1, gid=f"{size}:clipping")
         endpoint = next(r for r in panel["trained"] if r["family"] == "A7-OL1" and r["dose"] == .5)
         # The common A7 normalization replaces the old second row.
-        ax.annotate(r'$\kappa = 0.5$' + f'\n{endpoint["sparsity_percent"]:.2f}% · {endpoint["A7_ceiling_used_percent"]:.1f}% of ceiling',
-                    (endpoint["sparsity_percent"], endpoint["delta_loss_vs_A0"]),
-                    xytext=(.98 * XLIM[size], endpoint["delta_loss_vs_A0"] - (.49 if size == "70M" else .26)),
-                    textcoords="data", ha="right", va="top", linespacing=1.6,
-                    fontsize=7, color=STYLE["A7-OL1"][1],
-                    arrowprops={"arrowstyle": "-", "color": STYLE["A7-OL1"][1], "alpha": .45,
-                                "lw": .55, "relpos": (.78, 1), "shrinkA": 3, "shrinkB": 5})
-    axes[0].set_ylabel(r"$\Delta$ validation loss vs. A0")
+        ax.annotate(f'{endpoint["A7_ceiling_used_percent"]:.1f}% of ceiling',
+                    (endpoint["sparsity_percent"], endpoint["loss"]),
+                    xytext=(12 if size != "14M" else 10, {"14M": -16, "70M": 14, "410M": -11}[size]),
+                    textcoords="offset points", ha="right", va="bottom" if size == "70M" else "top",
+                    fontsize=7, color=STYLE["A7-OL1"][1])
+    axes[0].set_ylabel("Validation loss")
     handles = [Line2D([], [], color=color, marker=marker, linewidth=.9, markersize=4.3, label=label)
                for label, color, marker in STYLE.values()]
-    handles.append(Line2D([], [], color="#999DA2", linestyle=":", marker="o", markersize=3,
-                          markerfacecolor="white", linewidth=.8, label="A0 + post-hoc clipping"))
-    fig.legend(handles=handles, loc="center", bbox_to_anchor=(.54, .27), ncol=3,
+    handles.append(Line2D([], [], color="#999DA2", alpha=.6, linestyle=":", marker="o", markersize=2.7,
+                          markerfacecolor="white", linewidth=.7, label="A0 + post-hoc clipping"))
+    fig.legend(handles=handles, loc="center", bbox_to_anchor=(.54, .04), ncol=3,
                frameon=False, fontsize=7.5, handlelength=2, columnspacing=1.6)
-    fig.text(.54, .215, r"7-site + OL1 at $\kappa = 0.5$", fontsize=8, ha="center", va="center")
-    table_ax = fig.add_axes((.16, .012, .76, .183))
-    table_ax.axis("off")
-    table = table_ax.table(cellText=table_rows(data),
-                          colLabels=["Size", r"$\mathcal{S}_{\mathrm{model}}$ (%)", "7-site ceiling used",
-                                     r"$\Delta L$ vs. A0"],
-                          colWidths=[.12, .28, .34, .26], cellLoc="center", bbox=[0, 0, 1, 1])
-    table.auto_set_font_size(False)
-    table.set_fontsize(7.5)
-    for (row, _), cell in table.get_celld().items():
-        cell.visible_edges = "TB" if row == 0 else ("B" if row == 3 else "")
-        cell.set_linewidth(.5)
-        cell.set_edgecolor("#A1A4A8")
-        cell.PAD = .05
     return fig
 
 
@@ -188,7 +176,7 @@ def main():
     fig = make_figure(data)
     path = HERE / "figures/05-scale-transfer.pdf"
     fig.savefig(path, metadata={"Title": "Quality-sparsity trade-offs across Pythia model sizes",
-                              "Subject": "Analysis 021 O006; same-size A0 loss reference and common A7 ceiling",
+                              "Subject": "Analysis 021 O006; absolute validation loss and common A7 ceiling",
                               "CreationDate": None, "ModDate": None})
     plt.close(fig)
     print(path.relative_to(ROOT).as_posix())

@@ -233,13 +233,17 @@ visually checked; labels fit inside the page and fonts are embedded.
 
 [Across-size quality costs and ceilings](figures/05-scale-transfer.pdf) uses
 one horizontal row for 14M, 70M and 410M. Every panel plots model-wide sparsity
-against validation loss minus same-size A0, with the same loss range and
+against absolute validation loss, with the same loss range [4.0, 6.4] and
 size-specific sparsity ranges. Blue four-site and orange seven-site OL1 curves
 retain all five trained thresholds; only kappa = 0 and 0.5 are labeled.
+At 410M, only the seven-site kappa = 0 label remains to reduce annotation density.
 Four-/seven-site ceiling guides and seven-site endpoint utilization annotations
-replace the previous second normalized row. A small endpoint table sits beneath
-the panels; A0 clipping remains a thin dotted reference, clipped to the displayed
-loss range without dropping its retained off-scale coordinates.
+replace the previous second normalized row. Compact percentages identify the
+ceiling guides; endpoint annotations give only the fraction of the seven-site
+ceiling used. The table is omitted from the PDF. A0 clipping remains a faint
+dotted reference, clipped to the displayed loss range without dropping its
+retained off-scale coordinates. The shared legend sits below the three panels.
+The main figure is frozen after the author's final spacing/annotation polish.
 
 This figure is **analysis-only**, as requested on 11 September 2026. The
 manuscript and the previous full-range figure are unchanged. At kappa = 0.5,
@@ -251,10 +255,34 @@ ceilings, at total loss costs +0.621, +1.116 and +0.573 relative to A0.
 coverage, normalization and limitations. The
 [reduction](data/scale-transfer.json) retains the 30 trained endpoints,
 30 clipping evaluations and three A0 references from Analysis 018.
-The [companion table](tables/scale-transfer-endpoints.md) is also available as
-Markdown. Three focused tests pass; the PDF was rendered and visually checked.
+The [companion table](tables/scale-transfer-endpoints.md) remains available
+separately as Markdown. Three focused tests pass; the 7.4-by-2.95-inch PDF was
+rendered and visually checked.
 
 ```powershell
 .venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_scale_transfer.py -q
+```
+
+## Figure 06
+
+[A0 optimization across sizes](figures/06-a0-optimization.pdf) is a two-panel
+appendix diagnostic: training loss and pre-clipping global task-gradient norm
+versus the same token budget. Each of the three sizes contributes all 712
+logged steps, ending at 1.493 billion input tokens. Both panels show faint raw
+traces and thicker centered nine-step moving means, with one shared size legend.
+The norm panel uses a log scale and explicitly labels the pre-clipping global
+task-gradient norm. Short panel titles and very faint raw traces keep the
+smoothed curves dominant. These are global norms after loss unscaling,
+before the common norm-1 clip, rather than norms of AdamW update directions.
+
+The figure remains **analysis-only**. [O007](observations/O007-a0-optimization.md)
+records the proposed caption, source definitions, smoothing and limitations.
+The [reduction](data/a0-optimization.json) preserves all 2,136 records, source
+hashes and plotted smoothing values. Three focused tests pass; the
+7.4-by-2.95-inch PDF was rendered and visually checked.
+
+```powershell
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_a0_optimization.py -q
 ```
