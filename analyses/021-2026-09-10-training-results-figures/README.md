@@ -7,6 +7,32 @@ checkpoint evaluation, or measurement is required.
 
 ## K050 investigation
 
+### Focused appendix figures
+
+The three new, analysis-only figures follow the author's requested order:
+
+1. [Within-family sparsity-speedup association](figures/appendix/01-kernel-within-family.pdf):
+   ten checkpoints per group and within-family centered R² = 0.660.
+2. [Scalar sparsity versus kernel-skippable work](figures/appendix/02-kernel-scalar-vs-skippable.pdf):
+   projection and attention comparisons in a 2×2 grid, using matched gains.
+3. [Native baseline and absolute optimized latency](figures/appendix/03-kernel-absolute-latency.pdf):
+   20 multisite checkpoints, two pressure rows and three implementation columns.
+
+[09_kernel_appendix_figures.py](09_kernel_appendix_figures.py) reads the retained
+investigation data and creates these PDFs without changing the original
+five-page diagnostic or manuscript. [O011](observations/O011-kernel-within-family.md),
+[O012](observations/O012-kernel-scalar-vs-skippable.md) and
+[O013](observations/O013-kernel-absolute-latency.md) record captions, coverage,
+interpretation limits and verification. MMA bypass is labeled as instructions
+skipped, since some bypasses substitute scalar work.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/09_kernel_appendix_figures.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/investigation/test_investigation.py -q
+```
+
+### Investigation and manuscript adoption
+
 The author's follow-up [investigation](investigation/README.md) reconciles all
 30 K050 checkpoints with operation accounting, projection/attention counters
 and raw matched timing ablations. It finds that seven-site's larger relative

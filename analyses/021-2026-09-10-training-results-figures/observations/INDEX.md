@@ -52,3 +52,11 @@
   frozen v2 becomes Figure 7 in Section 4.6. The section and Discussion focus
   on sparsity location and execution structure; the appendix retains search
   history, counter definitions, all 30 latency ablations and diagnostics.
+- [O011 - Within-family kernel association](O011-kernel-within-family.md):
+  three ten-checkpoint fits and the centered R² = 0.660, with independent axes.
+- [O012 - Scalar zeros versus skippable work](O012-kernel-scalar-vs-skippable.md):
+  a 2×2 projection/attention diagnostic; instruction bypass and scalar zeros
+  have different relationships with matched skipping gains.
+- [O013 - Native and optimized absolute latency](O013-kernel-absolute-latency.md):
+  matched four-/seven-site curves in a 2×3 implementation-by-pressure layout,
+  with y-ranges shared within columns. These three new PDFs are analysis-only.
