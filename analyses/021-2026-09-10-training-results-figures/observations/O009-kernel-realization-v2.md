@@ -19,7 +19,9 @@ The author's follow-up adds four connected threshold sweeps to panel (b):
 four-/seven-site recipes, each with and without OL1. Each connects the five
 separately trained thresholds 0, 0.01, 0.05, 0.1 and 0.5 in that order.
 Solid curves/open markers denote no OL1; dashed curves/filled markers denote
-OL1. A small panel-specific key defines that encoding. Panel (a)'s markers
+OL1. A small panel-specific key defines that encoding. One κ = 0.5 label per
+color marks the OL1 endpoint; no κ = 0 labels are shown. The panel-(b) OLS
+line is thinner and fainter than the colored curves. Panel (a)'s markers
 and annotations remain unchanged. The unconnected v2 is retained in commit
 `7be29da` for rollback.
 
@@ -47,7 +49,7 @@ checkpoints against canonical model-wide sparsity. (a) Full K050 speedup
 relative to each checkpoint's native PyTorch/SDPA implementation.
 (b) Projection-skipping gain: all-skips-off latency divided by
 projection-on/attention-dense latency, retaining identical fusion and disabled
-attention skipping. Dashed lines are descriptive OLS fits with intercepts
+attention skipping. Gray dashed lines are descriptive OLS fits with intercepts
 (R² = 0.817 and 0.496); dotted lines mark 1×. Black squares identify A0,
 gray circles identify nine 1-site checkpoints (ReLU and local L1/OL1), and
 blue diamonds/orange triangles identify the ten four-site/seven-site
@@ -55,7 +57,8 @@ checkpoints. In panel (b), colored solid lines/open markers denote recipes
 without OL1 and colored dashed lines/filled markers denote recipes with OL1.
 Lines connect separately trained settings in increasing κ = 0, 0.01, 0.05,
 0.1 and 0.5; they are not training trajectories or interpolated models.
-The dark-gray dashed line remains the global OLS fit. The labeled
+The faint gray dashed line in panel (b) remains the global OLS fit, and one
+κ = 0.5 label per color identifies the high-threshold OL1 endpoints. The labeled
 seven-site + OL1, κ = 0.5 endpoint in panel (a)
 reaches 1.78× native-relative speedup. Canonical sparsity uses FP16 and full
 validation coverage; timings use BF16 and the matched 64-input subset.
@@ -85,6 +88,13 @@ The high-threshold endpoints in panel (b) all have κ = 0.5:
 These are the upper endpoints of the four connected curves. The gain compares
 implementations of the same checkpoint; connecting the curves does not turn
 the between-checkpoint threshold changes into matched runtime ablations.
+
+At κ = 0.5, adding OL1 raises S_model by 2.498 pp for four-site recipes and
+12.096 pp for seven-site recipes. Projection-skipping gain rises from 1.324×
+to 1.378× and from 1.316× to 1.325×, respectively. The seven-site sparsity
+increment thus accompanies little additional projection-skipping benefit;
+this does not establish that OL1 adds no useful sparsity, since S_model also
+counts attention products and the four-site projection gain increases.
 
 ## Reproduction and verification
 

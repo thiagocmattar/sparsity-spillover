@@ -38,8 +38,12 @@ def read_evidence():
 def make_figure(data):
     fig = base.make_figure(data, projection_x=data["projection_x_metric"])
     ax = fig.axes[1]
+    fit_line, = [line for line in ax.lines if line.get_gid() == "OLS"]
+    fit_line.set(color=".55", alpha=.45, linewidth=.7, zorder=1)
     points = {p["condition"]: p for p in data["projection_points"]}
     pressured = set()
+    endpoint_labels = {"A4-OL1": (6, -1, "left", "center"),
+                       "A7-OL1": (-5, 7, "right", "bottom")}
     for sweep in data["projection_sweeps"]:
         selected = [points[condition] for condition in sweep["conditions"]]
         color = base.STYLE[sweep["visual_family"]][0]
@@ -48,6 +52,12 @@ def make_figure(data):
                 zorder=2, gid=sweep["recipe"])
         if sweep["with_ol1"]:
             pressured.update(sweep["conditions"])
+            endpoint = selected[-1]
+            dx, dy, ha, va = endpoint_labels[sweep["recipe"]]
+            ax.annotate(r'$\kappa = 0.5$', xy=(endpoint["sparsity_percent"], endpoint["projection_sparse_gain"]),
+                        xytext=(dx, dy), textcoords="offset points", ha=ha, va=va, color=color, fontsize=6.8,
+                        bbox={"facecolor": "white", "edgecolor": "none", "pad": .6},
+                        gid=f'threshold:{sweep["recipe"]}:0.5')
     for collection in ax.collections:
         family = collection.get_gid()
         if family not in ("4-site", "7-site"):
