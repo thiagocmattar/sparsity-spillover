@@ -12,7 +12,8 @@ PDF and its data are preserved; the manuscript is unchanged.
 [07_kernel_realization_v2.py](../07_kernel_realization_v2.py) reuses the
 original figure's [verified reduction and plotting code](../07_kernel_realization.py).
 It joins canonical S_model to each of the same 30 projection-gain observations
-by checkpoint identity, then recomputes unweighted OLS with an intercept.
+by checkpoint identity. The previously computed unweighted OLS with an intercept
+is retained in the data for reproducibility but is no longer displayed in panel (b).
 Panel (a), the four legend groups, 55:45 layout and reference lines are retained.
 Panel (b) uses the same 0–30% displayed sparsity range as panel (a).
 The author's follow-up adds four connected threshold sweeps to panel (b):
@@ -20,8 +21,10 @@ four-/seven-site recipes, each with and without OL1. Each connects the five
 separately trained thresholds 0, 0.01, 0.05, 0.1 and 0.5 in that order.
 Solid curves/open markers denote no OL1; dashed curves/filled markers denote
 OL1. A small panel-specific key defines that encoding. One κ = 0.5 label per
-color marks the OL1 endpoint; no κ = 0 labels are shown. The panel-(b) OLS
-line is thinner and fainter than the colored curves. Panel (a)'s markers
+color marks the OL1 endpoint; no κ = 0 labels are shown. Panel (b) has no OLS
+line or R² annotation. Two muted gray paths connect the one-site naive-L1
+and OL1 sweeps separately, each starting at ReLU and continuing through
+λ = 0.05, 0.1, 0.5 and 1. Their markers remain unchanged. Panel (a)'s markers
 and annotations remain unchanged. The unconnected v2 is retained in commit
 `7be29da` for rollback.
 
@@ -49,16 +52,17 @@ checkpoints against canonical model-wide sparsity. (a) Full K050 speedup
 relative to each checkpoint's native PyTorch/SDPA implementation.
 (b) Projection-skipping gain: all-skips-off latency divided by
 projection-on/attention-dense latency, retaining identical fusion and disabled
-attention skipping. Gray dashed lines are descriptive OLS fits with intercepts
-(R² = 0.817 and 0.496); dotted lines mark 1×. Black squares identify A0,
+attention skipping. The gray dashed line in panel (a) is a descriptive OLS fit
+with an intercept (R² = 0.817); dotted lines mark 1×. Black squares identify A0,
 gray circles identify nine 1-site checkpoints (ReLU and local L1/OL1), and
 blue diamonds/orange triangles identify the ten four-site/seven-site
 checkpoints. In panel (b), colored solid lines/open markers denote recipes
 without OL1 and colored dashed lines/filled markers denote recipes with OL1.
 Lines connect separately trained settings in increasing κ = 0, 0.01, 0.05,
 0.1 and 0.5; they are not training trajectories or interpolated models.
-The faint gray dashed line in panel (b) remains the global OLS fit, and one
-κ = 0.5 label per color identifies the high-threshold OL1 endpoints. The labeled
+Muted gray paths connect one-site naive-L1 (solid) and OL1 (dashed) settings
+from ReLU through increasing λ = 0.05, 0.1, 0.5 and 1, with unchanged markers.
+One κ = 0.5 label per color identifies the high-threshold multisite OL1 endpoints. The labeled
 seven-site + OL1, κ = 0.5 endpoint in panel (a)
 reaches 1.78× native-relative speedup. Canonical sparsity uses FP16 and full
 validation coverage; timings use BF16 and the matched 64-input subset.
@@ -66,7 +70,7 @@ These associations across different checkpoints do not isolate causal effects.
 
 ## Result and limitations
 
-Panel (b): Pearson r = 0.704083, OLS R² = 0.495733; slope is
+The undisplayed panel-(b) fit has Pearson r = 0.704083, OLS R² = 0.495733; slope is
 0.016199614 gain units per sparsity percentage point, with intercept 0.934545121.
 Panel (a) remains R² = 0.816718. The previous panel (b), using projection MMA
 bypass, has R² = 0.946105 on exactly the same projection-gain outcomes.
@@ -100,7 +104,8 @@ counts attention products and the four-site projection gain increases.
 
 [kernel-realization-v2.json](../data/kernel-realization-v2.json) retains source
 hashes, all qualified comparisons, the 30 matched panel-(b) points, both
-regressions, four ordered sweep identities and the original PDF's SHA-256.
+regressions, four ordered threshold sweeps, two ordered local pressure-weight
+sweeps and the original PDF's SHA-256.
 The original Figure 07 is untouched.
 
 ```powershell

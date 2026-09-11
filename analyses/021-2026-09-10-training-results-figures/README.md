@@ -353,12 +353,15 @@ visually checked; the manuscript is unchanged.
 
 [The separate v2](figures/07-kernel-realization-v2.pdf) puts model-wide sparsity
 on both x-axes. Panel (a) is unchanged; panel (b) retains the same projection-
-skipping gains and refits the new predictor over all 30 checkpoints, yielding
-Pearson r = 0.704 and R² = 0.496. The previous MMA-bypass figure is preserved.
+skipping gains but displays no regression line or R² annotation. Its earlier
+fit (Pearson r = 0.704, R² = 0.496) remains in the data. The previous MMA-bypass
+figure is preserved.
 Panel (b) now connects the five thresholds separately for four-/seven-site
 recipes with and without OL1: solid/open means no OL1, dashed/filled means
-OL1. One κ = 0.5 label per color marks the OL1 endpoint; the global fit is
-faint. These are ordered trained settings, not training trajectories. The
+OL1. One κ = 0.5 label per color marks the OL1 endpoint. Muted gray paths
+connect the one-site naive-L1 and OL1 sweeps separately from ReLU through
+increasing pressure weights, keeping their markers unchanged.
+These are ordered trained settings, not training trajectories. The
 unconnected v2 is retained in commit `7be29da`.
 [O009](observations/O009-kernel-realization-v2.md) records the caption, provenance
 and limits; [the v2 reduction](data/kernel-realization-v2.json) retains both fits

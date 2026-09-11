@@ -44,8 +44,7 @@
   and 0.946. The projection gain uses matched raw candidate latencies, and
   bypass counts retain the SIMT/padding qualification. Analysis-only.
 - [O009 - Figure 07 v2: model-wide sparsity versus projection-skipping gain](O009-kernel-realization-v2.md):
-  a separate version with S_model on both x-axes; panel (b) is refitted over
-  the same 30 checkpoints, giving R² = 0.496. Four curves connect increasing
-  thresholds, with solid/open versus dashed/filled pressure encodings,
-  one κ = 0.5 label per color and a faded global fit.
+  a separate version with S_model on both x-axes. Panel (b) connects the
+  four multisite threshold sweeps and two muted one-site pressure-weight
+  sweeps, with one κ = 0.5 label per color and no displayed regression.
   Original Figure 07 is preserved.

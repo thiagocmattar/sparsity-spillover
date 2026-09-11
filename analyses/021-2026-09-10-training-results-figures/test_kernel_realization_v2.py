@@ -47,8 +47,8 @@ def test_both_panels_use_smodel_and_projection_fit_is_recomputed():
         assert sorted(plotted[:, 0]) == pytest.approx(sorted(x))
     plotted = np.concatenate([collection.get_offsets() for collection in fig.axes[1].collections])
     assert sorted(map(tuple, plotted)) == sorted(zip(x, y))
-    line, = [line for line in fig.axes[1].lines if line.get_gid() == "OLS"]
-    assert line.get_ydata() == pytest.approx(coefficients[0] + coefficients[1] * line.get_xdata())
+    assert not any(line.get_gid() == "OLS" for line in fig.axes[1].lines)
+    assert not any(text.get_text().startswith('$R^2') for text in fig.axes[1].texts)
     v2.base.plt.close(fig)
 
 

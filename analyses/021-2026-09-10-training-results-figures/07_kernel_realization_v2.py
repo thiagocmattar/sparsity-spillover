@@ -30,6 +30,15 @@ def read_evidence():
                                           "with_ol1": recipe.endswith("-OL1"),
                                           "kappas": [p["dose"] for p in points],
                                           "conditions": [p["condition"] for p in points]})
+    relu, = [p for p in full.values() if p["family"] == "A1-H"]
+    data["local_projection_sweeps"] = []
+    for recipe in ("A1-H-L1", "A1-H-OL1"):
+        points = sorted([p for p in full.values() if p["family"] == recipe], key=lambda p: p["dose"])
+        assert [p["dose"] for p in points] == [.05, .1, .5, 1.]
+        data["local_projection_sweeps"].append({"recipe": recipe,
+                                                "with_ol1": recipe.endswith("-OL1"),
+                                                "weights": [0.] + [p["dose"] for p in points],
+                                                "conditions": [relu["condition"]] + [p["condition"] for p in points]})
     original = HERE / "figures/07-kernel-realization.pdf"
     data["original_figure_sha256"] = hashlib.sha256(original.read_bytes()).hexdigest()
     return data
@@ -39,8 +48,15 @@ def make_figure(data):
     fig = base.make_figure(data, projection_x=data["projection_x_metric"])
     ax = fig.axes[1]
     fit_line, = [line for line in ax.lines if line.get_gid() == "OLS"]
-    fit_line.set(color=".55", alpha=.45, linewidth=.7, zorder=1)
+    fit_line.remove()
+    fit_label, = [text for text in ax.texts if text.get_text().startswith('$R^2')]
+    fit_label.remove()
     points = {p["condition"]: p for p in data["projection_points"]}
+    for sweep in data["local_projection_sweeps"]:
+        selected = [points[condition] for condition in sweep["conditions"]]
+        ax.plot([p["sparsity_percent"] for p in selected], [p["projection_sparse_gain"] for p in selected],
+                color=base.STYLE["1-site"][0], ls="--" if sweep["with_ol1"] else "-",
+                lw=.8, alpha=.55, zorder=2, gid=sweep["recipe"])
     pressured = set()
     endpoint_labels = {"A4-OL1": (6, -1, "left", "center"),
                        "A7-OL1": (-5, 7, "right", "bottom")}
@@ -86,7 +102,7 @@ def main():
                           "Creator": "Analysis 021 / 07_kernel_realization_v2.py", "CreationDate": None})
     base.plt.close(fig)
     assert hashlib.sha256((HERE / "figures/07-kernel-realization.pdf").read_bytes()).hexdigest() == data["original_figure_sha256"]
-    print(f'30 checkpoints; panel (a) R²={data["regression"]["r2"]:.6f}; panel (b) R²={data["projection_regression"]["r2"]:.6f}')
+    print(f'30 checkpoints; panel (a) R²={data["regression"]["r2"]:.6f}; panel (b): six ordered sweeps, no displayed fit')
 
 
 if __name__ == "__main__":
