@@ -48,7 +48,13 @@ ten contrasts. Only the two complete highest-threshold effects are annotated.
 The subsequent readability pass adds a light grid, repeats the threshold
 ticks and axis label on the top panel, and labels the zero references
 "lower is better" and "higher is better". Height increases from 3.25 to
-3.5 inches to fit the repeated axis. The contrasts and source data are unchanged.
+3.5 inches to fit the repeated axis. The final wording pass adds the prominent
+definition "Delta = (+OL1) - (no pressure), at matched kappa" above both
+panels. Titles read "Effect of adding OL1 on validation loss" and "Effect of
+adding OL1 on model-wide sparsity"; y-axes likewise specify changes from
+adding OL1. The figure is now 5.5 by 3.75 inches, preserving the data-region
+height while accommodating the definition. The contrasts and source data
+are unchanged; the reference remains no pressure at the same threshold.
 
 **The incremental effect of pressure depends on threshold and target set.**
 Matched changes from adding OL1 to four-site (blue diamonds) and seven-site
@@ -109,7 +115,7 @@ matched identities, and reconciles the calculated differences to Analysis 018.
 Three focused tests in [`test_paired_interventions.py`](../test_paired_interventions.py)
 pass: approved numerical values and coverage; pairing independent of source
 order; rejection of mismatched initialization or a missing threshold.
-The 5.5-by-3.5-inch PDF was rendered with Poppler and visually checked.
+The 5.5-by-3.75-inch PDF was rendered with Poppler and visually checked.
 All fonts are embedded, all text is inside the page, and the ten pairs appear
 at the requested categorical positions in both panels. Existing analysis
 figures and the entire manuscript draft remain unchanged.

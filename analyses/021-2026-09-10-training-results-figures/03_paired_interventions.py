@@ -92,10 +92,14 @@ def make_figure(data):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.linewidth": 0.6, "pdf.fonttype": 42,
     })
-    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.5))
-    fig.subplots_adjust(left=.135, right=.75, bottom=.13, top=.93, hspace=.78)
-    panels = (("delta_loss", "(a) Validation-loss change", r"$\Delta$ validation loss", (-.05, .42)),
-              ("delta_sparsity_pp", "(b) Model-wide sparsity gain", r"$\Delta\mathcal{S}_{\mathrm{model}}$ (pp)", (-1, 13)))
+    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(5.5, 3.75))
+    fig.subplots_adjust(left=.145, right=.75, bottom=.12, top=.865, hspace=.78)
+    fig.text(.54, .985, r"$\Delta =$ (+OL1) $-$ (no pressure), at matched $\kappa$",
+             ha="center", va="top", fontsize=9.5, fontweight="bold")
+    panels = (("delta_loss", "(a) Effect of adding OL1 on validation loss",
+               "Loss change from\nadding OL1", (-.05, .42)),
+              ("delta_sparsity_pp", "(b) Effect of adding OL1 on model-wide sparsity",
+               "Sparsity change from\nadding OL1 (pp)", (-1, 13)))
     for ax, (key, title, ylabel, limits) in zip(axes, panels):
         ax.set(ylabel=ylabel, ylim=limits, xlim=(-.15, 4.2))
         ax.set_title(title, loc="left", pad=6)
@@ -124,6 +128,7 @@ def make_figure(data):
         ax.annotate(f"{label}\n{endpoint['delta_sparsity_pp']:+.2f} pp / {endpoint['delta_loss']:+.2f} loss",
                     (4, endpoint[key]), xytext=(9, -1), textcoords="offset points",
                     fontsize=7.5, color=color, va="center", annotation_clip=False, linespacing=1.4)
+    fig.align_ylabels(axes)
     return fig, axes
 
 
