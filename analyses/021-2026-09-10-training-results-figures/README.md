@@ -132,3 +132,33 @@ per-family traces. All eight Analysis 021 tests passed. The 6.4-by-2.8-inch PDF
 uses the overview's fonts, font sizes and blue/orange colors. It was rendered and
 visually checked; all text is inside the page and all fonts are embedded.
 See [O002](observations/O002-ol1-geometry.md) for the caption and limitations.
+
+## Figure 03
+
+[Paired pressure additions](figures/03-14m-paired-interventions.pdf) answers
+one question: at a fixed threshold, what changes when OL1 is added, and how
+does that differ between four-site and seven-site recipes? The author requested
+this analysis-only redesign on 11 September 2026. The draft manuscript is
+unchanged; adoption awaits a separate instruction.
+
+The 5.5-by-3.25-inch PDF contains two stacked panels sharing five equally
+spaced threshold positions. Both show the same ten matched pairs:
+A4-OL1 minus A4 and A7-OL1 minus A7. Blue diamonds and orange triangles match
+the quality-sparsity overview. Top: validation-loss change; bottom: model-wide
+sparsity change in percentage points. Only the two complete effects at
+kappa = 0.5 are annotated: +2.50 pp / +0.38 loss and +12.10 pp / +0.13 loss.
+No other intervention contrasts, confidence bands or super-title are included.
+
+The source is Analysis 018 `figure_data.json`. The
+[reduction](data/14m-paired-interventions.json) retains all 20 endpoint identities,
+pooled integer counters and ten full-precision differences. It verifies matched
+initialization, data order, training settings and validation cache, and reconciles
+the differences against the existing contrast records. Three focused tests pass;
+the PDF was rendered and visually checked, with embedded fonts and no clipped text.
+See [O003](observations/O003-paired-interventions.md) for the caption, exact
+results and interpretation limits.
+
+```powershell
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_paired_interventions.py -q
+```
