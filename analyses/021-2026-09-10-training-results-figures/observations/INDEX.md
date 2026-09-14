@@ -60,3 +60,7 @@
 - [O013 - Native and optimized absolute latency](O013-kernel-absolute-latency.md):
   matched four-/seven-site curves in a 2×3 implementation-by-pressure layout,
   with y-ranges shared within columns. These three new PDFs are analysis-only.
+- [O014 - Kernel v3 with a common A0 reference](O014-kernel-common-a0-reference.md):
+  all 30 full-model points use one native A0 latency; R² = 0.510. Four-/seven-site
+  OL1 at kappa = 0.5 reach 1.427x/1.385x. Panel (b) retains its matched ablation
+  reference and layout; v2 and the manuscript are preserved.

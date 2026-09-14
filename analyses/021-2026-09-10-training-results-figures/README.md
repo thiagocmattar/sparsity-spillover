@@ -403,3 +403,25 @@ No new measurements were made.
 .venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py
 .venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization.py analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v2.py -q
 ```
+
+## Figure 07 v3
+
+[The separate v3](figures/07-kernel-realization-v3.pdf) uses **one native A0
+latency reference for all 30 panel (a) points**: 0.655442398 ms divided by each
+checkpoint's full K050 geometric-mean latency. The descriptive fit is now
+R² = 0.510. At kappa = 0.5 with OL1, four-site reaches 1.427x and seven-site
+1.385x; their ordering agrees with absolute optimized latency. Panel (b)
+retains its same-checkpoint projection-skipping ratio and complete v2 artwork.
+
+The original figure, v2 and the manuscript are preserved. The common A0
+reference compares different trained models and includes all implementation
+benefits; it is not an equal-quality or isolated sparse-skipping comparison.
+[O014](observations/O014-kernel-common-a0-reference.md) defines the reference,
+timing coverage, caption and caveats. [The reduction](data/kernel-realization-v3.json)
+retains both the old ratios and new common-reference values with source hashes.
+All five v2/v3 focused tests pass, and the rendered PDF was visually checked.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v3.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v3.py analyses/021-2026-09-10-training-results-figures/test_kernel_realization_v2.py -q
+```
