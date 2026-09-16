@@ -324,7 +324,9 @@ def run_code_identity() -> dict[str, Any]:
     files = []
     for name in names:
         path = RUN_DIR / name
-        payload = path.read_bytes()
+        # All inventory entries are text. Preserve one source identity across
+        # Windows checkout CRLF and the identical Linux Git blob LF contents.
+        payload = path.read_bytes().replace(b"\r\n", b"\n")
         files.append({
             "path": name,
             "bytes": len(payload),
@@ -336,7 +338,8 @@ def run_code_identity() -> dict[str, Any]:
         digest.update(b"\0")
         digest.update(row["sha256"].encode("ascii"))
         digest.update(b"\n")
-    return {"files": files, "content_sha256": digest.hexdigest()}
+    return {"files": files, "content_sha256": digest.hexdigest(),
+            "text_normalization": "CRLF to LF before byte counts and SHA-256"}
 
 
 def approved_identity() -> dict[str, Any]:

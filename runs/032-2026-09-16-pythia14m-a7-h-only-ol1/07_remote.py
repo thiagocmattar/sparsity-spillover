@@ -26,16 +26,11 @@ def sha(path):
 
 
 def connect(pod):
-    value = json.loads(subprocess.check_output([str(CLI), "pod", "get", pod], text=True))
+    value = json.loads(subprocess.check_output([str(CLI), "ssh", "info", pod], text=True))
     if not value.get("name", "").startswith("run032-"):
         raise ValueError("Not a Run 032 Pod")
-    host = value.get("publicIp")
-    port = value.get("portMappings", {}).get("22")
-    if not host or not port:
-        ports = (value.get("runtime") or {}).get("ports", [])
-        match = next((p for p in ports if p.get("privatePort") == 22 and p.get("isIpPublic")), None)
-        if match:
-            host, port = match["ip"], match["publicPort"]
+    host = value.get("ip")
+    port = value.get("port")
     if not host or not port:
         raise RuntimeError("Public SSH not ready")
     client = paramiko.SSHClient()
@@ -89,12 +84,7 @@ touch /workspace/run032-environment-ready
         with sftp.open("/workspace/run032-setup.sh", "w") as handle:
             handle.write(setup)
     command(client, "nohup bash /workspace/run032-setup.sh > /workspace/run032-setup.log 2>&1 < /dev/null & echo $! > /workspace/run032-setup.pid")
-    for split in ("validation", "train"):
-        folder = ROOT / "data/tokenized/minipile-pythia-14m-full" / split
-        for name in ("metadata.json", "tokens.int32.bin"):
-            local = folder / name
-            upload(client, local, REMOTE + "/" + local.relative_to(ROOT).as_posix())
-    print(json.dumps({"phase": "source_and_caches_uploaded", "pod": pod}), flush=True)
+    print(json.dumps({"phase": "source_uploaded_environment_installing", "pod": pod}), flush=True)
     readiness = f"""#!/bin/bash
 set -euo pipefail
 while [ ! -f /workspace/run032-environment-ready ]; do
@@ -103,6 +93,8 @@ while [ ! -f /workspace/run032-environment-ready ]; do
 done
 cd {REMOTE}
 export PYTHONPATH={REMOTE}/{RUN}:{REMOTE}/src
+{"" if not preflight else PYTHON + " " + RUN + "/06_build_cache_from_hf.py > /workspace/run032-cache.log 2>&1 && touch /workspace/run032-cache-ready"}
+while [ ! -f /workspace/run032-cache-ready ]; do sleep 10; done
 {PYTHON} - <<'PY'
 import json,sys,torch,numpy as np,transformers
 from run_config import load_config,load_verified_caches,build_schedule,EXPECTED_SCHEDULE_SHA256,approved_identity
