@@ -112,11 +112,9 @@ The following tables report every selected trained endpoint, all 29 paired
 dominated settings as well as favorable ones. Each entry summarizes one
 trained model on complete validation. Sparsity percentages are formed from pooled integer
 product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
-used for the endpoint annotations in Figure~\ref{fig:scale-transfer}, rather than a different denominator
+from Figure~\ref{fig:scale-transfer}, rather than a different denominator
 for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
-this common-reference ratio, retained for the complete endpoint table. Natural
-zeros outside the selected sites can make this ratio exceed one; it is not
-a universally bounded utilization fraction.
+this common-reference ratio, retained for the complete endpoint table.
 
 \input{tables/trained-endpoints}
 \input{tables/paired-effects}
@@ -143,15 +141,12 @@ ranges. Underflow and overflow counts are retained rather than folded into
 edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
 attention in Figure~\ref{fig:activation-density-full}. The largest omitted
 display tail is $6.6719\%$; the native-grid tail is at most $0.7607\%$.
-Figure~\ref{fig:activation-reshaping} separates $m$ and $h$ for the dense
-reference and the two OL1 checkpoints at $\kappa=0.5$, using the same density
-normalization and symlog scale. Its limits are $[-2.5,3]$ for each FFN site
-and $[-4,4]$ for pooled Q/K/V. The zero percentages use measured site counts,
-not inversion of rounded operation contributions. Pressure-free histograms
-were not retained; their operation counts support the main figure's bars.
+Figure~\ref{fig:activation-reshaping} selects the two OL1 checkpoints at
+$\kappa=0.5$, using the same density normalization and symlog scale, with
+FFN limits $[0,3]$ and attention limits $[-4,4]$.
 
 The diagnostic reruns use FP32 parameters with FP16 autocast and no
-additional thresholding. Their maximum absolute validation-loss difference
+additional clipping. Their maximum absolute validation-loss difference
 from the retained reference is $6.89\times10^{-5}$, below the specified
 $5\times10^{-4}$ tolerance; all 108 threshold-consistency checks pass. Small
 rounding differences in exact-zero counts between evaluation passes do not
@@ -173,7 +168,7 @@ the visible range. The vertical scale is symlog, linear below 0.01; filled
 areas on this scale do not represent probability mass. Dashed lines mark
 $+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
 Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
-A7 targets them directly. The seven checkpoints use no additional post-hoc magnitude thresholding.}
+A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
 \label{fig:activation-density-full}
 \end{figure}
 
@@ -189,21 +184,6 @@ come from seven checkpoints.}
 \label{tab:density-mass}
 \input{tables/density-mass}
 \end{table}
-
-% Source: Analysis 021 O015; 10_review_figures.py; Run 031 histograms.
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/review/appendix-site-zero-heatmap.pdf}
-\caption{\textbf{Exact-zero fractions by activation site and layer.}
-Counts pool all 338 validation sequences within each cell, for the dense
-reference and four-/seven-site OL1 at $\kappa=0.5$. Q/K use post-RoPE
-operands. The common scale is 0--100\%; displayed cell values are rounded
-to whole percentages, so a displayed 100 does not imply every entry is
-zero. The FFN-up input $m$ changes substantially between the OL1 recipes,
-while hidden activation $h$ remains nearly entirely zero. These observations
-do not isolate thresholding, pressure normalization or cap behavior.}
-\label{fig:site-zero-heatmap}
-\end{figure}
 
 \FloatBarrier
 \subsection{Operation contributions to model-wide sparsity}
@@ -244,17 +224,16 @@ The bars show logical multiplication opportunities, not runtime savings.}
 \end{figure}
 
 \FloatBarrier
-\subsection{Complete post-hoc magnitude thresholding trajectories}
+\subsection{Complete post-hoc clipping trajectories}
 \label{app:clipping-results}
 
-The retained evaluation set contains 540 evaluations: ten threshold targets for
+The complete release contains 540 evaluations: ten clipping targets for
 each of the 54 trained checkpoints. It joins 350 new evaluations with 190
 retained evaluations matched by checkpoint content hash. Calibration uses
 the first ten complete training blocks in source order, separately for
 each layer's $a,m,h,z$ activations. Evaluation zeros values satisfying
 $|x|\leq t$ after the trained nonlinearities, without changing weights or A7's
-internal attention nonlinearities. Historical figure labels use ``clipping'' for this magnitude-thresholding
-operation; amplitudes above the threshold are unchanged. The target $p$ controls a calibration quantile;
+internal attention nonlinearities. The target $p$ controls a calibration quantile;
 it is not the achieved model-wide sparsity. In particular, an existing
 zero mass can make several targets identical.
 
@@ -270,8 +249,8 @@ parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/14m-posthoc-frontiers.pdf}
-\caption{Complete 14M training and post-hoc magnitude thresholding results: 30 trained
-endpoints and 300 thresholding evaluations. Large filled markers denote trained
+\caption{Complete 14M training and post-hoc clipping results: 30 trained
+endpoints and 300 clipping evaluations. Large filled markers denote trained
 endpoints; bold lines connect their settings, solid for unpressured recipes
 and dashed for L1/OL1. Each faint open-marker path follows one fixed
 checkpoint through $p=0,0.1,\ldots,0.9$. Colors and symbols identify its
@@ -283,10 +262,10 @@ settings and do not interpolate attainable models or fitted Pareto envelopes.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/70m-posthoc-frontiers.pdf}
-\caption{Complete 70M training and post-hoc magnitude thresholding results: 12 trained
-endpoints and 120 thresholding evaluations. Large filled markers and bold
+\caption{Complete 70M training and post-hoc clipping results: 12 trained
+endpoints and 120 clipping evaluations. Large filled markers and bold
 lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing threshold targets. All points, including
+checkpoint through ten increasing clipping targets. All points, including
 overlaps and high-loss settings, are retained. The evaluation and line
 conventions match Figure~\ref{fig:clipping-14m}.}
 \label{fig:clipping-70m}
@@ -295,10 +274,10 @@ conventions match Figure~\ref{fig:clipping-14m}.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/410m-posthoc-frontiers.pdf}
-\caption{Complete 410M training and post-hoc magnitude thresholding results: 12 trained
-endpoints and 120 thresholding evaluations. Large filled markers and bold
+\caption{Complete 410M training and post-hoc clipping results: 12 trained
+endpoints and 120 clipping evaluations. Large filled markers and bold
 lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing threshold targets. All points, including
+checkpoint through ten increasing clipping targets. All points, including
 overlaps and high-loss settings, are retained. The evaluation and line
 conventions match Figure~\ref{fig:clipping-14m}.}
 \label{fig:clipping-410m}
@@ -336,9 +315,8 @@ between their $1.7830\times$ and $1.7832\times$ maxima.
 (a) Best qualified incumbent across 42 eligible retrospective proposals on
 the fixed seven-site + OL1, $\kappa=0.5$ checkpoint. (b) Final K050 speedup
 across the 30-checkpoint cohort; this historical view distinguishes individual
-recipes. Each ratio uses that checkpoint's own native PyTorch/SDPA
-CUDA-graph latency, not a common dense-model reference. All use the same
-BF16, batch-size-one, 2,048-token protocol on one RTX5090. Search replay and final
+recipes. Both use the same native PyTorch/SDPA CUDA-graph reference and
+BF16, batch-one, 2,048-token protocol on one RTX5090. Search replay and final
 evaluation are separate timing measurements. The history describes one
 human-guided development trajectory, not a comparison of coding agents.}
 \label{fig:kernel-search-history}
@@ -410,7 +388,7 @@ four-checkpoint subset is shown only to document its limited qualification.}
 \end{table}
 
 \FloatBarrier
-\subsection{Zero-fragment structure and matched runtime diagnostics}
+\subsection{Structured sparsity and matched runtime diagnostics}
 \label{app:kernel-diagnostics}
 
 We reconcile the same 30 checkpoints with their canonical logical-product
@@ -427,16 +405,6 @@ which also changes dense kernels and layouts, so it does not isolate fusion.
 Native-relative full speedup is $t_N/t_K$; $t_N$ uses the native measurements
 paired with full K050. Each geometric mean uses 64 inputs, seven paired
 passes, and three processes, matching the original timing protocol.
-
-A common dense-reference ratio instead uses $t_{N,\mathrm{A0}}/t_K$
-for every checkpoint, with $t_{N,\mathrm{A0}}=0.6554424$ ms. At
-$\kappa=0.5$, four-/seven-site OL1 then reach $1.427\times$ and
-$1.385\times$, respectively. This common denominator avoids rewarding
-recipe-specific native overhead, but still combines implementation changes
-and different quality operating points. It is a ratio of retained geometric
-means across models, not a new interleaved timing comparison. The original
-native-relative associations below describe implementation acceleration,
-not a ranking of optimized recipe latency.
 
 \paragraph{Execution units.}
 QKV and FFN-up omit a $16\!\times\!8\!\times\!16$ MMA when the entire
@@ -462,8 +430,7 @@ These instruction counts include tiled causal padding, unlike the unmasked
 scalar logical-product denominator.
 
 \paragraph{Associations and matched recipes.}
-Figures~\ref{fig:kernel-within-family}--\ref{fig:kernel-diagnostics} separate
-within-family associations from scalar and instruction-level
+Figure~\ref{fig:kernel-diagnostics} compares scalar and instruction-level
 predictors. Projection-skipping gain has Pearson $r=0.973$, $R^2=0.946$
 against projection MMA bypass, versus $r=0.643$, $R^2=0.413$ against the
 projection scalar zero-product fraction. The within-family $\Smodel$ versus
@@ -484,8 +451,7 @@ projection MMAs versus $57.68\%$ for seven-site. Its full K050 latency is
 also lower: $0.45948$ versus $0.47337$ ms. Seven-site nevertheless reports
 the larger native-relative speedup ($1.783\times$ versus $1.609\times$),
 because its native baseline is slower ($0.84409$ versus $0.73944$ ms).
-Figure~\ref{fig:kernel-absolute-latency} displays this difference.
-The relative-speedup/absolute-latency reversal holds in all eight
+This relative-speedup/absolute-latency reversal holds in all eight
 positive-threshold four-/seven-site pairs, with and without OL1.
 
 The native implementation executes Q/K/V gates separately at nonzero
@@ -519,59 +485,25 @@ values. Differences across checkpoints are not independent-seed estimates.}
 \input{tables/kernel-checkpoint-latencies}
 \end{table}
 
-% Sources: Analysis 021 O011--O013; 09_kernel_appendix_figures.py.
 \begin{figure}[p]
 \centering
-\includegraphics[width=\linewidth]{figures/appendix/01-kernel-within-family.pdf}
-\caption{\textbf{Sparsity--speedup association within intervention families.}
-Each panel contains ten checkpoints and a descriptive OLS fit with an
-intercept, using each checkpoint's own native-relative full K050 speedup.
-Axis ranges differ between panels to expose within-family variation.
-The centered statistic subtracts each family's mean from both variables.
-These relationships persist within families but do not control for native
-cost, pressure, threshold or validation quality, and do not establish a
-causal effect of additional scalar zeros. Baseline/local comprises the dense
-reference, one-site ReLU, naive L1 and OL1.}
-\label{fig:kernel-within-family}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/02-kernel-scalar-vs-skippable.pdf}
-\caption{\textbf{Scalar zeros, skipped instructions and matched runtime gains.}
-All 30 checkpoints use the same family colors and shapes. Projection and
-attention gains are $t_0/t_P$ and $t_P/t_K$, respectively; dashed lines are
-descriptive OLS fits with intercepts. Y-ranges match within rows. Scalar
-percentages use each operation group's own product denominator, whereas
-instruction fractions retain tiled padding. Projection bypass includes
-scalar substitution, so bypass does not mean all corresponding arithmetic
-disappears. Attention counts include masked/padded work and have only two
-distinct predictor values. Counters cover 338 validation blocks and timings
-64 matched inputs. Neither attention metric yields profitable skipping in
-this implementation.}
+\includegraphics[page=1,width=\linewidth]{figures/appendix/kernel-investigation.pdf}
+\caption{\textbf{Scalar sparsity, skipped instructions, and matched runtime gains.}
+The 30 checkpoints share colors and shapes by family. Projection and attention
+gains are $t_0/t_P$ and $t_P/t_K$; lines are descriptive OLS fits with intercepts.
+Projection bypass includes scalar substitution and padded MMA rows. Attention
+skip fractions include masked/padded work and take only two distinct values.
+The remaining pages of the accompanying diagnostic PDF show within-family
+fits, matched threshold comparisons, and absolute latency traces. Counters
+cover 338 validation blocks, while timings cover 64 matched inputs.}
 \label{fig:kernel-diagnostics}
 \end{figure}
 
-\begin{figure}[p]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/03-kernel-absolute-latency.pdf}
-\caption{\textbf{Native reference costs and absolute optimized latency.}
-Four-/seven-site checkpoints are compared at the same threshold, without
-OL1 (top) and with OL1 (bottom). Columns show native SDPA, all-skips-off
-K050 and full K050 geometric-mean latencies. Y-ranges are shared within
-columns but differ across columns. The positive-threshold seven-site
-native overhead is much larger than the difference under the optimized
-implementation. Connecting lines order independently trained settings;
-they are not training trajectories or uncertainty estimates.}
-\label{fig:kernel-absolute-latency}
-\end{figure}
-
-\FloatBarrier
 \subsection{Evidence and data accompanying the draft}
 \label{app:result-data}
 
 The supplementary directory \path{supplementary-data/} contains all 54 training records with
-integer operation counts, all 540 thresholding evaluations and frontier
+integer operation counts, all 540 clipping evaluations and frontier
 memberships, seven signed histograms with zero and tail counts, figure
 coordinates, and the 30-checkpoint runtime reduction, with the kernel
 investigation's per-checkpoint counters, raw-latency reductions, and stratified

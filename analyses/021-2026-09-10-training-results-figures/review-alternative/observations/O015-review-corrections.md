@@ -1,4 +1,8 @@
-# O015 — Review corrections from retained evidence
+# O015 — Archived review figure alternatives
+
+Status: the manuscript revision in `f9351d7` was reverted at the author's
+request. These figures and their evidence are retained separately; this
+observation does not describe the current manuscript.
 
 ## Question and scope
 
@@ -35,18 +39,18 @@ contributions, runtime records, and calculated contrasts.
 
 ## Figures, legends and captions
 
-All five new PDFs are in [figures/review](../figures/review). Their byte-identical
-draft copies are recorded in `manuscript/draft/figures/SOURCES.json`.
+All five PDFs are preserved byte-for-byte from `f9351d7` in
+[figures](../figures). Their draft copies were removed by the rollback.
 
-1. [Quality–sparsity overview](../figures/review/01-quality-sparsity.pdf),
-   manuscript Figure 1: unchanged 26-checkpoint view from O001, with dense,
+1. [Quality–sparsity overview](../figures/01-quality-sparsity.pdf),
+   overview: unchanged 26-checkpoint view from O001, with dense,
    post-hoc thresholding and selected-site reach terminology. Blue/orange
    identify four/seven sites; open/solid versus filled/dashed denote no
    pressure versus OL1 for those families. Dotted paths are post-hoc magnitude
    thresholding. The +0.13 loss callout is marginal pressure cost, not the
    complete recipe's +0.6208 dense-relative penalty.
-2. [Site distributions and operation accounting](../figures/review/04-site-distributions.pdf),
-   Figure 5: **Site-specific zeros and operation-weighted consequences.**
+2. [Site distributions and operation accounting](../figures/04-site-distributions.pdf),
+   composite: **Site-specific zeros and operation-weighted consequences.**
    Panel (a) separately displays m, h and pooled Q/K/V for the dense reference
    (gray), four-site OL1 (blue) and seven-site OL1 (orange). Curves divide bin
    counts by all captured elements and bin width, so their integrals exclude
@@ -55,13 +59,13 @@ draft copies are recorded in `manuscript/draft/figures/SOURCES.json`.
    Panel (b) includes the two pressure-free controls and two OL1 checkpoints;
    six operation colors partition S_model, including the dense vocabulary head
    in the denominator only. Stacks are logical opportunities, not runtime gains.
-3. [Cross-size recipes](../figures/review/05-cross-size.pdf), Figure 6:
+3. [Cross-size recipes](../figures/05-cross-size.pdf):
    unchanged absolute-loss coordinates from O006, with reach-reference wording.
    The common quality axis and size-specific sparsity axes show independently
    trained four-/seven-site OL1 recipes and dense post-hoc thresholds. The
    kappa = 0.5 ordering recurs; the complete threshold response does not.
-4. [Absolute latency and projection bypass](../figures/review/07-kernel-quality-latency.pdf),
-   Figure 7: **Quality, absolute latency and exploitable zero structure.**
+4. [Absolute latency and projection bypass](../figures/07-kernel-quality-latency.pdf),
+   runtime: **Quality, absolute latency and exploitable zero structure.**
    Panel (a) plots all 30 canonical losses against projection-only K050 latency;
    a black cross shows native dense-reference execution. Blue diamonds and
    orange triangles identify four-/seven-site recipes, open without pressure
@@ -69,13 +73,14 @@ draft copies are recorded in `manuscript/draft/figures/SOURCES.json`.
    gray fill does not encode pressure. Panel (b) plots actual projection MMA
    bypass against t0/tP with a descriptive OLS fit. Bypass includes padded
    instructions and replacement by scalar work, not solely eliminated arithmetic.
-5. [Site-by-layer exact zeros](../figures/review/appendix-site-zero-heatmap.pdf),
-   Figure 10: five sites by six layers for the same three density checkpoints.
+5. [Site-by-layer exact zeros](../figures/appendix-site-zero-heatmap.pdf),
+   heatmap: five sites by six layers for the same three density checkpoints.
    The common color scale is 0–100%; whole-number labels are rounded and a
    displayed 100 does not establish an all-zero tensor.
 
-The existing O011–O013 kernel appendix PDFs are adopted unchanged as Figures
-16–18, in within-family, scalar-versus-instruction, and absolute-latency order.
+The existing O011–O013 kernel appendix PDFs remain in the parent analysis
+folder, in within-family, scalar-versus-instruction, and absolute-latency order.
+Their manuscript adoption in the review revision was also reverted.
 Their native-relative associations retain each checkpoint's own reference;
 they do not rank absolute optimized recipe performance.
 
@@ -124,17 +129,16 @@ support reanalysis but do not constitute a standalone executable kernel release.
 ## Reproduction and verification
 
 ```powershell
-.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/10_review_figures.py
-.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/test_review_figures.py -q -p no:cacheprovider
+.venv/Scripts/python.exe analyses/021-2026-09-10-training-results-figures/review-alternative/10_review_figures.py
+.venv/Scripts/python.exe -m pytest analyses/021-2026-09-10-training-results-figures/review-alternative/test_review_figures.py -q -p no:cacheprovider
 ```
 
 The three new tests check site/layer count conservation, density mass, four
 operation controls, interaction and quality-cost arithmetic, the analytic
 reach simplification, all 30 plotted absolute latencies, correct marker fill,
-the bypass correlation and the projection-only recommendation. Existing
-density, overview, scale, OL1, common-reference and investigation tests also
-pass. The draft builds to nine main-text pages and 32 total pages. New figures
-and affected manuscript pages were rendered and checked; references resolve
-and there are no overfull boxes. The detailed requirement audit and machine
-verification are in
-[the review record](../../../manuscript/draft/reviews/2026-09-16-feedback/README.md).
+the bypass correlation and the projection-only recommendation.
+
+The archived PDFs were rendered and checked during the original revision.
+The rollback preserves their bytes and adjusts only reproduction paths.
+The original manuscript audit remains available in the history of `f9351d7`;
+its manuscript adoption and page-count claims no longer apply.

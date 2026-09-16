@@ -1,26 +1,37 @@
-% Review corrections: Analysis 021 observations/O015-review-corrections.md; 10_review_figures.py.
-\section{Related work}
+% Literature chain: post-hoc, trained and broader interventions; then execution.
+% Source checks and interpretation limits: positioning.md and review reports.
+\section{Related Work}
 \label{sec:related-work}
 
-\paragraph{Sparsification interventions.}
-Post-hoc magnitude thresholding zeros small activations without updating
-weights: CATS targets FFNs and TEAL includes attention
-projections~\citep{lee2024cats,liu2024teal}. ReLU Strikes Back studies
-nonlinearity choices~\citep{mirzadeh2023relu}; ProSparse combines pressure
-and thresholding during continued training~\citep{song2024prosparse}, while
-\citet{cetin2026sparser} study sparse pretraining and execution.
-Q-Sparse and Spark sparsify attention
-and FFN projection inputs with top-$k$ or statistical
-selection~\citep{wang2024qsparse,you2025spark}. We use fixed thresholds to
-study placement and pressure under matched pretraining, additionally
-targeting internal Q/K/V operands. This compares mechanisms rather than
-ranking those complete methods under their original protocols.
+\subsection{Sparsification interventions}
+\label{sec:related-interventions}
 
-\paragraph{Sparse execution.}
-TEAL, TwELL and Spark couple sparsity with implementations adapted to
-particular shapes and inference settings~\citep{liu2024teal,cetin2026sparser,you2025spark}.
-Memory movement, selection costs and instruction granularity limit whether
-zeros save time. Coding agents can assist kernel development with execution
-feedback~\citep{ouyang2025kernelbench,luo2026agentic}. Our qualified timings
-and matched ablations evaluate learned representations, without claiming
-agent superiority or state-of-the-art inference performance.
+Post-hoc thresholding removes small activations at inference-time of a pre-trained model. While CATS thresholds small-magnitude activations within FFNs~\citep{lee2024cats}, TEAL extends it to attention~\citep{liu2024teal}. Although effective, these studies motivate training-time interventions to adapt activation distributions to sparse computation and improve over the quality-sparsity trade-off frontier.
+
+ReLU Strikes Back studies the effect of activations functions in language models~\citep{mirzadeh2023relu}, showing clear sparsity gains on the use of ReLUs. ProSparse combines progressive $\ell_1$ pressure and thresholding at FFNs during continued training~\citep{song2024prosparse}. It does not, however, extend its interventions to attenton and restrict the analysis to local FFN sparsity. \citet{cetin2026sparser} extends ProSparse setup to pre-training and propose specialized kernels. These studies show that training can reshape the quality--sparsity trade-off, but they're restricted to a single local intervention at FFN sites.
+
+Q-Sparse extend sparsification beyond FFNs. It applies top-$k$ selection to both attention and FFN projection inputs~\citep{wang2024qsparse}. Its top-$k$ operation introduces, however, additional overhead due to the sorting operation. Spark Transformer tries to address it with statistical top-$k$~\citep{you2025spark}, but we take a simpler approach and use a constant thresholding non-linearity. We argue that when the intervention is introduced during training, the network can adapt itself to the pressure being applied. Additionally, we evaluate the complementary effect of regularization pressure on both attention and FFNs.
+
+\subsection{Inference speedup}
+\label{sec:related-speedup}
+
+Turning activation sparsity into speedup requires a specialized kernel adapted to the model architecture. TEAL accelerates batch-one autoregressive decoding, reporting up to $1.8\times$ speedup at 50\% sparsity~\citep{liu2024teal}. \citet{cetin2026sparser} address batched matrix multiplication with their TwELL kernel, and report $1.3\times$ speedup for batch inference. Spark likewise couples its sparsity mechanism with an implementation that reports decoding
+gains~\citep{you2025spark}. In each setting, skipped computation and memory access must compesate the additional overhead introuced by the sparse operations. This development has been increasingly accelerated by the use of coding agents, through iterative kernel development with execution and profiling feedback~\citep{ouyang2025kernelbench,luo2026agentic}. We take a related approach and use GPT-6 Astra do develop a specialized kernel based on our training interventions~\citep{openaigpt6astra}.
+
+% Possbible argument:
+%- use train-time pressure to enforce batched structure so its favorable for batch inference speedup
+%One interesting approach not addressed in this work is the Block Q-Sparse introduces structure into the mask to accommodate batched execution~\citep{wang2024qsparse}
+
+% The execution strategy also depends on shape and sparsity structure.
+% With larger batches, different token masks
+% can reduce the weight-loading savings available from sparsity, as Spark's
+% batching analysis illustrates~\citep{you2025spark}. Block Q-Sparse introduces
+% structure into the mask to accommodate batched
+% execution~\citep{wang2024qsparse}; TwELL instead makes packing and fusion
+% compatible with tiled computation~\citep{cetin2026sparser}.
+% Iterative kernel generation with execution and profiling feedback offers a
+% tool for exploring these
+% adaptations~\citep{ouyang2025kernelbench,luo2026agentic}.
+% We use this approach in a human-guided kernel case study, requiring numerical
+% agreement and full-model timings that include activation-dependent selection
+% and conversion costs.

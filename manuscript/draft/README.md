@@ -25,23 +25,6 @@ missing and no overfull boxes occur.
 
 ## Current format
 
-The 16 September review revision reframes the paper around disagreements
-between activation zeros, zero-product opportunity and useful acceleration.
-The main text fits nine pages; AI-use/reproducibility statements begin on page
-10, and the complete PDF has 32 pages. Figure 5 separates FFN sites and adds
-pressure-free operation controls; Figure 7 now compares absolute latency and
-quality, then actual projection MMA bypass. The layer heatmap and three kernel
-diagnostics support the appendix. Quality costs accompany sparsity maxima,
-and the native-reference reversal is explicit.
-
-[Review audit](reviews/2026-09-16-feedback/README.md) maps every correction to
-the current evidence and records the verification. No new experiment was
-launched. The source figure hashes, measured-data boundaries and single-seed
-limitations are preserved. The final build has resolved citations/references,
-no overfull boxes, and three visually checked underfull-box warnings.
-
-### Earlier revisions
-
 On 11 September, the frozen Analysis 021 kernel v2 became Figure 7 on page 10.
 Section 4.6 is now "When model-wide sparsity translates to speedup," with
 Astra as the implementation tool. The section and Discussion distinguish

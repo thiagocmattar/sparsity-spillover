@@ -13,12 +13,13 @@ from matplotlib.text import Text
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
+ANALYSIS = HERE.parent
+ROOT = ANALYSIS.parents[1]
 BLUE, ORANGE, GRAY = "#2878B5", "#C96024", "#777777"
 
 
 def module(name):
-    spec = importlib.util.spec_from_file_location(name, HERE / f"{name}.py")
+    spec = importlib.util.spec_from_file_location(name, ANALYSIS / f"{name}.py")
     out = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(out)
     return out
@@ -26,7 +27,7 @@ def module(name):
 
 def read_evidence():
     endpoint_path = ROOT / "analyses/018-2026-09-08-results-materials/figure_data.json"
-    runtime_path = HERE / "investigation/data/checkpoints.json"
+    runtime_path = ANALYSIS / "investigation/data/checkpoints.json"
     endpoints = json.loads(endpoint_path.read_text(encoding="utf-8"))
     runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
     assert len(runtime) == 30 and {r["condition"] for r in runtime} == {f"c{i:02d}" for i in range(1, 31)}
@@ -181,7 +182,7 @@ def terminology_figure(name):
 
 def main():
     data=read_evidence()
-    out=HERE/"figures/review";out.mkdir(exist_ok=True)
+    out=HERE/"figures";out.mkdir(exist_ok=True)
     figures={"04-site-distributions.pdf":densities(data),"appendix-site-zero-heatmap.pdf":heatmap(data),"07-kernel-quality-latency.pdf":kernel(data)}
     for name,builder in (("01-quality-sparsity.pdf","01_quality_sparsity"),("05-cross-size.pdf","05_scale_transfer")):
         figures[name],sidecar=terminology_figure(builder)

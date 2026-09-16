@@ -65,4 +65,6 @@
   OL1 at kappa = 0.5 reach 1.427x/1.385x. Panel (b) retains its matched ablation
   reference and layout; v2 and the manuscript are preserved.
 
-- [O015 - Review corrections](O015-review-corrections.md): separate m/h statistics, dense distributions and pressure-free bars; absolute quality-latency comparison and projection bypass; qualified cross-size and pressure claims; nine-page main text and an AI-use statement. Five new PDFs and the three existing kernel appendix figures are adopted with source hashes.
+- [O015 - Archived review alternatives](../review-alternative/observations/O015-review-corrections.md):
+  five PDFs and their reproduction files preserved separately after the
+  manuscript review revision was reverted. Not adopted in the current draft.

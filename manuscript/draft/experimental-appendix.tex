@@ -45,7 +45,7 @@ post-RoPE operands: rotation can repopulate an individual zero coordinate.
 Likewise, the output projection uses actual post-nonlinearity context $z$, rather than
 inferring its zeros from the value mask.
 \FloatBarrier
-\subsection{Architecture-specific counts and selected-site reach}
+\subsection{Architecture-specific counts and sparsity ceilings}
 \label{app:architecture-counts}
 
 The operation inventory comprises QKV projection, attention scores ($QK$),
@@ -86,20 +86,6 @@ the pinned $(L,d)$ configurations $(6,128)$, $(6,512)$, and $(24,1{,}024)$.%
 Links identify immutable configuration revisions; released weights are not used.}
 No checkpoint enters this calculation. For example, A0 has zero selected-site
 reach but may have positive observed sparsity from natural zeros.
-
-% Review reduction: Analysis 021 observations/O015-review-corrections.md.
-Dividing the seven-site count by the full-model denominator gives
-\begin{equation}
-\Smax(\mathrm{A7})=
-\frac{L(12d+T+1)}{L(12d+T+1)+V_{\!\mathrm{vocab}}}.
-\label{eq:seven-site-reach}
-\end{equation}
-Greater width or depth reduces the dense head's relative contribution under
-this workload. This is an analytic coverage fraction, not a prediction of
-learned sparsity at a given quality cost. It assumes full-vocabulary logits
-at every sequence position. Computing logits only at the final position
-would instead give denominator $LC_{\mathrm{block}}+dV_{\!\mathrm{vocab}}$,
-changing the reach reference even for the same architecture.
 
 \subsection{Evaluation scope}
 \label{app:evaluation}
