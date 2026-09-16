@@ -5,6 +5,10 @@
 
 ## Current status
 
+Run 032 is authorized and implemented for five Pythia-14M A7 threshold
+conditions with OL1 only at h. Local tests passed; A100 preflight and five-worker
+execution are pending. See `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
+
 Analysis 021 revises the manuscript's 14M quality-sparsity overview with short
 labels, baseline/ReLU clipping and both architectural reach guides, using
 retained measurements. See
@@ -205,7 +209,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `032`. Next analysis number: `020`. Next finding number: `F003`.
+Next run number: `033`. Next analysis number: `022`. Next finding number: `F003`.
 
 ## Where we stopped
 
