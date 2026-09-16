@@ -1,292 +1,180 @@
-% Source observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
-% OL1 geometry: analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
-% Matched OL1 additions: analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
-% Matched Q/K/V threshold additions without pressure: analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md
-% Table evidence: analyses/018-2026-09-08-results-materials/figure_data.json (trained endpoints; A4 to A7 gates contrasts).
-% Local/model-wide sparsity: analyses/021-2026-09-10-training-results-figures/observations/O005-distributions-and-operations.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/04_distributions_and_operations.py
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
-% Historical evidence chain: results-argument-map.md. Current overview/geometry/pressure effects: Analysis 021 O001/O002/O003.
-% Overview is in introduction.tex. Full density grid: results-appendix.tex.
-% Scale figure: analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py;
-% observations/O006-scale-transfer.md. A0 histories: 06_a0_optimization.py; observations/O007-a0-optimization.md.
-% Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
+% Review corrections: Analysis 021 observations/O015-review-corrections.md; 10_review_figures.py.
 \subsection{Quality--sparsity trade-offs}
 \label{sec:quality-sparsity-results}
 
-Local pressure and broader nonlinearities offer different quality--sparsity trade-offs
-(Figure~\ref{fig:quality-sparsity-overview}). With OL1 at $h$, the model can
-improve validation loss while introducing modest model-wide sparsity:
-at $\lambda=0.5$, A1-H-OL1 reaches $3.768\%$ sparsity at loss 5.1102,
-compared with A0's loss of 5.2086. A0 post-hoc clipping reaches a similar
-sparsity level, $3.832\%$ at target $p=0.3$, but with loss 5.3619. Thus,
-similar aggregate sparsity can carry different quality costs depending on
-the trained recipe and evaluation-time intervention.
-
-Broader interventions reach much greater sparsity. A7-OL1 at $\kappa=0.5$
-attains $27.483\%$ model-wide sparsity at loss 5.8294, accepting a quality
-cost relative to A0. This comparison also changes computational reach:
-the A0 clipping reference acts at $a,m,h,z$, whereas A7 additionally thresholds
-the internal attention operands. At 14M, these site sets have analytic sparsity
-ceilings of $12.833\%$ and $29.952\%$, respectively. This comparison changes
-both the trained representation and the computation the selected sites can
-affect. Matched pressure-on/off comparisons isolate pressure's contribution. Full endpoints
-and clipping trajectories are given in Appendix~\ref{app:complete-results}.
-
-In the local $h$-only sweep, OL1 is not uniformly better than naive L1:
-their validation-loss differences are small, and the ordering reverses at
-$\lambda=1$; the complete matched sweep is reported in
-Appendix~\ref{app:complete-results}, Table~\ref{tab:paired-effects-full}.
+Local pressure and broader thresholds offer different trade-offs
+(Figure~\ref{fig:quality-sparsity-overview}). One-site ReLU + OL1 at
+$\lambda=0.5$ reaches $3.768\%$ sparsity and loss 5.1102, versus dense
+loss 5.2086. Post-hoc magnitude thresholding of the dense reference reaches
+similar sparsity, $3.832\%$, at loss 5.3619. Broader trained recipes reach
+larger $\Smodel$, but seven-site placement also has more computational reach
+than the four-site post-hoc comparator: $29.952\%$ versus $12.833\%$ at
+14M. Thus the broad comparison changes both learned representation and
+reachable computation; it does not establish universal dominance over
+matched-site post-hoc methods. One-site OL1 is also not uniformly better
+than naive L1: their small loss differences reverse at $\lambda=1$
+(Appendix Table~\ref{tab:paired-effects-full}).
 
 \subsection{Paired effect of adding pressure}
 \label{sec:paired-results}
 
-To isolate the marginal contribution of pressure from threshold strength,
-we compare each OL1 recipe with its pressure-free counterpart at the
-\emph{same} trained threshold $\kappa$
-(Figure~\ref{fig:paired-intervention-effects}). Thus, the four-site contrasts
-are A4-OL1 minus A4 and the seven-site contrasts are A7-OL1 minus A7;
-changing $\kappa$ changes the operating point at which pressure is evaluated,
-while retaining a pressure-free reference at each threshold.
+We compare pressure-on and pressure-free recipes at each matched $\kappa$
+(Figure~\ref{fig:paired-intervention-effects}). Four-site OL1 slightly
+improves loss at $\kappa=0$ and $0.01$, adding $0.598$ and $1.173$ pp of
+$\Smodel$. Its increment reaches $2.498$ pp for $+0.3783$ loss at
+$\kappa=0.5$. Seven-site OL1 adds $1.372$ pp for $+0.0008$ loss at
+$\kappa=0.1$, but $12.096$ pp for $+0.1265$ at $0.5$.
+\textbf{Pressure's marginal benefit depends on both threshold and target set.}
 
-\textbf{The added value of pressure changes sharply with both threshold and
-target set.} For the four-site recipe, OL1 slightly improves validation loss
-at $\kappa=0$ and $0.01$, while adding $0.598$ and $1.173$ percentage points
-(pp) of model-wide sparsity. At larger thresholds, the sparsity increment
-approaches $2.5$ pp but carries increasing quality cost, reaching $+2.498$ pp
-for $+0.3783$ validation loss at $\kappa=0.5$. For the seven-site recipe, the
-pressure effect remains modest through $\kappa=0.1$, where it adds $1.372$ pp
-for only $+0.0008$ loss. At $\kappa=0.5$, however, the increment rises to
-$+12.096$ pp for $+0.1265$ loss.
+Define the complete-recipe interaction
+$I_S(\kappa)=(S_{7,+}-S_{7,-})-(S_{4,+}-S_{4,-})$, where $+$ and $-$ denote
+OL1 and no pressure; define $I_L$ analogously for loss. At $\kappa=0.5$,
+$I_S=+9.598$ pp and $I_L=-0.2518$. Expanding to seven sites changes both
+pressure targets and their equal-tensor normalization, so this is not an
+isolated effect of Q/K/V pressure. The large difference occurs at the
+largest sampled threshold; the gap from 0.1 to 0.5 does not identify a
+transition or its location.
 
-\textbf{At the highest threshold, seven-site pressure therefore produces
-nearly five times the additional model-wide sparsity of four-site pressure,
-while incurring roughly one third of its validation-loss increase.}
-
-This difference characterizes the complete pressure target sets, not an
-isolated effect of adding $q,k,v$. Seven-site OL1 introduces additional
-pressure targets, and because the pressure objective equally averages
-targeted site--layer tensors, expanding the target set also changes the
-normalization and relative weighting of the existing targets. The larger
-seven-site effect therefore cannot be attributed to attention placement alone.
-
-% Frozen Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{figures/03-14m-paired-interventions.pdf}
-\caption{\textbf{The marginal effect of adding OL1 depends strongly on threshold
-and pressure target set.} Each point is a matched comparison at the same
-trained threshold $\kappa$: $\Delta=(+\mathrm{OL1})-(\mathrm{no\ pressure})$,
-using A4-OL1 $-$ A4 for the four-site recipe and A7-OL1 $-$ A7 for the
-seven-site recipe. \textbf{(a)} Change in validation loss; negative values
-indicate improved quality. \textbf{(b)} Change in model-wide sparsity
-$\Smodel$, in percentage points. \textbf{At $\kappa=0.5$, four-site pressure
-adds $2.50$ pp sparsity for $+0.38$ loss, whereas seven-site pressure adds
-$12.10$ pp for only $+0.13$ loss.} Lines connect matched threshold settings
-and do not represent training trajectories. All comparisons use matched
-initialization, data order, and training budget.}
+\includegraphics[width=.88\linewidth]{figures/03-14m-paired-interventions.pdf}
+\caption{\textbf{Conditional effects of adding OL1.} Each point subtracts
+the pressure-free endpoint from its OL1 counterpart at the same trained
+$\kappa$: A4-OL1 minus A4, or A7-OL1 minus A7. Panels show validation-loss
+change and model-wide sparsity change (pp). At $\kappa=0.5$, the four-site
+effect is $+2.50$ pp/$+0.38$ loss and the seven-site effect is
+$+12.10$ pp/$+0.13$ loss. These are marginal pressure costs, not total
+penalties relative to the dense model. Lines order separately trained
+settings, with matched initialization, data order and budget.}
 \label{fig:paired-intervention-effects}
 \end{figure}
 
-\begin{samepage}
-\textbf{The same pressure weight produces very different optimization regimes
-across target sets} (Figure~\ref{fig:ol1-geometry}). We log global dot products
-and norms of the AdamW-preconditioned task direction $u$ and pressure direction
-$w$ at every optimizer step of the ten Pythia-14M multisite OL1 runs.
-Pre-projection alignment is negative on $99.9\%$ of the resulting 7,120 step
-records. We quantify the task-relative opposing component as
-\[
-\rho_{\mathrm{opp}}=
-\frac{\max(0,-\langle u,w\rangle)}{\|u\|_2^2+\epsilon},
-\]
-which expresses the removed opposing component relative to the task-direction
-norm. Pooled across thresholds, its median is $0.0095$ for four-site pressure
-and $0.588$ for seven-site pressure. Consistently, at $\lambda=b=1$, the norm
-cap is active on only $0.5\%$ of four-site steps but $97.0\%$ of seven-site
-steps. Thus, seven-site OL1 operates almost entirely in a budget-limited
-regime, whereas four-site OL1 is almost entirely uncapped. Because expanding
-to seven sites also changes the pressure objective and its equal-tensor
-normalization, these diagnostics characterize the complete target sets rather
-than isolating the contribution of $q,k,v$ alone.
-\end{samepage}
+The same pressure weight also produces different optimization regimes
+(Figure~\ref{fig:ol1-geometry}). For adaptive task and pressure directions
+$u,w$, the task-relative opposing component is
+$\rho_{\mathrm{opp}}=\max(0,-\langle u,w\rangle)/(\|u\|_2^2+\epsilon)$.
+Across 7,120 logged steps, $99.9\%$ have negative alignment. Median
+$\rho_{\mathrm{opp}}$ is $0.0095$ for four-site and $0.588$ for seven-site
+pressure; at $\lambda=b=1$, the cap is active on $0.5\%$ and $97.0\%$ of
+steps. This is a larger task-relative opposing component in OL1's
+AdamW-preconditioned coordinates, not a direct measure of loss sensitivity
+or the fraction of pressure removed. The geometry combines direction and
+magnitude and does not identify a cause of the distribution changes below.
 
-% Frozen Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=\linewidth]{figures/02-14m-ol1-geometry.pdf}
-\caption{\textbf{OL1 pressure geometry depends strongly on the pressure target set.}
-\textbf{(a)} Task-relative magnitude of the opposing pressure component removed
-by conflict-conditioned projection. For each trained threshold $\kappa$,
-points show the median over 712 optimizer steps of $100\rho_{\mathrm{opp}}$,
-where $\rho_{\mathrm{opp}}=\max(0,-\langle u,w\rangle)/(\|u\|_2^2+\epsilon)$;
-whiskers show the 25th--75th percentiles. Across all 7,120 logged multisite
-OL1 steps, $99.9\%$ have $\langle u,w\rangle<0$.
-\textbf{(b)} Pre-cap pressure-to-task norm ratio $r/b$ at $\lambda=b=1$.
-Faint curves show the five $\kappa$ conditions within each target set, and
-thick curves show their per-step median. The dotted line marks the nominal
-cap boundary $r/b=1$; cap-active fractions use the implemented condition
-$s<1$. The cap is active on $0.5\%$ of four-site steps and $97.0\%$ of
-seven-site steps. All quantities are measured in the AdamW-preconditioned
-coordinates used by OL1, before group learning rates and decoupled weight
-decay. Thus, expanding the pressure target set changes not only where
-pressure is applied but also the task-relative magnitude and budget regime
-of the pressure correction.}
+\caption{\textbf{Pressure targets change OL1 geometry and cap activity.}
+(a) Median $100\rho_{\mathrm{opp}}$ over 712 steps per condition; whiskers
+are the 25th--75th percentiles. (b) Pre-cap norm ratio at $\lambda=b=1$;
+faint curves are five thresholds per target set, thick curves their per-step
+median. Cap-active fractions use the implemented scale $s<1$. Geometry is
+measured before group learning rates and decoupled weight decay; it does
+not guarantee task-loss preservation (Appendix~\ref{app:pressure}).}
 \label{fig:ol1-geometry}
 \end{figure}
-
-Pressure therefore cannot be assigned a single context-independent
-sparsity--quality effect: its marginal contribution depends on the thresholded
-representation and pressure target set.
 
 \subsection{Broader threshold placement without pressure}
 \label{sec:qkv-thresholding-results}
 
-To isolate the effect of adding Q/K/V thresholding, we compare A7 with A4
-at matched $\kappa$ without pressure (Table~\ref{tab:qkv-thresholding}).
-\textbf{At $\kappa=0.5$, adding Q/K/V thresholding raises model-wide sparsity
-by $5.17$ pp for only $+0.043$ validation loss.}
+Pressure-free four-/seven-site comparisons keep $\kappa$ matched while
+adding Q/K/V thresholds (Table~\ref{tab:qkv-thresholding}). At zero threshold
+these added nonlinearities are identities, and the endpoints nearly
+coincide. At $\kappa=0.5$, broader thresholding adds $5.17$ pp for
+$+0.043$ loss. This control separates threshold placement from the
+complete-recipe pressure interaction.
 
 \begin{table}[htbp]
 \centering\small
-\caption{\textbf{Broader threshold placement increases model-wide sparsity
-at matched threshold without pressure.} A4 thresholds $a,m,h,z$, whereas
-A7 additionally thresholds $q,k,v$. At $\kappa=0$, the additional Q/K/V
-nonlinearities are identities, and the two recipes are nearly identical.
-As $\kappa$ increases, their sparsity difference grows; at $\kappa=0.5$,
-A7 reaches $15.39\%$ model-wide sparsity versus $10.22\%$ for A4, with
-validation losses 5.7029 and 5.6597, respectively.}
+\caption{\textbf{Four- versus seven-site thresholds without pressure.}
+A4 targets $a,m,h,z$; A7 additionally targets $q,k,v$. Values are raw
+matched endpoints, not pressure effects.}
 \label{tab:qkv-thresholding}
 \input{tables/qkv-thresholding-no-pressure}
 \end{table}
 
-We next examine how the resulting
-four- and seven-site recipes differ in their activation structure.
-
 \subsection{Local sparsity does not determine model-wide sparsity}
 \label{sec:activation-reshaping}
 
-\textbf{FFN sparsity alone does not determine which recipe exposes more
-model-wide sparse computation} (Figure~\ref{fig:activation-reshaping}).
-At $\kappa=0.5$, four-site OL1 has $99.31\%$ exact zeros in the pooled FFN
-activations, compared with $93.64\%$ for seven-site OL1. However, seven-site
-OL1 has the larger model-wide sparsity: $27.48\%$ versus $12.71\%$. It also
-has lower validation loss at this operating point, 5.8294 versus 6.0380.
-\textbf{Thus, the recipe with the larger FFN zero fraction is not the recipe
-with the larger $\Smodel$.}
+At $\kappa=0.5$, expanding four-site OL1 to seven sites reduces exact zeros
+at the \textbf{FFN-up input $m$ from 96.77\% to 68.70\%}, whereas the FFN
+hidden activation $h$ changes only from 99.94\% to 99.88\%
+(Figure~\ref{fig:activation-reshaping}). These are measured per-site counts,
+not estimates from rounded operation contributions. Pooling $h,m$ would
+weight them 80:20 and obscure the distinction. Layer-level counts appear
+in Appendix Figure~\ref{fig:site-zero-heatmap}.
 
-The operation decomposition explains the difference. Under four-site OL1,
-$QK$ and $PV$ together contribute only 0.06 percentage points to $\Smodel$;
-under seven-site OL1 they contribute 16.77 points. This increase more than
-offsets the smaller seven-site contributions from QKV and FFN-up projections.
-\textbf{Model-wide sparsity therefore depends on both the zero fraction at
-each activation site and the amount of matrix-product work that consumes
-those zeros.}
+Despite fewer zeros at $m$, seven-site OL1 reaches $27.48\%$ model-wide
+sparsity versus $12.71\%$ for four-site, with lower loss (5.8294 versus
+6.0380). The decomposition explains why: $QK+PV$ contribute $16.77$ pp
+versus $0.06$ pp, outweighing smaller projection contributions. FFN-up
+contribution falls from $4.139$ to $2.939$ pp, while FFN-down remains
+approximately $4.27$ pp. The pressure-free bars show the corresponding
+placement comparison without OL1.
 
-The nonzero density also shows why concentration near zero should not be
-interpreted as exact sparsity. Under four-site OL1, the pooled Q/K/V
-distribution is sharply concentrated near zero, but only $0.22\%$ of those
-activations are exactly zero. Under seven-site OL1, $95.60\%$ are exactly
-zero. \textbf{A narrow near-zero distribution therefore need not correspond
-to a large amount of zero-skippable computation.}
+Four-site OL1's Q/K/V density concentrates near zero, yet only $0.22\%$
+of these activations are exactly zero, versus $95.60\%$ with seven-site
+OL1. Since four-site recipes do not directly target Q/K/V, their difference
+from the dense reference is a \emph{nonlocal response of the trained
+network}. It does not isolate pressure, thresholding, or their interaction.
+Likewise, the FFN-up change may reflect target reweighting, cap behavior,
+or representation adaptation; the present controls do not distinguish them.
 
-Q/K/V receive neither direct thresholding nor direct pressure in the
-four-site recipe, yet their distributions differ substantially from the
-untreated reference (Appendix~\ref{app:density-results},
-Figure~\ref{fig:activation-density-full}). This shows that changing the
-four-site recipe is associated with changes at activation sites that are
-not directly targeted. We refer to this as a \textbf{nonlocal response of
-the trained network}. The comparison does not isolate whether that response
-is caused by pressure, thresholding, or their interaction.
-
-Expanding the intervention to Q/K/V also changes the FFN distribution:
-pooled FFN exact-zero mass decreases from $99.31\%$ under four-site OL1
-to $93.64\%$ under seven-site OL1. This shows that adding intervention sites
-does not simply add sparsity independently at those sites; the activation
-distributions elsewhere in the network also change. Because the seven-site
-recipe changes both the pressure target set and the normalization of the
-pressure objective, this comparison does not identify which component
-causes the FFN change.
-
-% Approved Analysis 021 PDF copied without alteration; hash in figures/SOURCES.json.
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/04-14m-distributions-and-operations.pdf}
-\caption{\textbf{Local activation sparsity does not determine model-wide sparsity.}
-\textbf{(a)} Nonzero activation densities for four-site and seven-site OL1 at
-$\kappa=0.5$ in Pythia-14M; exact-zero mass is reported below each panel.
-Four-site OL1 has a larger pooled FFN zero fraction than seven-site OL1
-($99.31\%$ versus $93.64\%$), whereas seven-site OL1 has a much larger pooled
-Q/K/V zero fraction ($95.60\%$ versus $0.22\%$).
-\textbf{(b)} Contribution of each matrix-product family to model-wide sparsity
-$\Smodel$, using the common full-model denominator. Despite its larger FFN
-zero fraction, four-site OL1 reaches only $\Smodel=12.71\%$, compared with
-$27.48\%$ for seven-site OL1. $QK$ and $PV$ contribute 16.77 percentage points
-under seven-site OL1 but only 0.06 under four-site OL1. Bars report zero-operand
-multiplication opportunities, not runtime savings. Density pooling and
-normalization are detailed in Appendix~\ref{app:density-results}.}
+\includegraphics[width=\linewidth]{figures/review/04-site-distributions.pdf}
+\caption{\textbf{Site-specific zeros and operation-weighted consequences.}
+(a) Nonzero densities at $m$, $h$, and pooled Q/K/V, separately, for the
+dense reference and four-/seven-site OL1 at $\kappa=0.5$; exact-zero
+percentages appear below. Counts pool validation sequences and layers;
+density divides by all elements and bin width, without renormalizing the
+nonzero mass. (b) Four-/seven-site endpoints with and without OL1 at
+$\kappa=0.5$. Stacks use the common full-model denominator, including the
+dense vocabulary head. Bars measure zero-product opportunities, not time
+savings. Pressure-free density measurements are unavailable; their bars
+use the retained logical counters.}
 \label{fig:activation-reshaping}
 \end{figure}
 
-\subsection{Transfer across model sizes}
+\subsection{Cross-size recipe evaluation}
 \label{sec:scale-results}
 
-\textbf{At $\kappa=0.5$, seven-site + OL1 has both lower validation loss
-and greater model-wide sparsity than four-site + OL1 at all three model
-sizes (Figure~\ref{fig:scale-transfer}).} The same ordering does not hold
-at $\kappa=0$: four-site + OL1 is better on both axes at 14M and 70M,
-whereas seven-site + OL1 is better on both axes at 410M. Thus, the cross-size
-result is recurrence of the \textbf{high-threshold complete-recipe
-relationship}, not transfer of the entire threshold response. The larger
-cohorts lack the pressure-free A4/A7 controls needed to isolate pressure's
-contribution. Exact matched seven-site minus four-site OL1 contrasts at all
-five thresholds are reported in Appendix Table~\ref{tab:scale-pairs-full}.
+\textbf{At the largest tested threshold, $\kappa=0.5$, seven-site OL1 has
+lower loss and greater $\Smodel$ than four-site OL1 at all three sizes}
+(Figure~\ref{fig:scale-transfer}). At $\kappa=0$, four-site is better on
+both axes at 14M and 70M, but seven-site is better at 410M. This is recurrence
+of one complete-recipe ordering, not transfer of the full threshold response.
+The larger cohorts lack pressure-free multisite controls; exact contrasts
+are in Appendix Table~\ref{tab:scale-pairs-full}.
 
-Raw $\Smodel$ must be interpreted relative to the computation reachable by
-each architecture. The seven-site sparsity ceiling increases from $29.95\%$
-at 14M to $49.42\%$ at 70M and $87.25\%$ at 410M, largely because the dense
-output projection accounts for a smaller fraction of the counted products
-as model width and depth increase. At $\kappa=0.5$, seven-site + OL1 reaches
-$27.48\%$, $40.60\%$, and $80.62\%$ $\Smodel$, corresponding to
-\textbf{91.8\%, 82.2\%, and 92.4\% of the respective seven-site ceilings}.
-The much larger raw sparsity at 410M therefore reflects in part a larger
-architectural opportunity for the selected intervention sites, rather than
-an isolated effect of model size on learned zero fractions.
+Seven-site reach rises from $29.95\%$ to $49.42\%$ to $87.25\%$, partly
+because the dense vocabulary head contributes a smaller share as width and
+depth grow. The $\kappa=0.5$ endpoints reach $27.48\%$, $40.60\%$, and
+$80.62\%$ $\Smodel$: 91.8\%, 82.2\%, and 92.4\% of these references.
+Their dense-relative loss penalties are $+0.6208$, $+1.1162$, and $+0.5732$
+(perplexity factors $1.86$, $3.05$, and $1.77$). Thus the larger raw
+sparsity at 70M does not imply an improved quality cost or reference ratio.
+The seven-site coverage formula in Appendix~\ref{app:architecture-counts}
+makes its architecture-and-workload dependence explicit.
 
-Absolute validation loss is not monotonic with model size under the realized
-protocol: the A0 endpoints are 5.2086, 4.0998, and 4.5475 for 14M, 70M, and
-410M. This experiment holds the input-token budget fixed rather than tokens
-per parameter; the resulting budgets are 106.14, 21.20, and 3.68 tokens per
-parameter, and 410M also uses a lower peak learning rate. Appendix
-Figure~\ref{fig:a0-optimization} reports the corresponding A0 optimization
-trajectories. \textbf{We therefore use the size sweep to test whether
-within-size recipe relationships recur, not as a language-model quality
-scaling law.}
+Dense losses themselves are non-monotonic: 5.2086, 4.0998, and 4.5475.
+The fixed token budget supplies 106.14, 21.20, and 3.68 tokens per parameter;
+410M also has a lower peak learning rate. Its different realized optimization
+regime is not evidence of premature convergence or failure to converge
+(Appendix Figure~\ref{fig:a0-optimization}). These experiments test
+within-size recipe relationships rather than a quality scaling law.
 
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=\linewidth]{figures/05-scale-transfer.pdf}
-\caption{\textbf{The high-threshold seven-site recipe remains better on both
-quality and model-wide sparsity across model sizes.} Absolute validation
-loss versus model-wide sparsity $\Smodel$ for Pythia-14M, 70M, and 410M.
-Blue and orange curves connect separately trained four-site + OL1 and
-seven-site + OL1 checkpoints at $\kappa\in\{0,0.01,0.05,0.1,0.5\}$; the gray
-dotted curves apply post-hoc clipping at $a,m,h,z$ to the corresponding A0
-checkpoints. Vertical guides mark the analytic four-site and seven-site
-sparsity ceilings, and annotations at the seven-site $\kappa=0.5$ endpoints
-report the fraction of the seven-site ceiling reached. \textbf{At
-$\kappa=0.5$, seven-site + OL1 has both lower validation loss and greater
-$\Smodel$ than four-site + OL1 at all three sizes, reaching 91.8\%, 82.2\%,
-and 92.4\% of the respective seven-site ceilings.} The ordering at
-$\kappa=0$ changes with size. Lines connect evaluated settings rather than
-interpolated models; full post-hoc clipping trajectories, including
-higher-loss evaluations outside the displayed range, are reported in
+\includegraphics[width=\linewidth]{figures/review/05-cross-size.pdf}
+\caption{\textbf{The $\kappa=0.5$ complete-recipe ordering recurs across sizes.}
+Absolute loss versus $\Smodel$ for independently trained four-/seven-site
+OL1 conditions; points use $\kappa\in\{0,0.01,0.05,0.1,0.5\}$.
+Gray dotted curves apply four-site post-hoc magnitude thresholding to the
+dense references. Vertical guides mark selected-site reach for full-sequence,
+full-vocabulary inference; endpoint annotations are reference ratios.
+Axes share the loss range but use size-specific sparsity ranges. Lines
+connect evaluated settings; complete post-hoc paths are in
 Appendix~\ref{app:clipping-results}.}
 \label{fig:scale-transfer}
 \end{figure}
-
-\FloatBarrier

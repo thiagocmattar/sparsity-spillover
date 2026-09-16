@@ -5,11 +5,15 @@ introduction-facing Pythia-14M quality-sparsity overview. The author approved
 this new analysis and the first figure on 10 September 2026. No new training,
 checkpoint evaluation, or measurement is required.
 
+## Review revision, 16 September 2026
+
+The author-approved review corrections are documented in [O015](observations/O015-review-corrections.md). [10_review_figures.py](10_review_figures.py) generates five new retained-evidence PDFs under figures/review: separate FFN sites and pressure-free operation controls, absolute latency versus quality, projection instruction bypass, a layer heatmap, and updated reach terminology. The three kernel appendix figures below are now adopted in the manuscript. Earlier PDFs remain unchanged. The draft has nine main-text pages and 32 total pages.
+
 ## K050 investigation
 
 ### Focused appendix figures
 
-The three new, analysis-only figures follow the author's requested order:
+The three figures, initially generated for analysis and now adopted in the draft, follow the author's requested order:
 
 1. [Within-family sparsity-speedup association](figures/appendix/01-kernel-within-family.pdf):
    ten checkpoints per group and within-family centered R² = 0.660.

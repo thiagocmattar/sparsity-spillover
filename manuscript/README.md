@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+The 16 September review corrections are applied in `draft/main.pdf`: nine
+main-text pages, separate AI-use/reproducibility statements, and 32 total pages.
+The paper now distinguishes activation zeros, counted computation and useful
+execution. The main kernel figure leads with absolute latency versus quality;
+the distribution figure separates FFN sites and includes pressure-free controls.
+[The review audit](draft/reviews/2026-09-16-feedback/README.md) records the
+complete correction map, retained evidence, source hashes and checks. No new
+training or timing was performed. The entries below describe earlier revisions.
+
 The redundant main-text boundary-contrast table (formerly Table 3) is removed.
 Section 4.5 states the high-threshold ordering and zero-threshold reversal
 directly, referring to Appendix Table 7 for all 15 matched contrasts. Figure 6

@@ -64,3 +64,5 @@
   all 30 full-model points use one native A0 latency; R² = 0.510. Four-/seven-site
   OL1 at kappa = 0.5 reach 1.427x/1.385x. Panel (b) retains its matched ablation
   reference and layout; v2 and the manuscript are preserved.
+
+- [O015 - Review corrections](O015-review-corrections.md): separate m/h statistics, dense distributions and pressure-free bars; absolute quality-latency comparison and projection bypass; qualified cross-size and pressure claims; nine-page main text and an AI-use statement. Five new PDFs and the three existing kernel appendix figures are adopted with source hashes.
