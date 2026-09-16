@@ -342,6 +342,11 @@ resolved references and no overfull boxes; affected pages were visually checked.
 
 ## Figure 07
 
+[Why attention zeros do not yet give K050 a net speedup](attention-sparsity-explained.md)
+uses small Q/K products, ASCII fragment layouts and a softmax example to
+distinguish logical zero products, actual skipped instructions and runtime
+savings. It links the illustrations to the measured c30 attention ablation.
+
 [K050 speedup and projection bypass](figures/07-kernel-realization.pdf) connects
 native-relative full-model speedup to S_model, then the speedup from projection
 skipping to projection MMA bypass. Both panels retain the same 30 checkpoints:
