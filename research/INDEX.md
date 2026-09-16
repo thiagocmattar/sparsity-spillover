@@ -5,9 +5,9 @@
 
 ## Current status
 
-Run 032 is authorized and implemented for five Pythia-14M A7 threshold
-conditions with OL1 only at h. Local tests passed; A100 preflight and five-worker
-execution are pending. See `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
+Run 032 is training five Pythia-14M A7 threshold conditions with OL1 only
+at h on five parallel A100s. All 253 local tests and all five exact GPU
+preflights passed; final evidence and retrieval are pending. See `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
 
 Analysis 021 revises the manuscript's 14M quality-sparsity overview with short
 labels, baseline/ReLU clipping and both architectural reach guides, using

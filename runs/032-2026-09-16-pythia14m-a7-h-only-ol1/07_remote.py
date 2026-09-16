@@ -17,7 +17,7 @@ CLI = ROOT / "tmp/runpodctl-v2.12.0.exe"
 KEY = Path.home() / ".runpod/ssh/runpodctl-ssh-key"
 REMOTE = "/workspace/sparsity-spillover"
 RUN = "runs/" + HERE.name
-PYTHON = "/workspace/run032-venv/bin/python"
+PYTHON = "/opt/run032-venv/bin/python"
 
 
 def sha(path):

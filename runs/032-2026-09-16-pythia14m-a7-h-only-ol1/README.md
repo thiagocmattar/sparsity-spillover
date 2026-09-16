@@ -126,3 +126,34 @@ and code hashes independently verify their bytes.
 Scientific files
 derive from Run 014, with a separate pressure-site constant and six-tensor
 capture audit; the frozen Run 004 training/diagnostic recipe is reused unchanged.
+
+## Execution record ? 16 September 2026, 20:49 UTC
+
+All five scientific workers are running concurrently after independent exact
+A100 preflights. Every worker passed five MB32/GAS32 boundaries at both kappa
+endpoints, matching initialization and data order, six h captures, finite OL1
+geometry and 10% memory headroom. Peak preflight reservations were 57.24 and
+61.90 GiB. All 50 non-evidence smoke boundaries passed. Evidence is retained
+under `prelaunch/cloud/` and summarized in `prelaunch/cohort-preflight.json`.
+
+Actual source snapshot commit: `240eb34490b40056a3d1dfe86ad0cc4de2f882c7`,
+created from main source commit `2a546dc01c3475ec5c0e60d5193523ccdb7ded15`.
+This is an actual newly committed deployment subset, not a reconstructed
+historical commit. Its complete file inventory and bundle checksum are in
+`prelaunch/source-receipt.json`. Scientific source content SHA-256 is
+`0e79e9dd83ed4f25f05290f6a2e69f32020d60371b9d4b433df49b2e6a9ac668`.
+All 36 text entries normalize CRLF to LF before hashing; this preserves the
+same source identity across the Windows checkout and Linux Git blobs.
+
+Infrastructure retries before the affected scientific launches are documented
+in `prelaunch/infrastructure/`: smaller source transport, direct local-disk
+Python/cache paths, and direct token-file transfer after a CLI ZIP collision.
+The preserved train and validation cache hashes match Runs 013/014 exactly.
+The transient SSH-address lookup at 20:46 UTC recovered on the next lookup;
+no worker restart was required.
+
+Scientific attempts started at 20:39:50 UTC (kappa=0.5), 20:41:50 (0), and
+20:47:21?22 (0.01, 0.05, 0.1). The 20:48 UTC snapshot has all five live, zero
+skipped updates, six pressure tensors, and 57.23?57.26 GiB training reservation.
+Normal monitoring is every five minutes, using end-to-end event differences.
+The three-hour creation-time stop guards remain armed; no extension is assumed.
