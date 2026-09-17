@@ -102,3 +102,8 @@ Four independent H200s imply **115–160 minutes elapsed**, including a
 Contention was material in the old cohort and can extend this range.
 This is a historical timing estimate, not a new run, live price quote, or
 authorization to create resources.
+
+The subsequent [70M cost estimate](70M-COST.md) uses RunPod's public H200
+price checked on 17 September: USD4.59/GPU-hour. Four parallel conditions
+are approximately USD35–50 in incremental usage under the normal ETC,
+with a USD65–70 planning allowance for slower workers and retrieval.
