@@ -5,10 +5,10 @@
 
 ## Current status
 
-Run 032 has fully recovered and verified four Pythia-14M A7/h-only OL1
-conditions, including all checkpoints; their four Pods are deleted. Kappa=0.5
-remains inaccessible on its stopped volume. An original budget
-overrun and the bounded recovery are documented in
+Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1
+conditions, including all checkpoints. All Pods are deleted and the recovery
+worker has exited. Analysis 022 retains the complete matched comparison.
+The original budget overrun and recovery are documented in
 `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
 
 Analysis 021 revises the manuscript's 14M quality-sparsity overview with short

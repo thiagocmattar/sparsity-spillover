@@ -13,12 +13,11 @@ Compare the verified final checkpoints from Run 013 (A7, no pressure), Run 032
 500 MiniPile validation documents through 338 complete 2,048-token blocks;
 the excluded tail contains 1,444 tokens.
 
-Run 032 has fully recovered and verified four conditions, including all their
-checkpoints; those Pods are deleted. Kappa=0.5 remains unretrieved on its
-stopped volume. `02_compare_recovered_four.py` and observation 001 report an
-explicitly interim comparison of the four completely verified conditions.
-The primary high-threshold question is still open. `01_compare.py` deliberately
-requires the complete five-condition verified cohort and has not yet run.
+All five Run 032 conditions are fully recovered and verified, including their
+checkpoints. All five Pods are deleted. `01_compare.py` has produced the full
+15-endpoint comparison; observation 002 reports the complete results.
+`02_compare_recovered_four.py` and observation 001 preserve the historical
+interim four-condition comparison and its original evidence hashes.
 
 ## Reduction
 

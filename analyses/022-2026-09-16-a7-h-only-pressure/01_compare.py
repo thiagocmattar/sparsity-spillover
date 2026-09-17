@@ -76,7 +76,7 @@ def main():
         opportunities = " / ".join(f"{100*r['R_model']:.2f}" for r in group)
         lines.append(f"| {kappa:g} | {losses} | {opportunities} |")
     (output / "comparison.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print("\n".join(lines))
+    print("\n".join(lines).replace("\u03ba", "Kappa"))
     print(json.dumps(comparisons[-1], indent=2))
 
 
