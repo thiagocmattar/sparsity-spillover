@@ -2,7 +2,18 @@
 
 ## Status and authorization
 
-Implementation/preflight preparation. No scientific attempt has started.
+As of 17 September 2026, four conditions have completed training and their
+measurements are recovered. Kappa=0.01 passes the complete local verifier;
+the other three accessible conditions still lack some checkpoints. Kappa=0.5
+is unretrieved because its stopped host cannot supply GPU or CPU-only capacity.
+All five Pods are stopped with their volumes retained. The original budget
+was exceeded after controller-hosted deadline guards failed to execute during
+an interruption. The user-approved USD2/15-minute recovery window subsequently
+stopped on time through on-Pod guards. See
+`observations/001-partial-recovery.md` and
+`prelaunch/infrastructure/004-controller-interruption-recovery/README.md`.
+
+Original launch authorization:
 On 16 September 2026 the user approved the matched design and existing
 checkpoint/diagnostic inventory, then explicitly requested all five thresholds
 on five parallel A100s after receiving the live $1.59/GPU-hour quote and the
@@ -97,8 +108,10 @@ a warning). Report step/tokens, task/pressure loss, throughput, ETC, memory,
 loss scale, trust ratio, process and event age. Warn on missing process,
 10-minute stale event, nonfinite/skipped update, capture mismatch, excess
 trust ratio, memory outside preflight, disk below 5 GB, incomplete validation,
-or projected budget/deadline overrun. A scoped independent 3-hour stop guard
-preserves Pod storage for retrieval if the controller fails. Normal cleanup
+or projected budget/deadline overrun. The original scoped 3-hour stop guard
+was controller-hosted and failed during the controller interruption; it did
+not provide the intended failure independence. Recovery used on-Pod guards.
+Normal cleanup
 deletes each Pod only after verified local retrieval; an emergency stop is
 not teardown and any surviving disk must be reported and removed after recovery.
 
@@ -113,8 +126,9 @@ verification and an account Pod/endpoint/volume audit complete closeout.
 Focused tests passed 11/11 and the complete bootstrap plus new suite passed
 253/253. The first full invocation had 11 fixture setup errors because its
 pytest parent directory did not exist; creating that directory resolved all
-errors without changing scientific code. Python compilation passed. Remote
-preflight is pending. The CLI update reported success but left no binary, so
+errors without changing scientific code. Python compilation passed. All five
+remote preflights later passed, as recorded below. The CLI update reported
+success but left no binary, so
 transport pins the working runpodctl 2.12.0 with current help checked.
 
 Historical step_wall_seconds excludes batch assembly/staging. Retain that field

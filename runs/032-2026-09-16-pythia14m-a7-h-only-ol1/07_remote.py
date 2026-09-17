@@ -26,7 +26,10 @@ def sha(path):
 
 
 def connect(pod):
-    value = json.loads(subprocess.check_output([str(CLI), "ssh", "info", pod], text=True))
+    recovery = HERE / "prelaunch/recovery-ssh.json"
+    value = next((p for p in json.loads(recovery.read_text()) if p['id'] == pod), None) if recovery.exists() else None
+    if value is None:
+        value = json.loads(subprocess.check_output([str(CLI), "ssh", "info", pod], text=True))
     if not value.get("name", "").startswith("run032-"):
         raise ValueError("Not a Run 032 Pod")
     host = value.get("ip")

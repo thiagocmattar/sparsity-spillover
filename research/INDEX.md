@@ -5,9 +5,11 @@
 
 ## Current status
 
-Run 032 is training five Pythia-14M A7 threshold conditions with OL1 only
-at h on five parallel A100s. All 253 local tests and all five exact GPU
-preflights passed; final evidence and retrieval are pending. See `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
+Run 032 has recovered four Pythia-14M A7/h-only OL1 endpoints; only kappa=0.01
+has complete local checkpoint verification. Kappa=0.5 remains inaccessible;
+remaining recovery is pending. All five Pods are stopped. An original budget
+overrun and the bounded recovery are documented in
+`runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
 
 Analysis 021 revises the manuscript's 14M quality-sparsity overview with short
 labels, baseline/ReLU clipping and both architectural reach guides, using

@@ -14,10 +14,10 @@ remote=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(remote)
 
 
-def retrieve(pod):
+def retrieve(pod, archive_path=None):
     dest=HERE/'retrieval'/pod['id']
     dest.mkdir(parents=True,exist_ok=True)
-    archive=dest/'results.tar'
+    archive=Path(archive_path) if archive_path else dest/'results.tar'
     evidence=HERE/'prelaunch/cloud'/pod['id']
     evidence.mkdir(parents=True,exist_ok=True)
     with remote.connect(pod['id']) as client:
@@ -25,7 +25,8 @@ def retrieve(pod):
         if exitcode!='0':raise RuntimeError('Training, verification or packaging failed: '+exitcode)
         expected=remote.command(client,'cat /workspace/run032-results.sha256').split()[0]
         with client.open_sftp() as sftp:
-            sftp.get('/workspace/run032-results.tar',str(archive),prefetch=True,max_concurrent_prefetch_requests=64)
+            if archive_path is None:
+                sftp.get('/workspace/run032-results.tar',str(archive),prefetch=True,max_concurrent_prefetch_requests=64)
             sources=[f'{remote.REMOTE}/{remote.RUN}/prelaunch/remote-preflight.json']
             sources += ['/workspace/'+n for n in sftp.listdir('/workspace') if n.startswith('run032-') and (n.endswith('.log') or n.endswith('.exit') or n.endswith('.sha256'))]
             for source in sources:
