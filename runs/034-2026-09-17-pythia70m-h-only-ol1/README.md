@@ -1,5 +1,11 @@
 # Run034 — Pythia-70M A4/A7 gates with h-only OL1
 
+**Current status: completed and locally verified (10/10), 17 September 2026.**
+All Pods were deleted by 20:45:22 UTC (17:45:22 Sao Paulo). GPU spending is
+USD0/hour. About USD119.28 was charged to the account across this run window;
+see the completion record below for scope and billing uncertainty. Earlier
+launch/progress entries below are retained as historical snapshots.
+
 ## Authorization and question
 
 On 17 September 2026 the user selected the full five-threshold 70M grid from
@@ -205,3 +211,64 @@ recovery and verifies locally before deleting each completed Pod independently.
 The live reporting path was exercised successfully against all six Pods; no
 scientific code or active training process was changed. The immutable follow-up
 snapshot is `prelaunch/status-20260917T181832.json`.
+
+## Completion and verified local recovery, 17 September
+
+All ten conditions completed 712 optimizer updates without overflow/skipped
+boundaries: 7,120 updates and 14,931,722,240 input tokens across the cohort.
+The last training/evaluation attempt finished at 2026-09-17T20:39:16.593885+00:00. The final local
+cohort verifier returned `verified 10`, with one shared pinned initialization,
+data schedule and scientific code identity. Final-checkpoint validation and
+both diagnostic passes cover all 500 documents / 338 complete blocks, with
+the declared 1,444-token tail excluded, for every condition.
+
+All 120 model checkpoints, 30 full optimizer/scaler/RNG recovery states and
+associated metadata (510 checkpoint files, 50,710,947,004 bytes) are retained
+locally under `artifacts/attempts/*/checkpoints/`. Every transferred file was
+SHA256-verified; complete condition verification preceded each Pod deletion.
+Metrics, activation/weight/logical diagnostics, all boundary events, manifests,
+preflights and transfer inventories are also local. Weights remain outside Git.
+
+The six scientific Pods were deleted individually as recovery completed; the
+last deletion was confirmed at 20:45:22 UTC (17:45:22 Sao Paulo). A fresh provider
+audit found zero Pods and USD0/hour GPU spending. The pre-existing 100GB network
+volume remains, accounting for USD0.01/hour. No 410M work was launched. After
+all six deletion receipts were complete, the idle monitoring waits were ended
+and the cohort verifier was invoked directly. Stop guards and the temporary
+local power request have exited.
+
+The six scientific Pod leases imply **USD115.87 compute** from allocation
+through confirmed deletion. The retired setup Pod adds **USD3.17** in posted
+charges. The observed account balance decrease is **USD119.28**, including
+storage and the pre-existing volume over the run window. These reconcile to
+about USD119 total, below the USD200 allowance. This is a closeout estimate,
+not an invoice: provider billing history still lacked its newest hourly
+bucket when queried. Earlier estimates included unused recovery reserves.
+
+Authoritative evidence:
+
+- [Complete scientific verification and full-precision endpoints](artifacts/verification.json).
+- [Resource, retention, timing and cost audit](prelaunch/completion-resource-cost-audit.json).
+- [Final live resource audit](prelaunch/final-resource-audit.json).
+- [Posted billing snapshot and lag caveat](prelaunch/posted-billing-at-closeout.json).
+- Per-Pod hash inventories, local verification output and deletion receipts in
+  `prelaunch/retrieval/`; monitoring and ETC/cost histories in `prelaunch/`.
+
+The table below reports reloaded final-checkpoint validation loss and pooled
+model-wide logical-product opportunity (`R_model`, percent). It is a descriptive
+single-seed endpoint record, not measured kernel speedup or a promoted finding.
+The source is `03_verify.py` / `verification.py` and the retained full-precision
+`artifacts/verification.json`. No manuscript claim was changed.
+
+| Condition | kappa | Final validation loss | R_model (%) |
+| --- | ---: | ---: | ---: |
+| A4-OL1(h) | 0 | 4.606489 | 25.791632 |
+| A4-OL1(h) | 0.01 | 4.618541 | 25.970787 |
+| A4-OL1(h) | 0.05 | 4.596354 | 26.566402 |
+| A4-OL1(h) | 0.1 | 4.701970 | 27.218067 |
+| A4-OL1(h) | 0.5 | 5.305709 | 29.235859 |
+| A7-OL1(h) | 0 | 4.650753 | 25.786062 |
+| A7-OL1(h) | 0.01 | 4.612215 | 26.008979 |
+| A7-OL1(h) | 0.05 | 4.667034 | 26.894689 |
+| A7-OL1(h) | 0.1 | 4.718894 | 27.779141 |
+| A7-OL1(h) | 0.5 | 5.337238 | 32.232517 |

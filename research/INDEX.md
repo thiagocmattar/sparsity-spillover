@@ -5,12 +5,13 @@
 
 ## Current status
 
-Run034 is executing the user-authorized full 70M h-only OL1 grid: A4 and A7
-at kappa=0,.01,.05,.1,.5, with matched Run018 initialization/data/recipe and
-full final diagnostics/checkpoint retention. Ten parallel slots (nine H200,
-one H100) are allocated; USD40.80/hour compute and a USD200 operating allowance.
-See [Run034](../runs/034-2026-09-17-pythia70m-h-only-ol1/README.md) for live
-status paths, verification and retrieval. No 410M launch is authorized.
+Run034 completed and locally verified all ten 70M h-only OL1 conditions:
+A4 and A7 at kappa=0,.01,.05,.1,.5, with matched Run018 initialization/data/recipe.
+All 120 model checkpoints and 30 full recovery states (50.71GB) are safe locally.
+All Pods are deleted; GPU spend is zero, observed expense about USD119.28 against
+the USD200 allowance. The existing network volume remains. See
+[Run034](../runs/034-2026-09-17-pythia70m-h-only-ol1/README.md) for verified
+endpoints, provenance and cost scope. No 410M run was launched.
 
 Run033 completed **only the five new Run032 A7+OL1(h) checkpoints** with frozen
 K050: all 15 processes qualified, speedups 1.206--1.784x. All 180 outputs are
@@ -237,7 +238,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `034`. Next analysis number: `025`. Next finding number: `F003`.
+Next run number: `035`. Next analysis number: `025`. Next finding number: `F003`.
 
 ## Where we stopped
 
