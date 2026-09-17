@@ -9,6 +9,8 @@ Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
 A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
 reported values, audits the small final-validation loss-pass difference,
 and retains uniform-pass alternatives, source hashes, and a 70M ETC estimate.
+The user has frozen/deferred the 70M proposal; current work is the requested
+14M kernel latency extension.
 See [Analysis 023](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md).
 
 Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1

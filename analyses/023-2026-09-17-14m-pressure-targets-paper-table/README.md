@@ -94,6 +94,9 @@ The analysis number is 023 because folder 022 already exists; the old
 
 ## Requested 70M ETC
 
+**Frozen/deferred by the user on 17 September 2026.**
+See [the freeze record](70M-FROZEN.md); resume only on a new user instruction.
+
 [70M-ETC.md](70M-ETC.md) and [70m-etc.json](70m-etc.json) retain a separate
 provisional estimate for A4-OL1(h) and A7-OL1(h), each at kappa 0.05 and 0.5.
 It uses actual Run 018 H200 wall times and its five-boundary timing preflight.
