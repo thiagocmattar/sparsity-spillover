@@ -13,10 +13,12 @@ Compare the verified final checkpoints from Run 013 (A7, no pressure), Run 032
 500 MiniPile validation documents through 338 complete 2,048-token blocks;
 the excluded tail contains 1,444 tokens.
 
-Run 032 is in partial artifact recovery with all Pods stopped. Four metadata
-sets are local, but its full cohort verifier is pending and kappa=0.5 is
-unretrieved. This reduction deliberately requires the complete verified cohort;
-it has not been run and no comparison result is claimed here.
+Run 032 has fully recovered and verified four conditions, including all their
+checkpoints; those Pods are deleted. Kappa=0.5 remains unretrieved on its
+stopped volume. `02_compare_recovered_four.py` and observation 001 report an
+explicitly interim comparison of the four completely verified conditions.
+The primary high-threshold question is still open. `01_compare.py` deliberately
+requires the complete five-condition verified cohort and has not yet run.
 
 ## Reduction
 

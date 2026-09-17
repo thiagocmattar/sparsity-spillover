@@ -1,4 +1,5 @@
 """Capture recovery metadata independently of large checkpoint transfers."""
+import argparse
 import concurrent.futures
 import importlib.util
 import json
@@ -32,9 +33,13 @@ with tarfile.open('/workspace/run032-metadata.tar.gz','w:gz') as t:
         print(json.dumps({'metadata_verified':pod['id']}),flush=True)
 
 if __name__=='__main__':
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--pod',action='append')
+    args=parser.parse_args()
     pods=json.loads((HERE/'prelaunch/pods.json').read_text())
+    selected=[p for p in pods if p['id'] in args.pod] if args.pod else [p for p in pods if p['id']!='8o1uyxgh6vb6ym']
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-        futures={pool.submit(capture,p):p['id'] for p in pods if p['id']!='8o1uyxgh6vb6ym'}
+        futures={pool.submit(capture,p):p['id'] for p in selected}
         for f in concurrent.futures.as_completed(futures):
             try:f.result()
             except Exception as e:print(json.dumps({'pod':futures[f],'error':str(e)}),flush=True)

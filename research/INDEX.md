@@ -5,9 +5,9 @@
 
 ## Current status
 
-Run 032 has recovered four Pythia-14M A7/h-only OL1 endpoints; only kappa=0.01
-has complete local checkpoint verification. Kappa=0.5 remains inaccessible;
-remaining recovery is pending. All five Pods are stopped. An original budget
+Run 032 has fully recovered and verified four Pythia-14M A7/h-only OL1
+conditions, including all checkpoints; their four Pods are deleted. Kappa=0.5
+remains inaccessible on its stopped volume. An original budget
 overrun and the bounded recovery are documented in
 `runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
 

@@ -2,15 +2,17 @@
 
 ## Status and authorization
 
-As of 17 September 2026, four conditions have completed training and their
-measurements are recovered. Kappa=0.01 passes the complete local verifier;
-the other three accessible conditions still lack some checkpoints. Kappa=0.5
+As of 17 September 2026, four conditions have completed training and all their
+scientific artifacts/checkpoints pass the complete local verifier. Their
+process logs are retrieved and their Pods are deleted. Kappa=0.5
 is unretrieved because its stopped host cannot supply GPU or CPU-only capacity.
-All five Pods are stopped with their volumes retained. The original budget
+Its Pod remains stopped with its volume retained. The original budget
 was exceeded after controller-hosted deadline guards failed to execute during
 an interruption. The user-approved USD2/15-minute recovery window subsequently
-stopped on time through on-Pod guards. See
-`observations/001-partial-recovery.md` and
+stopped on time through on-Pod guards. The user then added funds and explicitly
+authorized continued recovery until success. See
+`observations/002-four-conditions-recovered.md`,
+`prelaunch/infrastructure/005-staged-streamed-recovery/README.md`, and
 `prelaunch/infrastructure/004-controller-interruption-recovery/README.md`.
 
 Original launch authorization:

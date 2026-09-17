@@ -39,7 +39,7 @@ with open(str(stage)+'.tar','rb') as handle:digest=hashlib.file_digest(handle,'s
 print(json.dumps({'archive':str(stage)+'.tar','sha256':digest,'bytes':pathlib.Path(str(stage)+'.tar').stat().st_size}),flush=True)
 '''
 
-def retrieve(pod):
+def retrieve(pod,stage_only=False):
     evidence=HERE/'prelaunch/cloud'/pod['id']
     evidence.mkdir(parents=True,exist_ok=True)
     dest=HERE/'retrieval'/pod['id']
@@ -73,6 +73,10 @@ def retrieve(pod):
         print(json.dumps({'pod':pod['id'],'phase':'staging_missing_files','file_count':len(files)}),flush=True)
         output=remote.command(client,'python3 /tmp/run032-stage.py /tmp/run032-stage-settings.json')
         package=json.loads(output.strip().splitlines()[-1])
+        if stage_only:
+            (evidence/'staged-package.json').write_text(json.dumps(package,indent=2)+'\n',encoding='utf-8')
+            print(json.dumps({'pod':pod['id'],'phase':'staged','package':package}),flush=True)
+            return
         archive_path=dest/('missing-'+str(int(time.time()))+'.tar')
         with paramiko.SFTPClient.from_transport(client.get_transport(),window_size=32*1024**2) as sftp:
             sftp.get(package['archive'],str(archive_path),prefetch=True,max_concurrent_prefetch_requests=64)
@@ -91,6 +95,7 @@ def retrieve(pod):
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--pod',required=True)
+    parser.add_argument('--stage-only',action='store_true')
     args=parser.parse_args()
     pods=json.loads((HERE/'prelaunch/pods.json').read_text())
-    retrieve(next(p for p in pods if p['id']==args.pod))
+    retrieve(next(p for p in pods if p['id']==args.pod),args.stage_only)
