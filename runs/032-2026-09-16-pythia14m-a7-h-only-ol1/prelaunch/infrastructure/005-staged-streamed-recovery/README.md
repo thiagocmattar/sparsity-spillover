@@ -71,3 +71,22 @@ See `prelaunch/kappa05-machine-sync-attempt.json`. Normal five-minute retries
 continue without this optional flag. The retained control-plane system log
 is saved under the remaining Pod's evidence directory; it confirms the
 03:13:34 UTC stop but contains no training-result output.
+
+At approximately 04:26 UTC, the idle PowerShell worker was replaced so its
+loaded script includes the complete-cohort verifier and Analysis 022 reduction
+after successful retrieval. Its optional initial delay preserves the existing
+five-minute retry spacing. The script passed PowerShell syntax parsing; the
+restart receipt is `prelaunch/kappa05-worker-reload.json`, and current output
+uses `kappa05-waiter-v2.log` / `kappa05-waiter-v2-error.log`.
+
+`support-request-draft.md` is an unsent recovery request. Explicit permission
+to contact Runpod support was requested while the capacity worker continues.
+The official Pod Issue form was opened, but no account details were entered
+and nothing was submitted. Console sign-in for the alternate migration path
+also remains pending.
+
+The later posted billing snapshot in
+`prelaunch/billing-capacity-wait-snapshot.json` totals USD57.175005821394734
+for the five original Pods. This is still a non-final, lagging usage snapshot,
+not a compliant original-budget claim or the final recovery invoice. The
+original controller-interruption overrun is documented separately in record 004.
