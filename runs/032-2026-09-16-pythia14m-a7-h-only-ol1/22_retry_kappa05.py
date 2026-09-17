@@ -69,7 +69,7 @@ def emit(event,**fields):
     print(json.dumps(row),flush=True)
     with (HERE/'prelaunch/kappa05-persistent-recovery.jsonl').open('a',encoding='utf-8') as handle:handle.write(json.dumps(row)+'\n')
 
-def main(prepare):
+def main(prepare,sync_machine=False):
     pod=request('/pods/'+POD)
     assert pod['id']==POD and pod['name']==NAME
     if prepare:
@@ -81,13 +81,14 @@ def main(prepare):
         emit('boot_guard_prepared',pod=POD,guard_seconds=3600)
         return 0
     if pod['status']=='EXITED':
-        result=request('',{'query':'mutation { podResume(input: { podId: "'+POD+'", gpuCount: 0, computeType: CPU }) { id desiredStatus gpuCount costPerHr } }'},'POST',graphql=True)
+        sync_option=', syncMachine: true' if sync_machine else ''
+        result=request('',{'query':'mutation { podResume(input: { podId: "'+POD+'", gpuCount: 0, computeType: CPU'+sync_option+' }) { id desiredStatus gpuCount costPerHr } }'},'POST',graphql=True)
         if result.get('errors'):
             try:pod=request('/pods/'+POD+'/action',{'action':'start'},'POST')
             except urllib.error.HTTPError as error:
                 if error.code not in (400,409):raise
                 details=json.loads(error.read())
-                emit('capacity_unavailable',pod=POD,cpu_error=result['errors'][0]['message'],gpu_error=details.get('detail'))
+                emit('capacity_unavailable',pod=POD,sync_machine=sync_machine,cpu_error=result['errors'][0]['message'],gpu_error=details.get('detail'))
                 return 75
         else:emit('cpu_resume_accepted',result=result['data']['podResume'])
     for _ in range(24):
@@ -126,5 +127,6 @@ def main(prepare):
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--prepare',action='store_true')
+    parser.add_argument('--sync-machine',action='store_true',help='Use the documented optional syncMachine flag for this CPU resume attempt')
     args=parser.parse_args()
-    sys.exit(main(args.prepare))
+    sys.exit(main(args.prepare,args.sync_machine))

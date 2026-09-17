@@ -61,3 +61,13 @@ new identity before this original-ID worker can continue.
 Official documentation: https://docs.runpod.io/pods/troubleshooting/pod-migration
 and https://docs.runpod.io/pods/troubleshooting/zero-gpus . No messages or
 research data were submitted to Runpod support or its feedback tools.
+
+At 04:16:46 UTC, one additional CPU-only resume used the public GraphQL
+`PodResumeInput.syncMachine=true` option. Its semantics are not explained
+in that specification; this was a bounded alternate start request, not an
+assertion that stale accounting caused the failure. The same insufficient
+memory response was returned, followed by the same insufficient GPU response.
+See `prelaunch/kappa05-machine-sync-attempt.json`. Normal five-minute retries
+continue without this optional flag. The retained control-plane system log
+is saved under the remaining Pod's evidence directory; it confirms the
+03:13:34 UTC stop but contains no training-result output.
