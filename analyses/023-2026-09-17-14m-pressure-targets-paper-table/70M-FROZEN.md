@@ -16,3 +16,10 @@ These historical estimates are retained unchanged. A future launch requires
 fresh price/availability and exact h-only calibration, followed by the
 repository's design and launch confirmations. Current work switches to kernel
 latency benchmarking of the completed 14M checkpoints.
+
+## Subsequent instruction
+
+Later on 17 September, after the kernel benchmark completed, the user resumed
+planning for both 70M and 410M and requested time/cost for two versus all five
+kappas. See [70M-410M-ETC-COST.md](70M-410M-ETC-COST.md). This supersedes the
+planning pause only; no implementation, calibration or launch has been approved.

@@ -11,16 +11,16 @@ verified locally; the Pod is deleted, estimated cost USD0.496. Analysis024
 owns clean sparsity/speedup and latency figures, reusing all 35 historical
 checkpoints including A4+OL1(h). At kappa=0.5, h-only/all-site A7 observed
 speedups are 1.784x/1.783x despite 16.66%/27.48% logical sparsity; sessions
-differ. The 70M proposal remains deferred. See
+differ. See
 [Analysis024](../analyses/024-2026-09-17-h-only-kernel-latency/README.md) and
 [Run033](../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
 
 Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
 A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
 reported values, audits the small final-validation loss-pass difference,
-and retains uniform-pass alternatives, source hashes, and a 70M ETC estimate.
-The user has frozen/deferred the 70M proposal; current work is the requested
-14M kernel latency extension.
+and retains uniform-pass alternatives and source hashes. The user has resumed
+70M/410M planning: [two-grid ETC/cost estimates](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/70M-410M-ETC-COST.md)
+are saved with fresh prices and historical timings. No new launch is approved.
 See [Analysis 023](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md).
 
 Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1

@@ -94,8 +94,11 @@ The analysis number is 023 because folder 022 already exists; the old
 
 ## Requested 70M ETC
 
-**Frozen/deferred by the user on 17 September 2026.**
-See [the freeze record](70M-FROZEN.md); resume only on a new user instruction.
+**Planning resumed by the user on 17 September 2026, for both 70M and 410M.**
+The new [two-grid ETC/cost comparison](70M-410M-ETC-COST.md) covers
+{0.05,0.5} and {0,0.01,0.05,0.1,0.5}, with current prices and retained
+Run018/019 timing evidence. No design or launch is approved by this estimate.
+The earlier [freeze record](70M-FROZEN.md) remains as history.
 
 [70M-ETC.md](70M-ETC.md) and [70m-etc.json](70m-etc.json) retain a separate
 provisional estimate for A4-OL1(h) and A7-OL1(h), each at kappa 0.05 and 0.5.
@@ -117,4 +120,5 @@ The requested final-K050 benchmark extension is complete in
 [Analysis024](../024-2026-09-17-h-only-kernel-latency/README.md). It retains raw
 provenance, a complete 40-checkpoint latency/speedup table and clean PDF figures,
 including both h-only families. Only the five new A7 h-only models were timed;
-the historical A4 h-only measurements were reused. This does not resume 70M.
+the historical A4 h-only measurements were reused. That benchmark did not
+resume 70M; the subsequent user request resumed cost/ETC planning only.
