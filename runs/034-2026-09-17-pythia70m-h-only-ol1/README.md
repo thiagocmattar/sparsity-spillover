@@ -181,3 +181,27 @@ active; the final checkpoints and scientific results are not yet complete.
 A process-scoped Windows power request keeps the local recovery host awake
 while the controller runs, ending no later than 21:30 UTC. It leaves permanent
 power settings and display behavior unchanged.
+
+## Progress and spending follow-up, 18:18 UTC
+
+The user requested continued progress/ETC tracking to avoid unnecessary expense.
+All ten conditions remained healthy at steps 143--354 of 712; none of the six
+Pods was idle awaiting a completed run. About 14.93GB of checkpoints had already
+been hash-verified locally. The longest recent-throughput estimate was 140.5
+minutes remaining, or about 17:39 Sao Paulo for the last training completion.
+Host throughput fluctuates, so the planning range remains about 2--2.5 hours
+of training plus final retrieval. Current account spending was USD40.888/hour
+(USD40.80/hour for this run's GPUs, plus storage). The planning total remains
+USD120--150 against the USD200 operating allowance.
+
+The separate read-only `prelaunch/track_cost_and_etc.py` now refreshes the
+spending/ETC ledger every five minutes, using the primary controller's measured
+progress, current provider resource state/rates, and recorded lease times.
+It writes `latest-cost-etc.json` and `cost-etc-history.jsonl`, flags stale status,
+missing resources, insufficient time before a stop deadline, or a projected
+budget overrun. Cost projections include setup/disk/recovery reserves and are
+estimates, not a provider invoice. The primary controller continues checkpoint
+recovery and verifies locally before deleting each completed Pod independently.
+The live reporting path was exercised successfully against all six Pods; no
+scientific code or active training process was changed. The immutable follow-up
+snapshot is `prelaunch/status-20260917T181832.json`.
