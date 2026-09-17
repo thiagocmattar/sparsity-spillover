@@ -30,13 +30,18 @@ seed per condition. Parameter sweeps measure intervention variability rather
 than variation over independent training seeds. All quality comparisons reuse
 the same validation split, without a separate confirmation set. Within a size, the
 conditions share the initial parameter hash and training schedule. The
-30-condition 14M cohort contains A0, A1-H, four weights each for A1-H-L1 and
-A1-H-OL1, and five thresholds each for A4, A4-OL1, A7 and A7-OL1. Each
-larger cohort contains A0, A1-H, and the five-threshold A4-OL1/A7-OL1 sweeps.
+40-condition 14M cohort contains A0, A1-H, four weights each for A1-H-L1 and
+A1-H-OL1, and five thresholds for each of $T_4/P_0$, $T_4/P_h$, $T_4/P_4$,
+$T_7/P_0$, $T_7/P_h$, and $T_7/P_7$. Each larger cohort contains A0, A1-H,
+and the five-threshold $T_4/P_4$ and $T_7/P_7$ sweeps.
 Local pressure weights are $\{0.05,0.1,0.5,1\}$; thresholds are
 $\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$, with pressure
-at all four or seven selected sites. Every OL1 condition uses trust budget 1
-and projection stabilizer $\epsilon=10^{-12}$.
+at $h$ only or at all thresholded sites. Every OL1 condition uses trust budget 1
+and projection stabilizer $\epsilon=10^{-12}$. The historical four-site h-only
+conditions are identified by their audited executed pressure capture, not
+their original all-site declaration. They are valid $T_4/P_h$ conditions;
+the ten h-only endpoints match the initialization, order and final-checkpoint
+protocol of the original cohort.
 
 Training uses AdamW with $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight
 decay 0.1 and global task-gradient clipping at norm 1. Naive L1 clips the
@@ -107,8 +112,9 @@ optimization regimes and are not used as a convergence criterion.}
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
 
-The following tables report every selected trained endpoint, all 29 paired
-14M contrasts and all 15 cross-scale recipe comparisons. They retain
+The following tables report all 64 trained endpoints, the 29 original paired
+14M contrasts, 25 additional pressure-scope contrasts, and all 15 cross-scale
+broad-pressure recipe comparisons. They retain
 dominated settings as well as favorable ones. Each entry summarizes one
 trained model on complete validation. Sparsity percentages are formed from pooled integer
 product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
@@ -116,8 +122,9 @@ from Figure~\ref{fig:scale-transfer}, rather than a different denominator
 for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
 this common-reference ratio, retained for the complete endpoint table.
 
-\input{tables/trained-endpoints}
+\input{tables/pressure-scope/trained-endpoints}
 \input{tables/paired-effects}
+\input{tables/pressure-scope/pressure-scope-contrasts}
 \input{tables/scale-contrasts-full}
 
 \subsection{Activation sparsity and signed-density coverage}
@@ -141,17 +148,44 @@ ranges. Underflow and overflow counts are retained rather than folded into
 edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
 attention in Figure~\ref{fig:activation-density-full}. The largest omitted
 display tail is $6.6719\%$; the native-grid tail is at most $0.7607\%$.
-Figure~\ref{fig:activation-reshaping} selects the two OL1 checkpoints at
-$\kappa=0.5$, using the same density normalization and symlog scale, with
-FFN limits $[0,3]$ and attention limits $[-4,4]$.
+These historical densities cover no h-only multisite checkpoints.
+Figure~\ref{fig:activation-reshaping} instead uses retained final-validation
+site counters for all six threshold/pressure combinations, separating $m$
+and $h$. Its exact-zero counts were measured independently of the signed
+histogram reruns; small pass-to-pass rounding differences remain visible.
 
 The diagnostic reruns use FP32 parameters with FP16 autocast and no
-additional clipping. Their maximum absolute validation-loss difference
+additional thresholding. Their maximum absolute validation-loss difference
 from the retained reference is $6.89\times10^{-5}$, below the specified
 $5\times10^{-4}$ tolerance; all 108 threshold-consistency checks pass. Small
 rounding differences in exact-zero counts between evaluation passes do not
 change the displayed conclusions. Complete per-site and pooled histograms,
 counts and checkpoint hashes accompany the data release.
+
+% Source: Analysis 021 pressure-scope/observations/O016-pressure-placement.md.
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\linewidth]{figures/pressure-scope/appendix-moderate-structure.pdf}
+\caption{\textbf{Pressure-scope effects at the moderate threshold $\kappa=0.05$.}
+The six 14M recipes use the same count pooling and operation denominator as
+Figure~\ref{fig:activation-reshaping}. H-only pressure concentrates zeros at
+$h$ while preserving a different pattern at $m$ and Q/K/V from broad pressure.
+Rounded percentages do not establish all-zero or fully dense tensors.}
+\label{fig:moderate-structure}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth,page=1]{figures/pressure-scope/appendix-layer-zeros.pdf}
+\includegraphics[width=\linewidth,page=2]{figures/pressure-scope/appendix-layer-zeros.pdf}
+\caption{\textbf{Site-by-layer zero fractions under matched pressure scopes.}
+The six recipes at $\kappa=0.05$ (top) and $0.5$ (bottom). Each cell pools
+integer counts over all 338 validation blocks at one site and layer.
+Q/K are post-RoPE; values are rounded to whole percentages, so a displayed
+100 does not imply an all-zero tensor. The complete five-threshold counters
+and source identities accompany the supplementary data.}
+\label{fig:pressure-layer-zeros}
+\end{figure}
 
 % Full threshold grid moved from the main text; original Analysis 018 PDF unchanged.
 \begin{figure}[tbp]
@@ -168,7 +202,7 @@ the visible range. The vertical scale is symlog, linear below 0.01; filled
 areas on this scale do not represent probability mass. Dashed lines mark
 $+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
 Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
-A7 targets them directly. The seven checkpoints use no additional post-hoc clipping.}
+A7 targets them directly. The seven checkpoints use no additional post-hoc thresholding.}
 \label{fig:activation-density-full}
 \end{figure}
 
@@ -193,7 +227,7 @@ An operation's contribution to $\Smodel$ is its zero-product count divided
 by the full model product count. Summing these contributions recovers the
 model-wide fraction; summing local activation percentages would not.
 Table~\ref{tab:operation-contributions} gives this decomposition at
-$\kappa=0.5$. At 14M, extending from A4-OL1 to A7-OL1 adds attention
+$\kappa=0.5$. At 14M, extending from A4-OL1(all) to A7-OL1(all) adds attention
 opportunity while reducing the contribution from some projections.
 At larger sizes, projection work carries more weight in the workload, so
 an equal change in activation sparsity need not yield an equal change in
@@ -213,22 +247,26 @@ no zero credit. Differences in rounded entries can affect the displayed sum.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/04-operation-accounting.pdf}
-\caption{Operation accounting for A4-OL1 and A7-OL1 at $\kappa=0.5$ across
+\caption{Operation accounting for A4-OL1(all) and A7-OL1(all) at $\kappa=0.5$ across
 14M, 70M and 410M. Zero-operand
 products are counted over causally valid positions and pooled across all
 338 validation blocks. Each contribution uses the full model denominator,
 including the dense LM head without zero credit. At 14M, attention contributes
-more under A7-OL1, outweighing smaller contributions from several projections.
+more under A7-OL1(all), outweighing smaller contributions from several projections.
 The bars show logical multiplication opportunities, not runtime savings.}
 \label{fig:operation-accounting}
 \end{figure}
 
 \FloatBarrier
-\subsection{Complete post-hoc clipping trajectories}
+\subsection{Complete historical post-hoc thresholding trajectories}
 \label{app:clipping-results}
 
-The complete release contains 540 evaluations: ten clipping targets for
-each of the 54 trained checkpoints. It joins 350 new evaluations with 190
+Historical plot legends retain ``clipping'' for post-hoc thresholding and
+``A4-OL1/A7-OL1'' for the all-site pressure recipes. They do not include
+the newly integrated h-only conditions.
+The historical post-hoc release contains 540 evaluations: ten thresholding
+targets for each of the original 54 trained checkpoints. The ten newly
+included h-only endpoints have no corresponding post-hoc sweep. The release joins 350 evaluations with 190
 retained evaluations matched by checkpoint content hash. Calibration uses
 the first ten complete training blocks in source order, separately for
 each layer's $a,m,h,z$ activations. Evaluation zeros values satisfying
@@ -249,8 +287,8 @@ parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/14m-posthoc-frontiers.pdf}
-\caption{Complete 14M training and post-hoc clipping results: 30 trained
-endpoints and 300 clipping evaluations. Large filled markers denote trained
+\caption{Complete 14M training and post-hoc thresholding results: 30 trained
+endpoints and 300 post-hoc thresholding evaluations. Large filled markers denote trained
 endpoints; bold lines connect their settings, solid for unpressured recipes
 and dashed for L1/OL1. Each faint open-marker path follows one fixed
 checkpoint through $p=0,0.1,\ldots,0.9$. Colors and symbols identify its
@@ -262,10 +300,10 @@ settings and do not interpolate attainable models or fitted Pareto envelopes.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/70m-posthoc-frontiers.pdf}
-\caption{Complete 70M training and post-hoc clipping results: 12 trained
-endpoints and 120 clipping evaluations. Large filled markers and bold
+\caption{Complete 70M training and post-hoc thresholding results: 12 trained
+endpoints and 120 post-hoc thresholding evaluations. Large filled markers and bold
 lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing clipping targets. All points, including
+checkpoint through ten increasing thresholding targets. All points, including
 overlaps and high-loss settings, are retained. The evaluation and line
 conventions match Figure~\ref{fig:clipping-14m}.}
 \label{fig:clipping-70m}
@@ -274,10 +312,10 @@ conventions match Figure~\ref{fig:clipping-14m}.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/410m-posthoc-frontiers.pdf}
-\caption{Complete 410M training and post-hoc clipping results: 12 trained
-endpoints and 120 clipping evaluations. Large filled markers and bold
+\caption{Complete 410M training and post-hoc thresholding results: 12 trained
+endpoints and 120 post-hoc thresholding evaluations. Large filled markers and bold
 lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing clipping targets. All points, including
+checkpoint through ten increasing thresholding targets. All points, including
 overlaps and high-loss settings, are retained. The evaluation and line
 conventions match Figure~\ref{fig:clipping-14m}.}
 \label{fig:clipping-410m}
@@ -297,13 +335,16 @@ handling for Pythia. It retains dense attention and uses native projection
 fallback on A0. Table~\ref{tab:kernel-ablations} reports this adapted baseline.
 
 Historical proposals are replayed on four representative checkpoints; the
-incumbent in Figure~\ref{fig:kernel-search-history} uses fixed A7-OL1,
+incumbent in Figure~\ref{fig:kernel-search-history} uses fixed A7-OL1(all),
 $\kappa=0.5$. It reaches $1.6024\times$ by iteration 11 and $1.7830\times$
 at iteration 42. Final implementation and
-ablation summaries retain the 30-checkpoint manuscript cohort from the
-historical 35-checkpoint sweep. Five A4 checkpoints with pressure only at $h$
-are excluded because they do not implement the four-site pressure objective
-studied here. Search progress and the
+ablation summaries retain their original 30-checkpoint cohort. The main
+absolute-latency panel additionally restores the five qualified $T_4/P_h$
+checkpoints from the same historical 35-checkpoint sweep; they implement a
+valid, distinct pressure scope. These are existing measurements, reaggregated
+from raw timing pairs with the same geometric-mean rule. The five new
+$T_7/P_h$ timings remain pending; they are not inferred from sparsity or loss.
+Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
 
@@ -313,7 +354,7 @@ between their $1.7830\times$ and $1.7832\times$ maxima.
 \includegraphics[width=\linewidth]{figures/07-kernel-realization.pdf}
 \caption{\textbf{Kernel-search history and the final checkpoint sweep.}
 (a) Best qualified incumbent across 42 eligible retrospective proposals on
-the fixed seven-site + OL1, $\kappa=0.5$ checkpoint. (b) Final K050 speedup
+the fixed seven-site + OL1(all), $\kappa=0.5$ checkpoint. (b) Final K050 speedup
 across the 30-checkpoint cohort; this historical view distinguishes individual
 recipes. Both use the same native PyTorch/SDPA CUDA-graph reference and
 BF16, batch-one, 2,048-token protocol on one RTX5090. Search replay and final
@@ -391,7 +432,10 @@ four-checkpoint subset is shown only to document its limited qualification.}
 \subsection{Structured sparsity and matched runtime diagnostics}
 \label{app:kernel-diagnostics}
 
-We reconcile the same 30 checkpoints with their canonical logical-product
+This subsection preserves the original 30-checkpoint diagnostic subset;
+the five restored h-only records and updated 35-point fit are reported below.
+
+For the original diagnostic subset, we reconcile the same 30 checkpoints with their canonical logical-product
 counts, retained kernel diagnostics, and raw matched timing pairs.
 Table~\ref{tab:kernel-checkpoint-latencies} separates native and optimized
 latencies for each checkpoint. Let $t_N,t_0,t_P,t_K$ denote the geometric-mean
@@ -423,7 +467,7 @@ and scalar-work distinctions in the supplementary data.
 Attention omits an MMA when either complete operand fragment is zero.
 In 29 checkpoints, QK skips $0\%$ and PV skips $10.42\%$ of eligible
 instructions; the PV baseline includes masked or padded probability work.
-Only seven-site + OL1 at $\kappa=0.5$ has additional skipping, reaching
+Only seven-site + OL1(all) at $\kappa=0.5$ has additional skipping, reaching
 $58.00\%$ for QK and $67.21\%$ for PV. Attention-skipping gain nevertheless
 remains below one for every checkpoint ($0.9832$--$0.9894\times$).
 These instruction counts include tiled causal padding, unlike the unmasked
@@ -473,7 +517,7 @@ and explicit missing fields; \path{kernel/associations.csv} and
 
 \begin{table}[p]
 \centering\small
-\caption{\textbf{Matched K050 latency ablations for every 14M checkpoint.}
+\caption{\textbf{Matched K050 latency ablations for the original 30-checkpoint subset.}
 Entries are geometric-mean full-model latencies in milliseconds. Native
 uses the reference paired with full K050. All-skips-off retains the optimized
 implementation but disables both sparse paths; projection-only enables
@@ -485,7 +529,31 @@ values. Differences across checkpoints are not independent-seed estimates.}
 \input{tables/kernel-checkpoint-latencies}
 \end{table}
 
-\begin{figure}[p]
+
+
+The five restored four-site h-only records are given in
+Table~\ref{tab:h-only-runtime}. Adding them to the original 30 changes the
+projection-bypass $R^2$ from 0.946 to 0.941, and the scalar-projection $R^2$
+from 0.413 to 0.425. Figure~\ref{fig:kernel-autoresearch} uses all 35 qualified
+records; historical association panels retain their explicitly stated 30-point
+subset. Attention skipping remains slower than attention-dense execution
+for all 35. Seven-site h-only runtime is pending.
+
+\input{tables/pressure-scope/h-only-runtime}
+
+\subsection{Evidence and data accompanying the draft}
+\label{app:result-data}
+
+The supplementary data contain the original 54 training endpoints plus ten
+verified h-only endpoints, all 540 historical post-hoc evaluations, seven
+signed histograms, and the original 30-checkpoint kernel reduction. The
+pressure-placement extension adds both loss passes, site/layer counters,
+OL1 geometry, matched contrasts and five historical h-only runtime records.
+The README defines coverage and units; \texttt{SOURCES.json} records copy hashes
+and \texttt{protocol.json} records implementation and data identities. These
+files accompany the repository, not a standalone checkpoint or kernel release.
+
+\begin{figure}[!htbp]
 \centering
 \includegraphics[page=1,width=\linewidth]{figures/appendix/kernel-investigation.pdf}
 \caption{\textbf{Scalar sparsity, skipped instructions, and matched runtime gains.}
@@ -498,17 +566,3 @@ fits, matched threshold comparisons, and absolute latency traces. Counters
 cover 338 validation blocks, while timings cover 64 matched inputs.}
 \label{fig:kernel-diagnostics}
 \end{figure}
-
-\subsection{Evidence and data accompanying the draft}
-\label{app:result-data}
-
-The supplementary directory \path{supplementary-data/} contains all 54 training records with
-integer operation counts, all 540 clipping evaluations and frontier
-memberships, seven signed histograms with zero and tail counts, figure
-coordinates, and the 30-checkpoint runtime reduction, with the kernel
-investigation's per-checkpoint counters, raw-latency reductions, and stratified
-fits. The included README
-defines fields and units. Copy hashes are recorded in \texttt{SOURCES.json};
-\texttt{protocol.json} gives data preparation, training settings and
-implementation identities. Paths refer to the accompanying repository;
-the supplementary directory is not a standalone checkpoint or kernel release.

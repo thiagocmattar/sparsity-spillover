@@ -9,6 +9,11 @@
 
 A sparsification intervention specifies (i) where to threshold activations (thresholding sites $\mathcal{N}$), (ii) the thresholding function $G(.)$, and (iii) where to apply activation pressure (pressure sites $\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide, and different sites may use different functions $G$. These choices give a combinatorial set of interventions during training.
 
+We write $T_i/P_j$ to distinguish threshold and pressure scope: $T_4$ thresholds
+$a,m,h,z$, and $T_7$ additionally thresholds $q,k,v$; $P_0$ applies no pressure,
+$P_h$ applies OL1 only at $h$, and $P_4$/$P_7$ apply OL1 at all four/seven sites.
+In figure labels, these are ``4/7-site,'' ``+ OL1(h),'' and ``+ OL1(all).''
+
 To avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark}, we extend ReLU to one-sided and symmetric thresholding: $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$. The threshold $\kappa$ controls thresholding strength and is fixed within each training condition. Appendix~\ref{app:interventions} gives boundary and derivative conventions.
 
 Figure~\ref{fig:pythia-block} locates the intervention sites on the Pythia architecture: $a$ and $m$ are the normalized inputs to the attention and FFN branches; $h$ is the FFN hidden activation; $z$ is the concatenated attention context before output projection; and $q,k,v$ are the query, key and value operands, with $q,k$ taken after RoPE. The attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at selected sites among $a,m,h,z$ and $G_{\pm,\kappa}$ at $q,k,v$. At $h$, the selected nonlinearity replaces GELU.

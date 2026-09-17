@@ -68,3 +68,8 @@
 - [O015 - Archived review alternatives](../review-alternative/observations/O015-review-corrections.md):
   five PDFs and their reproduction files preserved separately after the
   manuscript review revision was reverted. Not adopted in the current draft.
+- [O016 - Threshold and pressure placement](../pressure-scope/observations/O016-pressure-placement.md):
+  ten h-only endpoints complete the six-recipe 14M grid; all 20 pressured
+  runs contribute geometry logs. Eight PDFs and four tables accompany the
+  targeted draft revision. Five historical h-only timings extend the kernel
+  cohort to 35; seven-site h-only timing and h-only scaling remain pending.

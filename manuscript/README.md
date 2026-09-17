@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+The 17 September pressure-placement revision integrates ten verified h-only
+14M endpoints, giving 64 trained conditions, and restores five historical
+kernel records for a 35-checkpoint runtime cohort. Threshold and pressure
+scope are now explicit throughout the updated figures and results. The
+[32-page draft](draft/main.pdf) and [verification record](draft/reviews/2026-09-17-pressure-placement/README.md)
+retain the original ICLR format and bibliography. Seven-site h-only timing
+and h-only scaling remain pending. The entries below describe earlier revisions.
+
 The redundant main-text boundary-contrast table (formerly Table 3) is removed.
 Section 4.5 states the high-threshold ordering and zero-threshold reversal
 directly, referring to Appendix Table 7 for all 15 matched contrasts. Figure 6

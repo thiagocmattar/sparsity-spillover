@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "artifact_kind": "locally_composed_reproducibility_protocol",
-  "date": "2026-09-08",
-  "scope": "Manuscript cohort: 54 retained trained checkpoints and corrected 30-checkpoint Pythia-14M kernel cohort. This file assembles retained records; it is not a new experiment or a public-availability claim.",
+  "date": "2026-09-17",
+  "scope": "64 trained endpoints: original 54 plus ten verified 14M h-only endpoints. Full K050 deployment panel: 35 historical checkpoints; current matched ablations: 35; historical association subset: original 30. Five A7 h-only timings and cross-size h-only results pending.",
   "path_base": "repository root",
   "dataset": {
     "name": "JeanKaddour/minipile",
@@ -74,7 +74,7 @@
     },
     "scales": {
       "14M": {
-        "trained_conditions": 30,
+        "trained_conditions": 40,
         "architecture": "EleutherAI/pythia-14m-deduped",
         "architecture_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
         "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
@@ -134,10 +134,11 @@
     "excluded_tail_tokens": 1444,
     "loss": "Mean next-token cross-entropy over 2047 targets per complete block.",
     "sparsity": "Pool integer zero-product counts before division; canonical measurement uses FP32 parameters and FP16 autocast.",
-    "split_usage": "One common validation split for all reported quality comparisons; no independent confirmation split."
+    "split_usage": "One common validation split for all reported quality comparisons; no independent confirmation split.",
+    "loss_passes": "Original 54: logical diagnostic eager loss. Ten added h-only: ordinary final loss. Both full-validation passes retained in pressure-placement.json."
   },
   "kernel": {
-    "cohort_conditions": 30,
+    "cohort_conditions": 35,
     "model": "Pythia-14M",
     "hardware": "NVIDIA GeForce RTX 5090",
     "batch_size": 1,
@@ -242,7 +243,8 @@
       "execution_scope": "Frozen weights, fixed shape/device and non-overlapping persistent buffers; no claim for training, concurrent serving, arbitrary masks, cached decoding, other sizes or devices.",
       "qualification_scope": "Numerical agreement on the recorded 338 validation blocks in three processes; not a proof for arbitrary inputs, bitwise equality, or a new GPU/sanitizer audit.",
       "agent_identity": "Recorded configured default gpt-6-astra does not attest the model served for each request."
-    }
+    },
+    "historical_association_cohort_conditions": 30
   },
   "verification": {
     "all_54_training_records_agree_on_data_identity_seeds_budget": true,
@@ -250,11 +252,14 @@
     "all_OL1_conditions_have_stabilizer_1e_minus_12_and_budget_1": true,
     "all_90_final_K050_processes_agree_on_selected_environment_versions": true,
     "all_source_paths_resolve_and_hashes_recomputed": true,
-    "new_measurements_performed": false
+    "new_measurements_performed": false,
+    "added_h_only_conditions_verified": 10
   },
   "sources": {
     "analysis_evidence": {
       "path": "analyses/018-2026-09-08-results-materials/figure_data.json",
+      "source_git_commit": "67478751a53e9bbd2fac2281b1603346e9133f4b",
+      "source_note": "Retained historical snapshot. Current source differs only in its sources metadata; scientific contents are identical.",
       "sha256": "76a2b2d52944cb4aa652a1c4a2d2b4250fc4e478291c05a7851f40004a020144",
       "bytes": 3296336
     },
@@ -402,6 +407,20 @@
       "path": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/tests/test_audit.py",
       "sha256": "58b58fc66f1cd36d04e85f3f61b9c33f7cfc19b747048b31a2acdade19ff0408",
       "bytes": 3679
+    },
+    "pressure_placement_extension": {
+      "path": "analyses/021-2026-09-10-training-results-figures/pressure-scope/data/evidence.json",
+      "sha256": "e271012404829c510d8bcc47df4469d3ef125507d4a78b7e5b0d36afb7480889",
+      "bytes": 3674201
     }
+  },
+  "pressure_placement_extension": {
+    "source_id": "pressure_placement_extension",
+    "training_endpoints": 64,
+    "h_only_added": 10,
+    "loss_policy": "Preserve Analysis 023 approved reported values; both final-checkpoint evaluation passes retained. Maximum discrepancy 0.000105806356 nats.",
+    "historical_full_k050_endpoints": 35,
+    "matched_ablation_endpoints": 35,
+    "pending": "Five A7 h-only runtime measurements; all cross-size h-only evidence."
   }
 }

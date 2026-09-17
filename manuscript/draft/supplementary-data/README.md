@@ -1,5 +1,25 @@
 # Manuscript results data
 
+## Pressure-placement extension, 17 September 2026
+
+`pressure-placement.json` adds all six multisite 14M recipes, including ten
+h-only endpoints, to the original 54-endpoint release: 64 trained models in
+total. It contains both full-validation loss passes, matched contrasts, pooled
+integer site/layer and operation counts, and all 14,240 OL1 step records.
+The approved reported losses use ordinary final validation for h-only and the
+logical diagnostic pass otherwise; their maximum difference is 0.000106 nats.
+Both uniform-pass alternatives are retained explicitly.
+
+The extension also restores all three matched K050 implementations and skip
+counters for five historical four-site h-only checkpoints, from qualified raw
+timing pairs in the same RTX5090 session. The current figure uses 35 points
+and recomputes its fits. `kernel/` retains the original 30-point reduction;
+these files are not silently overwritten. The five seven-site h-only timings
+and h-only scaling remain pending. Copy hashes appear in `SOURCES.json`.
+Source: [Analysis 021 pressure scope](../../../analyses/021-2026-09-10-training-results-figures/pressure-scope/README.md).
+
+The following catalog describes the original release.
+
 This release accompanies the manuscript results, including the 11 September
 kernel revision. The 18 copied measurement files are byte-identical to retained evidence;
 SOURCES.json records the original repository path, SHA-256 and byte size.

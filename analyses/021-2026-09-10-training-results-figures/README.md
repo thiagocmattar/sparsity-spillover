@@ -5,6 +5,16 @@ introduction-facing Pythia-14M quality-sparsity overview. The author approved
 this new analysis and the first figure on 10 September 2026. No new training,
 checkpoint evaluation, or measurement is required.
 
+## Pressure-placement revision (17 September)
+
+[pressure-scope/](pressure-scope/README.md) contains the targeted manuscript
+integration of ten verified h-only endpoints: six replacement main figures,
+two appendix PDFs, four tables and retained-measurement audits. Training now
+covers 64 endpoints; kernel analysis restores five historical h-only records
+for 35 qualified checkpoints. The five new seven-site h-only timings and
+h-only scaling remain pending. See the [30-item task audit](pressure-scope/TASK-AUDIT.md)
+and [O016](pressure-scope/observations/O016-pressure-placement.md).
+
 ## K050 investigation
 
 ### Focused appendix figures

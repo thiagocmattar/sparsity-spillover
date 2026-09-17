@@ -37,8 +37,8 @@ At $h$, the selected nonlinearity replaces GELU. Other sites retain their
 original activations unless a thresholding nonlinearity is applied.
 At zero threshold, A7's additional symmetric query/key/value nonlinearities are exact
 identities in both values and gradients. They therefore do not change A4's
-mathematical forward map in the absence of pressure. A7-OL1 still differs
-from A4-OL1 in its pressure targets and their equal-tensor normalization.
+mathematical forward map in the absence of pressure. A7-OL1(all) still differs
+from A4-OL1(all) in its pressure targets and their equal-tensor normalization.
 
 Query and key counts use actual
 post-RoPE operands: rotation can repopulate an individual zero coordinate.
@@ -90,8 +90,14 @@ reach but may have positive observed sparsity from natural zeros.
 \subsection{Evaluation scope}
 \label{app:evaluation}
 
-Quality and logical counts are paired in the same eager-attention evaluation
-of a checkpoint, with its declared nonlinearities and evaluation precision. The complete
+The original 54 endpoints pair quality and logical counts in the same
+eager-attention evaluation. For the ten h-only endpoints, we retain the
+author-approved ordinary final-validation losses and separately evaluated
+logical counts from the same checkpoint. Both passes cover the complete
+validation set; across the 30 multisite 14M endpoints, their largest absolute
+loss difference is $0.000106$ nats. Both loss versions and uniform-pass
+contrasts are retained in the supplementary pressure-placement data.
+The complete
 MiniPile validation split contains 500 documents. Concatenation and packing
 produce 338 complete blocks of 2,048 tokens (692,224 input tokens); the final
 1,444-token tail is excluded. Each block contributes 2,047 next-token targets

@@ -25,6 +25,18 @@ missing and no overfull boxes occur.
 
 ## Current format
 
+The 17 September revision implements the updated pressure-placement review
+task: 40/12/12 trained conditions, separate threshold/pressure scopes, six
+replacement main figures, two supporting appendix PDFs and four tables.
+The kernel figure uses absolute K050 latency versus quality and all 35
+qualified historical checkpoints, including five restored four-site h-only
+records. Seven-site h-only timing and h-only scaling remain pending.
+The 32-page build has resolved references and no overfull boxes; four underfull
+vertical boxes and one underfull horizontal box remain, with rendered pages
+checked. Twelve focused tests pass. See the [review record](reviews/2026-09-17-pressure-placement/README.md)
+and [analysis/task audit](../../analyses/021-2026-09-10-training-results-figures/pressure-scope/README.md).
+The entries below describe earlier revisions.
+
 On 11 September, the frozen Analysis 021 kernel v2 became Figure 7 on page 10.
 Section 4.6 is now "When model-wide sparsity translates to speedup," with
 Astra as the implementation tool. The section and Discussion distinguish
@@ -136,8 +148,8 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 
 ## Reading copy and sources
 
-- [main.pdf](main.pdf): 31-page ICLR 2027 draft; main text pages 1-12,
-  references pages 12-13, appendices pages 14-31. Before submission, shorten the
+- [main.pdf](main.pdf): 32-page ICLR 2027 draft; main text pages 1-11,
+  references pages 11-12, appendices pages 13-32. Before submission, shorten the
   main text to nine pages and add the required author-reviewed AI use statement.
 - [abstract.tex](abstract.tex), [introduction.tex](introduction.tex),
   [related-work.tex](related-work.tex), [methodology.tex](methodology.tex):
@@ -151,19 +163,21 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 - [methodology-appendix.tex](methodology-appendix.tex),
   [experimental-appendix.tex](experimental-appendix.tex),
   [results-appendix.tex](results-appendix.tex): definitions, complete results,
-  diagnostics, clipping, kernel qualification and data provenance.
+  diagnostics, post-hoc thresholding, kernel qualification and data provenance.
 - [figures/SOURCES.json](figures/SOURCES.json): figure-copy provenance.
-  The quality-sparsity overview uses Analysis 021's short-label view, with 26
-  trained checkpoints and both clipping controls; earlier overviews are retained.
+  The pressure-placement figures use Analysis 021's six-recipe comparison;
+  earlier overviews and diagnostics are retained with their original coverage.
 - [tables/](tables/): analysis-owned tables, including the complete kernel
-  latency ablations. Terminology uses threshold, activation sparsity and U_arch.
-- [supplementary-data/README.md](supplementary-data/README.md): eighteen
+  latency ablations and all 64 endpoints, with explicit threshold/pressure scope.
+- [supplementary-data/README.md](supplementary-data/README.md): nineteen
   measurement copies plus a separately sourced [protocol](supplementary-data/protocol.json).
-  Includes all 540 clipping evaluations, seven signed histograms, and source hashes.
+  Includes all 540 historical post-hoc evaluations, seven signed histograms,
+  and the pressure-placement extension with source hashes.
 
 The paper uses activation sparsity, model-wide sparsity, sparsity ceiling,
 thresholding and nonlinearities consistently. Operational data keys retain
-their original names. Figure revisions are recorded above; numerical measurements are unchanged.
+their original names. This revision adds retained h-only evidence; original
+measurements are unchanged and the final-loss pass convention is disclosed.
 
 ## Review and verification
 

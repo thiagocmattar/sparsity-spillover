@@ -1,3 +1,4 @@
+% Pressure-scope revision: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md; evidence.py, figures.py, tables.py.
 % Hand-edited adoption of Analysis 021 Figure 07 v2.
 % Figure: analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py;
 % observation: analyses/021-2026-09-10-training-results-figures/observations/O009-kernel-realization-v2.md.
@@ -11,53 +12,56 @@ $\Smodel$ measures matrix-product work exposed to zero operands, but does
 not by itself guarantee lower latency. Whether these opportunities become
 useful depends on where the zeros occur, their execution structure, and
 the kernel used to exploit them. We evaluate the same specialized K050
-implementation across all 30 Pythia-14M checkpoints to ask which forms of
-learned sparsity translate into measured acceleration. Measurements use
+implementation across 35 Pythia-14M checkpoints, including the five historical
+four-site h-only models, to ask which forms of learned sparsity translate into
+measured acceleration. The five new seven-site h-only timings remain pending;
+we also restore the five historical h-only matched ablations. Measurements use
 BF16, batch-one, uncached 2,048-token inference with full-vocabulary logits
 on one RTX5090. Each candidate undergoes numerical qualification against
 the native reference on complete validation before timing
 (Appendix~\ref{app:kernel-results}).
 
-\textbf{Model-wide sparsity is strongly associated with realized full-model
-acceleration (Figure~\ref{fig:kernel-autoresearch}a).} Native-relative K050
-speedup increases with $\Smodel$ across the cohort ($R^2=0.817$), reaching
-$1.78\times$ for seven-site + OL1 at $\kappa=0.5$. The association remains
-substantial within the baseline/one-site, four-site, and seven-site groups
-(Appendix~\ref{app:kernel-diagnostics}). Thus, the representations produced
-by the train-time interventions carry runtime-relevant sparsity; this does
-not imply that each additional zero product produces a fixed latency reduction.
+\textbf{More logical sparsity does not necessarily mean lower optimized latency}
+(Figure~\ref{fig:kernel-autoresearch}a). At $\kappa=0.5$, $T_4/P_4$ runs at
+0.4595 ms with loss 6.0380, whereas $T_7/P_7$ runs at 0.4734 ms with loss
+5.8294. The seven-site model is slower under full K050 despite its larger
+$\Smodel$, but has lower loss. These are quality--latency trade-offs, not an
+equal-quality speed ranking. The native-relative association
+($R^2=0.817$) remains descriptive and uses a different native latency for
+each checkpoint (Appendix~\ref{app:kernel-diagnostics}).
+
+The restored $T_4/P_h$ measurements make pressure placement relevant to this
+comparison: at $\kappa=0.5$, this model runs at 0.4623 ms with loss 5.7227,
+both lower than $T_7/P_7$ despite only $10.23\%$ model-wide sparsity.
+At $\kappa=0.05$, it runs at 0.5618 ms with loss 5.1956. These measured
+operating points do not establish the runtime ordering of the still-unmeasured
+seven-site h-only models.
 
 % Approved artwork copied unchanged; hash in figures/SOURCES.json.
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/07-kernel-realization-v2.pdf}
-\caption{\textbf{The runtime value of sparsity depends on where the zeros occur.}
-\textbf{(a)} Native-relative full-model speedup of K050 across 30 Pythia-14M
-checkpoints versus $\Smodel$. Marker shape identifies the intervention family;
-the dashed line is a descriptive OLS fit ($R^2=0.817$). Seven-site + OL1 at
-$\kappa=0.5$ reaches $1.78\times$.
-\textbf{(b)} Gain from projection skipping versus $\Smodel$: the geometric-mean
-latency with all skips disabled divided by that with projection skipping
-enabled, retaining the same fusion and disabled attention skipping.
-Values above $1\times$ indicate a net benefit. For four-/seven-site recipes,
-solid lines/open markers denote no OL1 and dashed lines/filled markers denote
-OL1. Lines connect separately trained thresholds in increasing order; muted
-gray paths connect the one-site L1/OL1 pressure-weight sweeps from ReLU.
-High thresholds produce substantial projection gains, further increased by
-OL1 for the four-site recipe. Seven-site OL1's much larger $\Smodel$ does not
-yield a proportional projection gain: much of its additional sparsity occurs
-in $QK/PV$. Sparsity uses complete-validation FP16 counts; BF16 timing uses
-64 matched inputs. These are descriptive associations across trained
-checkpoints, not causal effects of $\Smodel$ itself.}
+\includegraphics[width=\linewidth]{figures/pressure-scope/07-quality-latency.pdf}
+\caption{\textbf{The runtime value of zeros depends on their execution structure.}
+\textbf{(a)} Validation loss versus absolute full-model K050 latency for 35
+qualified checkpoints; the black cross is native A0. Gray
+circles show A0 and one-site conditions, blue diamonds four-site recipes, and
+orange triangles seven-site recipes. These multisite markers are open without
+pressure and filled with OL1(all); blue squares add four-site OL1(h).
+Seven-site OL1(h) timing remains pending.
+\textbf{(b)} Projection MMA bypass for the same 35 checkpoints versus matched gain from enabling
+projection skipping: all-skips-off latency divided by projection-enabled,
+attention-dense latency. The dashed OLS fit is descriptive ($R^2=0.941$).
+MMA bypass includes replacement by scalar work, not only eliminated arithmetic.
+Loss and sparsity use full-validation FP16 evaluation; BF16 timing uses
+64 matched inputs on an RTX5090. Neither panel identifies a causal effect of sparsity alone.}
 \label{fig:kernel-autoresearch}
 \end{figure}
 
-The aggregate relationship hides a distinction between where the additional
-sparsity occurs. Higher thresholds produce substantial gains from projection
-skipping, and OL1 further increases this benefit for the four-site recipe
-at positive thresholds (Figure~\ref{fig:kernel-autoresearch}b). Without
+The matched ablations distinguish where sparsity is profitable. Higher thresholds produce substantial gains from projection
+skipping, and OL1(all) further increases this benefit for the four-site recipe
+at positive thresholds (Appendix~\ref{app:kernel-diagnostics}). Without
 pressure, four-site and seven-site recipes have similar projection-skipping
-gains at matched thresholds. At $\kappa=0.5$, adding OL1 raises the four-site
+gains at matched thresholds. At $\kappa=0.5$, adding OL1(all) raises the four-site
 gain from $1.324\times$ to $1.378\times$, but the seven-site gain only from
 $1.316\times$ to $1.325\times$, despite its much larger increase in
 $\Smodel$. Much of that additional seven-site sparsity lies in $QK/PV$
@@ -71,8 +75,8 @@ with very sparse rows sometimes handled by scalar operations instead.
 We call the resulting omitted matrix multiply-accumulate instructions
 \emph{MMA bypasses}; a bypass need not eliminate all corresponding arithmetic.
 Across the cohort, projection MMA bypass is more strongly associated with
-projection-skipping gain ($R^2=0.946$) than scalar projection sparsity alone
-($R^2=0.413$). The useful execution unit is coarser than an individual zero
+projection-skipping gain ($R^2=0.941$) than scalar projection sparsity alone
+($R^2=0.425$). The useful execution unit is coarser than an individual zero
 activation. Appendix~\ref{app:kernel-diagnostics} gives the predicates,
 counters, and matched latencies.
 
@@ -92,15 +96,11 @@ native-relative speedups even when their absolute K050 latency exceeds that
 of the corresponding four-site model. Appendix~\ref{app:kernel-diagnostics}
 therefore reports native, optimized, and matched-ablation latencies separately.
 
-Developing an implementation to test these representation-level effects
-required architecture-specific kernel work. We used a human-guided coding-agent
-loop configured with GPT-6 Astra~\citep{openaigpt6astra} to propose, execute,
-profile, and refine implementations, selecting K050 after numerical
-qualification. Execution feedback supports this development
-approach~\citep{ouyang2025kernelbench,luo2026agentic}. The search history,
-upstream-kernel compatibility tests, and implementation ablations are in
-Appendix~\ref{app:kernel-results}. The agent serves as an implementation
-tool; this study does not compare agent-assisted with human-only optimization.
+We used a human-guided GPT-6-Astra coding-agent loop to develop and
+numerically qualify K050~\citep{openaigpt6astra,luo2026agentic}.
+Search history and upstream-kernel compatibility remain in
+Appendix~\ref{app:kernel-results}; this is an implementation tool, not an
+agent-versus-human development comparison.
 
 Together, these results separate sparsity opportunity from sparsity
 realization. $\Smodel$ captures computation logically exposed to zeros and
