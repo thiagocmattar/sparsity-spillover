@@ -2,6 +2,7 @@
 from contextlib import nullcontext
 import importlib.util
 import json
+import hashlib
 from pathlib import Path
 from types import SimpleNamespace
 import tarfile
@@ -11,6 +12,7 @@ import pytest
 spec = importlib.util.spec_from_file_location('retrieval034', Path(__file__).with_name('monitor_and_retrieve.py'))
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+sync_function = module.sync_ready_checkpoints
 
 
 @pytest.fixture
@@ -19,6 +21,7 @@ def setup(tmp_path, monkeypatch):
     records.mkdir()
     monkeypatch.setattr(module, 'HERE', tmp_path)
     monkeypatch.setattr(module, 'RECORDS', records)
+    monkeypatch.setattr(module, 'sync_ready_checkpoints', lambda *args, **kwargs: None)
     module.cloud.write(records / 'assignments.json', {'sample': ['a4-h-ol1-kappa-0']})
     module.cloud.write(records / 'lease-sample.json', {'pod': {'id': 'owned123'}})
     calls = []
@@ -108,3 +111,21 @@ def test_local_scientific_verification_failure_prevents_deletion(setup, monkeypa
         module.retrieve_and_delete('sample')
     assert calls == []
     assert not (local / 'receipt.json').exists()
+
+
+def test_bad_incremental_checkpoint_is_never_published(setup, monkeypatch):
+    records, calls = setup
+    relative = 'artifacts/attempts/001-example/checkpoints/step_000032/model.safetensors'
+    row = {'path': relative, 'bytes': 4, 'sha256': hashlib.sha256(b'good').hexdigest()}
+    module.cloud.write(records / 'ssh-sample.json', {'ip': '127.0.0.1', 'port': 22, 'ssh_key': {'path': 'unused'}})
+    monkeypatch.setattr(module.cloud, 'connect', lambda label: nullcontext(None))
+    monkeypatch.setattr(module.cloud, 'command', lambda *args, **kwargs: json.dumps([row]))
+    def transfer(command, **kwargs):
+        Path(command[-1]).write_bytes(b'bad!')
+        return SimpleNamespace(returncode=0)
+    monkeypatch.setattr(module.subprocess, 'run', transfer)
+    with pytest.raises(AssertionError, match='Checkpoint transfer hash mismatch'):
+        sync_function('sample')
+    assert not (module.HERE / relative).exists()
+    assert not (records / 'retrieval/sample/checkpoint-files.json').exists()
+    assert calls == []

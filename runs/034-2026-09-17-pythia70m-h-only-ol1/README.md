@@ -136,7 +136,48 @@ task loss, throughput, warnings and refreshed ETC, and retrieves at most two
 completed Pods concurrently. It verifies the complete archive hash, extracts
 all models/recovery states/diagnostics/logs, and invokes the condition verifier
 locally before permitting deletion of an exactly identified owned Pod.
-Six focused retrieval tests passed, including bad hashes, failed scientific
+Seven focused retrieval tests passed, including bad hashes, failed scientific
 verification, incomplete conditions and mismatched Pod identities. Logs and
 receipts are retained under `prelaunch/`; active files are not committed.
 The on-Pod and independent local deadline guards remain active throughout.
+
+The local download probe showed that waiting until the end to transfer all
+50.7GB would unnecessarily extend retention on billable GPUs. The controller
+therefore also recovers immutable checkpoints during training, using the final
+checkpoint metadata file as the publication marker. It transfers at most two
+streams concurrently, verifies every file's SHA256 before publishing locally,
+and keeps an explicit per-file receipt. Terminal archives contain the remaining
+logs and metrics; the final scientific verifier still checks the complete
+checkpoint inventory before deletion. At 17:40 UTC, four snapshots (1.13GB)
+were already verified locally. No training code or scientific input changed.
+
+The slow input link to worker3 used a resumable retry and then four disjoint
+byte-range streams. The complete reassembled archive still had to pass its
+original SHA256 before extraction. The exact transport script is retained in
+`prelaunch/worker3-striped-transfer.py`; this is an infrastructure retry only.
+
+## Confirmed launch status
+
+At **17:45:45 UTC (14:45:45 Sao Paulo), 17 September**, all ten conditions
+were training, with steps 3--77 of 712 completed and no current overflow or
+process warnings. All ten exact preflights passed and their reports are
+retained as `prelaunch/remote-preflight-*.json`. They agree on the canonical
+initialization, schedule, pinned runtime and scientific code identity
+`f13879dd7bd521f1547b84ead4239fcb68db0ccc8ef135ef196396974fe11a2d`.
+The immutable launch snapshot is `prelaunch/confirmed-launch-status.json`.
+
+The slowest recent-step projection was about **3 hours remaining**, targeting
+roughly **17:47 Sao Paulo** for the last training completion, with another
+15--30 minutes of planning margin for final retrieval/verification. Actual
+throughput varies substantially by host; the early per-GPU preflight training
+projections span 1.37--3.14 hours. Expected total expense is **USD120--150**,
+including setup/retry/retrieval allowance, within the USD200 operating allowance.
+These are measured projections, not completion guarantees. The full calculation
+and live status paths are retained in `prelaunch/launch-summary.json`.
+
+The detached controller and all six on-Pod plus six independent local stop
+guards were checked alive at handoff. Monitoring and checkpoint recovery are
+active; the final checkpoints and scientific results are not yet complete.
+A process-scoped Windows power request keeps the local recovery host awake
+while the controller runs, ending no later than 21:30 UTC. It leaves permanent
+power settings and display behavior unchanged.
