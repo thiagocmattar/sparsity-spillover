@@ -5,11 +5,15 @@
 
 ## Current status
 
-Run 033 is prepared and locally verified for **only five new Run 032 final
-A7+OL1(h) checkpoints** with frozen K050 and paired native timing. Historical
-results, including A4+OL1(h), will be reused. The user rejected a full-cohort
-refresh. Cloud launch confirmation is pending; 70M remains deferred. See
-[Run 033](../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
+Run033 completed **only the five new Run032 A7+OL1(h) checkpoints** with frozen
+K050: all 15 processes qualified, speedups 1.206--1.784x. All 180 outputs are
+verified locally; the Pod is deleted, estimated cost USD0.496. Analysis024
+owns clean sparsity/speedup and latency figures, reusing all 35 historical
+checkpoints including A4+OL1(h). At kappa=0.5, h-only/all-site A7 observed
+speedups are 1.784x/1.783x despite 16.66%/27.48% logical sparsity; sessions
+differ. The 70M proposal remains deferred. See
+[Analysis024](../analyses/024-2026-09-17-h-only-kernel-latency/README.md) and
+[Run033](../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
 
 Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
 A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
@@ -225,7 +229,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `034`. Next analysis number: `024`. Next finding number: `F003`.
+Next run number: `034`. Next analysis number: `025`. Next finding number: `F003`.
 
 ## Where we stopped
 

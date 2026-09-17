@@ -110,3 +110,11 @@ The subsequent [70M cost estimate](70M-COST.md) uses RunPod's public H200
 price checked on 17 September: USD4.59/GPU-hour. Four parallel conditions
 are approximately USD35–50 in incremental usage under the normal ETC,
 with a USD65–70 planning allowance for slower workers and retrieval.
+
+## Retained kernel measurements
+
+The requested final-K050 benchmark extension is complete in
+[Analysis024](../024-2026-09-17-h-only-kernel-latency/README.md). It retains raw
+provenance, a complete 40-checkpoint latency/speedup table and clean PDF figures,
+including both h-only families. Only the five new A7 h-only models were timed;
+the historical A4 h-only measurements were reused. This does not resume 70M.

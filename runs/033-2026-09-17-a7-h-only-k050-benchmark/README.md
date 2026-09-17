@@ -1,5 +1,33 @@
 # Run 033 — final K050 on the five new A7 h-only checkpoints
 
+## Verified outcome
+
+**Complete:** both smoke checks and all 15 scientific processes qualified.
+Every scientific process covered all 338 validation blocks from 500 documents;
+the excluded tail remains 1,444 tokens. The five new native-relative speedups
+are 1.206029, 1.392896, 1.470586, 1.564937 and 1.783869x at kappa
+0, 0.01, 0.05, 0.1 and 0.5. Raw timing pairs, validation gates, diagnostics and
+source/runtime identities are retained under `artifacts/attempts/`.
+
+The 985,307-byte returned archive has SHA-256
+`e93980466950c31339ccc5ef24b0d464f54d78cad2a3a6f14f2603b4b3e45d4a`.
+All **180 files / 9,123,896 payload bytes** verified locally before teardown;
+`artifacts/verification.json` records the checks. The exact checkpoint inputs
+remain locally retained and were never trained or modified by this run.
+
+The Pod was deleted at **2026-09-17 12:51:43 UTC**, after 29m51s from the
+creation request. Scientific processes took 296.37 seconds in total; cold
+compilation was absorbed by the first smoke. Peak allocated GPU memory was
+3.0343 GiB. Estimated incremental cost is **USD0.4956**, including temporary
+disk. The first posted-billing query returned no buckets yet; do not treat
+the estimate as a posted invoice. Zero Pods remain, the local stop guard was
+cancelled, and the pre-existing 100 GB volume is unchanged.
+
+The full 40-checkpoint reduction, clean PDF figures and captions are in
+[Analysis024](../../analyses/024-2026-09-17-h-only-kernel-latency/README.md).
+Only these five new models were timed; all 35 historical records are reused.
+See [the run observation](observations/001-final-k050.md).
+
 ## Approved design and launch status
 
 The user explicitly narrowed the scope on 17 September 2026:
@@ -10,9 +38,30 @@ reference, which supplies the speedup denominator. Existing A4 h-only and
 other historical results are reused. No old model, A0 timing, skip-control
 ablation, optimizer update, or kernel search is included.
 
-Implementation and local checks are complete. **Cloud launch is pending the
-explicit launch confirmation required by AGENTS.md.** The 70M proposal remains
-frozen in Analysis 023. No existing Run 028/029/032 cloud budget is reused.
+Implementation and local checks completed before the user explicitly approved
+the launch packet. **Run033 launched on 17 September at 12:21:53 UTC**, within
+the new USD2 / 90 cumulative GPU-minute limit. The exact approval and live
+catalog are in `prelaunch/approval-and-catalog.json`; the creation record and
+absolute deadline are in `prelaunch/lease-001.json`. The input config and tar
+retain their preapproval text and hashes; that historical text is superseded
+by the recorded user approval. The 70M proposal remains frozen in Analysis023.
+No existing Run028/029/032 cloud budget is reused.
+
+Community allocation failed without creating a Pod. The approved Secure
+fallback created `maqx3ynj9xp9q0`, one RTX5090 at USD0.99/hour. Both local and
+on-Pod stop guards were armed for 13:51:52 UTC. Environment installation overlaps
+the checkpoint upload. The initial uv first-index policy rejected a pinned
+package available on PyPI; a second attempt reached a slow NVIDIA wheel mirror.
+The next infrastructure attempt uses PyPI for dependencies and the official
+PyTorch wheel listing for Torch. All package versions, source and scientific
+inputs remain unchanged; all installer scripts/logs are retained.
+
+That retry succeeded with all 58 versions matching the lock exactly. The
+original setup script then completed from the populated environment/cache and
+verified all 1,410 source/input identities. One transient provider SSH-discovery
+503 did not interrupt the detached worker; monitoring used the already recorded
+endpoint and host key for the unchanged Pod lifecycle. No replacement Pod,
+scientific retry, source edit, or new kernel candidate was needed.
 
 ## Scientific question and matched contract
 

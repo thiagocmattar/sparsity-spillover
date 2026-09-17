@@ -447,3 +447,13 @@ The manuscript review revision in `f9351d7` was rolled back. Its five new
 PDFs, generating script, reduction and tests are preserved separately in
 [review-alternative](review-alternative/README.md), without changing the
 previous figures or the restored manuscript.
+
+## H-only runtime extension (17 September)
+
+[Analysis024](../024-2026-09-17-h-only-kernel-latency/README.md) now owns the
+updated full-model sparsity/speedup and absolute-latency figures with all six
+A4/A7 pressure families. Only the five new A7+OL1(h) checkpoints were timed
+with final K050; 35 Run029 checkpoints, including A4+OL1(h), were reused.
+All new processes qualified and their artifacts are verified locally. These
+new displays extend the full-K050 cohort; the historical projection/attention
+ablation panels above remain unchanged. The two GPU/host sessions are explicit.
