@@ -1,5 +1,22 @@
 # Run 032 — Pythia-14M A7 gates with h-only OL1
 
+## Quality–sparsity figure
+
+The user-requested [clean overview](figures/01-14m-quality-sparsity-h-only.pdf)
+retains Analysis 021's 14M curves and adds A4 and A7 with OL1 only at h,
+each at all five thresholds. Point labels, callouts, and ceiling guides are
+removed. A4 h-only uses the audited realized intervention in Run 012;
+the existing A4 all-site curve remains the corrected Run 015 experiment.
+This cross-run display is stored here at the user's explicit request.
+
+Reproduce with
+`python runs/032-2026-09-16-pythia14m-a7-h-only-ol1/24_plot_h_only_quality_sparsity.py`.
+The script verifies evidence identities and writes the PDF plus a source-hashed
+[data snapshot](data/14m-quality-sparsity-h-only.json).
+See [observation 004](observations/004-h-only-quality-sparsity.md) for the full
+caption, coverage, provenance, and checks. No training or diagnostic rerun
+was needed.
+
 ## Status and authorization
 
 All five conditions are recovered and pass the complete local verifier,

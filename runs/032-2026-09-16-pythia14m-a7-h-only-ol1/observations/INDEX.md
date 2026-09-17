@@ -1,5 +1,8 @@
 # Run 032 observations
 
+- [004: h-only quality–sparsity figure](004-h-only-quality-sparsity.md):
+  clean 14M overview with both A4 and A7 h-only OL1 curves, all five thresholds.
+
 - [003: complete recovery](003-complete-recovery.md): all five conditions,
   complete retained inventories verified locally; all Pods deleted.
 
