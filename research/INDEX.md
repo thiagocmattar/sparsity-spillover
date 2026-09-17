@@ -5,6 +5,12 @@
 
 ## Current status
 
+Analysis025 plots all 22 completed 70M trained endpoints: GeLU/ReLU controls
+and A4/A7 with all-site or h-only OL1 across all five kappas. It uses uniform
+ordinary final-checkpoint loss and pooled model-wide logical sparsity, with
+source hashes and a clean PDF. See
+[Analysis025](../analyses/025-2026-09-17-70m-quality-sparsity/README.md).
+
 Run034 completed and locally verified all ten 70M h-only OL1 conditions:
 A4 and A7 at kappa=0,.01,.05,.1,.5, with matched Run018 initialization/data/recipe.
 All 120 model checkpoints and 30 full recovery states (50.71GB) are safe locally.
@@ -238,7 +244,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `035`. Next analysis number: `025`. Next finding number: `F003`.
+Next run number: `035`. Next analysis number: `026`. Next finding number: `F003`.
 
 ## Where we stopped
 
