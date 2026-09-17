@@ -1,4 +1,15 @@
-# Proposed 14M kernel benchmark extension — awaiting design confirmation
+# Historical kernel benchmark proposal — superseded by five-model scope
+
+**Scope correction, 17 September 2026:** the user rejected the proposed full
+cohort refresh and requested only the five new Run 032 final checkpoints with
+final K050. Historical A4 h-only and other timing records will be reused.
+Matching the GPU model and unchanged paired timing protocol permits a useful
+cross-session comparison; a different physical GPU is a limitation on absolute
+latency, not a reason to require all historical models to be measured again.
+No new skip-control ablations or A0 timing are authorized. The accepted design,
+implemented files, verification and reduced launch packet are in
+[Run 033](../../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
+The original proposal below is retained as history and is not the active scope.
 
 On 17 September 2026 the user deferred the 70M work and requested kernel
 latency/speedup benchmarks for the new runs plus updated model-wide sparsity,

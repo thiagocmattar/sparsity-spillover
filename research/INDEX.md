@@ -5,6 +5,12 @@
 
 ## Current status
 
+Run 033 is prepared and locally verified for **only five new Run 032 final
+A7+OL1(h) checkpoints** with frozen K050 and paired native timing. Historical
+results, including A4+OL1(h), will be reused. The user rejected a full-cohort
+refresh. Cloud launch confirmation is pending; 70M remains deferred. See
+[Run 033](../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
+
 Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
 A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
 reported values, audits the small final-validation loss-pass difference,
@@ -219,7 +225,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `033`. Next analysis number: `024`. Next finding number: `F003`.
+Next run number: `034`. Next analysis number: `024`. Next finding number: `F003`.
 
 ## Where we stopped
 
