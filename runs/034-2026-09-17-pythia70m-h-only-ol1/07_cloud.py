@@ -27,7 +27,7 @@ def cli(*args):
     return json.loads(subprocess.check_output([str(CLI),*args],text=True))
 
 
-def create(label, counts):
+def create(label, counts, data_center=None):
     import yaml
     cfg=yaml.safe_load((HERE/'config.yaml').read_text())['runpod']
     catalog=cli('gpu','list','--include-unavailable')
@@ -37,7 +37,8 @@ def create(label, counts):
     assert used+min(counts)<=10, 'GPU envelope would be exceeded'
     attempt_file=HERE/'prelaunch'/f'allocations-{label}.json'
     attempts=[]
-    for gpu in cfg['candidate_gpu_types']:
+    gpus = cfg['candidate_gpu_types'] if not label.startswith('seed2h100') else ['NVIDIA H100 80GB HBM3']
+    for gpu in gpus:
         for count in counts:
             if used+count>10:continue
             for tier in ('COMMUNITY','SECURE'):
@@ -47,6 +48,8 @@ def create(label, counts):
                      '--gpu-count',str(count),'--cloud-type',tier,'--container-disk-in-gb','40',
                      '--volume-in-gb',str(20+20*count),'--ports','22/tcp','--ssh',
                      '--min-cuda-version','12.8']
+                if tier=='SECURE' and (data_center or label.startswith('seed2')):
+                    cmd += ['--data-center-ids',data_center or ('US-NE-1' if label.startswith('seed2h100') else 'US-NC-1')]
                 if tier=='COMMUNITY':cmd.append('--public-ip')
                 result=subprocess.run([str(CLI),*cmd],capture_output=True,text=True)
                 if result.returncode:
@@ -119,8 +122,9 @@ def arm(label):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('action',choices=['create','arm','command','upload']);p.add_argument('--label',required=True);p.add_argument('--counts',default='4,2,1');p.add_argument('--file',type=Path);p.add_argument('--remote')
+    p.add_argument('--data-center')
     a=p.parse_args()
-    if a.action=='create':create(a.label,[int(v) for v in a.counts.split(',')])
+    if a.action=='create':create(a.label,[int(v) for v in a.counts.split(',')],a.data_center)
     elif a.action=='arm':arm(a.label)
     else:
         with connect(a.label) as c:

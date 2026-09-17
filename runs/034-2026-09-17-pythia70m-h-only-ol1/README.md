@@ -101,3 +101,42 @@ loader and Run032's h-only OL1 boundary. Run034 adds the two-family grid,
 full checkpoint inventory, exact calibration and condition/cohort verification.
 Tests, remote preflight and execution evidence are retained under prelaunch/.
 No scientific input is changed after its first scientific attempt starts.
+
+## Allocation and infrastructure record, 17 September
+
+The scientific implementation was frozen in commit `58e82fd` and passed all
+249 local tests before provisioning. Each Pod received the same 116-file
+source snapshot, whose receipt is `prelaunch/source-receipt.json`; SHA256 of
+the compressed snapshot is
+`f8c8c83c6300db11ff2a9fc8e3d1180758a3113038855af35139199758160b92`.
+The receipt verifies exact deployed bytes and retains the source commit even
+though the compact deployment is not a complete Git checkout.
+
+Ten simultaneous GPU slots were acquired on six Pods: nine H200 SXM and one
+H100 SXM. Four H200s use Community capacity; five H200s and the H100 use Secure
+capacity. Their combined quoted compute rate is **USD40.80/hour**, plus disk.
+See `prelaunch/execution-allocation.json` for condition-to-GPU assignments,
+Pod identities, creation times and four-hour stop deadlines. The H100 runs
+A4/h-only at kappa=0.5; hardware is recorded, with the scientific definition
+unchanged. The other nine conditions use H200.
+
+The original four-H200 seed Pod had slow network/package transfers. Before
+any scientific attempt, its setup logs were copied and hash-verified, then
+the Pod was deleted. Evidence is retained in
+`prelaunch/infrastructure/seed-attempt001-slow-network/`. Capacity retries
+were recorded individually; the final allocation replaces those four slots.
+The replacement seed received the canonical model in 34.469 seconds via
+native SCP. It rebuilds the training cache from the pinned source, verifies
+the canonical token-file SHA256, and distributes one hashed input archive.
+All six runtimes installed the pinned package set successfully.
+
+`prelaunch/monitor_and_retrieve.py` runs detached on the local machine. It
+checks every five minutes (or at the projected completion window), logs step,
+task loss, throughput, warnings and refreshed ETC, and retrieves at most two
+completed Pods concurrently. It verifies the complete archive hash, extracts
+all models/recovery states/diagnostics/logs, and invokes the condition verifier
+locally before permitting deletion of an exactly identified owned Pod.
+Six focused retrieval tests passed, including bad hashes, failed scientific
+verification, incomplete conditions and mismatched Pod identities. Logs and
+receipts are retained under `prelaunch/`; active files are not committed.
+The on-Pod and independent local deadline guards remain active throughout.

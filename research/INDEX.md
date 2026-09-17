@@ -5,6 +5,13 @@
 
 ## Current status
 
+Run034 is executing the user-authorized full 70M h-only OL1 grid: A4 and A7
+at kappa=0,.01,.05,.1,.5, with matched Run018 initialization/data/recipe and
+full final diagnostics/checkpoint retention. Ten parallel slots (nine H200,
+one H100) are allocated; USD40.80/hour compute and a USD200 operating allowance.
+See [Run034](../runs/034-2026-09-17-pythia70m-h-only-ol1/README.md) for live
+status paths, verification and retrieval. No 410M launch is authorized.
+
 Run033 completed **only the five new Run032 A7+OL1(h) checkpoints** with frozen
 K050: all 15 processes qualified, speedups 1.206--1.784x. All 180 outputs are
 verified locally; the Pod is deleted, estimated cost USD0.496. Analysis024
@@ -20,7 +27,8 @@ A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
 reported values, audits the small final-validation loss-pass difference,
 and retains uniform-pass alternatives and source hashes. The user has resumed
 70M/410M planning: [two-grid ETC/cost estimates](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/70M-410M-ETC-COST.md)
-are saved with fresh prices and historical timings. No new launch is approved.
+are saved with fresh prices and historical timings. The full 70M grid is now
+authorized as Run034; 410M remains deferred.
 See [Analysis 023](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md).
 
 Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1
