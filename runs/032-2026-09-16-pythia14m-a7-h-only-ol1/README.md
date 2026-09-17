@@ -2,6 +2,15 @@
 
 ## Quality–sparsity figure
 
+**17 September provenance clarification:**
+[Analysis 023](../../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md)
+now archives the 30 paper-table endpoints. The four older overview curves use
+final-checkpoint eager logical-pass loss; the two h-only curves use ordinary
+final validation loss. Earlier figure metadata describing all losses as
+ordinary final validation is too broad. The largest between-pass difference
+is 0.000105806356 nats. The original figure/data are preserved; Analysis 023
+retains both loss measurements and two uniform-pass table alternatives.
+
 The user-requested [clean overview](figures/01-14m-quality-sparsity-h-only.pdf)
 retains Analysis 021's 14M curves and adds A4 and A7 with OL1 only at h,
 each at all five thresholds. Point labels, callouts, and ceiling guides are

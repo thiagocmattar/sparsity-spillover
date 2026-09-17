@@ -78,3 +78,13 @@ points, zero in-plot text annotations, and label/legend bounds inside the
 canvas. The single-page PDF was rendered at 1,800 pixels and visually checked
 for legibility, clipping, and legend placement. Both font subsets are embedded.
 Temporary PNGs are previews only; the retained publication figure is PDF.
+
+## 17 September loss-provenance correction
+
+The sentence above describing every y coordinate as ordinary final validation
+is too broad. The four inherited A4/A7 overview curves use final-checkpoint
+eager logical-pass loss, while the added h-only curves use ordinary final loss.
+The maximum between-pass difference across the 30 A4/A7 endpoints is
+0.000105806356 nats. The original figure and its data remain unchanged.
+Analysis 023 archives their exact values, names the loss pass per endpoint,
+and supplies both uniform-pass tables for manuscript preparation.

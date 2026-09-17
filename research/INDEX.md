@@ -5,6 +5,12 @@
 
 ## Current status
 
+Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
+A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
+reported values, audits the small final-validation loss-pass difference,
+and retains uniform-pass alternatives, source hashes, and a 70M ETC estimate.
+See [Analysis 023](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md).
+
 Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1
 conditions, including all checkpoints. All Pods are deleted and the recovery
 worker has exited. Analysis 022 retains the complete matched comparison.
@@ -211,7 +217,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `033`. Next analysis number: `022`. Next finding number: `F003`.
+Next run number: `033`. Next analysis number: `024`. Next finding number: `F003`.
 
 ## Where we stopped
 
