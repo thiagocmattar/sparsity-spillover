@@ -1,5 +1,13 @@
 # H-only pressure: final K050 latency extension
 
+New [all-model quality-sparsity overview](figures/11-all-model-quality-sparsity.pdf)
+shows all 74 trained paper conditions in three panels (14M/70M/410M), with
+uniform final-checkpoint loss, every executed recipe, analytic ceilings and
+fixed-control post-hoc paths. It is adopted as manuscript Figure 3 in the
+rewritten quality-sparsity subsection. See the [caption and evidence](observations/028-all-model-quality-sparsity.md)
+and [data export](data/all-model-quality-sparsity.json). Reproduce locally with
+`20_plot_quality_all_sizes.py`; four focused tests verify the reduction.
+
 The new [per-operation bypass figure](figures/10-operation-bypass.pdf) and
 [complete table](TABLE_OPERATION_BYPASS.md) cover 62 trained settings plus
 40 control-clipping settings from saved full-validation counters. They compare

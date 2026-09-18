@@ -20,27 +20,60 @@
 \subsection{Quality--sparsity operating regimes}
 \label{sec:quality-sparsity-results}
 
-\textbf{Narrow pressure is favorable at moderate thresholds, while broad
-seven-site pressure exposes the highest sparsity at 14M}
-(Figure~\ref{fig:quality-sparsity-overview}a).
-For both threshold scopes at $\kappa\leq0.1$, h-only OL1 lowers validation loss
-relative to no pressure by $0.18$--$0.26$. At $\kappa=0.05$, $T_7/P_h$ reaches
-$10.126\%$ model-wide sparsity at loss 5.19496, compared with A0's 5.2086.
-This is comparable loss at the evaluated seed, not evidence of improved generalization.
-Broad seven-site pressure is not uniformly preferable: at this threshold,
-$T_7/P_7$ has both higher loss (5.46280) and lower sparsity ($9.863\%$).
+% Overview and numerical claims: analyses/024-2026-09-17-h-only-kernel-latency/observations/028-all-model-quality-sparsity.md;
+% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/20_plot_quality_all_sizes.py.
+\textbf{The interventions extend the attainable sparsity range, sometimes
+close to the architectural ceiling, at a quality cost.}
+Figure~\ref{fig:quality-sparsity-all-sizes} summarizes all 74 trained
+conditions across the three model sizes. At $\kappa=0.5$,
+$T_7/P_{\mathrm{all}}$ reaches $27.48\%$, $40.60\%$, and $80.62\%$
+model-wide sparsity at 14M, 70M, and 410M: $91.8\%$, $82.2\%$, and $92.4\%$
+of their respective seven-site ceilings. Validation loss increases by
+$0.62$, $1.12$, and $0.57$ relative to the same-size base model.
+The cost is not uniform: at 14M, $T_7/P_h$ with $\kappa=0.05$ reaches
+$10.13\%$ sparsity at loss 5.195, close to the base model's 5.209.
+These are operating points from one training seed per condition.
 
-At $\kappa=0.5$, the trade-off changes. Broad seven-site pressure reaches
-$27.483\%$ model-wide sparsity, compared with $16.664\%$ under h-only pressure,
-at losses 5.82941 and 5.73205. This high-sparsity operating point uses
-$91.8\%$ of the seven-site ceiling, with a quality cost relative to A0.
-It is distinct from the moderate-threshold regime in which narrow pressure is favorable.
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/11-all-model-quality-sparsity.pdf}
+\caption{\textbf{Quality--sparsity trade-offs across model sizes.}
+All 40/22/12 trained conditions at 14M/70M/410M, with a shared loss scale.
+Colors distinguish executed recipes; lines connect separate threshold
+settings ($\kappa=0,.01,.05,.1,.5$), or pressure weights
+($\lambda=.05,.1,.5,1$) for $T_1/P_1$. Its L1 and OL1 variants are shown
+separately; all other pressured recipes use OL1. Dotted paths apply post-hoc
+clipping at $a,m,h,z$ to the fixed base and ReLU controls.
+Vertical guides mark the $T_4/T_7$ analytic sparsity ceilings.
+All trained points are visible; 8/5/7 high-loss clipping evaluations continue
+above the view (complete paths in Figures~\ref{fig:clipping-14m}--\ref{fig:clipping-410m}).
+Trained losses use ordinary final-checkpoint evaluation; sparsity uses pooled
+FP16 logical counts over all 338 complete validation blocks.}
+\label{fig:quality-sparsity-all-sizes}
+\end{figure}
 
-In the local ReLU sweep, OL1 is not uniformly better than naive L1:
-their validation-loss differences are small, and the ordering reverses at
-$\lambda=1$ (Appendix Table~\ref{tab:paired-effects-full}). Full trained endpoints
-appear in Tables~\ref{tab:trained-endpoints} and~\ref{tab:70m-h-only-endpoints}. Post-hoc thresholding at $a,m,h,z$
-has four-site reach; it does not share the seven-site recipe's attention coverage.
+\textbf{Larger models do not uniformly have lower loss under this budget.}
+The 410M base model finishes at loss 4.547, above 70M's 4.100.
+Every model receives the same 712 optimizer steps and 1.493B input tokens,
+but this gives 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M,
+and 410M. The 410M learning-rate schedule also has a lower peak
+($3\times10^{-4}$ rather than $10^{-3}$).
+These differences may contribute to the non-monotonic base-model loss;
+the present runs do not isolate their effects or establish convergence
+(Appendix~\ref{app:training-protocol}, Figure~\ref{fig:a0-optimization}).
+Some intervention recipes reverse the 70M/410M quality ordering, so this
+observation does not imply that every 410M condition is worse.
+
+Given this non-monotonic base-model quality and the differing optimization
+regimes, we retain a limited recipe sweep at 410M and focus the detailed
+pressure-placement and execution analysis on 14M and 70M. Their matched
+recipes already show transfer toward higher model-wide sparsity and larger
+speedups relative to each size's optimized base model. At $\kappa=0.5$,
+the four $T_4/T_7$ recipes with $P_h/P_{\mathrm{all}}$ increase speedup from
+$1.37$--$1.42\times$ at 14M to $1.89$--$2.05\times$ at 70M
+(Figure~\ref{fig:quality-sparsity-overview}; Section~\ref{sec:kernel-autoresearch}).
+This is a measured trend for these recipes and kernels, rather than a general
+scaling law or an isolated effect of parameter count.
 
 \subsection{Paired effects of pressure placement}
 \label{sec:paired-results}
@@ -212,15 +245,10 @@ The much larger raw sparsity at 410M therefore reflects in part a larger
 architectural opportunity for the selected intervention sites, rather than
 an isolated effect of model size on learned zero fractions.
 
-Absolute validation loss is not monotonic with model size under the realized
-protocol: the A0 endpoints are 5.2086, 4.0998, and 4.5475 for 14M, 70M, and
-410M. This experiment holds the input-token budget fixed rather than tokens
-per parameter; the resulting budgets are 106.14, 21.20, and 3.68 tokens per
-parameter, and 410M also uses a lower peak learning rate. Appendix
-Figure~\ref{fig:a0-optimization} reports the corresponding A0 optimization
-trajectories. \textbf{We therefore use the size sweep to test whether
-within-size recipe relationships recur, not as a language-model quality
-scaling law.}
+The common-step budget and optimization limits in
+Section~\ref{sec:quality-sparsity-results} apply here: these comparisons test
+the recurrence of within-size recipe relationships, rather than a
+language-model quality scaling law.
 
 \begin{figure}[tbp]
 \centering

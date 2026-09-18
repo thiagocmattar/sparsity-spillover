@@ -1,5 +1,11 @@
 # Observations
 
+- [028: All-model quality-sparsity](028-all-model-quality-sparsity.md): all 74
+  trained paper conditions in a 14M/70M/410M three-panel overview, uniform
+  final loss, sixty fixed-control clipping settings and ceiling guides.
+  Adopted as manuscript Figure 3 with the rewritten Section 4.1; documents
+  the common 712-step budget and limits of the cross-size interpretation.
+
 - [027: Operation bypass](027-operation-bypass.md): all 102 evaluation settings,
   six operation families, per-setting pooled MMA bypass, scalar opportunity and
   matched 35-setting 14M skip ablations. QK/PV can bypass substantial work without

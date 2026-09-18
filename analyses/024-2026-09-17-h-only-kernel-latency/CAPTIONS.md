@@ -1,5 +1,12 @@
 # Paper figures, captions, and associated manuscript writing
 
+New all-model overview:
+[quality-sparsity at 14M/70M/410M](figures/11-all-model-quality-sparsity.pdf),
+with [caption, evidence and adopted writing](observations/028-all-model-quality-sparsity.md).
+It includes all 74 trained paper conditions and the sixty fixed-control clipping
+settings. Adopted as manuscript Figure 3 in Section 4.1; the common loss axis,
+uniform final-loss pass, clipping visibility and cross-size limits are explicit.
+
 New operation-bypass analysis:
 [scalar sparsity and matrix-instruction bypass](figures/10-operation-bypass.pdf),
 with [caption, metric and hypothesis check](observations/027-operation-bypass.md)

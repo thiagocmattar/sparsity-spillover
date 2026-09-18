@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+The quality-sparsity subsection now includes a three-panel overview of all
+74 trained paper conditions at 14M/70M/410M (Figure 3, page 6). It quantifies
+the sparsity/quality cost, states the common 712-step budget, and explains the
+limited 410M sweep and focus on 14M/70M without assuming a scaling law.
+The canonical [main.pdf](draft/main.pdf) has been rebuilt and visually checked
+(35 pages). Figure 1 remains unchanged. See the [revision and evidence record](draft/reviews/2026-09-18-all-model-quality-overview/README.md).
+The notes below retain their earlier revision scope.
+
 The current draft is [main.pdf](draft/main.pdf), with the approved
 Analysis024 Figure08 as Figure 1 on page 2. The four panels compare quality,
 sparsity and latency at 14M/70M: 44 trained checkpoints and 40 measured control

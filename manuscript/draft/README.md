@@ -1,5 +1,14 @@
 # Manuscript draft: ICLR 2027 format
 
+Section 4.1 now presents the sparsity/quality cost across all 74 trained paper
+conditions, with a new 1-by-3 14M/70M/410M overview (Figure 3 on page 6).
+The common 712 optimizer steps, lower 410M learning-rate amplitude and tokens
+per parameter are explicit; the detailed cross-size runtime discussion stays
+within the observed 14M/70M comparison. [main.pdf](main.pdf) is rebuilt at
+35 pages with resolved references, no overfull boxes and checked layout.
+See the [revision and verification record](reviews/2026-09-18-all-model-quality-overview/README.md).
+Figure 1 is preserved. Notes below describe previous revisions.
+
 Current compiled draft: [main.pdf](main.pdf). Analysis024 Figure08
 is now Figure 1 on page 2, with 14M/70M quality-sparsity and full-model latency
 panels. The caption defines the T/P legend and all four panels, including the

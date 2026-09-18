@@ -1,5 +1,18 @@
 # Manuscript results data
 
+## All-model quality overview, 18 September 2026
+
+`all-model-quality-sparsity.json` is copied unchanged from Analysis024. It
+contains all 74 trained paper conditions (40/22/12 at 14M/70M/410M), sixty
+Base/ReLU post-hoc clipping settings, pooled counts, analytic ceilings,
+checkpoint identities, protocol checks, plotted recipe styles and source
+hashes. All trained losses use ordinary reloaded final-checkpoint validation;
+historical logical-pass losses remain separately recorded. Thus the 410M
+values may differ slightly from the older endpoint tables below. The 62
+existing 14M/70M coordinates are preserved exactly. The export also records
+the eight kappa=.5 optimized-base-relative speedup calculations cited in
+Section 4.1. See the [adoption record](../reviews/2026-09-18-all-model-quality-overview/README.md).
+
 ## Two-size Figure 1 extension, 18 September 2026
 
 `figure1-quality-latency.json` is copied unchanged from Analysis024's
