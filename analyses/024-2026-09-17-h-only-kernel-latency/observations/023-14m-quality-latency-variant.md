@@ -9,7 +9,9 @@ Exact point identities, coordinates, styling, limits, and hashes:
 
 How do the same 14M pressure recipes compare in quality-sparsity and
 sparsity-latency views? This is a new figure following the user's revised
-guidelines, preserving Figure 1 and the manuscript. Both panels use the same
+guidelines, preserving Figure 1 and the manuscript. At the user's follow-up,
+Figure 6 was changed to a 1-row, 2-column layout, with quality on the left and
+latency on the right. Both panels use the same
 22 trained checkpoints: Base model, GeLU -> ReLU, and the four 4/7-Threshold
 OL1(h)/OL1(all) families at κ=0,.01,.05,.1,.5. Pressure-free multisite recipes
 and local pressure sweeps are excluded. Uniform small circular markers replace

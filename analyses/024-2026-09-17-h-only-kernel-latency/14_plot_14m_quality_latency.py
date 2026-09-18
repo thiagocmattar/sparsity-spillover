@@ -1,4 +1,4 @@
-"""Requested clean, two-row 14M quality/sparsity and full-model latency variant."""
+"""Requested clean, side-by-side 14M quality/sparsity and full-model latency variant."""
 import hashlib
 import json
 from pathlib import Path
@@ -32,8 +32,8 @@ def main():
     plt.rcParams.update({'font.family':'DejaVu Sans','font.size':9,'axes.titlesize':10,
                          'axes.spines.top':False,'axes.spines.right':False,'axes.linewidth':.65,
                          'pdf.fonttype':42,'mathtext.fontset':'dejavusans'})
-    fig,axes=plt.subplots(2,1,figsize=(6.8,7.1),sharex=True)
-    fig.subplots_adjust(left=.13,right=.965,top=.905,bottom=.18,hspace=.38)
+    fig,axes=plt.subplots(1,2,figsize=(11.4,4.4),sharex=True)
+    fig.subplots_adjust(left=.075,right=.985,top=.87,bottom=.26,wspace=.27)
     limits={'loss':(5.12,6.19),'latency_ms':(.438,.676)}
     series=[]
     for scope,pressure,label,color,ls in STYLES:
@@ -78,10 +78,10 @@ def main():
     fig.text(.965,.955,'14M',ha='right',fontsize=10,color='#53575D')
     handles=[Line2D([],[],color=c,ls=ls,marker='o',ms=4,mfc=c,mec='white',mew=.35,lw=1.15,label=l)
              for _,_,l,c,ls in STYLES]
-    # Row order: controls, 4-Threshold recipes, 7-Threshold recipes.
-    fig.legend(handles=[handles[i] for i in [0,2,4,1,3,5]],loc='lower center',ncol=2,
+    # Column order: controls, 4-Threshold recipes, 7-Threshold recipes.
+    fig.legend(handles=handles,loc='lower center',ncol=3,
                frameon=False,fontsize=8.5,handlelength=2.8,columnspacing=2.8,
-               labelspacing=.8,bbox_to_anchor=(.55,.016))
+               labelspacing=.8,bbox_to_anchor=(.53,.018))
     fig.savefig(OUTPUT,metadata={'Title':'14M quality, sparsity, and full-model latency',
                                 'CreationDate':None,'ModDate':None})
     plt.close(fig)
@@ -89,7 +89,7 @@ def main():
     result={'source':SOURCE.relative_to(HERE).as_posix(),'source_sha256':hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
             'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             'original_figure_sha256':original_sha,'output':OUTPUT.relative_to(HERE).as_posix(),
-            'output_sha256':hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),'model':'14M','series':series,
+            'output_sha256':hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),'model':'14M','layout':{'rows':1,'columns':2},'series':series,
             'trained_points':[{k:r[k] for k in ['checkpoint_key','scope','pressure','kappa','sparsity','loss','latency_ms','timing_session']}
                               for r in rows],
             'panel_a_checkpoint_keys':[r['checkpoint_key'] for r in rows],
