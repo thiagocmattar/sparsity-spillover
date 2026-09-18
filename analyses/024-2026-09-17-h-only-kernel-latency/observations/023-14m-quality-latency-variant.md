@@ -1,5 +1,10 @@
 # Figure 6: 14M quality, sparsity, and full-model latency
 
+**Selected by the user as the main paper figure.** The final artwork omits the
+top-right model-size label and uses the Y-axis label "Validation loss" without
+a unit suffix. The caption retains the 14M scope; loss values remain in nats/token.
+This designation is recorded in the analysis only; manuscript TeX is unchanged.
+
 PDF: [06-14m-quality-sparsity-latency.pdf](../figures/06-14m-quality-sparsity-latency.pdf).
 Source: [14_plot_14m_quality_latency.py](../14_plot_14m_quality_latency.py).
 Exact point identities, coordinates, styling, limits, and hashes:

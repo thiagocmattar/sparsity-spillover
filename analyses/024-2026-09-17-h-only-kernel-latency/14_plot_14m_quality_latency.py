@@ -73,9 +73,8 @@ def main():
         ax.tick_params(axis='x',labelbottom=True)
         ax.tick_params(length=3,width=.65)
         ax.grid(axis='y',color='#E8EAED',lw=.55,zorder=0); ax.set_axisbelow(True)
-    axes[0].set_ylabel('Validation loss (nats/token)')
+    axes[0].set_ylabel('Validation loss')
     axes[1].set_ylabel('Full-model latency (ms)')
-    fig.text(.965,.955,'14M',ha='right',fontsize=10,color='#53575D')
     handles=[Line2D([],[],color=c,ls=ls,marker='o',ms=4,mfc=c,mec='white',mew=.35,lw=1.15,label=l)
              for _,_,l,c,ls in STYLES]
     # Column order: controls, 4-Threshold recipes, 7-Threshold recipes.
