@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+Latest addition: [two-row 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
+uses the same 22 trained pressure/control checkpoints in both panels, uniform
+circles, pressure-specific colors, direct post-hoc annotations, and ceiling guides.
+It is a new variant; Figure 1 is preserved. See the
+[caption and evidence](observations/023-14m-quality-latency-variant.md).
+Reproduce with `14_plot_14m_quality_latency.py` in this analysis folder.
+
 ## Current paper figure set: task.md rebuild, 18 September 2026
 
 **Current outputs: five main figures, four appendix figures, and Table 2.**

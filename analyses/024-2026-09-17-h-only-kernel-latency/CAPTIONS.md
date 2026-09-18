@@ -1,5 +1,9 @@
 # Paper figures, captions, and associated manuscript writing
 
+Latest requested variant: [Figure 6, two-row 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
+with [caption and proposed writing](observations/023-14m-quality-latency-variant.md).
+It preserves the original Figure 1 and uses the revised recipe naming and styling.
+
 Rebuilt from [task.md](task.md) on 18 September 2026. Each linked caption file
 is also the figure's observation: it contains the question, method, coverage,
 publication caption, result, proposed manuscript paragraph, caveats, and provenance.

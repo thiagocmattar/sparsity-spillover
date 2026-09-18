@@ -32,7 +32,7 @@ class PaperFigureTests(unittest.TestCase):
             self.assertEqual(p.stat().st_size,row['bytes'])
             self.assertEqual(hashlib.sha256(p.read_bytes()).hexdigest(),row['sha256'])
             self.assertFalse((HERE/'figures'/row['name']).exists())
-        self.assertEqual(len(list((HERE/'figures').glob('*.pdf'))),9)
+        self.assertEqual(len(self.derived['figures']),9)
         for row in self.derived['figures']:
             self.assertEqual(hashlib.sha256((HERE/'figures'/row['file']).read_bytes()).hexdigest(),row['sha256'])
 

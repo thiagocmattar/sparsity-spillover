@@ -1,5 +1,9 @@
 # Observations
 
+- [023: New two-row 14M variant](023-14m-quality-latency-variant.md): matched
+  22-checkpoint quality/sparsity and sparsity/latency panels, uniform circles,
+  pressure-specific colors, direct post-hoc labels and analytic ceiling guides.
+
 ## Current task.md paper figures and captions
 
 - [013: Figure 1](013-quality-sparsity-caption.md): dense-relative quality/sparsity,
