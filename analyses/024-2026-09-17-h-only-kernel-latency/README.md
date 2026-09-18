@@ -28,6 +28,10 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
   one row per pressure recipe, five matched kappa contrasts per row, and three
   panels for loss, logical sparsity and K050 latency. See the
   [observation and caption](observations/005-paired-topology-effects.md).
+- [Paired OL1(all)-minus-OL1(h) distributions](figures/06-14m-paired-pressure-effects.pdf):
+  four-site and seven-site rows, each with five matched kappa contrasts for loss,
+  logical sparsity and K050 latency. See the
+  [complete contrasts and caption](observations/006-paired-pressure-effects.md).
 
 The five new A7+OL1(h) speedups are **1.2060, 1.3929, 1.4706, 1.5649 and
 1.7839x**, in ascending kappa order. At kappa=0.5, h-only pressure has
@@ -94,3 +98,11 @@ uncertainty. Latency differences are in microseconds. The complete pairs,
 source hashes and box statistics are in `data/paired-topology-effects.json`.
 OL1(all) changes both gate and pressure scope; the h-only latency comparison
 spans the Run029 and Run033 GPU sessions. No new timings are measured.
+
+The pressure-scope distribution figure is reproduced with `06_plot_paired_pressure.py`.
+It re-pairs Figure05's retained endpoints as OL1(all) minus OL1(h), keeping the
+gate topology and kappa fixed, and checks the original reduction hashes.
+The complete ten pairs and six box summaries are in `data/paired-pressure-effects.json`.
+All-site pressure has higher loss in all ten pairs and higher observed latency
+in eight; only kappa=0.5 has a slightly negative latency contrast in each topology.
+Four-site timings share Run029; seven-site timings span Run029/Run033 sessions.
