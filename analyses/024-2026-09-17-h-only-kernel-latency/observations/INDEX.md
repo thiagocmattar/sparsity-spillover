@@ -6,6 +6,8 @@
   clarifies the checkpoint-specific speedup denominator and session boundary.
 - [003](003-final-latency-topology.md): final K050 latency only, 36 checkpoints
   in four topology groups; single-site naive L1 excluded, subtle recipe labels.
+- [004](004-70m-final-latency-topology.md): qualified70M shape port, all22 available
+  checkpoints and four pressure-family curves; matched Run033 measurement protocol.
 - [005](005-paired-topology-effects.md): distributions of five matched A7-minus-A4
   contrasts per pressure recipe, with loss, sparsity and latency panels.
 - [006](006-paired-pressure-effects.md): OL1(all) minus OL1(h), with five

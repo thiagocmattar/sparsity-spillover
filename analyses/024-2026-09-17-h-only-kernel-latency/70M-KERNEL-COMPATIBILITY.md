@@ -6,8 +6,9 @@ a proposed measurement design, not an executed kernel port or benchmark.
 
 The user subsequently approved this design and explicitly authorized RunPod.
 [Run035](../../runs/035-2026-09-18-pythia70m-k050-port/README.md) owns the port,
-qualification and new measurement. The availability statements below describe
-the pre-port audit; consult Run035 for execution status and eventual results.
+qualification and new measurement. Run035 is now complete: all22 checkpoints
+qualify, with a [new figure and caption](observations/004-70m-final-latency-topology.md).
+The availability statements below describe the pre-port audit.
 
 ## What is available
 
@@ -75,7 +76,7 @@ their own retained weights and gates. A shape port is required; an open-ended
 kernel search is not a prerequisite. Performance after a correct port is
 unknown, and any later optimization search should be a separate decision.
 
-## Proposed measurement design, pending confirmation
+## Approved measurement design (original proposal)
 
 Question: how does final full-model latency vary with model-wide sparsity across
 the 22 available 70M endpoints when using a correctly qualified K050-derived
@@ -127,8 +128,7 @@ latencies support a runtime benefit for this workload; flat trends, slowdowns
 or numerical failures limit it. Sparsity alone does not establish causation or
 guarantee speedup, and the 14M/70M runs use different weights and kernel shapes.
 
-After design confirmation, implementation, correctness tests and a resource
-assessment must precede a concrete launch packet with ETC, current price,
-cost ceiling, transfer inventory and teardown plan. No GPU was provisioned and
-no benchmark ran during this audit. No 70M latency figure was generated because
-the requested final-kernel measurements do not yet exist.
+No GPU was provisioned and no benchmark ran during this initial audit. Following
+the user's approval, Run035 implemented, qualified and executed this design
+within its stated USD10/eight-hour envelope. The final figure and full evidence
+are linked above; this original audit is retained as the pre-port record.

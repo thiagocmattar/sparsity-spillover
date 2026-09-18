@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run035 completed the approved 70M K050-derived port: all 22 checkpoints/66
+processes qualify; all 705 outputs are verified locally and the Pod is deleted
+(estimated compute USD1.015). [Analysis024 Figure04 and caption](../analyses/024-2026-09-17-h-only-kernel-latency/observations/004-70m-final-latency-topology.md)
+record latency versus sparsity and the shape-port/optimization-budget limits.
+
 Analysis025 plots all 22 completed 70M trained endpoints: GeLU/ReLU controls
 and A4/A7 with all-site or h-only OL1 across all five kappas. It uses uniform
 ordinary final-checkpoint loss and pooled model-wide logical sparsity, with

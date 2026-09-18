@@ -4,10 +4,14 @@ This analysis owns the requested extension of the model-wide-sparsity versus
 full-model-speedup and absolute-latency figures. Only the five new Run032
 A7+OL1(h) final checkpoints are measured in Run033. All 35 historical Run029
 checkpoints, including A4+OL1(h), are reused from their retained raw pairs.
-The 70M training has since completed in Run034. Its available checkpoints and
-the remaining kernel compatibility work are recorded in the
-[70M compatibility audit](70M-KERNEL-COMPATIBILITY.md); no 70M K050 timing
-results are available yet.
+The 70M counterpart is now complete in Run035: all 22 retained checkpoints and
+all 66 fresh processes qualify under one frozen K050-derived shape port. See
+[Figure04](figures/04-70m-k050-port-sparsity-latency-topology.pdf), its
+[caption and limitations](observations/004-70m-final-latency-topology.md), and the
+[22-point table](../../runs/035-2026-09-18-pythia70m-k050-port/TABLE.md).
+The [compatibility audit](70M-KERNEL-COMPATIBILITY.md) records why a port was
+required. This is a new qualified implementation, not unchanged 14M K050 or an
+equal optimization-budget comparison. The 14M results below remain unchanged.
 
 **Complete and verified:** all 15 new processes qualified over all 338 validation
 blocks. All 180 returned files passed byte-count/SHA-256 verification before
@@ -24,6 +28,9 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
   added on 18 September: 36 checkpoints (single-site naive L1 excluded), grouped as baseline, 1-site,
   4-sites and 7-sites, with [caption](observations/003-final-latency-topology.md).
 - [Complete 40-checkpoint table](TABLE.md) and [full-precision data](data/results.json).
+- [70M final port latency by topology](figures/04-70m-k050-port-sparsity-latency-topology.pdf):
+  all 22 available checkpoints, four separate dashed pressure-family curves,
+  and [caption](observations/004-70m-final-latency-topology.md).
 - [Paired seven-minus-four-site distributions](figures/05-14m-paired-topology-effects.pdf):
   one row per pressure recipe, five matched kappa contrasts per row, and three
   panels for loss, logical sparsity and K050 latency. See the
@@ -91,6 +98,13 @@ naive L1 checkpoints at the user's request; its single-site group contains ReLU
 and the four OL1 checkpoints. The original 40-checkpoint reduction and Figures01/02
 remain complete. Curves are dashed, with small no-pressure/OL1(h)/OL1(all) labels
 beside them and no arrows or label boxes. No fitted trend is added.
+
+Reproduce the 70M figure with `04_plot_70m_final_latency.py` after Run035's
+verified `16_reduce.py` reduction. It writes `data/70m-final-latency-topology.json`
+with source hash, all plotted points, and each family connection. No 70M
+pressure-free A4/A7 or single-site OL1 grids are imputed. All 705 Run035 outputs
+are verified locally and its Pod is deleted. Only the four kappa .5 endpoints
+beat their paired native graph references; speedups span 0.4997–1.1880x.
 
 The paired distribution figure is reproduced with `05_plot_paired_topology.py`.
 It joins the 30 multisite endpoints with Analysis023's uniform ordinary final
