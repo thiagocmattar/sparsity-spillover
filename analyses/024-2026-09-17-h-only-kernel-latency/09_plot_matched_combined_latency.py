@@ -1,4 +1,5 @@
 """Plot exactly the 22 shared recipe/kappa conditions at each model size."""
+import argparse
 import hashlib
 import json
 import math
@@ -8,6 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import FuncFormatter, NullFormatter
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -71,7 +73,7 @@ def load_points():
     return sources, references, points
 
 
-def main():
+def main(log_y=False):
     sources, references, points = load_points()
     plt.rcParams.update({
         'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.labelsize': 11,
@@ -108,6 +110,14 @@ def main():
     ax.set(xlim=(-.8, 42.5), ylim=(ymin-padding, ymax+padding),
            xlabel=r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)',
            ylabel='Full-model latency (ms)')
+    if log_y:
+        factor = (ymax/ymin)**.06
+        ax.set(yscale='log', ylim=(ymin/factor, ymax*factor),
+               ylabel='Full-model latency (ms, log scale)')
+        ax.set_yticks([.5, .75, 1, 1.5, 2, 3])
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f'{value:g}'))
+        ax.yaxis.set_minor_formatter(NullFormatter())
+    assert ax.get_yscale() == ('log' if log_y else 'linear')
     ax.set_xticks(range(0, 41, 5))
     ax.grid(axis='y', color='#E7E9ED', linewidth=.6)
     ax.set_axisbelow(True)
@@ -134,7 +144,8 @@ def main():
     assert sum(len(c.get_offsets()) for c in ax.collections) == 44
     assert all(ax.get_xlim()[0] < p['sparsity_percent'] < ax.get_xlim()[1]
                and ax.get_ylim()[0] < p['latency_ms'] < ax.get_ylim()[1] for p in points)
-    output = HERE/'figures/09-14m-70m-matched-sparsity-latency.pdf'
+    suffix = '-log-y' if log_y else ''
+    output = HERE/f'figures/09-14m-70m-matched-sparsity-latency{suffix}.pdf'
     fig.savefig(output, metadata={
         'Title': 'Matched Pythia-14M and Pythia-70M sparsity versus final-kernel latency',
         'Creator': 'Analysis024 / 09_plot_matched_combined_latency.py',
@@ -151,11 +162,23 @@ def main():
         'comparison_limits': 'Matched recipe/kappa conditions and measurement definition, not identical implementations or physical GPU/host sessions. 14M uses K050; 70M uses the qualified k050-70m-v2 port. No equal optimization-budget or causal scaling claim.',
         'pdf_sha256': sha(output),
     }
+    if log_y:
+        linear_source = HERE/'data/matched-combined-latency.json'
+        linear = json.loads(linear_source.read_text())
+        assert record['points'] == linear['points']
+        assert json.loads(json.dumps(connections)) == linear['connections']
+        record['display'] = record['display'].replace('linear shared axes', 'linear x and logarithmic y shared axes')
+        record['y_scale'] = 'log'
+        record['y_ticks_ms'] = list(ax.get_yticks())
+        record['linear_display_source'] = {'path': linear_source.relative_to(ROOT).as_posix(),
+                                           'sha256': sha(linear_source)}
     plt.close(fig)
-    (HERE/'data/matched-combined-latency.json').write_text(
+    (HERE/f'data/matched-combined-latency{suffix}.json').write_text(
         json.dumps(record, indent=2)+'\n', encoding='utf-8', newline='\n')
     print('Single panel; 44 checkpoints; 22 matching recipe/kappa conditions per model; 8 separate curves.')
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--log-y', action='store_true', help='Save a separate logarithmic latency variant.')
+    main(log_y=parser.parse_args().log_y)

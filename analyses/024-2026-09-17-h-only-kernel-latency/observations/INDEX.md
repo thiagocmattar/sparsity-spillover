@@ -17,4 +17,5 @@
 - [008](008-combined-final-latency.md): 14M and 70M sparsity versus latency in
   one two-panel figure, retaining all 36/22 points from Figures03/04.
 - [009](009-matched-combined-latency.md): one shared panel with 22 matching
-  conditions per model; baseline, ReLU and A4/A7 OL1(h)/OL1(all) grids only.
+  conditions per model; baseline, ReLU and A4/A7 OL1(h)/OL1(all) grids only,
+  with separate linear-y and log-y versions.

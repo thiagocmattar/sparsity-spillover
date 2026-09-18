@@ -152,3 +152,11 @@ integer counts and eight curve definitions are retained in
 `data/matched-combined-latency.json`. See the
 [caption and comparison limits](observations/009-matched-combined-latency.md).
 Figure08 and all prior source data and figures are preserved.
+
+The separate [logarithmic latency version](figures/09-14m-70m-matched-sparsity-latency-log-y.pdf)
+is reproduced with `09_plot_matched_combined_latency.py --log-y`. It retains
+the same 44 points, eight curves and marker styling, using a logarithmic y axis
+with tick labels in milliseconds. Its provenance is saved separately in
+`data/matched-combined-latency-log-y.json`; the script checks exact point and
+curve equality with the unchanged linear version. Observation009 documents
+both versions and the ratio interpretation of distances on the log axis.

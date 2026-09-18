@@ -50,6 +50,25 @@ sizes in common units on one pair of axes. Observed latency spans approximately
 compresses the differences among 14M checkpoints. Pressure recipe and model
 size are encoded in the legend without direct text annotations on the curves.
 
+## Logarithmic latency variant
+
+The user-requested [log-y version](../figures/09-14m-70m-matched-sparsity-latency-log-y.pdf)
+uses the identical 44 points and eight family curves, with a linear sparsity
+axis and logarithmic latency axis. Open/filled markers and both dashed pressure
+styles remain unchanged. Tick labels retain milliseconds; equal vertical
+distances now represent equal latency ratios rather than equal differences
+in milliseconds. This gives the within-14M variation more vertical space
+without changing any measurements, qualification or interpretation limits.
+
+Reproduce with `09_plot_matched_combined_latency.py --log-y`. The separate
+`data/matched-combined-latency-log-y.json` records the logarithmic scale, tick
+values, multiplicatively padded positive limits, source hashes and PDF hash.
+The script asserts exact point and curve equality with the retained linear
+version. The one-page PDF was rendered and visually inspected, with all fonts
+embedded. The original linear PDF and its data JSON remain byte-for-byte
+unchanged. For this variant, use the caption above with "shared linear axes"
+replaced by "a shared linear sparsity axis and logarithmic latency axis."
+
 ## Caveats
 
 Matching means the same topology, pressure recipe and kappa, not identical
