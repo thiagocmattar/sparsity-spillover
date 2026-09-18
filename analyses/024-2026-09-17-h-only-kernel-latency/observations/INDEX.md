@@ -1,5 +1,9 @@
 # Observations
 
+- [025: Combined quality and latency](025-matched-quality-latency.md): Figure 6
+  extended to 14M/70M rows, with 44 trained checkpoints, 40 measured control
+  clipping latencies, one shared legend and explicit quality-view/session limits.
+
 - [024: Control clipping latency](024-controls-posthoc-final-latency.md): all 40
   dense/ReLU clipping settings at 14M/70M,120 qualified processes, verified raw
   timings and diagnostics, with a full-range final-kernel latency PDF styled

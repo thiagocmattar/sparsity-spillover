@@ -28,6 +28,16 @@ figure records/PDFs and manuscript files.
 
 ## Scientific checks
 
+The additional Figure 8 combines Figure 6's style and 44 trained checkpoints
+with the exact 40-point Run036 clipping latency join. Four focused tests in
+`test_matched_quality_latency.py` pass: source/output identity, preservation of
+the 14M trained coordinates, matching checkpoint/dose and pooled counters,
+three-process geometric means, and the declared visible ranges. All clipping
+latencies are visible; eight 14M and seven 70M high-loss quality points lie
+above their focused quality ranges. Existing figure hashes are preserved.
+The PDF was visually reviewed at 2,000 pixels, has one page and three embedded
+fonts. See [the Figure 8 observation](observations/025-matched-quality-latency.md).
+
 Seven focused tests pass via:
 
 ```powershell

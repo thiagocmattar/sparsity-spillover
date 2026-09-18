@@ -1,5 +1,11 @@
 # Paper figures, captions, and associated manuscript writing
 
+New combined Figure 6 extension:
+[14M/70M quality-sparsity and full-model latency](figures/08-14m-70m-quality-sparsity-latency.pdf),
+with [caption, evidence and proposed writing](observations/025-matched-quality-latency.md).
+It uses 44 trained checkpoints, a shared legend and all 40 measured clipping
+latencies, while preserving the original Figure 6 and the manuscript.
+
 New control-clipping measurement figure:
 [final-kernel latency at 14M/70M](figures/07-controls-posthoc-final-latency.pdf),
 with [caption, coverage and results](observations/024-controls-posthoc-final-latency.md).

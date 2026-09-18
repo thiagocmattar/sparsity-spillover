@@ -1,5 +1,13 @@
 # H-only pressure: final K050 latency extension
 
+New Figure 8 extends the Figure 6 design to a 2-by-2
+[14M/70M quality-sparsity and latency view](figures/08-14m-70m-quality-sparsity-latency.pdf),
+with one shared legend, 44 trained checkpoints and all 40 measured control
+clipping latencies from Run036. Quality panels retain a focused range; their
+high-loss clipping tails and timing-session limits are disclosed in the
+[caption and evidence](observations/025-matched-quality-latency.md).
+Reproduce with `16_plot_matched_quality_latency.py`. Figure 6 remains preserved.
+
 Run036 supplies the missing final-kernel control clipping latencies: all 40
 settings at 14M/70M and p=0,...,0.9 qualify across 120 processes. See the
 [latency PDF](figures/07-controls-posthoc-final-latency.pdf),

@@ -1,5 +1,10 @@
 # Figure 6: 14M quality, sparsity, and full-model latency
 
+Later extension: [Figure 8](025-matched-quality-latency.md) adds a 70M row and
+the measured Run036 control clipping latencies. Figure 6 itself is preserved;
+the statements below about unmeasured clipping latency describe its original
+construction before Run036.
+
 **Selected by the user as the main paper figure.** The current artwork uses a
 wide 8.6-by-3.85-inch layout, the title "Sparsity vs. Quality trade-off and Latency
 on Pythia-14M", and T4/Ph, T4/Pall, T7/Ph, T7/Pall legend labels. Text is sized
