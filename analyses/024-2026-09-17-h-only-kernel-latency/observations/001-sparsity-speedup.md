@@ -44,5 +44,5 @@ Analysis023 with its explicit validation-pass conventions. No manuscript
 claim has been promoted from this observation.
 
 **Source and output.** `../02_plot.py` generates
-`../figures/01-14m-k050-sparsity-speedup.pdf` from the reduction. The final PDF
+`../figures/.archive/01-14m-k050-sparsity-speedup.pdf` from the reduction. The final PDF
 was rendered and visually checked with embedded TrueType fonts.

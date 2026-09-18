@@ -1,5 +1,34 @@
 # Observations
 
+## Current task.md paper figures and captions
+
+- [013: Figure 1](013-quality-sparsity-caption.md): dense-relative quality/sparsity,
+  54 trained endpoints, control clipping, coverage guides, and measured nondominance.
+- [014: Figure 2](014-intervention-sites-caption.md): retained architecture map,
+  independent threshold/pressure scopes, candidate sites and untargeted head.
+- [015: Figure 3](015-pressure-scope-caption.md): 20 threshold-explicit all-minus-h
+  pairs across sizes, including the 70M high-threshold trade-off reversal.
+- [016: Figure 4](016-operation-changes-caption.md): eight integer-count operation
+  decompositions, signed contributions and exact net changes at 14M.
+- [017: Figure 5](017-quality-latency-caption.md): qualified sparsity/latency and
+  quality/latency panels, finite measured frontier and session limitations.
+- [018: A1](018-complete-quality-caption.md): all 340 retained post-hoc points
+  and 54 trained endpoints, full-range absolute loss.
+- [019: A2](019-pressure-none-caption.md): 20 explicit 14M pressure-versus-none
+  contrasts, without pooling thresholds into boxplots.
+- [020: A3](020-dense-speedup-caption.md): speedup relative to each size's optimized
+  A0 implementation, with exact reference/session definitions.
+- [021: A4](021-instruction-caption.md): the historical 30-checkpoint 14M
+  instruction/ablation cohort, without new regression claims.
+- [022: Table 2](022-threshold-table-caption.md): seven-minus-four-site effects
+  at fixed h-only pressure, preserving all five thresholds and both sizes.
+
+Each current observation includes the PDF/table, publication caption, associated
+proposed manuscript writing, limitations, and generating source. See also
+[the caption index](../CAPTIONS.md).
+
+## Historical observations (PDFs archived)
+
 - [001](001-sparsity-speedup.md): final K050 speedup, five new A7 h-only points
   and 35 retained historical points, including A4 h-only.
 - [002](002-absolute-latency.md): paired native and K050 absolute latency;

@@ -81,7 +81,7 @@ The source observations' training-seed and workload limits remain applicable.
 ## Sources and reproduction
 
 Run `10_plot_a0_normalized_speedup.py` to produce
-[Figure10](../figures/10-14m-70m-matched-sparsity-a0-speedup.pdf) and
+[Figure10](../figures/.archive/10-14m-70m-matched-sparsity-a0-speedup.pdf) and
 [`data/matched-a0-normalized-speedup.json`](../data/matched-a0-normalized-speedup.json).
 The JSON records the formula, exact A0 references, raw latency and normalized
 speedup for all plotted points, the two excluded identities, unchanged family

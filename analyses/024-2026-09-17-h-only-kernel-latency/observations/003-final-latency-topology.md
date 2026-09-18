@@ -64,4 +64,4 @@ different pressure recipes.
 **Source and output.** `../03_plot_final_latency.py`, the unchanged source
 `../data/results.json` and its SHA-256 in
 `../data/final-latency-topology.json`. Output:
-`../figures/03-14m-k050-sparsity-latency-topology.pdf`.
+`../figures/.archive/03-14m-k050-sparsity-latency-topology.pdf`.

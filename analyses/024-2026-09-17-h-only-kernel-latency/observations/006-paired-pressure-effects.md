@@ -91,7 +91,7 @@ not measured acceleration. No manuscript edit or finding promotion is made.
 `../data/paired-topology-effects.json`, retaining that file's original source
 chain through Analysis023 quality/sparsity and Analysis024 timing reductions.
 It writes `../data/paired-pressure-effects.json` and
-`../figures/06-14m-paired-pressure-effects.pdf`.
+`../figures/.archive/06-14m-paired-pressure-effects.pdf`.
 
 **Verification.** Independent checks rejoin all 20 endpoints directly from
 the original quality and timing reductions, verify matched gate/pressure

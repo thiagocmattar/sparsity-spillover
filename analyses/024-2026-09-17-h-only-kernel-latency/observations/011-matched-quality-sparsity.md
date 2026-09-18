@@ -76,7 +76,7 @@ pressure-placement discussion. No manuscript text or finding is updated.
 ## Sources and reproduction
 
 Run `11_plot_matched_quality_sparsity.py` to regenerate
-[Figure11](../figures/11-14m-70m-matched-quality-sparsity.pdf) and
+[Figure11](../figures/.archive/11-14m-70m-matched-quality-sparsity.pdf) and
 [`data/matched-quality-sparsity.json`](../data/matched-quality-sparsity.json).
 The JSON records all 44 points, exact checkpoint weight identities, ordinary
 and audit-only logical losses, integer counts, 94 source hashes, coverage,

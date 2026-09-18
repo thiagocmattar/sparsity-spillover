@@ -59,7 +59,7 @@ Training-seed and causal limitations from the source observations remain.
 ## Sources and reproduction
 
 Run `08_plot_combined_latency.py` to generate
-[`Figure08`](../figures/08-14m-70m-final-sparsity-latency.pdf) and
+[`Figure08`](../figures/.archive/08-14m-70m-final-sparsity-latency.pdf) and
 [`data/combined-final-latency.json`](../data/combined-final-latency.json).
 The JSON records both source chains, all points and family connections, panel
 limits and the PDF hash. Numerical and implementation details remain in

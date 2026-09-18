@@ -1,12 +1,60 @@
 # H-only pressure: final K050 latency extension
 
+## Current paper figure set: task.md rebuild, 18 September 2026
+
+**Current outputs: five main figures, four appendix figures, and Table 2.**
+Start with [CAPTIONS.md](CAPTIONS.md), which links every PDF to its individual
+caption, observation, proposed manuscript paragraph, and draft placement.
+All 13 previous PDFs are preserved byte-for-byte in
+[figures/.archive](figures/.archive/README.md). Historical material below remains
+as a record; its links point to the archive. No new training, evaluation, GPU
+benchmark, or cloud resource was launched for this rebuild.
+
+The new [checkpoint-indexed evidence table](data/paper-checkpoints.json) joins
+ordinary-final loss, canonical integer-pooled logical sparsity, qualified timing,
+and clipping through exact checkpoint identities. It retains 62 checkpoint rows;
+the declared primary comparison is 32 at 14M and 22 at 70M. The eight historical
+local pressure settings are outside that primary cohort. The established
+30-checkpoint 14M instruction appendix uses its own explicitly retained membership.
+Kernel configuration, timing session, precision, initial-parameter identity,
+training schedule, and the ordinary/logical loss passes remain separate metadata.
+
+Figure 1 uses all 54 trained endpoints and the 40 dense/ReLU clipping evaluations,
+with 14 high-loss clipping records outside its main Y range. Appendix A1 includes
+all 340 retained clipping evaluations attached to the primary cohort. No clipping
+sweeps are invented for the 20 h-only multisite checkpoints. Figure 3 preserves
+all 20 pressure-scope pairs; Figure 4 derives eight operation decompositions from
+integer counters; Table 2 fixes pressure on h while comparing threshold placement.
+Figure 5 displays absolute full-model latency and measured quality-latency
+nondominance, preserving the Run029/Run033 session limitation and the distinct
+70M port. No old regression is extended to new checkpoints.
+
+Rebuild locally from the repository root:
+
+```powershell
+.venv/Scripts/python.exe -X utf8 analyses/024-2026-09-17-h-only-kernel-latency/13_rebuild_paper_figures.py
+.venv/Scripts/python.exe -X utf8 -m unittest discover -s analyses/024-2026-09-17-h-only-kernel-latency -p test_paper_figures.py -v
+```
+
+If MiKTeX requires a separate approved process for its user configuration, compile
+`paper-architecture.tex` with `pdflatex` into `tmp/pdfs/analysis024-architecture/`,
+then pass `--architecture-pdf tmp/pdfs/analysis024-architecture/paper-architecture.pdf`
+to the builder. That argument must refer to a PDF just compiled from the retained
+TeX source, not an older diagram. The builder saves exact pairs, selection IDs,
+operation deltas, dense references, and source/output hashes in
+[data/paper-derived.json](data/paper-derived.json). The nine PDFs were rendered
+and visually reviewed. Verification results are recorded in
+[PAPER-VERIFICATION.md](PAPER-VERIFICATION.md).
+
+## Historical analysis record
+
 This analysis owns the requested extension of the model-wide-sparsity versus
 full-model-speedup and absolute-latency figures. Only the five new Run032
 A7+OL1(h) final checkpoints are measured in Run033. All 35 historical Run029
 checkpoints, including A4+OL1(h), are reused from their retained raw pairs.
 The 70M counterpart is now complete in Run035: all 22 retained checkpoints and
 all 66 fresh processes qualify under one frozen K050-derived shape port. See
-[Figure04](figures/04-70m-k050-port-sparsity-latency-topology.pdf), its
+[Figure04](figures/.archive/04-70m-k050-port-sparsity-latency-topology.pdf), its
 [caption and limitations](observations/004-70m-final-latency-topology.md), and the
 [22-point table](../../runs/035-2026-09-18-pythia70m-k050-port/TABLE.md).
 The [compatibility audit](70M-KERNEL-COMPATIBILITY.md) records why a port was
@@ -20,26 +68,26 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
 
 ## Results and figures
 
-- [Full-model speedup](figures/01-14m-k050-sparsity-speedup.pdf), with
+- [Full-model speedup](figures/.archive/01-14m-k050-sparsity-speedup.pdf), with
   [observation and caption](observations/001-sparsity-speedup.md).
-- [Native and K050 latency](figures/02-14m-k050-sparsity-latency.pdf), with
+- [Native and K050 latency](figures/.archive/02-14m-k050-sparsity-latency.pdf), with
   [observation and caption](observations/002-absolute-latency.md).
-- [Final K050 latency by topology](figures/03-14m-k050-sparsity-latency-topology.pdf),
+- [Final K050 latency by topology](figures/.archive/03-14m-k050-sparsity-latency-topology.pdf),
   added on 18 September: 36 checkpoints (single-site naive L1 excluded), grouped as baseline, 1-site,
   4-sites and 7-sites, with [caption](observations/003-final-latency-topology.md).
 - [Complete 40-checkpoint table](TABLE.md) and [full-precision data](data/results.json).
-- [70M final port latency by topology](figures/04-70m-k050-port-sparsity-latency-topology.pdf):
+- [70M final port latency by topology](figures/.archive/04-70m-k050-port-sparsity-latency-topology.pdf):
   all 22 available checkpoints, four separate dashed pressure-family curves,
   and [caption](observations/004-70m-final-latency-topology.md).
-- [Paired seven-minus-four-site distributions](figures/05-14m-paired-topology-effects.pdf):
+- [Paired seven-minus-four-site distributions](figures/.archive/05-14m-paired-topology-effects.pdf):
   one row per pressure recipe, five matched kappa contrasts per row, and three
   panels for loss, logical sparsity and K050 latency. See the
   [observation and caption](observations/005-paired-topology-effects.md).
-- [Paired OL1(all)-minus-OL1(h) distributions](figures/06-14m-paired-pressure-effects.pdf):
+- [Paired OL1(all)-minus-OL1(h) distributions](figures/.archive/06-14m-paired-pressure-effects.pdf):
   four-site and seven-site rows, each with five matched kappa contrasts for loss,
   logical sparsity and K050 latency. See the
   [complete contrasts and caption](observations/006-paired-pressure-effects.md).
-- [Pressure versus no pressure, 2-by-3 distributions](figures/07-14m-pressure-vs-none-effects.pdf):
+- [Pressure versus no pressure, 2-by-3 distributions](figures/.archive/07-14m-pressure-vs-none-effects.pdf):
   all-site OL1 on the top row and h-only OL1 on the bottom, each compared with
   no pressure within four- and seven-site topologies. See the
   [observation and caption](observations/007-pressure-vs-none-effects.md).
@@ -133,7 +181,7 @@ between rows within each metric. The 20 contrasts from 30 unique checkpoints,
 source hashes and 12 box summaries are in `data/pressure-vs-none-effects.json`.
 Only the seven-site h-only latency contrasts span different GPU/host sessions.
 
-The [combined 14M/70M latency figure](figures/08-14m-70m-final-sparsity-latency.pdf)
+The [combined 14M/70M latency figure](figures/.archive/08-14m-70m-final-sparsity-latency.pdf)
 is reproduced with `08_plot_combined_latency.py`. It retains all 36/22 points
 from Figures03/04, with separate dashed recipe curves, a common topology legend
 and independently fitted linear axes in two panels. Source hashes, point and
@@ -141,7 +189,7 @@ connection identities, axis limits and the PDF hash are stored in
 `data/combined-final-latency.json`. See the
 [caption and comparison limits](observations/008-combined-final-latency.md).
 
-The new [matched single-panel figure](figures/09-14m-70m-matched-sparsity-latency.pdf)
+The new [matched single-panel figure](figures/.archive/09-14m-70m-matched-sparsity-latency.pdf)
 is reproduced with `09_plot_matched_combined_latency.py`. It selects the 22
 recipe/kappa conditions present at both sizes: baseline, ReLU and the A4/A7
 OL1(h)/OL1(all) grids. Open markers indicate 14M and filled markers 70M;
@@ -153,7 +201,7 @@ integer counts and eight curve definitions are retained in
 [caption and comparison limits](observations/009-matched-combined-latency.md).
 Figure08 and all prior source data and figures are preserved.
 
-The separate [logarithmic latency version](figures/09-14m-70m-matched-sparsity-latency-log-y.pdf)
+The separate [logarithmic latency version](figures/.archive/09-14m-70m-matched-sparsity-latency-log-y.pdf)
 is reproduced with `09_plot_matched_combined_latency.py --log-y`. It retains
 the same 44 points, eight curves and marker styling, using a logarithmic y axis
 with tick labels in milliseconds. Its provenance is saved separately in
@@ -161,7 +209,7 @@ with tick labels in milliseconds. Its provenance is saved separately in
 curve equality with the unchanged linear version. Observation009 documents
 both versions and the ratio interpretation of distances on the log axis.
 
-The [A0-normalized speedup figure](figures/10-14m-70m-matched-sparsity-a0-speedup.pdf)
+The [A0-normalized speedup figure](figures/.archive/10-14m-70m-matched-sparsity-a0-speedup.pdf)
 is reproduced with `10_plot_a0_normalized_speedup.py`. For each size it divides
 the final-kernel A0 latency by each checkpoint's final-kernel latency, placing
 both A0 controls at 1x. It retains 42 of Figure09's points and all eight recipe
@@ -173,7 +221,7 @@ original latencies, ratios and provenance are in
 `data/matched-a0-normalized-speedup.json`; see the
 [caption and interpretation limits](observations/010-a0-normalized-speedup.md).
 
-The [quality-sparsity companion panel](figures/11-14m-70m-matched-quality-sparsity.pdf)
+The [quality-sparsity companion panel](figures/.archive/11-14m-70m-matched-quality-sparsity.pdf)
 is reproduced with `11_plot_matched_quality_sparsity.py`. It restores both
 1-site controls to Figure10's recipe cohort, yielding 44 points, and plots
 ordinary final-checkpoint validation loss against model-wide sparsity. Colors,
@@ -184,7 +232,7 @@ counts and checkpoint identities. Exact values and source hashes are in
 `data/matched-quality-sparsity.json`; see the
 [caption and provenance](observations/011-matched-quality-sparsity.md).
 
-The separate [quality-sparsity figure with clipping](figures/12-14m-70m-quality-sparsity-clipping.pdf)
+The separate [quality-sparsity figure with clipping](figures/.archive/12-14m-70m-quality-sparsity-clipping.pdf)
 is reproduced with `12_plot_quality_sparsity_clipping.py`. It adds four dotted
 post-hoc frontiers to Figure11's unchanged trained cohort: baseline and 1-site
 at both 14M and 70M, with ten targets each. The full measured loss range is

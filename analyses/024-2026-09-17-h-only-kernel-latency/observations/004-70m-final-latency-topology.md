@@ -84,7 +84,7 @@ No manuscript text or finding promotion is made by this analysis.
 Run035's `16_reduce.py` writes
 [`results/70m-final-kernel.json`](../../../runs/035-2026-09-18-pythia70m-k050-port/results/70m-final-kernel.json)
 from verified raw attempts. [`04_plot_70m_final_latency.py`](../04_plot_70m_final_latency.py)
-writes [`Figure04`](../figures/04-70m-k050-port-sparsity-latency-topology.pdf)
+writes [`Figure04`](../figures/.archive/04-70m-k050-port-sparsity-latency-topology.pdf)
 and [`data/70m-final-latency-topology.json`](../data/70m-final-latency-topology.json),
 including source hash, plotted points and connection/annotation identities.
 The PDF was rendered and visually checked; fonts are embedded. Figure03 and

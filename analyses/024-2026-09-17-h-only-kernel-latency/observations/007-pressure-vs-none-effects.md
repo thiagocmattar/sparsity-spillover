@@ -74,7 +74,7 @@ promotion is made.
 `../data/paired-topology-effects.json`, retaining the original quality/sparsity
 source from Analysis023 and timing source from Analysis024. Outputs are
 `../data/pressure-vs-none-effects.json` and
-`../figures/07-14m-pressure-vs-none-effects.pdf`. The machine-readable file
+`../figures/.archive/07-14m-pressure-vs-none-effects.pdf`. The machine-readable file
 retains all endpoints, 20 differences, exact counts and 12 box summaries.
 
 **Verification.** Independent joins against the original quality and timing

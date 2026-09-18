@@ -63,7 +63,7 @@ individual dots do not label kappa. No manuscript claim or finding is promoted.
 `../../023-2026-09-17-14m-pressure-targets-paper-table/results.json`.
 It writes `../data/paired-topology-effects.json` with all 15 endpoint pairs,
 the differences, exact counts, source hashes and nine sets of box statistics,
-and `../figures/05-14m-paired-topology-effects.pdf`.
+and `../figures/.archive/05-14m-paired-topology-effects.pdf`.
 
 **Verification.** All 15 pairs and 45 plotted values are present, all selected
 endpoints qualify, checkpoint source paths and exact counts agree across the

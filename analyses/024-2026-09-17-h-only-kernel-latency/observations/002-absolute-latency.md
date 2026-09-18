@@ -35,5 +35,5 @@ numerator was measured or substituted. Logical opportunity and wall time are
 different estimands, and no projection/attention ablation is inferred here.
 
 **Source and output.** `../01_reduce.py`, `../data/results.json`, and
-`../02_plot.py`; output `../figures/02-14m-k050-sparsity-latency.pdf`.
+`../02_plot.py`; output `../figures/.archive/02-14m-k050-sparsity-latency.pdf`.
 Rendered and visually checked; embedded TrueType fonts, no point annotations.

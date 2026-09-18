@@ -87,7 +87,7 @@ No manuscript text or finding is updated.
 ## Sources and reproduction
 
 Run `12_plot_quality_sparsity_clipping.py` to regenerate
-[Figure12](../figures/12-14m-70m-quality-sparsity-clipping.pdf) and
+[Figure12](../figures/.archive/12-14m-70m-quality-sparsity-clipping.pdf) and
 [`data/quality-sparsity-clipping.json`](../data/quality-sparsity-clipping.json).
 The JSON retains all trained and clipping coordinates, eight trained and four
 clipping connection lists, checkpoint identities, integer counters, coverage,

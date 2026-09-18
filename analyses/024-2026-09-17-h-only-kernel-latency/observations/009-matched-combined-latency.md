@@ -52,7 +52,7 @@ size are encoded in the legend without direct text annotations on the curves.
 
 ## Logarithmic latency variant
 
-The user-requested [log-y version](../figures/09-14m-70m-matched-sparsity-latency-log-y.pdf)
+The user-requested [log-y version](../figures/.archive/09-14m-70m-matched-sparsity-latency-log-y.pdf)
 uses the identical 44 points and eight family curves, with a linear sparsity
 axis and logarithmic latency axis. Open/filled markers and both dashed pressure
 styles remain unchanged. Tick labels retain milliseconds; equal vertical
@@ -84,7 +84,7 @@ Overlapping markers remain separate observations in the retained data.
 ## Sources and reproduction
 
 Run `09_plot_matched_combined_latency.py` to generate
-[Figure09](../figures/09-14m-70m-matched-sparsity-latency.pdf) and
+[Figure09](../figures/.archive/09-14m-70m-matched-sparsity-latency.pdf) and
 [`data/matched-combined-latency.json`](../data/matched-combined-latency.json).
 The JSON retains source hashes, identities, original and normalized families,
 kappas, qualification, pooled integer counts, plotted coordinates, curve
