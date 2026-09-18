@@ -1,5 +1,16 @@
 # Manuscript results data
 
+## Operation-sparsity/runtime integration, 18 September 2026
+
+The existing `paired-pressure-figure-data.json` also contains the complete
+`04-operation-sparsity-changes.pdf` record: twelve 14M checkpoints, six
+operation numerators per checkpoint, full-model denominators and stack totals.
+That record now supports manuscript Figure 5 and the QK/PV contribution in
+Section 4.3. `kernel/operation-bypass-summary.json` continues to support the
+unchanged instruction-bypass artwork, now Figure 6. Logical zero products and
+matrix instructions have different units and denominators; neither is a
+measured fraction of running time saved. No new measurements were collected.
+
 ## Paired pressure figure adoption, 18 September 2026
 
 `paired-pressure-figure-data.json` is a byte-identical copy of Analysis024's

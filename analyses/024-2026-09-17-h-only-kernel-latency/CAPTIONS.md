@@ -1,7 +1,14 @@
 # Paper figures, captions, and associated manuscript writing
 
+[Absolute operation contributions](figures/04-operation-sparsity-changes.pdf)
+are adopted unchanged as manuscript Figure 5, followed by the existing bypass
+summary as Figure 6. The merged Section 4.3 connects high-threshold QK/PV
+sparsity to the tested kernel's runtime behavior. See the
+[caption and evidence](observations/016-operation-changes-caption.md) and
+[integration record](../../manuscript/draft/reviews/2026-09-18-operation-sparsity-speedup/README.md).
+
 [High-threshold operation bypass](figures/12-operation-bypass-summary.pdf)
-is manuscript Figure 7: two panels, T4/Pall versus T7/Pall at kappa=0.5,
+is manuscript Figure 6: two panels, T4/Pall versus T7/Pall at kappa=0.5,
 six operations per size. The [observation](observations/029-operation-bypass-summary.md)
 defines the count-based bars and the rewritten subsection's explanation of
 projection savings and attention implementation limits. Figure 10 remains

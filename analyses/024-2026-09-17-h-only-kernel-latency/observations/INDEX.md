@@ -2,7 +2,7 @@
 
 - [029: High-threshold bypass summary](029-operation-bypass-summary.md):
   two size panels, T4/Pall versus T7/Pall at kappa=0.5, and 24 count-based bars.
-  Adopted as manuscript Figure 7 with the first-principles kernel explanation;
+  Retained as manuscript Figure 6 in the merged sparsity/runtime explanation;
   identifies projection benefits and the unresolved attention implementation limit.
 
 - [028: All-model quality-sparsity](028-all-model-quality-sparsity.md): all 74
@@ -50,6 +50,7 @@
 - [016: Figure 4](016-operation-changes-caption.md): twelve absolute operation
   stacks at 14M, T/P recipe labels and the manuscript operation palette; each
   count-based stack reconciles to model-wide sparsity.
+  Adopted as manuscript Figure 5 in the merged Section 4.3 on sparsity and runtime.
 - [017: Figure 5](017-quality-latency-caption.md): qualified sparsity/latency and
   quality/latency panels, finite measured frontier and session limitations.
 - [018: A1](018-complete-quality-caption.md): all 340 retained post-hoc points

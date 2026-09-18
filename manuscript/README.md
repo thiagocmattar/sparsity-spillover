@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+The threshold-placement and cross-size pressure subsections are removed.
+The local-sparsity discussion is shortened and merged into Section 4.3,
+"When model-wide sparsity translates to speedup." It leads with Analysis024's
+operation-contribution figure (now Figure 5), then connects the high-threshold
+QK/PV sparsity increase to instruction bypass and the tested kernel's timing
+limitations (Figure 6). [main.pdf](draft/main.pdf) is rebuilt at 32 pages.
+See the [integration and verification record](draft/reviews/2026-09-18-operation-sparsity-speedup/README.md).
+Entries below describe earlier revision states.
+
 Section 4.6 now gives a lean, first-principles explanation of avoidable
 arithmetic, projection savings and the tested attention kernel's limitation.
 Its replacement Figure 7 uses two grouped-bar panels: 14M/70M, T4/Pall versus

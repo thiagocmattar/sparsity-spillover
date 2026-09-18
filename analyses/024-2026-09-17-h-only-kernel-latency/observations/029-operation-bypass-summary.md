@@ -1,5 +1,12 @@
 # High-threshold instruction bypass and manuscript explanation
 
+Subsequent integration: this artwork is retained unchanged as manuscript
+Figure 6, following the logical-operation decomposition in the merged
+Section 4.3. The shorter text links additional QK/PV sparsity to the tested
+attention implementation's lack of a timing benefit. See the
+[integration record](../../../manuscript/draft/reviews/2026-09-18-operation-sparsity-speedup/README.md).
+The details below document the original figure generation and adoption.
+
 Figure: [12-operation-bypass-summary.pdf](../figures/12-operation-bypass-summary.pdf).
 Counts and provenance: [operation-bypass-summary.json](../data/operation-bypass-summary.json).
 Source script: [21_plot_operation_bypass_summary.py](../21_plot_operation_bypass_summary.py).

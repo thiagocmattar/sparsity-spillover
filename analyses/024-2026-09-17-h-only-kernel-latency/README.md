@@ -1,7 +1,14 @@
 # H-only pressure: final K050 latency extension
 
+[Operation contributions](figures/04-operation-sparsity-changes.pdf) and the
+existing bypass summary now form manuscript Figures 5 and 6 in the merged
+Section 4.3 on sparsity and speedup. The operation figure is copied unchanged;
+the text focuses on additional high-threshold QK/PV products and explains why
+their bypass need not lower latency. See the
+[integration record](../../manuscript/draft/reviews/2026-09-18-operation-sparsity-speedup/README.md).
+
 The [two-panel operation-bypass summary](figures/12-operation-bypass-summary.pdf)
-is now manuscript Figure 7, comparing T4/Pall and T7/Pall at kappa=0.5 across
+is now manuscript Figure 6, comparing T4/Pall and T7/Pall at kappa=0.5 across
 six operations at 14M/70M. The rewritten kernel subsection explains avoidable
 arithmetic, projection savings and the tested attention implementation's
 limitation without numerical endpoint narration. See the

@@ -89,7 +89,7 @@ training. These observations are \textbf{consistent with different degrees
 of optimization under the fixed-token protocol}, but they do not establish
 whether any run has or has not converged. The trajectories therefore provide
 context for the non-monotonic A0 validation losses in
-Figure~\ref{fig:scale-transfer} rather than a basis for extrapolating
+Figure~\ref{fig:quality-sparsity-all-sizes} rather than a basis for extrapolating
 performance with additional training.
 
 % Approved Analysis 021 artwork copied unchanged; hash in figures/SOURCES.json.
@@ -123,8 +123,8 @@ additional 70M h-only endpoints, the 29 original paired
 broad-pressure recipe comparisons. They retain
 dominated settings as well as favorable ones. Each entry summarizes one
 trained model on complete validation. Sparsity percentages are formed from pooled integer
-product counts. The endpoint table uses the common A7 sparsity-ceiling denominator
-from Figure~\ref{fig:scale-transfer}, rather than a different denominator
+product counts. The endpoint table uses the common seven-site sparsity-ceiling
+denominator from Table~\ref{tab:interventions}, rather than a different denominator
 for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
 this common-reference ratio, retained for the complete endpoint table.
 
@@ -156,10 +156,12 @@ edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
 attention in Figure~\ref{fig:activation-density-full}. The largest omitted
 display tail is $6.6719\%$; the native-grid tail is at most $0.7607\%$.
 These historical densities cover no h-only multisite checkpoints.
-Figure~\ref{fig:activation-reshaping} instead uses retained final-validation
-site counters for all six threshold/pressure combinations, separating $m$
-and $h$. Its exact-zero counts were measured independently of the signed
-histogram reruns; small pass-to-pass rounding differences remain visible.
+Figures~\ref{fig:moderate-structure} and~\ref{fig:pressure-layer-zeros}
+use retained final-validation site counters for all six threshold/pressure
+combinations, separating $m$ and $h$. These counts were measured independently
+of the signed histogram reruns; small pass-to-pass rounding differences remain
+visible. Figure~\ref{fig:activation-reshaping} instead decomposes model-wide
+sparsity into logical operation contributions at $\kappa=0.05$ and $0.5$.
 
 The diagnostic reruns use FP32 parameters with FP16 autocast and no
 additional thresholding. Their maximum absolute validation-loss difference
@@ -617,6 +619,9 @@ The Figure~\ref{fig:paired-intervention-effects} export retains all 20
 all-site-minus-h-only pressure contrasts, including the two small 14M latency
 reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:quality-sparsity-overview}
 endpoint export.
+The same derived-data file includes the twelve operation decompositions in
+Figure~\ref{fig:activation-reshaping}, retaining per-operation integer
+numerators, the common full-model denominator and checkpoint identities.
 The Figure~\ref{fig:kernel-autoresearch} export retains the four selected
 high-threshold checkpoints, their per-operation issued and bypassed instruction
 counts, scalar replacement counts, and exact diagnostic identities.

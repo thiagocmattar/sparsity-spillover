@@ -1,9 +1,13 @@
 # Figure 4: Absolute operation contributions to model-wide sparsity
 
 PDF: [04-operation-sparsity-changes.pdf](../figures/04-operation-sparsity-changes.pdf).
-Proposed manuscript placement: [Section 4.4](../../../manuscript/draft/training-results.tex),
-`sec:activation-reshaping`, alongside/replacing the operation portion of
-`fig:activation-reshaping`.
+Adopted unchanged in the merged manuscript [Section 4.3](../../../manuscript/draft/kernel-autoresearch.tex),
+"When model-wide sparsity translates to speedup," as Figure 5
+(`fig:activation-reshaping`). The section leads with the high-threshold QK/PV
+contribution, then connects logical products to instruction bypass and measured
+latency. The former threshold-placement and cross-size pressure subsections
+are removed at the author's request. See the
+[integration and verification record](../../../manuscript/draft/reviews/2026-09-18-operation-sparsity-speedup/README.md).
 
 ## Question, method, and coverage
 
@@ -70,8 +74,8 @@ training seeds or causal attribution to a propagation path. Pressure scope
 changes both the target set and the equal-tensor pressure normalization.
 Logical product counts do not establish whether zeros align with kernel
 skipping predicates. No 70M operation figure or new measurement is inferred
-from these 14M bars. Proposed manuscript writing is retained here only;
-manuscript files are unchanged by this revision.
+from these 14M bars. The original plotting revision did not edit the manuscript;
+the later adoption and shortened discussion are recorded above.
 
 Source: [paper_effect_figures.py](../paper_effect_figures.py),
 [13_rebuild_paper_figures.py](../13_rebuild_paper_figures.py),

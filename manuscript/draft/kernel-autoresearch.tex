@@ -1,47 +1,54 @@
-% User-approved first-principles rewrite and focused bypass figure, 18 September 2026.
+% User-approved merged operation-sparsity/runtime discussion, 18 September 2026.
+% Logical operation counts: Analysis024 observations/016-operation-changes-caption.md;
+% figure generator: paper_effect_figures.py / 13_rebuild_paper_figures.py.
 % Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md.
 % Figure generator: analyses/024-2026-09-17-h-only-kernel-latency/21_plot_operation_bypass_summary.py.
 % Full counters and matched timings: Analysis024 observations/027-operation-bypass.md; 18_reduce_operation_bypass.py.
 % Implementation/search: Run028 README (K029--K035, K041, K046, K049);
 % Run029 observations/06-implementation-and-claim-audit.md.
 \subsection{When model-wide sparsity translates to speedup}
+\label{sec:activation-reshaping}
 \label{sec:kernel-autoresearch}
 
-A multiplication by zero cannot change a sum, but recognizing and skipping
-it also takes time. $\Smodel$ measures the arithmetic exposed to zero
-operands; lower latency requires an implementation that avoids more work
-than it adds. GPUs perform groups of multiplications together, so isolated
-zeros need not remove an execution step. Figure~\ref{fig:kernel-autoresearch}
-shows the matrix instructions actually bypassed by our specialized kernel.
-These percentages measure skipped instructions, not saved time.
+\textbf{The additional high-threshold sparsity is concentrated in $QK/PV$ products.}
+Figure~\ref{fig:activation-reshaping} decomposes $\Smodel$ by operation at 14M.
+At $\kappa=0.5$, extending $T_7$ pressure from $P_h$ to $P_{\mathrm{all}}$
+raises the $QK/PV$ contribution from $6.38$ to $16.77$ percentage points,
+accounting for most of the $10.82$-point increase in model-wide sparsity.
+The attention contribution is much smaller at $\kappa=0.05$.
 
-Both the projection and attention paths inspect the current activations.
-For FFN-down ($h$) and attention-output ($z$), the kernel checks which values
-survive before reading the corresponding weights. Nearly empty rows can
-then be projected using only their surviving contributions; empty groups
-avoid both weight reads and multiplications. The matched 14M controls
-locate the benefit from skipping in the projection path, with the code and
-bypass counts pointing especially to $h$ and $z$ together. Their individual
-time savings are not isolated. Speedup over native execution also includes
-combining operations to reduce intermediate work, separately from skipping
-zeros (Appendix~\ref{app:kernel-diagnostics}).
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/04-operation-sparsity-changes.pdf}
+\caption{\textbf{Where model-wide sparsity comes from.}
+Operation contributions at 14M for $\kappa=0.05$ (a) and $\kappa=0.5$ (b),
+with $P_0$, $P_h$ and $P_{\mathrm{all}}$ under $T_4/T_7$ thresholding.
+Each segment is the operation's zero-product count divided by the common
+full-model product count, in percentage points; stacks sum to $100\Smodel$.
+Counts pool all layers and 338 complete validation blocks, including the
+dense output head in the denominator. These are logical opportunities,
+not measured time savings.}
+\label{fig:activation-reshaping}
+\end{figure}
 
-The current $QK/PV$ path checks for zeros after loading the operands.
-It can omit multiplications, but has already paid for those reads and must
-still normalize attention scores and produce the output. A zero score is
-not a zero attention probability. The additional checks can therefore cost
-more than the skipped arithmetic saves. In the matched 14M measurements,
-disabling attention skipping makes the same models faster while leaving
-projection skipping unchanged, even where $QK/PV$ bypass is substantial.
+\textbf{More zero products need not mean lower latency.}
+GPUs execute groups of products, and detecting zeros also costs time.
+Figure~\ref{fig:kernel-autoresearch} shows the matrix instructions actually
+bypassed. For FFN-down ($h$) and attention-output ($z$), our kernel detects
+empty groups before reading the corresponding weights and handles nearly
+empty rows using their surviving values. This can avoid both arithmetic
+and data movement. Matched 14M controls locate the skipping benefit in the
+projection path; they do not separate the individual $h/z$ time savings.
 
-\textbf{This is a limitation of the tested implementation, not evidence that
-attention sparsity is intrinsically unhelpful.} Shortcuts for zero queries,
-broader zero-product detection and cheaper skipping decisions were explored,
-but did not establish a reliable, numerically qualified attention benefit
-(Appendix~\ref{app:kernel-results}). The frozen kernel is therefore not an
-optimal execution strategy. Avoiding data movement earlier remains an
-unresolved opportunity. The 70M bars establish instruction bypass under
-the shape-specific port; they do not extend the 14M timing attribution.
+The $QK/PV$ path instead tests already-loaded operands and retains attention
+normalization and output work. A zero score is not a zero attention
+probability. In all 35 matched 14M controls, enabling attention skipping
+increases latency with projection skipping held fixed, despite substantial
+$QK/PV$ bypass in some settings. The checks and remaining work can outweigh
+the saved arithmetic. This limits the tested implementation, not the
+potential value of attention sparsity. The 70M bars show instruction bypass
+without isolating its timing benefit; native-relative speedup also includes
+fusion (Appendices~\ref{app:kernel-results} and~\ref{app:kernel-diagnostics}).
 
 % Analysis-owned artwork copied unchanged; exact counts and hashes accompany it.
 \begin{figure}[!htbp]

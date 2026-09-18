@@ -1,5 +1,13 @@
 # Manuscript draft: ICLR 2027 format
 
+The two subsections on broader threshold placement and cross-size pressure
+are removed. The shortened operation-sparsity discussion is merged with the
+runtime explanation in Section 4.3, starting on page 6. Analysis024 Figure04
+is now Figure 5 (page 7); the retained instruction-bypass chart is Figure 6
+(page 8). [main.pdf](main.pdf) is rebuilt at 32 pages with resolved references.
+See the [integration record](reviews/2026-09-18-operation-sparsity-speedup/README.md).
+Earlier revision notes below retain their original scope.
+
 Section 4.6 now explains from first principles why skipping zeros can save
 time in projections but fail to do so in the tested attention implementation.
 The old quality/latency figure is replaced by a focused two-panel bypass
