@@ -97,7 +97,7 @@ def main():
                 ax.plot([p['sparsity'] for p in group],[p[metric] for p in group],
                         color=color,lw=1.3,ls=':',zorder=2)
         # One subtle note identifies both control paths in each panel.
-        qx,qy,angle=(2.,5.62,78) if size=='14M' else (10.5,4.72,68)
+        qx,qy,angle=(4.,5.62,78) if size=='14M' else (15.5,4.72,68)
         axes[i,0].text(qx,qy,'Post-hoc',rotation=angle,rotation_mode='anchor',
                        color='#646970',fontsize=9.5,ha='left',va='bottom')
         axes[i,1].text(4.5 if size=='14M' else 10.5,.803 if size=='14M' else 3.61,

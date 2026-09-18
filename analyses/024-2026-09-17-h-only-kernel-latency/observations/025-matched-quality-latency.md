@@ -22,6 +22,10 @@ note per panel. Quality panels retain the T4 and T7 ceiling guides.
 DejaVu Sans and 14/11.5/11/10/11-point title/panel/axis/tick/legend sizes follow
 Figure 6, on a 10.8-by-6.8-inch canvas.
 
+The final annotation polish shifts the quality-panel Post-hoc notes right:
+panel (a) from 2% to 4% sparsity and panel (c) from 10.5% to 15.5%.
+Their vertical positions and rotations, and all plotted data, are unchanged.
+
 ## Method and coverage
 
 Both panels in each row contain the same 22 trained checkpoints: the two
