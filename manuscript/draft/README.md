@@ -1,5 +1,15 @@
 # Manuscript draft: ICLR 2027 format
 
+Section 4.2 now has a brief paired-pressure analysis and Analysis024 Figure03
+as manuscript Figure 4 on page 6. H-only pressure lowers loss in all sixteen
+moderate-threshold pairs and latency in eighteen of twenty pairs; the two
+14M high-threshold reversals are stated. Existing pressure-budget diagnostics
+move to Appendix D.6 (Figure 17, page 33). The current
+[main.pdf](main.pdf) has 34 pages, resolved references and checked layout.
+The author's Section 4.1 edits are preserved. See the
+[revision record](reviews/2026-09-18-paired-pressure/README.md).
+Notes below retain their original revision scope.
+
 Section 4.1 now presents the sparsity/quality cost across all 74 trained paper
 conditions, with a new 1-by-3 14M/70M/410M overview (Figure 3 on page 6).
 The common 712 optimizer steps, lower 410M learning-rate amplitude and tokens

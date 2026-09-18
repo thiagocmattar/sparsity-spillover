@@ -30,9 +30,6 @@ $T_7/P_{\mathrm{all}}$ reaches $27.48\%$, $40.60\%$, and $80.62\%$
 model-wide sparsity at 14M, 70M, and 410M: $91.8\%$, $82.2\%$, and $92.4\%$
 of their respective seven-site ceilings. Validation loss increases by
 $0.62$, $1.12$, and $0.57$ relative to the same-size base model.
-The cost is not uniform: at 14M, $T_7/P_h$ with $\kappa=0.05$ reaches
-$10.13\%$ sparsity at loss 5.195, close to the base model's 5.209.
-These are operating points from one training seed per condition.
 
 \begin{figure}[!t]
 \centering
@@ -52,91 +49,54 @@ FP16 logical counts over all 338 complete validation blocks.}
 \label{fig:quality-sparsity-all-sizes}
 \end{figure}
 
-\textbf{Larger models do not uniformly have lower loss under this budget.}
+Larger models do not uniformly have lower loss under this training budget.
 The 410M base model finishes at loss 4.547, above 70M's 4.100.
 Every model receives the same 712 optimizer steps and 1.493B input tokens,
 but this gives 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M,
 and 410M. The 410M learning-rate schedule also has a lower peak
 ($3\times10^{-4}$ rather than $10^{-3}$).
-These differences may contribute to the non-monotonic base-model loss;
-the present runs do not isolate their effects or establish convergence
-(Appendix~\ref{app:training-protocol}, Figure~\ref{fig:a0-optimization}).
-Some intervention recipes reverse the 70M/410M quality ordering, so this
-observation does not imply that every 410M condition is worse.
+These differences may contribute to the non-monotonic base-model loss. We show the training loss and gradient norms during training at the Appendix~\ref{app:training-protocol}, Figure~\ref{fig:a0-optimization}.
 
 Given this non-monotonic base-model quality and the differing optimization
 regimes, we retain a limited recipe sweep at 410M and focus the detailed
-pressure-placement and execution analysis on 14M and 70M. Their matched
-recipes already show transfer toward higher model-wide sparsity and larger
-speedups relative to each size's optimized base model. At $\kappa=0.5$,
-the four $T_4/T_7$ recipes with $P_h/P_{\mathrm{all}}$ increase speedup from
-$1.37$--$1.42\times$ at 14M to $1.89$--$2.05\times$ at 70M
-(Figure~\ref{fig:quality-sparsity-overview}; Section~\ref{sec:kernel-autoresearch}).
-This is a measured trend for these recipes and kernels, rather than a general
-scaling law or an isolated effect of parameter count.
+pressure-placement and execution analysis on 14M and 70M.
 
 \subsection{Paired effects of pressure placement}
 \label{sec:paired-results}
 
-We hold threshold scope and $\kappa$ fixed and separate two pressure increments:
-$P_0\rightarrow P_h$, then $P_h\rightarrow P_{\mathrm{all}}$, where
-$P_{\mathrm{all}}$ is $P_4$ or $P_7$ (Figure~\ref{fig:paired-intervention-effects}).
-The first increment supplies the large moderate-threshold quality improvement.
-Broadening pressure then raises loss at every tested threshold, but its
-sparsity increment depends strongly on the operating point. For seven-site
-thresholding it is negative through $\kappa=0.05$, then rises to $10.819$ pp
-at $\kappa=0.5$ for $+0.0974$ loss. At the same high threshold, broadening
-four-site pressure adds $2.486$ pp for $+0.3153$ loss.
+% Source: analyses/024-2026-09-17-h-only-kernel-latency/observations/015-pressure-scope-caption.md;
+% generating analysis: paper_effect_figures.py / 13_rebuild_paper_figures.py;
+% adoption and checked claims: manuscript/draft/reviews/2026-09-18-paired-pressure/README.md.
+\textbf{H-only pressure gives a more favorable quality--sparsity trade-off
+at moderate thresholds in both model sizes.}
+For $\kappa\leq0.1$, $P_h$ lowers loss relative to $P_{\mathrm{all}}$ in
+all 16 matched four-/seven-site comparisons at 14M and 70M
+(Figure~\ref{fig:paired-intervention-effects}). The loss reduction is
+$0.19$--$0.32$, with sparsity differing by at most $3.36$ percentage points.
+At $\kappa=0.5$, all-site pressure instead gives substantially more sparsity,
+especially for $T_7$; at 70M it also lowers the $T_7$ loss by $0.121$.
 
-\textbf{At $\kappa=0.5$, expanding seven-site pressure from $h$ to all sites
-adds $10.82$ pp sparsity for $+0.0974$ validation loss.}
-These contrasts separate pressure scope from threshold scope. They do not
-isolate Q/K/V pressure: $T_7/P_4$ is absent, so $P_h\rightarrow P_7$ adds
-$a,m,z,q,k,v$ jointly. It also changes the equal-tensor normalization of the
-pressure objective. Appendix Table~\ref{tab:pressure-scope-full} gives every increment.
-
-% PENDING 70M h-only evidence: test recurrence of the P_h regime here only after
-% checkpoint/protocol verification; neither a positive nor a negative result is assumed.
+H-only pressure has lower measured latency in 18 of the 20 pairs, including
+all ten 70M pairs. The two small reversals occur at 14M and $\kappa=0.5$:
+all-site pressure is faster by $2.78\,\mu$s for $T_4$ and $0.52\,\mu$s for
+$T_7$. Thus, the extra sparsity from broader pressure does not consistently
+translate into lower latency. Detailed 14M pressure-budget diagnostics are
+reported in Appendix~\ref{app:pressure-budget-diagnostics}.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/03-pressure-increments.pdf}
-\caption{\textbf{The marginal effect of pressure depends on its scope and the threshold.}
-Columns hold four- or seven-site thresholding fixed. Each point subtracts the
-reference at the same $\kappa$: diamonds show $P_h-P_0$, triangles show
-$P_{\mathrm{all}}-P_h$. The top row reports validation-loss change and the
-bottom row model-wide sparsity change in percentage points. Lines join
-separately trained, matched settings, not training trajectories. Each condition
-has one seed, with matched initialization, data order and training budget.}
+\includegraphics[width=\linewidth]{figures/03-pressure-scope-threshold.pdf}
+\caption{\textbf{Paired effects of broadening pressure from $P_h$ to $P_{\mathrm{all}}$.}
+Every point is all-site minus h-only pressure at matched model size, threshold
+scope and $\kappa$, with $\lambda=b=1$. Rows show 14M/70M; columns show loss
+change, sparsity change (pp), and full-model latency change ($\mu$s).
+Positive loss or latency differences favor $P_h$; positive sparsity
+differences favor $P_{\mathrm{all}}$. Latencies subtract checkpoint geometric
+means: RTX5090, BF16, batch one, 2,048 tokens, full logit head and 1,344 timings
+per checkpoint. The 14M $T_7$ pairs span GPU sessions; 70M uses the qualified
+K050 port. Small timing differences are descriptive. Lines connect separate
+single-seed runs with matched initialization, data order and training budget.}
 \label{fig:paired-intervention-effects}
-\end{figure}
-
-\textbf{Pressure scope also changes the realized optimization regime}
-(Figure~\ref{fig:ol1-geometry}). All 20 pressured multisite runs retain 712
-optimizer-step records. We measure the task-relative opposing component
-$\rho_{\mathrm{opp}}=\max(0,-\langle u,w\rangle)/(\|u\|_2^2+\epsilon)$
-in the global AdamW-preconditioned geometry. H-only pressure is capped on
-$0.25\%$ of steps under either threshold scope; broad four-site pressure is
-capped on $0.51\%$, versus $96.99\%$ for broad seven-site pressure.
-The pooled median pre-cap ratio $r/b$ is 0.102 and 0.086 for four-/seven-site
-h-only pressure, compared with 0.253 and 57.49 for broad pressure. These logs
-establish different magnitude and budget regimes; they do not identify the
-cause of the validation-loss differences.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/04-ol1-geometry.pdf}
-\caption{\textbf{H-only and broad pressure operate in different norm-budget regimes.}
-\textbf{(a)} Median removed opposing component, $100\rho_{\mathrm{opp}}$;
-\textbf{(b)} median pre-cap ratio $r/b$ at $\lambda=b=1$. Each point summarizes
-712 optimizer steps at a fixed threshold, not seed uncertainty. Color denotes
-threshold scope; diamonds/dashed lines denote h-only pressure and
-triangles/dash-dot lines denote broad pressure. \textbf{(c)} Cap-active fractions
-pool 3,560 steps per recipe and use the implemented condition $s<1$.
-The geometry precedes group learning rates and decoupled weight decay, so it
-does not guarantee task-loss preservation. The h-only and broad-pressure
-comparison changes the objective composition and normalization.}
-\label{fig:ol1-geometry}
 \end{figure}
 
 \subsection{Broader threshold placement under matched pressure scope}

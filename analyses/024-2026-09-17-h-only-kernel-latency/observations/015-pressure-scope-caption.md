@@ -1,8 +1,15 @@
 # Figure 3: Global (Pall) vs. local (Ph) pressure paired analysis
 
 PDF: [03-pressure-scope-threshold.pdf](../figures/03-pressure-scope-threshold.pdf).
-Proposed manuscript placement: [Section 4.2](../../../manuscript/draft/training-results.tex),
-`sec:paired-results` (pressure-scope portion of `fig:paired-intervention-effects`).
+Adopted unchanged on 18 September 2026 in [Section 4.2](../../../manuscript/draft/training-results.tex),
+`sec:paired-results`, as manuscript Figure 4 (`fig:paired-intervention-effects`).
+The subsection now gives a two-paragraph analysis: h-only pressure lowers loss
+in all sixteen pairs through kappa=.1 and lowers latency in eighteen of twenty
+pairs. The two small 14M latency reversals at kappa=.5 are explicit. The
+previous pressure-budget diagnostics move to Appendix D.6. See the
+[adoption record and numerical checks](../../../manuscript/draft/reviews/2026-09-18-paired-pressure/README.md).
+The caption and method below retain the full analysis detail; the manuscript
+uses a shorter caption with the same subtraction direction and timing limits.
 
 ## Question, method, and coverage
 
@@ -107,4 +114,5 @@ session provenance, and agreement with the difference of the two retained 14M
 pressure-versus-none effects for all three metrics. The final styled PDF was rendered at 2,000 pixels
 and visually inspected; all fonts are embedded. All 20 contrast records are
 unchanged from the preceding version. Other figure PDFs and the manuscript
-are unchanged by this revision.
+were unchanged by that plotting revision; the later manuscript adoption is
+recorded above.

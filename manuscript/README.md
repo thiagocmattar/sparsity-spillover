@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+Section 4.2 now uses Analysis024's six-panel paired-pressure figure as
+Figure 4, comparing loss, sparsity and latency at 14M/70M. Its two paragraphs
+state the h-only advantage at moderate thresholds and the two small 14M
+latency exceptions at kappa=.5. The OL1 budget diagnostics remain in
+Appendix D.6. The author's latest Section 4.1 edits are preserved, and
+[main.pdf](draft/main.pdf) is rebuilt at 34 pages. See the
+[paired-pressure revision](draft/reviews/2026-09-18-paired-pressure/README.md).
+Entries below describe their earlier revision states.
+
 The quality-sparsity subsection now includes a three-panel overview of all
 74 trained paper conditions at 14M/70M/410M (Figure 3, page 6). It quantifies
 the sparsity/quality cost, states the common 712-step budget, and explains the

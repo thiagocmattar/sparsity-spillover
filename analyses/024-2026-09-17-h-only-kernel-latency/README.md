@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+[Figure 3's paired pressure analysis](figures/03-pressure-scope-threshold.pdf)
+is now adopted unchanged as manuscript Figure 4 in Section 4.2. The lean text
+compares all-site against h-only pressure across 14M/70M and reports the two
+small 14M high-threshold latency reversals. See the
+[adoption and verification](../../manuscript/draft/reviews/2026-09-18-paired-pressure/README.md).
+
 New [all-model quality-sparsity overview](figures/11-all-model-quality-sparsity.pdf)
 shows all 74 trained paper conditions in three panels (14M/70M/410M), with
 uniform final-checkpoint loss, every executed recipe, analytic ceilings and

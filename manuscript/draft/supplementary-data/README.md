@@ -1,5 +1,16 @@
 # Manuscript results data
 
+## Paired pressure figure adoption, 18 September 2026
+
+`paired-pressure-figure-data.json` is a byte-identical copy of Analysis024's
+`data/paper-derived.json`. The entry for `03-pressure-scope-threshold.pdf`
+contains all twenty all-site-minus-h-only contrasts across model size,
+threshold scope and kappa, their forty checkpoint keys and timing sessions.
+Those checkpoints and their endpoint measurements are already included in
+`figure1-quality-latency.json`. The copied export also retains the other
+Analysis024 figure records; this adoption does not replace those paper figures.
+See the [adoption and numerical audit](../reviews/2026-09-18-paired-pressure/README.md).
+
 ## All-model quality overview, 18 September 2026
 
 `all-model-quality-sparsity.json` is copied unchanged from Analysis024. It

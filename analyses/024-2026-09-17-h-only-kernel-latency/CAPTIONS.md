@@ -1,5 +1,11 @@
 # Paper figures, captions, and associated manuscript writing
 
+[Paired pressure analysis](figures/03-pressure-scope-threshold.pdf) is now
+manuscript Figure 4, with a shorter caption and two-paragraph Section 4.2.
+The [observation](observations/015-pressure-scope-caption.md) and
+[adoption record](../../manuscript/draft/reviews/2026-09-18-paired-pressure/README.md)
+retain the subtraction convention, supporting contrasts and timing exceptions.
+
 New all-model overview:
 [quality-sparsity at 14M/70M/410M](figures/11-all-model-quality-sparsity.pdf),
 with [caption, evidence and adopted writing](observations/028-all-model-quality-sparsity.md).
@@ -51,8 +57,8 @@ The original analysis Figure 1 is still retained. See the earlier
 Rebuilt from [task.md](task.md) on 18 September 2026. Each linked caption file
 is also the figure's observation: it contains the question, method, coverage,
 publication caption, result, proposed manuscript paragraph, caveats, and provenance.
-Proposed paragraphs remain suggestions except for the explicitly recorded
-Figure 6 and Figure 8 manuscript adoptions above.
+Proposed paragraphs remain suggestions except for the manuscript adoptions
+explicitly recorded above.
 
 | Figure | Publication PDF | Caption and associated writing | Proposed placement |
 |---|---|---|---|
