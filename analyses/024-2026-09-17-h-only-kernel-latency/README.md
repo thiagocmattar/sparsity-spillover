@@ -7,6 +7,10 @@ settings at 14M/70M and p=0,...,0.9 qualify across 120 processes. See the
 and [method, results and caveats](observations/024-controls-posthoc-final-latency.md).
 Reproduce with `15_plot_controls_clipping_latency.py`. The separate Figure3
 uses six panels for OL1(all) minus OL1(h) at both sizes.
+Figure7 now matches Figure3's typography, six-panel layout and circular-marker
+style, with concise labels and the title "Post-hoc Clipping Sparsity and Latency".
+Its [implementation note](observations/024-controls-posthoc-final-latency.md#implementation-note-for-later-text)
+records the tile/short-row skipping rules and timed, unfused clipping operators.
 
 Selected main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
 uses the same 22 trained pressure/control checkpoints in both panels, circular

@@ -3,6 +3,8 @@
 New control-clipping measurement figure:
 [final-kernel latency at 14M/70M](figures/07-controls-posthoc-final-latency.pdf),
 with [caption, coverage and results](observations/024-controls-posthoc-final-latency.md).
+The [implementation note for later text](observations/024-controls-posthoc-final-latency.md#implementation-note-for-later-text)
+describes the tiling, short-row path and clipping overhead included in latency.
 This Run036 figure is an additional analysis artifact; no manuscript adoption
 or renumbering is implied.
 

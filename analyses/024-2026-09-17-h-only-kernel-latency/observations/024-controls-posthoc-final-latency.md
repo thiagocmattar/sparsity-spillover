@@ -38,17 +38,62 @@ separate from canonical FP16 logical sparsity.
 
 ## Caption and legend
 
-**Full-model latency of post-hoc control clipping under the final kernels.**
-Rows show 14M and 70M; columns show clipping target p, retained model-wide logical
-sparsity, and retained FP16 validation loss. Gray circles denote the dense/GeLU
-control; olive squares denote ReLU/1-site. All 40 points and the full loss range
+**Post-hoc Clipping Sparsity and Latency.** Panels (a)-(c) show 14M and panels
+(d)-(f) show 70M; columns show latency versus clipping target p, retained
+model-wide logical sparsity, and retained FP16 validation loss. Gray circles
+denote Base model (GeLU); olive circles denote ReLU. All 40 points and the full loss range
 are visible. Labels identify p=0,0.5,0.9 on the quality-latency curves. Latency
 includes recurring clipping work. Axes share latency limits within each size.
-Dotted lines connect inference settings of one fixed checkpoint. The jump from
+Solid lines connect inference settings of one fixed checkpoint. The jump from
 p=0 to positive p includes the added mask operators. Target p is not achieved
 model-wide sparsity. The native comparison and process ranges are in the table
-and source JSON. This figure is separate from the four-panel all-minus-h
+and source JSON. This figure is separate from the six-panel all-minus-h
 pressure contrast in Figure3.
+
+The 12.8-by-5.8-inch layout, 14-point title, 11.5-point panel titles, 11-point
+axis labels and legend, 10-point ticks, 1.6-point lines, circular markers, and
+light horizontal grid match Figure3. Control colors remain gray and olive.
+Axis labels omit precision details for readability; the retained FP16 versus
+runtime BF16 distinction remains part of the measurement protocol above.
+
+## Implementation note for later text
+
+The final kernels exploit activation sparsity at matrix-instruction granularity.
+QKV and FFN-up bypass a BF16 16-by-8-by-16 matrix multiply-accumulate instruction
+only when its entire 16-by-16 activation tile is zero. FFN-down and
+attention-output use groups of eight token rows and 16 input features, with
+the eight active rows padded to the same 16-by-8-by-16 instruction shape.
+Rows with at most two nonzero activations can instead use a short scalar path,
+subject to the kernel's numerical safety checks; the remaining rows determine
+whether each 8-by-16 activation group requires matrix instructions. Reported
+bypassed instructions therefore include scalar substitution, whose products
+are counted separately. The weights remain dense.
+
+Post-hoc magnitude clipping is applied at a,m,h,z in all six layers using
+separate PyTorch operators inside the timed CUDA graph; it is not fused into
+the frozen kernels. At p=0 the value-identity clipping operators are omitted.
+Moderate clipping can increase scalar zero-product opportunity without creating
+entirely zero activation tiles or sufficiently short rows. Consequently, the
+number of matrix instructions can remain unchanged as logical sparsity rises.
+The vocabulary head remains dense, and the retained QK/PV instruction counters
+are unchanged across these clipping settings. Any benefit must also cover
+clipping, sparsity inspection and the remaining execution costs. This study
+does not isolate the duration of those individual costs.
+
+For a concrete retained example, the 14M Base model at p=0.5 has approximately
+49-55% BF16 activation zeros at the clipped sites but bypasses no projection
+matrix instructions. At p=0.9 it bypasses 9.73% of FFN-down and 98.72% of
+attention-output matrix instructions. Its latency falls from 0.787646 ms at
+p=0.5 to 0.718922 ms at p=0.9, while remaining above its unmodified p=0 latency
+of 0.659841 ms. Thus high-p skipping is useful to this execution path, but it
+does not establish a net improvement over the unclipped 14M control or a
+quality-preserving speedup. These observations concern the frozen implementation,
+not an intrinsic limit on other kernels for unstructured sparsity.
+
+Implementation provenance: [operand and instruction counter definitions](../../../runs/036-2026-09-18-controls-clipping-final-kernel/diagnostics.py),
+[timed clipping adapter](../../../runs/036-2026-09-18-controls-clipping-final-kernel/clipping_adapter.py),
+and the per-operation counters and timings in the
+[verified reduction](../../../runs/036-2026-09-18-controls-clipping-final-kernel/results/clipping-final-kernel.json).
 
 ## Result
 
