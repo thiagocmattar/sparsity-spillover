@@ -160,3 +160,13 @@ with tick labels in milliseconds. Its provenance is saved separately in
 `data/matched-combined-latency-log-y.json`; the script checks exact point and
 curve equality with the unchanged linear version. Observation009 documents
 both versions and the ratio interpretation of distances on the log axis.
+
+The [A0-normalized speedup figure](figures/10-14m-70m-matched-sparsity-a0-speedup.pdf)
+is reproduced with `10_plot_a0_normalized_speedup.py`. For each size it divides
+the final-kernel A0 latency by each checkpoint's final-kernel latency, placing
+both A0 controls at 1x. It retains Figure09's 44 points, eight recipe curves
+and log y scale. This shared-A0 reference differs from the paired native
+reference used in the earlier kernel speedup figures. Exact baseline values,
+original latencies, ratios and provenance are in
+`data/matched-a0-normalized-speedup.json`; see the
+[caption and interpretation limits](observations/010-a0-normalized-speedup.md).
