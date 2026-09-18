@@ -140,3 +140,15 @@ and independently fitted linear axes in two panels. Source hashes, point and
 connection identities, axis limits and the PDF hash are stored in
 `data/combined-final-latency.json`. See the
 [caption and comparison limits](observations/008-combined-final-latency.md).
+
+The new [matched single-panel figure](figures/09-14m-70m-matched-sparsity-latency.pdf)
+is reproduced with `09_plot_matched_combined_latency.py`. It selects the 22
+recipe/kappa conditions present at both sizes: baseline, ReLU and the A4/A7
+OL1(h)/OL1(all) grids. Open markers indicate 14M and filled markers 70M;
+short/long dashed lines distinguish h-only/all-site pressure within each
+topology and model size. Shared linear axes show absolute final-kernel latency
+without forcing zero. The 44 plotted points, matching keys, source hashes,
+integer counts and eight curve definitions are retained in
+`data/matched-combined-latency.json`. See the
+[caption and comparison limits](observations/009-matched-combined-latency.md).
+Figure08 and all prior source data and figures are preserved.
