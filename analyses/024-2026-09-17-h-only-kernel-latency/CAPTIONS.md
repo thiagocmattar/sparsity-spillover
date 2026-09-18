@@ -1,5 +1,11 @@
 # Paper figures, captions, and associated manuscript writing
 
+New control-clipping measurement figure:
+[final-kernel latency at 14M/70M](figures/07-controls-posthoc-final-latency.pdf),
+with [caption, coverage and results](observations/024-controls-posthoc-final-latency.md).
+This Run036 figure is an additional analysis artifact; no manuscript adoption
+or renumbering is implied.
+
 **Selected main paper figure:** [Figure 6, side-by-side 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
 with [caption and proposed writing](observations/023-14m-quality-latency-variant.md).
 It preserves the original Figure 1 and uses the revised recipe naming and styling.

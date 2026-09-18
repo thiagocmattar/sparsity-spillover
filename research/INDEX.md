@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run036 completed all 40 dense/ReLU post-hoc clipping settings at 14M/70M with
+the final kernels: 120/120 processes qualify, 1,032 outputs are verified locally,
+and the Pod is deleted (estimated GPU USD2.161). See the
+[latency table and evidence](../runs/036-2026-09-18-controls-clipping-final-kernel/README.md).
+
 Run035 completed the approved 70M K050-derived port: all 22 checkpoints/66
 processes qualify; all 705 outputs are verified locally and the Pod is deleted
 (estimated compute USD1.015). [Analysis024 Figure04 and caption](../analyses/024-2026-09-17-h-only-kernel-latency/observations/004-70m-final-latency-topology.md)

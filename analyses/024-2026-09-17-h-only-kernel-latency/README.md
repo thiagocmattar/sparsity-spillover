@@ -1,5 +1,13 @@
 # H-only pressure: final K050 latency extension
 
+Run036 supplies the missing final-kernel control clipping latencies: all 40
+settings at 14M/70M and p=0,...,0.9 qualify across 120 processes. See the
+[latency PDF](figures/07-controls-posthoc-final-latency.pdf),
+[complete table](../../runs/036-2026-09-18-controls-clipping-final-kernel/TABLE.md),
+and [method, results and caveats](observations/024-controls-posthoc-final-latency.md).
+Reproduce with `15_plot_controls_clipping_latency.py`. The separate Figure3
+uses four panels for OL1(all) minus OL1(h) at both sizes.
+
 Selected main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
 uses the same 22 trained pressure/control checkpoints in both panels, circular
 markers, pressure-specific colors, one shared post-hoc note, and ceiling guides.

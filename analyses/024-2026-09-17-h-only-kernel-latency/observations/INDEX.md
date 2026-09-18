@@ -1,5 +1,9 @@
 # Observations
 
+- [024: Control clipping latency](024-controls-posthoc-final-latency.md): all 40
+  dense/ReLU clipping settings at 14M/70M,120 qualified processes, verified raw
+  timings and diagnostics, with a full-range final-kernel latency PDF.
+
 - [023: Side-by-side 14M variant](023-14m-quality-latency-variant.md): matched
   22-checkpoint quality/sparsity and sparsity/latency panels, circular markers,
   T/P labels, wider layout, one post-hoc note and analytic ceiling guides.

@@ -1,7 +1,16 @@
 # Run036: final-kernel latency of post-hoc control clipping
 
-Status: all 12 GPU preflight settings passed. The 120-process full-validation
-sweep is active; final aggregation and verified retrieval are pending.
+Status: complete. All 40 settings, 120 full-validation processes and 12 smoke
+settings qualify. All 1,032 returned files are verified locally. The Pod was
+deleted at 19:20:58 UTC on 18 September 2026; no Pods or endpoints remain.
+Estimated GPU expense is USD2.161 plus temporary storage, below the USD5 cap.
+The existing network volume is unchanged; the local deadline guard is stopped.
+
+Results: [complete latency table](TABLE.md), [source JSON](results/clipping-final-kernel.json),
+and [Analysis024 figure and observation](../../analyses/024-2026-09-17-h-only-kernel-latency/observations/024-controls-posthoc-final-latency.md).
+Every positive-p 14M point is slower than its own p=0 final-kernel control.
+At 70M, p=0.9 gives 1.2315x/1.1815x over the dense/ReLU final-kernel controls,
+with large loss increases; the matched clipped native graph remains faster.
 
 The user requested the missing Analysis024 dense/ReLU clipping latencies at
 14M and 70M, then explicitly said to do it and authorized RunPod. The user
@@ -30,11 +39,11 @@ thresholds, the value-identity clipping is elided. Candidate h clipping on ReLU
 combines the existing deferred ReLU and threshold mask; the frozen joint gate
 then sees nonnegative operands. Source kernels remain byte-identical.
 
-Match RTX5090, BF16, batch1, T2048, all50304 logits, uncached causal attention,
+Match RTX5090, BF16, batch 1, T=2048, all50304 logits, uncached causal attention,
 runtime seed2801 and timing seed2504. Each of 40 settings uses three fresh
 processes, 64 fixed validation inputs and seven paired passes (1344 pairs).
 Each process qualifies against the matching clipped native eager reference on
-all338 complete blocks from500 MiniPile documents:692224 input tokens,
+all 338 complete blocks from 500 MiniPile documents: 692224 input tokens,
 691886 prediction tokens,1444 excluded tail tokens. Keep the existing numerical
 bounds (logit atol .25/rtol .02, relative L2 .02, loss delta .001); never qualify
 from loss alone. Failed configurations remain visible and are excluded from
@@ -64,7 +73,7 @@ Hash-check source/input bundles and all returned artifacts before Pod deletion.
 ## Execution envelope
 
 One sequential RTX5090 Pod, pinned Run035 image/environment. Live secure GPU
-quote on18 September2026:USD0.99/hour. Maximum four cumulative GPU-hours and
+quote on 18 September 2026:USD0.99/hour. Maximum four cumulative GPU-hours and
 USD5 total task spend including temporary storage; expected1â€“2 hours, to be
 refreshed after preflight. Use20GB container plus30GB Pod storage at/workspace,
 no new network volume, preserve the existing100GB volume. The local5070Ti
@@ -81,12 +90,14 @@ raw results, logs and diagnostics; weights need not be returned unchanged.
 ## Verification
 
 Four focused tests passed (cutoff equality, signed/deferred-ReLU behavior, exact
-hook placement, all40 retained condition identities). All242 bootstrap tests
+hook placement, all 40 retained condition identities). All242 bootstrap tests
 passed. Prepared1417 hash-recorded source/input files. Remote preflight covers
 12 settings (both sizes, both activations, p=0,.5,.9), eight validation blocks
-and four timing inputs each. All120 final processes then use full qualification.
+and four timing inputs each. All 120 final processes then use full qualification.
 All 12 GPU smoke settings passed the unchanged numerical qualification bounds.
-The full-validation results will determine final per-setting qualification.
+All 120 full-validation processes also passed. The first returned process was
+checked directly against the raw 448-pair timing contract; final reduction checks
+all 1,344 pairs per setting and all 40 full diagnostic records.
 
 ## Attempt 001 infrastructure record
 
@@ -120,3 +131,18 @@ Scientific scripts, checkpoints, cache, package bytes and GPU are unchanged;
 outputs remain on persistent storage. The copy and verification ran during
 preflight only, before the scientific sweep. `runtime/local-runtime.json`
 records activation, and runtime logs retain any consequent extension rebuilds.
+
+## Verified closeout
+
+Scientific execution completed at 19:20:02 UTC. Retrieval verified the archive
+SHA-256 `477bb68e22d63bec19e335948e87fa08c42b684981b30f5e10c9d57c639be24d`
+and all 1,032 inventoried files before deletion. See
+[verification](artifacts/verification.json), [inventory](transfer/inventory-001.json),
+and [provider closeout](prelaunch/closeout.json). The immediate provider billing
+snapshot is delayed (USD1.182 including disk at query time); it is not a final
+invoice. The elapsed-time GPU estimate uses the live USD0.99/hour rate through
+deletion. Inputs, final checkpoints and source/cache identities remain local.
+
+The reduction retains original FP16 quality/sparsity and new BF16 losses,
+same-session p=0-relative ratios, matched native ratios, three-process timing
+ranges, and source hashes. No manuscript edit or finding promotion is included.

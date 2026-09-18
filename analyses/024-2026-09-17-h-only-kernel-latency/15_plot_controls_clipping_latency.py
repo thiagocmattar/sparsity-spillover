@@ -39,12 +39,16 @@ def main():
                 ax.grid(axis='y',alpha=.16,lw=.5)
             for p in points:
                 if p['p'] in (0.,.5,.9):
+                    dy=5 if family=='A0' else -11
+                    if scale=='70M' and p['p']==.9:dy=-10 if family=='A0' else 8
                     axes[row,2].annotate(f"p={p['p']:g}",(p['retained_fp16_loss'],p['candidate_gm_ms']),
-                        xytext=(4,5 if family=='A0' else -11),textcoords='offset points',fontsize=7,color=color)
+                        xytext=(-6 if p['p']==.9 else 4,dy),
+                        ha='right' if p['p']==.9 else 'left',textcoords='offset points',fontsize=7,color=color)
         axes[row,0].set_ylabel(f'{scale}: full-model latency (ms)')
         axes[row,0].set_xlabel('Clipping target p');axes[row,0].set_xticks([0,.3,.6,.9])
         axes[row,1].set_xlabel('Model-wide logical sparsity (%)')
         axes[row,2].set_xlabel('Validation loss (nats; retained FP16)')
+        for ax in axes[row]:ax.margins(x=.08,y=.12)
     for ax,title in zip(axes[0],['(a) Clipping target','(b) Logical sparsity','(c) Quality-latency trade-off']):
         ax.set_title(title,loc='left')
     handles=[Line2D([],[],color=color,marker=marker,ls=':',label=label) for _,label,color,marker in styles]
@@ -53,10 +57,11 @@ def main():
     fig.legend(handles=handles,loc='lower center',bbox_to_anchor=(.5,.025),ncol=len(handles),frameon=False)
     fig.savefig(OUTPUT);plt.close(fig)
     evidence={'source':SOURCE.relative_to(ROOT).as_posix(),'source_sha256':hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+        'script':Path(__file__).name,'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'figure':OUTPUT.name,'figure_sha256':hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
         'series':series,'displayed_points':40,'qualified_points':sum(p['qualified'] for p in data['points']),
         'axes':'All targets/full loss range. Y shared within size, independent between sizes. Clipping inside timed graph.'}
-    (HERE/'data/controls-clipping-latency.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+    (HERE/'data/controls-clipping-latency.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(json.dumps({'pdf':str(OUTPUT),'points':40,'qualified':evidence['qualified_points']}))
 
 
