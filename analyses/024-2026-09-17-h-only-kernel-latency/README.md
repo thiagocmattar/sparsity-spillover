@@ -65,7 +65,9 @@ endpoint. Run033 owns source/input identity checks and verified retrieval.
 Reproduce with `.venv/Scripts/python.exe analyses/024-2026-09-17-h-only-kernel-latency/01_reduce.py`
 then `02_plot.py` from the same folder. Publication outputs are PDF only.
 
-The final-kernel-only topology scatter is reproduced with `03_plot_final_latency.py`.
+The final-kernel-only topology figure is reproduced with `03_plot_final_latency.py`.
 It reads the unchanged retained reduction and saves its plotted points and source
 hash in `data/final-latency-topology.json`. It uses the four explicitly listed
 labels in the user's request, with no pressure-specific sublabels or fitted lines.
+Markers sharing a legend label are connected in increasing model-wide sparsity
+order; the lines are visual guides across the group's recipes and thresholds.
