@@ -1,0 +1,284 @@
+name: pythia-70m-selected-ladder-canonical-init
+model:
+  architecture: EleutherAI/pythia-70m-deduped
+  revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+  initialization: random
+  initialization_device: cpu
+  training_device: cuda
+  initialization_method: small_init
+  output_layer_initialization_method: wang_init
+  initialization_realization: hash_pinned_generated_artifact
+  released_weights_loaded: false
+  attention_implementation: sdpa_flash
+  execution_engine: transformers_recipe_mapping
+  topology_id: A4-Z
+  site_gate: null
+  site_gates:
+    a:
+      operator: one_sided_threshold
+      kappa: 0.5
+    m:
+      operator: one_sided_threshold
+      kappa: 0.5
+    h:
+      operator: one_sided_threshold
+      kappa: 0.5
+    z:
+      operator: one_sided_threshold
+      kappa: 0.5
+  pressure_sites:
+  - a
+  - m
+  - h
+  - z
+initialization_artifact:
+  source_run: 017-2026-09-01-pythia70m-selected-ladder-portable-init
+  format: safetensors
+  model_path: prelaunch/initialization/pythia70m-seed1234.safetensors
+  model_bytes: 281715344
+  model_sha256: 024e01975e1a52ead00340afd7a5c3f0b7c2fa0542d9dd5998e648ec14f73501
+  rng_path: prelaunch/initialization/pythia70m-seed1234-rng.pt
+  rng_bytes: 14823
+  rng_sha256: ff839f490cbbbec528181113451802f52c734fb45ae693fc800991bc2be36762
+  metadata_path: prelaunch/initialization/metadata.json
+  parameter_sha256: e8b8d8e48880f8ff25e421ed29b04a81eb417300f2b4a01a8c4d56f2591a1062
+  tensor_count: 76
+  tensor_bytes: 281706496
+  rng_restore:
+  - python
+  - numpy
+  - torch_cpu
+  cuda_rng_policy: seed_1234_on_worker_before_artifact_load
+  locally_generated_random_pretraining_initialization: true
+recipe:
+  source: https://github.com/EleutherAI/pythia/blob/main/models/70M/pythia-70m-deduped.yml
+  original_engine: GPT-NeoX-v1.0-DeepSpeed
+  mapped_engine: Transformers-5.12-PyTorch-2.11
+  exact_framework_reproduction: false
+  optimizer_mapping: pytorch_fused_adamw
+  weight_decay_exclusions:
+  - bias
+  - layer_norm
+  lr_schedule_semantics: gpt_neox_v1_pre_step
+runtime:
+  python: '3.12'
+  torch: 2.11.0
+  transformers: 5.12.1
+  cuda_runtime: '12.8'
+data:
+  dataset: JeanKaddour/minipile
+  revision: 18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0
+  tokenizer: EleutherAI/pythia-14m-deduped
+  tokenizer_revision: 7386d9a4ae45aef494a6e704910394def3037fc5
+  tokenizer_reuse_note: Pythia-14M and Pythia-70M use the same 50,304-token vocabulary;
+    reuse is hash-verified.
+  append_eos: true
+  sequence_length: 2048
+  training_metadata: data/tokenized/minipile-pythia-14m-full/train/metadata.json
+  validation_metadata: data/tokenized/minipile-pythia-14m-full/validation/metadata.json
+seeds:
+  model: 1234
+  data_order: 1234
+conditions:
+  selected_steps:
+  - A0
+  - A1-H
+  - A4-OL1
+  - A7-OL1
+  gate_thresholds:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  pressure_method: orthogonal_l1
+  pressure_weight: 1.0
+  step_budget: 1.0
+training:
+  max_steps: 712
+  peak_learning_rate: 0.001
+  minimum_learning_rate: 0.0001
+  global_batch_size: 1024
+  micro_batch_size: 4
+  gradient_accumulation_steps: 256
+  optimizer: adamw
+  adamw_betas:
+  - 0.9
+  - 0.95
+  adamw_eps: 1.0e-08
+  weight_decay: 0.1
+  gradient_clip_norm: 1.0
+  warmup_fraction: 0.01
+  precision: float16_dynamic
+  parameter_dtype: float32
+  initial_loss_scale_power: 12
+  loss_scale_window: 1000
+  loss_scale_hysteresis: 2
+  minimum_loss_scale: 1.0
+  fp16_ol1_overflow_policy: skip_entire_boundary
+  hidden_dropout: 0.0
+  attention_dropout: 0.0
+  activation_checkpointing: false
+  device: cuda
+  log_every_steps: 1
+validation:
+  documents: 500
+  complete_sequences: 338
+  input_tokens: 692224
+  excluded_tail_tokens: 1444
+  batch_size: 4
+  at_step_one: true
+  at_final_step: true
+diagnostics:
+  activation_sites:
+  - a
+  - m
+  - h
+  - q_post
+  - k_post
+  - v
+  - z
+  - attention_output
+  near_zero_thresholds:
+  - 0.0
+  - 0.001
+  - 0.01
+  activation_statistics: true
+  weight_statistics: true
+  weight_statistics_include_bias_and_norm: true
+  gradient_interaction: true
+  ol1_adaptive_directions: true
+  logical_products: true
+  logical_product_batch_size: 1
+teal_posthoc:
+  condition_ids:
+  - a0-gelu
+  - a1h-relu
+  sites:
+  - a
+  - m
+  - h
+  - z
+  target_sparsities:
+  - 0.0
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  calibration_split: train
+  calibration_blocks: 10
+  calibration_selection: first_complete_source_order_blocks
+  evaluation_batch_size: 1
+  zero_threshold_loss_tolerance: 0.0005
+checkpoints:
+  model_steps:
+  - 712
+  optimizer_steps:
+  - 712
+  retain_final: true
+  retain_initial_weights: false
+runpod:
+  candidate_gpu_type: NVIDIA H200
+  candidate_gpu_memory_gb: 141
+  cloud_type: SECURE
+  maximum_parallel_pods: 8
+  parallelism: one_condition_per_gpu
+  candidate_data_centers:
+  - US-NC-1
+  - US-CA-2
+  - US-GA-2
+  - AP-JP-1
+  - EUR-IS-5
+  image: runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35
+  image_tag_reference: runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+  container_disk_gb: 30
+  pod_volume_gb: 25
+  volume_mount_path: /workspace
+  preflight_terminate_after_hours: 1.5
+  scientific_terminate_after_hours: null
+  scientific_guard_policy: measured_projection_x1p5_plus_measured_provision_setup_transfer
+  monitoring_interval_minutes: 5
+  stale_event_minutes: 10
+  storage_strategy: per_pod_volume_seeded_from_hash_verified_cache
+  retained_network_volume_used: false
+  launch_waves:
+    sentinel:
+    - a0-gelu
+    - a1h-relu
+    - a4-ol1-kappa-0
+    - a7-ol1-kappa-0
+    remainder:
+    - a4-ol1-kappa-0p01
+    - a4-ol1-kappa-0p05
+    - a4-ol1-kappa-0p1
+    - a4-ol1-kappa-0p5
+    - a7-ol1-kappa-0p01
+    - a7-ol1-kappa-0p05
+    - a7-ol1-kappa-0p1
+    - a7-ol1-kappa-0p5
+  worker_assignments:
+    a0-gelu:
+    - a0-gelu
+    a1h-relu:
+    - a1h-relu
+    a4-ol1-kappa-0:
+    - a4-ol1-kappa-0
+    a4-ol1-kappa-0p01:
+    - a4-ol1-kappa-0p01
+    a4-ol1-kappa-0p05:
+    - a4-ol1-kappa-0p05
+    a4-ol1-kappa-0p1:
+    - a4-ol1-kappa-0p1
+    a4-ol1-kappa-0p5:
+    - a4-ol1-kappa-0p5
+    a7-ol1-kappa-0:
+    - a7-ol1-kappa-0
+    a7-ol1-kappa-0p01:
+    - a7-ol1-kappa-0p01
+    a7-ol1-kappa-0p05:
+    - a7-ol1-kappa-0p05
+    a7-ol1-kappa-0p1:
+    - a7-ol1-kappa-0p1
+    a7-ol1-kappa-0p5:
+    - a7-ol1-kappa-0p5
+artifacts:
+  save_final_checkpoint: true
+  save_optimizer_at_declared_steps: true
+  retain_predictions: false
+  transfer_final_checkpoint_only: true
+condition:
+  id: a4-ol1-kappa-0p5
+  order: 7
+  step: A4-OL1
+  topology_id: A4-Z
+  active_sites:
+  - a
+  - m
+  - h
+  - z
+  gate_threshold: 0.5
+  pressure_method: orthogonal_l1
+  pressure_sites:
+  - a
+  - m
+  - h
+  - z
+  pressure_weight: 1.0
+  step_budget: 1.0
+  label: kappa=0.5, lambda=1
+  is_control: false
+activation_pressure:
+  method: orthogonal_l1
+  sites:
+  - a
+  - m
+  - h
+  - z
+  weight: 1.0
+  step_budget: 1.0
+  eps: 1.0e-12
