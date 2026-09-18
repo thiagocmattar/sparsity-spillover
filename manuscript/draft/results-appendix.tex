@@ -9,6 +9,8 @@
 % investigation/observations/O001-kernel-investigation.md and 01_extract.py--03_plot.py.
 % Per-checkpoint latency table: Analysis 021 / 08_kernel_manuscript_table.py.
 % Generated tables: Analysis 018 / 03_manuscript_tables.py.
+% Figure 1 timing extension: analyses/024-2026-09-17-h-only-kernel-latency/observations/023-14m-quality-latency-variant.md;
+% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py.
 % A0 histories: analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py;
 % observations/O007-a0-optimization.md; data/a0-optimization.json.
 \subsection{Realized training protocol}
@@ -342,8 +344,9 @@ ablation summaries retain their original 30-checkpoint cohort. The main
 absolute-latency panel additionally restores the five qualified $T_4/P_h$
 checkpoints from the same historical 35-checkpoint sweep; they implement a
 valid, distinct pressure scope. These are existing measurements, reaggregated
-from raw timing pairs with the same geometric-mean rule. The five new
-$T_7/P_h$ timings remain pending; they are not inferred from sparsity or loss.
+from raw timing pairs with the same geometric-mean rule. Figure~\ref{fig:quality-sparsity-overview}
+adds five measured $T_7/P_h$ full-model timings from a separate RTX5090
+session. They do not extend the historical skipping-ablation cohort.
 Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
@@ -537,7 +540,9 @@ projection-bypass $R^2$ from 0.946 to 0.941, and the scalar-projection $R^2$
 from 0.413 to 0.425. Figure~\ref{fig:kernel-autoresearch} uses all 35 qualified
 records; historical association panels retain their explicitly stated 30-point
 subset. Attention skipping remains slower than attention-dense execution
-for all 35. Seven-site h-only runtime is pending.
+for all 35. Seven-site h-only full-model timing is shown separately in
+Figure~\ref{fig:quality-sparsity-overview}; no corresponding skipping ablations
+are added here.
 
 \input{tables/pressure-scope/h-only-runtime}
 

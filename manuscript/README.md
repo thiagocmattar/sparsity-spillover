@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+The user-selected Analysis024 quality-sparsity/latency figure is now Figure 1
+in the introduction. The exact artwork is copied with a recorded source hash;
+the caption describes the matched 22-checkpoint 14M cohort and both panels.
+Stale seven-site h-only timing statements now point to Figure 1 while retaining
+the historical ablation cohorts. See the
+[adoption and build verification](draft/reviews/2026-09-18-main-figure/README.md).
+Entries below describe earlier revisions.
+
 The 17 September pressure-placement revision integrates ten verified h-only
 14M endpoints, giving 64 trained conditions, and restores five historical
 kernel records for a 35-checkpoint runtime cohort. Threshold and pressure

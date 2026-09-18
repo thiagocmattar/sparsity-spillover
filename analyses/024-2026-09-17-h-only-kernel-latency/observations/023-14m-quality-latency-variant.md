@@ -3,7 +3,10 @@
 **Selected by the user as the main paper figure.** The final artwork omits the
 top-right model-size label and uses the Y-axis label "Validation loss" without
 a unit suffix. The caption retains the 14M scope; loss values remain in nats/token.
-This designation is recorded in the analysis only; manuscript TeX is unchanged.
+At the user's subsequent request, the exact PDF was adopted as Figure 1 in the
+manuscript introduction. The caption covers both panels and the session boundary;
+the original analysis artwork remains unchanged. See the
+[adoption record](../../../manuscript/draft/reviews/2026-09-18-main-figure/README.md).
 
 PDF: [06-14m-quality-sparsity-latency.pdf](../figures/06-14m-quality-sparsity-latency.pdf).
 Source: [14_plot_14m_quality_latency.py](../14_plot_14m_quality_latency.py).
@@ -68,7 +71,9 @@ Related manuscript sections:
 [quality-sparsity results](../../../manuscript/draft/training-results.tex),
 `sec:quality-sparsity-results`, and
 [kernel execution](../../../manuscript/draft/kernel-autoresearch.tex),
-`sec:kernel-autoresearch`. No manuscript file is edited.
+`sec:kernel-autoresearch`. The later Figure 1 adoption updates the introduction
+caption and reconciles stale pending-runtime statements; the proposed result
+paragraph below remains analysis-local.
 
 > The pressure recipes expose distinct quality-sparsity operating points,
 > while the same models' latency depends on the execution structure of their

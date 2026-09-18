@@ -22,21 +22,33 @@ To measure their effects, rather than report sparsity locally at individual acti
 %(ii) FFNs seems more prone to sparsification. When applied the same thresholding and pressure, FFNs achieve a higher local sparsity then self-attention sites;
 %(iii) accross model sizes, the more aggressive thresholding+pressure recipes achieve higher model-wide sparsity than post-hoc thresholding over the baseline. But just changing the GeLU to ReLU (A1-H) improves de post-hoc thresholding frontier.. which gets better and better with increased sizes.
 % Paragraph evidence: introduction-findings.md; Analysis 020 observations/O003-cross-size.md.
-We pretrain Pythia-family models from scratch for controlled comparisons across model sizes~\citep{biderman2023pythia}. Across 40 conditions at 14M, we separate threshold placement from pressure placement (Figure~\ref{fig:quality-sparsity-overview}). Pressure only at the FFN hidden site gives favorable moderate-threshold trade-offs. Holding that pressure fixed, broader thresholding adds $6.44$ percentage points of model-wide sparsity for $+0.0094$ loss at the highest threshold. Expanding pressure to all seven sites then adds another $10.82$ points for $+0.0974$ loss, reaching $27.48\%$ sparsity near the $29.95\%$ ceiling. Selected broad-pressure recipes recur at 70M and 410M; h-only transfer remains untested.
+We pretrain Pythia-family models from scratch for controlled comparisons across model sizes~\citep{biderman2023pythia}. Across 40 conditions at 14M, we separate threshold placement from pressure placement. Figure~\ref{fig:quality-sparsity-overview} summarizes the quality and execution trade-offs for the 22 base, ReLU, and multisite-pressure checkpoints. Pressure only at the FFN hidden site gives favorable moderate-threshold trade-offs. Holding that pressure fixed, broader thresholding adds $6.44$ percentage points of model-wide sparsity for $+0.0094$ loss at the highest threshold. Expanding pressure to all seven sites then adds another $10.82$ points for $+0.0974$ loss, reaching $27.48\%$ sparsity near the $29.95\%$ ceiling. Selected broad-pressure recipes recur at 70M and 410M; h-only transfer remains untested.
 
-% Figure source: analyses/021-2026-09-10-training-results-figures/01_quality_sparsity.py
-% Observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
+% User-selected main figure, adopted 18 September 2026; copy hash in figures/SOURCES.json.
+% Figure source: analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py
+% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/023-14m-quality-latency-variant.md
+% Checkpoint identities and coordinates: analyses/024-2026-09-17-h-only-kernel-latency/data/14m-quality-sparsity-latency.json
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/01-overview.pdf}
-\caption{\textbf{Threshold and pressure placement give distinct quality--sparsity trade-offs.}
-Thirty multisite checkpoints span four-site (blue) and seven-site (orange)
-thresholding. Open circles/solid lines use no pressure; open diamonds/dashed
-lines use OL1 at $h$; filled triangles/dash-dot lines use OL1 at all thresholded
-sites. Each curve joins five separately trained thresholds. Muted markers show
-A0 and ReLU; dotted paths apply post-hoc thresholding to those controls at
-$a,m,h,z$. Vertical guides show the selected-site ceilings. All 40 trained
-endpoints and the full historical post-hoc sweeps appear in the appendix.}
+\includegraphics[width=\linewidth]{figures/06-14m-quality-sparsity-latency.pdf}
+\caption{\textbf{Quality and execution depend on threshold and pressure placement.}
+Both panels show the same 22 Pythia-14M checkpoints: the base and GeLU-to-ReLU
+controls, and four recipes combining four-/seven-site thresholding with OL1
+pressure at $h$ or all thresholded sites.
+\textbf{(a)} Final-checkpoint validation loss versus model-wide sparsity.
+Annotated dotted paths apply post-hoc thresholding at $a,m,h,z$ to the controls;
+eight high-loss evaluations are outside this view (Figure~\ref{fig:clipping-14m}).
+Vertical guides mark analytic selected-site sparsity ceilings, not runtime gains.
+\textbf{(b)} Full-model K050 latency for the same trained models; the clipped
+controls have no matched timing measurements. Latency is the geometric mean of
+1,344 host timings (64 inputs, seven passes, three processes) on RTX5090, with
+BF16, batch one, 2,048-token full-sequence inference and all 50,304 logits.
+Loss and count-pooled sparsity use FP16 validation over 338 complete blocks
+from 500 documents, excluding the 1,444-token tail. Seven-site $h$-only timings
+use a different physical GPU/host session; small cross-session differences are
+descriptive. Lines connect separately trained $\kappa\in\{0,.01,.05,.1,.5\}$
+settings, not training trajectories or attainable interpolations.
+Each setting has one final checkpoint and one training seed.}
 \label{fig:quality-sparsity-overview}
 \end{figure}
 

@@ -1,5 +1,11 @@
 # Manuscript draft: ICLR 2027 format
 
+The selected main paper figure from Analysis024 is now Figure 1 in the
+introduction: quality-sparsity and full-model latency for the same 22 14M
+checkpoints. Its unchanged source PDF, checkpoint evidence, and build checks
+are linked in the [adoption record](reviews/2026-09-18-main-figure/README.md).
+The following revision notes retain their historical scope.
+
 ## Collaborative editing
 
 As of 9 September 2026, this directory is tracked in Git for collaborative

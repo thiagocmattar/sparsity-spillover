@@ -42,8 +42,9 @@ Accordingly, the scale experiment tests recurrence of within-size recipe
 relationships rather than quality scaling with parameter count.
 These conclusions concern MiniPile pretraining and complete recipes at the
 larger sizes. The distribution diagnostics cover 14M and describe responses
-rather than isolating a causal pathway for the nonlocal response. The kernel results use one RTX5090,
-full-sequence inference, native SDPA and matched fusion controls. Transfer
+rather than isolating a causal pathway for the nonlocal response. The kernel results use RTX5090 hardware,
+full-sequence inference, native SDPA and matched fusion controls; Figure~\ref{fig:quality-sparsity-overview}
+adds seven-site h-only timings from a separate physical GPU/host session. Transfer
 to cached decoding, larger models and other hardware remains untested.
 
 The pressure-scope controls sharpen identification but do not complete it.
@@ -51,6 +52,7 @@ Each condition has one training seed, and the shared validation set is not
 an independent confirmation set. Because $T_7/P_4$ is absent, the
 $P_h\rightarrow P_7$ contrast jointly changes pressure at $a,m,z,q,k,v$
 and the objective normalization; it cannot isolate Q/K/V pressure.
-H-only scaling and seven-site h-only K050 runtime remain untested in the
-reported cohorts. Present larger-scale conclusions concern complete broad-pressure
-recipes only.
+H-only scaling remains outside the larger-size cohorts reported here. The
+seven-site h-only full-model timings in Figure~\ref{fig:quality-sparsity-overview}
+do not include matched skipping ablations. Present larger-scale conclusions
+concern complete broad-pressure recipes only.

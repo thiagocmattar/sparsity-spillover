@@ -3,6 +3,9 @@
 **Selected main paper figure:** [Figure 6, side-by-side 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
 with [caption and proposed writing](observations/023-14m-quality-latency-variant.md).
 It preserves the original Figure 1 and uses the revised recipe naming and styling.
+This variant is now adopted as manuscript Figure 1 in the introduction; the
+original analysis Figure 1 is still retained. See the
+[adoption record](../../manuscript/draft/reviews/2026-09-18-main-figure/README.md).
 
 Rebuilt from [task.md](task.md) on 18 September 2026. Each linked caption file
 is also the figure's observation: it contains the question, method, coverage,

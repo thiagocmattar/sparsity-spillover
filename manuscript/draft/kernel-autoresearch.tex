@@ -5,6 +5,8 @@
 % Kernel trace, matched latencies and stratified fits: Analysis 021 investigation/
 % observations/O001-kernel-investigation.md; 01_extract.py and 02_analyze.py.
 % Qualification/search audit: Run 029 observations/06-implementation-and-claim-audit.md.
+% New full-model h-only timings in Figure 1: Analysis024 observations/023-14m-quality-latency-variant.md;
+% generating script: analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py.
 \subsection{When model-wide sparsity translates to speedup}
 \label{sec:kernel-autoresearch}
 
@@ -14,8 +16,9 @@ useful depends on where the zeros occur, their execution structure, and
 the kernel used to exploit them. We evaluate the same specialized K050
 implementation across 35 Pythia-14M checkpoints, including the five historical
 four-site h-only models, to ask which forms of learned sparsity translate into
-measured acceleration. The five new seven-site h-only timings remain pending;
-we also restore the five historical h-only matched ablations. Measurements use
+measured acceleration. Figure~\ref{fig:quality-sparsity-overview} adds the five
+seven-site h-only full-model timings from a separate RTX5090 session;
+the matched ablations here retain the historical 35-checkpoint cohort. Those historical measurements use
 BF16, batch-one, uncached 2,048-token inference with full-vocabulary logits
 on one RTX5090. Each candidate undergoes numerical qualification against
 the native reference on complete validation before timing
@@ -33,9 +36,10 @@ each checkpoint (Appendix~\ref{app:kernel-diagnostics}).
 The restored $T_4/P_h$ measurements make pressure placement relevant to this
 comparison: at $\kappa=0.5$, this model runs at 0.4623 ms with loss 5.7227,
 both lower than $T_7/P_7$ despite only $10.23\%$ model-wide sparsity.
-At $\kappa=0.05$, it runs at 0.5618 ms with loss 5.1956. These measured
-operating points do not establish the runtime ordering of the still-unmeasured
-seven-site h-only models.
+At $\kappa=0.05$, it runs at 0.5618 ms with loss 5.1956. The seven-site h-only
+full-model measurements appear in Figure~\ref{fig:quality-sparsity-overview};
+small differences across the two physical GPU/host sessions do not establish
+a reliable runtime ordering.
 
 % Approved artwork copied unchanged; hash in figures/SOURCES.json.
 \begin{figure}[!htbp]
@@ -47,7 +51,8 @@ qualified checkpoints; the black cross is native A0. Gray
 circles show A0 and one-site conditions, blue diamonds four-site recipes, and
 orange triangles seven-site recipes. These multisite markers are open without
 pressure and filled with OL1(all); blue squares add four-site OL1(h).
-Seven-site OL1(h) timing remains pending.
+This historical panel excludes the seven-site OL1(h) timings shown in
+Figure~\ref{fig:quality-sparsity-overview}.
 \textbf{(b)} Projection MMA bypass for the same 35 checkpoints versus matched gain from enabling
 projection skipping: all-skips-off latency divided by projection-enabled,
 attention-dense latency. The dashed OLS fit is descriptive ($R^2=0.941$).
