@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+[Figure 13: sparsity versus base-model speedup](figures/13-14m-70m-sparsity-base-speedup.pdf)
+uses A3's size-specific optimized A0 references and Figure 08's matched cohort
+and styling, including all 40 measured control clipping settings. The new
+two-panel PDF, exact ratios and reproducible builder are documented in the
+[observation and caption](observations/030-base-speedup-clipping.md).
+
 [Operation contributions](figures/04-operation-sparsity-changes.pdf) and the
 existing bypass summary now form manuscript Figures 5 and 6 in the merged
 Section 4.3 on sparsity and speedup. The operation figure is copied unchanged;

@@ -1,5 +1,10 @@
 # Observations
 
+- [030: Base-model speedup with clipping](030-base-speedup-clipping.md):
+  a new two-panel 14M/70M scatter plot using A3's optimized A0 references,
+  Figure 08's 44 trained checkpoints and style, and all 40 measured control
+  clipping evaluations. Every ratio uses the same reference within its size.
+
 - [029: High-threshold bypass summary](029-operation-bypass-summary.md):
   two size panels, T4/Pall versus T7/Pall at kappa=0.5, and 24 count-based bars.
   Retained as manuscript Figure 6 in the merged sparsity/runtime explanation;

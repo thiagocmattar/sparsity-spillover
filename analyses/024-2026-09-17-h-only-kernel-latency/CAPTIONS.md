@@ -1,5 +1,11 @@
 # Paper figures, captions, and associated manuscript writing
 
+[Figure 13: model-wide sparsity and base-model speedup](figures/13-14m-70m-sparsity-base-speedup.pdf)
+uses the same optimized A0 reference for all trained and clipped settings
+within each size, with Figure 08's style and cohort. Its
+[publication caption and proposed runtime paragraph](observations/030-base-speedup-clipping.md)
+define the normalization, full clipping coverage and cross-session limits.
+
 [Absolute operation contributions](figures/04-operation-sparsity-changes.pdf)
 are adopted unchanged as manuscript Figure 5, followed by the existing bypass
 summary as Figure 6. The merged Section 4.3 connects high-threshold QK/PV
