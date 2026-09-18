@@ -68,7 +68,9 @@ then `02_plot.py` from the same folder. Publication outputs are PDF only.
 The final-kernel-only topology figure is reproduced with `03_plot_final_latency.py`.
 It reads the unchanged retained reduction and saves its plotted points and source
 hash in `data/final-latency-topology.json`. It uses the four explicitly listed
-labels in the user's request, with no pressure-specific sublabels or fitted lines.
+topology labels in the legend, with pressure recipes labeled directly on the plot.
 Markers within each recipe family are connected in increasing kappa or lambda
 order. A4, A4+OL1(all), A4+OL1(h), and their A7 counterparts have separate
 curves despite sharing topology labels; A1-H+L1 and A1-H+OL1 are also separate.
+The curves are dashed; labels distinguish no pressure, OL1(h), OL1(all), and
+the single-site naive L1 family. No fitted trend is added.

@@ -12,6 +12,8 @@ replaces the zero-based latency axis with a scale fitted to the data.
 The user clarified that a family means one recipe, such as A4, A4-OL1(all)
 or A4-OL1(h), rather than every point sharing a topology label. Lines connect
 only the same recipe in increasing kappa or lambda order.
+The next revision makes these curves dashed and directly labels their pressure
+recipes, retaining the four topology legend entries.
 
 **Method and coverage.** Reuse all 40 qualified checkpoints in
 `data/results.json`: 1 A0, 9 A1-H conditions (ReLU, naive L1 and OL1),
@@ -35,8 +37,12 @@ and markers within each recipe family are connected in increasing kappa
 (A4/A7) or lambda (A1-H+L1 and A1-H+OL1) order. Each A4/A7 topology has
 three separate five-point curves: no pressure, all-site OL1, and h-only OL1.
 The two single-site pressure families have separate four-point curves.
-Baseline and unpressured ReLU remain isolated markers. Lines are visual
-guides along each measured sweep, not fits. No point annotations are used.
+Baseline and unpressured ReLU remain isolated markers. Dashed lines are visual
+guides along each measured sweep, not fits. Color-matched direct labels
+identify no pressure, OL1(h), and OL1(all) within A4/A7. Single-site labels
+identify no pressure, naive L1 (shown as L1), and OL1(h). Thin leader arrows
+associate each label with its own curve or isolated control; they do not
+represent an additional measurement or intervention.
 
 **Result.** The displayed K050 latencies span 0.459476-0.651573 ms.
 The baseline is 0.651573 ms. Topology grouping changes only the presentation;
