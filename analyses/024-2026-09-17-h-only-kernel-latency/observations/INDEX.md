@@ -21,3 +21,5 @@
   with separate linear-y and log-y versions.
 - [010](010-a0-normalized-speedup.md): 42 points normalized to each model size's
   final-kernel A0 latency; 1-site controls excluded, linear axes and size labels.
+- [011](011-matched-quality-sparsity.md): validation loss versus model-wide
+  sparsity for 44 matched 14M/70M checkpoints, including both 1-site controls.

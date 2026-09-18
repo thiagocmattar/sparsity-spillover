@@ -172,3 +172,14 @@ reference used in the earlier kernel speedup figures. Exact baseline values,
 original latencies, ratios and provenance are in
 `data/matched-a0-normalized-speedup.json`; see the
 [caption and interpretation limits](observations/010-a0-normalized-speedup.md).
+
+The [quality-sparsity companion panel](figures/11-14m-70m-matched-quality-sparsity.pdf)
+is reproduced with `11_plot_matched_quality_sparsity.py`. It restores both
+1-site controls to Figure10's recipe cohort, yielding 44 points, and plots
+ordinary final-checkpoint validation loss against model-wide sparsity. Colors,
+open/filled markers, dashed recipe curves and model-size labels follow Figure10;
+both axes are linear. The builder checks all losses against original metrics,
+reconciles the uniform loss conventions in Analyses023/025, and verifies pooled
+counts and checkpoint identities. Exact values and source hashes are in
+`data/matched-quality-sparsity.json`; see the
+[caption and provenance](observations/011-matched-quality-sparsity.md).
