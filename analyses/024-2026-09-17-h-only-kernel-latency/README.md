@@ -32,6 +32,10 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
   four-site and seven-site rows, each with five matched kappa contrasts for loss,
   logical sparsity and K050 latency. See the
   [complete contrasts and caption](observations/006-paired-pressure-effects.md).
+- [Pressure versus no pressure, 2-by-3 distributions](figures/07-14m-pressure-vs-none-effects.pdf):
+  all-site OL1 on the top row and h-only OL1 on the bottom, each compared with
+  no pressure within four- and seven-site topologies. See the
+  [observation and caption](observations/007-pressure-vs-none-effects.md).
 
 The five new A7+OL1(h) speedups are **1.2060, 1.3929, 1.4706, 1.5649 and
 1.7839x**, in ascending kappa order. At kappa=0.5, h-only pressure has
@@ -106,3 +110,11 @@ The complete ten pairs and six box summaries are in `data/paired-pressure-effect
 All-site pressure has higher loss in all ten pairs and higher observed latency
 in eight; only kappa=0.5 has a slightly negative latency contrast in each topology.
 Four-site timings share Run029; seven-site timings span Run029/Run033 sessions.
+
+The separate two-row figure is reproduced with `07_plot_pressure_vs_none.py`.
+It retains Figure06 and changes the reference to no pressure: top row OL1(all)
+minus no pressure, bottom row OL1(h) minus no pressure. Each panel contains
+four-site and seven-site boxes, each over five matched kappas. Scales are shared
+between rows within each metric. The 20 contrasts from 30 unique checkpoints,
+source hashes and 12 box summaries are in `data/pressure-vs-none-effects.json`.
+Only the seven-site h-only latency contrasts span different GPU/host sessions.

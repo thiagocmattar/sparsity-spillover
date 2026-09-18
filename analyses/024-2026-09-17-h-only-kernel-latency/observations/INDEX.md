@@ -10,3 +10,5 @@
   contrasts per pressure recipe, with loss, sparsity and latency panels.
 - [006](006-paired-pressure-effects.md): OL1(all) minus OL1(h), with five
   matched contrasts per topology and the same three distribution panels.
+- [007](007-pressure-vs-none-effects.md): 2-by-3 distributions of all-site and
+  h-only OL1 minus no pressure, with four-/seven-site boxes in each panel.
