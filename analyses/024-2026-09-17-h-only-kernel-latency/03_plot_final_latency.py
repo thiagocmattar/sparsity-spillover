@@ -42,12 +42,17 @@ def main():
                 'group': label, 'session': point['session'],
                 'sparsity_percent': sparsity, 'k050_gm_ms': point['k050_gm_ms'],
             })
-        ordered = sorted(selected, key=lambda p: (p['sparsity_percent'], p['family'], p['condition']))
-        if len(ordered) > 1:
+        for family in sorted({p['family'] for p in selected}):
+            family_points = [p for p in selected if p['family'] == family]
+            if len(family_points) == 1:
+                continue
+            ordered = sorted(family_points, key=lambda p: p['kappa_or_lambda'])
             ax.plot([p['sparsity_percent'] for p in ordered],
                     [p['k050_gm_ms'] for p in ordered],
                     color=color, linewidth=1.0, alpha=.8, zorder=2)
-            connections.append({'group': label, 'order': 'increasing model-wide sparsity',
+            connections.append({'group': label, 'family': family,
+                                'order': 'increasing kappa or lambda within this recipe',
+                                'kappa_or_lambda': [p['kappa_or_lambda'] for p in ordered],
                                 'conditions': [{'session': p['session'], 'condition': p['condition']}
                                                for p in ordered]})
         ax.scatter([p['sparsity_percent'] for p in selected],
@@ -71,7 +76,7 @@ def main():
                columnspacing=1.35, bbox_to_anchor=(.53, .025))
     fig.subplots_adjust(left=.11, right=.985, bottom=.23, top=.965)
     assert sum(len(c.get_offsets()) for c in ax.collections) == 40
-    assert len(ax.lines) == 3 and sum(len(line.get_xdata()) for line in ax.lines) == 39
+    assert len(ax.lines) == 8 and sum(len(line.get_xdata()) for line in ax.lines) == 38
     assert all(ax.get_xlim()[0] < r['sparsity_percent'] < ax.get_xlim()[1]
                and ax.get_ylim()[0] < r['k050_gm_ms'] < ax.get_ylim()[1] for r in records)
     output = HERE / 'figures/03-14m-k050-sparsity-latency-topology.pdf'
@@ -86,7 +91,7 @@ def main():
         'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
         'protocol': data['protocol'], 'latency_definition': data['latency_definition'],
         'cross_session_limit': data['cross_session_limit'],
-        'display': 'Final K050 only; four topology labels; markers in each legend group connected in increasing sparsity order; no fits or point annotations; latency axis fitted to data with padding.',
+        'display': 'Final K050 only; four topology labels; separate recipe-family lines in increasing kappa or lambda order; no connections across recipes, fits or point annotations; latency axis fitted to data with padding.',
         'y_limits_ms': y_limits,
         'connections': connections,
         'points': records,

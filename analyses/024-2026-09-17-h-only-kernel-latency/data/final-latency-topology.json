@@ -18,7 +18,7 @@
   },
   "latency_definition": "Geometric mean of all 1,344 raw host-latency samples per implementation; not the older geometric mean of process medians.",
   "cross_session_limit": "Same GPU model, frozen kernel and timing protocol; different GPU/host sessions may shift absolute latencies and ratios. No new A0 or skip ablations.",
-  "display": "Final K050 only; four topology labels; markers in each legend group connected in increasing sparsity order; no fits or point annotations; latency axis fitted to data with padding.",
+  "display": "Final K050 only; four topology labels; separate recipe-family lines in increasing kappa or lambda order; no connections across recipes, fits or point annotations; latency axis fitted to data with padding.",
   "y_limits_ms": [
     0.44,
     0.67
@@ -26,23 +26,47 @@
   "connections": [
     {
       "group": "1-site (A1-H)",
-      "order": "increasing model-wide sparsity",
+      "family": "A1-H+L1",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.05,
+        0.1,
+        0.5,
+        1.0
+      ],
       "conditions": [
-        {
-          "session": "Run029",
-          "condition": "c02"
-        },
         {
           "session": "Run029",
           "condition": "c03"
         },
         {
           "session": "Run029",
-          "condition": "c07"
+          "condition": "c04"
         },
         {
           "session": "Run029",
-          "condition": "c04"
+          "condition": "c05"
+        },
+        {
+          "session": "Run029",
+          "condition": "c06"
+        }
+      ]
+    },
+    {
+      "group": "1-site (A1-H)",
+      "family": "A1-H+OL1",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.05,
+        0.1,
+        0.5,
+        1.0
+      ],
+      "conditions": [
+        {
+          "session": "Run029",
+          "condition": "c07"
         },
         {
           "session": "Run029",
@@ -54,21 +78,21 @@
         },
         {
           "session": "Run029",
-          "condition": "c05"
-        },
-        {
-          "session": "Run029",
           "condition": "c10"
-        },
-        {
-          "session": "Run029",
-          "condition": "c06"
         }
       ]
     },
     {
       "group": "4-sites (A4*)",
-      "order": "increasing model-wide sparsity",
+      "family": "A4",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
       "conditions": [
         {
           "session": "Run029",
@@ -80,23 +104,7 @@
         },
         {
           "session": "Run029",
-          "condition": "c16"
-        },
-        {
-          "session": "Run029",
           "condition": "c13"
-        },
-        {
-          "session": "Run029",
-          "condition": "c31"
-        },
-        {
-          "session": "Run029",
-          "condition": "c32"
-        },
-        {
-          "session": "Run029",
-          "condition": "c17"
         },
         {
           "session": "Run029",
@@ -104,19 +112,29 @@
         },
         {
           "session": "Run029",
-          "condition": "c33"
-        },
-        {
-          "session": "Run029",
-          "condition": "c34"
-        },
-        {
-          "session": "Run029",
           "condition": "c15"
+        }
+      ]
+    },
+    {
+      "group": "4-sites (A4*)",
+      "family": "A4+OL1@4",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
+      "conditions": [
+        {
+          "session": "Run029",
+          "condition": "c16"
         },
         {
           "session": "Run029",
-          "condition": "c35"
+          "condition": "c17"
         },
         {
           "session": "Run029",
@@ -133,13 +151,51 @@
       ]
     },
     {
-      "group": "7-sites (A7)",
-      "order": "increasing model-wide sparsity",
+      "group": "4-sites (A4*)",
+      "family": "A4+OL1@h",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
       "conditions": [
         {
           "session": "Run029",
-          "condition": "c26"
+          "condition": "c31"
         },
+        {
+          "session": "Run029",
+          "condition": "c32"
+        },
+        {
+          "session": "Run029",
+          "condition": "c33"
+        },
+        {
+          "session": "Run029",
+          "condition": "c34"
+        },
+        {
+          "session": "Run029",
+          "condition": "c35"
+        }
+      ]
+    },
+    {
+      "group": "7-sites (A7)",
+      "family": "A7",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
+      "conditions": [
         {
           "session": "Run029",
           "condition": "c21"
@@ -150,8 +206,64 @@
         },
         {
           "session": "Run029",
+          "condition": "c23"
+        },
+        {
+          "session": "Run029",
+          "condition": "c24"
+        },
+        {
+          "session": "Run029",
+          "condition": "c25"
+        }
+      ]
+    },
+    {
+      "group": "7-sites (A7)",
+      "family": "A7+OL1@7",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
+      "conditions": [
+        {
+          "session": "Run029",
+          "condition": "c26"
+        },
+        {
+          "session": "Run029",
           "condition": "c27"
         },
+        {
+          "session": "Run029",
+          "condition": "c28"
+        },
+        {
+          "session": "Run029",
+          "condition": "c29"
+        },
+        {
+          "session": "Run029",
+          "condition": "c30"
+        }
+      ]
+    },
+    {
+      "group": "7-sites (A7)",
+      "family": "A7+OL1@h",
+      "order": "increasing kappa or lambda within this recipe",
+      "kappa_or_lambda": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5
+      ],
+      "conditions": [
         {
           "session": "Run033",
           "condition": "c36"
@@ -161,40 +273,16 @@
           "condition": "c37"
         },
         {
-          "session": "Run029",
-          "condition": "c23"
-        },
-        {
-          "session": "Run029",
-          "condition": "c28"
-        },
-        {
           "session": "Run033",
           "condition": "c38"
-        },
-        {
-          "session": "Run029",
-          "condition": "c24"
         },
         {
           "session": "Run033",
           "condition": "c39"
         },
         {
-          "session": "Run029",
-          "condition": "c29"
-        },
-        {
-          "session": "Run029",
-          "condition": "c25"
-        },
-        {
           "session": "Run033",
           "condition": "c40"
-        },
-        {
-          "session": "Run029",
-          "condition": "c30"
         }
       ]
     }

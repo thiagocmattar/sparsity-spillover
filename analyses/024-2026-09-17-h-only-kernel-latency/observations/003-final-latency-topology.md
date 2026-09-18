@@ -9,8 +9,9 @@ model-wide sparsity on x and final-kernel full-model latency on y, followed by
 later styling guidance. The request said three labels but explicitly listed
 four; this figure uses the four named groups. The user's next instruction
 replaces the zero-based latency axis with a scale fitted to the data.
-The subsequent instruction connects markers sharing a legend label. Lines
-therefore join each topology group in increasing model-wide sparsity order.
+The user clarified that a family means one recipe, such as A4, A4-OL1(all)
+or A4-OL1(h), rather than every point sharing a topology label. Lines connect
+only the same recipe in increasing kappa or lambda order.
 
 **Method and coverage.** Reuse all 40 qualified checkpoints in
 `data/results.json`: 1 A0, 9 A1-H conditions (ReLU, naive L1 and OL1),
@@ -30,10 +31,12 @@ green circles: 1-site (A1-H); blue diamonds: 4-sites (A4*); orange triangles:
 h-only OL1 variants. BF16 inference on RTX5090, batch 1, T=2048, full
 50,304 logits; milliseconds per full-sequence forward. All points are shown,
 the latency axis spans 0.44-0.67 ms to show the measured range with padding,
-and markers within each legend group are connected from left to right.
-The singleton baseline remains an isolated marker. Lines are visual guides
-across recipes and thresholds, not a fit or one kappa/lambda sweep. No point
-annotations are used.
+and markers within each recipe family are connected in increasing kappa
+(A4/A7) or lambda (A1-H+L1 and A1-H+OL1) order. Each A4/A7 topology has
+three separate five-point curves: no pressure, all-site OL1, and h-only OL1.
+The two single-site pressure families have separate four-point curves.
+Baseline and unpressured ReLU remain isolated markers. Lines are visual
+guides along each measured sweep, not fits. No point annotations are used.
 
 **Result.** The displayed K050 latencies span 0.459476-0.651573 ms.
 The baseline is 0.651573 ms. Topology grouping changes only the presentation;
@@ -46,7 +49,8 @@ points were measured on a second physical RTX5090/host session, so absolute
 cross-session comparisons remain descriptive. Topology colors are not a causal
 decomposition, and overlapping points are not independent training-seed replicates.
 Connecting segments do not represent measurements between checkpoints or an
-interpolated causal response; a group may include different pressure targets.
+interpolated causal response. The shared topology label does not connect
+different pressure recipes.
 
 **Source and output.** `../03_plot_final_latency.py`, the unchanged source
 `../data/results.json` and its SHA-256 in

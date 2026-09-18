@@ -69,5 +69,6 @@ The final-kernel-only topology figure is reproduced with `03_plot_final_latency.
 It reads the unchanged retained reduction and saves its plotted points and source
 hash in `data/final-latency-topology.json`. It uses the four explicitly listed
 labels in the user's request, with no pressure-specific sublabels or fitted lines.
-Markers sharing a legend label are connected in increasing model-wide sparsity
-order; the lines are visual guides across the group's recipes and thresholds.
+Markers within each recipe family are connected in increasing kappa or lambda
+order. A4, A4+OL1(all), A4+OL1(h), and their A7 counterparts have separate
+curves despite sharing topology labels; A1-H+L1 and A1-H+OL1 are also separate.
