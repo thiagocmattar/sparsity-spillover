@@ -17,6 +17,9 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
   [observation and caption](observations/001-sparsity-speedup.md).
 - [Native and K050 latency](figures/02-14m-k050-sparsity-latency.pdf), with
   [observation and caption](observations/002-absolute-latency.md).
+- [Final K050 latency by topology](figures/03-14m-k050-sparsity-latency-topology.pdf),
+  added on 18 September: all 40 checkpoints, grouped as baseline, 1-site,
+  4-sites and 7-sites, with [caption](observations/003-final-latency-topology.md).
 - [Complete 40-checkpoint table](TABLE.md) and [full-precision data](data/results.json).
 
 The five new A7+OL1(h) speedups are **1.2060, 1.3929, 1.4706, 1.5649 and
@@ -61,3 +64,8 @@ endpoint. Run033 owns source/input identity checks and verified retrieval.
 
 Reproduce with `.venv/Scripts/python.exe analyses/024-2026-09-17-h-only-kernel-latency/01_reduce.py`
 then `02_plot.py` from the same folder. Publication outputs are PDF only.
+
+The final-kernel-only topology scatter is reproduced with `03_plot_final_latency.py`.
+It reads the unchanged retained reduction and saves its plotted points and source
+hash in `data/final-latency-topology.json`. It uses the four explicitly listed
+labels in the user's request, with no pressure-specific sublabels or fitted lines.
