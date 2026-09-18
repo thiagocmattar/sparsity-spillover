@@ -30,11 +30,11 @@ def install(model,shortcut=False,round_p=False,skip=True,projection_skip=True):
             linear._run028_projection=projection.Projection(linear,skip=projection_skip)
             linear.forward=MethodType(lambda obj,x:obj._run028_projection(x),linear)
         norm.bind_pair(layer,pair)
-    return {'identity':'k050-70m-v1','topology':topology_metadata(model),
+    return {'identity':'k050-70m-v2','topology':topology_metadata(model),
         'normalization':'width512 shared-input Welford pair; distinct affine and existing a/m gates',
         'input_projections':'same CUTLASS32x64x64 pipeline; input width512',
         'output_projections':'M8N128 tiles across N512; H2048/Z512;128-bit h support masks; same <=2-row SIMT fallback',
-        'attention':'K035-derived H8 D64, two KV splits, no prefix shortcut',
+        'attention':'K050 exact-zero MMA bypass in native H8 D64 M128N128 unsplit Flash schedule; no prefix shortcut',
         'rope':'unchanged shape-parametric K019 BF16 RoPE and symmetric gates',
         'projection_skip':projection_skip,'attention_skip':skip,'round_p':False,'shortcut':False,
         'new_optimization_search':False}

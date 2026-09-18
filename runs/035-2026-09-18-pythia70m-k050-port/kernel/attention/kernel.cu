@@ -1,4 +1,4 @@
-// K035-derived B1 H8 T2048 D64 port. Frozen no-prefix policy; two KV splits.
+// K035-derived B1 H8 T2048 D64 port. Native128x128 causal schedule, no KV splitting; exact-zero MMA bypass.
 #include <torch/extension.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>
@@ -12,26 +12,23 @@
 
 namespace run035_flash {
 struct Params:Flash_fwd_params{int64_t* run028_stats;};
-template<bool Skip,bool Count> struct Traits:Flash_fwd_kernel_traits<64,64,256,4,false,false,cutlass::bfloat16_t>{
+template<bool Skip,bool Count> struct Traits:Flash_fwd_kernel_traits<64,128,128,4,false,false,cutlass::bfloat16_t>{
     static constexpr bool Run028Skip=Skip,Run028Count=Count;
 };
 template<bool Skip,bool Count>
 __global__ void kernel(const __grid_constant__ Params p){
-    compute_attn_splitkv<Traits<Skip,Count>,true,false,false,true,true,false,true,false>(p);
-}
-__global__ void combine(const __grid_constant__ Params p){
-    combine_attn_seqk_parallel<Traits<false,false>,16,1,true>(p);
+    compute_attn<Traits<Skip,Count>,false,true,false,false,true,true,false,false>(p);
 }
 template<bool Skip,bool Count> void launch(Params p,cudaStream_t stream){
     constexpr int smem=Traits<Skip,Count>::kSmemSize;
     if constexpr(smem>=48*1024){
         C10_CUDA_CHECK(cudaFuncSetAttribute(kernel<Skip,Count>,cudaFuncAttributeMaxDynamicSharedMemorySize,smem));
     }
-    kernel<Skip,Count><<<dim3(32,2,8),128,smem,stream>>>(p);
+    kernel<Skip,Count><<<dim3(16,1,8),128,smem,stream>>>(p);
 }
 }
 
-void forward(torch::Tensor q,torch::Tensor k,torch::Tensor v,torch::Tensor out,
+void run035_forward(torch::Tensor q,torch::Tensor k,torch::Tensor v,torch::Tensor out,
     torch::Tensor lse,torch::Tensor lse_accum,torch::Tensor o_accum,
     torch::Tensor stats,torch::Tensor prefix,torch::Tensor safe,torch::Tensor prefix_stats,
     double scale,bool skip,bool count,bool shortcut){
@@ -41,8 +38,8 @@ void forward(torch::Tensor q,torch::Tensor k,torch::Tensor v,torch::Tensor out,
     for(const auto& x:{q,k,v,out})TORCH_CHECK(x.device()==q.device() && x.scalar_type()==q.scalar_type() && x.is_contiguous(),"BF16 device/layout");
     for(const auto& x:{lse,lse_accum,o_accum})TORCH_CHECK(x.is_contiguous() && x.device()==q.device() && x.scalar_type()==at::kFloat,"FP32 workspace");
     TORCH_CHECK(lse.numel()==8*2048 && lse_accum.numel()==2*8*2048 && o_accum.numel()==2*8*2048*64,"Workspace shape");
-    TORCH_CHECK(stats.is_contiguous() && stats.device()==q.device() && stats.scalar_type()==at::kLong && stats.numel()==8*32*2*4*4,"Counter shape");
-    TORCH_CHECK(prefix_stats.is_contiguous() && prefix_stats.device()==q.device() && prefix_stats.scalar_type()==at::kLong && prefix_stats.numel()==8*32*2*4*3,"Prefix counter shape");
+    TORCH_CHECK(stats.is_contiguous() && stats.device()==q.device() && stats.scalar_type()==at::kLong && stats.numel()==8*16*1*4*4,"Counter shape");
+    TORCH_CHECK(prefix_stats.is_contiguous() && prefix_stats.device()==q.device() && prefix_stats.scalar_type()==at::kLong && prefix_stats.numel()==8*16*1*4*3,"Prefix counter shape");
     TORCH_CHECK(std::isfinite(scale) && scale>0,"Positive finite scale required");
     c10::cuda::CUDAGuard guard(q.device());auto stream=at::cuda::getCurrentCUDAStream();
     run035_flash::Params p{};
@@ -55,13 +52,11 @@ void forward(torch::Tensor q,torch::Tensor k,torch::Tensor v,torch::Tensor out,
     p.scale_softmax=float(scale);p.scale_softmax_log2=p.scale_softmax*M_LOG2E;
     p.p_dropout=p.rp_dropout=1.f;p.p_dropout_in_uint8_t=255;p.scale_softmax_rp_dropout=p.scale_softmax;
     p.is_bf16=p.is_causal=p.is_seqlens_k_cumulative=true;
-    p.window_size_left=2048;p.window_size_right=0;p.num_splits=2;
+    p.window_size_left=2048;p.window_size_right=0;p.num_splits=1;
     p.softmax_lse_ptr=lse.data_ptr();p.softmax_lseaccum_ptr=lse_accum.data_ptr();p.oaccum_ptr=o_accum.data_ptr();p.run028_stats=stats.data_ptr<int64_t>();
     if(count)C10_CUDA_CHECK(cudaMemsetAsync(prefix_stats.data_ptr(),0,prefix_stats.numel()*sizeof(int64_t),stream));
     if(skip){if(count)run035_flash::launch<true,true>(p,stream);else run035_flash::launch<true,false>(p,stream);}
     else{if(count)run035_flash::launch<false,true>(p,stream);else run035_flash::launch<false,false>(p,stream);}
     C10_CUDA_KERNEL_LAUNCH_CHECK();
-    run035_flash::combine<<<1024,128,0,stream>>>(p);
-    C10_CUDA_KERNEL_LAUNCH_CHECK();
 }
-PYBIND11_MODULE(TORCH_EXTENSION_NAME,m){m.def("forward",&forward);}
+PYBIND11_MODULE(TORCH_EXTENSION_NAME,m){m.def("forward",&run035_forward);}

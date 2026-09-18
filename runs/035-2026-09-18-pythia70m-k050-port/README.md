@@ -6,10 +6,35 @@ comparability for eventual paper use. This authorizes the port and measurement,
 not an open-ended optimization search. The detailed approved design is in
 [Analysis024](../../analyses/024-2026-09-17-h-only-kernel-latency/70M-KERNEL-COMPATIBILITY.md).
 
-Status: implementing; no scientific measurement yet. The implementation has
-the new identity `k050-70m-v1`, preserving the original K050 archive. Correctness
-revisions will be separately identified and retained before freezing the final
-cohort implementation. A shape port is not an equal optimization-budget claim.
+Status: numerical qualification in progress. The initial `k050-70m-v1`
+failed the unchanged full-model logit bounds. Its source snapshot and failed
+qualification are retained. The corrected `k050-70m-v2` matches the observed
+70M native attention schedule. No scientific cohort result is accepted yet.
+A shape port is not an equal optimization-budget claim.
+
+## Numerical compatibility record
+
+The first shape port passed all 28 operator checks but failed elementwise
+logit bounds in 14 of 338 baseline blocks. Its loss delta was only -0.0000457;
+passing loss alone was insufficient. Untimed component substitutions on three
+failing blocks isolated attention: substituting native attention made complete
+model logits bit-exact while retaining the ported normalization and sparse
+projections. Native profiling then identified D64/M128/N128/four warps and no
+KV splitting, versus the 14M-derived two-split M64/N256 schedule.
+
+Version2 keeps the exact-zero MMA bypass and adopts that observed native
+schedule, preserving its softmax and reduction order. This is a correctness
+correction, not a performance search or relaxed tolerance. Its operator checks
+match native attention bit-exactly for dense, zero-query and sparse cases.
+Independent issued+skipped attention MMA totals are 557056 per operation per
+layer/block. The change from v1's 589824 reflects tile padding; logical-product
+denominators do not change. All 248 bootstrap and run-contract tests passed.
+
+`00_port_sources.py` creates the initial shape port; `22_native_attention_port.py`
+applies the recorded v2 correction. The original v1 source bundle and hashes
+are under `bundles/port-v1-preflight.tar` and `provenance/port-v1-preflight.json`.
+Raw qualification, native dispatch and substitution evidence are retained in
+`artifacts/`, including failed attempt `qualify-c00-r1-001`.
 
 ## Contract
 

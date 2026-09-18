@@ -17,7 +17,7 @@ def test_matched_contract():
     for key in ['gpu','runtime','precision','batch_size','sequence_length','vocabulary','validation_blocks',
         'validation_documents','excluded_tail_tokens','timing_inputs','timing_passes','timing_seed',
         'runtime_seed','process_replicates','numerical_bounds','near_zero_thresholds']:assert new[key]==old[key]
-    assert new['final_candidates']==['k050-70m-v1']
+    assert new['final_candidates']==['k050-70m-v2']
     assert read(HERE/'provenance/inputs.json')['validation']['sha256']==read(BASE/'provenance/inputs.json')['validation']['sha256']
 
 def test_complete_available_cohort():
@@ -34,6 +34,23 @@ def test_fresh_process_schedule():
     m=load('run035_queue',HERE/'03_execute.py');jobs=m.jobs()
     assert len(jobs)==len(set(jobs))==66
     assert set(jobs)=={(f'c{i:02d}',r) for i in range(22) for r in range(1,4)}
+    assert ('c03',1) in m.jobs(qualify=True)  # Historical interior-kappa failure is a sentinel.
+
+def test_paired_reduction_requires_complete_matching_and_preserves_pairing():
+    import math
+    import pytest
+    m=load('run035_reducer',HERE/'16_reduce.py')
+    samples=[]
+    for repeat in range(7):
+        for index in range(64):
+            for mode,value in [('native_graph',1+index/64),('candidate_graph',2+repeat/7)]:
+                samples.append({'mode':mode,'repeat':repeat,'input_index':index,
+                    'output_shape':[1,2048,50304],'host_ms':value})
+    n,c,ratios=m.pairs(list(reversed(samples)))
+    assert len(ratios)==448
+    assert math.isclose(m.gm(ratios),m.gm(n)/m.gm(c),rel_tol=1e-12)
+    with pytest.raises(AssertionError):m.pairs(samples[:-1])
+    with pytest.raises(AssertionError):m.pairs(samples+[samples[0]])
 
 def test_independent_hybrid_integer_counts():
     # Load only the pure counter function, avoiding CUDA/runtime import changes.

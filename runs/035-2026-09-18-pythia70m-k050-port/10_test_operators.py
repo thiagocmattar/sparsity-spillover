@@ -55,7 +55,7 @@ def main():
             op=candidate.attention.Attention(skip=True,shortcut=False)
             actual=op(q,k,v,.125,count=True).clone()
             stat=op.stats.sum((0,1,2,3)).tolist()
-            assert stat[0]+stat[1]==589824 and stat[2]+stat[3]==589824,stat
+            assert stat[0]+stat[1]==557056 and stat[2]+stat[3]==557056,stat
             op.skip=False;dense=op(q,k,v,.125).clone()
             check(f'attention_skip_{case}',actual,dense)
             native=torch.nn.functional.scaled_dot_product_attention(q,k,v,is_causal=True,scale=.125)

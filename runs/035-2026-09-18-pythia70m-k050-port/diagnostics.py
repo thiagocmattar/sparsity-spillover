@@ -88,7 +88,7 @@ def collect(model,native,validation,dest,emit,architecture,*,blocks=338):
                 for site,value in [('q_post',q),('k_post',k),('v',v)]:capture.activations[f'{site}.layer_{self.index}']=value
                 stat=self.original.stats.sum((0,1,2,3)).cpu().tolist()
                 prefix=self.original.prefix_stats.sum().item()
-                if prefix!=0 or stat[0]+stat[1]!=589824 or stat[2]+stat[3]!=589824:
+                if prefix!=0 or stat[0]+stat[1]!=557056 or stat[2]+stat[3]!=557056:
                     raise ValueError('No-prefix attention counter conservation failed')
                 target=attention_counts.setdefault(str(self.index),[0,0,0,0])
                 for j,value in enumerate(stat):target[j]+=int(value)

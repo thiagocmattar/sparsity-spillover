@@ -30,10 +30,10 @@ class Attention:
             self.lse=torch.empty((8,2048),device=q.device,dtype=torch.float32)
             self.lse_accum=torch.empty((2,8,2048),device=q.device,dtype=torch.float32)
             self.o_accum=torch.empty((2,8,2048,64),device=q.device,dtype=torch.float32)
-            self.stats=torch.empty((8,32,2,4,4),device=q.device,dtype=torch.int64)
+            self.stats=torch.empty((8,16,1,4,4),device=q.device,dtype=torch.int64)
             self.prefix=torch.empty((2,8,1024,64),device=q.device,dtype=torch.float32)
             self.safe=torch.empty((2,8,16,32),device=q.device,dtype=torch.int32)
-            self.prefix_stats=torch.empty((8,32,2,4,3),device=q.device,dtype=torch.int64)
+            self.prefix_stats=torch.empty((8,16,1,4,3),device=q.device,dtype=torch.int64)
             self.shape=q.shape
         extension().forward(q,k,v,self.out,self.lse,self.lse_accum,self.o_accum,self.stats,self.prefix,self.safe,self.prefix_stats,scale,self.skip,count,self.shortcut)
         return self.out

@@ -38,7 +38,7 @@ def connect(*, refresh=False):
 
 def execute(client, command, timeout=60):
     _, out, err = client.exec_command(command, timeout=timeout)
-    stdout = out.read().decode(); stderr = err.read().decode()
+    stdout = out.read().decode(errors='replace'); stderr = err.read().decode(errors='replace')
     code = out.channel.recv_exit_status()
     if code: raise RuntimeError(f'Remote exit {code}: {stdout}\n{stderr}')
     return stdout + stderr

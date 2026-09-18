@@ -39,7 +39,7 @@ def main():
             result=json.loads((folder/'result.json').read_text())
             quality=json.loads((folder/'quality.json').read_text())
             assert result['status']=='complete' and not result['arguments']['smoke']
-            assert result['candidate']=='k050-70m-v1' and result['condition']==condition
+            assert result['candidate']=='k050-70m-v2' and result['condition']==condition
             assert quality['blocks']==338 and quality['documents']==500
             assert quality['excluded_tail_tokens']==1444 and quality['prediction_tokens']==691886
             assert result['qualification']==quality['pass']

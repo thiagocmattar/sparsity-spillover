@@ -10,7 +10,9 @@ import time
 HERE = Path(__file__).resolve().parent
 
 
-def jobs(smoke=False):
+def jobs(smoke=False,qualify=False):
+    if qualify:
+        return [('c00',1),('c03',1),('c06',1),('c11',1),('c16',1),('c21',1)]
     if smoke:
         return [('c00', 1), ('c06', 1), ('c11', 1), ('c16', 1), ('c21', 1)]
     pairs = [(f'c{i:02d}', r) for i in range(22) for r in range(1, 4)]
@@ -19,7 +21,7 @@ def jobs(smoke=False):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--phase',choices=['smoke','scientific'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--phase',choices=['smoke','qualify','scientific'],required=True)
     p.add_argument('--deadline-epoch',type=float,required=True);p.add_argument('--tag',default='001')
     args=p.parse_args()
     assert args.tag.isalnum()
@@ -29,14 +31,21 @@ def main():
         handle.write(str(__import__('os').getpid()))
     try:
         summary=[]
-        for condition, replicate in jobs(args.phase=='smoke'):
+        for condition, replicate in jobs(args.phase=='smoke',args.phase=='qualify'):
+            if args.phase=='qualify':
+                prefix=HERE/'runtime/verified-prefix.json'
+                ready=json.loads(prefix.read_text())['hash_complete_sentinels'] if prefix.exists() else []
+                while condition not in ready and not (HERE/'runtime/setup-complete').exists():
+                    if time.time()+1860>args.deadline_epoch:raise RuntimeError('Input wait exhausted preflight deadline')
+                    print(json.dumps({'stage':'waiting_for_verified_inputs','condition':condition}),flush=True)
+                    time.sleep(30)
             if time.time()+1860 > args.deadline_epoch:
                 raise RuntimeError('Reserve thirty-minute leaf limit and one minute for finalization before deadline')
             attempt=f'{args.phase}-{condition}-r{replicate}-{args.tag}'
             dest=HERE/'artifacts/attempts'/attempt
             if dest.exists():
                 raise RuntimeError(f'Attempt already exists; retain it and use a new explicit tag: {attempt}')
-            command=[sys.executable,'-u',str(HERE/'02_benchmark.py'),'--candidate','k050-70m-v1',
+            command=[sys.executable,'-u',str(HERE/'02_benchmark.py'),'--candidate','k050-70m-v2',
                      '--condition',condition,'--replicate',str(replicate),'--attempt',attempt,'--final']
             if args.phase=='smoke':command.append('--smoke')
             started=time.monotonic()
@@ -53,8 +62,8 @@ def main():
                 raise RuntimeError('Process failure; inspect retained artifacts before retry')
             if not result.get('qualification',{}).get('native_graph',False):
                 raise RuntimeError('Native reference failed its eager correctness anchor')
-            if args.phase=='smoke' and not result.get('qualified'):
-                raise RuntimeError('Smoke qualification failed')
+            if args.phase in {'smoke','qualify'} and not result.get('qualified'):
+                raise RuntimeError('Preflight qualification failed')
     finally:
         lock.unlink()
 

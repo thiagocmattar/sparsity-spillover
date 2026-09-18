@@ -11,6 +11,6 @@ scaffold=module('run035_frozen_graph',R28/'45_graph_forward.py')
 def final_row(name,catalog):return next(r for r in catalog if r['id']==name)
 
 def install(model,row):
-    if row['candidate']!='k050-70m-v1':raise ValueError('Unknown frozen candidate')
+    if row['candidate']!='k050-70m-v2':raise ValueError('Unknown frozen candidate')
     candidate=module('run035_candidate',RUN/'kernel/candidate.py')
     return candidate.install(model,**row['settings'])

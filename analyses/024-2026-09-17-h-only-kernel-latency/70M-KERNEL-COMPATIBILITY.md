@@ -4,6 +4,11 @@ Audited 18 September 2026 in response to the request for a 70M version of
 Figure03, using only retained checkpoints. This is a source/artifact audit and
 a proposed measurement design, not an executed kernel port or benchmark.
 
+The user subsequently approved this design and explicitly authorized RunPod.
+[Run035](../../runs/035-2026-09-18-pythia70m-k050-port/README.md) owns the port,
+qualification and new measurement. The availability statements below describe
+the pre-port audit; consult Run035 for execution status and eventual results.
+
 ## What is available
 
 All 22 trained final endpoints are retained in Runs018/034 and reduced in

@@ -60,6 +60,11 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
 
     // The thread index.
     const int tidx = threadIdx.x;
+    int run035_q_issued=0,run035_q_skipped=0,run035_p_issued=0,run035_p_skipped=0;
+    const int run035_offset=((bidh*16+m_block)*4+tidx/32)*4;
+    if constexpr(Kernel_traits::Run028Count) if((tidx&31)==0){
+        for(int c=0;c<4;++c)params.run028_stats[run035_offset+c]=0;
+    }
 
     constexpr int kBlockM = Kernel_traits::kBlockM;
     constexpr int kBlockN = Kernel_traits::kBlockN;
@@ -316,9 +321,9 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
         }
         cute::cp_async_fence();
 
-        FLASH_NAMESPACE::gemm</*A_in_regs=*/Kernel_traits::Is_Q_in_regs>(
+        FLASH_NAMESPACE::run028_gemm<Kernel_traits::Run028Skip,Kernel_traits::Run028Count,Kernel_traits::Is_Q_in_regs>(
             acc_s, tSrQ, tSrK, tSsQ, tSsK, tiled_mma, smem_tiled_copy_Q, smem_tiled_copy_K,
-            smem_thr_copy_Q, smem_thr_copy_K
+            smem_thr_copy_Q, smem_thr_copy_K, run035_q_issued, run035_q_skipped
         );
         // if (cute::thread0()) { print(acc_s); }
         if constexpr (Is_softcap){
@@ -364,7 +369,7 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
         // if using m16n8k16 or (4, MMA_M, MMA_N) if using m16n8k8.
         Tensor tOrP = make_tensor(rP.data(), FLASH_NAMESPACE::convert_layout_acc_Aregs<typename Kernel_traits::TiledMma>(rP.layout()));
         // if (cute::thread0()) { print(tOrP); }
-        FLASH_NAMESPACE::gemm_rs(acc_o, tOrP, tOrVt, tOsVt, tiled_mma, smem_tiled_copy_V, smem_thr_copy_V);
+        FLASH_NAMESPACE::run028_gemm_rs<Kernel_traits::Run028Skip,Kernel_traits::Run028Count>(acc_o,tOrP,tOrVt,tOsVt,tiled_mma,smem_tiled_copy_V,smem_thr_copy_V,run035_p_issued,run035_p_skipped);
         // if (cute::thread0()) { print(scores); }
 
         // This check is at the end of the loop since we always have at least 1 iteration
@@ -383,9 +388,9 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
         FLASH_NAMESPACE::copy</*Is_even_MN=*/true, Is_even_K>(gmem_tiled_copy_QKV, tVgV(_, _, _, n_block), tVsV, tKVcKV, tKVpKV);
         cute::cp_async_fence();
 
-        FLASH_NAMESPACE::gemm</*A_in_regs=*/Kernel_traits::Is_Q_in_regs>(
+        FLASH_NAMESPACE::run028_gemm<Kernel_traits::Run028Skip,Kernel_traits::Run028Count,Kernel_traits::Is_Q_in_regs>(
             acc_s, tSrQ, tSrK, tSsQ, tSsK, tiled_mma, smem_tiled_copy_Q, smem_tiled_copy_K,
-            smem_thr_copy_Q, smem_thr_copy_K
+            smem_thr_copy_Q, smem_thr_copy_K, run035_q_issued, run035_q_skipped
         );
         if constexpr (Is_softcap){
             FLASH_NAMESPACE::apply_softcap(acc_s, params.softcap);
@@ -425,7 +430,7 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
         // Reshape rP from (MMA=4, MMA_M, MMA_N) to ((4, 2), MMA_M, MMA_N / 2)
         // if using m16n8k16 or (4, MMA_M, MMA_N) if using m16n8k8.
         Tensor tOrP = make_tensor(rP.data(), FLASH_NAMESPACE::convert_layout_acc_Aregs<typename Kernel_traits::TiledMma>(rP.layout()));
-        FLASH_NAMESPACE::gemm_rs(acc_o, tOrP, tOrVt, tOsVt, tiled_mma, smem_tiled_copy_V, smem_thr_copy_V);
+        FLASH_NAMESPACE::run028_gemm_rs<Kernel_traits::Run028Skip,Kernel_traits::Run028Count>(acc_o,tOrP,tOrVt,tOsVt,tiled_mma,smem_tiled_copy_V,smem_thr_copy_V,run035_p_issued,run035_p_skipped);
     }
 
     // Epilogue
@@ -491,6 +496,13 @@ inline __device__ void compute_attn_1rowblock(const Params &params, const int bi
     FLASH_NAMESPACE::copy<Is_even_MN, Is_even_K, /*Clear_OOB_MN=*/false, /*Clear_OOB_K=*/false>(
         gmem_tiled_copy_O, tOrO, tOgO, tOcO, tOpO, binfo.actual_seqlen_q - m_block * kBlockM
     );
+    if constexpr(Kernel_traits::Run028Count) if((tidx&31)==0){
+        params.run028_stats[run035_offset]=run035_q_issued;
+        params.run028_stats[run035_offset+1]=run035_q_skipped;
+        params.run028_stats[run035_offset+2]=run035_p_issued;
+        params.run028_stats[run035_offset+3]=run035_p_skipped;
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
