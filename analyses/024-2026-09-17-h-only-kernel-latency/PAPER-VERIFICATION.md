@@ -4,14 +4,17 @@ Completed locally on 18 September 2026. No training, evaluation, benchmarking,
 or cloud resources were launched. The approved task is retained as `task.md`.
 
 Figure 3 was subsequently revised at the user's request to show OL1(all) minus
-OL1(h) at both 14M and 70M in four panels. Rows distinguish model sizes; columns
-show loss and sparsity changes. Two topology curves use Figure 6's blue/orange
+OL1(h) at both 14M and 70M in six panels. Rows distinguish model sizes; columns
+show loss, sparsity and full-model latency changes. Two topology curves use Figure 6's blue/orange
 colours and uniform circular markers. Its 20 contrasts use 40 unique checkpoints.
-The final style matches Figure 6's 8.6-inch width and title/panel/axis/tick/legend
-font sizes (14/11.5/11/10/11 points), line width and markers. The global/local
+The final style matches Figure 6's title/panel/axis/tick/legend font sizes
+(14/11.5/11/10/11 points), line width and markers, widened to 12.8 inches for the
+third column at the existing 5.8-inch height. Loss/sparsity retain shared scales
+across model sizes; latency scales are separate to keep 14M differences legible.
+Latency is the difference of retained checkpoint geometric means in µs. The global/local
 title, paired-difference panel names and concise axes replace the earlier wording.
 The redundant OL1 legend subtitle is removed. The final PDF was visually checked
-at 1,800 pixels, with all 20 contrast records unchanged and all fonts embedded.
+at 2,000 pixels, with all 20 contrast records unchanged and all fonts embedded.
 Only Figure 3 and its provenance/caption were
 regenerated; other PDFs and manuscript files retain their prior hashes.
 
@@ -35,8 +38,10 @@ The checks cover:
   inputs per checkpoint. The equal-sized process geometric means reconcile to
   the reported geometric mean over all 1,344 timings.
 - All 20 all-minus-h pairs at fixed size, scope, and threshold: matched
-  initialization/schedule and integer-count sparsity differences. The 14M
-  contrasts also agree with the difference between the retained all-minus-P0
+  initialization/schedule, integer-count sparsity differences, latency subtraction
+  and unit conversion, identical timing workloads/indices and session provenance.
+  Only the 14M T7 timing contrasts span sessions. The 14M contrasts also agree
+  for all three metrics with the difference between the retained all-minus-P0
   and h-minus-P0 effects in the pressure-versus-none appendix.
 - Eight operation decompositions: signed integer numerator differences sum
   exactly to the aggregate difference, and contributions sum to ΔS within
@@ -62,7 +67,7 @@ The architecture was compiled from the retained adaptation of the existing
 manuscript TikZ diagram. `pdfinfo` confirmed one page per PDF; `pdffonts` confirmed
 that all listed fonts are embedded (counts in figure order: 3,12,3,4,3,2,3,2,2).
 Publication outputs are PDF only; temporary preview PNGs are not deliverables.
-The revised Figure 3 was separately rendered at 1,900 pixels and visually
+The six-panel Figure 3 was separately rendered at 2,000 pixels and visually
 checked for labels, legend, line styles, and panel spacing. Numeric annotations
 and the validation-loss unit suffix are absent; all four listed fonts are embedded.
 

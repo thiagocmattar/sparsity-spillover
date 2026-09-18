@@ -72,6 +72,13 @@ class PaperFigureTests(unittest.TestCase):
             self.assertEqual(a['initial_parameter_sha256'],b['initial_parameter_sha256'])
             self.assertEqual(a['training_schedule_hash'],b['training_schedule_hash'])
             self.assertAlmostEqual(pair['loss'],a['loss']-b['loss'])
+            self.assertAlmostEqual(pair['latency_us'],1000*(a['latency_ms']-b['latency_ms']),places=12)
+            self.assertEqual(pair['sessions'],[a['timing_session'],b['timing_session']])
+            self.assertEqual(a['timing_workload'],b['timing_workload'])
+            self.assertEqual(a['timing_indices'],b['timing_indices'])
+            # T7 at 14M is the retained cross-session comparison, not a paired timing sample.
+            cross_session=(pair['model'],pair['scope'])==('14M','7')
+            self.assertEqual(a['timing_session']!=b['timing_session'],cross_session)
             self.assertEqual(a['counts']['model_product_count'],b['counts']['model_product_count'])
             expected=100*(a['counts']['block_zero_product_count']-b['counts']['block_zero_product_count'])/a['counts']['model_product_count']
             self.assertAlmostEqual(pair['sparsity'],expected,places=12)
@@ -86,6 +93,7 @@ class PaperFigureTests(unittest.TestCase):
                              (a['treatment_key'],b['treatment_key']))
             self.assertAlmostEqual(p['loss'],a['loss']-b['loss'])
             self.assertAlmostEqual(p['sparsity'],a['sparsity']-b['sparsity'])
+            self.assertAlmostEqual(p['latency_us'],a['latency_us']-b['latency_us'],places=10)
 
     def test_operation_integer_decomposition(self):
         bars=self.figures['04-operation-sparsity-changes.pdf']['contrasts']

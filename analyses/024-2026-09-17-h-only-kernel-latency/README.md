@@ -6,7 +6,7 @@ settings at 14M/70M and p=0,...,0.9 qualify across 120 processes. See the
 [complete table](../../runs/036-2026-09-18-controls-clipping-final-kernel/TABLE.md),
 and [method, results and caveats](observations/024-controls-posthoc-final-latency.md).
 Reproduce with `15_plot_controls_clipping_latency.py`. The separate Figure3
-uses four panels for OL1(all) minus OL1(h) at both sizes.
+uses six panels for OL1(all) minus OL1(h) at both sizes.
 
 Selected main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
 uses the same 22 trained pressure/control checkpoints in both panels, circular
@@ -40,11 +40,14 @@ Figure 1 uses all 54 trained endpoints and the 40 dense/ReLU clipping evaluation
 with 14 high-loss clipping records outside its main Y range. Appendix A1 includes
 all 340 retained clipping evaluations attached to the primary cohort. No clipping
 sweeps are invented for the 20 h-only multisite checkpoints. Figure 3 now shows
-20 OL1(all)-minus-OL1(h) contrasts at 14M and 70M in four panels: model sizes
-form the rows, and loss/sparsity effects form the columns. Two curves distinguish
+20 OL1(all)-minus-OL1(h) contrasts at 14M and 70M in six panels: model sizes
+form the rows, and loss/sparsity/full-model latency differences form the columns.
+Latency subtracts retained checkpoint geometric means in µs and uses separate
+scales by size. The caption preserves the 14M T7 cross-session caveat. Two curves distinguish
 four- and seven-site threshold topologies, with explicit T/P contrasts in the
 legend, Figure 6's blue/orange colours, and uniform circular markers.
-Its final typography and line/marker sizes also match Figure 6. The title is
+Its final typography and line/marker sizes also match Figure 6; the figure is
+widened to 12.8 inches for three columns. The title is
 "Global (Pall) vs. Local (Ph) Pressure Paired Analysis"; panels use paired-difference
 nomenclature and concise threshold/sparsity axis labels.
 Figure 4 derives eight operation decompositions from
@@ -60,7 +63,7 @@ Rebuild locally from the repository root:
 .venv/Scripts/python.exe -X utf8 -m unittest discover -s analyses/024-2026-09-17-h-only-kernel-latency -p test_paper_figures.py -v
 ```
 
-For the four-panel all-minus-h revision alone, use
+For the six-panel all-minus-h revision alone, use
 `13_rebuild_paper_figures.py --only-pressure-scope`. It updates Figure 3 and its
 entry in `data/paper-derived.json` from the retained checkpoint table, leaving
 the other PDFs and manuscript unchanged. See its

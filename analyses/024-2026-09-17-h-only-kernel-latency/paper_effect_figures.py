@@ -16,15 +16,17 @@ def pressure_scope(data):
     pairs=[difference(data,m,s,k,'all','h')|{'treatment':'all','reference':'h'}
            for m in models for s,_ in styles for k in KAPPAS]
     title=r'Global ($P_{\mathrm{all}}$) vs. Local ($P_h$) Pressure Paired Analysis'
-    fig,axes=plt.subplots(2,2,figsize=(8.6,5.8),sharex=True,sharey='col')
-    fig.subplots_adjust(left=.085,right=.985,bottom=.16,top=.87,hspace=.55,wspace=.34)
+    fig,axes=plt.subplots(2,3,figsize=(12.8,5.8),sharex=True)
+    # Keep comparable loss/sparsity scales; latency needs a separate scale per size.
+    for j in [0,1]: axes[1,j].sharey(axes[0,j])
+    fig.subplots_adjust(left=.058,right=.985,bottom=.16,top=.87,hspace=.55,wspace=.34)
     fig.suptitle(title,fontsize=14,y=.985)
     series=[]
     for s,color in styles:
         label=rf'$T_{s}/P_{{\mathrm{{all}}}} - T_{s}/P_h$'
         for i,m in enumerate(models):
             rows=[r for r in pairs if (r['model'],r['scope'])==(m,s)]
-            for ax,metric in zip(axes[i],['loss','sparsity']):
+            for ax,metric in zip(axes[i],['loss','sparsity','latency_us']):
                 ax.plot(range(5),[r[metric] for r in rows],color=color,ls='-',lw=1.6,
                         marker='o',ms=5.8,mfc=color,mec='white',mew=.7,zorder=4,label=label)
         series.append({'scope':s,'treatment':'all','reference':'h','label':label,
@@ -32,12 +34,15 @@ def pressure_scope(data):
     for i,m in enumerate(models):
         for j,(metric,label,comparison) in enumerate([
                 ('loss',r'Validation loss change $\Delta L$','paired loss difference'),
-                ('sparsity',r'Sparsity change $\Delta S_{\mathrm{model}}$ (pp)','paired sparsity difference')]):
+                ('sparsity',r'Sparsity change $\Delta S_{\mathrm{model}}$ (pp)','paired sparsity difference'),
+                ('latency_us',r'Latency change $\Delta t$ ($\mu$s)','paired latency difference')]):
             ax=axes[i,j]
-            vals=[p[metric] for p in pairs]+[0]; lo,hi=min(vals),max(vals); pad=.12*(hi-lo)
+            vals=[p[metric] for p in pairs if metric!='latency_us' or p['model']==m]+[0]
+            lo,hi=min(vals),max(vals); pad=.12*(hi-lo)
             ax.set_ylim(lo-pad,hi+pad); ax.axhline(0,color='#777777',lw=.7)
             if metric=='loss': ax.set_yticks([-.1,0,.1,.2,.3])
-            ax.set_title(f'({chr(97+2*i+j)}) {m}: {comparison}',loc='left',pad=11,fontsize=11.5)
+            if metric=='latency_us': ax.set_yticks([0,20,40,60] if m=='14M' else [0,250,500,750,1000])
+            ax.set_title(f'({chr(97+3*i+j)}) {m}: {comparison}',loc='left',pad=11,fontsize=11.5)
             ax.set_ylabel(label,fontsize=11); categorical(ax)
             ax.set_xlabel(r'Threshold $\kappa$',fontsize=11)
             ax.tick_params(labelsize=10,length=3,width=.65)
@@ -49,9 +54,11 @@ def pressure_scope(data):
                bbox_to_anchor=(.53,.018))
     return save(fig,'03-pressure-scope-threshold.pdf')|{
         'pairs':pairs,'series':series,'title':title,
-        'layout':{'rows':2,'columns':2,'width_inches':8.6,'height_inches':5.8},
+        'layout':{'rows':2,'columns':3,'width_inches':12.8,'height_inches':5.8},
         'typography_pt':{'title':14,'panel_titles':11.5,'axes':11,'ticks':10,'legend':11},
-        'panel_nomenclature':'Paired loss difference / paired sparsity difference',
+        'panel_nomenclature':'Paired loss difference / paired sparsity difference / paired latency difference',
+        'latency_estimand':'Difference of retained full-model geometric mean latencies, in microseconds',
+        'y_scales':{'loss':'shared across sizes','sparsity':'shared across sizes','latency_us':'independent per size'},
         'reference':'OL1(h) at the same model size, threshold topology, and kappa',
         'style_reference':'14_plot_14m_quality_latency.py',
         'models':models}

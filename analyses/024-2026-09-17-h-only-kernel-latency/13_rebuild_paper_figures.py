@@ -49,7 +49,7 @@ def main():
         for name in [Path(__file__).name,'paper_effect_figures.py']:
             result['source_script_sha256'][name]=hashlib.sha256((HERE/name).read_bytes()).hexdigest()
         target.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
-        print('Updated Figure 3: 20 matched OL1(all)-minus-OL1(h) contrasts at 14M and 70M, in four panels.')
+        print('Updated Figure 3: 20 matched OL1(all)-minus-OL1(h) contrasts at 14M and 70M, in six panels including latency.')
         return
     data=paper_evidence.build()
     paper_style.setup()

@@ -16,8 +16,8 @@
 - [014: Figure 2](014-intervention-sites-caption.md): retained architecture map,
   independent threshold/pressure scopes, candidate sites and untargeted head.
 - [015: Figure 3](015-pressure-scope-caption.md): 20 matched all-minus-h pressure
-  contrasts at 14M and 70M; four loss/sparsity panels, blue/orange topology curves,
-  uniform circles, and explicit T/P reference labels.
+  contrasts at 14M and 70M; six loss/sparsity/latency panels, blue/orange topology
+  curves, uniform circles, explicit T/P references and timing-session caveats.
 - [016: Figure 4](016-operation-changes-caption.md): eight integer-count operation
   decompositions, signed contributions and exact net changes at 14M.
 - [017: Figure 5](017-quality-latency-caption.md): qualified sparsity/latency and
