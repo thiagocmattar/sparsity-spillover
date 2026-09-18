@@ -1,0 +1,1150 @@
+{
+  "title": "Operation Contributions to Model-wide Sparsity on Pythia 14M and 70M",
+  "output": "figures/09-14m-70m-operation-contributions.pdf",
+  "output_sha256": "c2e2e5dcb86d95b1d547789682f95e1e68055fde20283fb2599b1ee0a1939cfa",
+  "script": "17_plot_operation_grid.py",
+  "script_sha256": "2b5ee48da2136916951099a800454085bbf2c90e35f440c378ec6f027336cbfa",
+  "sources_sha256": {
+    "data/paper-checkpoints.json": "7b1c763aff1ebfc50d4bdcade1ff0b9223ddfcd79f9906551c150ef5add7322b",
+    "data/paper-derived.json": "d4be71c288ee2f5e9d5c4e1a2065f3d782733c68acfde28be4d0b30d8bd65c0b"
+  },
+  "reference_figure": "figures/04-operation-sparsity-changes.pdf",
+  "layout": {
+    "rows": 2,
+    "columns": 3,
+    "width_inches": 12.8,
+    "height_inches": 6.4,
+    "y_limits_by_model": {
+      "14M": [
+        0,
+        30
+      ],
+      "70M": [
+        0,
+        45
+      ]
+    },
+    "y_scale_sharing": "within each row"
+  },
+  "typography_pt": {
+    "title": 14,
+    "panel_titles": 11.5,
+    "axes": 11,
+    "ticks": 10,
+    "legend": 11
+  },
+  "palette": [
+    {
+      "operation": "qkv_projection",
+      "label": "QKV",
+      "color": "#9eaec2"
+    },
+    {
+      "operation": "qk_scores",
+      "label": "QK",
+      "color": "#df985c"
+    },
+    {
+      "operation": "probability_value",
+      "label": "PV",
+      "color": "#f0c68b"
+    },
+    {
+      "operation": "attention_output_projection",
+      "label": "Attention output",
+      "color": "#76969c"
+    },
+    {
+      "operation": "mlp_w1",
+      "label": "FFN up",
+      "color": "#817ca9"
+    },
+    {
+      "operation": "mlp_w2",
+      "label": "FFN down",
+      "color": "#b5acd0"
+    }
+  ],
+  "estimand": "100 * pooled operation zero-product count / full-model product count; absolute contribution in percentage points",
+  "panels": [
+    {
+      "panel": "a",
+      "model": "14M",
+      "kappa": 0,
+      "checkpoint_keys": [
+        "791bad2a410975369a114ba382d1e56a377ef6c333ccc83e237387e2a7b8e05e",
+        "234f675072e8dd19fc48d907f5ac93abeaa0379a490795c327718264f7cc5ecc",
+        "3ae7a6cae60940a7c3904ce9671e2c65c998821d39b071adec64ea2f8e2674f2",
+        "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    },
+    {
+      "panel": "b",
+      "model": "14M",
+      "kappa": 0.05,
+      "checkpoint_keys": [
+        "3b9d8808f97c0da666e62d67cc3babb986290008ceee2fe250c688a815517a85",
+        "e7c37b789bff41e1949d1570561f1f8992848751e3651d53b9419e1730cc93ff",
+        "a7cdaad3f6f304b9d2577a6efa1ffed842a2697411811dcf8d61c6ca16a6607c",
+        "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    },
+    {
+      "panel": "c",
+      "model": "14M",
+      "kappa": 0.5,
+      "checkpoint_keys": [
+        "8b816ce5e72c4d64f3219788cdabfad37f0531c393523da24985d62e0acc6e59",
+        "a4b457f12a8556ba5efe8447b577da4647417dcd9dbea023553b376bdaa76d82",
+        "f307e23c272062f30a2960f75aa3cb1b9e585c7c3931de57080a05452347ae33",
+        "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    },
+    {
+      "panel": "d",
+      "model": "70M",
+      "kappa": 0,
+      "checkpoint_keys": [
+        "8e1e497e539432ff78ba1148b3a01e691defff9499e6ca43faa2f658098dddea",
+        "621cf739c94553f80f7267a53e77a4a361593686e91bec2586800a09e0360faf",
+        "efbdb667bbd07a2de79914d3c25a759e271940bc97786477aa62a595bd9d1955",
+        "4bcf4b869bfee59724165744e17d3c387fd2a1194e2cfb970ac590b3aab44654"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    },
+    {
+      "panel": "e",
+      "model": "70M",
+      "kappa": 0.05,
+      "checkpoint_keys": [
+        "cfba744ee88a90fb5b559245bfce65d31b52e53a6f60654bb47b6ddac280e997",
+        "d4612a60f28dba30813a3af1a98f7f45992597a0f3d3a5b13d0389e9ce04b91b",
+        "457c80504359940c46149877205abc16b9e586c87c223b8b70e284e830104643",
+        "90278f4e57528a5b68922d1fa8385fc691669dc7878ba0dfeabea0a3ac8fd06b"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    },
+    {
+      "panel": "f",
+      "model": "70M",
+      "kappa": 0.5,
+      "checkpoint_keys": [
+        "3787919d31e9cf8b0a6f13816b16afdb42af505ee20c765b241b503fd0fae41c",
+        "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934",
+        "d030d16d527b7ec9bfc26c2c71e4250068b4f6da4c1332c419d8181268882658",
+        "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e"
+      ],
+      "recipe_labels": [
+        "$T_4/P_{h}$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{h}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ]
+    }
+  ],
+  "checkpoints": [
+    {
+      "model": "14M",
+      "kappa": 0,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "791bad2a410975369a114ba382d1e56a377ef6c333ccc83e237387e2a7b8e05e",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 100875195648,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.585326248824472
+        },
+        "qk_scores": {
+          "zero_product_count": 20682,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.250325044483598e-07
+        },
+        "probability_value": {
+          "zero_product_count": 29852,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.691456494919465e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 44007598208,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.6916110560053859
+        },
+        "mlp_w1": {
+          "zero_product_count": 135595085312,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.1309742853615883
+        },
+        "mlp_w2": {
+          "zero_product_count": 254617727744,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.001500711999949
+        }
+      },
+      "total_pp": 8.40941309636955
+    },
+    {
+      "model": "14M",
+      "kappa": 0,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "234f675072e8dd19fc48d907f5ac93abeaa0379a490795c327718264f7cc5ecc",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 140633510400,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.2101567592436155
+        },
+        "qk_scores": {
+          "zero_product_count": 43415,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 6.822979489713539e-07
+        },
+        "probability_value": {
+          "zero_product_count": 353770,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 5.559749980596473e-06
+        },
+        "attention_output_projection": {
+          "zero_product_count": 47378826880,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.7445923391660221
+        },
+        "mlp_w1": {
+          "zero_product_count": 106963897344,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.6810145749578176
+        },
+        "mlp_w2": {
+          "zero_product_count": 201980726272,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.174272377453186
+        }
+      },
+      "total_pp": 7.8100422928685695
+    },
+    {
+      "model": "14M",
+      "kappa": 0,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "3ae7a6cae60940a7c3904ce9671e2c65c998821d39b071adec64ea2f8e2674f2",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 100803550080,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.5842002871960188
+        },
+        "qk_scores": {
+          "zero_product_count": 17904,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.8137423651694394e-07
+        },
+        "probability_value": {
+          "zero_product_count": 30863,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.850342416008959e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 43819043456,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.688647782469548
+        },
+        "mlp_w1": {
+          "zero_product_count": 135401341440,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.127929461072947
+        },
+        "mlp_w2": {
+          "zero_product_count": 254433266176,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.99860176579448
+        }
+      },
+      "total_pp": 8.399380062941471
+    },
+    {
+      "model": "14M",
+      "kappa": 0,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 99179240064,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.5586730870944312
+        },
+        "qk_scores": {
+          "zero_product_count": 16141,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.5366742357126855e-07
+        },
+        "probability_value": {
+          "zero_product_count": 43827,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 6.887728252808367e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 29097996416,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.45729594089168735
+        },
+        "mlp_w1": {
+          "zero_product_count": 134742758400,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.1175793549478907
+        },
+        "mlp_w2": {
+          "zero_product_count": 185844492160,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.920679853239453
+        }
+      },
+      "total_pp": 7.054229178613711
+    },
+    {
+      "model": "14M",
+      "kappa": 0.05,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "3b9d8808f97c0da666e62d67cc3babb986290008ceee2fe250c688a815517a85",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 105728790912,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.661603989093141
+        },
+        "qk_scores": {
+          "zero_product_count": 12739,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.0020254686044172e-07
+        },
+        "probability_value": {
+          "zero_product_count": 21571,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.390037788151808e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 60091582592,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.9443824381657103
+        },
+        "mlp_w1": {
+          "zero_product_count": 142604328448,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.2411295822758883
+        },
+        "mlp_w2": {
+          "zero_product_count": 266517390208,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.1885124658324635
+        }
+      },
+      "total_pp": 9.035629014573528
+    },
+    {
+      "model": "14M",
+      "kappa": 0.05,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "e7c37b789bff41e1949d1570561f1f8992848751e3651d53b9419e1730cc93ff",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 180678716160,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.8394959681848535
+        },
+        "qk_scores": {
+          "zero_product_count": 90390,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.420543858286783e-06
+        },
+        "probability_value": {
+          "zero_product_count": 334301,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 5.253780643535013e-06
+        },
+        "attention_output_projection": {
+          "zero_product_count": 66273429504,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.0415346083583281
+        },
+        "mlp_w1": {
+          "zero_product_count": 164509382656,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.585383263220832
+        },
+        "mlp_w2": {
+          "zero_product_count": 253887496960,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.990024610049035
+        }
+      },
+      "total_pp": 10.45644512413755
+    },
+    {
+      "model": "14M",
+      "kappa": 0.05,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "a7cdaad3f6f304b9d2577a6efa1ffed842a2697411811dcf8d61c6ca16a6607c",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 105656022912,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.6604603876385575
+        },
+        "qk_scores": {
+          "zero_product_count": 31352263948,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.49272337642125813
+        },
+        "probability_value": {
+          "zero_product_count": 36680592592,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.5764618931838176
+        },
+        "attention_output_projection": {
+          "zero_product_count": 61328431104,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.9638204020704868
+        },
+        "mlp_w1": {
+          "zero_product_count": 142702651392,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.242674798054491
+        },
+        "mlp_w2": {
+          "zero_product_count": 266607468160,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.189928105632006
+        }
+      },
+      "total_pp": 10.126068963000618
+    },
+    {
+      "model": "14M",
+      "kappa": 0.05,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 104187409920,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.637380078246083
+        },
+        "qk_scores": {
+          "zero_product_count": 54256685978,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.8526828414320446
+        },
+        "probability_value": {
+          "zero_product_count": 57289461946,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.9003450969348895
+        },
+        "attention_output_projection": {
+          "zero_product_count": 49040487424,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.7707065296775464
+        },
+        "mlp_w1": {
+          "zero_product_count": 142196758528,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.234724327859709
+        },
+        "mlp_w2": {
+          "zero_product_count": 220619411072,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.4671927139858023
+        }
+      },
+      "total_pp": 9.863031588136074
+    },
+    {
+      "model": "14M",
+      "kappa": 0.5,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "8b816ce5e72c4d64f3219788cdabfad37f0531c393523da24985d62e0acc6e59",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 129880878720,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.0411714191236476
+        },
+        "qk_scores": {
+          "zero_product_count": 13159,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.0680314892350677e-07
+        },
+        "probability_value": {
+          "zero_product_count": 5411,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 8.503775657915458e-08
+        },
+        "attention_output_projection": {
+          "zero_product_count": 68003276544,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.0687203986940683
+        },
+        "mlp_w1": {
+          "zero_product_count": 180848184832,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.8421592902468253
+        },
+        "mlp_w2": {
+          "zero_product_count": 272042208256,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.275338954893625
+        }
+      },
+      "total_pp": 10.227390354799072
+    },
+    {
+      "model": "14M",
+      "kappa": 0.5,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "a4b457f12a8556ba5efe8447b577da4647417dcd9dbea023553b376bdaa76d82",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 201911724288,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 3.1731879616485523
+        },
+        "qk_scores": {
+          "zero_product_count": 90357,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.4200252395532564e-06
+        },
+        "probability_value": {
+          "zero_product_count": 3599366371,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 0.05656663117654648
+        },
+        "attention_output_projection": {
+          "zero_product_count": 68031862912,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.0691696540264406
+        },
+        "mlp_w1": {
+          "zero_product_count": 263389541376,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.139356071895667
+        },
+        "mlp_w2": {
+          "zero_product_count": 272031263232,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.275166945969828
+        }
+      },
+      "total_pp": 12.713448684742275
+    },
+    {
+      "model": "14M",
+      "kappa": 0.5,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "f307e23c272062f30a2960f75aa3cb1b9e585c7c3931de57080a05452347ae33",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 130507762176,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.051023343487874
+        },
+        "qk_scores": {
+          "zero_product_count": 265863137942,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.1782304209355
+        },
+        "probability_value": {
+          "zero_product_count": 140407185192,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.20659989582731
+        },
+        "attention_output_projection": {
+          "zero_product_count": 67999078144,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.0686544178185884
+        },
+        "mlp_w1": {
+          "zero_product_count": 183488092672,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.883647340568267
+        },
+        "mlp_w2": {
+          "zero_product_count": 272051493632,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.275484881255487
+        }
+      },
+      "total_pp": 16.663640299893025
+    },
+    {
+      "model": "14M",
+      "kappa": 0.5,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 154604260224,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.4297171404599487
+        },
+        "qk_scores": {
+          "zero_product_count": 529670733162,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 8.32415650965302
+        },
+        "probability_value": {
+          "zero_product_count": 537622783397,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 8.449128698192872
+        },
+        "attention_output_projection": {
+          "zero_product_count": 67992747008,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 1.0685549194630095
+        },
+        "mlp_w1": {
+          "zero_product_count": 186990871552,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 2.93869602985824
+        },
+        "mlp_w2": {
+          "zero_product_count": 271857173376,
+          "model_denominator": 6363055915008,
+          "contribution_pp": 4.272430998677751
+        }
+      },
+      "total_pp": 27.48268429630484
+    },
+    {
+      "model": "70M",
+      "kappa": 0,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "8e1e497e539432ff78ba1148b3a01e691defff9499e6ca43faa2f658098dddea",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1635925145088,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.6407655269182335
+        },
+        "qk_scores": {
+          "zero_product_count": 23217,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.58616034859375e-08
+        },
+        "probability_value": {
+          "zero_product_count": 35923,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 1.019057751658411e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 998507862528,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.832550670603873
+        },
+        "mlp_w1": {
+          "zero_product_count": 2206437691392,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.259186128564726
+        },
+        "mlp_w2": {
+          "zero_product_count": 4250986872832,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.059129596519215
+        }
+      },
+      "total_pp": 25.791632090373426
+    },
+    {
+      "model": "70M",
+      "kappa": 0,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "621cf739c94553f80f7267a53e77a4a361593686e91bec2586800a09e0360faf",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1848895437312,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.244916146754617
+        },
+        "qk_scores": {
+          "zero_product_count": 18352,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.2060651555925614e-08
+        },
+        "probability_value": {
+          "zero_product_count": 1492391958,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.004233592944109829
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1016806113792,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.884458848630131
+        },
+        "mlp_w1": {
+          "zero_product_count": 2150450450432,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.100362444868333
+        },
+        "mlp_w2": {
+          "zero_product_count": 4032221078016,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 11.438538390314392
+        }
+      },
+      "total_pp": 25.672509475572234
+    },
+    {
+      "model": "70M",
+      "kappa": 0,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "efbdb667bbd07a2de79914d3c25a759e271940bc97786477aa62a595bd9d1955",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1637958253056,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.646533014140205
+        },
+        "qk_scores": {
+          "zero_product_count": 22922,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.502475234115774e-08
+        },
+        "probability_value": {
+          "zero_product_count": 791649,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.245736853944908e-06
+        },
+        "attention_output_projection": {
+          "zero_product_count": 993131615744,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.817299422211301
+        },
+        "mlp_w1": {
+          "zero_product_count": 2209948397568,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.269145242064288
+        },
+        "mlp_w2": {
+          "zero_product_count": 4248854927360,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.0530817286926
+        }
+      },
+      "total_pp": 25.786061717870002
+    },
+    {
+      "model": "70M",
+      "kappa": 0,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "4bcf4b869bfee59724165744e17d3c387fd2a1194e2cfb970ac590b3aab44654",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1624386719232,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.608033510353658
+        },
+        "qk_scores": {
+          "zero_product_count": 209387,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.939855954305033e-07
+        },
+        "probability_value": {
+          "zero_product_count": 105729,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.9993028707260565e-07
+        },
+        "attention_output_projection": {
+          "zero_product_count": 747020492288,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.119135437780165
+        },
+        "mlp_w1": {
+          "zero_product_count": 2190599530496,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.214256694405324
+        },
+        "mlp_w2": {
+          "zero_product_count": 3744025866752,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 10.620990958225166
+        }
+      },
+      "total_pp": 23.562417494680197
+    },
+    {
+      "model": "70M",
+      "kappa": 0.05,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "cfba744ee88a90fb5b559245bfce65d31b52e53a6f60654bb47b6ddac280e997",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1698577320960,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.818496188278998
+        },
+        "qk_scores": {
+          "zero_product_count": 49221,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 1.3962932270238745e-07
+        },
+        "probability_value": {
+          "zero_product_count": 6355946,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 1.803044300426543e-05
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1057617610752,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.00023223151539
+        },
+        "mlp_w1": {
+          "zero_product_count": 2295207204864,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.5110060233802685
+        },
+        "mlp_w2": {
+          "zero_product_count": 4313564548608,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.236648917233797
+        }
+      },
+      "total_pp": 26.566401530480782
+    },
+    {
+      "model": "70M",
+      "kappa": 0.05,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "d4612a60f28dba30813a3af1a98f7f45992597a0f3d3a5b13d0389e9ce04b91b",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 2274379438080,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.451922157358586
+        },
+        "qk_scores": {
+          "zero_product_count": 13288,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.7695179701130095e-08
+        },
+        "probability_value": {
+          "zero_product_count": 733713062,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.0020813851385578274
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1066284402688,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.0248180442381343
+        },
+        "mlp_w1": {
+          "zero_product_count": 2445573060608,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.9375614081774
+        },
+        "mlp_w2": {
+          "zero_product_count": 4256078908416,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.073574599257281
+        }
+      },
+      "total_pp": 28.48995763186514
+    },
+    {
+      "model": "70M",
+      "kappa": 0.05,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "457c80504359940c46149877205abc16b9e586c87c223b8b70e284e830104643",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1702562216448,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.829800474214458
+        },
+        "qk_scores": {
+          "zero_product_count": 61544376109,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.17458807322566924
+        },
+        "probability_value": {
+          "zero_product_count": 38667700092,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.10969189521352685
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1060545934848,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.0085392531154707
+        },
+        "mlp_w1": {
+          "zero_product_count": 2303798808576,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.535378543386645
+        },
+        "mlp_w2": {
+          "zero_product_count": 4313579401728,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.236691052320154
+        }
+      },
+      "total_pp": 26.894689291475924
+    },
+    {
+      "model": "70M",
+      "kappa": 0.05,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "90278f4e57528a5b68922d1fa8385fc691669dc7878ba0dfeabea0a3ac8fd06b",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 1709595786240,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 4.849753189239284
+        },
+        "qk_scores": {
+          "zero_product_count": 334277205190,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.9482720740238252
+        },
+        "probability_value": {
+          "zero_product_count": 220357378135,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.6251061835692882
+        },
+        "attention_output_projection": {
+          "zero_product_count": 881246623232,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.4999059168982787
+        },
+        "mlp_w1": {
+          "zero_product_count": 2307833067520,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.546822862761643
+        },
+        "mlp_w2": {
+          "zero_product_count": 3896695160320,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 11.05408069753058
+        }
+      },
+      "total_pp": 26.5239409240229
+    },
+    {
+      "model": "70M",
+      "kappa": 0.5,
+      "scope": "4",
+      "pressure": "h",
+      "checkpoint_key": "3787919d31e9cf8b0a6f13816b16afdb42af505ee20c765b241b503fd0fae41c",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 2066216552448,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.861409109420293
+        },
+        "qk_scores": {
+          "zero_product_count": 41655,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 1.1816621842644297e-07
+        },
+        "probability_value": {
+          "zero_product_count": 3249,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 9.216709726743806e-09
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1088430934528,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.087642961265949
+        },
+        "mlp_w1": {
+          "zero_product_count": 2797277896704,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 7.935271898724904
+        },
+        "mlp_w2": {
+          "zero_product_count": 4354063168000,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.351534734183609
+        }
+      },
+      "total_pp": 29.235858830977683
+    },
+    {
+      "model": "70M",
+      "kappa": 0.5,
+      "scope": "4",
+      "pressure": "all",
+      "checkpoint_key": "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 3109008267264,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 8.819583483354576
+        },
+        "qk_scores": {
+          "zero_product_count": 520387,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 1.4762252768762784e-06
+        },
+        "probability_value": {
+          "zero_product_count": 3938690755,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.011173213109339613
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1088093426176,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.0866855231278336
+        },
+        "mlp_w1": {
+          "zero_product_count": 3993444841472,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 11.328538600680165
+        },
+        "mlp_w2": {
+          "zero_product_count": 4353605656576,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.350236873305901
+        }
+      },
+      "total_pp": 35.59621916980309
+    },
+    {
+      "model": "70M",
+      "kappa": 0.5,
+      "scope": "7",
+      "pressure": "h",
+      "checkpoint_key": "d030d16d527b7ec9bfc26c2c71e4250068b4f6da4c1332c419d8181268882658",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 2075264074752,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.887074971784777
+        },
+        "qk_scores": {
+          "zero_product_count": 813207196524,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 2.3068927910313364
+        },
+        "probability_value": {
+          "zero_product_count": 204480668470,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 0.5800673948964372
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1088428391936,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.08763574848281
+        },
+        "mlp_w1": {
+          "zero_product_count": 2826823856128,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 8.019087390140465
+        },
+        "mlp_w2": {
+          "zero_product_count": 4354142049792,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.351758504752889
+        }
+      },
+      "total_pp": 32.232516801088714
+    },
+    {
+      "model": "70M",
+      "kappa": 0.5,
+      "scope": "7",
+      "pressure": "all",
+      "checkpoint_key": "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e",
+      "components": {
+        "qkv_projection": {
+          "zero_product_count": 2196362672640,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 6.230605481187475
+        },
+        "qk_scores": {
+          "zero_product_count": 1781058936200,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.052478676878582
+        },
+        "probability_value": {
+          "zero_product_count": 1893463866218,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 5.3713471323513
+        },
+        "attention_output_projection": {
+          "zero_product_count": 1087085782016,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 3.08382705475893
+        },
+        "mlp_w1": {
+          "zero_product_count": 3005475465216,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 8.525883334486355
+        },
+        "mlp_w2": {
+          "zero_product_count": 4349197002752,
+          "model_denominator": 35251191545856,
+          "contribution_pp": 12.33773047669725
+        }
+      },
+      "total_pp": 40.60187215635989
+    }
+  ],
+  "recipe_scope": "Ph and Pall only for both topologies, model sizes and all three thresholds.",
+  "preserved_pdf_sha256": {
+    "01-quality-sparsity-tradeoffs.pdf": "48266b08b2618f26d8ecdfd953e48e26e25f81da8357df1085797918cbbdcf06",
+    "02-intervention-sites.pdf": "82b2401887e84825e3346273ecb6e9c0c833f84c652b12b29c5b28f02a488276",
+    "03-pressure-scope-threshold.pdf": "232d9447c4f40c24662886deb23a58d3193d32a9d29f0917062177a190a2c955",
+    "04-operation-sparsity-changes.pdf": "99b6ad13f7070a31a7e7cb0d609157e9323bcd4a495acc4ba29738d0b3bd09ed",
+    "05-quality-latency.pdf": "20af9c765be721f211d1b06f7e83df3e09771475336abeda35408267c8ce05e1",
+    "06-14m-quality-sparsity-latency.pdf": "5ff818bea62712a412963720a25fbc7d97b27f96cf8b92a3df9c3ca22e63d7b4",
+    "07-controls-posthoc-final-latency.pdf": "e1a7a0b206a3c2932d921b8385ff81dbc7d346e20256166359c40eb8b1fb6396",
+    "08-14m-70m-quality-sparsity-latency.pdf": "6bc5c9133c6316f650027121b116207e3f74cb404bbe54fc395cdfe838aef398",
+    "A1-complete-quality-sparsity.pdf": "eb42ef959d9e9b4cabae4c9317b72056bc1042cb49d5cc62c26659b3c4f973ba",
+    "A2-pressure-versus-none.pdf": "b037b4f3aac3edb181fd37c6875e6b74a016a129097d0c9cd303274c6e0f3e47",
+    "A3-dense-reference-speedup.pdf": "5e218a9b2efebbb7147ce4d1365bb4f9d2176aa5461e17ca81d7516d4d509259",
+    "A4-instruction-level-explanation.pdf": "b71f5d5ca77a1e9e91b2bcfd6d8cd17a932ddd5469f3ff416d3cafb4172208f4"
+  }
+}

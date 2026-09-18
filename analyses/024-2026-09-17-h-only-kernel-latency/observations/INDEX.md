@@ -1,5 +1,9 @@
 # Observations
 
+- [026: Operation grid](026-operation-grid.md): six absolute-contribution panels
+  with 14M/70M rows and κ=0,.05,.5 columns; 24 matched Ph/Pall checkpoint stacks,
+  separate row scales, a common palette and a concise contribution axis label.
+
 - [025: Combined quality and latency](025-matched-quality-latency.md): Figure 6
   extended to 14M/70M rows, with 44 trained checkpoints, 40 measured control
   clipping latencies, one shared legend and explicit quality-view/session limits.

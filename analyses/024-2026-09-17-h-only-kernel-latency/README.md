@@ -1,5 +1,13 @@
 # H-only pressure: final K050 latency extension
 
+New Figure 9 extends Figure 4 to a
+[2-by-3 operation-contribution grid](figures/09-14m-70m-operation-contributions.pdf):
+14M/70M rows and κ=0,.05,.5 columns, with one palette and separate row scales
+(0-30 pp at 14M, 0-45 pp at 70M). It shows 24 retained checkpoints with only
+Ph/Pall in every panel and the concise Y label "Contribution to S_model (pp)".
+See the [caption and evidence](observations/026-operation-grid.md).
+Reproduce with `17_plot_operation_grid.py`. The original Figure 4 is preserved.
+
 New Figure 8 extends the Figure 6 design to a 2-by-2
 [14M/70M quality-sparsity and latency view](figures/08-14m-70m-quality-sparsity-latency.pdf),
 with one shared legend, 44 trained checkpoints and all 40 measured control

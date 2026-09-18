@@ -28,6 +28,16 @@ figure records/PDFs and manuscript files.
 
 ## Scientific checks
 
+The additional Figure 9 extends the absolute operation plot to 14M/70M rows
+and κ=0,.05,.5 columns. Three focused checks in `test_operation_grid.py` cover
+source/output hashes, the eight overlapping Figure 4 pressure decompositions,
+all 24 retained Ph/Pall checkpoints, integer counts, full-model denominators
+and stack totals. The final axes share scales only within a model-size row,
+and the Y label is "Contribution to S_model (pp)". They pass along with the seven
+existing paper-evidence checks. The PDF was visually reviewed at 2,100 pixels,
+has one page and three embedded fonts. All twelve prior PDFs are preserved.
+See [the Figure 9 observation](observations/026-operation-grid.md).
+
 The additional Figure 8 combines Figure 6's style and 44 trained checkpoints
 with the exact 40-point Run036 clipping latency join. Four focused tests in
 `test_matched_quality_latency.py` pass: source/output identity, preservation of

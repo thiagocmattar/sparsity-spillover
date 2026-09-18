@@ -1,5 +1,11 @@
 # Paper figures, captions, and associated manuscript writing
 
+New Figure 4 extension:
+[operation contributions across size and threshold](figures/09-14m-70m-operation-contributions.pdf),
+with [caption, evidence and proposed writing](observations/026-operation-grid.md).
+The 2-by-3 grid covers 24 retained Ph/Pall checkpoints at 14M/70M and κ=0,.05,.5,
+using a separate contribution scale for each model-size row.
+
 New combined Figure 6 extension:
 [14M/70M quality-sparsity and full-model latency](figures/08-14m-70m-quality-sparsity-latency.pdf),
 with [caption, evidence and proposed writing](observations/025-matched-quality-latency.md).
