@@ -1,17 +1,19 @@
 # Manuscript draft: ICLR 2027 format
 
-Current compiled draft: [main-14m-70m.pdf](main-14m-70m.pdf). Analysis024 Figure08
+Current compiled draft: [main.pdf](main.pdf). Analysis024 Figure08
 is now Figure 1 on page 2, with 14M/70M quality-sparsity and full-model latency
 panels. The caption defines the T/P legend and all four panels, including the
 40 measured clipping settings. Its 44 trained checkpoints include the ten
 70M h-only endpoints now recorded in the appendix. The setup and dependent
 results/limitations have been reconciled to 74 total trained conditions.
 
-The 35-page build has resolved references and no overfull boxes; all pages
-were visually checked. The approved artwork is copied unchanged with source
-and evidence hashes. The open `main.pdf` is locked against replacement, so
-the current build uses the filename above. See the
-[adoption record](reviews/2026-09-18-two-size-main-figure/README.md).
+Table 1 now has nine T/P recipes, a shorter caption, separators between
+T0/T1/T4/T7, and the unchanged 14M/70M/410M ceilings. P_all means identical
+threshold and pressure target sets. The methodology and Figure 1 caption use
+the same control aliases. The 35-page canonical build has resolved references
+and no overfull boxes; the superseded preview PDFs are removed. See the
+[Table 1 verification](reviews/2026-09-18-table1-terminology/README.md) and
+[Figure 1 adoption record](reviews/2026-09-18-two-size-main-figure/README.md).
 The following revision notes retain their historical scope.
 
 ## Collaborative editing

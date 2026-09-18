@@ -1,6 +1,6 @@
 # Living Manuscript Draft
 
-The current draft is [main-14m-70m.pdf](draft/main-14m-70m.pdf), with the approved
+The current draft is [main.pdf](draft/main.pdf), with the approved
 Analysis024 Figure08 as Figure 1 on page 2. The four panels compare quality,
 sparsity and latency at 14M/70M: 44 trained checkpoints and 40 measured control
 clipping settings. The caption defines the shared T/P legend and panel labels.
@@ -8,9 +8,13 @@ The introduction, results, scope statements and appendix now include the ten
 70M h-only endpoints, for 74 trained conditions overall. Historical ablations
 retain their original cohort. The source artwork is byte-identical.
 
-The 35-page draft builds with resolved references and no overfull boxes.
-The open `main.pdf` is locked against replacement, so the rebuilt PDF is saved
-under the name above. See the [adoption and verification record](draft/reviews/2026-09-18-two-size-main-figure/README.md).
+Table 1 now uses T/P terminology, nine OL1/control recipes, horizontal rules
+between threshold groups, and all three model-size ceiling columns. All-site
+pressure means the pressure and thresholding sites coincide. Its caption and
+setup text are shortened. The canonical 35-page PDF has been rebuilt, and the
+two superseded preview PDFs have been removed. See the
+[Table 1 revision record](draft/reviews/2026-09-18-table1-terminology/README.md)
+and [Figure 1 adoption record](draft/reviews/2026-09-18-two-size-main-figure/README.md).
 Entries below describe earlier revisions.
 
 The 17 September pressure-placement revision integrates ten verified h-only

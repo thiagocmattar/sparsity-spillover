@@ -9,10 +9,13 @@
 
 A sparsification intervention specifies (i) where to threshold activations (thresholding sites $\mathcal{N}$), (ii) the thresholding function $G(.)$, and (iii) where to apply activation pressure (pressure sites $\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide, and different sites may use different functions $G$. These choices give a combinatorial set of interventions during training.
 
-We write $T_i/P_j$ to distinguish threshold and pressure scope: $T_4$ thresholds
-$a,m,h,z$, and $T_7$ additionally thresholds $q,k,v$; $P_0$ applies no pressure,
-$P_h$ applies OL1 only at $h$, and $P_4$/$P_7$ apply OL1 at all four/seven sites.
-In figure labels, these are ``4/7-site,'' ``+ OL1(h),'' and ``+ OL1(all).''
+We write $T_i/P_j$ for threshold and pressure scope. $T_0/P_0$ is the base
+model (formerly A0); $T_1/P_0$ replaces GeLU with ReLU at $h$ (formerly A1-H);
+$T_4$ thresholds $a,m,h,z$;
+and $T_7$ adds $q,k,v$. $P_0$ means no pressure, $P_1=P_h$ applies OL1 at
+$h$, and $P_{\mathrm{all}}$ applies OL1 at every thresholded site
+($\mathcal{P}=\mathcal{N}$). Thus $P_{\mathrm{all}}$ is $P_1$, $P_4$ or
+$P_7$ under $T_1$, $T_4$ or $T_7$, respectively.
 
 To avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark}, we extend ReLU to one-sided and symmetric thresholding: $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$. The threshold $\kappa$ controls thresholding strength and is fixed within each training condition. Appendix~\ref{app:interventions} gives boundary and derivative conventions.
 

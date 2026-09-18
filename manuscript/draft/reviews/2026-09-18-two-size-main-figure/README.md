@@ -1,11 +1,17 @@
 # Two-size main Figure 1 adoption
 
+Subsequent cleanup: the canonical [main.pdf](../../main.pdf) is now rebuilt
+with the simplified Table 1. The author requested removal of the temporary
+`main-14m-70m.pdf`; its original bytes remain recoverable from commit `901a4f6`.
+The record and hashes below describe that earlier adoption build. See the
+[current revision](../2026-09-18-table1-terminology/README.md).
+
 ## Request and result
 
 At the author's request, Analysis024 Figure08 replaces the preceding 14M-only
 overview as Figure 1 in the introduction, under the existing
 `fig:quality-sparsity-overview` label. It appears on page 2 of the
-[rebuilt 35-page draft](../../main-14m-70m.pdf). The open canonical `main.pdf`
+35-page `main-14m-70m.pdf` build. The open canonical `main.pdf`
 is locked against replacement; it remains the older build. The TeX sources
 and new figure asset are current.
 

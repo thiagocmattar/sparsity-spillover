@@ -1,5 +1,11 @@
 # Main Figure 1 adoption
 
+Subsequent cleanup: the author requested removal of `main-readability.pdf`.
+Its original bytes remain recoverable from commit `048eb2d`; the current
+compiled paper is [main.pdf](../../main.pdf). This historical review retains
+the original build's scope and hashes. See the
+[current revision](../2026-09-18-table1-terminology/README.md).
+
 ## Current readability revision
 
 The author's follow-up adds the requested title, T/P legend names, a wider
@@ -11,7 +17,7 @@ colours, and pressure line styles remain unchanged.
 
 The current paper asset matches the analysis PDF and `figures/SOURCES.json`.
 The open `main.pdf` could not be overwritten, so the rebuilt 32-page draft is
-[main-readability.pdf](../../main-readability.pdf), with Figure 1 on page 2.
+`main-readability.pdf`, with Figure 1 on page 2.
 All manuscript TeX files remain unchanged. References resolve; no overfull
 boxes occur. Four underfull vertical boxes, one underfull horizontal box, and
 the existing appendix longtable's ignored glue diagnostic remain. The figure
