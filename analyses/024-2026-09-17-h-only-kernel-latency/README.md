@@ -1,5 +1,14 @@
 # H-only pressure: final K050 latency extension
 
+The new [per-operation bypass figure](figures/10-operation-bypass.pdf) and
+[complete table](TABLE_OPERATION_BYPASS.md) cover 62 trained settings plus
+40 control-clipping settings from saved full-validation counters. They compare
+scalar zeros with matrix-instruction bypass across all six operation families.
+The [observation](observations/027-operation-bypass.md) also checks 35 matched
+14M skip ablations: attention can bypass substantial work while remaining
+slower. Reproduce locally with `18_reduce_operation_bypass.py` and
+`19_plot_operation_bypass.py`; no new GPU pass is required.
+
 **Selected manuscript Figure 1:** [Figure 8, 14M/70M quality and latency](figures/08-14m-70m-quality-sparsity-latency.pdf)
 is adopted unchanged in the introduction. The caption, shared T/P legend
 definitions, panel references and dependent manuscript scope now reflect both

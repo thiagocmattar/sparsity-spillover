@@ -1,5 +1,12 @@
 # Paper figures, captions, and associated manuscript writing
 
+New operation-bypass analysis:
+[scalar sparsity and matrix-instruction bypass](figures/10-operation-bypass.pdf),
+with [caption, metric and hypothesis check](observations/027-operation-bypass.md)
+and the [complete per-setting table](TABLE_OPERATION_BYPASS.md).
+It reuses saved counters for all 62 trained and 40 control-clipping settings;
+manuscript adoption remains separate.
+
 New Figure 4 extension:
 [operation contributions across size and threshold](figures/09-14m-70m-operation-contributions.pdf),
 with [caption, evidence and proposed writing](observations/026-operation-grid.md).
