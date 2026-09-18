@@ -15,8 +15,16 @@ Latency is the difference of retained checkpoint geometric means in µs. The glo
 title, paired-difference panel names and concise axes replace the earlier wording.
 The redundant OL1 legend subtitle is removed. The final PDF was visually checked
 at 2,000 pixels, with all 20 contrast records unchanged and all fonts embedded.
-Only Figure 3 and its provenance/caption were
-regenerated; other PDFs and manuscript files retain their prior hashes.
+That revision regenerated only Figure 3 and its provenance/caption.
+
+Figure 4 was then revised to absolute operation contributions for twelve 14M
+checkpoints, replacing the eight signed contrasts. Its six bars per threshold
+cover T4/T7 with P0/Ph/Pall at κ=.05/.5. All segments use the full-model
+denominator and each stack sums to the checkpoint's model-wide sparsity. The
+two panels share a 0–30 pp scale and use Figure 3's typography, with the exact
+operation palette/order from the manuscript's `05-site-structure.pdf`.
+The targeted `--only-operation-contributions` rebuild preserves all other
+figure records/PDFs and manuscript files.
 
 ## Scientific checks
 
@@ -43,9 +51,11 @@ The checks cover:
   Only the 14M T7 timing contrasts span sessions. The 14M contrasts also agree
   for all three metrics with the difference between the retained all-minus-P0
   and h-minus-P0 effects in the pressure-versus-none appendix.
-- Eight operation decompositions: signed integer numerator differences sum
-  exactly to the aggregate difference, and contributions sum to ΔS within
-  1e-12 percentage points.
+- Twelve operation decompositions: each operation's numerator matches the
+  retained counter and uses the full-model denominator. Nonnegative integer
+  numerators sum exactly to the checkpoint aggregate; contributions sum to
+  model-wide sparsity within 1e-12 percentage points. Recipe membership and
+  all twelve unique checkpoint identities are verified.
 - Nondominance direction, strict improvement, and preservation of ties.
 - All 340 retained clipping records for the declared cohort, complete validation
   coverage, all 54 trained points inside the main range, and exactly seven
@@ -65,11 +75,14 @@ All nine publication PDFs contain one page and were rendered with Poppler at
 pressure, and operation panels were re-rendered and reviewed after layout changes.
 The architecture was compiled from the retained adaptation of the existing
 manuscript TikZ diagram. `pdfinfo` confirmed one page per PDF; `pdffonts` confirmed
-that all listed fonts are embedded (counts in figure order: 3,12,3,4,3,2,3,2,2).
+that all listed fonts are embedded.
 Publication outputs are PDF only; temporary preview PNGs are not deliverables.
 The six-panel Figure 3 was separately rendered at 2,000 pixels and visually
 checked for labels, legend, line styles, and panel spacing. Numeric annotations
 and the validation-loss unit suffix are absent; all four listed fonts are embedded.
+The absolute-contribution Figure 4 was separately rendered at 1,900 pixels;
+all three listed fonts are embedded. Visual inspection confirmed the T/P labels,
+palette, shared scale, segment boundaries, title, and common legend.
 
 Each PDF has its own observation/caption file containing the associated proposed
 manuscript paragraph and links to the relevant draft section. Table 2 has its own

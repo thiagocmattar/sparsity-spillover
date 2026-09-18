@@ -96,13 +96,25 @@ class PaperFigureTests(unittest.TestCase):
             self.assertAlmostEqual(p['latency_us'],a['latency_us']-b['latency_us'],places=10)
 
     def test_operation_integer_decomposition(self):
-        bars=self.figures['04-operation-sparsity-changes.pdf']['contrasts']
-        self.assertEqual(len(bars),8)
+        bars=self.figures['04-operation-sparsity-changes.pdf']['checkpoints']
+        self.assertEqual(len(bars),12)
+        self.assertEqual(len({b['checkpoint_key'] for b in bars}),12)
+        self.assertEqual({(b['model'],b['scope'],b['pressure'],b['kappa']) for b in bars},
+                         {('14M',s,p,k) for s in ['4','7'] for p in ['none','h','all'] for k in [.05,.5]})
         for bar in bars:
-            a,b=(self.index[bar[k]] for k in ['treatment_key','reference_key'])
-            delta=a['counts']['block_zero_product_count']-b['counts']['block_zero_product_count']
-            self.assertEqual(sum(c['zero_product_difference'] for c in bar['components'].values()),delta)
-            self.assertAlmostEqual(sum(c['contribution_pp'] for c in bar['components'].values()),a['sparsity']-b['sparsity'],places=12)
+            row=self.index[bar['checkpoint_key']]
+            self.assertTrue(row['comparison_cohort'])
+            self.assertEqual({k:bar[k] for k in ['model','scope','pressure','kappa']},
+                             {k:row[k] for k in ['model','scope','pressure','kappa']})
+            self.assertEqual(set(bar['components']),set(row['counts']['per_operation']))
+            for op,c in bar['components'].items():
+                self.assertEqual(c['zero_product_count'],row['counts']['per_operation'][op]['zero_product_count'])
+                self.assertEqual(c['model_denominator'],row['counts']['model_product_count'])
+                self.assertGreaterEqual(c['contribution_pp'],0)
+                self.assertAlmostEqual(c['contribution_pp'],100*c['zero_product_count']/c['model_denominator'],places=12)
+            self.assertEqual(sum(c['zero_product_count'] for c in bar['components'].values()),row['counts']['block_zero_product_count'])
+            self.assertAlmostEqual(sum(c['contribution_pp'] for c in bar['components'].values()),row['sparsity'],places=12)
+            self.assertAlmostEqual(bar['total_pp'],row['sparsity'],places=12)
 
     def test_frontier_dominance_directions_and_ties(self):
         rows=[{'x':0,'y':2},{'x':1,'y':1},{'x':2,'y':2},{'x':1,'y':1}]

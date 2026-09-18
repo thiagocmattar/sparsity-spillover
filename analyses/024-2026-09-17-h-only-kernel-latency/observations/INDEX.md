@@ -19,8 +19,9 @@
 - [015: Figure 3](015-pressure-scope-caption.md): 20 matched all-minus-h pressure
   contrasts at 14M and 70M; six loss/sparsity/latency panels, blue/orange topology
   curves, uniform circles, explicit T/P references and timing-session caveats.
-- [016: Figure 4](016-operation-changes-caption.md): eight integer-count operation
-  decompositions, signed contributions and exact net changes at 14M.
+- [016: Figure 4](016-operation-changes-caption.md): twelve absolute operation
+  stacks at 14M, T/P recipe labels and the manuscript operation palette; each
+  count-based stack reconciles to model-wide sparsity.
 - [017: Figure 5](017-quality-latency-caption.md): qualified sparsity/latency and
   quality/latency panels, finite measured frontier and session limitations.
 - [018: A1](018-complete-quality-caption.md): all 340 retained post-hoc points

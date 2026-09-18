@@ -35,21 +35,25 @@ def architecture(precompiled=None):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--architecture-pdf',type=Path,help='PDF just compiled from paper-architecture.tex, when TeX requires a separate approved invocation.')
-    parser.add_argument('--only-pressure-scope',action='store_true',help='Update only Figure 3 and its provenance using the retained checkpoint table.')
+    subset=parser.add_mutually_exclusive_group()
+    subset.add_argument('--only-pressure-scope',action='store_true',help='Update only Figure 3 and its provenance using the retained checkpoint table.')
+    subset.add_argument('--only-operation-contributions',action='store_true',help='Update only Figure 4 and its absolute operation contributions using the retained checkpoint table.')
     args=parser.parse_args()
-    if args.only_pressure_scope:
+    if args.only_pressure_scope or args.only_operation_contributions:
         source=HERE/'data/paper-checkpoints.json'
         target=HERE/'data/paper-derived.json'
         result=json.loads(target.read_text(encoding='utf-8'))
         assert result['checkpoint_table_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()
         paper_style.setup()
-        replacement=paper_effect_figures.pressure_scope(json.loads(source.read_text(encoding='utf-8')))
+        build=paper_effect_figures.pressure_scope if args.only_pressure_scope else paper_effect_figures.operation_changes
+        replacement=build(json.loads(source.read_text(encoding='utf-8')))
         assert sum(r['file']==replacement['file'] for r in result['figures'])==1
         result['figures']=[replacement if r['file']==replacement['file'] else r for r in result['figures']]
         for name in [Path(__file__).name,'paper_effect_figures.py']:
             result['source_script_sha256'][name]=hashlib.sha256((HERE/name).read_bytes()).hexdigest()
         target.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
-        print('Updated Figure 3: 20 matched OL1(all)-minus-OL1(h) contrasts at 14M and 70M, in six panels including latency.')
+        print('Updated Figure 3: 20 matched OL1(all)-minus-OL1(h) contrasts at 14M and 70M, in six panels including latency.'
+              if args.only_pressure_scope else 'Updated Figure 4: 12 checkpoint stacks of absolute operation contributions at 14M.')
         return
     data=paper_evidence.build()
     paper_style.setup()

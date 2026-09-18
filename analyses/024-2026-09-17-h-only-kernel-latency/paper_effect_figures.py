@@ -1,6 +1,5 @@
 """Explicit threshold contrasts and count-based operation contributions."""
 from paper_style import *
-from paper_evidence import OPS
 
 def difference(data,size,scope,k,treatment,reference):
     a,b=pick(data,size,scope,treatment,k),pick(data,size,scope,reference,k)
@@ -83,40 +82,55 @@ def pressure_none(data):
     return save(fig,'A2-pressure-versus-none.pdf')|{'pairs':pairs}
 
 def operation_changes(data):
-    palette=['#4477AA','#66CCEE','#228833','#CCBB44','#EE6677','#AA3377']
-    labels=['QKV projection','FFN-up','FFN-down','Attention-output','QK','PV']
-    fig,axes=plt.subplots(1,2,figsize=(10.6,4.5))
-    fig.subplots_adjust(left=.08,right=.985,bottom=.30,top=.90,wspace=.25)
+    # Same operation order and muted palette as the manuscript's site-structure figure.
+    operations=[('qkv_projection','QKV','#9eaec2'),('qk_scores','QK','#df985c'),
+                ('probability_value','PV','#f0c68b'),
+                ('attention_output_projection','Attention output','#76969c'),
+                ('mlp_w1','FFN up','#817ca9'),('mlp_w2','FFN down','#b5acd0')]
+    title='Operation Contributions to Model-wide Sparsity on Pythia-14M'
+    fig,axes=plt.subplots(1,2,figsize=(10.8,4.6),sharey=True)
+    fig.subplots_adjust(left=.09,right=.985,bottom=.23,top=.81,wspace=.20)
+    fig.suptitle(title,fontsize=14,y=.975)
+    recipes=[(s,p) for s in ['4','7'] for p in ['none','h','all']]
+    positions=[0,1,2,3.6,4.6,5.6]
+    pressure_labels={'none':'0','h':'h','all':r'\mathrm{all}'}
+    labels=[rf'$T_{s}/P_{{{pressure_labels[p]}}}$' for s,p in recipes]
     records=[]
     for ax,k,letter in zip(axes,[.05,.5],'ab'):
-        for x,(s,p,q) in enumerate([('4','h','none'),('4','all','h'),('7','h','none'),('7','all','h')]):
-            a,b=pick(data,'14M',s,p,k),pick(data,'14M',s,q,k)
-            assert a['counts']['model_product_count']==b['counts']['model_product_count']
-            den=a['counts']['model_product_count']; positive=negative=0.; components={}
-            for op,c in zip(OPS,palette):
-                delta=a['counts']['per_operation'][op]['zero_product_count']-b['counts']['per_operation'][op]['zero_product_count']
-                value=100*delta/den; components[op]={'zero_product_difference':delta,'model_denominator':den,'contribution_pp':value}
-                ax.bar(x,value,bottom=positive if value>=0 else negative,color=c,width=.6,edgecolor='white',lw=.3)
-                if value>=0: positive+=value
-                else: negative+=value
-            net=sum(v['contribution_pp'] for v in components.values())
-            assert abs(net-(a['sparsity']-b['sparsity']))<1e-12
-            ax.scatter([x],[net],color='black',marker='D',s=24,zorder=5)
-            records.append({'kappa':k,'scope':s,'treatment':p,'reference':q,'treatment_key':a['checkpoint_key'],
-                            'reference_key':b['checkpoint_key'],'components':components,'net_pp':net})
-        ax.set_xticks(range(4),[r'$T_4:P_h-P_0$',r'$T_4:P_4-P_h$',r'$T_7:P_h-P_0$',r'$T_7:P_7-P_h$'],rotation=15)
-        ax.axhline(0,color='#555555',lw=.75); ax.set_title(f'({letter}) 14M, '+rf'$\kappa={k:g}$',loc='left')
-        # Bar sticky edges can clip the extremum of a diverging stack; derive limits explicitly.
-        stacks=[r['components'] for r in records if r['kappa']==k]
-        lo=min(sum(min(0,c['contribution_pp']) for c in stack.values()) for stack in stacks)
-        hi=max(sum(max(0,c['contribution_pp']) for c in stack.values()) for stack in stacks)
-        pad=.12*(hi-lo)
-        ax.set_ylim(lo-pad,hi+pad); polish(ax)
-    axes[0].set_ylabel('Change in contribution to\nmodel-wide sparsity (pp)')
-    handles=[plt.Rectangle((0,0),1,1,color=c,label=l) for c,l in zip(palette,labels)]
-    handles+=[Line2D([],[],color='black',marker='D',ls='none',label='Net change')]
-    fig.legend(handles=handles,loc='lower center',ncol=4,frameon=False,fontsize=8,bbox_to_anchor=(.53,.01))
-    return save(fig,'04-operation-sparsity-changes.pdf')|{'contrasts':records}
+        for x,(s,p) in zip(positions,recipes):
+            row=pick(data,'14M',s,p,k)
+            den=row['counts']['model_product_count']; bottom=0.; components={}
+            for op,_,color in operations:
+                count=row['counts']['per_operation'][op]['zero_product_count']
+                value=100*count/den
+                components[op]={'zero_product_count':count,'model_denominator':den,'contribution_pp':value}
+                ax.bar(x,value,bottom=bottom,color=color,width=.72,edgecolor='white',lw=.4,zorder=3)
+                bottom+=value
+            assert sum(c['zero_product_count'] for c in components.values())==row['counts']['block_zero_product_count']
+            assert abs(bottom-row['sparsity'])<1e-12
+            records.append({'model':'14M','kappa':k,'scope':s,'pressure':p,
+                            'checkpoint_key':row['checkpoint_key'],'components':components,'total_pp':bottom})
+        ax.set_xticks(positions,labels)
+        ax.set_xlim(-.65,6.25)
+        ax.set_title(f'({letter}) '+rf'Threshold $\kappa={k:g}$',loc='left',pad=11,fontsize=11.5)
+        ax.set_xlabel('Threshold / pressure recipe',fontsize=11,labelpad=9)
+        ax.tick_params(labelsize=10,length=3,width=.65)
+        for spine in ax.spines.values(): spine.set_linewidth(.65)
+        ax.grid(axis='y',color='#E8EAED',lw=.6,zorder=0)
+    axes[0].set_ylim(0,30)
+    axes[0].set_yticks(range(0,31,5))
+    axes[0].set_ylabel('Contribution to model-wide\nsparsity (pp)',fontsize=11)
+    handles=[plt.Rectangle((0,0),1,1,color=c,label=label) for _,label,c in operations]
+    fig.legend(handles=handles,loc='lower center',ncol=6,frameon=False,fontsize=11,
+               handlelength=1.2,columnspacing=1.5,bbox_to_anchor=(.53,.015))
+    return save(fig,'04-operation-sparsity-changes.pdf')|{
+        'checkpoints':records,'title':title,
+        'estimand':'100 * pooled operation zero-product count / full-model product count; absolute contribution in percentage points',
+        'layout':{'rows':1,'columns':2,'width_inches':10.8,'height_inches':4.6,'shared_y_limits':[0,30]},
+        'typography_pt':{'title':14,'panel_titles':11.5,'axes':11,'ticks':10,'legend':11},
+        'palette':[{'operation':op,'label':label,'color':c} for op,label,c in operations],
+        'palette_reference':'manuscript/draft/figures/pressure-scope/05-site-structure.pdf',
+        'style_reference':'03-pressure-scope-threshold.pdf'}
 
 def table2(data):
     records=[]

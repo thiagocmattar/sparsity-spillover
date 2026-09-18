@@ -54,8 +54,11 @@ Its final typography and line/marker sizes also match Figure 6; the figure is
 widened to 12.8 inches for three columns. The title is
 "Global (Pall) vs. Local (Ph) Pressure Paired Analysis"; panels use paired-difference
 nomenclature and concise threshold/sparsity axis labels.
-Figure 4 derives eight operation decompositions from
-integer counters; Table 2 fixes pressure on h while comparing threshold placement.
+Figure 4 now shows twelve absolute operation decompositions from integer
+counters: T4/T7 with P0/Ph/Pall at κ=.05/.5. Each stacked bar sums to the
+checkpoint's model-wide sparsity on a shared 0–30 pp scale, using the operation
+palette from the manuscript's `pressure-scope/05-site-structure.pdf`. Typography
+matches Figure 3. Table 2 fixes pressure on h while comparing threshold placement.
 Figure 5 displays absolute full-model latency and measured quality-latency
 nondominance, preserving the Run029/Run033 session limitation and the distinct
 70M port. No old regression is extended to new checkpoints.
@@ -73,12 +76,17 @@ entry in `data/paper-derived.json` from the retained checkpoint table, leaving
 the other PDFs and manuscript unchanged. See its
 [revised caption and scientific scope](observations/015-pressure-scope-caption.md).
 
+For Figure 4 alone, use `13_rebuild_paper_figures.py --only-operation-contributions`.
+This updates the PDF and its twelve count-based decompositions without
+regenerating other figures. See its
+[absolute-contribution caption and evidence](observations/016-operation-changes-caption.md).
+
 If MiKTeX requires a separate approved process for its user configuration, compile
 `paper-architecture.tex` with `pdflatex` into `tmp/pdfs/analysis024-architecture/`,
 then pass `--architecture-pdf tmp/pdfs/analysis024-architecture/paper-architecture.pdf`
 to the builder. That argument must refer to a PDF just compiled from the retained
 TeX source, not an older diagram. The builder saves exact pairs, selection IDs,
-operation deltas, dense references, and source/output hashes in
+operation contributions, dense references, and source/output hashes in
 [data/paper-derived.json](data/paper-derived.json). The nine PDFs were rendered
 and visually reviewed. Verification results are recorded in
 [PAPER-VERIFICATION.md](PAPER-VERIFICATION.md).
