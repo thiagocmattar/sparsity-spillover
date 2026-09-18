@@ -24,6 +24,10 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
   added on 18 September: 36 checkpoints (single-site naive L1 excluded), grouped as baseline, 1-site,
   4-sites and 7-sites, with [caption](observations/003-final-latency-topology.md).
 - [Complete 40-checkpoint table](TABLE.md) and [full-precision data](data/results.json).
+- [Paired seven-minus-four-site distributions](figures/05-14m-paired-topology-effects.pdf):
+  one row per pressure recipe, five matched kappa contrasts per row, and three
+  panels for loss, logical sparsity and K050 latency. See the
+  [observation and caption](observations/005-paired-topology-effects.md).
 
 The five new A7+OL1(h) speedups are **1.2060, 1.3929, 1.4706, 1.5649 and
 1.7839x**, in ascending kappa order. At kappa=0.5, h-only pressure has
@@ -79,3 +83,14 @@ naive L1 checkpoints at the user's request; its single-site group contains ReLU
 and the four OL1 checkpoints. The original 40-checkpoint reduction and Figures01/02
 remain complete. Curves are dashed, with small no-pressure/OL1(h)/OL1(all) labels
 beside them and no arrows or label boxes. No fitted trend is added.
+
+The paired distribution figure is reproduced with `05_plot_paired_topology.py`.
+It joins the 30 multisite endpoints with Analysis023's uniform ordinary final
+validation losses, checks matching checkpoint paths and integer sparsity counts,
+and subtracts A4 from A7 within each pressure recipe and kappa. The boxes show
+the middle 50%, median bars and full-range whiskers; dots retain all five
+contrasts. They describe variation across the fixed kappa grid, not seed
+uncertainty. Latency differences are in microseconds. The complete pairs,
+source hashes and box statistics are in `data/paired-topology-effects.json`.
+OL1(all) changes both gate and pressure scope; the h-only latency comparison
+spans the Run029 and Run033 GPU sessions. No new timings are measured.

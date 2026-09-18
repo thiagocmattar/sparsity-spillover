@@ -1,0 +1,642 @@
+{
+  "contrast": "7-sites minus 4-sites at matched pressure recipe and kappa",
+  "sources_sha256": {
+    "analyses/023-2026-09-17-14m-pressure-targets-paper-table/results.json": "cfa002da7506b337a340bb71fa254e2501f30d1d5654c811db5c2ec06cc6b19f",
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/results.json": "f4bddaebcf23ba1118b487e951cd89c140149c2eab0dc46ccbc261793fcebd9a"
+  },
+  "coverage": {
+    "documents": 500,
+    "excluded_tail_tokens": 1444,
+    "input_tokens": 692224,
+    "prediction_tokens": 691886,
+    "seed_count": 1,
+    "sequences": 338
+  },
+  "seed": 1234,
+  "matched_initialization_and_schedule_sha256": [
+    "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa"
+  ],
+  "timing_protocol": {
+    "gpu_model": "RTX 5090",
+    "precision": "BF16",
+    "sparsity_precision": "FP16",
+    "batch": 1,
+    "sequence_length": 2048,
+    "vocabulary": 50304,
+    "validation_blocks": 338,
+    "validation_documents": 500,
+    "excluded_tail_tokens": 1444,
+    "timing_inputs": 64,
+    "passes_per_process": 7,
+    "processes": 3,
+    "paired_samples_per_checkpoint": 1344
+  },
+  "loss_definition": "Ordinary final validation for every endpoint; not the mixed-pass archival table.",
+  "sparsity_definition": "100 times pooled zero-product counts / model-product counts; differences in percentage points.",
+  "latency_definition": "Difference of geometric means of 1344 K050 full-logit host timings per checkpoint, converted from ms to microseconds.",
+  "box_definition": "25th and 75th percentiles (numpy linear quantiles); median bar; min/max whiskers; all five kappa contrasts as dots.",
+  "limits": [
+    "One shared training seed; boxes describe variation across fixed kappa settings, not confidence intervals.",
+    "OL1(all) expands both gate and pressure scope from four to seven sites.",
+    "OL1(h) absolute latency comparisons span different physical GPU/host sessions."
+  ],
+  "pairs": [
+    {
+      "recipe": "No pressure",
+      "kappa": 0,
+      "a4": {
+        "family": "A4",
+        "source_attempt": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/001-20260830-174350-716db646",
+        "checkpoint_content_sha256": "060ff379a5d51da0eaea4f51f56bece29dde0a9cb058ab8370494f0bd1ef67fb",
+        "timing_condition": "c11",
+        "timing_session": "Run029",
+        "block_zero_product_count": 458904778470,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.470497405035256,
+        "sparsity_pp": 7.212018636951158,
+        "latency_us": 633.9123181467637
+      },
+      "a7": {
+        "family": "A7",
+        "source_attempt": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/001-20260831-005745-6f0b05f1",
+        "checkpoint_content_sha256": "5d38ab81a47a469f535a9c2ee9419c97d4c5ac4ab1e7924a45f39e4dadc742ed",
+        "timing_condition": "c21",
+        "timing_session": "Run029",
+        "block_zero_product_count": 459263160723,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.468401059596496,
+        "sparsity_pp": 7.217650871804771,
+        "latency_us": 633.9609261760486
+      },
+      "delta": {
+        "loss_nats": -0.002096345438760139,
+        "sparsity_pp": 0.005632234853613305,
+        "latency_us": 0.048608029284878285
+      }
+    },
+    {
+      "recipe": "No pressure",
+      "kappa": 0.01,
+      "a4": {
+        "family": "A4",
+        "source_attempt": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/002-20260830-174353-bad92c8a",
+        "checkpoint_content_sha256": "1e0e29a9574677f17d6a40410ac1ce8415519498e5673ce478673c3d627cf941",
+        "timing_condition": "c12",
+        "timing_session": "Run029",
+        "block_zero_product_count": 471738145166,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.466499520476753,
+        "sparsity_pp": 7.4137042243075575,
+        "latency_us": 633.9121150063515
+      },
+      "a7": {
+        "family": "A7",
+        "source_attempt": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/002-20260831-005744-1a6c84bc",
+        "checkpoint_content_sha256": "0437460bee1df0057377b0290d7db2d6cc927990e62229eee76778bd9b3bdb40",
+        "timing_condition": "c22",
+        "timing_session": "Run029",
+        "block_zero_product_count": 484715257166,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.458821875103832,
+        "sparsity_pp": 7.61764887249762,
+        "latency_us": 638.3515614185558
+      },
+      "delta": {
+        "loss_nats": -0.007677645372920594,
+        "sparsity_pp": 0.20394464819006242,
+        "latency_us": 4.439446412204234
+      }
+    },
+    {
+      "recipe": "No pressure",
+      "kappa": 0.05,
+      "a4": {
+        "family": "A4",
+        "source_attempt": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/003-20260830-174407-dec7abf0",
+        "checkpoint_content_sha256": "0cd349a1cff2f09a6eed888ab9301738966b1223053a6e281a8ae0619045d678",
+        "timing_condition": "c13",
+        "timing_session": "Run029",
+        "block_zero_product_count": 522145555220,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.434109907883864,
+        "sparsity_pp": 8.205892926203266,
+        "latency_us": 629.5806886345232
+      },
+      "a7": {
+        "family": "A7",
+        "source_attempt": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/003-20260831-005747-b39b4dc0",
+        "checkpoint_content_sha256": "7183ac584f79a32cadcdd3c427a2f3415617bb964bd4f9edc8acc9497d08f010",
+        "timing_condition": "c23",
+        "timing_session": "Run029",
+        "block_zero_product_count": 580751259757,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.437888173661994,
+        "sparsity_pp": 9.126923722094462,
+        "latency_us": 635.332206928517
+      },
+      "delta": {
+        "loss_nats": 0.0037782657781297857,
+        "sparsity_pp": 0.9210307958911965,
+        "latency_us": 5.751518293993854
+      }
+    },
+    {
+      "recipe": "No pressure",
+      "kappa": 0.1,
+      "a4": {
+        "family": "A4",
+        "source_attempt": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/004-20260830-174521-6819b5a6",
+        "checkpoint_content_sha256": "eb128d4268e4e9799cc5baac09696a96fbf5d687b745beb4036aa53cf1014915",
+        "timing_condition": "c14",
+        "timing_session": "Run029",
+        "block_zero_product_count": 569684713932,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.41964218602378,
+        "sparsity_pp": 8.953004995419466,
+        "latency_us": 592.5477467447122
+      },
+      "a7": {
+        "family": "A7",
+        "source_attempt": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/004-20260831-005745-4358dc28",
+        "checkpoint_content_sha256": "2c041d2229719dcc9a166b9ba439f3c7448e5500d3213223639050b817e02322",
+        "timing_condition": "c24",
+        "timing_session": "Run029",
+        "block_zero_product_count": 663349731193,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.428680648465129,
+        "sparsity_pp": 10.425018105347986,
+        "latency_us": 594.1659390244922
+      },
+      "delta": {
+        "loss_nats": 0.00903846244134865,
+        "sparsity_pp": 1.47201310992852,
+        "latency_us": 1.6181922797800325
+      }
+    },
+    {
+      "recipe": "No pressure",
+      "kappa": 0.5,
+      "a4": {
+        "family": "A4",
+        "source_attempt": "runs/011-2026-08-30-pythia14m-full-pass-a4z/artifacts/attempts/005-20260830-174409-0df99a05",
+        "checkpoint_content_sha256": "d80c134b0d7364db4e14eec0f684f82c7fcdd3fd05a86649092d58d74a74d253",
+        "timing_condition": "c15",
+        "timing_session": "Run029",
+        "block_zero_product_count": 650020335259,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.6596795426317925,
+        "sparsity_pp": 10.215537061773293,
+        "latency_us": 478.8187158664201
+      },
+      "a7": {
+        "family": "A7",
+        "source_attempt": "runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/attempts/005-20260831-005744-c27e6b75",
+        "checkpoint_content_sha256": "b95091ec4e035e78cd34c5d623061261c0c11992aba1eb14a42f200be9f4d80c",
+        "timing_condition": "c25",
+        "timing_session": "Run029",
+        "block_zero_product_count": 979071518810,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.70292312576926,
+        "sparsity_pp": 15.386813064155968,
+        "latency_us": 479.1367114457241
+      },
+      "delta": {
+        "loss_nats": 0.04324358313746757,
+        "sparsity_pp": 5.171276002382674,
+        "latency_us": 0.31799557930395395
+      }
+    },
+    {
+      "recipe": "OL1(h)",
+      "kappa": 0,
+      "a4": {
+        "family": "A4-OL1-H",
+        "source_attempt": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/001-20260830-203456-3b24b353",
+        "checkpoint_content_sha256": "bffa4f26ebb3e8829425389bea1fe541b9acc9673e3f1a6b719cb9a15dc5766b",
+        "timing_condition": "c31",
+        "timing_session": "Run029",
+        "block_zero_product_count": 535095657446,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.21574851323867,
+        "sparsity_pp": 8.40941309636955,
+        "latency_us": 603.6581645781898
+      },
+      "a7": {
+        "family": "A7-OL1-H",
+        "source_attempt": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef",
+        "checkpoint_content_sha256": "6429d9f48b107f3c32b8a8897c694b2bf662135bb2f6252636174b092324b882",
+        "timing_condition": "c36",
+        "timing_session": "Run033",
+        "block_zero_product_count": 534457249919,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.219826960704736,
+        "sparsity_pp": 8.399380062941471,
+        "latency_us": 617.6052196706247
+      },
+      "delta": {
+        "loss_nats": 0.004078447466065782,
+        "sparsity_pp": -0.010033033428078042,
+        "latency_us": 13.94705509243488
+      }
+    },
+    {
+      "recipe": "OL1(h)",
+      "kappa": 0.01,
+      "a4": {
+        "family": "A4-OL1-H",
+        "source_attempt": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/002-20260830-204526-86141a25",
+        "checkpoint_content_sha256": "31d568909075b230d8f1f7139708a795ef715c33f11bb6e080aeb8f4bf9b3699",
+        "timing_condition": "c32",
+        "timing_session": "Run029",
+        "block_zero_product_count": 546319454932,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.204503547510452,
+        "sparsity_pp": 8.585803145992205,
+        "latency_us": 592.1584458814019
+      },
+      "a7": {
+        "family": "A7-OL1-H",
+        "source_attempt": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/002-20260916-204722-62bc1055",
+        "checkpoint_content_sha256": "a4aeadb98def4ae023e9970a620642f22855854ce5d8affaf8821de82f76c95b",
+        "timing_condition": "c37",
+        "timing_session": "Run033",
+        "block_zero_product_count": 563516173771,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.198101864763971,
+        "sparsity_pp": 8.856061950388998,
+        "latency_us": 603.7083308341697
+      },
+      "delta": {
+        "loss_nats": -0.006401682746481008,
+        "sparsity_pp": 0.27025880439679284,
+        "latency_us": 11.549884952767798
+      }
+    },
+    {
+      "recipe": "OL1(h)",
+      "kappa": 0.05,
+      "a4": {
+        "family": "A4-OL1-H",
+        "source_attempt": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/003-20260830-203458-6293407b",
+        "checkpoint_content_sha256": "e56d45fab751ced06565dc8243bfd4659a5f502a48b6b8943b79c6a9ba53d00b",
+        "timing_condition": "c33",
+        "timing_session": "Run029",
+        "block_zero_product_count": 574942126470,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.19558994304499,
+        "sparsity_pp": 9.035629014573528,
+        "latency_us": 561.800516284532
+      },
+      "a7": {
+        "family": "A7-OL1-H",
+        "source_attempt": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/003-20260916-204722-d7c4a3d8",
+        "checkpoint_content_sha256": "69e8668927636260ac17619761456ba67138c9b3b58bbead6984428ae3da28b7",
+        "timing_condition": "c38",
+        "timing_session": "Run033",
+        "block_zero_product_count": 644327430108,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.194958627576659,
+        "sparsity_pp": 10.126068963000616,
+        "latency_us": 574.8757458856758
+      },
+      "delta": {
+        "loss_nats": -0.0006313154683308397,
+        "sparsity_pp": 1.090439948427088,
+        "latency_us": 13.075229601143747
+      }
+    },
+    {
+      "recipe": "OL1(h)",
+      "kappa": 0.1,
+      "a4": {
+        "family": "A4-OL1-H",
+        "source_attempt": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/004-20260830-204238-8b4a903d",
+        "checkpoint_content_sha256": "6327bda2dc4c26e4332e350a24a48e03deb461ce14d05abd94e33e31dd5d76c1",
+        "timing_condition": "c34",
+        "timing_session": "Run029",
+        "block_zero_product_count": 594531176662,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.228686820825882,
+        "sparsity_pp": 9.3434850267421,
+        "latency_us": 529.3094843212026
+      },
+      "a7": {
+        "family": "A7-OL1-H",
+        "source_attempt": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/004-20260916-204721-b9dfc815",
+        "checkpoint_content_sha256": "cf4ea308f22681e389a0df2cecc48a93e494341ad9e62ffc34c6e3ba68ebe75f",
+        "timing_condition": "c39",
+        "timing_session": "Run033",
+        "block_zero_product_count": 693801971485,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.237395131376368,
+        "sparsity_pp": 10.903596962720195,
+        "latency_us": 541.8435860514979
+      },
+      "delta": {
+        "loss_nats": 0.008708310550486154,
+        "sparsity_pp": 1.560111935978096,
+        "latency_us": 12.534101730295333
+      }
+    },
+    {
+      "recipe": "OL1(h)",
+      "kappa": 0.5,
+      "a4": {
+        "family": "A4-OL1-H",
+        "source_attempt": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/005-20260830-202955-8e694b5b",
+        "checkpoint_content_sha256": "579251a68ad1796152ce2710f6989bc9b82152e04800fe31430feaf0d92c1401",
+        "timing_condition": "c35",
+        "timing_session": "Run029",
+        "block_zero_product_count": 650774566922,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.722665995535766,
+        "sparsity_pp": 10.227390354799072,
+        "latency_us": 462.2520366926445
+      },
+      "a7": {
+        "family": "A7-OL1-H",
+        "source_attempt": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/005-20260916-203950-9a9e1fbf",
+        "checkpoint_content_sha256": "d86a3daa3444b95be63b50f95fc614d7f7b80dabe1e221034f0e6e15c3ad748e",
+        "timing_condition": "c40",
+        "timing_session": "Run033",
+        "block_zero_product_count": 1060316749758,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.732049095560107,
+        "sparsity_pp": 16.663640299893025,
+        "latency_us": 473.8877783122141
+      },
+      "delta": {
+        "loss_nats": 0.009383100024341395,
+        "sparsity_pp": 6.436249945093953,
+        "latency_us": 11.635741619569615
+      }
+    },
+    {
+      "recipe": "OL1(all)",
+      "kappa": 0,
+      "a4": {
+        "family": "A4-OL1",
+        "source_attempt": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85",
+        "checkpoint_content_sha256": "98bf5862ec5890efe1365fcf9962cdfcd03067407472b832696b5b07079c0edd",
+        "timing_condition": "c16",
+        "timing_session": "Run029",
+        "block_zero_product_count": 496957358081,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.458170360362036,
+        "sparsity_pp": 7.81004229286857,
+        "latency_us": 633.2821484489826
+      },
+      "a7": {
+        "family": "A7-OL1",
+        "source_attempt": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/001-20260831-122537-35dd4889",
+        "checkpoint_content_sha256": "597e0275a7930f4e87129f0b74b85799743faa55a19600ba3fddc0b3ef95ede4",
+        "timing_condition": "c26",
+        "timing_session": "Run029",
+        "block_zero_product_count": 448864547008,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.480183674738957,
+        "sparsity_pp": 7.054229178613711,
+        "latency_us": 634.0298911233261
+      },
+      "delta": {
+        "loss_nats": 0.022013314376921223,
+        "sparsity_pp": -0.7558131142548596,
+        "latency_us": 0.747742674343499
+      }
+    },
+    {
+      "recipe": "OL1(all)",
+      "kappa": 0.01,
+      "a4": {
+        "family": "A4-OL1",
+        "source_attempt": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae",
+        "checkpoint_content_sha256": "e385f7e1f49ac31d0220c8f293808ca1ba08ce59ddd7492b57d1182e4f032229",
+        "timing_condition": "c17",
+        "timing_session": "Run029",
+        "block_zero_product_count": 546377094553,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.458277163420909,
+        "sparsity_pp": 8.586708994090507,
+        "latency_us": 620.1353408313895
+      },
+      "a7": {
+        "family": "A7-OL1",
+        "source_attempt": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/002-20260831-120213-d99dacb3",
+        "checkpoint_content_sha256": "cc8e860ad0a25fb72c5b8fbf090d3f2bba6811ef26bf44b42866148bbfc011d2",
+        "timing_condition": "c27",
+        "timing_session": "Run029",
+        "block_zero_product_count": 491443806958,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.475797046571088,
+        "sparsity_pp": 7.723392871636931,
+        "latency_us": 638.4171237219794
+      },
+      "delta": {
+        "loss_nats": 0.017519883150179716,
+        "sparsity_pp": -0.8633161224535764,
+        "latency_us": 18.281782890589852
+      }
+    },
+    {
+      "recipe": "OL1(all)",
+      "kappa": 0.05,
+      "a4": {
+        "family": "A4-OL1",
+        "source_attempt": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f",
+        "checkpoint_content_sha256": "a6f076630dc59a9aac93fe3f92e7850b4bd8e3ea4b4ea5917b79f7b2b7a82b09",
+        "timing_condition": "c18",
+        "timing_session": "Run029",
+        "block_zero_product_count": 665349449971,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.489802651151398,
+        "sparsity_pp": 10.45644512413755,
+        "latency_us": 572.6794117517053
+      },
+      "a7": {
+        "family": "A7-OL1",
+        "source_attempt": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/003-20260831-120427-8f1cb9f2",
+        "checkpoint_content_sha256": "451110e9c90a5342ab0b3d1a96cd1651510b4789f64ef88fc7b750bb9bd217ff",
+        "timing_condition": "c28",
+        "timing_session": "Run029",
+        "block_zero_product_count": 627590214868,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.46281109476936,
+        "sparsity_pp": 9.863031588136074,
+        "latency_us": 634.5187746158431
+      },
+      "delta": {
+        "loss_nats": -0.026991556382037984,
+        "sparsity_pp": -0.5934135360014761,
+        "latency_us": 61.8393628641378
+      }
+    },
+    {
+      "recipe": "OL1(all)",
+      "kappa": 0.1,
+      "a4": {
+        "family": "A4-OL1",
+        "source_attempt": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728",
+        "checkpoint_content_sha256": "a33ad55f6372db866368d0dc25f61d751646486f4b3f3347daa8f8b2cdc5abdb",
+        "timing_condition": "c19",
+        "timing_session": "Run029",
+        "block_zero_product_count": 725024441739,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.54832332091924,
+        "sparsity_pp": 11.394280537892907,
+        "latency_us": 533.7081452636854
+      },
+      "a7": {
+        "family": "A7-OL1",
+        "source_attempt": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/004-20260831-120424-d743fe3d",
+        "checkpoint_content_sha256": "784f56de3f13d585e2a895603ecda08b9300d3cf1ceb340172e90c8760fa360f",
+        "timing_condition": "c29",
+        "timing_session": "Run029",
+        "block_zero_product_count": 750634458981,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.429496900569758,
+        "sparsity_pp": 11.796760377518327,
+        "latency_us": 592.9787562063977
+      },
+      "delta": {
+        "loss_nats": -0.11882642034948265,
+        "sparsity_pp": 0.40247983962541944,
+        "latency_us": 59.270610942712324
+      }
+    },
+    {
+      "recipe": "OL1(all)",
+      "kappa": 0.5,
+      "a4": {
+        "family": "A4-OL1",
+        "source_attempt": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68",
+        "checkpoint_content_sha256": "81427a14cb4e70b3467600fca052e680ee9dc2991135886b2ed3e0b8b84790ff",
+        "timing_condition": "c20",
+        "timing_session": "Run029",
+        "block_zero_product_count": 808963848536,
+        "model_product_count": 6363055915008,
+        "loss_nats": 6.0379865042556675,
+        "sparsity_pp": 12.713448684742273,
+        "latency_us": 459.47566382466186
+      },
+      "a7": {
+        "family": "A7-OL1",
+        "source_attempt": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca",
+        "checkpoint_content_sha256": "937f7a1d25676306a429f0871368542a67c644fbde5b355faded4db4237ad78a",
+        "timing_condition": "c30",
+        "timing_session": "Run029",
+        "block_zero_product_count": 1748738568719,
+        "model_product_count": 6363055915008,
+        "loss_nats": 5.829389594715728,
+        "sparsity_pp": 27.482684296304843,
+        "latency_us": 473.36601349583015
+      },
+      "delta": {
+        "loss_nats": -0.20859690953993937,
+        "sparsity_pp": 14.76923561156257,
+        "latency_us": 13.89034967116828
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "recipe": "No pressure",
+      "metric": "loss_nats",
+      "n": 5,
+      "whislo": -0.007677645372920594,
+      "q1": -0.002096345438760139,
+      "med": 0.0037782657781297857,
+      "q3": 0.00903846244134865,
+      "whishi": 0.04324358313746757,
+      "mean": 0.009257264109053054
+    },
+    {
+      "recipe": "OL1(h)",
+      "metric": "loss_nats",
+      "n": 5,
+      "whislo": -0.006401682746481008,
+      "q1": -0.0006313154683308397,
+      "med": 0.004078447466065782,
+      "q3": 0.008708310550486154,
+      "whishi": 0.009383100024341395,
+      "mean": 0.0030273719652162967
+    },
+    {
+      "recipe": "OL1(all)",
+      "metric": "loss_nats",
+      "n": 5,
+      "whislo": -0.20859690953993937,
+      "q1": -0.11882642034948265,
+      "med": -0.026991556382037984,
+      "q3": 0.017519883150179716,
+      "whishi": 0.022013314376921223,
+      "mean": -0.06297633774887182
+    },
+    {
+      "recipe": "No pressure",
+      "metric": "sparsity_pp",
+      "n": 5,
+      "whislo": 0.005632234853613305,
+      "q1": 0.20394464819006242,
+      "med": 0.9210307958911965,
+      "q3": 1.47201310992852,
+      "whishi": 5.171276002382674,
+      "mean": 1.5547793582492133
+    },
+    {
+      "recipe": "OL1(h)",
+      "metric": "sparsity_pp",
+      "n": 5,
+      "whislo": -0.010033033428078042,
+      "q1": 0.27025880439679284,
+      "med": 1.090439948427088,
+      "q3": 1.560111935978096,
+      "whishi": 6.436249945093953,
+      "mean": 1.8694055200935704
+    },
+    {
+      "recipe": "OL1(all)",
+      "metric": "sparsity_pp",
+      "n": 5,
+      "whislo": -0.8633161224535764,
+      "q1": -0.7558131142548596,
+      "med": -0.5934135360014761,
+      "q3": 0.40247983962541944,
+      "whishi": 14.76923561156257,
+      "mean": 2.5918345356956154
+    },
+    {
+      "recipe": "No pressure",
+      "metric": "latency_us",
+      "n": 5,
+      "whislo": 0.048608029284878285,
+      "q1": 0.31799557930395395,
+      "med": 1.6181922797800325,
+      "q3": 4.439446412204234,
+      "whishi": 5.751518293993854,
+      "mean": 2.4351521189133907
+    },
+    {
+      "recipe": "OL1(h)",
+      "metric": "latency_us",
+      "n": 5,
+      "whislo": 11.549884952767798,
+      "q1": 11.635741619569615,
+      "med": 12.534101730295333,
+      "q3": 13.075229601143747,
+      "whishi": 13.94705509243488,
+      "mean": 12.548402599242275
+    },
+    {
+      "recipe": "OL1(all)",
+      "metric": "latency_us",
+      "n": 5,
+      "whislo": 0.747742674343499,
+      "q1": 13.89034967116828,
+      "med": 18.281782890589852,
+      "q3": 59.270610942712324,
+      "whishi": 61.8393628641378,
+      "mean": 30.80596980859035
+    }
+  ]
+}
