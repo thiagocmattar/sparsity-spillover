@@ -1,4 +1,4 @@
-"""Re-express Figure09 latency as speedup over the size-matched candidate A0."""
+"""Plot A0 and multisite speedup on linear axes, with model-size labels."""
 import hashlib
 import json
 import math
@@ -8,13 +8,12 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.ticker import FuncFormatter, NullFormatter
+from matplotlib.ticker import FuncFormatter
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 GROUPS = [
     ('A0', 'Baseline (A0)', '#444A52', '*', 72),
-    ('A1-H', '1-site (A1-H)', '#19856B', 'o', 32),
     ('A4', '4-sites (A4*)', '#2878B5', 'D', 32),
     ('A7', '7-sites (A7)', '#C96024', '^', 42),
 ]
@@ -30,14 +29,16 @@ def main():
     for item in retained['sources'] + retained['verified_against']:
         assert sha(ROOT/item['path']) == item['sha256']
     assert sha(HERE/'figures/09-14m-70m-matched-sparsity-latency.pdf') == retained['pdf_sha256']
-    points = retained['points']
-    assert len(points) == 44 and all(p['qualified'] for p in points)
+    assert len(retained['points']) == 44 and all(p['qualified'] for p in retained['points'])
+    excluded = [p for p in retained['points'] if p['family'] == 'A1-H']
+    assert len(excluded) == 2 and {p['model'] for p in excluded} == {'14M', '70M'}
+    points = [p for p in retained['points'] if p['family'] != 'A1-H']
     baselines = {}
     keys = []
     for model in ['14M', '70M']:
         cohort = [p for p in points if p['model'] == model]
         a0 = [p for p in cohort if p['family'] == 'A0']
-        assert len(cohort) == 22 and len(a0) == 1
+        assert len(cohort) == 21 and len(a0) == 1
         keys.append({(p['family'], p['kappa']) for p in cohort})
         baseline = a0[0]
         baselines[model] = {k: baseline[k] for k in ['condition', 'session', 'latency_ms']}
@@ -46,9 +47,9 @@ def main():
             point['baseline_latency_ms'] = baseline['latency_ms']
             point['speedup_vs_a0'] = baseline['latency_ms']/point['latency_ms']
         assert baseline['speedup_vs_a0'] == 1.0
-    assert keys[0] == keys[1] and len(keys[0]) == 22
+    assert keys[0] == keys[1] and len(keys[0]) == 21
     by_id = {(p['model'], p['condition']): p for p in points}
-    assert len(by_id) == 44
+    assert len(by_id) == 42
     plt.rcParams.update({
         'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.labelsize': 11,
         'axes.linewidth': .65, 'axes.spines.top': False,
@@ -68,7 +69,7 @@ def main():
         for prefix, _, color, marker, size in GROUPS:
             selected = [p for p in points if p['model'] == model
                         and p['family'].split('+')[0] == prefix]
-            assert len(selected) == (1 if prefix in ['A0', 'A1-H'] else 10)
+            assert len(selected) == (1 if prefix == 'A0' else 10)
             # The two A0 values coincide at 1x: retain both using nested stars.
             if prefix == 'A0':
                 size = 110 if model == '14M' else 38
@@ -79,14 +80,20 @@ def main():
                        linewidths=1.05 if model == '14M' else .7, zorder=3)
     ymin = min(p['speedup_vs_a0'] for p in points)
     ymax = max(p['speedup_vs_a0'] for p in points)
-    padding = (ymax/ymin)**.07
-    ax.set(xlim=(-.8, 42.5), yscale='log', ylim=(ymin/padding, ymax*padding),
+    span = ymax-ymin
+    ax.set(xlim=(-.8, 42.5), yscale='linear', ylim=(ymin-.06*span, ymax+.15*span),
            xlabel=r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)',
-           ylabel='Full-model speedup vs. A0 (log scale)')
+           ylabel='Full-model speedup vs. A0')
     ax.set_xticks(range(0, 41, 5))
-    ax.set_yticks([1, 1.2, 1.5, 2])
+    ax.set_yticks([1, 1.2, 1.4, 1.6, 1.8, 2])
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f'{v:g}'+r'$\times$'))
-    ax.yaxis.set_minor_formatter(NullFormatter())
+    annotations = []
+    for model, x in [('14M', 12), ('70M', 33)]:
+        y = max(p['speedup_vs_a0'] for p in points if p['model'] == model) + .07*span
+        ax.text(x, y, model, color='#555C64', fontsize=10,
+                fontweight='normal', ha='center', va='bottom')
+        annotations.append({'text': model, 'position': [x, y],
+                            'coordinates': 'data', 'alignment': 'center, bottom'})
     ax.grid(axis='y', color='#E7E9ED', linewidth=.6)
     ax.axhline(1, color='#A7ADB5', linewidth=.7, zorder=1)
     ax.set_axisbelow(True)
@@ -102,7 +109,7 @@ def main():
         Line2D([], [], color='#444A52', linestyle=(0, (2, 2)), label='OL1(h)'),
         Line2D([], [], color='#444A52', linestyle=(0, (6, 3)), label='OL1(all)'),
     ]
-    fig.legend(handles=topology_handles, loc='lower center', ncol=4,
+    fig.legend(handles=topology_handles, loc='lower center', ncol=3,
                frameon=False, fontsize=9, handletextpad=.4, columnspacing=1.6,
                bbox_to_anchor=(.55, .054))
     fig.legend(handles=style_handles, loc='lower center', ncol=4,
@@ -110,8 +117,9 @@ def main():
                bbox_to_anchor=(.55, .005))
     fig.subplots_adjust(left=.10, right=.985, bottom=.25, top=.97)
     assert len(fig.axes) == 1 and len(ax.lines) == 9  # Eight curves plus the A0 guide.
-    assert ax.get_yscale() == 'log'
-    assert sum(len(c.get_offsets()) for c in ax.collections) == 44
+    assert ax.get_yscale() == 'linear'
+    assert [t.get_text() for t in ax.texts] == ['14M', '70M']
+    assert sum(len(c.get_offsets()) for c in ax.collections) == 42
     assert all(ax.get_xlim()[0] < p['sparsity_percent'] < ax.get_xlim()[1]
                and ax.get_ylim()[0] < p['speedup_vs_a0'] < ax.get_ylim()[1] for p in points)
     output = HERE/'figures/10-14m-70m-matched-sparsity-a0-speedup.pdf'
@@ -125,9 +133,14 @@ def main():
         'upstream_sources': retained['sources'],
         'definition': 'candidate A0 geometric-mean latency / candidate checkpoint geometric-mean latency, separately within each model size',
         'baseline_kind': 'final candidate kernel on A0, not the checkpoint-specific native reference',
-        'baselines': baselines, 'checkpoint_count': 44, 'checkpoint_count_per_model': 22,
+        'baselines': baselines, 'checkpoint_count': 42, 'checkpoint_count_per_model': 21,
+        'excluded_points': [{'model': p['model'], 'session': p['session'],
+                             'condition': p['condition'], 'family': p['family']}
+                            for p in excluded],
+        'exclusion_reason': 'User-requested removal of both 1-site A1-H controls.',
         'kappas': retained['kappas'], 'points': points, 'connections': retained['connections'],
-        'y_scale': 'log', 'y_unit': 'x', 'y_ticks': list(ax.get_yticks()),
+        'y_scale': 'linear', 'y_unit': 'x', 'y_ticks': list(ax.get_yticks()),
+        'annotations': annotations,
         'x_limits_percent': list(ax.get_xlim()), 'y_limits_speedup': list(ax.get_ylim()),
         'baseline_marker_areas_pt2': {'14M': 110, '70M': 38},
         'comparison_limits': retained['comparison_limits'] + ' Shared A0 normalization is descriptive, not a paired native-relative kernel speedup or an equal-quality comparison; 14M A7 h-only points span a different session from A0.',
@@ -136,7 +149,7 @@ def main():
     plt.close(fig)
     (HERE/'data/matched-a0-normalized-speedup.json').write_text(
         json.dumps(record, indent=2)+'\n', encoding='utf-8', newline='\n')
-    print('44 points; eight curves; both A0 controls equal 1x; separate size-matched baselines.')
+    print('42 points; eight curves; linear y axis; 14M/70M group labels; both A0 controls equal 1x.')
     for model in baselines:
         print(model, baselines[model], 'maximum speedup:',
               max(p['speedup_vs_a0'] for p in points if p['model'] == model))

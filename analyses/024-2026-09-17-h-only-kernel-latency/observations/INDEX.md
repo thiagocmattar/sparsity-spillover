@@ -19,5 +19,5 @@
 - [009](009-matched-combined-latency.md): one shared panel with 22 matching
   conditions per model; baseline, ReLU and A4/A7 OL1(h)/OL1(all) grids only,
   with separate linear-y and log-y versions.
-- [010](010-a0-normalized-speedup.md): the same 44 points normalized to each
-  model size's final-kernel A0 latency, displaying A0/checkpoint speedup.
+- [010](010-a0-normalized-speedup.md): 42 points normalized to each model size's
+  final-kernel A0 latency; 1-site controls excluded, linear axes and size labels.

@@ -27,8 +27,23 @@
       "latency_ms": 3.313247016348893
     }
   },
-  "checkpoint_count": 44,
-  "checkpoint_count_per_model": 22,
+  "checkpoint_count": 42,
+  "checkpoint_count_per_model": 21,
+  "excluded_points": [
+    {
+      "model": "14M",
+      "session": "Run029",
+      "condition": "c02",
+      "family": "A1-H"
+    },
+    {
+      "model": "70M",
+      "session": "Run035",
+      "condition": "c01",
+      "family": "A1-H"
+    }
+  ],
+  "exclusion_reason": "User-requested removal of both 1-site A1-H controls.",
   "kappas": [
     0,
     0.01,
@@ -51,21 +66,6 @@
       "latency_ms": 0.651573035007824,
       "baseline_latency_ms": 0.651573035007824,
       "speedup_vs_a0": 1.0
-    },
-    {
-      "model": "14M",
-      "session": "Run029",
-      "condition": "c02",
-      "source_family": "A1-H",
-      "family": "A1-H",
-      "kappa": null,
-      "qualified": true,
-      "block_zero_product_count": 172701605233,
-      "model_product_count": 6363055915008,
-      "sparsity_percent": 2.7141299328466277,
-      "latency_ms": 0.6328194194692462,
-      "baseline_latency_ms": 0.651573035007824,
-      "speedup_vs_a0": 1.029635019030084
     },
     {
       "model": "14M",
@@ -381,21 +381,6 @@
       "latency_ms": 3.313247016348893,
       "baseline_latency_ms": 3.313247016348893,
       "speedup_vs_a0": 1.0
-    },
-    {
-      "model": "70M",
-      "session": "Run035",
-      "condition": "c01",
-      "source_family": "A1-H",
-      "family": "A1-H",
-      "kappa": null,
-      "qualified": true,
-      "block_zero_product_count": 3548299693748,
-      "model_product_count": 35251191545856,
-      "sparsity_percent": 10.06575817198192,
-      "latency_ms": 3.318765414595398,
-      "baseline_latency_ms": 3.313247016348893,
-      "speedup_vs_a0": 0.9983372135245727
     },
     {
       "model": "70M",
@@ -876,26 +861,48 @@
       ]
     }
   ],
-  "y_scale": "log",
+  "y_scale": "linear",
   "y_unit": "x",
   "y_ticks": [
     1.0,
     1.2,
-    1.5,
+    1.4,
+    1.6,
+    1.8,
     2.0
+  ],
+  "annotations": [
+    {
+      "text": "14M",
+      "position": [
+        12,
+        1.4913887215471786
+      ],
+      "coordinates": "data",
+      "alignment": "center, bottom"
+    },
+    {
+      "text": "70M",
+      "position": [
+        33,
+        2.1205833031151684
+      ],
+      "coordinates": "data",
+      "alignment": "center, bottom"
+    }
   ],
   "x_limits_percent": [
     -0.8,
     42.5
   ],
   "y_limits_speedup": [
-    0.9493893344156468,
-    2.1528258863460903
+    0.9371635530963457,
+    2.2043652323200407
   ],
   "baseline_marker_areas_pt2": {
     "14M": 110,
     "70M": 38
   },
   "comparison_limits": "Matched recipe/kappa conditions and measurement definition, not identical implementations or physical GPU/host sessions. 14M uses K050; 70M uses the qualified k050-70m-v2 port. No equal optimization-budget or causal scaling claim. Shared A0 normalization is descriptive, not a paired native-relative kernel speedup or an equal-quality comparison; 14M A7 h-only points span a different session from A0.",
-  "pdf_sha256": "40f6e579ba4165ba6f219b1d411cf5b17cf0080c1f68dba7e12072caf6a8691d"
+  "pdf_sha256": "dc9fc91614d95cddcfa4c8394f1a64799ca2f0e342c5b88f9641f3a8e1be22ee"
 }

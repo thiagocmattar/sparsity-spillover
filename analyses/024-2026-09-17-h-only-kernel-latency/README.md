@@ -164,8 +164,10 @@ both versions and the ratio interpretation of distances on the log axis.
 The [A0-normalized speedup figure](figures/10-14m-70m-matched-sparsity-a0-speedup.pdf)
 is reproduced with `10_plot_a0_normalized_speedup.py`. For each size it divides
 the final-kernel A0 latency by each checkpoint's final-kernel latency, placing
-both A0 controls at 1x. It retains Figure09's 44 points, eight recipe curves
-and log y scale. This shared-A0 reference differs from the paired native
+both A0 controls at 1x. It retains 42 of Figure09's points and all eight recipe
+curves, excluding the two 1-site controls at the user's request. Both axes are
+linear, with subtle 14M/70M labels above their groups. This shared-A0 reference
+differs from the paired native
 reference used in the earlier kernel speedup figures. Exact baseline values,
 original latencies, ratios and provenance are in
 `data/matched-a0-normalized-speedup.json`; see the

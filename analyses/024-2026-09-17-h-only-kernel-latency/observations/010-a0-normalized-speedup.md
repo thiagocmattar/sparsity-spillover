@@ -7,9 +7,11 @@ each size's A0 baseline, and show speedup on one panel.
 
 ## Method and coverage
 
-Retain exactly the 44 qualified points and eight family curves from
-`data/matched-combined-latency.json`: A0, unpressured A1-H ReLU, and
-A4/A7 with OL1(h)/OL1(all) at kappa `{0, 0.01, 0.05, 0.1, 0.5}`.
+Retain 42 qualified points and all eight family curves from
+`data/matched-combined-latency.json`: A0 and A4/A7 with OL1(h)/OL1(all)
+at kappa `{0, 0.01, 0.05, 0.1, 0.5}`. At the user's request, exclude
+the two unpressured A1-H ReLU controls (one per size) from the 44-point source.
+This leaves 21 matching recipe/kappa conditions per size.
 For checkpoint c of size s, plot
 
 ```text
@@ -40,23 +42,24 @@ logical-product sparsity. No new measurement or cloud compute is performed.
 **Speedup over size-matched A0 versus model-wide sparsity for Pythia-14M and
 Pythia-70M.** Each checkpoint's speedup is its model size's final-kernel A0
 latency divided by its own final-kernel latency. Open markers indicate 14M;
-filled markers indicate 70M. Colors and shapes distinguish A0, 1-site A1-H,
-4-sites A4* and 7-sites A7. Short dashes identify OL1(h), and long dashes
+filled markers indicate 70M. Colors and shapes distinguish A0, 4-sites A4*
+and 7-sites A7. Short dashes identify OL1(h), and long dashes
 identify OL1(all). Each family curve connects increasing kappa within one
-model size and recipe. The y axis retains the logarithmic scale of the
-preceding version, with ticks labeled as speedup multiples and a horizontal
-1x guide. X remains linear. Both A0 points are at 1x and near zero sparsity;
+model size and recipe. Both axes are linear, with y ticks labeled as speedup
+multiples and a horizontal 1x guide. Subtle 14M and 70M labels sit above
+their respective multisite groups. Both A0 points are at 1x and near zero sparsity;
 the larger open 14M star surrounds the smaller filled 70M star so both are
-retained at their true coordinates. Baseline and ReLU controls have no curves.
+retained at their true coordinates. Baseline controls have no curves.
 
 ## Result
 
 The normalized view removes the absolute latency offset between sizes and
 shows relative changes from their own A0 endpoints. The maximum observed
-A0-relative speedup is 1.4180795335x at 14M and 2.0472741151x at 70M. The
-70M ReLU control is approximately 0.9983372135x. Equal vertical distances
-on the log axis represent equal speedup ratios. All 44 original sparsity
-and latency values remain recoverable in the normalized figure's data JSON.
+A0-relative speedup is 1.4180795335x at 14M and 2.0472741151x at 70M.
+Equal vertical distances now represent equal differences in speedup multiples.
+All 42 plotted sparsity and latency values remain recoverable in the normalized
+figure's data JSON. The two excluded controls remain available in Figure09's
+source data. Neither the normalization nor any retained point value changes.
 
 ## Caveats
 
@@ -81,15 +84,20 @@ Run `10_plot_a0_normalized_speedup.py` to produce
 [Figure10](../figures/10-14m-70m-matched-sparsity-a0-speedup.pdf) and
 [`data/matched-a0-normalized-speedup.json`](../data/matched-a0-normalized-speedup.json).
 The JSON records the formula, exact A0 references, raw latency and normalized
-speedup for all points, unchanged family connections, source hashes, axis
-limits and PDF hash. Source definitions remain in
+speedup for all plotted points, the two excluded identities, unchanged family
+connections, group-label positions, source hashes, axis limits and PDF hash.
+Source definitions remain in
 [Observation009](009-matched-combined-latency.md),
 [Observation003](003-final-latency-topology.md) and
 [Observation004](004-70m-final-latency-topology.md).
 
 Verification checks both A0 controls equal 1x, all ratios reconstruct from
-the retained latencies, exact 22-key matching per size, 44 unique point
-identities, eight separate curves, positive log limits and source hashes.
+the retained latencies, exact 21-key matching per size, 42 unique point
+identities, eight separate curves, linear axes, both group labels and source hashes.
 The single-page PDF was rendered and visually inspected, and all fonts are
 embedded. Earlier PDFs and data are unchanged. No manuscript update or
 finding promotion is made.
+
+The current display revises Figure10 in place at the user's request: remove
+the 1-site controls, label the model-size groups, and use a linear y axis.
+The original 44-point logarithmic display is preserved in Git commit `3924817`.
