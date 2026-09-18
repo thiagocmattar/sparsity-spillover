@@ -102,34 +102,39 @@ masking/padding; it is not a runtime speedup or a fraction of S_model recovered.
 
 ### Explanation for later text
 
-The final specialized kernel combines operation fusion with exact-zero checks
-that bypass matrix instructions: QKV and FFN-up test 16x16 activation fragments,
-whereas FFN-down (h) and attention-output (z) use 8x16 groups and a special path
-for rows with at most two nonzeros. This h/z path can avoid corresponding weight
-loads and replace a full row projection with only its surviving weighted
-contributions. QK/PV skipping instead checks operands after loading them and
-retains the attention loop, synchronization, softmax and output updates; a zero
-QK dot product still contributes to softmax normalization. Consequently, even
-substantial attention-instruction bypass can save less time than the added
-checks and conditional execution cost. The matched 14M measurements confirm
-the net result: attention skipping slows all 35 tested settings, including one
-with 58% QK and 67% PV bypass. The measured sparsity benefit comes from the
-projection path, with the strongest mechanistic evidence pointing to FFN-down
-and attention-output together: at T4/Ph, kappa=0.5, projection skipping gives
-1.37x acceleration while h/z bypass is 98.38%/99.73% and a/m bypass is zero.
-The timings do not separate h from z, so they cannot establish which contributes
-more. Overall speedup relative to native execution also includes fusion and
-other implementation changes; these 14M attribution results are not established
-by the available 70M or clipping timings.
+The lack of an attention speedup is not because h and z need to become more
+sparse. At the 14M T7/Pall endpoint in Figure 10, their bypass rates are already
+about 94.5% and 99.6%. The kernel tries to save time by finding exact zeros in
+the activations and avoiding calculations that cannot change the result. But
+the 58% QK and 67% PV bypass rates describe only the matrix-multiplication
+steps skipped, not the fraction of attention's total running time
+removed. The implementation has already read the input values before deciding
+what to skip, and it still needs to normalize the attention scores into
+probabilities and finish producing the output. Finding which calculations can
+be skipped also takes time. Here, the extra cost of skipping outweighs the
+time saved: enabling QK/PV skipping increases the same model's latency from
+0.468 to 0.473 ms, with h and z unchanged. The implementation can save more
+surrounding work at h and z: when very few activations remain, it computes
+their projections from just those surviving values and avoids reading weights
+that would only multiply zeros. The measured benefit comes from the linear
+projections, with the evidence pointing especially to FFN-down and
+attention-output together; their individual time savings have not been
+separated. These conclusions describe the tested 14M implementation, not a
+general limitation of sparse attention.
 
 Implementation sources: [h/z short-row and tile path](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k049/joint.cu),
 [QKV/FFN-up predicate](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/projection.cu),
 and [QK/PV loading and skip predicate](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k035/sparse_gemm.h).
 The code identifies work retained or avoided; the timing ablations establish
-the net gain, not a profiler decomposition of individual overheads. In the
-T4/Ph example the matched full-model times are 0.623390 ms with all skipping
+the net gain, not a profiler decomposition of individual overheads. Overall
+native-relative speedup also includes fusion and other implementation changes.
+The available 70M and clipping timings do not establish the same attribution.
+As a complementary example, at 14M T4/Ph, kappa=0.5, h/z bypass is
+98.38%/99.73% while a/m bypass is zero. The matched full-model times are
+0.623390 ms with all skipping
 disabled and 0.455867 ms with projection skipping enabled, with attention
-skipping disabled in both. The complete table retains the raw-time reduction.
+skipping disabled in both: a 1.37x gain. The complete table retains the raw-time
+reduction.
 
 The following comparison uses **T7/Pall, kappa=0.5** at both sizes. Scalar
 percentages below are the BF16 lower bound plotted in the figure.
