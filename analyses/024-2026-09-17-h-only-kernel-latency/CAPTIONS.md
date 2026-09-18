@@ -16,7 +16,7 @@ The proposed paragraphs have not been inserted into manuscript TeX.
 |---|---|---|---|
 | 1 | [Quality-sparsity trade-offs](figures/01-quality-sparsity-tradeoffs.pdf) | [Caption / writing](observations/013-quality-sparsity-caption.md) | Introduction; Section 4.1 |
 | 2 | [Intervention sites](figures/02-intervention-sites.pdf) | [Caption / writing](observations/014-intervention-sites-caption.md) | Methodology |
-| 3 | [Pressure scope and threshold](figures/03-pressure-scope-threshold.pdf) | [Caption / writing](observations/015-pressure-scope-caption.md) | Section 4.2 |
+| 3 | [14M pressure effects versus P0](figures/03-pressure-scope-threshold.pdf) | [Caption / writing](observations/015-pressure-scope-caption.md) | Section 4.2 |
 | 4 | [Operation contributions](figures/04-operation-sparsity-changes.pdf) | [Caption / writing](observations/016-operation-changes-caption.md) | Section 4.4 |
 | 5 | [Quality, sparsity, and latency](figures/05-quality-latency.pdf) | [Caption / writing](observations/017-quality-latency-caption.md) | Section 4.5 |
 | A1 | [Complete quality-sparsity results](figures/A1-complete-quality-sparsity.pdf) | [Caption / writing](observations/018-complete-quality-caption.md) | Results appendix |

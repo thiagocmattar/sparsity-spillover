@@ -3,6 +3,13 @@
 Completed locally on 18 September 2026. No training, evaluation, benchmarking,
 or cloud resources were launched. The approved task is retained as `task.md`.
 
+Figure 3 was subsequently revised at the user's request to use P0 as the
+reference for both pressure scopes. The approved replacement has two 14M panels
+and four curves per panel, matching Figure 6's colours and line styles.
+Its 20 contrasts use 30 unique checkpoints. Matching no-pressure multisite
+controls are unavailable at 70M. Only Figure 3 and its provenance/caption were
+regenerated; other PDFs and manuscript files retain their prior hashes.
+
 ## Scientific checks
 
 Seven focused tests pass via:
@@ -22,8 +29,9 @@ The checks cover:
   optimized-dense speedup normalization, three process means, and 64 timing
   inputs per checkpoint. The equal-sized process geometric means reconcile to
   the reported geometric mean over all 1,344 timings.
-- All 20 all-minus-h pairs at fixed size, scope, and threshold, including
-  the required 70M κ=.05/.5 rounded annotations.
+- All 20 14M h-minus-P0 and all-minus-P0 pairs at fixed scope and threshold:
+  matched initialization/schedule, integer-count sparsity differences, and
+  agreement with the previously retained pressure-versus-none appendix.
 - Eight operation decompositions: signed integer numerator differences sum
   exactly to the aggregate difference, and contributions sum to ΔS within
   1e-12 percentage points.
@@ -48,6 +56,9 @@ The architecture was compiled from the retained adaptation of the existing
 manuscript TikZ diagram. `pdfinfo` confirmed one page per PDF; `pdffonts` confirmed
 that all listed fonts are embedded (counts in figure order: 3,12,3,4,3,2,3,2,2).
 Publication outputs are PDF only; temporary preview PNGs are not deliverables.
+The revised Figure 3 was separately rendered at 1,900 pixels and visually
+checked for labels, legend, line styles, and panel spacing. Numeric annotations
+and the validation-loss unit suffix are absent; all four listed fonts are embedded.
 
 Each PDF has its own observation/caption file containing the associated proposed
 manuscript paragraph and links to the relevant draft section. Table 2 has its own

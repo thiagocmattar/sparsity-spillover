@@ -29,8 +29,11 @@ training schedule, and the ordinary/logical loss passes remain separate metadata
 Figure 1 uses all 54 trained endpoints and the 40 dense/ReLU clipping evaluations,
 with 14 high-loss clipping records outside its main Y range. Appendix A1 includes
 all 340 retained clipping evaluations attached to the primary cohort. No clipping
-sweeps are invented for the 20 h-only multisite checkpoints. Figure 3 preserves
-all 20 pressure-scope pairs; Figure 4 derives eight operation decompositions from
+sweeps are invented for the 20 h-only multisite checkpoints. Figure 3 now shows
+20 pressure-minus-P0 contrasts at 14M, with four curves per loss/sparsity panel.
+The 70M P0 controls are unavailable; the user selected the two-panel 14M view.
+Colours and line styles match Figure 6, with explicit T/P contrasts in the legend.
+Figure 4 derives eight operation decompositions from
 integer counters; Table 2 fixes pressure on h while comparing threshold placement.
 Figure 5 displays absolute full-model latency and measured quality-latency
 nondominance, preserving the Run029/Run033 session limitation and the distinct
@@ -42,6 +45,12 @@ Rebuild locally from the repository root:
 .venv/Scripts/python.exe -X utf8 analyses/024-2026-09-17-h-only-kernel-latency/13_rebuild_paper_figures.py
 .venv/Scripts/python.exe -X utf8 -m unittest discover -s analyses/024-2026-09-17-h-only-kernel-latency -p test_paper_figures.py -v
 ```
+
+For the pressure-versus-P0 revision alone, use
+`13_rebuild_paper_figures.py --only-pressure-scope`. It updates Figure 3 and its
+entry in `data/paper-derived.json` from the retained checkpoint table, leaving
+the other PDFs and manuscript unchanged. See its
+[revised caption and scientific scope](observations/015-pressure-scope-caption.md).
 
 If MiKTeX requires a separate approved process for its user configuration, compile
 `paper-architecture.tex` with `pdflatex` into `tmp/pdfs/analysis024-architecture/`,
