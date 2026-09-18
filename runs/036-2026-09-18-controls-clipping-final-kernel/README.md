@@ -1,6 +1,7 @@
 # Run036: final-kernel latency of post-hoc control clipping
 
-Status: implementation and local verification; no compute launched yet.
+Status: all 12 GPU preflight settings passed. The 120-process full-validation
+sweep is active; final aggregation and verified retrieval are pending.
 
 The user requested the missing Analysis024 dense/ReLU clipping latencies at
 14M and 70M, then explicitly said to do it and authorized RunPod. The user
@@ -84,4 +85,38 @@ hook placement, all40 retained condition identities). All242 bootstrap tests
 passed. Prepared1417 hash-recorded source/input files. Remote preflight covers
 12 settings (both sizes, both activations, p=0,.5,.9), eight validation blocks
 and four timing inputs each. All120 final processes then use full qualification.
-GPU smoke is still pending; CPU tests are insufficient for numerical qualification.
+All 12 GPU smoke settings passed the unchanged numerical qualification bounds.
+The full-validation results will determine final per-setting qualification.
+
+## Attempt 001 infrastructure record
+
+Pod `283sr45ea620r2` started at 2026-09-18 17:09:58 UTC on an RTX5090 in
+EU-RO-1, at USD0.99/hour. The four-hour stop guard is armed for 21:09:58 UTC;
+it preserves storage if the deadline is reached. The existing network volume
+was not attached or changed. Source preparation is committed as `9197b61`.
+
+Initial direct SFTP was too slow, so the same 714,229,760-byte input archive
+was sent through the encrypted relay. The relay left incomplete chunks; bounded
+parallel SFTP repaired only mismatched 8 MiB chunks. Two intermediate repair
+attempts are retained: the first hit a local SSH-cache write race, and the
+second left two stalled workers. Serializing connection setup and bounding
+channel waits let the final repair finish. The complete archive SHA-256 is
+`53a9cc985cf8827f0969c52e1af9998b46c44d5dc670eaacf8d3ed8369751291`.
+All 1,417 frozen file identities passed before any GPU benchmark began.
+
+The detached preflight began at 17:31:27 UTC. Compilation of the first 14M
+kernel exceeded the five-minute status warning; read-only process/log checks
+confirmed successive CUDA extensions were still building. Compilation is
+outside timed inference. Transfer receipts, repair records, and runtime logs
+retain the chronology; no scientific input or kernel source changed.
+
+After the first warm smoke process spent about 90 seconds on imports/model
+loading/extension setup but less than one second on timing, validation and
+diagnostics, the pinned virtual environment was copied to `/opt/run036-venv`
+on the same Pod's local disk. `19_local_runtime.sh` completed `diff -qr` with
+no differences before activating a launcher wrapper for subsequent processes.
+The original Python symlink is retained as `python.network-original`.
+Scientific scripts, checkpoints, cache, package bytes and GPU are unchanged;
+outputs remain on persistent storage. The copy and verification ran during
+preflight only, before the scientific sweep. `runtime/local-runtime.json`
+records activation, and runtime logs retain any consequent extension rebuilds.
