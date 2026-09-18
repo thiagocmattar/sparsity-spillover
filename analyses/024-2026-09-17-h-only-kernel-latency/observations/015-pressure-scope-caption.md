@@ -1,4 +1,4 @@
-# Figure 3: All-site minus h-only pressure at 14M and 70M
+# Figure 3: Global (Pall) vs. local (Ph) pressure paired analysis
 
 PDF: [03-pressure-scope-threshold.pdf](../figures/03-pressure-scope-threshold.pdf).
 Proposed manuscript placement: [Section 4.2](../../../manuscript/draft/training-results.tex),
@@ -21,14 +21,21 @@ values explicit. Validation covers 338 complete 2,048-token blocks from 500
 documents, excluding the 1,444-token tail. The ordinary-final losses and
 canonical FP16 counters are reused without re-evaluation.
 
+The final styling matches Figure 6: 8.6-inch width, DejaVu Sans, 14-point
+overall title, 11.5-point panel titles, 11-point axes/legend and 10-point ticks.
+Panel titles name paired loss/sparsity differences; X axes read "Threshold κ".
+Panels (b)/(d) use "Sparsity change ΔS_model (pp)". The redundant OL1 legend
+subtitle is removed; the two T/P contrast labels retain the subtraction direction.
+
 ## Publication caption
 
-**Effect of extending pressure from h to all selected sites.**
+**Global (Pall) vs. local (Ph) pressure paired analysis.**
 Validation-loss change (left) and model-wide sparsity change (right), computed
 as OL1(all) minus OL1(h) at 14M (top) and 70M (bottom), holding threshold
 placement and κ fixed. Blue and orange curves show four- and seven-site
 threshold topologies, respectively. The legend states each matched pressure
 contrast explicitly; colours and uniform circular markers follow Figure 6.
+Here global means pressure at all selected threshold sites, and local means h-only.
 Negative loss changes are better; positive sparsity changes mean more logical
 zero-operand products, in percentage points. The horizontal line denotes zero
 change. Lines join separately trained settings, not training trajectories or
@@ -64,6 +71,7 @@ Source: [paper_effect_figures.py](../paper_effect_figures.py),
 Regenerate only this figure with `13_rebuild_paper_figures.py --only-pressure-scope`.
 The seven focused evidence tests pass, including direct integer-count contrast
 checks and agreement with the difference of the two retained 14M
-pressure-versus-none effects. The PDF was rendered at 1,900 pixels and visually
-inspected; its four fonts are embedded. Other figure PDFs and the manuscript
+pressure-versus-none effects. The final styled PDF was rendered at 1,800 pixels
+and visually inspected; all fonts are embedded. All 20 contrast records are
+unchanged from the preceding version. Other figure PDFs and the manuscript
 are unchanged by this revision.

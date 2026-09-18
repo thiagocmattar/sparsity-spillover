@@ -7,6 +7,11 @@ Figure 3 was subsequently revised at the user's request to show OL1(all) minus
 OL1(h) at both 14M and 70M in four panels. Rows distinguish model sizes; columns
 show loss and sparsity changes. Two topology curves use Figure 6's blue/orange
 colours and uniform circular markers. Its 20 contrasts use 40 unique checkpoints.
+The final style matches Figure 6's 8.6-inch width and title/panel/axis/tick/legend
+font sizes (14/11.5/11/10/11 points), line width and markers. The global/local
+title, paired-difference panel names and concise axes replace the earlier wording.
+The redundant OL1 legend subtitle is removed. The final PDF was visually checked
+at 1,800 pixels, with all 20 contrast records unchanged and all fonts embedded.
 Only Figure 3 and its provenance/caption were
 regenerated; other PDFs and manuscript files retain their prior hashes.
 

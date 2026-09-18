@@ -36,6 +36,9 @@ sweeps are invented for the 20 h-only multisite checkpoints. Figure 3 now shows
 form the rows, and loss/sparsity effects form the columns. Two curves distinguish
 four- and seven-site threshold topologies, with explicit T/P contrasts in the
 legend, Figure 6's blue/orange colours, and uniform circular markers.
+Its final typography and line/marker sizes also match Figure 6. The title is
+"Global (Pall) vs. Local (Ph) Pressure Paired Analysis"; panels use paired-difference
+nomenclature and concise threshold/sparsity axis labels.
 Figure 4 derives eight operation decompositions from
 integer counters; Table 2 fixes pressure on h while comparing threshold placement.
 Figure 5 displays absolute full-model latency and measured quality-latency

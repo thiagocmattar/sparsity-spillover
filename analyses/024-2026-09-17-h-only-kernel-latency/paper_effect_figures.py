@@ -15,34 +15,43 @@ def pressure_scope(data):
     models=['14M','70M']
     pairs=[difference(data,m,s,k,'all','h')|{'treatment':'all','reference':'h'}
            for m in models for s,_ in styles for k in KAPPAS]
-    fig,axes=plt.subplots(2,2,figsize=(10.2,6.4),sharex=True,sharey='col')
-    fig.subplots_adjust(left=.085,right=.985,bottom=.18,top=.94,hspace=.40,wspace=.28)
+    title=r'Global ($P_{\mathrm{all}}$) vs. Local ($P_h$) Pressure Paired Analysis'
+    fig,axes=plt.subplots(2,2,figsize=(8.6,5.8),sharex=True,sharey='col')
+    fig.subplots_adjust(left=.085,right=.985,bottom=.16,top=.87,hspace=.55,wspace=.34)
+    fig.suptitle(title,fontsize=14,y=.985)
     series=[]
     for s,color in styles:
         label=rf'$T_{s}/P_{{\mathrm{{all}}}} - T_{s}/P_h$'
         for i,m in enumerate(models):
             rows=[r for r in pairs if (r['model'],r['scope'])==(m,s)]
             for ax,metric in zip(axes[i],['loss','sparsity']):
-                ax.plot(range(5),[r[metric] for r in rows],color=color,ls='-',lw=1.15,
-                        marker='o',ms=3.8,mfc=color,mec='white',mew=.35,zorder=4,label=label)
+                ax.plot(range(5),[r[metric] for r in rows],color=color,ls='-',lw=1.6,
+                        marker='o',ms=5.8,mfc=color,mec='white',mew=.7,zorder=4,label=label)
         series.append({'scope':s,'treatment':'all','reference':'h','label':label,
                        'color':color,'linestyle':'-','marker':'o'})
     for i,m in enumerate(models):
-        for j,(metric,label,effect) in enumerate([
-                ('loss',r'Validation loss change $\Delta L$','loss effect'),
-                ('sparsity',r'Model-wide sparsity change $\Delta S_{\mathrm{model}}$ (pp)','sparsity effect')]):
+        for j,(metric,label,comparison) in enumerate([
+                ('loss',r'Validation loss change $\Delta L$','paired loss difference'),
+                ('sparsity',r'Sparsity change $\Delta S_{\mathrm{model}}$ (pp)','paired sparsity difference')]):
             ax=axes[i,j]
             vals=[p[metric] for p in pairs]+[0]; lo,hi=min(vals),max(vals); pad=.12*(hi-lo)
             ax.set_ylim(lo-pad,hi+pad); ax.axhline(0,color='#777777',lw=.7)
-            ax.set_title(f'({chr(97+2*i+j)}) {m} {effect}',loc='left',pad=10)
-            ax.set_ylabel(label); categorical(ax)
+            if metric=='loss': ax.set_yticks([-.1,0,.1,.2,.3])
+            ax.set_title(f'({chr(97+2*i+j)}) {m}: {comparison}',loc='left',pad=11,fontsize=11.5)
+            ax.set_ylabel(label,fontsize=11); categorical(ax)
+            ax.set_xlabel(r'Threshold $\kappa$',fontsize=11)
+            ax.tick_params(labelsize=10,length=3,width=.65)
+            for spine in ax.spines.values(): spine.set_linewidth(.65)
+            ax.grid(axis='y',color='#E8EAED',lw=.6)
     handles,labels=axes[0,0].get_legend_handles_labels()
     fig.legend(handles,labels,loc='lower center',ncol=2,frameon=False,
-               fontsize=9,handlelength=2.8,columnspacing=3,labelspacing=.8,
-               title=r'OL1(all) minus OL1(h), matched at each $\kappa$',
-               title_fontsize=8.5,bbox_to_anchor=(.53,.005))
+               fontsize=11,handlelength=2.3,columnspacing=2.3,
+               bbox_to_anchor=(.53,.018))
     return save(fig,'03-pressure-scope-threshold.pdf')|{
-        'pairs':pairs,'series':series,'layout':{'rows':2,'columns':2},
+        'pairs':pairs,'series':series,'title':title,
+        'layout':{'rows':2,'columns':2,'width_inches':8.6,'height_inches':5.8},
+        'typography_pt':{'title':14,'panel_titles':11.5,'axes':11,'ticks':10,'legend':11},
+        'panel_nomenclature':'Paired loss difference / paired sparsity difference',
         'reference':'OL1(h) at the same model size, threshold topology, and kappa',
         'style_reference':'14_plot_14m_quality_latency.py',
         'models':models}
