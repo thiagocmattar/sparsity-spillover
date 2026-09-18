@@ -4,7 +4,10 @@ This analysis owns the requested extension of the model-wide-sparsity versus
 full-model-speedup and absolute-latency figures. Only the five new Run032
 A7+OL1(h) final checkpoints are measured in Run033. All 35 historical Run029
 checkpoints, including A4+OL1(h), are reused from their retained raw pairs.
-The 70M training proposal remains frozen.
+The 70M training has since completed in Run034. Its available checkpoints and
+the remaining kernel compatibility work are recorded in the
+[70M compatibility audit](70M-KERNEL-COMPATIBILITY.md); no 70M K050 timing
+results are available yet.
 
 **Complete and verified:** all 15 new processes qualified over all 338 validation
 blocks. All 180 returned files passed byte-count/SHA-256 verification before
