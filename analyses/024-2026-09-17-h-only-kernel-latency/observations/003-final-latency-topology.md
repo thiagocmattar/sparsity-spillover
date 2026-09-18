@@ -7,7 +7,8 @@ checkpoint groups?
 **Request.** On 18 September 2026 the user requested a new figure with
 model-wide sparsity on x and final-kernel full-model latency on y, followed by
 later styling guidance. The request said three labels but explicitly listed
-four; this figure uses the four named groups.
+four; this figure uses the four named groups. The user's next instruction
+replaces the zero-based latency axis with a scale fitted to the data.
 
 **Method and coverage.** Reuse all 40 qualified checkpoints in
 `data/results.json`: 1 A0, 9 A1-H conditions (ReLU, naive L1 and OL1),
@@ -26,8 +27,8 @@ green circles: 1-site (A1-H); blue diamonds: 4-sites (A4*); orange triangles:
 7-sites (A7). Both multisite labels include no-pressure, all-site OL1 and
 h-only OL1 variants. BF16 inference on RTX5090, batch 1, T=2048, full
 50,304 logits; milliseconds per full-sequence forward. All points are shown,
-the latency axis includes zero, and no connecting line, fit or point
-annotation is used.
+the latency axis spans 0.44-0.67 ms to show the measured range with padding,
+and no connecting line, fit or point annotation is used.
 
 **Result.** The displayed K050 latencies span 0.459476-0.651573 ms.
 The baseline is 0.651573 ms. Topology grouping changes only the presentation;

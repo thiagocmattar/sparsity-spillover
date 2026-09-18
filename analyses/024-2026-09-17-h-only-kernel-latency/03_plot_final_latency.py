@@ -48,8 +48,12 @@ def main():
                    linewidths=.5, edgecolors='white', zorder=3)
     assert len(records) == 40
     assert len({(r['session'], r['condition']) for r in records}) == 40
+    latencies = [r['k050_gm_ms'] for r in records]
+    padding = .08 * (max(latencies) - min(latencies))
+    y_limits = (math.floor(100 * (min(latencies) - padding)) / 100,
+                math.ceil(100 * (max(latencies) + padding)) / 100)
     ax.set(xlabel=r'Model-wide sparsity $\mathcal{S}_{\mathrm{model}}$ (%)',
-           ylabel='Full-model latency (ms)', xlim=(-.6, 30), ylim=(0, .70))
+           ylabel='Full-model latency (ms)', xlim=(-.6, 30), ylim=y_limits)
     ax.set_xticks(range(0, 31, 5))
     ax.grid(axis='y', color='#E7E9ED', linewidth=.6)
     ax.set_axisbelow(True)
@@ -73,7 +77,8 @@ def main():
         'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
         'protocol': data['protocol'], 'latency_definition': data['latency_definition'],
         'cross_session_limit': data['cross_session_limit'],
-        'display': 'Final K050 only; four topology labels; scatter without lines, fits or point annotations; zero latency shown.',
+        'display': 'Final K050 only; four topology labels; scatter without lines, fits or point annotations; latency axis fitted to data with padding.',
+        'y_limits_ms': y_limits,
         'points': records,
     }
     (HERE / 'data/final-latency-topology.json').write_text(
