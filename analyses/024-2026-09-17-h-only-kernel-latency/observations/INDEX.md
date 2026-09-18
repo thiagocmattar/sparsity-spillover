@@ -45,7 +45,8 @@
 - [015: Figure 3](015-pressure-scope-caption.md): 20 matched all-minus-h pressure
   contrasts at 14M and 70M; six loss/sparsity/latency panels, blue/orange topology
   curves, uniform circles, explicit T/P references and timing-session caveats.
-  Adopted unchanged as manuscript Figure 4 with a lean Section 4.2 analysis.
+  Adopted as manuscript Figure 4 with a lean Section 4.2 analysis; width later
+  reduced to 90% (11.52 inches), retaining the 5.8-inch height and font sizes.
 - [016: Figure 4](016-operation-changes-caption.md): twelve absolute operation
   stacks at 14M, T/P recipe labels and the manuscript operation palette; each
   count-based stack reconciles to model-wide sparsity.

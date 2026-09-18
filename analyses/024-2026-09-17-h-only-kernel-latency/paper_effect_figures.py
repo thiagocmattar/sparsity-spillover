@@ -15,10 +15,10 @@ def pressure_scope(data):
     pairs=[difference(data,m,s,k,'all','h')|{'treatment':'all','reference':'h'}
            for m in models for s,_ in styles for k in KAPPAS]
     title=r'Global ($P_{\mathrm{all}}$) vs. Local ($P_h$) Pressure Paired Analysis'
-    fig,axes=plt.subplots(2,3,figsize=(12.8,5.8),sharex=True)
+    fig,axes=plt.subplots(2,3,figsize=(11.52,5.8),sharex=True)
     # Keep comparable loss/sparsity scales; latency needs a separate scale per size.
     for j in [0,1]: axes[1,j].sharey(axes[0,j])
-    fig.subplots_adjust(left=.058,right=.985,bottom=.16,top=.87,hspace=.55,wspace=.34)
+    fig.subplots_adjust(left=.058/.9,right=1-.015/.9,bottom=.16,top=.87,hspace=.55,wspace=.34)
     fig.suptitle(title,fontsize=14,y=.985)
     series=[]
     for s,color in styles:
@@ -53,7 +53,7 @@ def pressure_scope(data):
                bbox_to_anchor=(.53,.018))
     return save(fig,'03-pressure-scope-threshold.pdf')|{
         'pairs':pairs,'series':series,'title':title,
-        'layout':{'rows':2,'columns':3,'width_inches':12.8,'height_inches':5.8},
+        'layout':{'rows':2,'columns':3,'width_inches':11.52,'height_inches':5.8},
         'typography_pt':{'title':14,'panel_titles':11.5,'axes':11,'ticks':10,'legend':11},
         'panel_nomenclature':'Paired loss difference / paired sparsity difference / paired latency difference',
         'latency_estimand':'Difference of retained full-model geometric mean latencies, in microseconds',

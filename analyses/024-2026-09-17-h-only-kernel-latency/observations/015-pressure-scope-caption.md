@@ -36,7 +36,7 @@ logit head. Each checkpoint has 64 common inputs × 7 passes × 3 processes
 (1,344 timings). The plotted estimand is the difference between checkpoint
 geometric means, not the mean of paired per-input timing differences.
 
-The final styling follows Figure 6, widened to 12.8 inches for three columns
+The final styling follows Figure 6, with an 11.52-inch width for three columns
 at the existing 5.8-inch height: DejaVu Sans, 14-point
 overall title, 11.5-point panel titles, 11-point axes/legend and 10-point ticks.
 Panel titles name paired loss/sparsity/latency differences; X axes read "Threshold κ".
@@ -116,3 +116,13 @@ and visually inspected; all fonts are embedded. All 20 contrast records are
 unchanged from the preceding version. Other figure PDFs and the manuscript
 were unchanged by that plotting revision; the later manuscript adoption is
 recorded above.
+
+## Width revision, 18 September 2026
+
+At the user's request, the PDF width is reduced to 90%: 12.8 to 11.52 inches
+(921.6 to 829.44 PDF points). Height stays 5.8 inches (417.6 points).
+The plot is regenerated at the narrower width, preserving font sizes and
+physical outer margins. All 20 contrasts and all other figure records are
+unchanged. The manuscript figure copy matches the analysis PDF byte-for-byte;
+its source hash is updated. The narrower PDF was rendered and checked for
+clipping and overlap. This asset-only revision does not rebuild main.pdf.
