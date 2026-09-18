@@ -5,6 +5,8 @@ New operation-bypass analysis:
 with [caption, metric and hypothesis check](observations/027-operation-bypass.md)
 and the [complete per-setting table](TABLE_OPERATION_BYPASS.md).
 It reuses saved counters for all 62 trained and 40 control-clipping settings;
+the twelve size-specific panels now follow Figure 08's style. The observation
+includes a paragraph explaining the implementation and runtime attribution;
 manuscript adoption remains separate.
 
 New Figure 4 extension:

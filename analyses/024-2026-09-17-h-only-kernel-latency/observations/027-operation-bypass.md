@@ -75,20 +75,61 @@ their denominator include the kernel's extra padded arithmetic.
 
 ## Figure caption and legend
 
-**Scalar Sparsity and Matrix-Instruction Bypass.** Each panel shows one of six
-operation families: (a) QKV projection, (b) FFN-up, (c) FFN-down, (d) attention
-output, (e) QK scores and (f) PV product. X is BF16 activation-derived scalar
-zero-product opportunity (a lower bound); Y is the percentage of potential
-matrix instructions bypassed by the frozen implementation. Blue denotes 14M
-and orange denotes 70M. Filled circles are trained settings; open circles and
-dotted connecting lines are the dense/ReLU post-hoc clipping sweeps. All 102
-settings are present in every panel; coincident markers can overlap. Labels in
-QK/PV identify T7/Pall at kappa=0.5. Dashed PV guides show the same-size base
-model's bypass percentage. Counts pool all 338 validation blocks and six layers.
-Bypass includes scalar substitution at h/z and attention masking/padding; it is
-not a runtime speedup or a fraction of S_model recovered.
+**Scalar Sparsity and Matrix-Instruction Bypass.** Panels (a)-(f) show 14M and
+(g)-(l) show 70M, each ordered as QKV projection (a), FFN-up (m), FFN-down (h),
+attention output (z), QK scores and PV product. X is BF16 activation-derived
+scalar zero-product opportunity (a lower bound); Y is the percentage of
+potential matrix instructions bypassed by the frozen implementation. Colors,
+line styles, circular markers, typography and the shared legend follow Figure
+08. Teal/purple dashed curves denote T4/Ph and T7/Ph; blue/orange solid curves
+denote T4/Pall and T7/Pall. The gray open and olive filled control markers
+denote the base model and GeLU-to-ReLU model, respectively; dotted curves in
+those colors trace their post-hoc clipping sweeps. The extra 14M-only recipes
+use lighter blue/orange dash-dot curves for T4/P0 and T7/P0, dark green dashed
+for T1/Ph, and brown dash-dot for T1/L1. Trained curves follow increasing kappa
+or local pressure weight, and clipping curves increasing p; connections are
+guides through evaluated settings, not interpolated measurements. P0 means no
+pressure; Ph/Pall denote OL1 on h/all declared sites, while L1 is naive L1.
+Each 14M panel contains 40 trained and 20 clipping settings; each 70M panel
+contains 22 trained and 20 clipping settings. Thus all 102 settings and 612
+operation coordinates are retained; coincident markers and curves can overlap.
+Labels in QK/PV identify T7/Pall at kappa=0.5. Dashed PV guides show the
+same-size base model's bypass percentage. Counts pool all 338 validation blocks
+and six layers. Bypass includes scalar substitution at h/z and attention
+masking/padding; it is not a runtime speedup or a fraction of S_model recovered.
 
 ## Results
+
+### Explanation for later text
+
+The final specialized kernel combines operation fusion with exact-zero checks
+that bypass matrix instructions: QKV and FFN-up test 16x16 activation fragments,
+whereas FFN-down (h) and attention-output (z) use 8x16 groups and a special path
+for rows with at most two nonzeros. This h/z path can avoid corresponding weight
+loads and replace a full row projection with only its surviving weighted
+contributions. QK/PV skipping instead checks operands after loading them and
+retains the attention loop, synchronization, softmax and output updates; a zero
+QK dot product still contributes to softmax normalization. Consequently, even
+substantial attention-instruction bypass can save less time than the added
+checks and conditional execution cost. The matched 14M measurements confirm
+the net result: attention skipping slows all 35 tested settings, including one
+with 58% QK and 67% PV bypass. The measured sparsity benefit comes from the
+projection path, with the strongest mechanistic evidence pointing to FFN-down
+and attention-output together: at T4/Ph, kappa=0.5, projection skipping gives
+1.37x acceleration while h/z bypass is 98.38%/99.73% and a/m bypass is zero.
+The timings do not separate h from z, so they cannot establish which contributes
+more. Overall speedup relative to native execution also includes fusion and
+other implementation changes; these 14M attribution results are not established
+by the available 70M or clipping timings.
+
+Implementation sources: [h/z short-row and tile path](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k049/joint.cu),
+[QKV/FFN-up predicate](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/projection.cu),
+and [QK/PV loading and skip predicate](../../../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k035/sparse_gemm.h).
+The code identifies work retained or avoided; the timing ablations establish
+the net gain, not a profiler decomposition of individual overheads. In the
+T4/Ph example the matched full-model times are 0.623390 ms with all skipping
+disabled and 0.455867 ms with projection skipping enabled, with attention
+skipping disabled in both. The complete table retains the raw-time reduction.
 
 The following comparison uses **T7/Pall, kappa=0.5** at both sizes. Scalar
 percentages below are the BF16 lower bound plotted in the figure.
@@ -145,6 +186,10 @@ All 30 previously reduced historical ablation results reproduce from raw
 timings to relative tolerance 1e-12. All 35 full-mode latencies agree with the
 existing Analysis024 table at the same tolerance. Four focused tests pass;
 all 801 source hashes and all 612 plotted coordinates were verified. Precision,
-coverage and exact diagnostic paths are retained. The six-panel PDF was
-rendered and visually checked, with embedded fonts. No manuscript or promoted
+coverage and exact diagnostic paths are retained. The twelve-panel PDF was
+rendered and visually checked, with embedded fonts. The requested Figure 08
+restyle separates the sizes into twelve panels while preserving all 612
+coordinates exactly. Its source data, complete table and other analysis PDFs
+remain unchanged; the plot provenance also records the style source/reference
+hashes, recipe series, layout and typography. No manuscript or promoted
 finding was changed.

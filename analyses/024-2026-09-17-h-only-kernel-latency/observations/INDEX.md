@@ -3,7 +3,8 @@
 - [027: Operation bypass](027-operation-bypass.md): all 102 evaluation settings,
   six operation families, per-setting pooled MMA bypass, scalar opportunity and
   matched 35-setting 14M skip ablations. QK/PV can bypass substantial work without
-  a timing benefit; the saved counters support a more qualified structural claim.
+  a timing benefit; twelve size-specific panels follow Figure 08's style, with
+  an explanatory paragraph on h/z specialization and runtime attribution.
 
 - [026: Operation grid](026-operation-grid.md): six absolute-contribution panels
   with 14M/70M rows and κ=0,.05,.5 columns; 24 matched Ph/Pall checkpoint stacks,

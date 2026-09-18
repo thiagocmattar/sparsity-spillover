@@ -4,6 +4,10 @@ The new [per-operation bypass figure](figures/10-operation-bypass.pdf) and
 [complete table](TABLE_OPERATION_BYPASS.md) cover 62 trained settings plus
 40 control-clipping settings from saved full-validation counters. They compare
 scalar zeros with matrix-instruction bypass across all six operation families.
+Figure 10 now follows Figure 08's recipe colors, line styles and typography,
+with twelve separate size/operation panels and one shared legend. The
+[explanatory paragraph](observations/027-operation-bypass.md#explanation-for-later-text)
+describes the h/z path, attention's retained costs and the attribution limits.
 The [observation](observations/027-operation-bypass.md) also checks 35 matched
 14M skip ablations: attention can bypass substantial work while remaining
 slower. Reproduce locally with `18_reduce_operation_bypass.py` and
