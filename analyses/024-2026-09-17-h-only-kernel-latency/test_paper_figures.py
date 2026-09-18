@@ -61,28 +61,31 @@ class PaperFigureTests(unittest.TestCase):
     def test_pressure_contrasts_preserve_matching(self):
         pairs=self.figures['03-pressure-scope-threshold.pdf']['pairs']
         self.assertEqual(len(pairs),20)
-        self.assertEqual({(p['model'],p['scope'],p['treatment'],p['kappa']) for p in pairs},
-                         {('14M',s,p,k) for s in ['4','7'] for p in ['h','all'] for k in KAPPAS})
-        self.assertEqual(len({p['reference_key'] for p in pairs}),10)
+        self.assertEqual({(p['model'],p['scope'],p['kappa']) for p in pairs},
+                         {(m,s,k) for m in ['14M','70M'] for s in ['4','7'] for k in KAPPAS})
+        self.assertEqual(len({p[key] for p in pairs for key in ['treatment_key','reference_key']}),40)
         for pair in pairs:
             a,b=(self.index[pair[k]] for k in ['treatment_key','reference_key'])
             self.assertEqual((a['model'],a['scope'],a['kappa']),(b['model'],b['scope'],b['kappa']))
-            self.assertEqual((a['pressure'],b['pressure']),(pair['treatment'],'none'))
+            self.assertEqual((a['pressure'],b['pressure']),('all','h'))
+            self.assertEqual((pair['treatment'],pair['reference']),('all','h'))
             self.assertEqual(a['initial_parameter_sha256'],b['initial_parameter_sha256'])
             self.assertEqual(a['training_schedule_hash'],b['training_schedule_hash'])
             self.assertAlmostEqual(pair['loss'],a['loss']-b['loss'])
             self.assertEqual(a['counts']['model_product_count'],b['counts']['model_product_count'])
             expected=100*(a['counts']['block_zero_product_count']-b['counts']['block_zero_product_count'])/a['counts']['model_product_count']
             self.assertAlmostEqual(pair['sparsity'],expected,places=12)
-        # Cross-check against the previously retained pressure-versus-none appendix.
+        # The difference of the two P0-referenced effects must recover all-minus-h.
         previous={ (p['scope'],p['kappa'],p['pressure']):p
                    for p in self.figures['A2-pressure-versus-none.pdf']['pairs'] }
         for p in pairs:
-            reference=previous[p['scope'],p['kappa'],p['treatment']]
+            if p['model']!='14M':
+                continue
+            a,b=(previous[p['scope'],p['kappa'],pressure] for pressure in ['all','h'])
             self.assertEqual((p['treatment_key'],p['reference_key']),
-                             (reference['treatment_key'],reference['reference_key']))
-            self.assertAlmostEqual(p['loss'],reference['loss'])
-            self.assertAlmostEqual(p['sparsity'],reference['sparsity'])
+                             (a['treatment_key'],b['treatment_key']))
+            self.assertAlmostEqual(p['loss'],a['loss']-b['loss'])
+            self.assertAlmostEqual(p['sparsity'],a['sparsity']-b['sparsity'])
 
     def test_operation_integer_decomposition(self):
         bars=self.figures['04-operation-sparsity-changes.pdf']['contrasts']

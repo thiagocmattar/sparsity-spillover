@@ -10,39 +10,42 @@ def difference(data,size,scope,k,treatment,reference):
             'sessions':[a['timing_session'],b['timing_session']]}
 
 def pressure_scope(data):
-    # Match Figure06's colors, circular markers, and pressure-specific line styles.
-    styles=[('4','h','#008B87',(0,(3,2))),('4','all','#3679AD','-'),
-            ('7','h','#8A669C',(0,(3,2))),('7','all','#C27539','-')]
-    pairs=[difference(data,'14M',s,k,p,'none')|{'treatment':p,'reference':'none'}
-           for s,p,_,_ in styles for k in KAPPAS]
-    fig,axes=plt.subplots(1,2,figsize=(10.2,4.1),sharex=True)
-    fig.subplots_adjust(left=.085,right=.985,bottom=.30,top=.89,wspace=.28)
+    # All-site minus h-only pressure, matched within size, topology, and kappa.
+    styles=[('4','#3679AD'),('7','#C27539')]
+    models=['14M','70M']
+    pairs=[difference(data,m,s,k,'all','h')|{'treatment':'all','reference':'h'}
+           for m in models for s,_ in styles for k in KAPPAS]
+    fig,axes=plt.subplots(2,2,figsize=(10.2,6.4),sharex=True,sharey='col')
+    fig.subplots_adjust(left=.085,right=.985,bottom=.18,top=.94,hspace=.40,wspace=.28)
     series=[]
-    for s,p,color,ls in styles:
-        rows=[r for r in pairs if (r['scope'],r['treatment'])==(s,p)]
-        pressure_label='h' if p=='h' else r'\mathrm{all}'
-        label=rf'$T_{s}/P_{{{pressure_label}}} - T_{s}/P_0$'
-        for ax,metric in zip(axes,['loss','sparsity']):
-            ax.plot(range(5),[r[metric] for r in rows],color=color,ls=ls,lw=1.15,
-                    marker='o',ms=3.8,mfc=color,mec='white',mew=.35,zorder=4,label=label)
-        series.append({'scope':s,'treatment':p,'reference':'none','label':label,
-                       'color':color,'linestyle':ls,'marker':'o'})
-    for ax,metric,label,title in zip(axes,['loss','sparsity'],
-            [r'Validation loss change $\Delta L$',r'Model-wide sparsity change $\Delta S_{\mathrm{model}}$ (pp)'],
-            ['(a) 14M loss effect','(b) 14M sparsity effect']):
-        vals=[p[metric] for p in pairs]+[0]; lo,hi=min(vals),max(vals); pad=.12*(hi-lo)
-        ax.set_ylim(lo-pad,hi+pad); ax.axhline(0,color='#777777',lw=.7)
-        ax.set_title(title,loc='left',pad=10); ax.set_ylabel(label); categorical(ax)
-    handles,labels=axes[0].get_legend_handles_labels()
+    for s,color in styles:
+        label=rf'$T_{s}/P_{{\mathrm{{all}}}} - T_{s}/P_h$'
+        for i,m in enumerate(models):
+            rows=[r for r in pairs if (r['model'],r['scope'])==(m,s)]
+            for ax,metric in zip(axes[i],['loss','sparsity']):
+                ax.plot(range(5),[r[metric] for r in rows],color=color,ls='-',lw=1.15,
+                        marker='o',ms=3.8,mfc=color,mec='white',mew=.35,zorder=4,label=label)
+        series.append({'scope':s,'treatment':'all','reference':'h','label':label,
+                       'color':color,'linestyle':'-','marker':'o'})
+    for i,m in enumerate(models):
+        for j,(metric,label,effect) in enumerate([
+                ('loss',r'Validation loss change $\Delta L$','loss effect'),
+                ('sparsity',r'Model-wide sparsity change $\Delta S_{\mathrm{model}}$ (pp)','sparsity effect')]):
+            ax=axes[i,j]
+            vals=[p[metric] for p in pairs]+[0]; lo,hi=min(vals),max(vals); pad=.12*(hi-lo)
+            ax.set_ylim(lo-pad,hi+pad); ax.axhline(0,color='#777777',lw=.7)
+            ax.set_title(f'({chr(97+2*i+j)}) {m} {effect}',loc='left',pad=10)
+            ax.set_ylabel(label); categorical(ax)
+    handles,labels=axes[0,0].get_legend_handles_labels()
     fig.legend(handles,labels,loc='lower center',ncol=2,frameon=False,
                fontsize=9,handlelength=2.8,columnspacing=3,labelspacing=.8,
-               title=r'Reference: matched $T_4/P_0$ or $T_7/P_0$ (no pressure)',
+               title=r'OL1(all) minus OL1(h), matched at each $\kappa$',
                title_fontsize=8.5,bbox_to_anchor=(.53,.005))
     return save(fig,'03-pressure-scope-threshold.pdf')|{
-        'pairs':pairs,'series':series,'layout':{'rows':1,'columns':2},
-        'reference':'P0 at the same threshold topology and kappa',
+        'pairs':pairs,'series':series,'layout':{'rows':2,'columns':2},
+        'reference':'OL1(h) at the same model size, threshold topology, and kappa',
         'style_reference':'14_plot_14m_quality_latency.py',
-        'models':['14M'],'unavailable_models':{'70M':'No matched T4/P0 or T7/P0 checkpoints.'}}
+        'models':models}
 
 def pressure_none(data):
     pairs=[]

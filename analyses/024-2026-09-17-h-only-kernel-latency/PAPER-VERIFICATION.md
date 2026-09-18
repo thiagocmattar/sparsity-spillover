@@ -3,11 +3,11 @@
 Completed locally on 18 September 2026. No training, evaluation, benchmarking,
 or cloud resources were launched. The approved task is retained as `task.md`.
 
-Figure 3 was subsequently revised at the user's request to use P0 as the
-reference for both pressure scopes. The approved replacement has two 14M panels
-and four curves per panel, matching Figure 6's colours and line styles.
-Its 20 contrasts use 30 unique checkpoints. Matching no-pressure multisite
-controls are unavailable at 70M. Only Figure 3 and its provenance/caption were
+Figure 3 was subsequently revised at the user's request to show OL1(all) minus
+OL1(h) at both 14M and 70M in four panels. Rows distinguish model sizes; columns
+show loss and sparsity changes. Two topology curves use Figure 6's blue/orange
+colours and uniform circular markers. Its 20 contrasts use 40 unique checkpoints.
+Only Figure 3 and its provenance/caption were
 regenerated; other PDFs and manuscript files retain their prior hashes.
 
 ## Scientific checks
@@ -29,9 +29,10 @@ The checks cover:
   optimized-dense speedup normalization, three process means, and 64 timing
   inputs per checkpoint. The equal-sized process geometric means reconcile to
   the reported geometric mean over all 1,344 timings.
-- All 20 14M h-minus-P0 and all-minus-P0 pairs at fixed scope and threshold:
-  matched initialization/schedule, integer-count sparsity differences, and
-  agreement with the previously retained pressure-versus-none appendix.
+- All 20 all-minus-h pairs at fixed size, scope, and threshold: matched
+  initialization/schedule and integer-count sparsity differences. The 14M
+  contrasts also agree with the difference between the retained all-minus-P0
+  and h-minus-P0 effects in the pressure-versus-none appendix.
 - Eight operation decompositions: signed integer numerator differences sum
   exactly to the aggregate difference, and contributions sum to ΔS within
   1e-12 percentage points.
