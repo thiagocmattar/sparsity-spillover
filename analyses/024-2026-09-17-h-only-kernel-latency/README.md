@@ -1,8 +1,10 @@
 # H-only pressure: final K050 latency extension
 
 Selected main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
-uses the same 22 trained pressure/control checkpoints in both panels, uniform
-circles, pressure-specific colors, direct post-hoc annotations, and ceiling guides.
+uses the same 22 trained pressure/control checkpoints in both panels, circular
+markers, pressure-specific colors, one shared post-hoc note, and ceiling guides.
+The wider layout includes the requested Pythia-14M title, T/P legend labels,
+paper-sized text, and larger open/filled markers to distinguish the two controls.
 It is a new variant; Figure 1 is preserved. See the
 [caption and evidence](observations/023-14m-quality-latency-variant.md).
 Reproduce with `14_plot_14m_quality_latency.py` in this analysis folder.

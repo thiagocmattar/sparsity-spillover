@@ -3,6 +3,8 @@
 **Selected main paper figure:** [Figure 6, side-by-side 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
 with [caption and proposed writing](observations/023-14m-quality-latency-variant.md).
 It preserves the original Figure 1 and uses the revised recipe naming and styling.
+The readability revision adds the Pythia-14M title, wider layout, T/P legend,
+open/filled control markers and a single post-hoc note.
 This variant is now adopted as manuscript Figure 1 in the introduction; the
 original analysis Figure 1 is still retained. See the
 [adoption record](../../manuscript/draft/reviews/2026-09-18-main-figure/README.md).

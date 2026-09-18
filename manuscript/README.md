@@ -1,5 +1,10 @@
 # Living Manuscript Draft
 
+The latest Figure 1 readability revision is compiled in
+[main-readability.pdf](draft/main-readability.pdf). The open `main.pdf` was locked
+against replacement; the manuscript figure asset and source hash are updated.
+See the [current verification](draft/reviews/2026-09-18-main-figure/README.md).
+
 The user-selected Analysis024 quality-sparsity/latency figure is now Figure 1
 in the introduction. The exact artwork is copied with a recorded source hash;
 the caption describes the matched 22-checkpoint 14M cohort and both panels.

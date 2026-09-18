@@ -1,13 +1,35 @@
 # Main Figure 1 adoption
 
+## Current readability revision
+
+The author's follow-up adds the requested title, T/P legend names, a wider
+8.6-by-3.85-inch layout, and one shared post-hoc note. The final axis/legend
+font is 11 points (about 7 points at the paper's 5.5-inch width), with 10-point
+ticks and a 14-point title. The two controls use larger open-gray/filled-olive
+circles at their original coordinates. All measurements, membership, limits,
+colours, and pressure line styles remain unchanged.
+
+The current paper asset matches the analysis PDF and `figures/SOURCES.json`.
+The open `main.pdf` could not be overwritten, so the rebuilt 32-page draft is
+[main-readability.pdf](../../main-readability.pdf), with Figure 1 on page 2.
+All manuscript TeX files remain unchanged. References resolve; no overfull
+boxes occur. Four underfull vertical boxes, one underfull horizontal box, and
+the existing appendix longtable's ignored glue diagnostic remain. The figure
+and pages 2-13, 17, and 30 were rendered and visually reviewed.
+See [readability-verification.json](readability-verification.json) for the
+current hashes and checks. The initial adoption record below is historical;
+its hashes and PDF layout describe commit `4282dca`.
+
+## Initial adoption
+
 At the author's request, the approved Analysis024 Figure06 is now Figure 1
 on page 2 in the introduction. It replaces the earlier quality-only overview
 under the existing `fig:quality-sparsity-overview` label.
 
 ## Artwork and evidence
 
-The [paper copy](../../figures/06-14m-quality-sparsity-latency.pdf) is byte-identical
-to the [approved analysis PDF](../../../../analyses/024-2026-09-17-h-only-kernel-latency/figures/06-14m-quality-sparsity-latency.pdf):
+At initial adoption, the [paper copy](../../figures/06-14m-quality-sparsity-latency.pdf) was byte-identical
+to the [approved analysis PDF](../../../../analyses/024-2026-09-17-h-only-kernel-latency/figures/06-14m-quality-sparsity-latency.pdf), with
 SHA-256 `0712761cc05b1295015a5e14cb9323895d2ffe158cc8d96bbdbc22c5f3442859`.
 Its source is pinned in [SOURCES.json](../../figures/SOURCES.json).
 The [source observation](../../../../analyses/024-2026-09-17-h-only-kernel-latency/observations/023-14m-quality-latency-variant.md),

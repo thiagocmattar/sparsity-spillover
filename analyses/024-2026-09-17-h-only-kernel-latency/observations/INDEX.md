@@ -1,9 +1,9 @@
 # Observations
 
 - [023: Side-by-side 14M variant](023-14m-quality-latency-variant.md): matched
-  22-checkpoint quality/sparsity and sparsity/latency panels, uniform circles,
-  pressure-specific colors, direct post-hoc labels and analytic ceiling guides.
-  Adopted unchanged as the manuscript's main Figure 1 in the introduction.
+  22-checkpoint quality/sparsity and sparsity/latency panels, circular markers,
+  T/P labels, wider layout, one post-hoc note and analytic ceiling guides.
+  Main Figure 1 in the introduction; refreshed artwork and a rebuilt paper preview.
 
 ## Current task.md paper figures and captions
 

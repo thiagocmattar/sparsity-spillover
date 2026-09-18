@@ -1,5 +1,11 @@
 # Manuscript draft: ICLR 2027 format
 
+Latest Figure 1 readability preview: [main-readability.pdf](main-readability.pdf).
+The paper asset now has the requested title, T/P labels, wider layout, smaller
+final typography and one post-hoc note. The open `main.pdf` was locked against
+replacement; the preview is the rebuilt 32-page draft. TeX content is unchanged.
+Current verification is in the [adoption record](reviews/2026-09-18-main-figure/README.md).
+
 The selected main paper figure from Analysis024 is now Figure 1 in the
 introduction: quality-sparsity and full-model latency for the same 22 14M
 checkpoints. Its unchanged source PDF, checkpoint evidence, and build checks

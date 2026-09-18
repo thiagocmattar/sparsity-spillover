@@ -1,11 +1,18 @@
 # Figure 6: 14M quality, sparsity, and full-model latency
 
-**Selected by the user as the main paper figure.** The final artwork omits the
-top-right model-size label and uses the Y-axis label "Validation loss" without
-a unit suffix. The caption retains the 14M scope; loss values remain in nats/token.
-At the user's subsequent request, the exact PDF was adopted as Figure 1 in the
-manuscript introduction. The caption covers both panels and the session boundary;
-the original analysis artwork remains unchanged. See the
+**Selected by the user as the main paper figure.** The current artwork uses a
+wide 8.6-by-3.85-inch layout, the title "Sparsity vs. Quality trade-off and Latency
+on Pythia-14M", and T4/Ph, T4/Pall, T7/Ph, T7/Pall legend labels. Text is sized
+for paper use, then reduced at the user's follow-up while retaining the wider
+layout. One shared "Post-hoc" note identifies both control clipping paths.
+The base model has a larger open gray circle; GeLU -> ReLU has a larger filled
+olive circle. Coordinates are unchanged, without jitter or offsets. The loss
+axis has no unit suffix; underlying values remain in nats/token.
+
+The figure is Figure 1 in the manuscript introduction. The manuscript figure
+copy is refreshed; the rebuilt draft is `manuscript/draft/main-readability.pdf`
+because the open `main.pdf` was locked against replacement. The caption still
+covers both panels and the session boundary. See the
 [adoption record](../../../manuscript/draft/reviews/2026-09-18-main-figure/README.md).
 
 PDF: [06-14m-quality-sparsity-latency.pdf](../figures/06-14m-quality-sparsity-latency.pdf).
@@ -22,8 +29,8 @@ Figure 6 was changed to a 1-row, 2-column layout, with quality on the left and
 latency on the right. Both panels use the same
 22 trained checkpoints: Base model, GeLU -> ReLU, and the four 4/7-Threshold
 OL1(h)/OL1(all) families at κ=0,.01,.05,.1,.5. Pressure-free multisite recipes
-and local pressure sweeps are excluded. Uniform small circular markers replace
-the previous topology-specific shapes. H-pressure uses teal/purple and dashed
+and local pressure sweeps are excluded. All markers are circular, with larger
+open/filled control markers for separation. H-pressure uses teal/purple and dashed
 lines; all-pressure uses blue/orange and solid lines. There is one shared
 six-entry legend, no pressure-free or nondominance legend, and no nondominated outlines.
 
@@ -48,19 +55,19 @@ so those paths are not plotted in panel (b). There is no new evaluation or timin
 **14M quality-sparsity trade-offs and full-model latency.** (a) Absolute validation
 loss versus model-wide sparsity. (b) Full-model K050 latency versus the same
 sparsity measure for the identical 22 trained checkpoints. The Base model and
-GeLU -> ReLU controls use gray and olive circles; the four threshold/pressure
+GeLU -> ReLU controls use open gray and filled olive circles; the four threshold/pressure
 recipes use the colors and line styles in the shared legend. Each pressure
 recipe uses OL1 with pressure on h or all thresholded sites, respectively.
 Lines connect separately trained κ settings in increasing order
 (0,.01,.05,.1,.5), not training steps or attainable interpolated models.
-Annotated dotted paths in (a) apply post-hoc magnitude clipping at a,m,h,z
+The dotted paths with the shared "Post-hoc" note in (a) apply magnitude clipping at a,m,h,z
 to the fixed control checkpoints. Their high-loss continuation is shown in
 Appendix A1; clipping has not been kernel-benchmarked. Vertical guides denote
 the analytic 4-Threshold and 7-Threshold architecture/workload ceilings,
 not measured speedup. Validation uses all 338 complete blocks from the 500
 MiniPile validation documents, excluding the 1,444-token tail. Latency is the
 geometric mean of 1,344 retained host timings on RTX 5090, BF16, batch one,
-2,048-token full-sequence inference with all 50,304 logits. The 7-Thresh-h-Pressure
+2,048-token full-sequence inference with all 50,304 logits. The T7/Ph
 timings are from Run033; the other timings are from Run029 on a different
 physical GPU/host. One final checkpoint is used per setting; no training-seed
 uncertainty is represented.
@@ -94,3 +101,6 @@ not establish reliable winners or equivalence. The figure is one-seed descriptiv
 evidence. The original Figure 1's hash is preserved; the new PDF was rendered
 and visually reviewed and all fonts are embedded. The existing seven scientific
 checks still pass, and the new builder validates the matched 22-point cohort.
+The readability revision preserves all trained coordinates, clipping identities,
+axis limits, colours, and line styles. Figure and paper preview were visually
+checked, with current hashes and build status recorded in the adoption record.
