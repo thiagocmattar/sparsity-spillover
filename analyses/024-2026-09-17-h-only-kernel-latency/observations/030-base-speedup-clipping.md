@@ -5,6 +5,14 @@ Source: [22_plot_base_speedup_clipping.py](../22_plot_base_speedup_clipping.py).
 Exact coordinates, normalization references, source/output hashes and curves:
 [14m-70m-sparsity-base-speedup.json](../data/14m-70m-sparsity-base-speedup.json).
 
+**Manuscript adoption, 18 September 2026:** the unchanged PDF is now Figure 3
+on page 5, directly after the post-hoc calibration paragraph in Experimental
+Study. The accompanying text introduces the configured GPT-6 Astra agent,
+execution mechanisms, within-recipe linear trends and the limited clipping
+gains, including the positive high-dose 70M exception. See the
+[adoption and claim audit](../../../manuscript/draft/reviews/2026-09-18-base-speedup-adoption/README.md).
+The creation notes below describe the preceding analysis-only task.
+
 ## Question and method
 
 How does full-model speedup relative to each size's base model vary with
@@ -63,8 +71,9 @@ does not remove differences between timing sessions or model quality.
 
 ## Result and associated proposed manuscript writing
 
-Suggested placement: the runtime subsection or its appendix, alongside the
-quality/sparsity overview. This task does not edit manuscript TeX.
+The initial suggested placement was the runtime subsection or its appendix,
+alongside the quality/sparsity overview. The original plotting task did not
+edit manuscript TeX; the subsequent author-requested adoption is recorded above.
 
 > Relative to the optimized base model, the trained recipes reach up to
 > 1.418x speedup at 14M and 2.047x at 70M. The measured clipping paths have a

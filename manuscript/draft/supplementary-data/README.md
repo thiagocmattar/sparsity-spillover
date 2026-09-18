@@ -1,5 +1,16 @@
 # Manuscript results data
 
+## Base-model speedup adoption, 18 September 2026
+
+`base-model-speedup.json` is copied unchanged from Analysis024's
+`data/14m-70m-sparsity-base-speedup.json`. It supports Figure 3 with all 44
+trained checkpoints, 40 control-clipping settings, original latencies,
+size-specific A0 references, computed ratios, pooled logical counts,
+checkpoint identities, timing sessions and source hashes. The caption and
+main text distinguish the optimized-base reference from native execution.
+See the [adoption and numerical audit](../reviews/2026-09-18-base-speedup-adoption/README.md).
+Later figure numbers below describe their earlier adoption states.
+
 ## Operation-sparsity/runtime integration, 18 September 2026
 
 The existing `paired-pressure-figure-data.json` also contains the complete

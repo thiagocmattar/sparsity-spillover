@@ -1,5 +1,14 @@
 # Manuscript draft: ICLR 2027 format
 
+Figure 3 (page 5) now shows Analysis024's base-model-normalized speedup plot,
+immediately after the post-hoc calibration paragraph. The accompanying
+Experimental Study text introduces GPT-6 Astra-assisted kernel development,
+skippable work, recipe-specific sparsity/speedup trends and the measured
+clipping limitations. [main.pdf](main.pdf) is rebuilt at 33 pages, with
+resolved references and checked layout. See the
+[adoption record](reviews/2026-09-18-base-speedup-adoption/README.md).
+Earlier revision notes and figure numbers below retain their original scope.
+
 The two subsections on broader threshold placement and cross-size pressure
 are removed. The shortened operation-sparsity discussion is merged with the
 runtime explanation in Section 4.3, starting on page 6. Analysis024 Figure04

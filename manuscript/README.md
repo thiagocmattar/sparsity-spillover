@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+Analysis024 Figure13 is now Figure 3 immediately after the post-hoc calibration
+paragraph in Experimental Study (page 5). The new discussion explains the
+human-guided GPT-6 Astra workflow, how sparse execution can save work, the
+approximately linear within-recipe trend and the limited clipping gains.
+The clipping statement retains the 70M high-dose exception. The rebuilt
+[main.pdf](draft/main.pdf) has 33 pages and resolved references. See the
+[adoption and claim audit](draft/reviews/2026-09-18-base-speedup-adoption/README.md).
+Notes below describe earlier revision states and numbering.
+
 The threshold-placement and cross-size pressure subsections are removed.
 The local-sparsity discussion is shortened and merged into Section 4.3,
 "When model-wide sparsity translates to speedup." It leads with Analysis024's

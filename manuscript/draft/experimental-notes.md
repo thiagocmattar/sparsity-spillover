@@ -1,5 +1,12 @@
 # Experimental-section scope and provenance
 
+18 September 2026: the author requested Analysis024 Figure13 immediately
+after the post-hoc calibration paragraph. The setup now introduces the
+GPT-6 Astra-assisted kernel development, its first-principles execution
+mechanisms, recipe-dependent sparsity/speedup trends and the measured
+clipping limitations. See the [adoption and claim audit](reviews/2026-09-18-base-speedup-adoption/README.md).
+The original scope statement below describes the earlier setup-only revision.
+
 5 September 2026. The user approved separating methodological definitions
 from the concrete study. `experimental-study.tex` introduces the setup,
 ladder recipes, and the comparisons they support. It contains no empirical

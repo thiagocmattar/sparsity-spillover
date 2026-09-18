@@ -52,5 +52,71 @@ reported in the appendix, the study contains 40/22/12 conditions at
 
 To compare the interventions with post-hoc thresholding, we apply uniform percentile magnitude-thresholding targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$ as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are calibrated separately on ten training blocks.
 
+% Figure and ratios: Analysis024 observations/030-base-speedup-clipping.md;
+% generating analysis: 22_plot_base_speedup_clipping.py.
+% Agent/search provenance: Run029 observations/06-implementation-and-claim-audit.md.
+% Clipping implementation: Run036 README.md and clipping_adapter.py.
+% Descriptive fits and claim checks: reviews/2026-09-18-base-speedup-adoption/verification.json.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/13-14m-70m-sparsity-base-speedup.pdf}
+\caption{\textbf{From model-wide sparsity to measured speedup.}
+Pythia-14M (a) and 70M (b), with 22 trained checkpoints and 20 post-hoc
+clipping settings per size. Speedup divides the same-size base-model latency
+by each setting's latency, using the final specialized implementation for
+both terms; it is not speedup over native execution. Dashed/solid curves
+connect h-only/all-site pressure settings; dotted paths show base/ReLU
+clipping, including its recurring cost. Timings use RTX5090, BF16, batch one,
+2,048 tokens and the full logit head. Sparsity uses full-validation pooled
+logical counts. Panel scales differ; normalization does not remove differences
+in model quality or timing sessions.}
+\label{fig:base-model-speedup}
+\end{figure}
+
+\textbf{Agentic kernel development.}
+To test whether the learned zeros save time, we used GPT-6
+Astra~\citep{openaigpt6astra} as the configured coding agent in a human-guided
+search for specialized GPU routines. For our representation-learning team,
+without specialist GPU-kernel expertise, this made direct execution tests
+practical. The agent inspected existing implementations, proposed edits,
+compiled candidates and revised them using correctness and timing feedback.
+We fixed the workload and numerical tolerances, then froze the implementation
+before final-checkpoint benchmarking. The final routines pass the full-validation
+checks at 14M and, after a shape-specific port, 70M
+(Appendix~\ref{app:kernel-results}). This single development case illustrates
+the feasibility of this workflow.
+
+In a matrix product, a zero activation contributes nothing to the output.
+Avoiding its multiplication can save arithmetic and avoid reading the
+corresponding weights. However, GPUs process groups of products;
+isolated zeros need not eliminate a group, and finding which work to skip
+also costs time. Our implementation detects empty groups and handles nearly
+empty rows using their surviving values, especially at $h$ and $z$. It also
+combines adjacent operations to reduce intermediate data movement. These
+mechanisms make speedup depend on both the activation pattern and the routines
+that consume it.
+
+\textbf{Sparsity and speedup rise together within recipes.}
+Figure~\ref{fig:base-model-speedup} shows an approximately linear increase
+within each trained threshold/pressure family over the tested grid, with
+different slopes across families. At 14M and $\kappa=0.5$, for example,
+$T_7/P_{\mathrm{all}}$ is much sparser than $T_4/P_{\mathrm{all}}$
+($27.48\%$ versus $12.71\%$), yet slightly slower ($1.38\times$ versus
+$1.42\times$ base-model speedup). Thus, a larger $\Smodel$ need not yield a
+larger gain: where the zeros occur and whether the kernel can exploit them
+matter (Section~\ref{sec:kernel-autoresearch}).
+
+\textbf{Post-hoc clipping does not yield comparable gains in this implementation.}
+Every positive clipping target remains below $1\times$ at 14M. At 70M,
+aggressive clipping can exceed $1\times$, reaching $1.22\times$, but with
+substantial loss degradation (Appendix~\ref{app:clipping-results}).
+Here clipping uses separate masking operations around the frozen kernel,
+adding activation scans and writes on every forward pass. The resulting zeros
+still have to form groups that its skipping rules can use. These costs can
+outweigh the avoided products; the measurements do not separately isolate
+each cost. We did not optimize a fused clipping implementation, so this
+result does not establish a general limitation of post-hoc sparsification.
+
+\FloatBarrier
 \input{training-results}
 \input{kernel-autoresearch}

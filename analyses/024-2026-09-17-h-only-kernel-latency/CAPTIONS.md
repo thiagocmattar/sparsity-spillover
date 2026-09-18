@@ -5,6 +5,10 @@ uses the same optimized A0 reference for all trained and clipped settings
 within each size, with Figure 08's style and cohort. Its
 [publication caption and proposed runtime paragraph](observations/030-base-speedup-clipping.md)
 define the normalization, full clipping coverage and cross-session limits.
+The PDF is adopted unchanged as manuscript Figure 3; the
+[integration record](../../manuscript/draft/reviews/2026-09-18-base-speedup-adoption/README.md)
+documents the actual caption and text after the Experimental Study calibration paragraph.
+Later manuscript figure numbers below describe earlier adoption states.
 
 [Absolute operation contributions](figures/04-operation-sparsity-changes.pdf)
 are adopted unchanged as manuscript Figure 5, followed by the existing bypass
