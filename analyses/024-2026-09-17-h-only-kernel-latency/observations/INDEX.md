@@ -23,3 +23,5 @@
   final-kernel A0 latency; 1-site controls excluded, linear axes and size labels.
 - [011](011-matched-quality-sparsity.md): validation loss versus model-wide
   sparsity for 44 matched 14M/70M checkpoints, including both 1-site controls.
+- [012](012-quality-sparsity-clipping.md): Figure11's cohort plus four complete
+  A0/A1-H post-hoc clipping frontiers, showing all 40 clipping measurements.

@@ -183,3 +183,13 @@ reconciles the uniform loss conventions in Analyses023/025, and verifies pooled
 counts and checkpoint identities. Exact values and source hashes are in
 `data/matched-quality-sparsity.json`; see the
 [caption and provenance](observations/011-matched-quality-sparsity.md).
+
+The separate [quality-sparsity figure with clipping](figures/12-14m-70m-quality-sparsity-clipping.pdf)
+is reproduced with `12_plot_quality_sparsity_clipping.py`. It adds four dotted
+post-hoc frontiers to Figure11's unchanged trained cohort: baseline and 1-site
+at both 14M and 70M, with ten targets each. The full measured loss range is
+shown. Each control's clipping acts at a,m,h,z, with its own retained p=0
+measurement; no offset is applied to align different loss evaluation passes.
+All 84 plotted records, source hashes and checkpoint checks are retained in
+`data/quality-sparsity-clipping.json`; see the
+[caption and measurement definitions](observations/012-quality-sparsity-clipping.md).
