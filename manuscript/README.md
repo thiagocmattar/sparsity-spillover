@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+Section 4.6 now gives a lean, first-principles explanation of avoidable
+arithmetic, projection savings and the tested attention kernel's limitation.
+Its replacement Figure 7 uses two grouped-bar panels: 14M/70M, T4/Pall versus
+T7/Pall at kappa=0.5, six operations per size. Both are on page 9 of the rebuilt
+33-page [main.pdf](draft/main.pdf). The subsection distinguishes instruction
+bypass from time saved and does not claim optimal attention execution or
+extend the 14M timing attribution to 70M. See the
+[revision and verification record](draft/reviews/2026-09-18-kernel-explanation/README.md).
+Entries below describe their earlier revision states.
+
 Section 4.2 now uses Analysis024's six-panel paired-pressure figure as
 Figure 4, comparing loss, sparsity and latency at 14M/70M. Its two paragraphs
 state the h-only advantage at moderate thresholds and the two small 14M

@@ -407,8 +407,8 @@ affine parameters and thresholds. The all-skips-off control retains
 fusion while disabling both attention and projection skips; the
 attention-dense control retains projection skips. The historical ablation
 summary forms ratios from separately measured, native-normalized timings.
-Figure~\ref{fig:kernel-autoresearch}b instead directly divides candidate
-latency geometric means, as defined below. K050's sparse paths
+The matched gains in Appendix~\ref{app:kernel-diagnostics} instead directly
+divide candidate latency geometric means, as defined below. K050's sparse paths
 improve 14 of 30 checkpoints relative to all-skips-off, with geometric
 mean ratio $1.0432\times$. Disabling attention skipping improves all 30:
 at the search checkpoint, instrumentation confirms that skipping bypasses
@@ -425,6 +425,16 @@ masking and softmax still execute. A zero $QK$ score does not imply a zero
 softmax probability. The measurements do not identify a profitable joint-zero
 pattern or break-even threshold. They show that the skipped work does not
 repay these costs for the measured 14M shapes and hardware.
+
+% Search evidence: Run028 README, K029--K035, K041, K046;
+% crosswalk: Analysis024 observations/029-operation-bypass-summary.md.
+Development also tested shortcuts that reuse cumulative value sums for zero
+queries, detect non-overlapping nonzero positions in $Q/K$, or reduce the
+cost of conditional execution. Qualified versions did not establish a
+reliable attention-speed benefit; earlier aggressive alternatives failed
+numerical checks. These trials do not exhaust strategies that could avoid
+operand loading earlier. The frozen candidate is not an optimal latency
+configuration: its attention-dense control is faster.
 
 \begin{table}[htbp]
 \centering\small
@@ -543,9 +553,11 @@ values. Differences across checkpoints are not independent-seed estimates.}
 The five restored four-site h-only records are given in
 Table~\ref{tab:h-only-runtime}. Adding them to the original 30 changes the
 projection-bypass $R^2$ from 0.946 to 0.941, and the scalar-projection $R^2$
-from 0.413 to 0.425. Figure~\ref{fig:kernel-autoresearch} uses all 35 qualified
-records; historical association panels retain their explicitly stated 30-point
-subset. Attention skipping remains slower than attention-dense execution
+from 0.413 to 0.425. These expanded associations use all 35 qualified
+14M records; historical association panels retain their explicitly stated
+30-point subset. Figure~\ref{fig:kernel-autoresearch} instead shows
+per-operation bypass for the selected high-threshold, all-site-pressure
+endpoints at 14M and 70M. Attention skipping remains slower than attention-dense execution
 for all 35. Seven-site h-only full-model timing is shown separately in
 Figure~\ref{fig:quality-sparsity-overview}; no corresponding skipping ablations
 are added here.
@@ -605,6 +617,9 @@ The Figure~\ref{fig:paired-intervention-effects} export retains all 20
 all-site-minus-h-only pressure contrasts, including the two small 14M latency
 reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:quality-sparsity-overview}
 endpoint export.
+The Figure~\ref{fig:kernel-autoresearch} export retains the four selected
+high-threshold checkpoints, their per-operation issued and bypassed instruction
+counts, scalar replacement counts, and exact diagnostic identities.
 The README defines coverage and units; \texttt{SOURCES.json} records copy hashes
 and \texttt{protocol.json} records implementation and data identities. These
 files accompany the repository, not a standalone checkpoint or kernel release.

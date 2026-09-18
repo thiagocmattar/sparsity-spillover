@@ -1,5 +1,12 @@
 # Paper figures, captions, and associated manuscript writing
 
+[High-threshold operation bypass](figures/12-operation-bypass-summary.pdf)
+is manuscript Figure 7: two panels, T4/Pall versus T7/Pall at kappa=0.5,
+six operations per size. The [observation](observations/029-operation-bypass-summary.md)
+defines the count-based bars and the rewritten subsection's explanation of
+projection savings and attention implementation limits. Figure 10 remains
+the complete diagnostic view.
+
 [Paired pressure analysis](figures/03-pressure-scope-threshold.pdf) is now
 manuscript Figure 4, with a shorter caption and two-paragraph Section 4.2.
 The [observation](observations/015-pressure-scope-caption.md) and
@@ -20,7 +27,7 @@ and the [complete per-setting table](TABLE_OPERATION_BYPASS.md).
 It reuses saved counters for all 62 trained and 40 control-clipping settings;
 the twelve size-specific panels now follow Figure 08's style. The observation
 includes a paragraph explaining the implementation and runtime attribution;
-manuscript adoption remains separate.
+its focused four-checkpoint summary is now adopted as manuscript Figure 7.
 
 New Figure 4 extension:
 [operation contributions across size and threshold](figures/09-14m-70m-operation-contributions.pdf),

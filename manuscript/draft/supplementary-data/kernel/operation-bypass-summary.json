@@ -1,0 +1,337 @@
+{
+  "title": "Matrix-Instruction Bypass at kappa=0.5",
+  "selection": {
+    "models": [
+      "14M",
+      "70M"
+    ],
+    "scopes": [
+      "4",
+      "7"
+    ],
+    "pressure": "all",
+    "kappa": 0.5
+  },
+  "metric": "B_op = pooled bypassed MMA / pooled (issued + bypassed MMA)",
+  "coverage": {
+    "validation_blocks_per_setting": 338,
+    "documents": 500,
+    "input_tokens": 692224,
+    "excluded_tail_tokens": 1444
+  },
+  "operation_order": [
+    "qkv_projection",
+    "mlp_w1",
+    "mlp_w2",
+    "attention_output_projection",
+    "qk_scores",
+    "probability_value"
+  ],
+  "operation_labels": [
+    "QKV\n($a$)",
+    "FFN\nup ($m$)",
+    "FFN\ndown ($h$)",
+    "Attn.\nout ($z$)",
+    "QK",
+    "PV"
+  ],
+  "settings": [
+    {
+      "setting_id": "trained-14M-c20",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.5,
+      "checkpoint_key": "a4b457f12a8556ba5efe8447b577da4647417dcd9dbea023553b376bdaa76d82",
+      "weight_sha256": "e01e17fc0a981b1ffb7e8be7d081465f9ab424fc46e08a13da46e4a86b79f600",
+      "kernel": "K050",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c20-r1-a01/diagnostics.json",
+      "label": "$T_4/P_{\\mathrm{all}}$",
+      "color": "#3679AD",
+      "operations": {
+        "qkv_projection": {
+          "issued_mmas": 32772480,
+          "bypassed_mmas": 66907776,
+          "potential_mmas": 99680256,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 67.12239583333334
+        },
+        "mlp_w1": {
+          "issued_mmas": 60484672,
+          "bypassed_mmas": 72422336,
+          "potential_mmas": 132907008,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 54.4909836507643
+        },
+        "mlp_w2": {
+          "issued_mmas": 6722432,
+          "bypassed_mmas": 259091584,
+          "potential_mmas": 265814016,
+          "simt_products": 99814144,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 97.47100167961045
+        },
+        "attention_output_projection": {
+          "issued_mmas": 12592,
+          "bypassed_mmas": 66440912,
+          "potential_mmas": 66453504,
+          "simt_products": 16491520,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 99.98105141303007
+        },
+        "qk_scores": {
+          "issued_mmas": 299040768,
+          "bypassed_mmas": 0,
+          "potential_mmas": 299040768,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 0.0
+        },
+        "probability_value": {
+          "issued_mmas": 267890688,
+          "bypassed_mmas": 31150080,
+          "potential_mmas": 299040768,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.10416666666666667,
+          "bypass_percent": 10.416666666666668
+        }
+      }
+    },
+    {
+      "setting_id": "trained-14M-c30",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.5,
+      "checkpoint_key": "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+      "weight_sha256": "f83aef36ddbddbd94efb915d574c4645c687206bb68f51886ffc6e979985b425",
+      "kernel": "K050",
+      "diagnostic_source": "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c30-r1-a01/diagnostics.json",
+      "label": "$T_7/P_{\\mathrm{all}}$",
+      "color": "#C27539",
+      "operations": {
+        "qkv_projection": {
+          "issued_mmas": 91268736,
+          "bypassed_mmas": 8411520,
+          "potential_mmas": 99680256,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 8.438501602564102
+        },
+        "mlp_w1": {
+          "issued_mmas": 132907008,
+          "bypassed_mmas": 0,
+          "potential_mmas": 132907008,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 0.0
+        },
+        "mlp_w2": {
+          "issued_mmas": 14626368,
+          "bypassed_mmas": 251187648,
+          "potential_mmas": 265814016,
+          "simt_products": 189838464,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 94.49751814441568
+        },
+        "attention_output_projection": {
+          "issued_mmas": 235984,
+          "bypassed_mmas": 66217520,
+          "potential_mmas": 66453504,
+          "simt_products": 51767296,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 99.64488855245315
+        },
+        "qk_scores": {
+          "issued_mmas": 125611580,
+          "bypassed_mmas": 173429188,
+          "potential_mmas": 299040768,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 57.99516539497384
+        },
+        "probability_value": {
+          "issued_mmas": 98060121,
+          "bypassed_mmas": 200980647,
+          "potential_mmas": 299040768,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.10416666666666667,
+          "bypass_percent": 67.2084439670781
+        }
+      }
+    },
+    {
+      "setting_id": "trained-70M-c06",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.5,
+      "checkpoint_key": "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934",
+      "weight_sha256": "fb2f9056c3e7bdf218dfc5c972f85db6c65366740ebc59be414788a7a646325f",
+      "kernel": "k050-70m-v2",
+      "diagnostic_source": "runs/035-2026-09-18-pythia70m-k050-port/artifacts/attempts/scientific-c06-r1-001/diagnostics.json",
+      "label": "$T_4/P_{\\mathrm{all}}$",
+      "color": "#3679AD",
+      "operations": {
+        "qkv_projection": {
+          "issued_mmas": 1153529280,
+          "bypassed_mmas": 441354816,
+          "potential_mmas": 1594884096,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 27.673159266364642
+        },
+        "mlp_w1": {
+          "issued_mmas": 2057245184,
+          "bypassed_mmas": 69266944,
+          "potential_mmas": 2126512128,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 3.2573030310034516
+        },
+        "mlp_w2": {
+          "issued_mmas": 67697984,
+          "bypassed_mmas": 4185326272,
+          "potential_mmas": 4253024256,
+          "simt_products": 693245440,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 98.40823893951476
+        },
+        "attention_output_projection": {
+          "issued_mmas": 10238976,
+          "bypassed_mmas": 1053017088,
+          "potential_mmas": 1063256064,
+          "simt_products": 487934464,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 99.0370169193787
+        },
+        "qk_scores": {
+          "issued_mmas": 1129709568,
+          "bypassed_mmas": 0,
+          "potential_mmas": 1129709568,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 0.0
+        },
+        "probability_value": {
+          "issued_mmas": 1071562752,
+          "bypassed_mmas": 58146816,
+          "potential_mmas": 1129709568,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.051470588235294115,
+          "bypass_percent": 5.147058823529411
+        }
+      }
+    },
+    {
+      "setting_id": "trained-70M-c11",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.5,
+      "checkpoint_key": "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e",
+      "weight_sha256": "f4c90e2312b89dda911b2a1eccf25b2f19e45ad8d36ea00a15bdea26748cfe74",
+      "kernel": "k050-70m-v2",
+      "diagnostic_source": "runs/035-2026-09-18-pythia70m-k050-port/artifacts/attempts/scientific-c11-r1-001/diagnostics.json",
+      "label": "$T_7/P_{\\mathrm{all}}$",
+      "color": "#C27539",
+      "operations": {
+        "qkv_projection": {
+          "issued_mmas": 1594884096,
+          "bypassed_mmas": 0,
+          "potential_mmas": 1594884096,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 0.0
+        },
+        "mlp_w1": {
+          "issued_mmas": 2126511104,
+          "bypassed_mmas": 1024,
+          "potential_mmas": 2126512128,
+          "simt_products": 0,
+          "counter_method": "Operand-derived all-zero 16x16 A-fragment predicate",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 4.815396942800789e-05
+        },
+        "mlp_w2": {
+          "issued_mmas": 364656704,
+          "bypassed_mmas": 3888367552,
+          "potential_mmas": 4253024256,
+          "simt_products": 839499264,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 91.42594346868451
+        },
+        "attention_output_projection": {
+          "issued_mmas": 34193920,
+          "bypassed_mmas": 1029062144,
+          "potential_mmas": 1063256064,
+          "simt_products": 1009556992,
+          "counter_method": "Instrumented M8/padded-M16 hybrid; includes SIMT substitution",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 96.7840371517505
+        },
+        "qk_scores": {
+          "issued_mmas": 1031290378,
+          "bypassed_mmas": 98419190,
+          "potential_mmas": 1129709568,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.0,
+          "bypass_percent": 8.71190196027445
+        },
+        "probability_value": {
+          "issued_mmas": 1051811649,
+          "bypassed_mmas": 77897919,
+          "potential_mmas": 1129709568,
+          "simt_products": 0,
+          "counter_method": "Instrumented attention MMA; includes causal padding",
+          "base_model_bypass_fraction": 0.051470588235294115,
+          "bypass_percent": 6.895393400793079
+        }
+      }
+    }
+  ],
+  "bars": 24,
+  "figure": "figures/12-operation-bypass-summary.pdf",
+  "figure_sha256": "69c2d2235e81b2ab1fe290c8e8c2dee4692085d00db565c53b1c93802e60dff0",
+  "script": "21_plot_operation_bypass_summary.py",
+  "script_sha256": "4681ecaa967b9134b61f314fc1048d0f74af7aa6c25a02d2715fe3885ef80a31",
+  "sources_sha256": {
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/operation-bypass.json": "9bfbc777262aa1cb6c37d71b62473a42349f0491f4d8b237ecd12327a6d60564",
+    "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c20-r1-a01/diagnostics.json": "067aef30c18d291fd9479244bdc4315247ad35ef3829ba023a4f70f4b13f5ac6",
+    "runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/artifacts/attempts/scientific-final-k050-c30-r1-a01/diagnostics.json": "820695641a7ed6bfd29df7f01b7a4ffcd1bee69a2336a252b83ca3ecd391fe15",
+    "runs/035-2026-09-18-pythia70m-k050-port/artifacts/attempts/scientific-c06-r1-001/diagnostics.json": "bf3a744e6789a1ab0d2f8c728fb2f03678fb65ed6c0aa4c99654599b52fdb89c",
+    "runs/035-2026-09-18-pythia70m-k050-port/artifacts/attempts/scientific-c11-r1-001/diagnostics.json": "9a74c99c35b81133e802bed17fe3a66383b694463940f40d56a5841d4c3e9265"
+  },
+  "detailed_figure": "figures/10-operation-bypass.pdf",
+  "style_reference": "figures/08-14m-70m-quality-sparsity-latency.pdf",
+  "limits": [
+    "Per-operation instruction bypass, not a fraction of operator time or model-wide savings.",
+    "h/z bypass includes replacement with scalar work; SIMT product counts are retained.",
+    "Attention counts include causal/padded work; PV baseline bypass is not intervention-induced.",
+    "The figure contains no latency measurements; matched attention skip ablations are available only at 14M.",
+    "Four selected checkpoints, one training seed; no uncertainty across seeds is estimated."
+  ]
+}

@@ -1,5 +1,10 @@
 # Observations
 
+- [029: High-threshold bypass summary](029-operation-bypass-summary.md):
+  two size panels, T4/Pall versus T7/Pall at kappa=0.5, and 24 count-based bars.
+  Adopted as manuscript Figure 7 with the first-principles kernel explanation;
+  identifies projection benefits and the unresolved attention implementation limit.
+
 - [028: All-model quality-sparsity](028-all-model-quality-sparsity.md): all 74
   trained paper conditions in a 14M/70M/410M three-panel overview, uniform
   final loss, sixty fixed-control clipping settings and ceiling guides.

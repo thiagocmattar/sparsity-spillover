@@ -1,5 +1,15 @@
 # Manuscript draft: ICLR 2027 format
 
+Section 4.6 now explains from first principles why skipping zeros can save
+time in projections but fail to do so in the tested attention implementation.
+The old quality/latency figure is replaced by a focused two-panel bypass
+chart: T4/Pall and T7/Pall at kappa=0.5, 14M/70M. The subsection and Figure 7
+are on page 9 of the rebuilt 33-page [main.pdf](main.pdf). Appendix references
+and the count export follow the new figure scope; the 14M timing attribution
+and unresolved attention-optimization limit remain explicit. See the
+[revision record](reviews/2026-09-18-kernel-explanation/README.md).
+Notes below retain their original revision scope.
+
 Section 4.2 now has a brief paired-pressure analysis and Analysis024 Figure03
 as manuscript Figure 4 on page 6. H-only pressure lowers loss in all sixteen
 moderate-threshold pairs and latency in eighteen of twenty pairs; the two

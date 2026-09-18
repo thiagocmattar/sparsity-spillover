@@ -1,5 +1,14 @@
 # H-only pressure: final K050 latency extension
 
+The [two-panel operation-bypass summary](figures/12-operation-bypass-summary.pdf)
+is now manuscript Figure 7, comparing T4/Pall and T7/Pall at kappa=0.5 across
+six operations at 14M/70M. The rewritten kernel subsection explains avoidable
+arithmetic, projection savings and the tested attention implementation's
+limitation without numerical endpoint narration. See the
+[caption and evidence](observations/029-operation-bypass-summary.md).
+Reproduce with `21_plot_operation_bypass_summary.py`; the complete Figure 10
+and its source measurements remain available.
+
 [Figure 3's paired pressure analysis](figures/03-pressure-scope-threshold.pdf)
 is now adopted unchanged as manuscript Figure 4 in Section 4.2. The lean text
 compares all-site against h-only pressure across 14M/70M and reports the two

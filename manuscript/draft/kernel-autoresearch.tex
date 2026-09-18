@@ -1,138 +1,61 @@
-% Pressure-scope revision: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md; evidence.py, figures.py, tables.py.
-% Hand-edited adoption of Analysis 021 Figure 07 v2.
-% Figure: analyses/021-2026-09-10-training-results-figures/07_kernel_realization_v2.py;
-% observation: analyses/021-2026-09-10-training-results-figures/observations/O009-kernel-realization-v2.md.
-% Kernel trace, matched latencies and stratified fits: Analysis 021 investigation/
-% observations/O001-kernel-investigation.md; 01_extract.py and 02_analyze.py.
-% Qualification/search audit: Run 029 observations/06-implementation-and-claim-audit.md.
-% Two-size full-model and clipping timings in Figure 1: Analysis024 observations/025-matched-quality-latency.md;
-% generating script: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
+% User-approved first-principles rewrite and focused bypass figure, 18 September 2026.
+% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md.
+% Figure generator: analyses/024-2026-09-17-h-only-kernel-latency/21_plot_operation_bypass_summary.py.
+% Full counters and matched timings: Analysis024 observations/027-operation-bypass.md; 18_reduce_operation_bypass.py.
+% Implementation/search: Run028 README (K029--K035, K041, K046, K049);
+% Run029 observations/06-implementation-and-claim-audit.md.
 \subsection{When model-wide sparsity translates to speedup}
 \label{sec:kernel-autoresearch}
 
-$\Smodel$ measures matrix-product work exposed to zero operands, but does
-not by itself guarantee lower latency. Whether these opportunities become
-useful depends on where the zeros occur, their execution structure, and
-the kernel used to exploit them. We evaluate the same specialized K050
-implementation across 35 Pythia-14M checkpoints, including the five historical
-four-site h-only models, to ask which forms of learned sparsity translate into
-measured acceleration. Figure~\ref{fig:quality-sparsity-overview} additionally
-includes seven-site h-only timing at 14M, 22 trained checkpoints at 70M,
-and 40 post-hoc clipping settings across both sizes. Those measurements use
-separate RTX5090 sessions; the matched ablations here retain the historical
-35-checkpoint cohort. Those historical measurements use
-BF16, batch-one, uncached 2,048-token inference with full-vocabulary logits
-on one RTX5090. Each candidate undergoes numerical qualification against
-the native reference on complete validation before timing
-(Appendix~\ref{app:kernel-results}).
+A multiplication by zero cannot change a sum, but recognizing and skipping
+it also takes time. $\Smodel$ measures the arithmetic exposed to zero
+operands; lower latency requires an implementation that avoids more work
+than it adds. GPUs perform groups of multiplications together, so isolated
+zeros need not remove an execution step. Figure~\ref{fig:kernel-autoresearch}
+shows the matrix instructions actually bypassed by our specialized kernel.
+These percentages measure skipped instructions, not saved time.
 
-\textbf{More logical sparsity does not necessarily mean lower optimized latency}
-(Figure~\ref{fig:kernel-autoresearch}a). At $\kappa=0.5$, $T_4/P_4$ runs at
-0.4595 ms with loss 6.0380, whereas $T_7/P_7$ runs at 0.4734 ms with loss
-5.8294. The seven-site model is slower under full K050 despite its larger
-$\Smodel$, but has lower loss. These are quality--latency trade-offs, not an
-equal-quality speed ranking. The native-relative association
-($R^2=0.817$) remains descriptive and uses a different native latency for
-each checkpoint (Appendix~\ref{app:kernel-diagnostics}).
+Both the projection and attention paths inspect the current activations.
+For FFN-down ($h$) and attention-output ($z$), the kernel checks which values
+survive before reading the corresponding weights. Nearly empty rows can
+then be projected using only their surviving contributions; empty groups
+avoid both weight reads and multiplications. The matched 14M controls
+locate the benefit from skipping in the projection path, with the code and
+bypass counts pointing especially to $h$ and $z$ together. Their individual
+time savings are not isolated. Speedup over native execution also includes
+combining operations to reduce intermediate work, separately from skipping
+zeros (Appendix~\ref{app:kernel-diagnostics}).
 
-The restored $T_4/P_h$ measurements make pressure placement relevant to this
-comparison: at $\kappa=0.5$, this model runs at 0.4623 ms with loss 5.7227,
-both lower than $T_7/P_7$ despite only $10.23\%$ model-wide sparsity.
-At $\kappa=0.05$, it runs at 0.5618 ms with loss 5.1956. The seven-site h-only
-full-model measurements appear in Figure~\ref{fig:quality-sparsity-overview}b;
-small differences across the two physical GPU/host sessions do not establish
-a reliable runtime ordering.
+The current $QK/PV$ path checks for zeros after loading the operands.
+It can omit multiplications, but has already paid for those reads and must
+still normalize attention scores and produce the output. A zero score is
+not a zero attention probability. The additional checks can therefore cost
+more than the skipped arithmetic saves. In the matched 14M measurements,
+disabling attention skipping makes the same models faster while leaving
+projection skipping unchanged, even where $QK/PV$ bypass is substantial.
 
-The qualified 70M shape-specific port exhibits a similar distinction between
-logical sparsity and latency (Figure~\ref{fig:quality-sparsity-overview}d).
-At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ is more sparse and has lower loss
-than $T_7/P_h$, but higher full-model latency: 1.748 versus 1.618 ms.
-These final-kernel measurements do not extend the 14M skipping ablations
-or establish equal optimization effort across model sizes.
+\textbf{This is a limitation of the tested implementation, not evidence that
+attention sparsity is intrinsically unhelpful.} Shortcuts for zero queries,
+broader zero-product detection and cheaper skipping decisions were explored,
+but did not establish a reliable, numerically qualified attention benefit
+(Appendix~\ref{app:kernel-results}). The frozen kernel is therefore not an
+optimal execution strategy. Avoiding data movement earlier remains an
+unresolved opportunity. The 70M bars establish instruction bypass under
+the shape-specific port; they do not extend the 14M timing attribution.
 
-The dotted control paths in Figure~\ref{fig:quality-sparsity-overview}b,d
-include measured post-hoc clipping latency, with recurring external PyTorch
-clipping operators inside the timed graph; zero-dose identity masks are elided.
-Every positive clipping target
-is slower than its own zero-dose control at 14M. At 70M, the largest targets
-reduce final-kernel latency at substantial validation-loss cost. The clipping
-timings come from a separate session and retain their measured zero-dose
-endpoints; they do not isolate trained gates versus post-hoc masks under a
-common implementation or imply speedup over the matching native graph.
-
-% Approved artwork copied unchanged; hash in figures/SOURCES.json.
+% Analysis-owned artwork copied unchanged; exact counts and hashes accompany it.
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/07-quality-latency.pdf}
-\caption{\textbf{The runtime value of zeros depends on their execution structure.}
-\textbf{(a)} Validation loss versus absolute full-model K050 latency for 35
-qualified checkpoints; the black cross is native A0. Gray
-circles show A0 and one-site conditions, blue diamonds four-site recipes, and
-orange triangles seven-site recipes. These multisite markers are open without
-pressure and filled with OL1(all); blue squares add four-site OL1(h).
-This historical panel excludes the seven-site OL1(h) timings shown in
-Figure~\ref{fig:quality-sparsity-overview}.
-\textbf{(b)} Projection MMA bypass for the same 35 checkpoints versus matched gain from enabling
-projection skipping: all-skips-off latency divided by projection-enabled,
-attention-dense latency. The dashed OLS fit is descriptive ($R^2=0.941$).
-MMA bypass includes replacement by scalar work, not only eliminated arithmetic.
-Loss and sparsity use full-validation FP16 evaluation; BF16 timing uses
-64 matched inputs on an RTX5090. Neither panel identifies a causal effect of sparsity alone.}
+\includegraphics[width=\linewidth]{figures/pressure-scope/07-operation-bypass.pdf}
+\caption{\textbf{Skippable work is not the same as saved time.}
+Matrix instructions bypassed for $T_4/P_{\mathrm{all}}$ and
+$T_7/P_{\mathrm{all}}$ at $\kappa=0.5$: \textbf{(a)} 14M and \textbf{(b)} 70M.
+Each bar pools bypassed instructions divided by issued plus bypassed
+instructions over all layers and complete validation. Labels identify each
+operation and its input site. Bypass at $h/z$ includes replacement by a few
+scalar operations; attention counts include causal masking and padding.
+The bars do not measure latency or the fraction of total model work saved.}
 \label{fig:kernel-autoresearch}
 \end{figure}
-
-The matched ablations distinguish where sparsity is profitable. Higher thresholds produce substantial gains from projection
-skipping, and OL1(all) further increases this benefit for the four-site recipe
-at positive thresholds (Appendix~\ref{app:kernel-diagnostics}). Without
-pressure, four-site and seven-site recipes have similar projection-skipping
-gains at matched thresholds. At $\kappa=0.5$, adding OL1(all) raises the four-site
-gain from $1.324\times$ to $1.378\times$, but the seven-site gain only from
-$1.316\times$ to $1.325\times$, despite its much larger increase in
-$\Smodel$. Much of that additional seven-site sparsity lies in $QK/PV$
-attention products (Figure~\ref{fig:activation-reshaping}), outside the
-projection path. Additional model-wide sparsity therefore need not bring
-a proportional projection-skipping benefit.
-
-Scalar sparsity also does not fully determine the projection benefit. The
-kernel exploits zero structure at the level of matrix-multiply fragments,
-with very sparse rows sometimes handled by scalar operations instead.
-We call the resulting omitted matrix multiply-accumulate instructions
-\emph{MMA bypasses}; a bypass need not eliminate all corresponding arithmetic.
-Across the cohort, projection MMA bypass is more strongly associated with
-projection-skipping gain ($R^2=0.941$) than scalar projection sparsity alone
-($R^2=0.425$). The useful execution unit is coarser than an individual zero
-activation. Appendix~\ref{app:kernel-diagnostics} gives the predicates,
-counters, and matched latencies.
-
-The attention path provides the complementary result. Seven-site
-interventions expose many zero-operand $QK$ and $PV$ products, but the tested
-attention-skipping path remains slower than its dense counterpart across
-the cohort, even at the checkpoint with substantial additional MMA skipping.
-\textbf{For these 14M measurements, high-threshold projection skipping is
-profitable, whereas attention skipping is not.} This is a property of the
-measured kernel, shapes, and hardware, rather than evidence that attention
-sparsity is intrinsically unprofitable.
-
-Native-relative speedup is not a pure measure of sparse-path savings: it
-divides native latency by optimized K050 latency, and the native cost itself
-differs across intervention families. Seven-site recipes can report larger
-native-relative speedups even when their absolute K050 latency exceeds that
-of the corresponding four-site model. Appendix~\ref{app:kernel-diagnostics}
-therefore reports native, optimized, and matched-ablation latencies separately.
-
-We used a human-guided GPT-6-Astra coding-agent loop to develop and
-numerically qualify K050~\citep{openaigpt6astra,luo2026agentic}.
-Search history and upstream-kernel compatibility remain in
-Appendix~\ref{app:kernel-results}; this is an implementation tool, not an
-agent-versus-human development comparison.
-
-Together, these results separate sparsity opportunity from sparsity
-realization. $\Smodel$ captures computation logically exposed to zeros and
-tracks end-to-end performance across the trained models, but the runtime
-value of those zeros depends on their location and execution structure.
-K050 profitably exploits high-threshold projection sparsity, with pressure
-amplifying the four-site benefit, while the additional attention sparsity
-remains overhead-limited in the tested implementation.
-
 
 \FloatBarrier

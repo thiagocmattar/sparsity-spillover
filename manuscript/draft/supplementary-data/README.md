@@ -104,6 +104,14 @@ the manuscript figures; its first page appears in the appendix.
 
 ## Fields and interpretation
 
+`kernel/operation-bypass-summary.json` supplies manuscript Figure 7's four
+selected checkpoints: T4/Pall and T7/Pall at kappa=0.5 for 14M/70M. It retains
+pooled issued/bypassed instruction counts for all six operations, scalar
+replacement counts, checkpoint identities and source hashes. The bars measure
+instruction bypass, including padding and scalar replacement, rather than
+latency savings. The originating [observation](../../../analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md)
+and `21_plot_operation_bypass_summary.py` document the selection and figure.
+
 `R_model` is the fraction plotted as S_model (multiply by 100 for percent).
 `counts` contains pooled integer product counts. `loss` is validation
 cross-entropy on all 338 complete 2,048-token blocks from 500 MiniPile
