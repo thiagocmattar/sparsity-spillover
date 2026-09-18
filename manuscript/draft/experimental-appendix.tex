@@ -91,12 +91,19 @@ reach but may have positive observed sparsity from natural zeros.
 \label{app:evaluation}
 
 The original 54 endpoints pair quality and logical counts in the same
-eager-attention evaluation. For the ten h-only endpoints, we retain the
+eager-attention evaluation. For the ten 14M h-only endpoints, we retain the
 author-approved ordinary final-validation losses and separately evaluated
 logical counts from the same checkpoint. Both passes cover the complete
 validation set; across the 30 multisite 14M endpoints, their largest absolute
 loss difference is $0.000106$ nats. Both loss versions and uniform-pass
 contrasts are retained in the supplementary pressure-placement data.
+% Source: Analysis024 observations/025-matched-quality-latency.md; 16_plot_matched_quality_latency.py.
+Figure~\ref{fig:quality-sparsity-overview} uses ordinary reloaded
+final-checkpoint loss uniformly for all 44 trained checkpoints, including
+the ten added 70M h-only conditions, with separately evaluated canonical
+FP16 logical counts. Its post-hoc paths preserve the historical FP16
+quality/count measurements. BF16 timing and qualification do not replace
+those validation losses.
 The complete
 MiniPile validation split contains 500 documents. Concatenation and packing
 produce 338 complete blocks of 2,048 tokens (692,224 input tokens); the final

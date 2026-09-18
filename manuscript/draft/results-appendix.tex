@@ -9,8 +9,8 @@
 % investigation/observations/O001-kernel-investigation.md and 01_extract.py--03_plot.py.
 % Per-checkpoint latency table: Analysis 021 / 08_kernel_manuscript_table.py.
 % Generated tables: Analysis 018 / 03_manuscript_tables.py.
-% Figure 1 timing extension: analyses/024-2026-09-17-h-only-kernel-latency/observations/023-14m-quality-latency-variant.md;
-% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py.
+% Figure 1 two-size extension: analyses/024-2026-09-17-h-only-kernel-latency/observations/025-matched-quality-latency.md;
+% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
 % A0 histories: analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py;
 % observations/O007-a0-optimization.md; data/a0-optimization.json.
 \subsection{Realized training protocol}
@@ -35,15 +35,18 @@ conditions share the initial parameter hash and training schedule. The
 40-condition 14M cohort contains A0, A1-H, four weights each for A1-H-L1 and
 A1-H-OL1, and five thresholds for each of $T_4/P_0$, $T_4/P_h$, $T_4/P_4$,
 $T_7/P_0$, $T_7/P_h$, and $T_7/P_7$. Each larger cohort contains A0, A1-H,
-and the five-threshold $T_4/P_4$ and $T_7/P_7$ sweeps.
+and the five-threshold $T_4/P_4$ and $T_7/P_7$ sweeps. The 70M extension
+adds five thresholds each for $T_4/P_h$ and $T_7/P_h$, giving 22 conditions
+at 70M and 12 at 410M.
 Local pressure weights are $\{0.05,0.1,0.5,1\}$; thresholds are
 $\{0,0.01,0.05,0.1,0.5\}$. Multisite OL1 uses $\lambda=1$, with pressure
 at $h$ only or at all thresholded sites. Every OL1 condition uses trust budget 1
 and projection stabilizer $\epsilon=10^{-12}$. The historical four-site h-only
 conditions are identified by their audited executed pressure capture, not
 their original all-site declaration. They are valid $T_4/P_h$ conditions;
-the ten h-only endpoints match the initialization, order and final-checkpoint
-protocol of the original cohort.
+the ten 14M h-only endpoints match the initialization, order and final-checkpoint
+protocol of the original cohort. The ten 70M h-only runs likewise match the
+original 70M initialization, data schedule, optimizer and token budget.
 
 Training uses AdamW with $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight
 decay 0.1 and global task-gradient clipping at norm 1. Naive L1 clips the
@@ -114,7 +117,8 @@ optimization regimes and are not used as a convergence criterion.}
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
 
-The following tables report all 64 trained endpoints, the 29 original paired
+The following tables report the original 64 trained endpoints and the ten
+additional 70M h-only endpoints, the 29 original paired
 14M contrasts, 25 additional pressure-scope contrasts, and all 15 cross-scale
 broad-pressure recipe comparisons. They retain
 dominated settings as well as favorable ones. Each entry summarizes one
@@ -125,6 +129,7 @@ for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
 this common-reference ratio, retained for the complete endpoint table.
 
 \input{tables/pressure-scope/trained-endpoints}
+\input{tables/70m-h-only-endpoints}
 \input{tables/paired-effects}
 \input{tables/pressure-scope/pressure-scope-contrasts}
 \input{tables/scale-contrasts-full}
@@ -345,8 +350,9 @@ absolute-latency panel additionally restores the five qualified $T_4/P_h$
 checkpoints from the same historical 35-checkpoint sweep; they implement a
 valid, distinct pressure scope. These are existing measurements, reaggregated
 from raw timing pairs with the same geometric-mean rule. Figure~\ref{fig:quality-sparsity-overview}
-adds five measured $T_7/P_h$ full-model timings from a separate RTX5090
-session. They do not extend the historical skipping-ablation cohort.
+adds five measured $T_7/P_h$ full-model timings at 14M, 22 trained models
+at 70M, and 40 control-clipping settings from separate RTX5090 sessions.
+They do not extend the historical skipping-ablation cohort.
 Search progress and the
 final sweep are separate measurements, explaining the small difference
 between their $1.7830\times$ and $1.7832\times$ maxima.
@@ -550,10 +556,14 @@ are added here.
 \label{app:result-data}
 
 The supplementary data contain the original 54 training endpoints plus ten
-verified h-only endpoints, all 540 historical post-hoc evaluations, seven
+verified 14M h-only endpoints, all 540 historical post-hoc evaluations, seven
 signed histograms, and the original 30-checkpoint kernel reduction. The
 pressure-placement extension adds both loss passes, site/layer counters,
 OL1 geometry, matched contrasts and five historical h-only runtime records.
+The Figure~\ref{fig:quality-sparsity-overview} evidence export additionally
+records all 44 plotted trained checkpoints, including the ten 70M h-only
+endpoints, and the 40 control-clipping settings with their matched latency,
+checkpoint identities, timing sessions and source hashes.
 The README defines coverage and units; \texttt{SOURCES.json} records copy hashes
 and \texttt{protocol.json} records implementation and data identities. These
 files accompany the repository, not a standalone checkpoint or kernel release.

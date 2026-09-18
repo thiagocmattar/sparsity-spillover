@@ -10,7 +10,10 @@ New combined Figure 6 extension:
 [14M/70M quality-sparsity and full-model latency](figures/08-14m-70m-quality-sparsity-latency.pdf),
 with [caption, evidence and proposed writing](observations/025-matched-quality-latency.md).
 It uses 44 trained checkpoints, a shared legend and all 40 measured clipping
-latencies, while preserving the original Figure 6 and the manuscript.
+latencies. **This is now the selected manuscript Figure 1**, adopted unchanged
+with a revised caption and associated results/scope text; see the
+[adoption record](../../manuscript/draft/reviews/2026-09-18-two-size-main-figure/README.md).
+The original Figure 6 is preserved.
 
 New control-clipping measurement figure:
 [final-kernel latency at 14M/70M](figures/07-controls-posthoc-final-latency.pdf),
@@ -20,19 +23,20 @@ describes the tiling, short-row path and clipping overhead included in latency.
 This Run036 figure is an additional analysis artifact; no manuscript adoption
 or renumbering is implied.
 
-**Selected main paper figure:** [Figure 6, side-by-side 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
+**Previous main paper figure:** [Figure 6, side-by-side 14M quality and latency](figures/06-14m-quality-sparsity-latency.pdf),
 with [caption and proposed writing](observations/023-14m-quality-latency-variant.md).
 It preserves the original Figure 1 and uses the revised recipe naming and styling.
 The readability revision adds the Pythia-14M title, wider layout, T/P legend,
 open/filled control markers and a single post-hoc note.
-This variant is now adopted as manuscript Figure 1 in the introduction; the
-original analysis Figure 1 is still retained. See the
+This variant was the preceding manuscript Figure 1; Figure 8 now replaces it.
+The original analysis Figure 1 is still retained. See the earlier
 [adoption record](../../manuscript/draft/reviews/2026-09-18-main-figure/README.md).
 
 Rebuilt from [task.md](task.md) on 18 September 2026. Each linked caption file
 is also the figure's observation: it contains the question, method, coverage,
 publication caption, result, proposed manuscript paragraph, caveats, and provenance.
-The proposed paragraphs have not been inserted into manuscript TeX.
+Proposed paragraphs remain suggestions except for the explicitly recorded
+Figure 6 and Figure 8 manuscript adoptions above.
 
 | Figure | Publication PDF | Caption and associated writing | Proposed placement |
 |---|---|---|---|

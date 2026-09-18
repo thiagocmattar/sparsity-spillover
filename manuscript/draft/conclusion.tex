@@ -2,6 +2,8 @@
 % Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
 % Evidence: Analysis 018 observations O001/O002/O003/O004/O007/O011.
 % OL1 budget regimes: Analysis 021 observations/O002-ol1-geometry.md; 02_ol1_geometry.py.
+% Two-size extension: analyses/024-2026-09-17-h-only-kernel-latency/observations/025-matched-quality-latency.md;
+% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
 % Cross-size scope and A0 histories: Analysis 021 observations/O006-scale-transfer.md
 % and O007-a0-optimization.md; 05_scale_transfer.py and 06_a0_optimization.py.
 \section{Discussion and conclusion}
@@ -18,8 +20,10 @@ These observations suggest a scoped rule of thumb: in our 14M sweep, use
 threshold placement to expose computational reach; start pressure narrowly
 at the FFN hidden site when quality preservation matters, and broaden it
 when the target operating point requires extreme sparsity. This is not yet
-a recommendation across model sizes. The larger cohorts establish only the
-recurrence of the high-threshold broad-pressure recipe ordering.
+a recommendation across model sizes. In the 70M extension, broadening
+seven-site pressure at the highest threshold increases sparsity and lowers
+loss relative to h-only pressure, reversing the 14M quality cost. The
+410M cohort establishes only the broad-pressure recipe ordering.
 
 % Kernel evidence: Analysis 021 observations/O009-kernel-realization-v2.md
 % and investigation/observations/O001-kernel-investigation.md.
@@ -40,19 +44,21 @@ optimization trajectories in Appendix Figure~\ref{fig:a0-optimization}
 show that the three sizes finish in different realized optimization regimes.
 Accordingly, the scale experiment tests recurrence of within-size recipe
 relationships rather than quality scaling with parameter count.
-These conclusions concern MiniPile pretraining and complete recipes at the
-larger sizes. The distribution diagnostics cover 14M and describe responses
+These conclusions concern MiniPile pretraining. The distribution diagnostics cover 14M and describe responses
 rather than isolating a causal pathway for the nonlocal response. The kernel results use RTX5090 hardware,
 full-sequence inference, native SDPA and matched fusion controls; Figure~\ref{fig:quality-sparsity-overview}
-adds seven-site h-only timings from a separate physical GPU/host session. Transfer
-to cached decoding, larger models and other hardware remains untested.
+adds 70M execution and post-hoc clipping measurements from separate physical
+GPU/host sessions. Transfer to cached decoding, 410M execution and other
+hardware remains untested. The 70M port is shape-specific; the two sizes do
+not constitute an equal-budget kernel optimization comparison.
 
 The pressure-scope controls sharpen identification but do not complete it.
 Each condition has one training seed, and the shared validation set is not
 an independent confirmation set. Because $T_7/P_4$ is absent, the
 $P_h\rightarrow P_7$ contrast jointly changes pressure at $a,m,z,q,k,v$
 and the objective normalization; it cannot isolate Q/K/V pressure.
-H-only scaling remains outside the larger-size cohorts reported here. The
-seven-site h-only full-model timings in Figure~\ref{fig:quality-sparsity-overview}
-do not include matched skipping ablations. Present larger-scale conclusions
-concern complete broad-pressure recipes only.
+The 70M h-only comparison lacks multisite no-pressure controls, and h-only
+training remains untested at 410M. The new full-model timings in
+Figure~\ref{fig:quality-sparsity-overview} do not extend the historical
+skipping-ablation cohort. Clipping latency includes recurring mask operators
+and uses a separate session, limiting small cross-session comparisons.

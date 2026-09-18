@@ -1,15 +1,17 @@
 # Manuscript draft: ICLR 2027 format
 
-Latest Figure 1 readability preview: [main-readability.pdf](main-readability.pdf).
-The paper asset now has the requested title, T/P labels, wider layout, smaller
-final typography and one post-hoc note. The open `main.pdf` was locked against
-replacement; the preview is the rebuilt 32-page draft. TeX content is unchanged.
-Current verification is in the [adoption record](reviews/2026-09-18-main-figure/README.md).
+Current compiled draft: [main-14m-70m.pdf](main-14m-70m.pdf). Analysis024 Figure08
+is now Figure 1 on page 2, with 14M/70M quality-sparsity and full-model latency
+panels. The caption defines the T/P legend and all four panels, including the
+40 measured clipping settings. Its 44 trained checkpoints include the ten
+70M h-only endpoints now recorded in the appendix. The setup and dependent
+results/limitations have been reconciled to 74 total trained conditions.
 
-The selected main paper figure from Analysis024 is now Figure 1 in the
-introduction: quality-sparsity and full-model latency for the same 22 14M
-checkpoints. Its unchanged source PDF, checkpoint evidence, and build checks
-are linked in the [adoption record](reviews/2026-09-18-main-figure/README.md).
+The 35-page build has resolved references and no overfull boxes; all pages
+were visually checked. The approved artwork is copied unchanged with source
+and evidence hashes. The open `main.pdf` is locked against replacement, so
+the current build uses the filename above. See the
+[adoption record](reviews/2026-09-18-two-size-main-figure/README.md).
 The following revision notes retain their historical scope.
 
 ## Collaborative editing
@@ -179,8 +181,9 @@ attention-skipping limits. See the [argument and review record](reviews/2026-09-
 - [figures/SOURCES.json](figures/SOURCES.json): figure-copy provenance.
   The pressure-placement figures use Analysis 021's six-recipe comparison;
   earlier overviews and diagnostics are retained with their original coverage.
-- [tables/](tables/): analysis-owned tables, including the complete kernel
-  latency ablations and all 64 endpoints, with explicit threshold/pressure scope.
+- [tables/](tables/): analysis-owned tables, including the historical kernel
+  latency ablations, original 64 endpoints and ten additional 70M h-only
+  endpoints, with explicit threshold/pressure scope.
 - [supplementary-data/README.md](supplementary-data/README.md): nineteen
   measurement copies plus a separately sourced [protocol](supplementary-data/protocol.json).
   Includes all 540 historical post-hoc evaluations, seven signed histograms,

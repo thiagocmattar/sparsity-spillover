@@ -4,7 +4,7 @@
 \section{Experimental study}
 \label{sec:experiments}
 
-We pretrain randomly initialized Pythia-14M, 70M, and 410M models~\citep{biderman2023pythia}. To fit our compute budget, we adapt Pythia's training recipe to MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model. We conduct extensive comparisons at 14M and promote the sparsest recipes to 70M and 410M, alongside their baselines. We measure validation cross-entropy loss and $\Smodel$ over all complete sequences from MiniPile's validation documents. Table~\ref{tab:interventions} maps the ten recipes onto the sites in Figure~\ref{fig:pythia-block}.
+We pretrain randomly initialized Pythia-14M, 70M, and 410M models~\citep{biderman2023pythia}. To fit our compute budget, we adapt Pythia's training recipe to MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model. We conduct extensive comparisons at 14M, compare h-only and all-site pressure at 70M, and retain all-site pressure sweeps at 410M, alongside the base and ReLU controls at every size. We measure validation cross-entropy loss and $\Smodel$ over all complete sequences from MiniPile's validation documents. Table~\ref{tab:interventions} maps the ten recipes onto the sites in Figure~\ref{fig:pythia-block}.
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
@@ -14,7 +14,10 @@ We pretrain randomly initialized Pythia-14M, 70M, and 410M models~\citep{biderma
 Ceilings are $100\cdot\Smax\%$ at $T=2{,}048$. A1-H recipes use ReLU at $h$;
 $T_4/T_7$ use the thresholding functions in Section~\ref{sec:interventions}.
 A1-H-L1 uses L1N; $P_h$, $P_4$ and $P_7$ use OL1.
-All recipes are evaluated at 14M; 70M and 410M use A0, A1-H, $T_4/P_4$ and $T_7/P_7$.}
+All recipes are evaluated at 14M. Both larger sizes use A0, A1-H, $T_4/P_4$
+and $T_7/P_7$; 70M additionally includes $T_4/P_h$ and $T_7/P_h$.
+In Figure~\ref{fig:quality-sparsity-overview}, $P_{\mathrm{all}}$ denotes
+$P_4$ under $T_4$ and $P_7$ under $T_7$.}
 \label{tab:interventions}
 \vspace{4pt}
 \setlength{\tabcolsep}{5pt}
@@ -38,7 +41,9 @@ $T_7/P_7$ & $a,m,h,z,q,k,v$ & $a,m,h,z,q,k,v$ & 29.95 & 49.42 & 87.25 \\
 \end{tabular}
 \end{table}
 
-The experimental setup contains 40 training runs at 14M and 12 at each larger model size, for 64 endpoints. Within each size, runs share initialization, data order and training budget. We vary local pressure for A1-H using L1N and OL1 with $\lambda\in\{0.05,0.1,0.5,1\}$. At 14M, we sweep $\kappa\in\{0,0.01,0.05,0.1,0.5\}$ under both threshold scopes, with no pressure, h-only OL1, or OL1 at all thresholded sites. Multisite OL1 uses $\lambda=b=1$. The larger sizes retain only the broad-pressure sweeps. Figure~\ref{fig:ol1-geometry} characterizes the resulting cap activity at 14M. These sweeps test which interventions yield the largest sparsification gains. Appendix~\ref{app:training-protocol} details the training settings.
+% 70M extension: runs/034-2026-09-17-pythia70m-h-only-ol1/README.md;
+% Figure 1 evidence: Analysis024 observations/025-matched-quality-latency.md.
+The experimental setup contains 40 training runs at 14M, 22 at 70M and 12 at 410M, for 74 endpoints. Within each size, runs share initialization, data order and training budget. We vary local pressure for A1-H using L1N and OL1 with $\lambda\in\{0.05,0.1,0.5,1\}$. At 14M, we sweep $\kappa\in\{0,0.01,0.05,0.1,0.5\}$ under both threshold scopes, with no pressure, h-only OL1, or OL1 at all thresholded sites. Multisite OL1 uses $\lambda=b=1$. The 70M sweeps use the same five thresholds with h-only and all-site pressure; 410M retains only all-site pressure. Neither larger size includes the multisite no-pressure controls. Figure~\ref{fig:ol1-geometry} characterizes the resulting cap activity at 14M. Appendix~\ref{app:training-protocol} details the training settings.
 
 To compare the interventions with post-hoc thresholding, we apply uniform percentile magnitude-thresholding targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$ as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are calibrated separately on ten training blocks.
 

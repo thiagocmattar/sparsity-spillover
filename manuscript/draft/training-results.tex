@@ -21,7 +21,8 @@
 \label{sec:quality-sparsity-results}
 
 \textbf{Narrow pressure is favorable at moderate thresholds, while broad
-seven-site pressure exposes the highest sparsity} (Figure~\ref{fig:quality-sparsity-overview}).
+seven-site pressure exposes the highest sparsity at 14M}
+(Figure~\ref{fig:quality-sparsity-overview}a).
 For both threshold scopes at $\kappa\leq0.1$, h-only OL1 lowers validation loss
 relative to no pressure by $0.18$--$0.26$. At $\kappa=0.05$, $T_7/P_h$ reaches
 $10.126\%$ model-wide sparsity at loss 5.19496, compared with A0's 5.2086.
@@ -38,7 +39,7 @@ It is distinct from the moderate-threshold regime in which narrow pressure is fa
 In the local ReLU sweep, OL1 is not uniformly better than naive L1:
 their validation-loss differences are small, and the ordering reverses at
 $\lambda=1$ (Appendix Table~\ref{tab:paired-effects-full}). Full trained endpoints
-appear in Table~\ref{tab:trained-endpoints}. Post-hoc thresholding at $a,m,h,z$
+appear in Tables~\ref{tab:trained-endpoints} and~\ref{tab:70m-h-only-endpoints}. Post-hoc thresholding at $a,m,h,z$
 has four-site reach; it does not share the seven-site recipe's attention coverage.
 
 \subsection{Paired effects of pressure placement}
@@ -174,7 +175,7 @@ These are logical zero-operand products, not measured runtime savings.}
 \label{fig:activation-reshaping}
 \end{figure}
 
-\subsection{Cross-size recurrence of broad-pressure recipes}
+\subsection{Pressure placement across model sizes}
 \label{sec:scale-results}
 
 \textbf{At $\kappa=0.5$, seven-site + OL1(all) has both lower validation loss
@@ -183,10 +184,22 @@ sizes (Figure~\ref{fig:scale-transfer}).} The same ordering does not hold
 at $\kappa=0$: four-site + OL1(all) is better on both axes at 14M and 70M,
 whereas seven-site + OL1(all) is better on both axes at 410M. Thus, the cross-size
 result is recurrence of the \textbf{high-threshold complete-recipe
-relationship}, not transfer of the entire threshold response. The larger
-cohorts lack the h-only and pressure-free controls needed to isolate pressure's
-contribution or establish h-only transfer. Exact matched seven-site minus four-site OL1(all) contrasts at all
+relationship}, not transfer of the entire threshold response. This broad-pressure
+comparison retains its original coverage. Exact matched seven-site minus four-site OL1(all) contrasts at all
 five thresholds are reported in Appendix Table~\ref{tab:scale-pairs-full}.
+
+% Source: Analysis024 observations/025-matched-quality-latency.md;
+% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
+The 70M h-only extension in Figure~\ref{fig:quality-sparsity-overview}c
+allows pressure scope to be compared at a fixed threshold scope.
+At $\kappa=0.5$, expanding $T_7$ pressure from $P_h$ to $P_{\mathrm{all}}$
+increases $\Smodel$ from $32.233\%$ to $40.602\%$ and lowers loss from
+5.33724 to 5.21598. At 14M, the corresponding expansion increases sparsity
+from $16.664\%$ to $27.483\%$ but raises loss from 5.73205 to 5.82939.
+Thus, the high-threshold sparsity increase recurs at 70M, while its quality
+cost does not. Multisite no-pressure controls remain unavailable at 70M;
+410M has neither h-only nor multisite no-pressure controls. These comparisons
+do not isolate pressure's effect relative to no pressure at the larger sizes.
 
 Raw $\Smodel$ must be interpreted relative to the computation reachable by
 each architecture. The seven-site sparsity ceiling increases from $29.95\%$

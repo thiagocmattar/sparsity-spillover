@@ -1,16 +1,16 @@
 # Living Manuscript Draft
 
-The latest Figure 1 readability revision is compiled in
-[main-readability.pdf](draft/main-readability.pdf). The open `main.pdf` was locked
-against replacement; the manuscript figure asset and source hash are updated.
-See the [current verification](draft/reviews/2026-09-18-main-figure/README.md).
+The current draft is [main-14m-70m.pdf](draft/main-14m-70m.pdf), with the approved
+Analysis024 Figure08 as Figure 1 on page 2. The four panels compare quality,
+sparsity and latency at 14M/70M: 44 trained checkpoints and 40 measured control
+clipping settings. The caption defines the shared T/P legend and panel labels.
+The introduction, results, scope statements and appendix now include the ten
+70M h-only endpoints, for 74 trained conditions overall. Historical ablations
+retain their original cohort. The source artwork is byte-identical.
 
-The user-selected Analysis024 quality-sparsity/latency figure is now Figure 1
-in the introduction. The exact artwork is copied with a recorded source hash;
-the caption describes the matched 22-checkpoint 14M cohort and both panels.
-Stale seven-site h-only timing statements now point to Figure 1 while retaining
-the historical ablation cohorts. See the
-[adoption and build verification](draft/reviews/2026-09-18-main-figure/README.md).
+The 35-page draft builds with resolved references and no overfull boxes.
+The open `main.pdf` is locked against replacement, so the rebuilt PDF is saved
+under the name above. See the [adoption and verification record](draft/reviews/2026-09-18-two-size-main-figure/README.md).
 Entries below describe earlier revisions.
 
 The 17 September pressure-placement revision integrates ten verified h-only

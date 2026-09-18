@@ -5,6 +5,14 @@ Builder: [16_plot_matched_quality_latency.py](../16_plot_matched_quality_latency
 Exact plotted records, joins, limits and hashes:
 [14m-70m-quality-sparsity-latency.json](../data/14m-70m-quality-sparsity-latency.json).
 
+**Manuscript adoption, 18 September 2026:** at the author's request, the
+unchanged PDF is now Figure 1 on page 2 of the manuscript. The caption defines
+the shared T/P legend and four panels; the introduction, results and scope
+statements include both sizes and measured clipping. The appendix adds the ten
+70M h-only endpoints and the evidence export is copied with a verified hash.
+See the [adoption/build record](../../../manuscript/draft/reviews/2026-09-18-two-size-main-figure/README.md).
+The creation notes below describe the preceding analysis-only task.
+
 ## Question and requested design
 
 How do the matching trained recipes and control clipping paths compare in
@@ -97,7 +105,8 @@ reliable winners. Each training condition has one seed and one final checkpoint.
 Proposed placement: extension of the introduction overview, or the paired
 [quality and execution discussion](../../../manuscript/draft/training-results.tex)
 and [kernel section](../../../manuscript/draft/kernel-autoresearch.tex).
-This new figure is not adopted into manuscript TeX by this task.
+The initial plotting task did not edit TeX; the subsequent author-requested
+Figure 1 adoption is recorded above.
 
 > The same recipe comparisons yield different quality and latency orderings.
 > At κ=.5, T7/Pall has greater logical sparsity than T7/Ph at both sizes:

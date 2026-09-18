@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+**Selected manuscript Figure 1:** [Figure 8, 14M/70M quality and latency](figures/08-14m-70m-quality-sparsity-latency.pdf)
+is adopted unchanged in the introduction. The caption, shared T/P legend
+definitions, panel references and dependent manuscript scope now reflect both
+sizes and measured clipping. See the
+[adoption and build record](../../manuscript/draft/reviews/2026-09-18-two-size-main-figure/README.md).
+
 New Figure 9 extends Figure 4 to a
 [2-by-3 operation-contribution grid](figures/09-14m-70m-operation-contributions.pdf):
 14M/70M rows and κ=0,.05,.5 columns, with one palette and separate row scales
@@ -28,7 +34,7 @@ style, with concise labels and the title "Post-hoc Clipping Sparsity and Latency
 Its [implementation note](observations/024-controls-posthoc-final-latency.md#implementation-note-for-later-text)
 records the tile/short-row skipping rules and timed, unfused clipping operators.
 
-Selected main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
+Previous main paper figure: [side-by-side 14M quality-sparsity and latency figure](figures/06-14m-quality-sparsity-latency.pdf)
 uses the same 22 trained pressure/control checkpoints in both panels, circular
 markers, pressure-specific colors, one shared post-hoc note, and ceiling guides.
 The wider layout includes the requested Pythia-14M title, T/P legend labels,

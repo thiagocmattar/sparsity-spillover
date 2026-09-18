@@ -5,8 +5,8 @@
 % Kernel trace, matched latencies and stratified fits: Analysis 021 investigation/
 % observations/O001-kernel-investigation.md; 01_extract.py and 02_analyze.py.
 % Qualification/search audit: Run 029 observations/06-implementation-and-claim-audit.md.
-% New full-model h-only timings in Figure 1: Analysis024 observations/023-14m-quality-latency-variant.md;
-% generating script: analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py.
+% Two-size full-model and clipping timings in Figure 1: Analysis024 observations/025-matched-quality-latency.md;
+% generating script: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
 \subsection{When model-wide sparsity translates to speedup}
 \label{sec:kernel-autoresearch}
 
@@ -16,9 +16,11 @@ useful depends on where the zeros occur, their execution structure, and
 the kernel used to exploit them. We evaluate the same specialized K050
 implementation across 35 Pythia-14M checkpoints, including the five historical
 four-site h-only models, to ask which forms of learned sparsity translate into
-measured acceleration. Figure~\ref{fig:quality-sparsity-overview} adds the five
-seven-site h-only full-model timings from a separate RTX5090 session;
-the matched ablations here retain the historical 35-checkpoint cohort. Those historical measurements use
+measured acceleration. Figure~\ref{fig:quality-sparsity-overview} additionally
+includes seven-site h-only timing at 14M, 22 trained checkpoints at 70M,
+and 40 post-hoc clipping settings across both sizes. Those measurements use
+separate RTX5090 sessions; the matched ablations here retain the historical
+35-checkpoint cohort. Those historical measurements use
 BF16, batch-one, uncached 2,048-token inference with full-vocabulary logits
 on one RTX5090. Each candidate undergoes numerical qualification against
 the native reference on complete validation before timing
@@ -37,9 +39,26 @@ The restored $T_4/P_h$ measurements make pressure placement relevant to this
 comparison: at $\kappa=0.5$, this model runs at 0.4623 ms with loss 5.7227,
 both lower than $T_7/P_7$ despite only $10.23\%$ model-wide sparsity.
 At $\kappa=0.05$, it runs at 0.5618 ms with loss 5.1956. The seven-site h-only
-full-model measurements appear in Figure~\ref{fig:quality-sparsity-overview};
+full-model measurements appear in Figure~\ref{fig:quality-sparsity-overview}b;
 small differences across the two physical GPU/host sessions do not establish
 a reliable runtime ordering.
+
+The qualified 70M shape-specific port exhibits a similar distinction between
+logical sparsity and latency (Figure~\ref{fig:quality-sparsity-overview}d).
+At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ is more sparse and has lower loss
+than $T_7/P_h$, but higher full-model latency: 1.748 versus 1.618 ms.
+These final-kernel measurements do not extend the 14M skipping ablations
+or establish equal optimization effort across model sizes.
+
+The dotted control paths in Figure~\ref{fig:quality-sparsity-overview}b,d
+include measured post-hoc clipping latency, with recurring external PyTorch
+clipping operators inside the timed graph; zero-dose identity masks are elided.
+Every positive clipping target
+is slower than its own zero-dose control at 14M. At 70M, the largest targets
+reduce final-kernel latency at substantial validation-loss cost. The clipping
+timings come from a separate session and retain their measured zero-dose
+endpoints; they do not isolate trained gates versus post-hoc masks under a
+common implementation or imply speedup over the matching native graph.
 
 % Approved artwork copied unchanged; hash in figures/SOURCES.json.
 \begin{figure}[!htbp]

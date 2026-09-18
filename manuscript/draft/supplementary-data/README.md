@@ -1,5 +1,21 @@
 # Manuscript results data
 
+## Two-size Figure 1 extension, 18 September 2026
+
+`figure1-quality-latency.json` is copied unchanged from Analysis024's
+`data/14m-70m-quality-sparsity-latency.json`. It records 44 trained checkpoints
+(22 each at 14M/70M), 40 post-hoc control settings with matched measured
+latencies, the panel membership and visibility limits, analytic ceilings,
+checkpoint identities, timing sessions, and source hashes. Trained loss is
+uniformly ordinary final-checkpoint validation; clipping retains its original
+FP16 loss/count pass. Timing uses BF16 and is a separate measurement.
+
+The ten added 70M h-only endpoints supplement the historical 64 below, giving
+74 conditions across the paper. The historical skipping-ablation and clipping
+sweeps remain unchanged. See the
+[Figure 1 adoption record](../reviews/2026-09-18-two-size-main-figure/README.md).
+The following entries describe their original release scopes.
+
 ## Pressure-placement extension, 17 September 2026
 
 `pressure-placement.json` adds all six multisite 14M recipes, including ten
