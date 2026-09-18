@@ -14,10 +14,14 @@ or A4-OL1(h), rather than every point sharing a topology label. Lines connect
 only the same recipe in increasing kappa or lambda order.
 The next revision makes these curves dashed and directly labels their pressure
 recipes, retaining the four topology legend entries.
+The latest request removes single-site naive L1 from this figure and makes
+the labels more subtle: small text beside the curves, without arrows or boxes.
 
-**Method and coverage.** Reuse all 40 qualified checkpoints in
-`data/results.json`: 1 A0, 9 A1-H conditions (ReLU, naive L1 and OL1),
+**Method and coverage.** Select 36 of the 40 qualified checkpoints in
+`data/results.json`: 1 A0, 5 A1-H conditions (ReLU and OL1),
 15 A4 conditions and 15 A7 conditions (no, all-site and h-only pressure).
+The four single-site naive L1 points are excluded only from this figure;
+the complete source data and earlier figures retain them.
 Each point is one checkpoint, not an average across its topology group.
 The final K050 latency is the geometric mean of 1,344 synchronized host
 full-logit graph-replay timings, from 64 timing inputs, seven passes and
@@ -27,22 +31,21 @@ Numerical qualification covers 338 complete blocks from all 500 validation
 documents; the 1,444-token tail is excluded.
 
 **Caption and legend.** Full-model final K050 latency versus model-wide
-logical sparsity for 40 Pythia-14M checkpoints. Gray stars: Baseline (A0);
+logical sparsity for 36 Pythia-14M checkpoints. Gray stars: Baseline (A0);
 green circles: 1-site (A1-H); blue diamonds: 4-sites (A4*); orange triangles:
 7-sites (A7). Both multisite labels include no-pressure, all-site OL1 and
 h-only OL1 variants. BF16 inference on RTX5090, batch 1, T=2048, full
-50,304 logits; milliseconds per full-sequence forward. All points are shown,
+50,304 logits; milliseconds per full-sequence forward. All selected points are shown,
 the latency axis spans 0.44-0.67 ms to show the measured range with padding,
 and markers within each recipe family are connected in increasing kappa
-(A4/A7) or lambda (A1-H+L1 and A1-H+OL1) order. Each A4/A7 topology has
+(A4/A7) or lambda (A1-H+OL1) order. Each A4/A7 topology has
 three separate five-point curves: no pressure, all-site OL1, and h-only OL1.
-The two single-site pressure families have separate four-point curves.
+Single-site OL1 has one four-point curve; naive L1 is omitted.
 Baseline and unpressured ReLU remain isolated markers. Dashed lines are visual
-guides along each measured sweep, not fits. Color-matched direct labels
-identify no pressure, OL1(h), and OL1(all) within A4/A7. Single-site labels
-identify no pressure, naive L1 (shown as L1), and OL1(h). Thin leader arrows
-associate each label with its own curve or isolated control; they do not
-represent an additional measurement or intervention.
+guides along each measured sweep, not fits. Small color-matched labels
+identify no pressure, OL1(h), and OL1(all) within A4/A7 and OL1(h) for
+the single-site pressure curve. Labels use neither arrows nor boxes;
+isolated controls rely on their legend markers.
 
 **Result.** The displayed K050 latencies span 0.459476-0.651573 ms.
 The baseline is 0.651573 ms. Topology grouping changes only the presentation;

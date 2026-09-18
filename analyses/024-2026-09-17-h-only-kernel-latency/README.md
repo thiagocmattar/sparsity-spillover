@@ -18,7 +18,7 @@ the Pod was deleted. `01_reduce.py` requires all 15 complete new processes;
 - [Native and K050 latency](figures/02-14m-k050-sparsity-latency.pdf), with
   [observation and caption](observations/002-absolute-latency.md).
 - [Final K050 latency by topology](figures/03-14m-k050-sparsity-latency-topology.pdf),
-  added on 18 September: all 40 checkpoints, grouped as baseline, 1-site,
+  added on 18 September: 36 checkpoints (single-site naive L1 excluded), grouped as baseline, 1-site,
   4-sites and 7-sites, with [caption](observations/003-final-latency-topology.md).
 - [Complete 40-checkpoint table](TABLE.md) and [full-precision data](data/results.json).
 
@@ -36,7 +36,7 @@ reduction reproduces the saved speedups and source hashes. Input preparation
 and prelaunch verification passed all 246 bootstrap/contract tests in Run033.
 No manuscript TeX or historical figure was overwritten.
 
-The display includes all six A4/A7 pressure families at kappa
+Figures01 and02 include all six A4/A7 pressure families at kappa
 {0, 0.01, 0.05, 0.1, 0.5}, A0 and nine single-site controls. The clean figures
 use no point annotations or fitted trend lines. Small speedup whiskers show
 the range of three process means, not confidence intervals.
@@ -71,6 +71,8 @@ hash in `data/final-latency-topology.json`. It uses the four explicitly listed
 topology labels in the legend, with pressure recipes labeled directly on the plot.
 Markers within each recipe family are connected in increasing kappa or lambda
 order. A4, A4+OL1(all), A4+OL1(h), and their A7 counterparts have separate
-curves despite sharing topology labels; A1-H+L1 and A1-H+OL1 are also separate.
-The curves are dashed; labels distinguish no pressure, OL1(h), OL1(all), and
-the single-site naive L1 family. No fitted trend is added.
+curves despite sharing topology labels. This figure excludes the four single-site
+naive L1 checkpoints at the user's request; its single-site group contains ReLU
+and the four OL1 checkpoints. The original 40-checkpoint reduction and Figures01/02
+remain complete. Curves are dashed, with small no-pressure/OL1(h)/OL1(all) labels
+beside them and no arrows or label boxes. No fitted trend is added.
