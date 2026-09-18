@@ -132,3 +132,11 @@ four-site and seven-site boxes, each over five matched kappas. Scales are shared
 between rows within each metric. The 20 contrasts from 30 unique checkpoints,
 source hashes and 12 box summaries are in `data/pressure-vs-none-effects.json`.
 Only the seven-site h-only latency contrasts span different GPU/host sessions.
+
+The [combined 14M/70M latency figure](figures/08-14m-70m-final-sparsity-latency.pdf)
+is reproduced with `08_plot_combined_latency.py`. It retains all 36/22 points
+from Figures03/04, with separate dashed recipe curves, a common topology legend
+and independently fitted linear axes in two panels. Source hashes, point and
+connection identities, axis limits and the PDF hash are stored in
+`data/combined-final-latency.json`. See the
+[caption and comparison limits](observations/008-combined-final-latency.md).

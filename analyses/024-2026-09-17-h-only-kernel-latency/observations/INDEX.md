@@ -14,3 +14,5 @@
   matched contrasts per topology and the same three distribution panels.
 - [007](007-pressure-vs-none-effects.md): 2-by-3 distributions of all-site and
   h-only OL1 minus no pressure, with four-/seven-site boxes in each panel.
+- [008](008-combined-final-latency.md): 14M and 70M sparsity versus latency in
+  one two-panel figure, retaining all 36/22 points from Figures03/04.
