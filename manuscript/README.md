@@ -1,5 +1,11 @@
 # Living Manuscript Draft
 
+19 September 2026, citation correction: `openaigpt6astra` now cites the
+[dated OpenAI announcement](https://openai.com/index/gpt-6-astra/) with year
+2026, replacing the undated API-documentation entry. OpenAI's
+[release index](https://openai.com/research/index/release/?page=2) lists
+3 September 2026. The inline author-year label is now `(OpenAI, 2026)`.
+
 19 September 2026, figure polish: Figure 3's PDF now removes naive-L1,
 shortens the T1/P1 label, uses independent loss scales, and restores the
 three-row legend in a 10% narrower, 14.3% taller canvas. The include uses
