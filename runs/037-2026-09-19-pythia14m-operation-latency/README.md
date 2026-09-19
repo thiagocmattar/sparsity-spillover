@@ -64,7 +64,7 @@ limit or refute it. No other recipe, threshold, model size or device is tested.
   coverage and the exact process matrix.
 - Full bootstrap suite: **242 passed** (8.06s).
 - Original source/input and derived-code hash checks pass; bundle inventory
-  and receipt are retained under `bundles/`.
+  and receipt are retained under `bundles/` (93.6 MB input tar).
 - CUDA compilation/direct tests/smokes have **not run**: this Windows machine
   has an RTX5070Ti Laptop with12GB, no WSL distribution, and does not match the
   approved RTX5090 hardware. GPU qualification is the first bounded cloud phase.
@@ -75,7 +75,9 @@ limit or refute it. No other recipe, threshold, model size or device is tested.
 ## Proposed launch envelope
 
 Live read on19 September: no active Pods; Community RTX5090 stock NONE.
-Secure RTX5090 stock LOW at **USD0.99/hour**, in EU-RO-1 and EUR-NO-1.
+Secure RTX5090 stock LOW at **USD0.99/hour**. The latest read is recorded in
+`prelaunch/catalog-002.json`; its available locations are carried into the
+launch proposal (capacity changed during preparation).
 The existing100GB `sparsity-spillover-shared` volume in EUR-IS-1 is left unchanged.
 Raw catalog responses are retained under `prelaunch/`.
 
