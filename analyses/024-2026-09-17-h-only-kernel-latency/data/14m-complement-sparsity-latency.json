@@ -1,0 +1,1215 @@
+{
+  "question": "How does full-model latency vary with contributions to S_model from all sites except h,z?",
+  "x_definition": "100 * sum(zero products in qkv_projection, mlp_w1, qk_scores, probability_value) / full-model products",
+  "x_unit": "percentage points of S_model; unchanged full-model denominator, including dense LM head",
+  "complement_identity": "complement_contribution_pp + hz_contribution_pp = S_model percent; QK counted once",
+  "y_definition": "K050 full-model host latency per 2048-token sequence, geometric mean of 1344 timings",
+  "y_unit": "milliseconds",
+  "cohort": "20 trained 14M T/P settings from manuscript Figure 1 / Analysis024 Figure 08; Base and ReLU controls excluded",
+  "points": [
+    {
+      "checkpoint_key": "234f675072e8dd19fc48d907f5ac93abeaa0379a490795c327718264f7cc5ecc",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.0,
+      "latency_ms": 0.6332821484489827,
+      "process_latency_ms": [
+        0.6327155318075375,
+        0.6337016252961221,
+        0.6334296979316737
+      ],
+      "sparsity": 7.81004229286857,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.458276166718387,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 3.9188647166192077,
+      "complement_contribution_pp": 3.891177576249363,
+      "contributions_pp": {
+        "a": 2.2101567592436155,
+        "m": 1.6810145749578176,
+        "qk": 6.822979489713539e-07,
+        "v": 5.559749980596473e-06
+      },
+      "zero_product_counts": {
+        "a": 140633510400,
+        "m": 106963897344,
+        "qk": 43415,
+        "v": 353770
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "ccb3c6e84432780961f283b06b0214e4075849e3dbee15546c98af09917efd5e",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.01,
+      "latency_ms": 0.6201353408313895,
+      "process_latency_ms": [
+        0.6205494442961198,
+        0.6205775187288732,
+        0.6192799457338606
+      ],
+      "sparsity": 8.586708994090507,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.458309076241488,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.3696210072931665,
+      "complement_contribution_pp": 4.217087986797341,
+      "contributions_pp": {
+        "a": 2.3578153564569355,
+        "m": 1.8592660942199384,
+        "qk": 8.541964855566048e-07,
+        "v": 5.6819239816399675e-06
+      },
+      "zero_product_counts": {
+        "a": 150029109504,
+        "m": 118306141184,
+        "qk": 54353,
+        "v": 361544
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "e7c37b789bff41e1949d1570561f1f8992848751e3651d53b9419e1730cc93ff",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.05,
+      "latency_ms": 0.5726794117517053,
+      "process_latency_ms": [
+        0.5724350753136994,
+        0.57229183376218,
+        0.5733118584983831
+      ],
+      "sparsity": 10.45644512413755,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.489760381230236,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.031559218407363,
+      "complement_contribution_pp": 5.4248859057301875,
+      "contributions_pp": {
+        "a": 2.8394959681848535,
+        "m": 2.585383263220832,
+        "qk": 1.420543858286783e-06,
+        "v": 5.253780643535013e-06
+      },
+      "zero_product_counts": {
+        "a": 180678716160,
+        "m": 164509382656,
+        "qk": 90390,
+        "v": 334301
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "a6a6aa4827ac0cad6d9aceab6992000f49167b812ece9e2d1966d9f74db0b5a3",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.1,
+      "latency_ms": 0.5337081452636854,
+      "process_latency_ms": [
+        0.5337105258472065,
+        0.5337636071478719,
+        0.5336503088168442
+      ],
+      "sparsity": 11.394280537892907,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.548253721739414,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.217521942702944,
+      "complement_contribution_pp": 6.1767585951899635,
+      "contributions_pp": {
+        "a": 2.9294718571990677,
+        "m": 3.247283587633541,
+        "qk": 1.0260478749842625e-06,
+        "v": 2.124309479682296e-06
+      },
+      "zero_product_counts": {
+        "a": 186403932288,
+        "m": 206626470400,
+        "qk": 65288,
+        "v": 135171
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "a4b457f12a8556ba5efe8447b577da4647417dcd9dbea023553b376bdaa76d82",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.5,
+      "latency_ms": 0.4594756638246619,
+      "process_latency_ms": [
+        0.4591939845987958,
+        0.4601090675746311,
+        0.45912459604807987
+      ],
+      "sparsity": 12.713448684742273,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.037982463131289,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.344336599996269,
+      "complement_contribution_pp": 7.369112084746005,
+      "contributions_pp": {
+        "a": 3.1731879616485523,
+        "m": 4.139356071895667,
+        "qk": 1.4200252395532564e-06,
+        "v": 0.05656663117654648
+      },
+      "zero_product_counts": {
+        "a": 201911724288,
+        "m": 263389541376,
+        "qk": 90357,
+        "v": 3599366371
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.0,
+      "latency_ms": 0.6340298911233261,
+      "process_latency_ms": [
+        0.6333182620796809,
+        0.6346078430008598,
+        0.6341642454414242
+      ],
+      "sparsity": 7.054229178613711,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/001-20260831-122537-35dd4889/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.480180751642532,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 3.3779757941311406,
+      "complement_contribution_pp": 3.6762533844825707,
+      "contributions_pp": {
+        "a": 1.5586730870944312,
+        "m": 2.1175793549478907,
+        "qk": 2.5366742357126855e-07,
+        "v": 6.887728252808367e-07
+      },
+      "zero_product_counts": {
+        "a": 99179240064,
+        "m": 134742758400,
+        "qk": 16141,
+        "v": 43827
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "c3dd056db0c26258b8414ce86df925b47d5f49502642111f8e061a1c81e17412",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.01,
+      "latency_ms": 0.6384171237219793,
+      "process_latency_ms": [
+        0.6377074118767195,
+        0.6394864279828163,
+        0.6380589211172408
+      ],
+      "sparsity": 7.723392871636931,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/002-20260831-120213-d99dacb3/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.475800738532162,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 3.5626003498307304,
+      "complement_contribution_pp": 4.160792521806201,
+      "contributions_pp": {
+        "a": 1.578355729408575,
+        "m": 2.143281899226066,
+        "qk": 0.23922102454101823,
+        "v": 0.19993386863054158
+      },
+      "zero_product_counts": {
+        "a": 100431657600,
+        "m": 136378225664,
+        "qk": 15221767552,
+        "v": 12721903854
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.05,
+      "latency_ms": 0.634518774615843,
+      "process_latency_ms": [
+        0.6343475951189219,
+        0.6349655275720789,
+        0.6342434412067016
+      ],
+      "sparsity": 9.863031588136074,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/003-20260831-120427-8f1cb9f2/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.462799572380336,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.237899243663349,
+      "complement_contribution_pp": 5.625132344472727,
+      "contributions_pp": {
+        "a": 1.637380078246083,
+        "m": 2.234724327859709,
+        "qk": 0.8526828414320446,
+        "v": 0.9003450969348895
+      },
+      "zero_product_counts": {
+        "a": 104187409920,
+        "m": 142196758528,
+        "qk": 54256685978,
+        "v": 57289461946
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "bc631ed36207c9517825646ed32b86c0a9e34221859f11731db95ead8e0f15cc",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.1,
+      "latency_ms": 0.5929787562063977,
+      "process_latency_ms": [
+        0.5928458685216792,
+        0.5932398323237996,
+        0.5928506539615099
+      ],
+      "sparsity": 11.796760377518327,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/004-20260831-120424-d743fe3d/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.429487593075227,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.869392973605677,
+      "complement_contribution_pp": 6.92736740391265,
+      "contributions_pp": {
+        "a": 1.7037309656246153,
+        "m": 2.347343905869358,
+        "qk": 1.266344275381064,
+        "v": 1.6099482570376125
+      },
+      "zero_product_counts": {
+        "a": 108409353984,
+        "m": 149362805248,
+        "qk": 80578194319,
+        "v": 102441907798
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.5,
+      "latency_ms": 0.47336601349583013,
+      "process_latency_ms": [
+        0.4732832961510513,
+        0.47325569918463606,
+        0.4735591046069964
+      ],
+      "sparsity": 27.482684296304843,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.829406580981418,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.340985918140761,
+      "complement_contribution_pp": 22.141698378164083,
+      "contributions_pp": {
+        "a": 2.4297171404599487,
+        "m": 2.93869602985824,
+        "qk": 8.32415650965302,
+        "v": 8.449128698192872
+      },
+      "zero_product_counts": {
+        "a": 154604260224,
+        "m": 186990871552,
+        "qk": 529670733162,
+        "v": 537622783397
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "791bad2a410975369a114ba382d1e56a377ef6c333ccc83e237387e2a7b8e05e",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.0,
+      "latency_ms": 0.6036581645781899,
+      "process_latency_ms": [
+        0.6033144541340404,
+        0.6032562757234263,
+        0.6044044565383111
+      ],
+      "sparsity": 8.40941309636955,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/001-20260830-203456-3b24b353/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.215749357579022,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.693111768005335,
+      "complement_contribution_pp": 3.716301328364214,
+      "contributions_pp": {
+        "a": 1.585326248824472,
+        "m": 2.1309742853615883,
+        "qk": 3.250325044483598e-07,
+        "v": 4.691456494919465e-07
+      },
+      "zero_product_counts": {
+        "a": 100875195648,
+        "m": 135595085312,
+        "qk": 20682,
+        "v": 29852
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "82c6212c5e612bd754ea40bcb5d69c15c58ad1863e3f81086021b6d54ad2939b",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.01,
+      "latency_ms": 0.5921584458814019,
+      "process_latency_ms": [
+        0.591758829292916,
+        0.5924440417023003,
+        0.5922726814159474
+      ],
+      "sparsity": 8.585803145992205,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/002-20260830-204526-86141a25/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.204512724156916,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.827991259662124,
+      "complement_contribution_pp": 3.7578118863300825,
+      "contributions_pp": {
+        "a": 1.6022828228733523,
+        "m": 2.1555285451523107,
+        "qk": 2.926895543393411e-07,
+        "v": 2.2561486480324212e-07
+      },
+      "zero_product_counts": {
+        "a": 101954151936,
+        "m": 137157486592,
+        "qk": 18624,
+        "v": 14356
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "3b9d8808f97c0da666e62d67cc3babb986290008ceee2fe250c688a815517a85",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.05,
+      "latency_ms": 0.561800516284532,
+      "process_latency_ms": [
+        0.5617781679360172,
+        0.5619175893030921,
+        0.5617058122388127
+      ],
+      "sparsity": 9.035629014573528,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/003-20260830-203458-6293407b/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.195583005275952,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.1328949039981735,
+      "complement_contribution_pp": 3.9027341105753552,
+      "contributions_pp": {
+        "a": 1.661603989093141,
+        "m": 2.2411295822758883,
+        "qk": 2.0020254686044172e-07,
+        "v": 3.390037788151808e-07
+      },
+      "zero_product_counts": {
+        "a": 105728790912,
+        "m": 142604328448,
+        "qk": 12739,
+        "v": 21571
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "f64e12b5e8d3e5097ed6969387ecec69267b7002f393c1fb73957cab7fb2065f",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.1,
+      "latency_ms": 0.5293094843212026,
+      "process_latency_ms": [
+        0.5292639482932853,
+        0.5294963565072774,
+        0.5291682019604032
+      ],
+      "sparsity": 9.3434850267421,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/004-20260830-204238-8b4a903d/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.228698848972659,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.275202556813898,
+      "complement_contribution_pp": 4.068282469928202,
+      "contributions_pp": {
+        "a": 1.7263358687279726,
+        "m": 2.3419455196130023,
+        "qk": 7.725218928857738e-07,
+        "v": 3.090653337434215e-07
+      },
+      "zero_product_counts": {
+        "a": 109847716608,
+        "m": 149019302912,
+        "qk": 49156,
+        "v": 19666
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "8b816ce5e72c4d64f3219788cdabfad37f0531c393523da24985d62e0acc6e59",
+      "model": "14M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.5,
+      "latency_ms": 0.4622520366926445,
+      "process_latency_ms": [
+        0.4622924243889319,
+        0.46216897957789826,
+        0.46229471730835475
+      ],
+      "sparsity": 10.227390354799072,
+      "kernel": "K050",
+      "timing_session": "Run029",
+      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/005-20260830-202955-8e694b5b/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.722659920799662,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.344059353587693,
+      "complement_contribution_pp": 4.883331001211379,
+      "contributions_pp": {
+        "a": 2.0411714191236476,
+        "m": 2.8421592902468253,
+        "qk": 2.0680314892350677e-07,
+        "v": 8.503775657915458e-08
+      },
+      "zero_product_counts": {
+        "a": 129880878720,
+        "m": 180848184832,
+        "qk": 13159,
+        "v": 5411
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "3ae7a6cae60940a7c3904ce9671e2c65c998821d39b071adec64ea2f8e2674f2",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.0,
+      "latency_ms": 0.6176052196706246,
+      "process_latency_ms": [
+        0.6171416564108072,
+        0.6177484553583725,
+        0.6179258210919748
+      ],
+      "sparsity": 8.399380062941471,
+      "kernel": "K050",
+      "timing_session": "Run033",
+      "timing_device_uuid": "3ce3f8e5-ad63-9457-8104-f384b1f446c4",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.219833391657947,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.687249548264028,
+      "complement_contribution_pp": 3.712130514677444,
+      "contributions_pp": {
+        "a": 1.5842002871960188,
+        "m": 2.127929461072947,
+        "qk": 2.8137423651694394e-07,
+        "v": 4.850342416008959e-07
+      },
+      "zero_product_counts": {
+        "a": 100803550080,
+        "m": 135401341440,
+        "qk": 17904,
+        "v": 30863
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "dfa714e84761e124682596ea8a8bff6b2f5d6073dd8d60738a147cf720e74bfd",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.01,
+      "latency_ms": 0.6037083308341697,
+      "process_latency_ms": [
+        0.6040242273344786,
+        0.6031892885551713,
+        0.603911816770852
+      ],
+      "sparsity": 8.856061950388998,
+      "kernel": "K050",
+      "timing_session": "Run033",
+      "timing_device_uuid": "3ce3f8e5-ad63-9457-8104-f384b1f446c4",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/002-20260916-204722-62bc1055/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.198096936976416,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 4.824056466013533,
+      "complement_contribution_pp": 4.032005484375465,
+      "contributions_pp": {
+        "a": 1.6033534752282894,
+        "m": 2.155975831116479,
+        "qk": 0.11992435071962441,
+        "v": 0.15275182731107242
+      },
+      "zero_product_counts": {
+        "a": 102022278144,
+        "m": 137185947648,
+        "qk": 7630853492,
+        "v": 9719684183
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "a7cdaad3f6f304b9d2577a6efa1ffed842a2697411811dcf8d61c6ca16a6607c",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.05,
+      "latency_ms": 0.5748757458856758,
+      "process_latency_ms": [
+        0.5780896951863582,
+        0.5702239521576091,
+        0.5763433340619465
+      ],
+      "sparsity": 10.126068963000616,
+      "kernel": "K050",
+      "timing_session": "Run033",
+      "timing_device_uuid": "3ce3f8e5-ad63-9457-8104-f384b1f446c4",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/003-20260916-204722-d7c4a3d8/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.1949789887349285,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.153748507702493,
+      "complement_contribution_pp": 4.972320455298124,
+      "contributions_pp": {
+        "a": 1.6604603876385575,
+        "m": 2.242674798054491,
+        "qk": 0.49272337642125813,
+        "v": 0.5764618931838176
+      },
+      "zero_product_counts": {
+        "a": 105656022912,
+        "m": 142702651392,
+        "qk": 31352263948,
+        "v": 36680592592
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "e05353098c7e5991c79e50f7bade1db4ad2615cc1636eefa38d62420923f0365",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.1,
+      "latency_ms": 0.541843586051498,
+      "process_latency_ms": [
+        0.5400238471537406,
+        0.5440654567365079,
+        0.5414492035031488
+      ],
+      "sparsity": 10.903596962720195,
+      "kernel": "K050",
+      "timing_session": "Run033",
+      "timing_device_uuid": "3ce3f8e5-ad63-9457-8104-f384b1f446c4",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/004-20260916-204721-b9dfc815/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.2374148636880005,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.276066481832541,
+      "complement_contribution_pp": 5.627530480887653,
+      "contributions_pp": {
+        "a": 1.717113184661723,
+        "m": 2.333360136374243,
+        "qk": 0.8575347455662174,
+        "v": 0.7195224142854706
+      },
+      "zero_product_counts": {
+        "a": 109260872064,
+        "m": 148473010176,
+        "qk": 54565415351,
+        "v": 45783613542
+      },
+      "model_product_count": 6363055915008
+    },
+    {
+      "checkpoint_key": "f307e23c272062f30a2960f75aa3cb1b9e585c7c3931de57080a05452347ae33",
+      "model": "14M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.5,
+      "latency_ms": 0.47388777831221407,
+      "process_latency_ms": [
+        0.4756542913457819,
+        0.4746966508891174,
+        0.47132333050324665
+      ],
+      "sparsity": 16.663640299893025,
+      "kernel": "K050",
+      "timing_session": "Run033",
+      "timing_device_uuid": "3ce3f8e5-ad63-9457-8104-f384b1f446c4",
+      "timing_workload": {
+        "gpu_model": "RTX 5090",
+        "precision": "BF16",
+        "sparsity_precision": "FP16",
+        "batch": 1,
+        "sequence_length": 2048,
+        "vocabulary": 50304,
+        "validation_blocks": 338,
+        "validation_documents": 500,
+        "excluded_tail_tokens": 1444,
+        "timing_inputs": 64,
+        "passes_per_process": 7,
+        "processes": 3,
+        "paired_samples_per_checkpoint": 1344
+      },
+      "logical_source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/005-20260916-203950-9a9e1fbf/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.732069544538239,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "hz_contribution_pp": 5.344139299074075,
+      "complement_contribution_pp": 11.319501000818951,
+      "contributions_pp": {
+        "a": 2.051023343487874,
+        "m": 2.883647340568267,
+        "qk": 4.1782304209355,
+        "v": 2.20659989582731
+      },
+      "zero_product_counts": {
+        "a": 130507762176,
+        "m": 183488092672,
+        "qk": 265863137942,
+        "v": 140407185192
+      },
+      "model_product_count": 6363055915008
+    }
+  ],
+  "limits": {
+    "x": [
+      2.8,
+      23.0
+    ],
+    "y": [
+      0.45,
+      0.65
+    ]
+  },
+  "caption": "Four T/P recipes at five thresholds; dashed Ph and solid Pall lines connect increasing kappa. Base and ReLU controls omitted.",
+  "precision_note": "Canonical FP16 logical counts; qualified BF16 timings on RTX5090, batch one, full vocabulary output.",
+  "session_note": "14M T7/Ph uses Run033; all other plotted timings use Run029. Small cross-session differences are descriptive.",
+  "sources_sha256": {
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/paper-checkpoints.json": "7b1c763aff1ebfc50d4bdcade1ff0b9223ddfcd79f9906551c150ef5add7322b",
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/14m-hz-sparsity-latency.json": "56bc296555424bdb65638fa6e87337e5615e3349ff37ab9abe26c0d6ab9c1988",
+    "analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py": "7fadc916c30cacec08e8e85a841d209674c951cd55de619cd39b29c3ccdf99c3",
+    "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/diagnostics/logical_products.json": "0a9d5d802a47528adf932438cfd3f9ccd7f47f5d137d10172822282205a4ac3d",
+    "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/diagnostics/logical_products.json": "0f5f8ef1dcc8edb0a0c73b71ae73f9de8357bc25cbe62da1097d32159dfb5b7c",
+    "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/diagnostics/logical_products.json": "46020757bbf299555810ed87436c3b51194fabb70d163734fadc378e624b1d01",
+    "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/004-20260831-185953-85233728/diagnostics/logical_products.json": "68e29356ce653bbe483fa61dea378dc1538b25b3fde87e9982dd9991795fffaa",
+    "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/005-20260831-185726-17913c68/diagnostics/logical_products.json": "adde6ae277b5631776fa76a1021040286986466454c7a503c521c282df45a100",
+    "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/001-20260831-122537-35dd4889/diagnostics/logical_products.json": "8e37048e93da19b80e984024c0ed6e9927fdad70bb36c6c960995321785efeef",
+    "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/002-20260831-120213-d99dacb3/diagnostics/logical_products.json": "cab7fd2ee4b83b1315232995fcbaddbefc3d692245ac3ea8660770a2ecd3025c",
+    "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/003-20260831-120427-8f1cb9f2/diagnostics/logical_products.json": "fe1a0be01a257d2bab2b87367fde9c5e34d35b9b8e8f9ee2be83c74e5df91269",
+    "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/004-20260831-120424-d743fe3d/diagnostics/logical_products.json": "c3f56fa40015bc6ebf0d1443b4953b6a424d72584bdd11f0d5e8661ec7285607",
+    "runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/artifacts/attempts/005-20260831-120353-af6ed1ca/diagnostics/logical_products.json": "dc07f4de982bdcf9bbb82ea08952934a3bf6731ef7ae6193e8c9c981184657a8",
+    "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/001-20260830-203456-3b24b353/diagnostics/logical_products.json": "22e47a890eebc8bf62e3a9b1611bff8a9d4268757846f23a33d66812a2b5ecb2",
+    "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/002-20260830-204526-86141a25/diagnostics/logical_products.json": "7427a1d0da690722a05c7dd3f3085bcffeafc07743de12019d190426705b2a45",
+    "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/003-20260830-203458-6293407b/diagnostics/logical_products.json": "60853af9fedadc15d35b6012c15d82a75b85aba2987128e019f44ec1979aac88",
+    "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/004-20260830-204238-8b4a903d/diagnostics/logical_products.json": "f846ba44dd81ae6a78c3f987c0d4eb45358ef6ccf0fe564e06dd1874200610ad",
+    "runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/artifacts/attempts/005-20260830-202955-8e694b5b/diagnostics/logical_products.json": "8d4c7c9c51adc2d679161617aabca088d345eda05dd337674821179112e8eea4",
+    "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef/diagnostics/logical_products.json": "9739e6b0ad10ea4b5af83f9197b86b84daa332aed47a9440a752f0eb2877d2ef",
+    "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/002-20260916-204722-62bc1055/diagnostics/logical_products.json": "842f5fc0aa211b7265f354da09cb29b42a5ecdee3529e0a3bf002b61dd2e44e8",
+    "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/003-20260916-204722-d7c4a3d8/diagnostics/logical_products.json": "eed37fb34237bb249b1651689d308b8674387fd5e4789da5da5589b20f230e1a",
+    "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/004-20260916-204721-b9dfc815/diagnostics/logical_products.json": "6cfec9b282c20a0e6d9916bda8ca8fae0b9a73038efa2fba6a8bfe4cf20fcee2",
+    "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/005-20260916-203950-9a9e1fbf/diagnostics/logical_products.json": "1fd125c791fc7ff9f127689acba2a5fa530c11c646b92039ea649b677050d2c4"
+  },
+  "script": "27_plot_complement_sparsity_latency.py",
+  "script_sha256": "0b0fc11f48e8965d2ee017e35f7d039c9adbdd6ffbe532852febcbb54b711aa3",
+  "output": "figures/16-14m-complement-sparsity-latency.pdf",
+  "output_sha256": "2ff7053063ffe2cf62d4ddab4d49f02b5474f7ae782f75d39e2087b3f4373735",
+  "preserved_pdf_sha256": {
+    "01-quality-sparsity-tradeoffs.pdf": "48266b08b2618f26d8ecdfd953e48e26e25f81da8357df1085797918cbbdcf06",
+    "02-intervention-sites.pdf": "82b2401887e84825e3346273ecb6e9c0c833f84c652b12b29c5b28f02a488276",
+    "03-pressure-scope-threshold.pdf": "6cc89a53fc353ae7e1ff052a29b5a27f036fc43825686e1907bc918340a5b645",
+    "04-operation-sparsity-changes.pdf": "99b6ad13f7070a31a7e7cb0d609157e9323bcd4a495acc4ba29738d0b3bd09ed",
+    "05-quality-latency.pdf": "20af9c765be721f211d1b06f7e83df3e09771475336abeda35408267c8ce05e1",
+    "06-14m-quality-sparsity-latency.pdf": "5ff818bea62712a412963720a25fbc7d97b27f96cf8b92a3df9c3ca22e63d7b4",
+    "07-controls-posthoc-final-latency.pdf": "e1a7a0b206a3c2932d921b8385ff81dbc7d346e20256166359c40eb8b1fb6396",
+    "08-14m-70m-quality-sparsity-latency.pdf": "6bc5c9133c6316f650027121b116207e3f74cb404bbe54fc395cdfe838aef398",
+    "09-14m-70m-operation-contributions.pdf": "c2e2e5dcb86d95b1d547789682f95e1e68055fde20283fb2599b1ee0a1939cfa",
+    "10-operation-bypass.pdf": "2e3104a9b40dfbaed77c41202e6578d9c13fcecfe9aa4bbeb7b1a6d2251469e0",
+    "11-all-model-quality-sparsity.pdf": "8e505b35103db3a5d7579000f3358c533c0211017f1b4c74d8a70943dcff0ef6",
+    "12-operation-bypass-summary.pdf": "69c2d2235e81b2ab1fe290c8e8c2dee4692085d00db565c53b1c93802e60dff0",
+    "13-14m-70m-sparsity-base-speedup.pdf": "12373003008d4530124f053de24a6feb7625fe0494fdab83401b9d0b93349102",
+    "14-14m-70m-quality-sparsity.pdf": "a83fd345489a59182b839189826ee3f40b0521a28d414dea21998b73bf074977",
+    "15-14m-hz-sparsity-latency.pdf": "3a74bbc436a53f3b6de11547241dbedfe2f955f3b0a4106baa8387a6b862fd87",
+    "A1-complete-quality-sparsity.pdf": "eb42ef959d9e9b4cabae4c9317b72056bc1042cb49d5cc62c26659b3c4f973ba",
+    "A2-pressure-versus-none.pdf": "b037b4f3aac3edb181fd37c6875e6b74a016a129097d0c9cd303274c6e0f3e47",
+    "A3-dense-reference-speedup.pdf": "5e218a9b2efebbb7147ce4d1365bb4f9d2176aa5461e17ca81d7516d4d509259",
+    "A4-instruction-level-explanation.pdf": "b71f5d5ca77a1e9e91b2bcfd6d8cd17a932ddd5469f3ff416d3cafb4172208f4",
+    "A5-410m-quality-sparsity.pdf": "b8f3d6036c2d07788e34a97346cd67e8be992ce21d62ffedad63a82146f6d3ff"
+  }
+}

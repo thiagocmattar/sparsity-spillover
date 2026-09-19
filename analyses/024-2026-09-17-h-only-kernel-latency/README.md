@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+New [complementary sparsity-versus-latency figure](figures/16-14m-complement-sparsity-latency.pdf)
+uses the same 20 T/P settings as Figure 15, with the a/m/QK/PV contributions
+on the x-axis. These sum with the h/z contributions to S_model at every point.
+The original figure and latencies are preserved; see
+[Observation 037](observations/037-complement-sparsity-latency.md).
+
 New [14M h/z contribution-versus-latency scatter](figures/15-14m-hz-sparsity-latency.pdf)
 uses Figure 1's 20 T/P settings and recipe colors, with Base and ReLU controls
 omitted and axes focused on the pressure recipes. The x-axis sums only

@@ -1,5 +1,9 @@
 # Observations
 
+- [037: Contributions outside h/z versus latency](037-complement-sparsity-latency.md):
+  companion 14M figure with the same 20 T/P settings; sums a/m/QK/PV
+  contributions and verifies their complement with h/z equals S_model.
+
 - [036: h/z contribution versus latency](036-hz-sparsity-latency.md):
   14M scatter of Figure 1's 20 T/P settings, with controls omitted and focused
   axes; sums only h/z logical contributions and preserves K050 timings.
