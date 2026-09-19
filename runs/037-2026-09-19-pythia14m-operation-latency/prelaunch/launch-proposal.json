@@ -1,0 +1,46 @@
+{
+  "status": "awaiting explicit launch approval",
+  "pod_name": "run037-operation-latency-001",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "gpu_count": 1,
+  "cloud": "SECURE",
+  "data_center_preferences": [
+    "EU-RO-1",
+    "EUR-NO-1"
+  ],
+  "min_cuda_version": "12.8",
+  "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+  "container_disk_gb": 20,
+  "pod_volume_gb": 25,
+  "volume_mount_path": "/workspace",
+  "ports": [
+    "22/tcp"
+  ],
+  "gpu_usd_per_hour_ceiling": 0.99,
+  "maximum_aggregate_gpu_minutes": 90,
+  "maximum_incremental_total_usd": 2,
+  "expected_wall_minutes": [
+    25,
+    50
+  ],
+  "expected_incremental_usd": [
+    0.42,
+    0.83
+  ],
+  "storage_usd_per_gb_month_running": 0.1,
+  "network_transfer_usd": 0,
+  "retrieval_reserve_minutes": 10,
+  "monitor_interval_seconds": 60,
+  "input_bundle": {
+    "bytes": 93603840,
+    "path": "bundles/input-001.tar",
+    "sha256": "2393815ba4afc7e22cfbee5aa52f1f7c886197f6afc99da94f32dae9b440ec86"
+  },
+  "cli_version": "2.14.0-dd55bcf",
+  "scientific_processes": 30,
+  "smoke_processes": 10,
+  "direct_cuda_cases": 20,
+  "retain_diagnostics": "raw paired timing; all338 block output checks; pooled loss; source/config/environment/checkpoint/cache identities; exact/near-zero/RMS; row occupancy; per-operation issued/bypassed/scalar counts; weight norms",
+  "no_new_network_volume": true,
+  "teardown": "Stop-guard retains Pod volume. Retrieve all completed/failed artifacts, verify archive and member SHA256, then delete this Pod and confirm resource inventory."
+}
