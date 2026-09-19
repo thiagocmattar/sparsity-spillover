@@ -1,5 +1,10 @@
 # H-only pressure: final K050 latency extension
 
+Proposed short follow-up, awaiting design confirmation:
+[extend the h/z load-avoiding strategy to a/m](AM-LOAD-AVOIDANCE-DESIGN.md).
+One retained 14M T7/Pall kappa=0.5 checkpoint, five execution modes and matched
+full-validation checks; no new run or cloud execution has started.
+
 19 September manuscript update: the compact
 [per-operation latency table](observations/034-operation-latency-manuscript.md)
 now uses the completed Run037 ablations for 14M T7/Pall at kappa=0.5.
