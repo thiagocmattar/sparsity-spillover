@@ -1,5 +1,11 @@
 # Observations
 
+- [035: Direct h/z strategy port to a/m](035-am-load-avoidance-port.md):
+  correct across complete validation, but 17.23%/27.38%/44.49% slower at
+  a/m/both; tile occupancy, short rows and executed-work counts explain why
+  this particular finer-grained port does not improve latency. Evidence is
+  recovered and the Pod is deleted.
+
 - [034: Operation latency in the manuscript](034-operation-latency-manuscript.md):
   compact mechanism-first explanation and six-row table from Run037;
   conditional savings, process spans and net attention overhead, with historical

@@ -1,9 +1,15 @@
 # H-only pressure: final K050 latency extension
 
-Proposed short follow-up, awaiting design confirmation:
+Completed short follow-up, Run039 after a retained Run038 fixture failure:
 [extend the h/z load-avoiding strategy to a/m](AM-LOAD-AVOIDANCE-DESIGN.md).
 One retained 14M T7/Pall kappa=0.5 checkpoint, five execution modes and matched
-full-validation checks; no new run or cloud execution has started.
+full-validation checks. Both design and launch were explicitly approved;
+[Run039](../../runs/039-2026-09-19-pythia14m-am-port-fixture/README.md)
+retains the implementation, checks and execution record. The port is correct
+but slower: +17.23% latency at a, +27.38% at m, and +44.49% at both.
+The [result and mechanism](observations/035-am-load-avoidance-port.md) explain
+why the finer grouping and padded fallback do not help these a/m operands.
+All evidence is recovered and hash verified; the Pod is deleted.
 
 19 September manuscript update: the compact
 [per-operation latency table](observations/034-operation-latency-manuscript.md)

@@ -1,0 +1,15 @@
+Verified 1383 frozen source/input identities and derived control sources
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF projection.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k042_d356a72e5dcf -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/run038/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /opt/run038-venv/lib/python3.12/site-packages/torch/include -isystem /opt/run038-venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --expt-relaxed-constexpr -std=c++17 -c /workspace/run038/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/projection.cu -o projection.cuda.o 
+[2/2] c++ projection.cuda.o -shared -L/opt/run038-venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run028_k042_d356a72e5dcf.so
+Traceback (most recent call last):
+  File "/workspace/run038/06_cuda_checks.py", line 95, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/run038/06_cuda_checks.py", line 64, in main
+    check(linear,x,'synthetic-'+pattern)
+  File "/workspace/run038/06_cuda_checks.py", line 23, in check
+    old_value = old(x).clone()
+                ^^^^^^
+  File "/workspace/run038/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/candidate.py", line 29, in __call__
+    extension().forward(x,self.linear.weight,self.linear.bias,self.output,self.skip)
+RuntimeError: Pythia a/m shapes

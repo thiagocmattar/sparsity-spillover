@@ -1,0 +1,46 @@
+{
+  "run_id": "039-2026-09-19-pythia14m-am-port-fixture",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "runtime": {
+    "python": "3.12",
+    "torch": "2.11.0",
+    "transformers": "5.12.1",
+    "numpy": "2.5.0",
+    "cuda": "12.8"
+  },
+  "precision": "bfloat16",
+  "batch_size": 1,
+  "sequence_length": 2048,
+  "vocabulary": 50304,
+  "validation_blocks": 338,
+  "validation_documents": 500,
+  "excluded_tail_tokens": 1444,
+  "timing_inputs": 64,
+  "timing_passes": 7,
+  "timing_seed": 2504,
+  "runtime_seed": 2801,
+  "process_replicates": 3,
+  "numerical_bounds": {
+    "logit_atol": 0.25,
+    "logit_rtol": 0.02,
+    "logit_relative_l2": 0.02,
+    "validation_loss_atol": 0.001
+  },
+  "near_zero_thresholds": [
+    0.0,
+    0.001,
+    0.01
+  ],
+  "leaf_timeout_seconds": 600,
+  "monitor_interval_seconds": 60,
+  "condition": "c30",
+  "modes": [
+    "frozen",
+    "port-a",
+    "port-m",
+    "port-am",
+    "port-am-dense"
+  ],
+  "design_status": "Design and launch both approved by user on 2026-09-19; 90 GPU-minutes / USD2 cap",
+  "preflight_correction": "Run038 synthetic fixture used M16, unsupported by frozen K042 (requires M multiple of32). Use M32; candidate CUDA and full-model protocol unchanged."
+}

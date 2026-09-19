@@ -1,9 +1,18 @@
 # Proposed short test: extend h/z load avoidance to a/m
 
-Status: **awaiting design confirmation**, 19 September 2026. No numbered
-run, experiment implementation, GPU execution or billable resource has been
-created for this proposal. Launch approval will follow implementation and
-prelaunch verification, as required by the repository's AGENTS.md.
+Status: **complete, recovered and verified**, 19 September 2026.
+Both design and launch were explicitly approved. The direct port preserves
+outputs but increases latency by 17.23% at a, 27.38% at m and 44.49% at both.
+See [the result](observations/035-am-load-avoidance-port.md).
+Execution is tracked in
+[Run039](../../runs/039-2026-09-19-pythia14m-am-port-fixture/README.md),
+which corrects the synthetic fixture row count after the retained Run038
+preflight failure; the candidate CUDA and full-model protocol are unchanged.
+The user confirmed both approvals together and reiterated that no further
+launch-permission question was needed. The proposal below retains its original
+scientific scope and preliminary estimates; Runs038/039 record realized execution.
+All 15 scientific processes passed; all artifacts were recovered and the Pod
+deleted before handoff. GPU cost was approximately USD 0.616 plus storage.
 
 ## Question and manuscript relevance
 
