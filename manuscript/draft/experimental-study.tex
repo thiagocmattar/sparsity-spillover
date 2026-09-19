@@ -4,15 +4,12 @@
 \section{Experimental study}
 \label{sec:experiments}
 
-We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model. We evaluate validation loss and $\Smodel$ over all complete validation sequences. Table~\ref{tab:interventions} defines the thresholding and OL1-pressure recipes and their sparsity ceilings.
+We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model and training for one full-pass. We evaluate validation loss and $\Smodel$ over all complete validation sequences. Table~\ref{tab:interventions} defines the thresholding and OL1-pressure recipes and their sparsity ceilings. Across model sizes, Table~\ref{tab:interventions} also shows that, under the same intervention recipe and fixed sequence length, the attainable sparsity ceiling increases with model size.
 
-\textbf{Roles of the three scales.}
-The 14M controlled intervention study identifies threshold- and pressure-placement
-regimes. The 70M targeted replication tests whether those regimes recur.
-The 410M fixed-token stress test examines attainable sparsity in a larger
-architecture, not language-model quality scaling. All models receive the same
-712 optimizer steps; the resulting tokens per parameter and the 410M
-learning-rate schedule differ (Appendix~\ref{app:training-protocol}).
+\textbf{Experiments across model sizes.}
+The 14M runs provide the most extensive controlled ablation, used to identify threshold and pressure regimes. The 70M runs test whether these regimes persist in a larger model. We also attempted to extend this analysis to 410M, but the fixed-token protocol leaves this model substantially less trained per parameter: all models receive 712 optimizer steps and 1.493B input tokens, corresponding to 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M, and 410M, respectively. The 410M run also follows the Pythia learning-rate schedule, with a lower peak learning rate. It had a higher final loss and larger late-training gradient norm, which evidentiate a different training regime. We therefore treat the 410M result as a limited, partial scale-up, and base the detailed intervention analysis on the 14M and 70M runs (Appendix~\ref{app:training-protocol}).
+
+
 
 % 70M extension: runs/034-2026-09-17-pythia70m-h-only-ol1/README.md;
 % Figure 1 evidence: Analysis024 observations/025-matched-quality-latency.md.
@@ -31,10 +28,7 @@ $T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
 $h$, and $P_{\mathrm{all}}$ matches the thresholding sites
 ($\mathcal{P}=\mathcal{N}$). For $T_4/T_7$, threshold strength is swept over
 $\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
-and task-relative norm budget $b=1$ fixed. OL1 limits conflict with the
-adaptive task direction and uses the full allowed norm when its cap binds
-(Appendix~\ref{app:pressure}), motivating a shared setting without a
-loss-preservation guarantee. The 14M $T_1/P_1$ ablation instead sweeps
+and task-relative norm budget $b=1$ fixed. Only the 14M $T_1/P_1$ ablation sweeps
 $\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
 Ceilings are $100\cdot\Smax$ at 2,048 tokens; executed recipes by model size
 are listed in Appendix~\ref{app:training-protocol}.}

@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+19 September 2026, author revision and rebuild: the experimental setup,
+methodology, captions, and sparsity-to-speedup discussion incorporate the
+author's edits; the tile explanation is retained as a source comment.
+The Table 1 reference and the distinction between 64 timing sequences and
+338 correctness-check sequences are corrected. `draft/main.pdf` is rebuilt
+at 33 pages with resolved references and citations, no overfull boxes, and
+the revised pages visually checked. Earlier notes describe prior versions.
+
 19 September 2026, tile explanation: `draft/training-results.tex` now gives
 the activation-tile sizes (tokens by features) and distinguishes skipped
 matrix operations from avoided weight reads at h/z. Checked against

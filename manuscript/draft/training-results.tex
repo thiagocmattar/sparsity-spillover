@@ -8,20 +8,13 @@
 \caption{\textbf{Quality--sparsity trade-offs at 14M and 70M.}
 36/22 trained conditions, with loss scales fitted separately to each size.
 Colors distinguish executed recipes; lines connect separate threshold
-settings ($\kappa=0,.01,.05,.1,.5$), or pressure weights
-($\lambda=.05,.1,.5,1$) for $T_1/P_1$. Dotted paths apply post-hoc
+settings ($\kappa$), or pressure weights
+($\lambda$) for $T_1/P_1$. Dotted paths apply post-hoc
 clipping at $a,m,h,z$ to the fixed base and ReLU controls.
-Vertical guides mark the $T_4/T_7$ analytic sparsity ceilings.
-All trained points are visible; 8/7 high-loss clipping evaluations continue
-above the view (complete paths in Figures~\ref{fig:clipping-14m} and~\ref{fig:clipping-70m}).
-Trained losses use ordinary final-checkpoint evaluation; sparsity uses pooled
-FP16 logical counts over all 338 complete validation blocks.}
+Vertical guides mark the $T_4$ and $T_7$ analytic sparsity ceilings.}
 \label{fig:quality-sparsity-14m-70m}
 \end{figure}
 \FloatBarrier
-
-\subsection{Quality--sparsity operating regimes}
-\label{sec:quality-sparsity-results}
 
 \textbf{The interventions extend the attainable sparsity range, sometimes
 close to the architectural ceiling, at a quality cost.}
@@ -32,7 +25,50 @@ of the respective seven-site ceilings. Validation loss increases by
 $0.62$ and $1.12$ relative to the same-size base model.
 The complete 410M stress-test panel is retained in
 Appendix Figure~\ref{fig:quality-sparsity-410m}, alongside the full
-post-hoc trajectories in Figure~\ref{fig:clipping-410m} and the endpoint tables.
+post-hoc trajectories in Figure~\ref{fig:clipping-410m}.
+
+
+\subsection{From sparsity to speedups}
+\label{sec:quality-sparsity-results}
+
+\textbf{Agentic kernel development.}
+To test whether learned sparsity reduces inference latency, we used Codex
+with GPT-6 Astra~\citep{openaigpt6astra}, to develop specialized
+GPU kernels under human guidance. Starting from the kernels released by
+\citet{cetin2026sparser}, although they required adaptation for Pythia architecture.
+The agent proposed code changes and tested the kernels speed and accuracy. For
+development, we tested changes on the same small set of training text
+sequences, comparing the model's output scores and loss with and without
+the custom GPU code. We specified how much these values were allowed to
+differ and rejected versions that exceeded those limits. After selecting
+the kernels for 14M, we tested it with the model saved
+at the end of training for each recipe. For each
+model, we measured inference time on the same 64 validation sequences
+and checked output agreement on all 338 complete validation sequences.
+Its speedup was included only if these checks passed. We repeated this
+evaluation at 70M after adapting the kernels to its larger matrix dimensions
+(Appendix~\ref{app:kernel-results}). Although we are not specialized in GPU-kernel expertise,
+this workflow made direct execution tests practical. This case illustrates how coding agents can
+support systems development.
+
+
+\textbf{Sparsity and speedup increase together within recipes.}
+For the implemented kernel, Figure~\ref{fig:base-model-speedup} shows an approximately linear increase
+within each trained threshold/pressure family over the tested grid, although with
+different slopes across families. At 14M and $\kappa=0.5$, for example,
+$T_7/P_{\mathrm{all}}$ is much sparser than $T_4/P_{\mathrm{all}}$
+($27.48\%$ versus $12.71\%$), yet slightly slower ($1.38\times$ versus
+$1.42\times$ base-model speedup). Thus, a larger $\Smodel$ need not yield a
+larger gain: where the zeros occur and whether the kernel can exploit them
+matter. We explore the reasons for it under the implemented kernel and training recipes on Section~\ref{sec:kernel-autoresearch}.
+
+% GPUs operations occurr in blocks (tiles), so isolated zeros may not
+% save computation. The implemented kernels skip matrix operations for entirely
+% zero activation tiles: $16\times16$ at $a,m$ and $8\times16$ at $h,z$
+% (tokens $\times$ features). At $h,z$, checking tiles before loading weights
+% also avoids the corresponding memory reads; nearly empty rows can instead
+% use only their nonzero values. Speedup therefore depends on how zeros
+% cluster, which operations exploit them, and the cost of detecting them.
 
 % Figure and ratios: Analysis024 observations/030-base-speedup-clipping.md;
 % generating analysis: 22_plot_base_speedup_clipping.py.
@@ -55,55 +91,16 @@ in model quality or timing sessions.}
 \label{fig:base-model-speedup}
 \end{figure}
 
-\textbf{Agentic kernel development.}
-To test whether learned sparsity reduces inference latency, we used Codex,
-configured with GPT-6 Astra~\citep{openaigpt6astra}, to develop specialized
-GPU kernels under human guidance. Starting from the kernels released by
-\citet{cetin2026sparser}, the agent proposed code changes and tested their
-speed and accuracy. During
-development, we tested changes on the same small set of training text
-sequences, comparing the model's output scores and loss with and without
-the custom GPU code. We specified how much these values were allowed to
-differ and rejected versions that exceeded those limits. After selecting
-the kernels for 14M, we stopped changing their code and tested the model saved
-at the end of training for each recipe. For each
-model, we measured inference time on the same 64 validation sequences
-and checked output agreement on all 338 complete validation sequences;
-its speedup was included only if these checks passed. We repeated this
-evaluation at 70M after adapting the kernels to its larger matrix dimensions
-(Appendix~\ref{app:kernel-results}). For our representation-learning team,
-which lacks specialist GPU-kernel expertise, this workflow made direct
-execution tests practical. This case illustrates how coding agents can
-support systems development.
-
-GPUs multiply blocks of values, called tiles, so isolated zeros need not
-save computation. Our projection kernels skip matrix operations for entirely
-zero activation tiles: $16\times16$ at $a,m$ and $8\times16$ at $h,z$
-(tokens $\times$ features). At $h,z$, checking tiles before loading weights
-also avoids the corresponding memory reads; nearly empty rows can instead
-use only their nonzero values. Speedup therefore depends on how zeros
-cluster, which operations exploit them, and the cost of detecting them.
-
-\textbf{Sparsity and speedup rise together within recipes.}
-Figure~\ref{fig:base-model-speedup} shows an approximately linear increase
-within each trained threshold/pressure family over the tested grid, with
-different slopes across families. At 14M and $\kappa=0.5$, for example,
-$T_7/P_{\mathrm{all}}$ is much sparser than $T_4/P_{\mathrm{all}}$
-($27.48\%$ versus $12.71\%$), yet slightly slower ($1.38\times$ versus
-$1.42\times$ base-model speedup). Thus, a larger $\Smodel$ need not yield a
-larger gain: where the zeros occur and whether the kernel can exploit them
-matter (Section~\ref{sec:kernel-autoresearch}).
-
 \textbf{Post-hoc clipping does not yield comparable gains in this implementation.}
-Every positive clipping target remains below $1\times$ at 14M. At 70M,
-aggressive clipping can exceed $1\times$, reaching $1.22\times$, but with
+Every post-hoc clipping point remains below $1\times$ at 14M.
+At 70M, aggressive clipping can exceed $1\times$, reaching $1.22\times$, but with
 substantial loss degradation (Appendix~\ref{app:clipping-results}).
-Here clipping uses separate masking operations around the frozen kernel,
-adding activation scans and writes on every forward pass. The resulting zeros
-still have to form groups that its skipping rules can use. These costs can
-outweigh the avoided products; the measurements do not separately isolate
-each cost. We did not optimize a fused clipping implementation, so this
-result does not establish a general limitation of post-hoc sparsification.
+Here clipping uses a separate masking operations around the frozen kernel,
+adding additional overhead because it has to iterate over activations on every forward pass.
+The resulting zeros still have to form groups that the kernel skipping rules can use.
+The overhead can outweigh the avoided products. However, we did not optimize a fused clipping implementation, so this
+result does not establish a general limitation of post-hoc sparsification,
+but \textbf{points into a requirement of pairing the sparse intervention with specialized implementation}.
 
 \FloatBarrier
 
