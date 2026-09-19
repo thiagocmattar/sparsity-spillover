@@ -1,7 +1,8 @@
 # H-only pressure: final K050 latency extension
 
 New [14M h/z contribution-versus-latency scatter](figures/15-14m-hz-sparsity-latency.pdf)
-uses Figure 1's 22 trained settings and recipe colors. The x-axis sums only
+uses Figure 1's 20 T/P settings and recipe colors, with Base and ReLU controls
+omitted and axes focused on the pressure recipes. The x-axis sums only
 the h/z contributions to S_model (pp), preserving the full-model denominator;
 the y-axis retains the measured K050 full-model latency. Dashed Ph and solid
 Pall lines connect increasing thresholds within each recipe. See

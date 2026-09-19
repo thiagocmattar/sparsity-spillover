@@ -1,8 +1,8 @@
 # Observations
 
 - [036: h/z contribution versus latency](036-hz-sparsity-latency.md):
-  new 14M scatter of Figure 1's 22 trained settings; sums only h/z logical
-  contributions using the full-model denominator and preserves K050 timings.
+  14M scatter of Figure 1's 20 T/P settings, with controls omitted and focused
+  axes; sums only h/z logical contributions and preserves K050 timings.
 
 - [035: Direct h/z strategy port to a/m](035-am-load-avoidance-port.md):
   correct across complete validation, but 17.23%/27.38%/44.49% slower at

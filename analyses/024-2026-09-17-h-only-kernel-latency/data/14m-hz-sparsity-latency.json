@@ -4,112 +4,8 @@
   "x_unit": "percentage points of S_model; full denominator retained, including dense LM head",
   "y_definition": "K050 full-model host latency per 2048-token sequence, geometric mean of 1344 timings",
   "y_unit": "milliseconds",
-  "cohort": "22 trained 14M settings from manuscript Figure 1 / Analysis024 Figure 08",
+  "cohort": "20 trained 14M T/P settings from manuscript Figure 1 / Analysis024 Figure 08; Base and ReLU controls excluded",
   "points": [
-    {
-      "checkpoint_key": "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
-      "model": "14M",
-      "scope": "0",
-      "pressure": "none",
-      "kappa": null,
-      "latency_ms": 0.651573035007824,
-      "process_latency_ms": [
-        0.6515079341175382,
-        0.6510354301274902,
-        0.6521762449846633
-      ],
-      "sparsity": 1.1415112639303074e-06,
-      "kernel": "K050",
-      "timing_session": "Run029",
-      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
-      "timing_workload": {
-        "gpu_model": "RTX 5090",
-        "precision": "BF16",
-        "sparsity_precision": "FP16",
-        "batch": 1,
-        "sequence_length": 2048,
-        "vocabulary": 50304,
-        "validation_blocks": 338,
-        "validation_documents": 500,
-        "excluded_tail_tokens": 1444,
-        "timing_inputs": 64,
-        "passes_per_process": 7,
-        "processes": 3,
-        "paired_samples_per_checkpoint": 1344
-      },
-      "hz_contribution_pp": 5.250307469592305e-07,
-      "contributions_pp": {
-        "h": 4.103688596922721e-07,
-        "z": 1.1466188726695838e-07
-      },
-      "zero_product_counts": {
-        "h": 26112,
-        "z": 7296
-      },
-      "model_product_count": 6363055915008,
-      "logical_source": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8/diagnostics/logical_products.json",
-      "coverage": {
-        "batches": 338,
-        "complete_block_coverage": true,
-        "excluded_tail_tokens": 1444,
-        "input_tokens": 692224,
-        "loss": 5.2085730123096665,
-        "sequences": 338,
-        "source_tokens": 693668
-      }
-    },
-    {
-      "checkpoint_key": "69e7eaf3f23d1c583847a80f20a3bfd3aa8366d21512b154b18cf43ecef0a30d",
-      "model": "14M",
-      "scope": "1",
-      "pressure": "none",
-      "kappa": null,
-      "latency_ms": 0.6328194194692462,
-      "process_latency_ms": [
-        0.6330177490207483,
-        0.6320437322742892,
-        0.6333975478999003
-      ],
-      "sparsity": 2.7141299328466277,
-      "kernel": "K050",
-      "timing_session": "Run029",
-      "timing_device_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
-      "timing_workload": {
-        "gpu_model": "RTX 5090",
-        "precision": "BF16",
-        "sparsity_precision": "FP16",
-        "batch": 1,
-        "sequence_length": 2048,
-        "vocabulary": 50304,
-        "validation_blocks": 338,
-        "validation_documents": 500,
-        "excluded_tail_tokens": 1444,
-        "timing_inputs": 64,
-        "passes_per_process": 7,
-        "processes": 3,
-        "paired_samples_per_checkpoint": 1344
-      },
-      "hz_contribution_pp": 2.7141295951315376,
-      "contributions_pp": {
-        "h": 2.7141295207018916,
-        "z": 7.44296461206572e-08
-      },
-      "zero_product_counts": {
-        "h": 172701579008,
-        "z": 4736
-      },
-      "model_product_count": 6363055915008,
-      "logical_source": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/002-20260829-231305-195b22c6/diagnostics/logical_products.json",
-      "coverage": {
-        "batches": 338,
-        "complete_block_coverage": true,
-        "excluded_tail_tokens": 1444,
-        "input_tokens": 692224,
-        "loss": 5.26963426093378,
-        "sequences": 338,
-        "source_tokens": 693668
-      }
-    },
     {
       "checkpoint_key": "234f675072e8dd19fc48d907f5ac93abeaa0379a490795c327718264f7cc5ecc",
       "model": "14M",
@@ -1153,23 +1049,21 @@
   ],
   "limits": {
     "x": [
-      -0.18,
-      5.58
+      3.25,
+      5.45
     ],
     "y": [
-      0.445,
-      0.67
+      0.45,
+      0.65
     ]
   },
-  "caption": "One point per trained recipe-threshold setting; colors identify recipes. Lines connect increasing kappa within each recipe: dashed for Ph, solid for Pall. Controls remain unconnected; no post-hoc clipping.",
+  "caption": "One point per trained recipe-threshold setting; colors identify the four T/P recipes. Lines connect increasing kappa within each recipe: dashed for Ph, solid for Pall. Base and ReLU controls omitted; no post-hoc clipping.",
   "precision_note": "Canonical FP16 logical counts; qualified BF16 timings on RTX5090, batch one, full vocabulary output.",
   "session_note": "14M T7/Ph uses Run033; all other plotted timings use Run029. Small cross-session differences are descriptive.",
   "sources_sha256": {
     "analyses/024-2026-09-17-h-only-kernel-latency/data/paper-checkpoints.json": "7b1c763aff1ebfc50d4bdcade1ff0b9223ddfcd79f9906551c150ef5add7322b",
     "analyses/024-2026-09-17-h-only-kernel-latency/data/14m-70m-quality-sparsity-latency.json": "25b3c3b09a0bf957b4388a0ea25c9d341d07d5abadffdec47f63535f2a0a4a03",
     "analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py": "7fadc916c30cacec08e8e85a841d209674c951cd55de619cd39b29c3ccdf99c3",
-    "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/001-20260829-221007-bb5288c8/diagnostics/logical_products.json": "26f8a4f1cccf63138b453c8fdc566462237a764e7bc2a4a0f0e816aa8cedef8e",
-    "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/002-20260829-231305-195b22c6/diagnostics/logical_products.json": "c312fb8e1e57355db536fd4b811b7e5cb8a16d6df021187b3c696ea5abe08d69",
     "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/001-20260831-185531-47e3fd85/diagnostics/logical_products.json": "0a9d5d802a47528adf932438cfd3f9ccd7f47f5d137d10172822282205a4ac3d",
     "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/002-20260831-185533-e3b22eae/diagnostics/logical_products.json": "0f5f8ef1dcc8edb0a0c73b71ae73f9de8357bc25cbe62da1097d32159dfb5b7c",
     "runs/015-2026-08-31-pythia14m-corrected-a4-ol1/artifacts/attempts/003-20260831-185532-bdfeb27f/diagnostics/logical_products.json": "46020757bbf299555810ed87436c3b51194fabb70d163734fadc378e624b1d01",
@@ -1192,9 +1086,9 @@
     "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/005-20260916-203950-9a9e1fbf/diagnostics/logical_products.json": "1fd125c791fc7ff9f127689acba2a5fa530c11c646b92039ea649b677050d2c4"
   },
   "script": "26_plot_hz_sparsity_latency.py",
-  "script_sha256": "e2925fdd6e237da8178c7cf2bf557f00c13ac579176111602e8c709d83c83664",
+  "script_sha256": "aaccdd8e5010c0f29d5292bc738c3e48d73c77fc5d27ef22763969df32aadb05",
   "output": "figures/15-14m-hz-sparsity-latency.pdf",
-  "output_sha256": "7d2c519464e12eae8e55828f570a9b100e2ca7215066e80312e5696ba8a1ab65",
+  "output_sha256": "3a74bbc436a53f3b6de11547241dbedfe2f955f3b0a4106baa8387a6b862fd87",
   "preserved_pdf_sha256": {
     "01-quality-sparsity-tradeoffs.pdf": "48266b08b2618f26d8ecdfd953e48e26e25f81da8357df1085797918cbbdcf06",
     "02-intervention-sites.pdf": "82b2401887e84825e3346273ecb6e9c0c833f84c652b12b29c5b28f02a488276",

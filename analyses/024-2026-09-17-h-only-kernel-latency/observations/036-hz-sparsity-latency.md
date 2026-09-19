@@ -9,17 +9,18 @@ Exact coordinates, integer counts and source hashes:
 
 How does full-model latency vary with the combined h/z contribution to
 model-wide sparsity when other sites' contributions are omitted from the x-axis?
-The user selected 14M only and the same trained recipes as manuscript Figure 1
-(Analysis024 Figure 08). This is a new scatter plot of retained measurements;
+The user selected 14M only and the T/P recipes from manuscript Figure 1
+(Analysis024 Figure 08), then requested omission of Base and ReLU controls
+to focus the axes on the pressure recipes. This uses retained measurements;
 no experiment, timing, kernel change or manuscript edit is involved.
 
 ## Method and coverage
 
-Each of the 22 points represents one final trained checkpoint: Base model,
-GeLU -> ReLU, and T4/Ph, T4/Pall, T7/Ph, T7/Pall at kappa = 0, .01, .05,
+Each of the 20 points represents one final trained checkpoint:
+T4/Ph, T4/Pall, T7/Ph, T7/Pall at kappa = 0, .01, .05,
 .1, .5. Colors match Figure 1. Lines connect increasing kappa within each
-pressure recipe: dashed for Ph, solid for Pall. Base and ReLU controls remain
-unconnected. The two nearly coincident T7 high-threshold points overlap. Post-hoc clipping and
+pressure recipe: dashed for Ph, solid for Pall. Base and ReLU controls are
+omitted. The two nearly coincident T7 high-threshold points overlap. Post-hoc clipping and
 other recipe families are outside this requested matched cohort.
 
 The horizontal coordinate is
@@ -38,33 +39,34 @@ in the measured model. Natural zeros remain included at unpressured sites.
 Canonical FP16 logical counts pool all six layers and all 338 complete
 2048-token blocks from 500 MiniPile validation documents: 692224 input tokens,
 with a 1444-token excluded tail. Integer numerators are added before division.
-All 22 original diagnostic files are hash-checked and their counts compared
+All 20 original diagnostic files are hash-checked and their counts compared
 with the retained paper export.
 
 The vertical coordinate preserves Figure 1's final K050 full-model latency
 in milliseconds per 2048-token sequence. Timings use RTX5090, BF16, batch one,
 all 50304 vocabulary logits, 64 fixed inputs, seven passes and three fresh
 processes (1344 timings per checkpoint), summarized by the geometric mean.
-T7/Ph uses Run033; the other 17 settings use Run029.
+T7/Ph uses Run033; the other 15 settings use Run029.
 
 ## Caption
 
 **h/z sparsity contribution and full-model latency on Pythia-14M.** Each
-point is one trained recipe-threshold setting; colors identify the six
-Figure 1 recipes. Dashed Ph and solid Pall lines connect increasing thresholds
+point is one trained recipe-threshold setting; colors identify the four
+T/P recipes from Figure 1. Dashed Ph and solid Pall lines connect increasing thresholds
 within each recipe. The x-axis sums the h-fed MLP-down and z-fed attention-output
 zero-product counts and divides by the full-model product count, including
 the dense output head. It therefore shows their combined contribution to
 S_model in percentage points. The y-axis is the measured K050 full-model
 latency per 2048-token sequence (RTX5090, BF16, batch one), averaged
 geometrically over 1344 timings. Sparsity uses full-validation FP16 counts.
-Axes are linear. Connecting lines are visual guides, not fitted trends or
+Base and ReLU controls are omitted to focus the linear axes on the T/P
+recipes. Connecting lines are visual guides, not fitted trends or
 claims of attainable intermediate models.
 
 ## Result and interpretation limits
 
-The h/z contribution ranges from effectively zero at the base model to
-5.34434 pp. Full-model latency ranges from 0.45948 to 0.65157 ms. Within
+The h/z contribution ranges from 3.37798 to 5.34434 pp.
+Full-model latency ranges from 0.45948 to 0.63842 ms. Within
 each pressure family, higher thresholds increase the h/z contribution and
 generally reduce latency, with a small low-threshold reversal in T7/Pall.
 At kappa=.5 the four pressure recipes have almost the same h/z contribution
@@ -81,7 +83,9 @@ No manuscript adoption or finding promotion is made.
 
 ## Verification and reproduction
 
-- Exact membership and all 22 latencies match Figure 1's retained export.
+- Exact membership and all 20 latencies match Figure 1's T/P subset. Removing
+  the controls leaves every retained coordinate unchanged; the focused axes
+  span 3.25--5.45 pp and 0.45--0.65 ms.
 - Original pooled h/z counts, full denominators, coverage and source hashes
   match for every checkpoint. Latencies also match the geometric means of
   the three retained process means to relative tolerance 1e-12.

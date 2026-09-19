@@ -1,4 +1,4 @@
-"""14M Figure 1 recipes: h+z contribution to S_model versus final-kernel latency."""
+"""14M Figure 1 T/P recipes: h+z contribution to S_model versus final-kernel latency."""
 import hashlib
 import json
 import math
@@ -15,7 +15,7 @@ ROOT = HERE.parents[1]
 SOURCE = HERE / 'data/paper-checkpoints.json'
 REFERENCE = HERE / 'data/14m-70m-quality-sparsity-latency.json'
 STYLE = HERE / '14_plot_14m_quality_latency.py'
-STYLES = import_module(STYLE.stem).STYLES
+STYLES = [s for s in import_module(STYLE.stem).STYLES if s[0] in ['4', '7']]
 OUTPUT = HERE / 'figures/15-14m-hz-sparsity-latency.pdf'
 EXPORT = HERE / 'data/14m-hz-sparsity-latency.json'
 TITLE = r'$h,z$ sparsity contribution vs. latency on Pythia-14M'
@@ -30,9 +30,10 @@ def main():
     preserved = {p.name: sha(p) for p in (HERE / 'figures').glob('*.pdf') if p != OUTPUT}
     data = json.loads(SOURCE.read_text(encoding='utf-8'))
     reference = json.loads(REFERENCE.read_text(encoding='utf-8'))
-    refs = {p['checkpoint_key']: p for p in reference['trained_points'] if p['model'] == '14M'}
+    refs = {p['checkpoint_key']: p for p in reference['trained_points']
+            if p['model'] == '14M' and p['scope'] in ['4', '7']}
     rows = [r for r in data['checkpoints'] if r['checkpoint_key'] in refs]
-    assert len(rows) == len(refs) == 22
+    assert len(rows) == len(refs) == 20
     assert reference['sources_sha256'][SOURCE.relative_to(ROOT).as_posix()] == sha(SOURCE)
     sources = {p.relative_to(ROOT).as_posix(): sha(p) for p in [SOURCE, REFERENCE, STYLE]}
     points = []
@@ -81,24 +82,21 @@ def main():
     for scope, pressure, label, color, linestyle in STYLES:
         group = sorted([p for p in points if (p['scope'], p['pressure']) == (scope, pressure)],
                        key=lambda p: -1 if p['kappa'] is None else p['kappa'])
-        assert len(group) == (1 if scope in ['0', '1'] else 5)
-        if scope in ['4', '7']:
-            assert [p['kappa'] for p in group] == [0, .01, .05, .1, .5]
-            ax.plot([p['hz_contribution_pp'] for p in group], [p['latency_ms'] for p in group],
-                    color=color, ls=linestyle, lw=1.4, zorder=2)
-        face, edge = ('white', color) if scope == '0' else (color, 'white')
-        size = 72 if scope in ['0', '1'] else 50
-        width = 1.5 if scope == '0' else .65
+        assert [p['kappa'] for p in group] == [0, .01, .05, .1, .5]
+        ax.plot([p['hz_contribution_pp'] for p in group], [p['latency_ms'] for p in group],
+                color=color, ls=linestyle, lw=1.4, zorder=2)
+        face, edge = color, 'white'
+        size, width = 50, .65
         ax.scatter([p['hz_contribution_pp'] for p in group], [p['latency_ms'] for p in group],
                    s=size, color=face, edgecolors=edge, linewidths=width,
-                   zorder=4 if scope in ['0', '1'] else 3)
+                   zorder=3)
         handles.append(Line2D([], [], color=color, ls=linestyle, lw=1.4, marker='o', ms=math.sqrt(size),
                               mfc=face, mec=edge, mew=width, label=label))
-    limits = {'x': [-.18, 5.58], 'y': [.445, .670]}
+    limits = {'x': [3.25, 5.45], 'y': [.45, .65]}
     ax.set(xlim=limits['x'], ylim=limits['y'],
            xlabel=r'$h+z$ contribution to $S_{\mathrm{model}}$ (pp)',
            ylabel='Full-model latency (ms)')
-    ax.set_xticks(range(6))
+    ax.set_xticks([3.5, 4, 4.5, 5])
     ax.set_yticks([.45, .50, .55, .60, .65])
     ax.tick_params(length=3, width=.65)
     ax.grid(axis='y', color='#E8EAED', lw=.6)
@@ -106,7 +104,7 @@ def main():
     for p in points:
         assert limits['x'][0] <= p['hz_contribution_pp'] <= limits['x'][1]
         assert limits['y'][0] <= p['latency_ms'] <= limits['y'][1]
-    fig.legend(handles=handles, loc='lower center', ncol=3, frameon=False,
+    fig.legend(handles=handles, loc='lower center', ncol=2, frameon=False,
                fontsize=11, handletextpad=.45, columnspacing=1.8,
                labelspacing=.8, bbox_to_anchor=(.55, .02))
     fig.savefig(OUTPUT, metadata={'Title': 'h,z sparsity contribution vs. latency on Pythia-14M',
@@ -118,9 +116,9 @@ def main():
         'x_definition': '100 * (mlp_w2 zero products + attention_output_projection zero products) / full-model products',
         'x_unit': 'percentage points of S_model; full denominator retained, including dense LM head',
         'y_definition': 'K050 full-model host latency per 2048-token sequence, geometric mean of 1344 timings',
-        'y_unit': 'milliseconds', 'cohort': '22 trained 14M settings from manuscript Figure 1 / Analysis024 Figure 08',
+        'y_unit': 'milliseconds', 'cohort': '20 trained 14M T/P settings from manuscript Figure 1 / Analysis024 Figure 08; Base and ReLU controls excluded',
         'points': points, 'limits': limits,
-        'caption': 'One point per trained recipe-threshold setting; colors identify recipes. Lines connect increasing kappa within each recipe: dashed for Ph, solid for Pall. Controls remain unconnected; no post-hoc clipping.',
+        'caption': 'One point per trained recipe-threshold setting; colors identify the four T/P recipes. Lines connect increasing kappa within each recipe: dashed for Ph, solid for Pall. Base and ReLU controls omitted; no post-hoc clipping.',
         'precision_note': 'Canonical FP16 logical counts; qualified BF16 timings on RTX5090, batch one, full vocabulary output.',
         'session_note': '14M T7/Ph uses Run033; all other plotted timings use Run029. Small cross-session differences are descriptive.',
         'sources_sha256': sources, 'script': Path(__file__).name,
