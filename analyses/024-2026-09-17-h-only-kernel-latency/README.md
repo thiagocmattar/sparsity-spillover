@@ -1,10 +1,13 @@
 # H-only pressure: final K050 latency extension
 
-19 September manuscript simplification: the attention-latency explanation now
-uses only [the instruction-bypass summary](figures/12-operation-bypass-summary.pdf).
-The operation-contribution PDF and its evidence are retained but no longer
-included in the manuscript. [Observation 029](observations/029-operation-bypass-summary.md)
-records the focused explanation and its 14M-only timing attribution.
+19 September manuscript revision: a compact
+[mechanism evidence table](observations/033-kernel-mechanism-table.md) replaces
+the main-text bypass chart. It combines operation counters with three retained
+timing modes for 14M T4/Ph and T7/Pall at kappa=0.5, and explains why h/z can
+avoid weight reads while attention skipping retains operand loading and softmax.
+All earlier figures and evidence remain available. The
+[single-checkpoint per-operation attribution design](PER-SITE-LATENCY-DESIGN.md)
+was approved at kappa=0.5 on 19 September; no new timings have been collected.
 Older adoption notes below retain their historical figure placements.
 
 The current [14M/70M quality figure](figures/14-14m-70m-quality-sparsity.pdf)

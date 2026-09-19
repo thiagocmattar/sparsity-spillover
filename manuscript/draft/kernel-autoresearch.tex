@@ -1,43 +1,54 @@
-% User-requested single-question, one-figure revision, 19 September 2026.
-% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md.
-% Figure generator: analyses/024-2026-09-17-h-only-kernel-latency/21_plot_operation_bypass_summary.py.
-% Full counters and matched timings: Analysis024 observations/027-operation-bypass.md; 18_reduce_operation_bypass.py.
-% Implementation/search: Run028 README (K029--K035, K041, K046, K049);
-% Run029 observations/06-implementation-and-claim-audit.md.
+% Evidence: analyses/024-2026-09-17-h-only-kernel-latency/observations/033-kernel-mechanism-table.md.
+% Table generator: analyses/024-2026-09-17-h-only-kernel-latency/24_build_kernel_mechanism_table.py.
+% Counters and matched timings: Analysis024 observations/027-operation-bypass.md.
+% Implementation: Run028 candidates/k049/joint.cu, k042/projection.cu,
+% k035/sparse_gemm.h and k035/flash_fwd_kernel.h; Run029 implementation audit.
 \subsection{When model-wide sparsity translates to speedup}
 \label{sec:activation-reshaping}
 \label{sec:kernel-autoresearch}
 
-\textbf{The kernel saves attention arithmetic but retains other costs.}
-At 14M, $T_7/P_{\mathrm{all}}$ with $\kappa=0.5$ bypasses 58\% of $QK$
-and 67\% of $PV$ matrix instructions (Figure~\ref{fig:kernel-autoresearch}).
-However, the kernel checks for zero tiles after loading their inputs, so
-skipping those instructions does not avoid the input reads. It also still
-computes softmax normalization and assembles the attention output: a zero
-$QK$ score does not imply a zero attention probability. Detecting which
-tiles can be skipped adds work of its own.
+Sparsity helps when skipping saves more work than detecting zeros costs.
+We measure \emph{bypass} as the number of skipped matrix-multiply instructions
+divided by the total issued plus skipped instructions for each operation;
+it is not the fraction of that operation's running time removed.
+Table~\ref{tab:kernel-mechanisms} separates these counts from measured latency.
+At $h,z$, the kernel inspects $8\times16$ activation groups before requesting
+their corresponding weights: empty groups avoid both weight reads and matrix
+instructions, while eligible rows with at most two nonzeros use direct scalar products.
+For $T_4/P_h$, projection skipping gives a $1.37\times$ full-model gain with
+bypass confined to $h,z$. At $a,m$, the kernel instead checks $16\times16$
+groups after loading both operands, saving only matrix instructions;
+$T_7/P_{\mathrm{all}}$ bypasses just 8.4\% and 0\%, respectively.
 
-Matched timing tests show that the skipping overhead outweighs the arithmetic
-savings. With projection skipping held fixed,
-enabling $QK/PV$ skipping increases latency in all 35 tested 14M models.
-For the endpoint above, full-model latency rises from 0.468 to 0.473\,ms.
-The tests establish a net overhead, without separating its individual
-sources. This is a limitation of the tested kernel; the 70M bypass counts
-alone do not establish the same timing attribution
-(Appendix~\ref{app:kernel-diagnostics}).
+Attention uses FlashAttention's tiled computation \citep{dao2022flashattention}:
+load $Q,K$ tiles, form scores, apply masking and softmax, then multiply
+probabilities by $V$. Our zero checks occur after operand loads, within these
+tile computations. Consequently, discovering an empty tile saves its matrix
+multiplication, but does not recover the loading work already performed.
+Softmax still runs and maps zero scores to nonzero probabilities, so $Q/K$
+sparsity does not automatically propagate to $PV$; zeros in $V$ remain usable.
+Sparsifying the probabilities themselves is a further opportunity, untested here.
 
-% Analysis-owned artwork copied unchanged; exact counts and hashes accompany it.
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/07-operation-bypass.pdf}
-\caption{\textbf{Instruction bypass does not guarantee lower latency.}
-$T_4/P_{\mathrm{all}}$ and $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$:
-\textbf{(a)} 14M; \textbf{(b)} 70M. Bars show bypassed divided by issued
-plus bypassed instructions per operation, pooled over all layers and
-338 validation blocks. Bypass at $h/z$ includes scalar replacements;
-attention counts include causal masking and padding. These percentages
-measure skipped instructions, not time saved.}
-\label{fig:kernel-autoresearch}
-\end{figure}
+For $T_7/P_{\mathrm{all}}$, substantial $QK/PV$ bypass therefore coexists with
+a net slowdown: enabling attention skipping raises latency from 0.468 to
+0.473\,ms with projection skipping fixed. The net cost of the attention skip
+path outweighs its arithmetic savings in all 35 matched 14M comparisons.
+These timings isolate projection and attention paths, but neither individual
+sites nor each source of overhead; they do not establish the same attribution
+at 70M (Appendix~\ref{app:kernel-diagnostics}).
+
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{Where the kernel skips work, and where it saves time.}
+Pythia-14M, $\kappa=0.5$, frozen K050 on RTX\,5090.
+Bypass pools all layers and 338 validation blocks; $h/z$ includes scalar
+replacement, and attention includes masked/padded work (base-model $PV$: 10.4\%).
+Latencies are geometric means over 64 fixed inputs, seven passes and three
+processes per mode, including the full vocabulary projection.
+All-off retains the same optimized implementation; it is not the base model.
+Timing rows toggle groups of skipping paths, not individual sites.}
+\label{tab:kernel-mechanisms}
+\input{tables/kernel-mechanisms}
+\end{table}
 
 \FloatBarrier

@@ -1,5 +1,18 @@
 # Living Manuscript Draft
 
+19 September 2026, mechanism evidence table: Section 4.3 now defines instruction
+bypass, distinguishes the h/z weight-load avoidance from later a/m and attention
+checks, and explains the FlashAttention/softmax sequence. Sparsifying attention
+probabilities is an untested opportunity. Table 2 replaces the bypass chart,
+using 12 operation counts and six grouped timing means checked against original
+diagnostics and 8064 raw candidate timing samples. Individual-site attribution
+is a separately approved experiment, not a claim drawn from these timings.
+Evidence: [Observation 033](../analyses/024-2026-09-17-h-only-kernel-latency/observations/033-kernel-mechanism-table.md).
+The canonical 34-page `draft/main.pdf` is rebuilt with resolved references and
+citations, no overfull boxes, and a visually checked subsection/table on page 9
+and new FlashAttention bibliography entry on page 10. Older entries describe
+previous versions.
+
 19 September 2026, focused attention-latency explanation:
 `draft/kernel-autoresearch.tex` is reduced to two paragraphs and one figure,
 with about 30% less prose. It explains that QK/PV skipping retains input reads

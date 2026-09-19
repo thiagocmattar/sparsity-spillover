@@ -594,9 +594,10 @@ Table~\ref{tab:h-only-runtime}. Adding them to the original 30 changes the
 projection-bypass $R^2$ from 0.946 to 0.941, and the scalar-projection $R^2$
 from 0.413 to 0.425. These expanded associations use all 35 qualified
 14M records; historical association panels retain their explicitly stated
-30-point subset. Figure~\ref{fig:kernel-autoresearch} instead shows
-per-operation bypass for the selected high-threshold, all-site-pressure
-endpoints at 14M and 70M. Attention skipping remains slower than attention-dense execution
+30-point subset. Table~\ref{tab:kernel-mechanisms} instead pairs
+per-operation bypass with grouped skipping ablations for the high-threshold
+$T_4/P_h$ and $T_7/P_{\mathrm{all}}$ endpoints at 14M.
+Attention skipping remains slower than attention-dense execution
 for all 35. Seven-site h-only full-model timing is shown separately in
 Figure~\ref{fig:quality-sparsity-overview}; no corresponding skipping ablations
 are added here.
@@ -663,9 +664,11 @@ reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:q
 endpoint export.
 The same derived-data file retains twelve operation decompositions, with per-operation integer
 numerators, the common full-model denominator and checkpoint identities.
-The Figure~\ref{fig:kernel-autoresearch} export retains the four selected
-high-threshold checkpoints, their per-operation issued and bypassed instruction
-counts, scalar replacement counts, and exact diagnostic identities.
+The Table~\ref{tab:kernel-mechanisms} export retains both selected 14M
+checkpoints, per-operation issued and bypassed instruction counts, scalar
+replacement counts, and the unrounded grouped-ablation timings with source
+identities. The earlier four-checkpoint 14M/70M bypass figure and its complete
+export remain available in the generating analysis.
 The README defines coverage and units; \texttt{SOURCES.json} records copy hashes
 and \texttt{protocol.json} records implementation and data identities. These
 files accompany the repository, not a standalone checkpoint or kernel release.

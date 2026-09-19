@@ -1,5 +1,10 @@
 # Observations
 
+- [033: Kernel mechanism evidence table](033-kernel-mechanism-table.md):
+  two 14M kappa=0.5 endpoints, six operation bypass rates and three grouped
+  timing modes. Replaces the main-text bar chart; individual-site timings
+  remain a proposed new experiment, not a result inferred from counters.
+
 - [032: OL1-only quality overview layout](032-quality-ol1-layout.md):
   36/22 trained conditions, independent loss scales, taller/narrower PDF and
   three-row legend. Four naive-L1 records remain in the data but are not plotted.
