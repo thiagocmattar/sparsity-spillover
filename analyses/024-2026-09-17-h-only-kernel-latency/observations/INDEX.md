@@ -1,5 +1,10 @@
 # Observations
 
+- [034: Operation latency in the manuscript](034-operation-latency-manuscript.md):
+  compact mechanism-first explanation and six-row table from Run037;
+  conditional savings, process spans and net attention overhead, with historical
+  timing sessions kept separate.
+
 - [Run037: Direct conditional operation latency](../../../runs/037-2026-09-19-pythia14m-operation-latency/observations/001-operation-latency.md):
   completed approved 14M T7/Pall kappa=0.5 experiment; h/z benefits and grouped
   attention overhead, with process variation and verified recovery documented.

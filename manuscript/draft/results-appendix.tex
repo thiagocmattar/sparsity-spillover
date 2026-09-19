@@ -594,13 +594,23 @@ Table~\ref{tab:h-only-runtime}. Adding them to the original 30 changes the
 projection-bypass $R^2$ from 0.946 to 0.941, and the scalar-projection $R^2$
 from 0.413 to 0.425. These expanded associations use all 35 qualified
 14M records; historical association panels retain their explicitly stated
-30-point subset. Table~\ref{tab:kernel-mechanisms} instead pairs
-per-operation bypass with grouped skipping ablations for the high-threshold
-$T_4/P_h$ and $T_7/P_{\mathrm{all}}$ endpoints at 14M.
-Attention skipping remains slower than attention-dense execution
-for all 35. Seven-site h-only full-model timing is shown separately in
+30-point subset. Attention skipping remains slower than attention-dense
+execution for all 35 historical comparisons. Seven-site h-only full-model timing is shown separately in
 Figure~\ref{fig:quality-sparsity-overview}; no corresponding skipping ablations
 are added here.
+
+% Source: Run037 observations/001-operation-latency.md;
+% Analysis024 observations/034-operation-latency-manuscript.md.
+Table~\ref{tab:kernel-mechanisms} reports a separate single-checkpoint
+experiment at 14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$, disabling each
+operation's skipping path while retaining weights, gates and the $h/z$ fusion.
+The all-path control and untouched K050 implementation average 0.521 and
+0.518\,ms, respectively, with overlapping ranges across three processes.
+Each table span runs from the smallest path-off process mean minus the
+largest all-path mean to the largest path-off mean minus the smallest
+all-path mean. These descriptive spans are not confidence intervals.
+The ablations measure net path effects, without separately timing memory
+reads, zero checks or softmax.
 
 \input{tables/pressure-scope/h-only-runtime}
 
@@ -664,10 +674,11 @@ reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:q
 endpoint export.
 The same derived-data file retains twelve operation decompositions, with per-operation integer
 numerators, the common full-model denominator and checkpoint identities.
-The Table~\ref{tab:kernel-mechanisms} export retains both selected 14M
-checkpoints, per-operation issued and bypassed instruction counts, scalar
-replacement counts, and the unrounded grouped-ablation timings with source
-identities. The earlier four-checkpoint 14M/70M bypass figure and its complete
+The Table~\ref{tab:kernel-mechanisms} export retains Run037's single-checkpoint
+operation ablations, issued and bypassed instruction counts, scalar replacement
+counts, unrounded conditional effects, process spans and control timings with
+source identities. These measurements form a separate timing session from
+the historical figures. The earlier four-checkpoint 14M/70M bypass figure and its complete
 export remain available in the generating analysis.
 The README defines coverage and units; \texttt{SOURCES.json} records copy hashes
 and \texttt{protocol.json} records implementation and data identities. These

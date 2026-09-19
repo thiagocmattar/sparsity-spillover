@@ -1,6 +1,14 @@
 # H-only pressure: final K050 latency extension
 
-19 September manuscript revision: a compact
+19 September manuscript update: the compact
+[per-operation latency table](observations/034-operation-latency-manuscript.md)
+now uses the completed Run037 ablations for 14M T7/Pall at kappa=0.5.
+The subsection explains the kernel mechanism first, presents conditional
+effects and process variation, then concludes with clear h/z savings and net
+attention overhead. The earlier grouped-control table and generator remain
+available as historical exports.
+
+Earlier 19 September manuscript revision: a compact
 [mechanism evidence table](observations/033-kernel-mechanism-table.md) replaces
 the main-text bypass chart. It combines operation counters with three retained
 timing modes for 14M T4/Ph and T7/Pall at kappa=0.5, and explains why h/z can
@@ -13,7 +21,8 @@ Its [direct operation-level evidence](../../runs/037-2026-09-19-pythia14m-operat
 reports 30 qualified processes, clear h/z benefits and grouped attention
 overhead, with small individual a/m/QK effects unresolved against process
 variation. All artifacts were recovered and the Pod deleted (estimated USD1.15).
-These new measurements have not been inserted into the manuscript table.
+These new measurements are now inserted into the manuscript table through
+the adoption record linked above.
 Older adoption notes below retain their historical figure placements.
 
 The current [14M/70M quality figure](figures/14-14m-70m-quality-sparsity.pdf)
