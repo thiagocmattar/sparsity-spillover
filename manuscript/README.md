@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+19 September 2026, protocol wording: the agentic-kernel paragraph now
+explains the comparison with the original model, preset limits on output
+differences, and tests on the saved model from each training recipe.
+It distinguishes the fixed training-text subset used during development
+([Run028](../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/README.md))
+from the 64 validation sequences used for timing and all 338 used for
+output checks ([Run029](../runs/029-2026-09-07-pythia14m-matched-kernel-retrospective/README.md)).
+The same per-model checks apply after the
+[70M adaptation](../runs/035-2026-09-18-pythia70m-k050-port/README.md).
+
 19 September 2026, paragraph polish: the agentic-kernel introduction in
 `draft/training-results.tex` now describes the human-guided workflow in
 plain language and uses `\citet{cetin2026sparser}` for the released starting

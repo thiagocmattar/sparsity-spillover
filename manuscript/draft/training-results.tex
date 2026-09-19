@@ -59,12 +59,18 @@ in model quality or timing sessions.}
 To test whether learned sparsity reduces inference latency, we used Codex,
 configured with GPT-6 Astra~\citep{openaigpt6astra}, to develop specialized
 GPU kernels under human guidance. Starting from the kernels released by
-\citet{cetin2026sparser}, the agent proposed changes, compiled candidates,
-and refined them using correctness checks and timing feedback. We fixed
-the benchmark inputs and numerical tolerances, then froze the implementation
-before evaluating the final checkpoints. The kernels passed checks over
-the full validation set at 14M and, after a shape-specific port, 70M,
-matching the native implementation within the prescribed tolerances
+\citet{cetin2026sparser}, the agent proposed code changes and tested their
+speed and accuracy. During
+development, we tested changes on the same small set of training text
+sequences, comparing the model's output scores and loss with and without
+the custom GPU code. We specified how much these values were allowed to
+differ and rejected versions that exceeded those limits. After selecting
+the kernels for 14M, we stopped changing their code and tested the model saved
+at the end of training for each recipe. For each
+model, we measured inference time on the same 64 validation sequences
+and checked output agreement on all 338 complete validation sequences;
+its speedup was included only if these checks passed. We repeated this
+evaluation at 70M after adapting the kernels to its larger matrix dimensions
 (Appendix~\ref{app:kernel-results}). For our representation-learning team,
 which lacks specialist GPU-kernel expertise, this workflow made direct
 execution tests practical. This case illustrates how coding agents can
