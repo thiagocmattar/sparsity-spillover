@@ -1,5 +1,18 @@
 # Living Manuscript Draft
 
+19 September 2026, focused attention-latency explanation:
+`draft/kernel-autoresearch.tex` is reduced to two paragraphs and one figure,
+with about 30% less prose. It explains that QK/PV skipping retains input reads
+and softmax/output work, while the added skipping overhead exceeds the arithmetic
+savings in the matched 14M controls. The instruction-bypass artwork is unchanged;
+the operation-contribution figure is removed from the document, with its data
+and PDF preserved. Appendix references now describe those retained counters
+without referencing the removed figure. Evidence:
+[Observation 029](../analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md).
+A temporary 34-page build has resolved citations/references, no overfull boxes,
+and a visually checked Section 4.3 on page 9. Replacing `draft/main.pdf` awaits
+release of its PDF-viewer file lock.
+
 19 September 2026, nonlocal pressure response: the final paragraph of
 `draft/training-results.tex` now describes the retained 14M h/z comparisons
 at kappa=0.05 and distinguishes the possible OL1-cap explanation from an

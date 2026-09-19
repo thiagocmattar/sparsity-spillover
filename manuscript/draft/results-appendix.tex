@@ -160,8 +160,8 @@ Figures~\ref{fig:moderate-structure} and~\ref{fig:pressure-layer-zeros}
 use retained final-validation site counters for all six threshold/pressure
 combinations, separating $m$ and $h$. These counts were measured independently
 of the signed histogram reruns; small pass-to-pass rounding differences remain
-visible. Figure~\ref{fig:activation-reshaping} instead decomposes model-wide
-sparsity into logical operation contributions at $\kappa=0.05$ and $0.5$.
+visible. The retained logical-product counters separately decompose model-wide
+sparsity into operation contributions at $\kappa=0.05$ and $0.5$.
 
 The diagnostic reruns use FP32 parameters with FP16 autocast and no
 additional thresholding. Their maximum absolute validation-loss difference
@@ -176,8 +176,8 @@ counts and checkpoint hashes accompany the data release.
 \centering
 \includegraphics[width=\linewidth]{figures/pressure-scope/appendix-moderate-structure.pdf}
 \caption{\textbf{Pressure-scope effects at the moderate threshold $\kappa=0.05$.}
-The six 14M recipes use the same count pooling and operation denominator as
-Figure~\ref{fig:activation-reshaping}. H-only pressure concentrates zeros at
+The six 14M recipes use pooled counts and the full-model operation denominator
+defined in Appendix~\ref{app:accounting}. H-only pressure concentrates zeros at
 $h$ while preserving a different pattern at $m$ and Q/K/V from broad pressure.
 Rounded percentages do not establish all-zero or fully dense tensors.}
 \label{fig:moderate-structure}
@@ -661,8 +661,7 @@ The Figure~\ref{fig:paired-intervention-effects} export retains all 20
 all-site-minus-h-only pressure contrasts, including the two small 14M latency
 reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:quality-sparsity-overview}
 endpoint export.
-The same derived-data file includes the twelve operation decompositions in
-Figure~\ref{fig:activation-reshaping}, retaining per-operation integer
+The same derived-data file retains twelve operation decompositions, with per-operation integer
 numerators, the common full-model denominator and checkpoint identities.
 The Figure~\ref{fig:kernel-autoresearch} export retains the four selected
 high-threshold checkpoints, their per-operation issued and bypassed instruction

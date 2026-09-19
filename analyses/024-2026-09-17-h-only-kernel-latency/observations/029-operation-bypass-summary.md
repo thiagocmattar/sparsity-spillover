@@ -1,5 +1,17 @@
 # High-threshold instruction bypass and manuscript explanation
 
+19 September revision: the main subsection now answers only why extra QK/PV
+sparsity does not lower latency in the tested attention path. It keeps this
+bypass figure and removes the operation-contribution figure from the manuscript
+flow (the PDF and data remain retained). The two paragraphs distinguish
+already-paid input reads, remaining softmax/output work, and the net cost of
+zero detection/skipping. The text reports the retained 14M T7/Pall endpoint's
+58%/67% QK/PV bypass and 0.468-to-0.473 ms attention-toggle comparison.
+All 35 matched 14M records have a positive attention-skipping time increment;
+no corresponding 70M timing attribution is claimed. The current manuscript
+caption is shorter but keeps the per-operation denominator, scalar replacement,
+causal-mask/padding, and non-latency interpretation. Artwork and counts are unchanged.
+
 Subsequent integration: this artwork is retained unchanged as manuscript
 Figure 6, following the logical-operation decomposition in the merged
 Section 4.3. The shorter text links additional QK/PV sparsity to the tested

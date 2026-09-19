@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+19 September manuscript simplification: the attention-latency explanation now
+uses only [the instruction-bypass summary](figures/12-operation-bypass-summary.pdf).
+The operation-contribution PDF and its evidence are retained but no longer
+included in the manuscript. [Observation 029](observations/029-operation-bypass-summary.md)
+records the focused explanation and its 14M-only timing attribution.
+Older adoption notes below retain their historical figure placements.
+
 The current [14M/70M quality figure](figures/14-14m-70m-quality-sparsity.pdf)
 omits naive-L1, uses independent loss scales, and has a taller/narrower layout
 with a three-row legend. Its 36/22 trained points and all clipping data are
