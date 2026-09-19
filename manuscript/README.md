@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+19 September 2026: [experimental-study.tex](draft/experimental-study.tex)
+merges the matching/protocol and post-hoc setup paragraphs. Table 1's caption
+now associates threshold kappa and pressure lambda/b with their executed
+settings, preserves the historical T1/P1 lambda sweep, and motivates fixed
+multisite settings using the conflict projection and norm cap in Appendix A.2.
+It does not claim loss preservation. A temporary build and caption layout
+check pass, with no overfull boxes; the author's existing unresolved
+`\ref{tab}` remains. The canonical PDF and other ongoing author edits are
+unchanged by this source-only revision.
+
 The quality overview is now Figure 3, limited to 14M/70M, directly after
 Table 1 on page 5. Base-model speedup follows as Figure 4 on page 6. The
 complete 410M panel moves to appendix Figure 15 (page 26), beside the

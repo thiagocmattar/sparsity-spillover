@@ -17,15 +17,10 @@ learning-rate schedule differ (Appendix~\ref{app:training-protocol}).
 % 70M extension: runs/034-2026-09-17-pythia70m-h-only-ol1/README.md;
 % Figure 1 evidence: Analysis024 observations/025-matched-quality-latency.md.
 Within each size, runs share initialization, data order and training budget.
-For $T_4/T_7$, we sweep $\kappa\in\{0,0.01,0.05,0.1,0.5\}$ with
-$P_0/P_h/P_{\mathrm{all}}$ at 14M, $P_h/P_{\mathrm{all}}$ at 70M, and
-$P_{\mathrm{all}}$ at 410M, using $\lambda=b=1$. All sizes include
-$T_0/P_0$ and $T_1/P_0$ controls. At 14M, $T_1/P_1$ uses
-$\lambda\in\{0.05,0.1,0.5,1\}$. Including the historical naive-L1 controls
-reported in the appendix, the study contains 40/22/12 conditions at
-14M/70M/410M (74 total). Appendix~\ref{app:training-protocol} gives the full protocol.
-
-To compare the interventions with post-hoc thresholding, we apply uniform percentile magnitude-thresholding targets $p=0,0.1,\ldots,0.9$ at $a,m,h,z$ as a TEAL-style baseline~\citep{liu2024teal}. Site--layer thresholds are calibrated separately on ten training blocks.
+Appendix~\ref{app:training-protocol} gives the full protocol.
+For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal}
+at $a,m,h,z$, with percentile targets $p=0,0.1,\ldots,0.9$ and site--layer
+thresholds calibrated separately on ten training blocks.
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
@@ -34,7 +29,15 @@ To compare the interventions with post-hoc thresholding, we apply uniform percen
 \caption{\textbf{Thresholding, pressure and sparsity ceilings.}
 $T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
 $h$, and $P_{\mathrm{all}}$ matches the thresholding sites
-($\mathcal{P}=\mathcal{N}$). Ceilings are $100\cdot\Smax$ at 2,048 tokens.}
+($\mathcal{P}=\mathcal{N}$). For $T_4/T_7$, threshold strength is swept over
+$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
+and task-relative norm budget $b=1$ fixed. OL1 limits conflict with the
+adaptive task direction and uses the full allowed norm when its cap binds
+(Appendix~\ref{app:pressure}), motivating a shared setting without a
+loss-preservation guarantee. The 14M $T_1/P_1$ ablation instead sweeps
+$\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
+Ceilings are $100\cdot\Smax$ at 2,048 tokens; executed recipes by model size
+are listed in Appendix~\ref{app:training-protocol}.}
 \label{tab:interventions}
 \vspace{4pt}
 \setlength{\tabcolsep}{5pt}
