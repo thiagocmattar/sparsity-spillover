@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+19 September 2026, Table 2 caption clarification: timing units are now explicit
+as microseconds per complete 2048-token sequence. Brackets give the minimum and
+maximum savings across all pairs of independent off/on timing-run means, not
+confidence intervals or variation across tokens/sequences. The shorter caption
+retains the sign convention, repetitions and non-additivity; measurements are
+unchanged. See [Observation 034](../analyses/024-2026-09-17-h-only-kernel-latency/observations/034-operation-latency-manuscript.md).
+The 34-page `draft/main.pdf` is rebuilt, with resolved references/citations,
+no overfull boxes and a visually checked table on page 9. Author edits are preserved.
+
 19 September 2026, a/m implementation justification: the first paragraph of
 `draft/kernel-autoresearch.tex` now reports the user-approved Run039 follow-up.
 The h/z strategy increases latency at a/m despite unchanged outputs; the text

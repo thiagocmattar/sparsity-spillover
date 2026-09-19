@@ -39,15 +39,14 @@ skipped instructions; it does not measure the fraction of runtime saved.
 
 \begin{table}[!htbp]
 \centering\small
-\caption{\textbf{Conditional latency savings by operation.}
-Pythia-14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$; RTX\,5090, BF16, batch one,
-2,048 tokens and full vocabulary output. Saved time is full-model latency
-with one path off minus latency with all paths on: positive values help.
-Geometric means use 64 inputs, seven passes and three processes per mode;
-spans compare process extrema, not confidence intervals. All 338 validation
-blocks match reference outputs. Bypass pools all layers and blocks, including
-scalar replacement at $h/z$ and masked/padded attention work.
-Effects are conditional, not additive.}
+\caption{\textbf{Conditional latency savings: 14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$.}
+Times are per 2,048-token sequence on RTX\,5090 (BF16, batch one).
+Saved time is full-model latency with one skipping path off minus latency
+with all paths on; positive values indicate a benefit.
+Brackets give [minimum, maximum] savings across all off/on pairs of three
+independent timing runs per mode, not confidence intervals.
+Each run reports the geometric mean over 64 sequences and seven passes.
+Effects are not additive.}
 \label{tab:kernel-mechanisms}
 \input{tables/operation-latency}
 \end{table}

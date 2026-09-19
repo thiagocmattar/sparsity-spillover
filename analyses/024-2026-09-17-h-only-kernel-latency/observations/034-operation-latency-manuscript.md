@@ -33,14 +33,19 @@ copy `manuscript/draft/tables/operation-latency.tex`.
 
 ## Caption, observations and interpretation
 
-**Conditional latency savings by operation.** Pythia-14M T7/Pall, kappa=0.5;
-RTX5090, BF16, batch one, 2048 tokens and full vocabulary output. Saved time
-is full-model latency with one path off minus latency with all paths on:
-positive values help. Geometric means use 64 inputs, seven passes and three
-processes per mode; spans compare process extrema, not confidence intervals.
-All 338 validation blocks match reference outputs. Bypass pools all layers
-and blocks, including scalar replacement at h/z and masked/padded attention
-work. Effects are conditional, not additive.
+**Conditional latency savings: 14M T7/Pall, kappa=0.5.** Times are per
+2048-token sequence on RTX5090 (BF16, batch one). Saved time is full-model
+latency with one skipping path off minus latency with all paths on; positive
+values indicate a benefit. Brackets give [minimum, maximum] savings across
+all off/on pairs of three independent timing runs per mode, not confidence
+intervals. Each run reports the geometric mean over 64 sequences and seven
+passes. Effects are not additive.
+
+Caption clarified on 19 September at the user's request. Specifically, the
+bounds are [minimum off-run mean minus maximum on-run mean, maximum off-run
+mean minus minimum on-run mean]. They describe variation between repeated
+timing runs, not a per-token or per-sequence distribution. The time unit is
+microseconds per complete 2048-token sequence. No measurements changed.
 
 - h saves 150.1 us and z saves 29.0 us. Their process spans remain positive.
 - a, m and QK have small negative point estimates with spans crossing zero;
