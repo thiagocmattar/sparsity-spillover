@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+19 September 2026, paragraph polish: the agentic-kernel introduction in
+`draft/training-results.tex` now describes the human-guided workflow in
+plain language and uses `\citet{cetin2026sparser}` for the released starting
+kernels. It states numerical agreement within the prescribed tolerances,
+consistent with Appendix D.4 and the Run029 implementation audit, rather
+than exact output equality. Other ongoing author edits are preserved.
+
 19 September 2026, citation correction: `openaigpt6astra` now cites the
 [dated OpenAI announcement](https://openai.com/index/gpt-6-astra/) with year
 2026, replacing the undated API-documentation entry. OpenAI's

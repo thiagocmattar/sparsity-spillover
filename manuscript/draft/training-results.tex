@@ -56,17 +56,19 @@ in model quality or timing sessions.}
 \end{figure}
 
 \textbf{Agentic kernel development.}
-To test whether the learned zeros save time, we used GPT-6
-Astra~\citep{openaigpt6astra} as the configured coding agent in a human-guided
-search for specialized GPU routines. For our representation-learning team,
-without specialist GPU-kernel expertise, this made direct execution tests
-practical. The agent inspected existing implementations, proposed edits,
-compiled candidates and revised them using correctness and timing feedback.
-We fixed the workload and numerical tolerances, then froze the implementation
-before final-checkpoint benchmarking. The final routines pass the full-validation
-checks at 14M and, after a shape-specific port, 70M
-(Appendix~\ref{app:kernel-results}). This single development case illustrates
-the feasibility of this workflow.
+To test whether learned sparsity reduces inference latency, we used Codex,
+configured with GPT-6 Astra~\citep{openaigpt6astra}, to develop specialized
+GPU kernels under human guidance. Starting from the kernels released by
+\citet{cetin2026sparser}, the agent proposed changes, compiled candidates,
+and refined them using correctness checks and timing feedback. We fixed
+the benchmark inputs and numerical tolerances, then froze the implementation
+before evaluating the final checkpoints. The kernels passed checks over
+the full validation set at 14M and, after a shape-specific port, 70M,
+matching the native implementation within the prescribed tolerances
+(Appendix~\ref{app:kernel-results}). For our representation-learning team,
+which lacks specialist GPU-kernel expertise, this workflow made direct
+execution tests practical. This case illustrates how coding agents can
+support systems development.
 
 In a matrix product, a zero activation contributes nothing to the output.
 Avoiding its multiplication can save arithmetic and avoid reading the
