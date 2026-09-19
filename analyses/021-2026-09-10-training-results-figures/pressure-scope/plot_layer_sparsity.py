@@ -7,7 +7,6 @@ import shutil
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patheffects as path_effects
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 
@@ -70,8 +69,7 @@ def main():
                 im = ax.imshow(values, vmin=0, vmax=100, cmap=cmap, aspect="auto", interpolation="nearest")
                 for (i, j), value in np.ndenumerate(values):
                     ax.text(j, i, f"{value:.0f}", ha="center", va="center", fontsize=9,
-                            color="black", path_effects=[
-                                path_effects.withStroke(linewidth=1.1, foreground=(1, 1, 1, .8))])
+                            color="white" if SITES[i] in ("q_post", "k_post", "v") else "black")
                 ax.set(xticks=range(6), xticklabels=range(1, 7),
                        yticks=range(7), yticklabels=[rf"${s}$" for s in ("a", "m", "h", "q", "k", "v", "z")])
                 ax.set_title(f"({letter}) {label}", color="black", pad=9)
@@ -102,7 +100,8 @@ def main():
     result = {"source": SOURCE.relative_to(ROOT).as_posix(), "source_sha256": sha(SOURCE),
               "output": OUTPUT.relative_to(ROOT).as_posix(), "review_copy": REVIEW.relative_to(ROOT).as_posix(),
               "pdf_sha256": sha(OUTPUT), "coverage": data["coverage"], "colormap": "viridis",
-              "cell_text_color": "black", "cell_text_outline": "thin translucent white",
+              "cell_text_colors": {s: "white" if s in ("q_post", "k_post", "v") else "black" for s in SITES},
+              "cell_text_outline": None,
               "color_limits_percent": [0, 100], "pages": pages}
     (HERE / "data/layer-sparsity-review.json").write_text(
         json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")

@@ -24,8 +24,9 @@ divided by the total activation count at that site and layer.
 - Seven activation sites by six layers, with layers numbered 1 through 6.
   Q and K are measured after RoPE.
 - Following the author's preview feedback, panel titles are black and every
-  panel uses the same `viridis` scale from 0 to 100%. All cell numerals are
-  black, with a thin translucent light outline for contrast on dark tiles.
+  panel uses the same `viridis` scale from 0 to 100%. Cell numerals are white
+  on q/k/v rows and black on a/m/h/z rows, as requested after preview. Text
+  has no background or outline.
   The displayed term is activation sparsity; the underlying zero criterion
   and original integer counts are unchanged.
 
