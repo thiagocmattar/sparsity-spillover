@@ -76,15 +76,13 @@ which lacks specialist GPU-kernel expertise, this workflow made direct
 execution tests practical. This case illustrates how coding agents can
 support systems development.
 
-In a matrix product, a zero activation contributes nothing to the output.
-Avoiding its multiplication can save arithmetic and avoid reading the
-corresponding weights. However, GPUs process groups of products;
-isolated zeros need not eliminate a group, and finding which work to skip
-also costs time. Our implementation detects empty groups and handles nearly
-empty rows using their surviving values, especially at $h$ and $z$. It also
-combines adjacent operations to reduce intermediate data movement. These
-mechanisms make speedup depend on both the activation pattern and the routines
-that consume it.
+GPUs multiply blocks of values, called tiles, so isolated zeros need not
+save computation. Our projection kernels skip matrix operations for entirely
+zero activation tiles: $16\times16$ at $a,m$ and $8\times16$ at $h,z$
+(tokens $\times$ features). At $h,z$, checking tiles before loading weights
+also avoids the corresponding memory reads; nearly empty rows can instead
+use only their nonzero values. Speedup therefore depends on how zeros
+cluster, which operations exploit them, and the cost of detecting them.
 
 \textbf{Sparsity and speedup rise together within recipes.}
 Figure~\ref{fig:base-model-speedup} shows an approximately linear increase

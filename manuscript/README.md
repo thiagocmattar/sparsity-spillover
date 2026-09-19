@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+19 September 2026, tile explanation: `draft/training-results.tex` now gives
+the activation-tile sizes (tokens by features) and distinguishes skipped
+matrix operations from avoided weight reads at h/z. Checked against
+[K042 input projections](../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/projection.cu),
+[K049 output projections](../runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k049/joint.cu),
+and the corresponding Run035 70M port. The shorter paragraph retains the
+nearly empty row path and the cost of detecting zeros.
+
 19 September 2026, protocol wording: the agentic-kernel paragraph now
 explains the comparison with the original model, preset limits on output
 differences, and tests on the saved model from each training recipe.
