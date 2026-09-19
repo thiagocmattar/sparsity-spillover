@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+New [single-panel 70M site-group figure](figures/17-70m-site-groups-sparsity-latency.pdf)
+combines the h/z and complementary contributions versus full-model latency.
+Filled circles and open squares show the two groups for each of 20 T/P
+checkpoints, with unchanged recipe colors and threshold connections. See
+[Observation 038](observations/038-70m-site-groups-latency.md) for the caption,
+paired coordinates and source checks. Figures 15 and 16 remain unchanged.
+
 New [complementary sparsity-versus-latency figure](figures/16-14m-complement-sparsity-latency.pdf)
 uses the same 20 T/P settings as Figure 15, with the a/m/QK/PV contributions
 on the x-axis. These sum with the h/z contributions to S_model at every point.

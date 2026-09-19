@@ -1,0 +1,1191 @@
+{
+  "question": "Compare h/z and complementary sparsity contributions against latency in a single 70M panel.",
+  "cohort": "20 trained 70M T/P settings from Figure 1; controls and post-hoc clipping omitted",
+  "x_definition": "100 * selected operation zero-product counts / full-model product count",
+  "x_unit": "percentage points of S_model; denominator includes dense vocabulary head",
+  "groups": {
+    "hz": [
+      "h",
+      "z"
+    ],
+    "complement": [
+      "a",
+      "m",
+      "qk",
+      "v"
+    ]
+  },
+  "operations": {
+    "h": "mlp_w2",
+    "z": "attention_output_projection",
+    "a": "qkv_projection",
+    "m": "mlp_w1",
+    "qk": "qk_scores",
+    "v": "probability_value"
+  },
+  "complement_identity": "hz contribution + complementary contribution = S_model; QK counted once",
+  "y_definition": "Run035 k050-70m-v2 full-model latency per 2048-token sequence, geometric mean of 1344 timings",
+  "y_unit": "milliseconds",
+  "points": [
+    {
+      "checkpoint_key": "621cf739c94553f80f7267a53e77a4a361593686e91bec2586800a09e0360faf",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.0,
+      "latency_ms": 2.798658676182331,
+      "process_latency_ms": [
+        2.799395241345971,
+        2.7988067656378437,
+        2.7977742621633968
+      ],
+      "sparsity": 25.672509475572234,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.322997238944524,
+        "complement": 11.349512236627712
+      },
+      "group_zero_product_counts": {
+        "hz": 5049027191808,
+        "complement": 4000838298054
+      },
+      "operation_zero_product_counts": {
+        "h": 4032221078016,
+        "z": 1016806113792,
+        "a": 1848895437312,
+        "m": 2150450450432,
+        "qk": 18352,
+        "v": 1492391958
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/003-20260901-131727-14b4dea9/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.805361172503973,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "f7a1b4414c530f059aac51199a774feb8c4c0043b9c6062f5715a7b777f99f6a",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.01,
+      "latency_ms": 2.7123729934614422,
+      "process_latency_ms": [
+        2.7106608512850117,
+        2.710468271388277,
+        2.7159934815880247
+      ],
+      "sparsity": 26.22424792437898,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.576195102137016,
+        "complement": 11.648052822241963
+      },
+      "group_zero_product_counts": {
+        "hz": 5138282455552,
+        "complement": 4106077411731
+      },
+      "operation_zero_product_counts": {
+        "h": 4099394456064,
+        "z": 1038887999488,
+        "a": 1893334597632,
+        "m": 2211462393856,
+        "qk": 33610,
+        "v": 1280386633
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/004-20260901-160446-a489068c/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.822850325756525,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "d4612a60f28dba30813a3af1a98f7f45992597a0f3d3a5b13d0389e9ce04b91b",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.05,
+      "latency_ms": 2.318006524159784,
+      "process_latency_ms": [
+        2.3166526155990232,
+        2.3203114623087626,
+        2.3170572297713976
+      ],
+      "sparsity": 28.48995763186514,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.098392643495416,
+        "complement": 13.391564988369723
+      },
+      "group_zero_product_counts": {
+        "hz": 5322363311104,
+        "complement": 4720686225038
+      },
+      "operation_zero_product_counts": {
+        "h": 4256078908416,
+        "z": 1066284402688,
+        "a": 2274379438080,
+        "m": 2445573060608,
+        "qk": 13288,
+        "v": 733713062
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/005-20260901-161549-02c4d451/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.874176727949515,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "1c33c9a7ca64a5007c846016b569df861d0ecffaac1add0bf1367f5b3f646db4",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.1,
+      "latency_ms": 2.0748817652107983,
+      "process_latency_ms": [
+        2.0769824569026616,
+        2.0755618379923053,
+        2.07210403585034
+      ],
+      "sparsity": 30.574257817401346,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.277662105515711,
+        "complement": 15.296595711885633
+      },
+      "group_zero_product_counts": {
+        "hz": 5385557932544,
+        "complement": 5392232254392
+      },
+      "operation_zero_product_counts": {
+        "h": 4308615080960,
+        "z": 1076942851584,
+        "a": 2560582040064,
+        "m": 2830738063360,
+        "qk": 40779,
+        "v": 912110189
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/006-20260901-161058-0c9a31ac/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.943887012597372,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "all",
+      "kappa": 0.5,
+      "latency_ms": 1.6264439188988178,
+      "process_latency_ms": [
+        1.627750251763887,
+        1.6245324145872417,
+        1.6270508520361475
+      ],
+      "sparsity": 35.59621916980309,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.436922396433735,
+        "complement": 20.159296773369356
+      },
+      "group_zero_product_counts": {
+        "hz": 5441699082752,
+        "complement": 7106392319878
+      },
+      "operation_zero_product_counts": {
+        "h": 4353605656576,
+        "z": 1088093426176,
+        "a": 3109008267264,
+        "m": 3993444841472,
+        "qk": 520387,
+        "v": 3938690755
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/007-20260901-155848-8b7ee7e3/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.389480136202637,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "4bcf4b869bfee59724165744e17d3c387fd2a1194e2cfb970ac590b3aab44654",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.0,
+      "latency_ms": 3.185772656611134,
+      "process_latency_ms": [
+        3.1892350298544523,
+        3.1810914673325192,
+        3.1869970306514395
+      ],
+      "sparsity": 23.562417494680194,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 12.740126396005332,
+        "complement": 10.822291098674864
+      },
+      "group_zero_product_counts": {
+        "hz": 4491046359040,
+        "complement": 3814986564844
+      },
+      "operation_zero_product_counts": {
+        "h": 3744025866752,
+        "z": 747020492288,
+        "a": 1624386719232,
+        "m": 2190599530496,
+        "qk": 209387,
+        "v": 105729
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/008-20260901-131158-54a0039f/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.941205969223609,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "1215d8d8569fd9169efbf7e1301daf3eaba0a5f0dee009fc98161eee0b21bddf",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.01,
+      "latency_ms": 3.1398751081746554,
+      "process_latency_ms": [
+        3.141560050163777,
+        3.138530202401964,
+        3.1395358303355563
+      ],
+      "sparsity": 24.226276136279814,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 12.952605972017862,
+        "complement": 11.273670164261954
+      },
+      "group_zero_product_counts": {
+        "hz": 4565947941376,
+        "complement": 3974103063852
+      },
+      "operation_zero_product_counts": {
+        "h": 3773404243456,
+        "z": 792543697920,
+        "a": 1643415446016,
+        "m": 2217390804992,
+        "qk": 68427734237,
+        "v": 44869078607
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/009-20260901-155845-6d49e30d/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.936396388965245,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "90278f4e57528a5b68922d1fa8385fc691669dc7878ba0dfeabea0a3ac8fd06b",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.05,
+      "latency_ms": 2.9973025434421565,
+      "process_latency_ms": [
+        2.9969445572705125,
+        2.991711279299451,
+        3.0032629552611585
+      ],
+      "sparsity": 26.5239409240229,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 13.55398661442886,
+        "complement": 12.969954309594039
+      },
+      "group_zero_product_counts": {
+        "hz": 4777941783552,
+        "complement": 4572063437085
+      },
+      "operation_zero_product_counts": {
+        "h": 3896695160320,
+        "z": 881246623232,
+        "a": 1709595786240,
+        "m": 2307833067520,
+        "qk": 334277205190,
+        "v": 220357378135
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/010-20260901-161732-c071ca13/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.963655849532969,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "d5c130b1e58509e171cfdeaca42e92323ec28793d28de4533d1cc0f33acd38c4",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.1,
+      "latency_ms": 2.8908458788069695,
+      "process_latency_ms": [
+        2.8906571722424674,
+        2.8907792921417155,
+        2.8911011902365296
+      ],
+      "sparsity": 28.69378509087325,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.118626231325436,
+        "complement": 14.575158859547813
+      },
+      "group_zero_product_counts": {
+        "hz": 4976983976448,
+        "complement": 5137917167692
+      },
+      "operation_zero_product_counts": {
+        "h": 4018043910144,
+        "z": 958940066304,
+        "a": 1773921180672,
+        "m": 2402493468672,
+        "qk": 547272007122,
+        "v": 414230511226
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/011-20260901-165652-95bb8381/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.950079453062024,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "all",
+      "kappa": 0.5,
+      "latency_ms": 1.7484202786076186,
+      "process_latency_ms": [
+        1.7538647866558386,
+        1.7447903571494983,
+        1.7466188533933271
+      ],
+      "sparsity": 40.601872156359896,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.42155753145618,
+        "complement": 25.180314624903716
+      },
+      "group_zero_product_counts": {
+        "hz": 5436282784768,
+        "complement": 8876360940274
+      },
+      "operation_zero_product_counts": {
+        "h": 4349197002752,
+        "z": 1087085782016,
+        "a": 2196362672640,
+        "m": 3005475465216,
+        "qk": 1781058936200,
+        "v": 1893463866218
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/012-20260901-155715-b6ac963f/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.215924663303872,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "8e1e497e539432ff78ba1148b3a01e691defff9499e6ca43faa2f658098dddea",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.0,
+      "latency_ms": 2.6270914212331187,
+      "process_latency_ms": [
+        2.626801951058282,
+        2.627037151084637,
+        2.6274352005574286
+      ],
+      "sparsity": 25.791632090373426,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.891680267123087,
+        "complement": 10.899951823250337
+      },
+      "group_zero_product_counts": {
+        "hz": 5249494735360,
+        "complement": 3842362895620
+      },
+      "operation_zero_product_counts": {
+        "h": 4250986872832,
+        "z": 998507862528,
+        "a": 1635925145088,
+        "m": 2206437691392,
+        "qk": 23217,
+        "v": 35923
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/001-20260917-173130-84408086/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.60655031190116,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "aeafcc2e5a73a6ea4a0bc16330f451dd1f536baf8908379268f992b019d4a901",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.01,
+      "latency_ms": 2.58646545864515,
+      "process_latency_ms": [
+        2.5817423454298174,
+        2.587598579841406,
+        2.5900625154048935
+      ],
+      "sparsity": 25.970787460993584,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.980401768429832,
+        "complement": 10.99038569256375
+      },
+      "group_zero_product_counts": {
+        "hz": 5280770121728,
+        "complement": 3874241912114
+      },
+      "operation_zero_product_counts": {
+        "h": 4265211937280,
+        "z": 1015558184448,
+        "a": 1647659748864,
+        "m": 2226582110208,
+        "qk": 26045,
+        "v": 26997
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/002-20260917-173645-31b12ee8/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.61856081746739,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "cfba744ee88a90fb5b559245bfce65d31b52e53a6f60654bb47b6ddac280e997",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.05,
+      "latency_ms": 2.258318064602946,
+      "process_latency_ms": [
+        2.2588117666923426,
+        2.2569241501472566,
+        2.2592189409293066
+      ],
+      "sparsity": 26.566401530480782,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.236881148749188,
+        "complement": 11.329520381731594
+      },
+      "group_zero_product_counts": {
+        "hz": 5371182159360,
+        "complement": 3993790930991
+      },
+      "operation_zero_product_counts": {
+        "h": 4313564548608,
+        "z": 1057617610752,
+        "a": 1698577320960,
+        "m": 2295207204864,
+        "qk": 49221,
+        "v": 6355946
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/003-20260917-173054-14d784b1/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.596409227368394,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "dd31758c0fa84e34243e8c247179a027ed4ff462614c167eef5112792d4db285",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.1,
+      "latency_ms": 1.987782803587052,
+      "process_latency_ms": [
+        1.9857142743091178,
+        1.9915349804827094,
+        1.986104478805448
+      ],
+      "sparsity": 27.218066988274376,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.34847626338475,
+        "complement": 11.869590724889626
+      },
+      "group_zero_product_counts": {
+        "hz": 5410520766976,
+        "complement": 4184172162140
+      },
+      "operation_zero_product_counts": {
+        "h": 4336962394624,
+        "z": 1073558372352,
+        "a": 1781670319104,
+        "m": 2402501793792,
+        "qk": 32078,
+        "v": 17166
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/004-20260917-174442-671f5099/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.702017948472288,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "3787919d31e9cf8b0a6f13816b16afdb42af505ee20c765b241b503fd0fae41c",
+      "model": "70M",
+      "scope": "4",
+      "pressure": "h",
+      "kappa": 0.5,
+      "latency_ms": 1.6199679065134918,
+      "process_latency_ms": [
+        1.6187866918192577,
+        1.6200390944172889,
+        1.6210787464113365
+      ],
+      "sparsity": 29.235858830977683,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.439177695449558,
+        "complement": 13.796681135528125
+      },
+      "group_zero_product_counts": {
+        "hz": 5442494102528,
+        "complement": 4863494494056
+      },
+      "operation_zero_product_counts": {
+        "h": 4354063168000,
+        "z": 1088430934528,
+        "a": 2066216552448,
+        "m": 2797277896704,
+        "qk": 41655,
+        "v": 3249
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/005-20260917-173923-a5685cea/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.305721733697068,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "efbdb667bbd07a2de79914d3c25a759e271940bc97786477aa62a595bd9d1955",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.0,
+      "latency_ms": 2.6573950191427294,
+      "process_latency_ms": [
+        2.661269131080767,
+        2.6545199031794238,
+        2.6564005869556766
+      ],
+      "sparsity": 25.786061717870002,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.870381150903901,
+        "complement": 10.915680566966099
+      },
+      "group_zero_product_counts": {
+        "hz": 5241986543104,
+        "complement": 3847907465195
+      },
+      "operation_zero_product_counts": {
+        "h": 4248854927360,
+        "z": 993131615744,
+        "a": 1637958253056,
+        "m": 2209948397568,
+        "qk": 22922,
+        "v": 791649
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/006-20260917-173141-f427392c/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.6507842875796666,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "2bb3f271e7dc058fa13bd31b2753837dc55ad9fee7785ef9effde62463b2afe2",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.01,
+      "latency_ms": 2.5694835491077197,
+      "process_latency_ms": [
+        2.569786263499256,
+        2.570933398827814,
+        2.567732008974306
+      ],
+      "sparsity": 26.008979240626015,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 14.983181773453849,
+        "complement": 11.025797467172167
+      },
+      "group_zero_product_counts": {
+        "hz": 5281750106624,
+        "complement": 3886724984611
+      },
+      "operation_zero_product_counts": {
+        "h": 4266995375616,
+        "z": 1014754731008,
+        "a": 1641773042688,
+        "m": 2219055296512,
+        "qk": 13055382427,
+        "v": 12841262984
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/007-20260917-173646-e4ef5f01/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.612227870867803,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "457c80504359940c46149877205abc16b9e586c87c223b8b70e284e830104643",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.05,
+      "latency_ms": 2.2464814985550627,
+      "process_latency_ms": [
+        2.2437629562860155,
+        2.244062343613891,
+        2.2516280316659456
+      ],
+      "sparsity": 26.894689291475924,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.245230305435625,
+        "complement": 11.6494589860403
+      },
+      "group_zero_product_counts": {
+        "hz": 5374125336576,
+        "complement": 4106573101225
+      },
+      "operation_zero_product_counts": {
+        "h": 4313579401728,
+        "z": 1060545934848,
+        "a": 1702562216448,
+        "m": 2303798808576,
+        "qk": 61544376109,
+        "v": 38667700092
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/008-20260917-173110-ca902d4a/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.66702864438119,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "95a8e631a9d14cd6f7961fe24719313e373299cf064326e27105afef6521d2a0",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.1,
+      "latency_ms": 1.9727207082298286,
+      "process_latency_ms": [
+        1.9734679488584201,
+        1.9716934698773854,
+        1.9730011349156604
+      ],
+      "sparsity": 27.779140661031548,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.358196663682547,
+        "complement": 12.420943997349003
+      },
+      "group_zero_product_counts": {
+        "hz": 5413947323904,
+        "complement": 4378530760309
+      },
+      "operation_zero_product_counts": {
+        "h": 4337050873856,
+        "z": 1076896450048,
+        "a": 1788865597440,
+        "m": 2415861784576,
+        "qk": 119183895411,
+        "v": 54619482882
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/009-20260917-174442-da07e21a/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 4.7189352413606365,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    },
+    {
+      "checkpoint_key": "d030d16d527b7ec9bfc26c2c71e4250068b4f6da4c1332c419d8181268882658",
+      "model": "70M",
+      "scope": "7",
+      "pressure": "h",
+      "kappa": 0.5,
+      "latency_ms": 1.6183700033008652,
+      "process_latency_ms": [
+        1.6204826573765687,
+        1.6167831238217416,
+        1.6178464696649766
+      ],
+      "sparsity": 32.232516801088714,
+      "kernel": "k050-70m-v2",
+      "timing_session": "Run035",
+      "timing_device_uuid": "65f634e5-59cb-9890-3a0f-610aa4a22836",
+      "contributions_pp": {
+        "hz": 15.4393942532357,
+        "complement": 16.793122547853017
+      },
+      "group_zero_product_counts": {
+        "hz": 5442570441728,
+        "complement": 5919775795874
+      },
+      "operation_zero_product_counts": {
+        "h": 4354142049792,
+        "z": 1088428391936,
+        "a": 2075264074752,
+        "m": 2826823856128,
+        "qk": 813207196524,
+        "v": 204480668470
+      },
+      "model_product_count": 35251191545856,
+      "logical_source": "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/010-20260917-173647-0382245c/diagnostics/logical_products.json",
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.337246905417132,
+        "sequences": 338,
+        "source_tokens": 693668
+      }
+    }
+  ],
+  "series": [
+    {
+      "scope": "4",
+      "pressure": "h",
+      "label": "$T_4/P_h$",
+      "group": "complement",
+      "color": "#008B87",
+      "linestyle": [
+        0,
+        [
+          3,
+          2
+        ]
+      ],
+      "keys": [
+        "8e1e497e539432ff78ba1148b3a01e691defff9499e6ca43faa2f658098dddea",
+        "aeafcc2e5a73a6ea4a0bc16330f451dd1f536baf8908379268f992b019d4a901",
+        "cfba744ee88a90fb5b559245bfce65d31b52e53a6f60654bb47b6ddac280e997",
+        "dd31758c0fa84e34243e8c247179a027ed4ff462614c167eef5112792d4db285",
+        "3787919d31e9cf8b0a6f13816b16afdb42af505ee20c765b241b503fd0fae41c"
+      ]
+    },
+    {
+      "scope": "4",
+      "pressure": "h",
+      "label": "$T_4/P_h$",
+      "group": "hz",
+      "color": "#008B87",
+      "linestyle": [
+        0,
+        [
+          3,
+          2
+        ]
+      ],
+      "keys": [
+        "8e1e497e539432ff78ba1148b3a01e691defff9499e6ca43faa2f658098dddea",
+        "aeafcc2e5a73a6ea4a0bc16330f451dd1f536baf8908379268f992b019d4a901",
+        "cfba744ee88a90fb5b559245bfce65d31b52e53a6f60654bb47b6ddac280e997",
+        "dd31758c0fa84e34243e8c247179a027ed4ff462614c167eef5112792d4db285",
+        "3787919d31e9cf8b0a6f13816b16afdb42af505ee20c765b241b503fd0fae41c"
+      ]
+    },
+    {
+      "scope": "4",
+      "pressure": "all",
+      "label": "$T_4/P_{\\mathrm{all}}$",
+      "group": "complement",
+      "color": "#3679AD",
+      "linestyle": "-",
+      "keys": [
+        "621cf739c94553f80f7267a53e77a4a361593686e91bec2586800a09e0360faf",
+        "f7a1b4414c530f059aac51199a774feb8c4c0043b9c6062f5715a7b777f99f6a",
+        "d4612a60f28dba30813a3af1a98f7f45992597a0f3d3a5b13d0389e9ce04b91b",
+        "1c33c9a7ca64a5007c846016b569df861d0ecffaac1add0bf1367f5b3f646db4",
+        "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934"
+      ]
+    },
+    {
+      "scope": "4",
+      "pressure": "all",
+      "label": "$T_4/P_{\\mathrm{all}}$",
+      "group": "hz",
+      "color": "#3679AD",
+      "linestyle": "-",
+      "keys": [
+        "621cf739c94553f80f7267a53e77a4a361593686e91bec2586800a09e0360faf",
+        "f7a1b4414c530f059aac51199a774feb8c4c0043b9c6062f5715a7b777f99f6a",
+        "d4612a60f28dba30813a3af1a98f7f45992597a0f3d3a5b13d0389e9ce04b91b",
+        "1c33c9a7ca64a5007c846016b569df861d0ecffaac1add0bf1367f5b3f646db4",
+        "d0367386226ffd28d59414ae7234e4bb596dddb7ef8e36b139aa608b012fa934"
+      ]
+    },
+    {
+      "scope": "7",
+      "pressure": "h",
+      "label": "$T_7/P_h$",
+      "group": "complement",
+      "color": "#8A669C",
+      "linestyle": [
+        0,
+        [
+          3,
+          2
+        ]
+      ],
+      "keys": [
+        "efbdb667bbd07a2de79914d3c25a759e271940bc97786477aa62a595bd9d1955",
+        "2bb3f271e7dc058fa13bd31b2753837dc55ad9fee7785ef9effde62463b2afe2",
+        "457c80504359940c46149877205abc16b9e586c87c223b8b70e284e830104643",
+        "95a8e631a9d14cd6f7961fe24719313e373299cf064326e27105afef6521d2a0",
+        "d030d16d527b7ec9bfc26c2c71e4250068b4f6da4c1332c419d8181268882658"
+      ]
+    },
+    {
+      "scope": "7",
+      "pressure": "h",
+      "label": "$T_7/P_h$",
+      "group": "hz",
+      "color": "#8A669C",
+      "linestyle": [
+        0,
+        [
+          3,
+          2
+        ]
+      ],
+      "keys": [
+        "efbdb667bbd07a2de79914d3c25a759e271940bc97786477aa62a595bd9d1955",
+        "2bb3f271e7dc058fa13bd31b2753837dc55ad9fee7785ef9effde62463b2afe2",
+        "457c80504359940c46149877205abc16b9e586c87c223b8b70e284e830104643",
+        "95a8e631a9d14cd6f7961fe24719313e373299cf064326e27105afef6521d2a0",
+        "d030d16d527b7ec9bfc26c2c71e4250068b4f6da4c1332c419d8181268882658"
+      ]
+    },
+    {
+      "scope": "7",
+      "pressure": "all",
+      "label": "$T_7/P_{\\mathrm{all}}$",
+      "group": "complement",
+      "color": "#C27539",
+      "linestyle": "-",
+      "keys": [
+        "4bcf4b869bfee59724165744e17d3c387fd2a1194e2cfb970ac590b3aab44654",
+        "1215d8d8569fd9169efbf7e1301daf3eaba0a5f0dee009fc98161eee0b21bddf",
+        "90278f4e57528a5b68922d1fa8385fc691669dc7878ba0dfeabea0a3ac8fd06b",
+        "d5c130b1e58509e171cfdeaca42e92323ec28793d28de4533d1cc0f33acd38c4",
+        "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e"
+      ]
+    },
+    {
+      "scope": "7",
+      "pressure": "all",
+      "label": "$T_7/P_{\\mathrm{all}}$",
+      "group": "hz",
+      "color": "#C27539",
+      "linestyle": "-",
+      "keys": [
+        "4bcf4b869bfee59724165744e17d3c387fd2a1194e2cfb970ac590b3aab44654",
+        "1215d8d8569fd9169efbf7e1301daf3eaba0a5f0dee009fc98161eee0b21bddf",
+        "90278f4e57528a5b68922d1fa8385fc691669dc7878ba0dfeabea0a3ac8fd06b",
+        "d5c130b1e58509e171cfdeaca42e92323ec28793d28de4533d1cc0f33acd38c4",
+        "0aa9bf0b4b590d192f2cf5c5ad2c940c3597f0d69846259685c301b93cfa2a9e"
+      ]
+    }
+  ],
+  "limits": {
+    "x": [
+      10.0,
+      26.0
+    ],
+    "y": [
+      1.52,
+      3.28
+    ]
+  },
+  "displayed_markers": 40,
+  "unique_checkpoints": 20,
+  "encoding": "Recipe color and pressure line style; filled circles h/z, open squares complement. Each checkpoint appears twice at the same latency.",
+  "precision_note": "Canonical FP16 logical counts; BF16 timings on RTX5090, batch one, full 50304 vocabulary logits.",
+  "kernel_note": "Qualified shape-specific 70M K050 port; these are full-model latencies, not separately timed site groups.",
+  "timing_workload": {
+    "run_id": "035-2026-09-18-pythia70m-k050-port",
+    "budget_usd": 10,
+    "maximum_gpu_hours": 8,
+    "maximum_configurations": 1,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "runtime": {
+      "python": "3.12",
+      "torch": "2.11.0",
+      "transformers": "5.12.1",
+      "numpy": "2.5.0",
+      "cuda": "12.8"
+    },
+    "precision": "bfloat16",
+    "batch_size": 1,
+    "sequence_length": 2048,
+    "vocabulary": 50304,
+    "validation_blocks": 338,
+    "validation_documents": 500,
+    "excluded_tail_tokens": 1444,
+    "timing_inputs": 64,
+    "timing_passes": 7,
+    "timing_seed": 2504,
+    "runtime_seed": 2801,
+    "process_replicates": 3,
+    "final_candidates": [
+      "k050-70m-v2"
+    ],
+    "numerical_bounds": {
+      "logit_atol": 0.25,
+      "logit_rtol": 0.02,
+      "logit_relative_l2": 0.02,
+      "validation_loss_atol": 0.001
+    },
+    "near_zero_thresholds": [
+      0.0,
+      0.001,
+      0.01
+    ],
+    "leaf_timeout_seconds": 1800,
+    "monitor_interval_seconds": 60,
+    "authorization": "User approved shape port and all22-checkpoint benchmark and explicitly authorized RunPod on 2026-09-18; bounded USD10/eight cumulative GPU-hour envelope stated before provisioning.",
+    "conditions": [
+      "c00",
+      "c01",
+      "c02",
+      "c03",
+      "c04",
+      "c05",
+      "c06",
+      "c07",
+      "c08",
+      "c09",
+      "c10",
+      "c11",
+      "c12",
+      "c13",
+      "c14",
+      "c15",
+      "c16",
+      "c17",
+      "c18",
+      "c19",
+      "c20",
+      "c21"
+    ]
+  },
+  "sources_sha256": {
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/paper-checkpoints.json": "7b1c763aff1ebfc50d4bdcade1ff0b9223ddfcd79f9906551c150ef5add7322b",
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/14m-70m-quality-sparsity-latency.json": "25b3c3b09a0bf957b4388a0ea25c9d341d07d5abadffdec47f63535f2a0a4a03",
+    "analyses/024-2026-09-17-h-only-kernel-latency/14_plot_14m_quality_latency.py": "7fadc916c30cacec08e8e85a841d209674c951cd55de619cd39b29c3ccdf99c3",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/003-20260901-131727-14b4dea9/diagnostics/logical_products.json": "49aad915d3bf3a2f3a440bb1e1d303c3d81812579c48221aa6c0a921dd5b47ec",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/004-20260901-160446-a489068c/diagnostics/logical_products.json": "a62c8ef5f951dd51a16e188c6ab9c6054e1e1980081fcc511616a1f36b9b6e85",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/005-20260901-161549-02c4d451/diagnostics/logical_products.json": "9bd67b8e1b5d332f5f96a7e107691898f91fb1bca4715dba92c4e83e5d42bf2a",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/006-20260901-161058-0c9a31ac/diagnostics/logical_products.json": "8ced596fa00428794e3f7665bba8a5358699956e6986153e87c2da23653f336f",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/007-20260901-155848-8b7ee7e3/diagnostics/logical_products.json": "d01f3c688450b79e48d982a79ab69728aee1fc4c96c4786c60030fda1cda1b00",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/008-20260901-131158-54a0039f/diagnostics/logical_products.json": "8b65815d6b976a716193603007e8a6b7e9c9cd0ae43215cb382713e33a380eff",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/009-20260901-155845-6d49e30d/diagnostics/logical_products.json": "9db538d46be4b5f2d499ea05bf714de1550e10245b83ccb5549c67a2af1da20f",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/010-20260901-161732-c071ca13/diagnostics/logical_products.json": "179c0514305bcc2f81e9f78cf026c5eb8b59fe84ff62990a791cb0b66433f8a7",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/011-20260901-165652-95bb8381/diagnostics/logical_products.json": "8553015b68cd6bc527baab2c7d710772d5c1f0c7ae14ff8674b00a9112491cbf",
+    "runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/artifacts/attempts/012-20260901-155715-b6ac963f/diagnostics/logical_products.json": "e583f5a76c11cdb1707ce1fe23bae13c664d21bc3e4d125604288877e3f6cc5c",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/001-20260917-173130-84408086/diagnostics/logical_products.json": "e2d625ab99683805be2baa6c48435d3a7b37d7cd8d01db60249605261a45dbc6",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/002-20260917-173645-31b12ee8/diagnostics/logical_products.json": "ed3cc2754ddfecc4f22a32a14d7d13b4f1b243ba7dadd5a9a5bc19b9d4e7d2ab",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/003-20260917-173054-14d784b1/diagnostics/logical_products.json": "f6abbddc4f895d714c022092c8db2d8f43582da79d6fcb8d3374fa200855f023",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/004-20260917-174442-671f5099/diagnostics/logical_products.json": "3aba8022008eac86f433f2c2a71dfc71621b10b418f9d7e05d069a91b2f1f70d",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/005-20260917-173923-a5685cea/diagnostics/logical_products.json": "973a5f39d65982887143058bf8a97e19ad113ffafce99f35b2a146391702903e",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/006-20260917-173141-f427392c/diagnostics/logical_products.json": "e4ceb6aff6b674abe13618ecdbba93d8021a105a9c48b5c24e1fa28c2f1f637e",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/007-20260917-173646-e4ef5f01/diagnostics/logical_products.json": "86a01499267c2a78c0627444a15fd2523ef8e4995a325a4b0229b51f46561430",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/008-20260917-173110-ca902d4a/diagnostics/logical_products.json": "44bd79c78f465c3c9b2331d43cd45fb728fd2001a7d214e88b192a10f5f3e26c",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/009-20260917-174442-da07e21a/diagnostics/logical_products.json": "a94dbd19fa68771c45178b76a41f672aa84afb08f42976c93ed999507485faa1",
+    "runs/034-2026-09-17-pythia70m-h-only-ol1/artifacts/attempts/010-20260917-173647-0382245c/diagnostics/logical_products.json": "bdba71d518601621e14959b133648e8c67136d4cb5436e76139119acc9547295"
+  },
+  "script": "28_plot_70m_site_groups_latency.py",
+  "script_sha256": "4bcca5c8189e8cc04ff3055d0a33e3f8ed5fb2af9f8309d687bbda40c010d446",
+  "output": "figures/17-70m-site-groups-sparsity-latency.pdf",
+  "output_sha256": "d3c3dcceb7ea775e74dd312250e1e7134340de104b67fce583bf4aa7af23f697",
+  "preserved_pdf_sha256": {
+    "01-quality-sparsity-tradeoffs.pdf": "48266b08b2618f26d8ecdfd953e48e26e25f81da8357df1085797918cbbdcf06",
+    "02-intervention-sites.pdf": "82b2401887e84825e3346273ecb6e9c0c833f84c652b12b29c5b28f02a488276",
+    "03-pressure-scope-threshold.pdf": "6cc89a53fc353ae7e1ff052a29b5a27f036fc43825686e1907bc918340a5b645",
+    "04-operation-sparsity-changes.pdf": "99b6ad13f7070a31a7e7cb0d609157e9323bcd4a495acc4ba29738d0b3bd09ed",
+    "05-quality-latency.pdf": "20af9c765be721f211d1b06f7e83df3e09771475336abeda35408267c8ce05e1",
+    "06-14m-quality-sparsity-latency.pdf": "5ff818bea62712a412963720a25fbc7d97b27f96cf8b92a3df9c3ca22e63d7b4",
+    "07-controls-posthoc-final-latency.pdf": "e1a7a0b206a3c2932d921b8385ff81dbc7d346e20256166359c40eb8b1fb6396",
+    "08-14m-70m-quality-sparsity-latency.pdf": "6bc5c9133c6316f650027121b116207e3f74cb404bbe54fc395cdfe838aef398",
+    "09-14m-70m-operation-contributions.pdf": "c2e2e5dcb86d95b1d547789682f95e1e68055fde20283fb2599b1ee0a1939cfa",
+    "10-operation-bypass.pdf": "2e3104a9b40dfbaed77c41202e6578d9c13fcecfe9aa4bbeb7b1a6d2251469e0",
+    "11-all-model-quality-sparsity.pdf": "8e505b35103db3a5d7579000f3358c533c0211017f1b4c74d8a70943dcff0ef6",
+    "12-operation-bypass-summary.pdf": "69c2d2235e81b2ab1fe290c8e8c2dee4692085d00db565c53b1c93802e60dff0",
+    "13-14m-70m-sparsity-base-speedup.pdf": "12373003008d4530124f053de24a6feb7625fe0494fdab83401b9d0b93349102",
+    "14-14m-70m-quality-sparsity.pdf": "a83fd345489a59182b839189826ee3f40b0521a28d414dea21998b73bf074977",
+    "15-14m-hz-sparsity-latency.pdf": "3a74bbc436a53f3b6de11547241dbedfe2f955f3b0a4106baa8387a6b862fd87",
+    "16-14m-complement-sparsity-latency.pdf": "2ff7053063ffe2cf62d4ddab4d49f02b5474f7ae782f75d39e2087b3f4373735",
+    "A1-complete-quality-sparsity.pdf": "eb42ef959d9e9b4cabae4c9317b72056bc1042cb49d5cc62c26659b3c4f973ba",
+    "A2-pressure-versus-none.pdf": "b037b4f3aac3edb181fd37c6875e6b74a016a129097d0c9cd303274c6e0f3e47",
+    "A3-dense-reference-speedup.pdf": "5e218a9b2efebbb7147ce4d1365bb4f9d2176aa5461e17ca81d7516d4d509259",
+    "A4-instruction-level-explanation.pdf": "b71f5d5ca77a1e9e91b2bcfd6d8cd17a932ddd5469f3ff416d3cafb4172208f4",
+    "A5-410m-quality-sparsity.pdf": "b8f3d6036c2d07788e34a97346cd67e8be992ce21d62ffedad63a82146f6d3ff"
+  }
+}
