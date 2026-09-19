@@ -9,9 +9,9 @@ the operation-contribution figure is removed from the document, with its data
 and PDF preserved. Appendix references now describe those retained counters
 without referencing the removed figure. Evidence:
 [Observation 029](../analyses/024-2026-09-17-h-only-kernel-latency/observations/029-operation-bypass-summary.md).
-A temporary 34-page build has resolved citations/references, no overfull boxes,
-and a visually checked Section 4.3 on page 9. Replacing `draft/main.pdf` awaits
-release of its PDF-viewer file lock.
+The verified 34-page build now replaces `draft/main.pdf`, with resolved
+citations/references, no overfull boxes, and a visually checked Section 4.3
+on page 9. The installed PDF hash matches the checked build.
 
 19 September 2026, nonlocal pressure response: the final paragraph of
 `draft/training-results.tex` now describes the retained 14M h/z comparisons
