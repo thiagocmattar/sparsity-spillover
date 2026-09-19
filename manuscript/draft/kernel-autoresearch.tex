@@ -1,6 +1,9 @@
 % Evidence: Analysis024 observations/034-operation-latency-manuscript.md;
 % Run037 observations/001-operation-latency.md and results/conditional-effects-audit.json.
 % Table generator: Analysis024/25_build_operation_latency_table.py.
+% a/m port evidence: Analysis024 observations/035-am-load-avoidance-port.md;
+% Run039 observations/001-am-port-verdict.md, results/am-load-avoidance.json
+% and results/mechanism.json; reducers: Run039/07_reduce.py and 12_mechanism.py.
 % Mechanism: Run028 candidates/k049/joint.cu, k042/projection.cu,
 % k035/sparse_gemm.h and k035/flash_fwd_kernel.h; Run029 implementation audit.
 \subsection{When model-wide sparsity translates to speedup}
@@ -12,6 +15,14 @@ skipping zeros. At $h,z$, our kernel checks $8\times16$ activation groups
 before loading their weights: empty groups avoid both weight reads and matrix
 multiplications. At $a,m$, the $16\times16$ checks occur after both operands
 are loaded, so skipping saves only arithmetic.
+A follow-up test supports this choice: applying the $h/z$ strategy separately
+at $a$ and $m$ increased full-model latency by $17.2\%$ and $27.4\%$ on
+14M $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$, with unchanged outputs.
+Only $11.12\%$ of $a$'s $8\times16$ tiles were empty, and none at $m$, so
+most groups still required matrix multiplication. Padding eight real rows to
+sixteen-row matrix instructions increased issued instructions by $1.90\times$
+at $a$ and $2\times$ at $m$. At $h/z$, most rows instead have at most two
+nonzero activations, making the cheaper scalar path useful much more often.
 
 Attention follows FlashAttention's tiled sequence \citep{dao2022flashattention}:
 load $Q,K$, compute scores, apply masking and softmax, then multiply

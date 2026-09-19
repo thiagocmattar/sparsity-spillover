@@ -1,5 +1,19 @@
 # Living Manuscript Draft
 
+19 September 2026, a/m implementation justification: the first paragraph of
+`draft/kernel-autoresearch.tex` now reports the user-approved Run039 follow-up.
+The h/z strategy increases latency at a/m despite unchanged outputs; the text
+connects the measured empty-tile fractions and extra padded matrix instructions
+to the different activation structure at h/z. It identifies this as a follow-up
+test, without attributing an unperformed test to the original agentic search.
+Evidence: [Observation 035](../analyses/024-2026-09-17-h-only-kernel-latency/observations/035-am-load-avoidance-port.md)
+and its Run039 sources. The current working draft builds at 34 pages with no
+undefined references/citations or overfull boxes; the revised paragraph and
+adjacent table were visually checked on pages 8--9. Existing author edits are
+preserved. The viewer currently locks `draft/main.pdf`; the checked rebuilt
+copy is temporarily at `tmp/manuscript-am-port/main-rebuilt.pdf` in the repository
+root. Canonical PDF replacement is pending release of that file lock.
+
 19 September 2026, mechanism evidence table: Section 4.3 now defines instruction
 bypass, distinguishes the h/z weight-load avoidance from later a/m and attention
 checks, and explains the FlashAttention/softmax sequence. Sparsifying attention
