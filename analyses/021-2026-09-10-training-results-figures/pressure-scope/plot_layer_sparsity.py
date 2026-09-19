@@ -104,7 +104,8 @@ def main():
               "pdf_sha256": sha(OUTPUT), "coverage": data["coverage"], "colormap": "viridis",
               "cell_text_color": "black", "cell_text_outline": "thin translucent white",
               "color_limits_percent": [0, 100], "pages": pages}
-    (HERE / "data/layer-sparsity-review.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    (HERE / "data/layer-sparsity-review.json").write_text(
+        json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"Verified 504 cells; saved two-page PDF: {REVIEW.relative_to(ROOT)}")
 
 
