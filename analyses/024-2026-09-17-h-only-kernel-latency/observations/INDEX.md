@@ -1,8 +1,8 @@
 # Observations
 
-- [038: One-panel 70M site-group comparison](038-70m-site-groups-latency.md):
-  overlays h/z circles and complementary-site squares at the same full-model
-  latency for each of 20 T/P checkpoints; two contributions sum to S_model.
+- [038: Two-panel 70M site-group comparison](038-70m-site-groups-latency.md):
+  h/z on the left and complementary sites on the right, with shared latency
+  scale and recipe legend; the two contributions sum to S_model.
 
 - [037: Contributions outside h/z versus latency](037-complement-sparsity-latency.md):
   companion 14M figure with the same 20 T/P settings; sums a/m/QK/PV
