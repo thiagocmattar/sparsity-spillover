@@ -1,5 +1,11 @@
 # All-model quality-sparsity overview
 
+**Subsequent main/appendix split:** this original three-panel PDF and its
+data export remain unchanged. The manuscript now uses a 14M/70M main view
+and a complete 410M appendix panel; see
+[observation 031](031-quality-main-appendix.md). Adoption details below
+describe the original three-panel revision.
+
 ## Question and approved scope
 
 Show the quality-sparsity operating range of every trained condition in the

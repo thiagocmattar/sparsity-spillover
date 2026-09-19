@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+The quality overview is now Figure 3, limited to 14M/70M, directly after
+Table 1 on page 5. Base-model speedup follows as Figure 4 on page 6. The
+complete 410M panel moves to appendix Figure 15 (page 26), beside the
+unchanged full post-hoc trajectories in Figure 16 (page 27). The main setup
+retains the controlled-study, targeted-replication and fixed-token stress-test
+roles. [main.pdf](draft/main.pdf) is rebuilt at 33 pages; see the
+[placement and preservation audit](draft/reviews/2026-09-18-quality-scope-placement/README.md).
+Notes below retain their earlier revision states and figure numbering.
+
 Analysis024 Figure13 is now Figure 3 immediately after the post-hoc calibration
 paragraph in Experimental Study (page 5). The new discussion explains the
 human-guided GPT-6 Astra workflow, how sparse execution can save work, the

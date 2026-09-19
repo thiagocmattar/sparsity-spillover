@@ -1,65 +1,105 @@
-% Pressure-scope revision: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md; evidence.py, figures.py, tables.py.
-% Source observation: analyses/021-2026-09-10-training-results-figures/observations/O001-14m-quality-sparsity.md
-% OL1 geometry: analyses/021-2026-09-10-training-results-figures/observations/O002-ol1-geometry.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/02_ol1_geometry.py
-% Matched OL1 additions: analyses/021-2026-09-10-training-results-figures/observations/O003-paired-interventions.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/03_paired_interventions.py
-% Matched Q/K/V threshold additions without pressure: analyses/021-2026-09-10-training-results-figures/observations/O004-qkv-thresholding.md
-% Table evidence: analyses/018-2026-09-08-results-materials/figure_data.json (trained endpoints; A4 to A7 gates contrasts).
-% Local/model-wide sparsity: analyses/021-2026-09-10-training-results-figures/observations/O005-distributions-and-operations.md
-% Generating analysis: analyses/021-2026-09-10-training-results-figures/04_distributions_and_operations.py
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O002-blocked-effects.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O003-scale-transfer.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O004-operation-accounting.md
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O011-activation-density-v3.md
-% Historical evidence chain: results-argument-map.md. Current overview/geometry/pressure effects: Analysis 021 O001/O002/O003.
-% Overview is in introduction.tex. Full density grid: results-appendix.tex.
-% Scale figure: analyses/021-2026-09-10-training-results-figures/05_scale_transfer.py;
-% observations/O006-scale-transfer.md. A0 histories: 06_a0_optimization.py; observations/O007-a0-optimization.md.
-% Tables: Analysis 018 03_manuscript_tables.py, from retained integer-count evidence.
-\subsection{Quality--sparsity operating regimes}
-\label{sec:quality-sparsity-results}
-
-% Overview and numerical claims: analyses/024-2026-09-17-h-only-kernel-latency/observations/028-all-model-quality-sparsity.md;
-% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/20_plot_quality_all_sizes.py.
-\textbf{The interventions extend the attainable sparsity range, sometimes
-close to the architectural ceiling, at a quality cost.}
-Figure~\ref{fig:quality-sparsity-all-sizes} summarizes all 74 trained
-conditions across the three model sizes. At $\kappa=0.5$,
-$T_7/P_{\mathrm{all}}$ reaches $27.48\%$, $40.60\%$, and $80.62\%$
-model-wide sparsity at 14M, 70M, and 410M: $91.8\%$, $82.2\%$, and $92.4\%$
-of their respective seven-site ceilings. Validation loss increases by
-$0.62$, $1.12$, and $0.57$ relative to the same-size base model.
-
-\begin{figure}[!t]
+% Main/appendix split: Analysis024 observations/031-quality-main-appendix.md;
+% generating analysis: 23_plot_quality_main_appendix.py.
+% This figure immediately follows Table 1 in experimental-study.tex.
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/11-all-model-quality-sparsity.pdf}
-\caption{\textbf{Quality--sparsity trade-offs across model sizes.}
-All 40/22/12 trained conditions at 14M/70M/410M, with a shared loss scale.
+\includegraphics[width=\linewidth]{figures/14-14m-70m-quality-sparsity.pdf}
+\caption{\textbf{Quality--sparsity trade-offs at 14M and 70M.}
+All 40/22 trained conditions, with a shared loss scale.
 Colors distinguish executed recipes; lines connect separate threshold
 settings ($\kappa=0,.01,.05,.1,.5$), or pressure weights
 ($\lambda=.05,.1,.5,1$) for $T_1/P_1$. Its L1 and OL1 variants are shown
 separately; all other pressured recipes use OL1. Dotted paths apply post-hoc
 clipping at $a,m,h,z$ to the fixed base and ReLU controls.
 Vertical guides mark the $T_4/T_7$ analytic sparsity ceilings.
-All trained points are visible; 8/5/7 high-loss clipping evaluations continue
-above the view (complete paths in Figures~\ref{fig:clipping-14m}--\ref{fig:clipping-410m}).
+All trained points are visible; 8/5 high-loss clipping evaluations continue
+above the view (complete paths in Figures~\ref{fig:clipping-14m} and~\ref{fig:clipping-70m}).
 Trained losses use ordinary final-checkpoint evaluation; sparsity uses pooled
 FP16 logical counts over all 338 complete validation blocks.}
-\label{fig:quality-sparsity-all-sizes}
+\label{fig:quality-sparsity-14m-70m}
+\end{figure}
+\FloatBarrier
+
+\subsection{Quality--sparsity operating regimes}
+\label{sec:quality-sparsity-results}
+
+\textbf{The interventions extend the attainable sparsity range, sometimes
+close to the architectural ceiling, at a quality cost.}
+Figure~\ref{fig:quality-sparsity-14m-70m} summarizes all 62 trained
+conditions at 14M and 70M. At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ reaches
+$27.48\%$ and $40.60\%$ model-wide sparsity: $91.8\%$ and $82.2\%$
+of the respective seven-site ceilings. Validation loss increases by
+$0.62$ and $1.12$ relative to the same-size base model.
+The complete 410M stress-test panel is retained in
+Appendix Figure~\ref{fig:quality-sparsity-410m}, alongside the full
+post-hoc trajectories in Figure~\ref{fig:clipping-410m} and the endpoint tables.
+
+% Figure and ratios: Analysis024 observations/030-base-speedup-clipping.md;
+% generating analysis: 22_plot_base_speedup_clipping.py.
+% Agent/search provenance: Run029 observations/06-implementation-and-claim-audit.md.
+% Clipping implementation: Run036 README.md and clipping_adapter.py.
+% Descriptive fits and claim checks: reviews/2026-09-18-base-speedup-adoption/verification.json.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/13-14m-70m-sparsity-base-speedup.pdf}
+\caption{\textbf{From model-wide sparsity to measured speedup.}
+Pythia-14M (a) and 70M (b), with 22 trained checkpoints and 20 post-hoc
+clipping settings per size. Speedup divides the same-size base-model latency
+by each setting's latency, using the final specialized implementation for
+both terms; it is not speedup over native execution. Dashed/solid curves
+connect h-only/all-site pressure settings; dotted paths show base/ReLU
+clipping, including its recurring cost. Timings use RTX5090, BF16, batch one,
+2,048 tokens and the full logit head. Sparsity uses full-validation pooled
+logical counts. Panel scales differ; normalization does not remove differences
+in model quality or timing sessions.}
+\label{fig:base-model-speedup}
 \end{figure}
 
-Larger models do not uniformly have lower loss under this training budget.
-The 410M base model finishes at loss 4.547, above 70M's 4.100.
-Every model receives the same 712 optimizer steps and 1.493B input tokens,
-but this gives 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M,
-and 410M. The 410M learning-rate schedule also has a lower peak
-($3\times10^{-4}$ rather than $10^{-3}$).
-These differences may contribute to the non-monotonic base-model loss. We show the training loss and gradient norms during training at the Appendix~\ref{app:training-protocol}, Figure~\ref{fig:a0-optimization}.
+\textbf{Agentic kernel development.}
+To test whether the learned zeros save time, we used GPT-6
+Astra~\citep{openaigpt6astra} as the configured coding agent in a human-guided
+search for specialized GPU routines. For our representation-learning team,
+without specialist GPU-kernel expertise, this made direct execution tests
+practical. The agent inspected existing implementations, proposed edits,
+compiled candidates and revised them using correctness and timing feedback.
+We fixed the workload and numerical tolerances, then froze the implementation
+before final-checkpoint benchmarking. The final routines pass the full-validation
+checks at 14M and, after a shape-specific port, 70M
+(Appendix~\ref{app:kernel-results}). This single development case illustrates
+the feasibility of this workflow.
 
-Given this non-monotonic base-model quality and the differing optimization
-regimes, we retain a limited recipe sweep at 410M and focus the detailed
-pressure-placement and execution analysis on 14M and 70M.
+In a matrix product, a zero activation contributes nothing to the output.
+Avoiding its multiplication can save arithmetic and avoid reading the
+corresponding weights. However, GPUs process groups of products;
+isolated zeros need not eliminate a group, and finding which work to skip
+also costs time. Our implementation detects empty groups and handles nearly
+empty rows using their surviving values, especially at $h$ and $z$. It also
+combines adjacent operations to reduce intermediate data movement. These
+mechanisms make speedup depend on both the activation pattern and the routines
+that consume it.
+
+\textbf{Sparsity and speedup rise together within recipes.}
+Figure~\ref{fig:base-model-speedup} shows an approximately linear increase
+within each trained threshold/pressure family over the tested grid, with
+different slopes across families. At 14M and $\kappa=0.5$, for example,
+$T_7/P_{\mathrm{all}}$ is much sparser than $T_4/P_{\mathrm{all}}$
+($27.48\%$ versus $12.71\%$), yet slightly slower ($1.38\times$ versus
+$1.42\times$ base-model speedup). Thus, a larger $\Smodel$ need not yield a
+larger gain: where the zeros occur and whether the kernel can exploit them
+matter (Section~\ref{sec:kernel-autoresearch}).
+
+\textbf{Post-hoc clipping does not yield comparable gains in this implementation.}
+Every positive clipping target remains below $1\times$ at 14M. At 70M,
+aggressive clipping can exceed $1\times$, reaching $1.22\times$, but with
+substantial loss degradation (Appendix~\ref{app:clipping-results}).
+Here clipping uses separate masking operations around the frozen kernel,
+adding activation scans and writes on every forward pass. The resulting zeros
+still have to form groups that its skipping rules can use. These costs can
+outweigh the avoided products; the measurements do not separately isolate
+each cost. We did not optimize a fused clipping implementation, so this
+result does not establish a general limitation of post-hoc sparsification.
+
+\FloatBarrier
 
 \subsection{Paired effects of pressure placement}
 \label{sec:paired-results}

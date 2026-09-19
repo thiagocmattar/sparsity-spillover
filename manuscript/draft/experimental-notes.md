@@ -1,5 +1,13 @@
 # Experimental-section scope and provenance
 
+18 September 2026, subsequent placement revision: protocol and calibration
+precede Table 1, immediately followed by the 14M/70M quality overview and
+then base-model speedup. The agentic-development discussion is preserved.
+The complete 410M panel and detailed quality/schedule discussion move to
+the appendix. The main setup retains all three scale roles, including
+410M as a fixed-token sparsity stress test rather than quality scaling.
+See the [placement and preservation audit](reviews/2026-09-18-quality-scope-placement/README.md).
+
 18 September 2026: the author requested Analysis024 Figure13 immediately
 after the post-hoc calibration paragraph. The setup now introduces the
 GPT-6 Astra-assisted kernel development, its first-principles execution

@@ -1,5 +1,11 @@
 # Figure 13: Base-model speedup with post-hoc clipping
 
+**Subsequent placement:** the unchanged PDF is now manuscript Figure 4 on
+page 6, after the 14M/70M quality overview (Figure 3). The agentic-development
+discussion moves with it unchanged. See
+[observation 031](031-quality-main-appendix.md); the original adoption
+record below retains its earlier placement and numbering.
+
 PDF: [13-14m-70m-sparsity-base-speedup.pdf](../figures/13-14m-70m-sparsity-base-speedup.pdf).
 Source: [22_plot_base_speedup_clipping.py](../22_plot_base_speedup_clipping.py).
 Exact coordinates, normalization references, source/output hashes and curves:

@@ -1,10 +1,15 @@
 # Observations
 
+- [031: Main/appendix quality split](031-quality-main-appendix.md):
+  all 14M/70M recipes directly after Table 1, followed by base-model speedup;
+  complete 410M panel in the appendix. Exact partition of all 74 trained
+  and 60 control-clipping records, with the original figures retained.
+
 - [030: Base-model speedup with clipping](030-base-speedup-clipping.md):
   a new two-panel 14M/70M scatter plot using A3's optimized A0 references,
   Figure 08's 44 trained checkpoints and style, and all 40 measured control
   clipping evaluations. Every ratio uses the same reference within its size.
-  Adopted unchanged as manuscript Figure 3 in the Experimental Study introduction.
+  Adopted unchanged; now manuscript Figure 4 after the 14M/70M quality overview.
 
 - [029: High-threshold bypass summary](029-operation-bypass-summary.md):
   two size panels, T4/Pall versus T7/Pall at kappa=0.5, and 24 count-based bars.

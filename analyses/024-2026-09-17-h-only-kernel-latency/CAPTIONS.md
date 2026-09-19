@@ -1,5 +1,14 @@
 # Paper figures, captions, and associated manuscript writing
 
+[14-14m-70m-quality-sparsity.pdf](figures/14-14m-70m-quality-sparsity.pdf)
+and [A5-410m-quality-sparsity.pdf](figures/A5-410m-quality-sparsity.pdf)
+split the retained all-scale quality overview into the main-text 14M/70M
+view and complete 410M appendix panel. Their publication captions and
+associated main/appendix writing are in
+[observation 031](observations/031-quality-main-appendix.md). Current
+manuscript numbering is quality Figure 3 after Table 1, base-model speedup
+Figure 4, and 410M Figure 15. Earlier placement notes below are historical.
+
 [Figure 13: model-wide sparsity and base-model speedup](figures/13-14m-70m-sparsity-base-speedup.pdf)
 uses the same optimized A0 reference for all trained and clipped settings
 within each size, with Figure 08's style and cohort. Its

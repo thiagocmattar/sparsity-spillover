@@ -1,5 +1,14 @@
 # H-only pressure: final K050 latency extension
 
+[Figure 14: 14M/70M quality overview](figures/14-14m-70m-quality-sparsity.pdf)
+is now manuscript Figure 3, directly after Table 1. The existing Figure 13
+speedup plot follows as manuscript Figure 4. The complete
+[410M panel](figures/A5-410m-quality-sparsity.pdf) moves to appendix Figure 15,
+beside the retained full 410M post-hoc trajectories. The split preserves all
+original data records and PDFs; [observation 031](observations/031-quality-main-appendix.md)
+documents captions, coverage, associated writing and the builder
+`23_plot_quality_main_appendix.py`. Notes below describe previous placements.
+
 [Figure 13: sparsity versus base-model speedup](figures/13-14m-70m-sparsity-base-speedup.pdf)
 uses A3's size-specific optimized A0 references and Figure 08's matched cohort
 and styling, including all 40 measured control clipping settings. The new

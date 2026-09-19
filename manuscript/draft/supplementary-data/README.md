@@ -1,5 +1,17 @@
 # Manuscript results data
 
+## Main/appendix quality split, 18 September 2026
+
+`quality-main-appendix.json` is copied unchanged from Analysis024 and
+partitions the original 74 trained and 60 Base/ReLU clipping records:
+62/40 in the 14M/70M main figure, 12/20 in the complete 410M appendix panel.
+Coordinates, source identities, loss conventions and pooled counts are
+unchanged. Every 410M point is visible at the expanded loss range. The
+original `all-model-quality-sparsity.json` remains the measurement and
+protocol source. Current figures are quality Figure 3, speedup Figure 4
+and 410M Figure 15; earlier numbering below records earlier revisions.
+See the [placement and preservation audit](../reviews/2026-09-18-quality-scope-placement/README.md).
+
 ## Base-model speedup adoption, 18 September 2026
 
 `base-model-speedup.json` is copied unchanged from Analysis024's

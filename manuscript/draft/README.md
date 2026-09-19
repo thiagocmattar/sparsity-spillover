@@ -1,5 +1,13 @@
 # Manuscript draft: ICLR 2027 format
 
+The current Figure 3 contains the 14M/70M quality overview directly after
+Table 1 (page 5), followed by Figure 4's base-model speedup plot (page 6).
+The complete 410M panel is appendix Figure 15 (page 26); its existing full
+post-hoc trajectories are Figure 16 (page 27). Main text retains 410M as a
+fixed-token sparsity stress test. [main.pdf](main.pdf) has 33 checked pages;
+see the [scope and placement audit](reviews/2026-09-18-quality-scope-placement/README.md).
+Earlier notes below describe previous revision states.
+
 Figure 3 (page 5) now shows Analysis024's base-model-normalized speedup plot,
 immediately after the post-hoc calibration paragraph. The accompanying
 Experimental Study text introduces GPT-6 Astra-assisted kernel development,

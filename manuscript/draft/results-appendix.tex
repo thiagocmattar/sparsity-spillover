@@ -89,7 +89,7 @@ training. These observations are \textbf{consistent with different degrees
 of optimization under the fixed-token protocol}, but they do not establish
 whether any run has or has not converged. The trajectories therefore provide
 context for the non-monotonic A0 validation losses in
-Figure~\ref{fig:quality-sparsity-all-sizes} rather than a basis for extrapolating
+Figures~\ref{fig:quality-sparsity-14m-70m} and~\ref{fig:quality-sparsity-410m} rather than a basis for extrapolating
 performance with additional training.
 
 % Approved Analysis 021 artwork copied unchanged; hash in figures/SOURCES.json.
@@ -316,6 +316,43 @@ checkpoint through ten increasing thresholding targets. All points, including
 overlaps and high-loss settings, are retained. The evaluation and line
 conventions match Figure~\ref{fig:clipping-14m}.}
 \label{fig:clipping-70m}
+\end{figure}
+
+\FloatBarrier
+\paragraph{410M as a fixed-token stress test.}
+% Source: Analysis024 observations/031-quality-main-appendix.md;
+% generating analysis: 23_plot_quality_main_appendix.py; original evidence: 20_plot_quality_all_sizes.py.
+Figure~\ref{fig:quality-sparsity-410m} retains all twelve trained 410M
+conditions and both complete control-clipping paths. At $\kappa=0.5$,
+$T_7/P_{\mathrm{all}}$ reaches $80.62\%$ model-wide sparsity, or $92.4\%$
+of the seven-site ceiling, at loss $5.121$ versus the base model's $4.547$.
+This tests attainable sparsity under a larger architecture and the same token
+budget; it is not a quality-scaling experiment. The 410M seven-site ceiling
+is $87.25\%$, compared with $49.42\%$ at 70M, so greater architectural reach
+also contributes to the larger observed model-wide sparsity.
+
+The 410M base-model loss exceeds 70M's $4.100$. All sizes receive 712 optimizer
+steps and 1.493B input tokens, corresponding to $106.14$, $21.20$ and $3.68$
+tokens per parameter at 14M, 70M and 410M. The 410M schedule also has a lower
+peak learning rate ($3\times10^{-4}$ rather than $10^{-3}$). These differences
+may contribute to the non-monotonic quality ordering, but their effects are
+not isolated. The training trajectories are retained in
+Figure~\ref{fig:a0-optimization}. We therefore treat 410M as a limited
+stress test and use 14M/70M for detailed intervention and runtime analysis.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/appendix/A5-410m-quality-sparsity.pdf}
+\caption{\textbf{Complete 410M quality--sparsity stress-test panel.}
+All twelve trained conditions: Base, ReLU, and $T_4/P_{\mathrm{all}}$ and
+$T_7/P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$. Dotted paths retain
+all ten post-hoc targets for each fixed Base/ReLU control, including their
+full loss range. Vertical guides mark the four- and seven-site sparsity
+ceilings. Trained losses use ordinary final-checkpoint validation;
+clipping retains its original FP16 pass. Sparsity pools logical counts over
+all 338 complete validation blocks. Figure~\ref{fig:clipping-410m} additionally
+retains the historical clipping sweeps of every trained recipe.}
+\label{fig:quality-sparsity-410m}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -614,10 +651,11 @@ checkpoint identities, timing sessions and source hashes. The
 Figure~\ref{fig:base-model-speedup} export retains the same 84 settings,
 their unrounded latencies and the two common base-model references used to
 compute every displayed speedup. The
-Figure~\ref{fig:quality-sparsity-all-sizes} export additionally retains all
-74 trained endpoints under a uniform final-loss convention, the 60 base/ReLU
-clipping settings across three sizes, and the source counts and protocol
-checks supporting the overview.
+Figures~\ref{fig:quality-sparsity-14m-70m} and~\ref{fig:quality-sparsity-410m}
+partition the original all-size export without changing its 74 trained
+endpoints or 60 base/ReLU clipping settings. The split export records the
+main-text and appendix membership, display limits, uniform final-loss
+convention and pooled counts; the original retains the protocol checks.
 The Figure~\ref{fig:paired-intervention-effects} export retains all 20
 all-site-minus-h-only pressure contrasts, including the two small 14M latency
 reversals at $\kappa=0.5$; its checkpoint identities match the Figure~\ref{fig:quality-sparsity-overview}
