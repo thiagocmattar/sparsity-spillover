@@ -5,7 +5,8 @@ use black T/P labels and a shared viridis sparsity
 scale. Both thresholds and all 504 original values are preserved. Reproduce
 with `plot_layer_sparsity.py`; [O017](observations/O017-layer-sparsity-style.md)
 records the caption and audit. A copy is saved directly in
-`manuscript/draft/figures/` for review; the manuscript still includes the old figure.
+`manuscript/draft/figures/` and is now included in the main pressure-placement
+discussion at the author's request. The older appendix figure is retained.
 
 This is the targeted revision requested in the updated
 `manuscript/draft/feedback-review-task.md` on 17 September 2026. It uses

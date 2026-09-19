@@ -53,7 +53,17 @@ These are activation fractions, not model-wide sparsity or measured speedups.
 The original one-seed, precision, and independent diagnostic-pass caveats in
 [O016](O016-pressure-placement.md) still apply.
 
+At kappa=0.05, pooled h/z sparsity increases from 81.34/77.64% under T4/P0
+to 97.91/88.31% under T4/Ph. Under T7, the corresponding change is from
+81.30/78.02% to 97.95/90.12%; T7/Pall instead gives 81.05/72.07%.
+These values support the manuscript's nonlocal-response paragraph. The more
+frequently active OL1 cap under T7/Pall is a possible explanation, not an
+identified cause; O016 owns the pressure-budget evidence.
+
 Both pages were rendered and inspected for label clipping, legibility, and
-contrast. The original appendix PDF and manuscript TeX inclusion are unchanged;
-the new figure awaits author review. The exact plotted values, source digest,
+contrast. On 19 September, the author requested the polished nonlocal-response
+paragraph and inclusion of both heatmap pages in the main results section.
+`training-results.tex` now includes the figure under label
+`fig:pressure-layer-sparsity`; the original appendix inclusion remains unchanged.
+The exact plotted values, source digest,
 and output digest are in [layer-sparsity-review.json](../data/layer-sparsity-review.json).

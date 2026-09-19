@@ -110,10 +110,10 @@ but \textbf{points into a requirement of pairing the sparse intervention with sp
 % Source: analyses/024-2026-09-17-h-only-kernel-latency/observations/015-pressure-scope-caption.md;
 % generating analysis: paper_effect_figures.py / 13_rebuild_paper_figures.py;
 % adoption and checked claims: manuscript/draft/reviews/2026-09-18-paired-pressure/README.md.
-\textbf{H-only pressure gives a more favorable quality--sparsity trade-off
-at moderate thresholds in both model sizes.}
-For $\kappa\leq0.1$, $P_h$ lowers loss relative to $P_{\mathrm{all}}$ in
-all 16 matched four-/seven-site comparisons at 14M and 70M
+One question raised during sparse intervetion design is wheater activation pressure should be applied over the entire network, or are there local sites more suceptible to sparsification? To answer this, we combine the clipping accross multiple sites ($T_4$ and $T_7$) with global and local FFN hidden pressure ($P_{all}$ and $P_h$).
+
+We find that \textbf{local h-only pressure gives a more favorable quality--sparsity trade-off at moderate thresholds in both model sizes}.
+For $\kappa\leq0.1$, $P_h$ lowers loss relative to $P_{\mathrm{all}}$ in all 16 matched four-/seven-site comparisons at 14M and 70M
 (Figure~\ref{fig:paired-intervention-effects}). The loss reduction is
 $0.19$--$0.32$, with sparsity differing by at most $3.36$ percentage points.
 At $\kappa=0.5$, all-site pressure instead gives substantially more sparsity,
@@ -140,6 +140,34 @@ per checkpoint. The 14M $T_7$ pairs span GPU sessions; 70M uses the qualified
 K050 port. Small timing differences are descriptive. Lines connect separate
 single-seed runs with matched initialization, data order and training budget.}
 \label{fig:paired-intervention-effects}
+\end{figure}
+
+% Source: Analysis021 pressure-scope/observations/O016-pressure-placement.md
+% and O017-layer-sparsity-style.md; figure: pressure-scope/plot_layer_sparsity.py.
+Additionally, \textbf{local pressure can produce nonlocal sparsity changes}.
+At $\kappa=0.05$ in 14M, $P_h$ increases sparsity at both $h$ and $z$
+relative to $P_0$ under $T_4$ and $T_7$, although $z$ receives no direct
+pressure (Figure~\ref{fig:pressure-layer-sparsity}). Under $T_7$, $P_h$ also
+produces higher sparsity at $h$ and $z$ than $P_{\mathrm{all}}$, despite
+the latter targeting both sites. More frequent activation of the OL1 norm
+cap under $T_7/P_{\mathrm{all}}$ offers a possible explanation
+(Appendix~\ref{app:pressure-budget-diagnostics}), but these diagnostics do
+not isolate its contribution. At $\kappa=0.5$, $h$ and $z$ are nearly
+fully sparse under every pressure scope; the larger differences instead
+appear at $q,k,v$.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.94\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
+\includegraphics[width=0.94\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
+\caption{\textbf{Activation sparsity by site and layer in Pythia-14M.}
+The six threshold/pressure recipes at $\kappa=0.05$ (top) and $0.5$ (bottom).
+Each cell gives the percentage of zero activations, pooling integer counts
+over all 338 complete validation sequences at one site and layer.
+Q/K are post-RoPE; all panels share a 0--100\% color scale.
+Values are rounded to whole percentages, so 0 or 100 does not establish
+a completely dense or all-zero tensor.}
+\label{fig:pressure-layer-sparsity}
 \end{figure}
 
 \FloatBarrier

@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+19 September 2026, nonlocal pressure response: the final paragraph of
+`draft/training-results.tex` now describes the retained 14M h/z comparisons
+at kappa=0.05 and distinguishes the possible OL1-cap explanation from an
+identified mechanism. The approved two-page viridis heatmap is included as
+Figure 6 on page 8, immediately after the discussion on page 7. Evidence and
+caption: [O017](../analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O017-layer-sparsity-style.md)
+and its linked O016 pressure diagnostics. `draft/main.pdf` is rebuilt at
+35 pages with resolved references and citations, no overfull boxes, and the
+affected pages visually checked. The author's other paragraph edits are retained.
+
 19 September 2026, author revision and rebuild: the experimental setup,
 methodology, captions, and sparsity-to-speedup discussion incorporate the
 author's edits; the tile explanation is retained as a source comment.
