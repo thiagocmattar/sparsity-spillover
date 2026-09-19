@@ -78,19 +78,21 @@ def main():
     fig.subplots_adjust(left=.13, right=.97, top=.85, bottom=.27)
     ax.set_title(TITLE, pad=18)
     handles = []
-    for scope, pressure, label, color, _ in STYLES:
+    for scope, pressure, label, color, linestyle in STYLES:
         group = sorted([p for p in points if (p['scope'], p['pressure']) == (scope, pressure)],
                        key=lambda p: -1 if p['kappa'] is None else p['kappa'])
         assert len(group) == (1 if scope in ['0', '1'] else 5)
         if scope in ['4', '7']:
             assert [p['kappa'] for p in group] == [0, .01, .05, .1, .5]
+            ax.plot([p['hz_contribution_pp'] for p in group], [p['latency_ms'] for p in group],
+                    color=color, ls=linestyle, lw=1.4, zorder=2)
         face, edge = ('white', color) if scope == '0' else (color, 'white')
         size = 72 if scope in ['0', '1'] else 50
         width = 1.5 if scope == '0' else .65
         ax.scatter([p['hz_contribution_pp'] for p in group], [p['latency_ms'] for p in group],
                    s=size, color=face, edgecolors=edge, linewidths=width,
                    zorder=4 if scope in ['0', '1'] else 3)
-        handles.append(Line2D([], [], ls='none', marker='o', ms=math.sqrt(size),
+        handles.append(Line2D([], [], color=color, ls=linestyle, lw=1.4, marker='o', ms=math.sqrt(size),
                               mfc=face, mec=edge, mew=width, label=label))
     limits = {'x': [-.18, 5.58], 'y': [.445, .670]}
     ax.set(xlim=limits['x'], ylim=limits['y'],
@@ -118,7 +120,7 @@ def main():
         'y_definition': 'K050 full-model host latency per 2048-token sequence, geometric mean of 1344 timings',
         'y_unit': 'milliseconds', 'cohort': '22 trained 14M settings from manuscript Figure 1 / Analysis024 Figure 08',
         'points': points, 'limits': limits,
-        'caption': 'One point per trained recipe-threshold setting; colors identify recipes. No connecting lines or post-hoc clipping.',
+        'caption': 'One point per trained recipe-threshold setting; colors identify recipes. Lines connect increasing kappa within each recipe: dashed for Ph, solid for Pall. Controls remain unconnected; no post-hoc clipping.',
         'precision_note': 'Canonical FP16 logical counts; qualified BF16 timings on RTX5090, batch one, full vocabulary output.',
         'session_note': '14M T7/Ph uses Run033; all other plotted timings use Run029. Small cross-session differences are descriptive.',
         'sources_sha256': sources, 'script': Path(__file__).name,

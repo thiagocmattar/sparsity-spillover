@@ -17,8 +17,9 @@ no experiment, timing, kernel change or manuscript edit is involved.
 
 Each of the 22 points represents one final trained checkpoint: Base model,
 GeLU -> ReLU, and T4/Ph, T4/Pall, T7/Ph, T7/Pall at kappa = 0, .01, .05,
-.1, .5. Colors match Figure 1. Circular markers are unconnected; the two
-nearly coincident T7 high-threshold points overlap. Post-hoc clipping and
+.1, .5. Colors match Figure 1. Lines connect increasing kappa within each
+pressure recipe: dashed for Ph, solid for Pall. Base and ReLU controls remain
+unconnected. The two nearly coincident T7 high-threshold points overlap. Post-hoc clipping and
 other recipe families are outside this requested matched cohort.
 
 The horizontal coordinate is
@@ -50,13 +51,15 @@ T7/Ph uses Run033; the other 17 settings use Run029.
 
 **h/z sparsity contribution and full-model latency on Pythia-14M.** Each
 point is one trained recipe-threshold setting; colors identify the six
-Figure 1 recipes. The x-axis sums the h-fed MLP-down and z-fed attention-output
+Figure 1 recipes. Dashed Ph and solid Pall lines connect increasing thresholds
+within each recipe. The x-axis sums the h-fed MLP-down and z-fed attention-output
 zero-product counts and divides by the full-model product count, including
 the dense output head. It therefore shows their combined contribution to
 S_model in percentage points. The y-axis is the measured K050 full-model
 latency per 2048-token sequence (RTX5090, BF16, batch one), averaged
 geometrically over 1344 timings. Sparsity uses full-validation FP16 counts.
-Axes are linear, and no trend or interpolation is fitted.
+Axes are linear. Connecting lines are visual guides, not fitted trends or
+claims of attainable intermediate models.
 
 ## Result and interpretation limits
 
