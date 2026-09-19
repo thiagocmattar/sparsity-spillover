@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+19 September 2026, requested rebuild: `draft/main.pdf` now reflects the current
+author-edited manuscript. A missing closing brace in Figure 1's caption was
+repaired in `draft/introduction.tex`; no wording changed. The 34-page build has
+no undefined references/citations or overfull boxes. Pages 1, 2 and 9 were
+visually checked, and the installed PDF's hash matches the reviewed build.
+The author's source edits, including the one-brace repair within the revised
+caption, remain in the working tree; this rebuild records only the PDF and note.
+
 19 September 2026, Table 2 caption clarification: timing units are now explicit
 as microseconds per complete 2048-token sequence. Brackets give the minimum and
 maximum savings across all pairs of independent off/on timing-run means, not
