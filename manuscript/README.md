@@ -10,9 +10,8 @@ Evidence: [Observation 035](../analyses/024-2026-09-17-h-only-kernel-latency/obs
 and its Run039 sources. The current working draft builds at 34 pages with no
 undefined references/citations or overfull boxes; the revised paragraph and
 adjacent table were visually checked on pages 8--9. Existing author edits are
-preserved. The viewer currently locks `draft/main.pdf`; the checked rebuilt
-copy is temporarily at `tmp/manuscript-am-port/main-rebuilt.pdf` in the repository
-root. Canonical PDF replacement is pending release of that file lock.
+preserved. After the viewer was closed, the checked build replaced
+`draft/main.pdf`; the installed PDF's SHA256 matches the reviewed copy.
 
 19 September 2026, mechanism evidence table: Section 4.3 now defines instruction
 bypass, distinguishes the h/z weight-load avoidance from later a/m and attention
