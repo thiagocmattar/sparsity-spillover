@@ -1,5 +1,12 @@
 # Paper figures, captions, and associated manuscript writing
 
+The current caption for
+[14-14m-70m-quality-sparsity.pdf](figures/14-14m-70m-quality-sparsity.pdf)
+is in [observation 032](observations/032-quality-ol1-layout.md): 36/22 trained
+conditions, OL1-only pressure recipes, independent loss scales and 8/7
+clipping points continuing above the view. It also records the associated
+manuscript count/width edits and the restored three-row legend.
+
 [14-14m-70m-quality-sparsity.pdf](figures/14-14m-70m-quality-sparsity.pdf)
 and [A5-410m-quality-sparsity.pdf](figures/A5-410m-quality-sparsity.pdf)
 split the retained all-scale quality overview into the main-text 14M/70M

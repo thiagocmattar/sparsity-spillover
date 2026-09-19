@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+The current [14M/70M quality figure](figures/14-14m-70m-quality-sparsity.pdf)
+omits naive-L1, uses independent loss scales, and has a taller/narrower layout
+with a three-row legend. Its 36/22 trained points and all clipping data are
+documented in [observation 032](observations/032-quality-ol1-layout.md).
+The four omitted conditions remain in the export; earlier notes retain
+their original display scope and page numbering.
+
 [Figure 14: 14M/70M quality overview](figures/14-14m-70m-quality-sparsity.pdf)
 is now manuscript Figure 3, directly after Table 1. The existing Figure 13
 speedup plot follows as manuscript Figure 4. The complete

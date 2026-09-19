@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+19 September 2026, figure polish: Figure 3's PDF now removes naive-L1,
+shortens the T1/P1 label, uses independent loss scales, and restores the
+three-row legend in a 10% narrower, 14.3% taller canvas. The include uses
+90% line width; caption and overview counts are 36/22 (58 total). See
+[observation 032](../analyses/024-2026-09-17-h-only-kernel-latency/observations/032-quality-ol1-layout.md).
+The figure PDF and provenance are updated; canonical `main.pdf` remains
+unchanged while the author is editing.
+
 19 September 2026: [experimental-study.tex](draft/experimental-study.tex)
 merges the matching/protocol and post-hoc setup paragraphs. Table 1's caption
 now associates threshold kappa and pressure lambda/b with their executed

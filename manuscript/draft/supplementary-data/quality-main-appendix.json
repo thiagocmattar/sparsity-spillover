@@ -2,7 +2,7 @@
   "source": "analyses/024-2026-09-17-h-only-kernel-latency/data/all-model-quality-sparsity.json",
   "source_sha256": "11163bedb4af932d343cbc54bf623c4af45c1d278e40230f81b275f17a7c29f5",
   "script": "23_plot_quality_main_appendix.py",
-  "script_sha256": "714b91b590162dc41fd5b0f046b7e2ca7f7c98fbada63264d3785e358748e730",
+  "script_sha256": "86763810878694ebe6bf53c17295c16bc0cc415cc22edb31e8a5b7abf94ecc11",
   "style_source_sha256": "f12f2f886314d1d405a0ef4b578aa7705d78c8f1a134c336164b2550b3e69db9",
   "outputs": [
     {
@@ -13,19 +13,25 @@
       ],
       "title": "Quality-sparsity trade-offs on Pythia 14M and 70M",
       "figsize": [
-        10.8,
-        4.55
+        9.72,
+        5.2
       ],
-      "loss_limits": [
-        4.0,
-        6.2
-      ],
+      "loss_limits": {
+        "14M": [
+          5.0,
+          6.2
+        ],
+        "70M": [
+          4.0,
+          5.5
+        ]
+      },
       "output": "figures/14-14m-70m-quality-sparsity.pdf",
-      "output_sha256": "5d869d328f85faee3ea822b2565fd2dccb7bb78390337e4c4039307b1eaf66ea",
+      "output_sha256": "a83fd345489a59182b839189826ee3f40b0521a28d414dea21998b73bf074977",
       "panels": [
         {
           "model": "14M",
-          "trained_count": 40,
+          "trained_count": 36,
           "clipping_count": 20,
           "clipping_outside_y": [
             "14M:A0:None:clip:0.6",
@@ -43,9 +49,11 @@
           "trained_count": 22,
           "clipping_count": 20,
           "clipping_outside_y": [
+            "70M:A0:None:clip:0.6",
             "70M:A0:None:clip:0.7",
             "70M:A0:None:clip:0.8",
             "70M:A0:None:clip:0.9",
+            "70M:A1-H:None:clip:0.7",
             "70M:A1-H:None:clip:0.8",
             "70M:A1-H:None:clip:0.9"
           ]
@@ -77,22 +85,8 @@
         {
           "model": "14M",
           "scope": "1",
-          "pressure": "L1",
-          "label": "$T_1/P_1$ (L1)",
-          "color": "#95664E",
-          "linestyle": "-.",
-          "source_attempts": [
-            "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/003-20260829-221010-062e6eae",
-            "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/004-20260829-221037-231415c7",
-            "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/005-20260829-221010-866aa09f",
-            "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/006-20260829-221054-e7b8a083"
-          ]
-        },
-        {
-          "model": "14M",
-          "scope": "1",
           "pressure": "h",
-          "label": "$T_1/P_1$ (OL1)",
+          "label": "$T_1/P_1$",
           "color": "#B9568B",
           "linestyle": "--",
           "source_attempts": [
@@ -361,130 +355,6 @@
           "training_tokens": 1493172224,
           "final_learning_rate": 0.0001,
           "logical_pass_loss": 5.26963426093378
-        },
-        {
-          "model": "14M",
-          "family": "A1-H+L1",
-          "scope": "1",
-          "pressure": "L1",
-          "kappa": null,
-          "local_pressure_weight": 0.05,
-          "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/003-20260829-221010-062e6eae",
-          "loss": 5.206149132294063,
-          "checkpoint_key": "27a90a95e5c9cf4014b1fd71bc7c0466144fb9131bd3162610446ad229155b8c",
-          "latency_ms": 0.6330179885832224,
-          "timing_session": "Run029",
-          "kernel": "K050",
-          "sparsity": 3.141594861527296,
-          "zero_product_count": 199901437662,
-          "model_product_count": 6363055915008,
-          "coverage": {
-            "sequences": 338,
-            "input_tokens": 692224,
-            "source_tokens": 693668,
-            "excluded_tail_tokens": 1444,
-            "complete_block_coverage": true
-          },
-          "final_checkpoint_content_sha256": "e92e876511c10da7978ee4a274b14b21dc795086764a5ef102fda0f6e8670325",
-          "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
-          "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
-          "training_steps": 712,
-          "training_tokens": 1493172224,
-          "final_learning_rate": 0.0001,
-          "logical_pass_loss": 5.206143599290114
-        },
-        {
-          "model": "14M",
-          "family": "A1-H+L1",
-          "scope": "1",
-          "pressure": "L1",
-          "kappa": null,
-          "local_pressure_weight": 0.1,
-          "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/004-20260829-221037-231415c7",
-          "loss": 5.16547385052111,
-          "checkpoint_key": "03fc6b993113acaf2d04bd3cb84984000700d2e306a0b0095e0e9512ab61af2b",
-          "latency_ms": 0.6325058135739893,
-          "timing_session": "Run029",
-          "kernel": "K050",
-          "sparsity": 3.336306479694562,
-          "zero_product_count": 212291046799,
-          "model_product_count": 6363055915008,
-          "coverage": {
-            "sequences": 338,
-            "input_tokens": 692224,
-            "source_tokens": 693668,
-            "excluded_tail_tokens": 1444,
-            "complete_block_coverage": true
-          },
-          "final_checkpoint_content_sha256": "0b4a84eb437d0e3c57da21a4edd6108b16949530ee0bc494ca7447c16589868b",
-          "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
-          "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
-          "training_steps": 712,
-          "training_tokens": 1493172224,
-          "final_learning_rate": 0.0001,
-          "logical_pass_loss": 5.165482571844518
-        },
-        {
-          "model": "14M",
-          "family": "A1-H+L1",
-          "scope": "1",
-          "pressure": "L1",
-          "kappa": null,
-          "local_pressure_weight": 0.5,
-          "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/005-20260829-221010-866aa09f",
-          "loss": 5.112688293118449,
-          "checkpoint_key": "e19a6726ff346bdd2850ba533fccba7a0aed7732c3213e83335814a0afd8c938",
-          "latency_ms": 0.6122575853995819,
-          "timing_session": "Run029",
-          "kernel": "K050",
-          "sparsity": 3.7875781055382567,
-          "zero_product_count": 241005712680,
-          "model_product_count": 6363055915008,
-          "coverage": {
-            "sequences": 338,
-            "input_tokens": 692224,
-            "source_tokens": 693668,
-            "excluded_tail_tokens": 1444,
-            "complete_block_coverage": true
-          },
-          "final_checkpoint_content_sha256": "379a01b80c1211bdd97b879d50e5dfb3bd4c81800dd34253c4cee459f0aad652",
-          "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
-          "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
-          "training_steps": 712,
-          "training_tokens": 1493172224,
-          "final_learning_rate": 0.0001,
-          "logical_pass_loss": 5.112687533423745
-        },
-        {
-          "model": "14M",
-          "family": "A1-H+L1",
-          "scope": "1",
-          "pressure": "L1",
-          "kappa": null,
-          "local_pressure_weight": 1.0,
-          "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/006-20260829-221054-e7b8a083",
-          "loss": 5.10227634215496,
-          "checkpoint_key": "2be6e2a65ed7f7029b678d1ec0aa58f4dfbeb181e4d4c3824b81f5c329964ef8",
-          "latency_ms": 0.5928247465408344,
-          "timing_session": "Run029",
-          "kernel": "K050",
-          "sparsity": 3.9493342588312625,
-          "zero_product_count": 251298347160,
-          "model_product_count": 6363055915008,
-          "coverage": {
-            "sequences": 338,
-            "input_tokens": 692224,
-            "source_tokens": 693668,
-            "excluded_tail_tokens": 1444,
-            "complete_block_coverage": true
-          },
-          "final_checkpoint_content_sha256": "96622fc39261f3d14c4bae4dd53ecaf33f7cd10055e2382bd992c3894ecf7dcf",
-          "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
-          "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
-          "training_steps": 712,
-          "training_tokens": 1493172224,
-          "final_learning_rate": 0.0001,
-          "logical_pass_loss": 5.1022753408674655
         },
         {
           "model": "14M",
@@ -3112,10 +2982,12 @@
         8.6,
         4.55
       ],
-      "loss_limits": [
-        4.2,
-        9.35
-      ],
+      "loss_limits": {
+        "410M": [
+          4.2,
+          9.35
+        ]
+      },
       "output": "figures/A5-410m-quality-sparsity.pdf",
       "output_sha256": "b8f3d6036c2d07788e34a97346cd67e8be992ce21d62ffedad63a82146f6d3ff",
       "panels": [
@@ -3975,5 +3847,131 @@
     "A3-dense-reference-speedup.pdf": "5e218a9b2efebbb7147ce4d1365bb4f9d2176aa5461e17ca81d7516d4d509259",
     "A4-instruction-level-explanation.pdf": "b71f5d5ca77a1e9e91b2bcfd6d8cd17a932ddd5469f3ff416d3cafb4172208f4"
   },
-  "note": "Exact partition of the retained 74 trained and 60 control-clipping records; no measurement or loss convention changed."
+  "excluded_trained_points": [
+    {
+      "model": "14M",
+      "family": "A1-H+L1",
+      "scope": "1",
+      "pressure": "L1",
+      "kappa": null,
+      "local_pressure_weight": 0.05,
+      "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/003-20260829-221010-062e6eae",
+      "loss": 5.206149132294063,
+      "checkpoint_key": "27a90a95e5c9cf4014b1fd71bc7c0466144fb9131bd3162610446ad229155b8c",
+      "latency_ms": 0.6330179885832224,
+      "timing_session": "Run029",
+      "kernel": "K050",
+      "sparsity": 3.141594861527296,
+      "zero_product_count": 199901437662,
+      "model_product_count": 6363055915008,
+      "coverage": {
+        "sequences": 338,
+        "input_tokens": 692224,
+        "source_tokens": 693668,
+        "excluded_tail_tokens": 1444,
+        "complete_block_coverage": true
+      },
+      "final_checkpoint_content_sha256": "e92e876511c10da7978ee4a274b14b21dc795086764a5ef102fda0f6e8670325",
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "training_steps": 712,
+      "training_tokens": 1493172224,
+      "final_learning_rate": 0.0001,
+      "logical_pass_loss": 5.206143599290114
+    },
+    {
+      "model": "14M",
+      "family": "A1-H+L1",
+      "scope": "1",
+      "pressure": "L1",
+      "kappa": null,
+      "local_pressure_weight": 0.1,
+      "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/004-20260829-221037-231415c7",
+      "loss": 5.16547385052111,
+      "checkpoint_key": "03fc6b993113acaf2d04bd3cb84984000700d2e306a0b0095e0e9512ab61af2b",
+      "latency_ms": 0.6325058135739893,
+      "timing_session": "Run029",
+      "kernel": "K050",
+      "sparsity": 3.336306479694562,
+      "zero_product_count": 212291046799,
+      "model_product_count": 6363055915008,
+      "coverage": {
+        "sequences": 338,
+        "input_tokens": 692224,
+        "source_tokens": 693668,
+        "excluded_tail_tokens": 1444,
+        "complete_block_coverage": true
+      },
+      "final_checkpoint_content_sha256": "0b4a84eb437d0e3c57da21a4edd6108b16949530ee0bc494ca7447c16589868b",
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "training_steps": 712,
+      "training_tokens": 1493172224,
+      "final_learning_rate": 0.0001,
+      "logical_pass_loss": 5.165482571844518
+    },
+    {
+      "model": "14M",
+      "family": "A1-H+L1",
+      "scope": "1",
+      "pressure": "L1",
+      "kappa": null,
+      "local_pressure_weight": 0.5,
+      "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/005-20260829-221010-866aa09f",
+      "loss": 5.112688293118449,
+      "checkpoint_key": "e19a6726ff346bdd2850ba533fccba7a0aed7732c3213e83335814a0afd8c938",
+      "latency_ms": 0.6122575853995819,
+      "timing_session": "Run029",
+      "kernel": "K050",
+      "sparsity": 3.7875781055382567,
+      "zero_product_count": 241005712680,
+      "model_product_count": 6363055915008,
+      "coverage": {
+        "sequences": 338,
+        "input_tokens": 692224,
+        "source_tokens": 693668,
+        "excluded_tail_tokens": 1444,
+        "complete_block_coverage": true
+      },
+      "final_checkpoint_content_sha256": "379a01b80c1211bdd97b879d50e5dfb3bd4c81800dd34253c4cee459f0aad652",
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "training_steps": 712,
+      "training_tokens": 1493172224,
+      "final_learning_rate": 0.0001,
+      "logical_pass_loss": 5.112687533423745
+    },
+    {
+      "model": "14M",
+      "family": "A1-H+L1",
+      "scope": "1",
+      "pressure": "L1",
+      "kappa": null,
+      "local_pressure_weight": 1.0,
+      "source_attempt": "runs/004-2026-08-29-pythia14m-full-pass-l1n/artifacts/attempts/006-20260829-221054-e7b8a083",
+      "loss": 5.10227634215496,
+      "checkpoint_key": "2be6e2a65ed7f7029b678d1ec0aa58f4dfbeb181e4d4c3824b81f5c329964ef8",
+      "latency_ms": 0.5928247465408344,
+      "timing_session": "Run029",
+      "kernel": "K050",
+      "sparsity": 3.9493342588312625,
+      "zero_product_count": 251298347160,
+      "model_product_count": 6363055915008,
+      "coverage": {
+        "sequences": 338,
+        "input_tokens": 692224,
+        "source_tokens": 693668,
+        "excluded_tail_tokens": 1444,
+        "complete_block_coverage": true
+      },
+      "final_checkpoint_content_sha256": "96622fc39261f3d14c4bae4dd53ecaf33f7cd10055e2382bd992c3894ecf7dcf",
+      "initial_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+      "training_schedule_hash": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+      "training_steps": 712,
+      "training_tokens": 1493172224,
+      "final_learning_rate": 0.0001,
+      "logical_pass_loss": 5.1022753408674655
+    }
+  ],
+  "note": "Plots retain 70 trained and all 60 control-clipping records; four historical 14M naive-L1 records are retained here but omitted from the main figure. No measurement or loss convention changed."
 }

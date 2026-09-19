@@ -15,27 +15,30 @@ SOURCE = HERE / 'data/all-model-quality-sparsity.json'
 VIEWS = [
     {'name': '14-14m-70m-quality-sparsity.pdf', 'sizes': ['14M', '70M'],
      'title': 'Quality-sparsity trade-offs on Pythia 14M and 70M',
-     'figsize': [10.8, 4.55], 'loss_limits': [4., 6.2]},
+     'figsize': [9.72, 5.2], 'loss_limits': {'14M': [5., 6.2], '70M': [4., 5.5]}},
     {'name': 'A5-410m-quality-sparsity.pdf', 'sizes': ['410M'],
      'title': 'Pythia-410M: fixed-token sparsity stress test',
-     'figsize': [8.6, 4.55], 'loss_limits': [4.2, 9.35]},
+     'figsize': [8.6, 4.55], 'loss_limits': {'410M': [4.2, 9.35]}},
 ]
 
 
 def draw(data, view):
     sizes = view['sizes']
-    rows = [p for p in data['trained_points'] if p['model'] in sizes]
+    rows = [p for p in data['trained_points'] if p['model'] in sizes and p['pressure'] != 'L1']
     clips = [p for p in data['clipping_points'] if p['model'] in sizes]
-    fig, axes = plt.subplots(1, len(sizes), figsize=view['figsize'], sharey=True, squeeze=False)
-    fig.subplots_adjust(left=.085, right=.985, top=.82, bottom=.34 if len(sizes) == 2 else .25,
+    fig, axes = plt.subplots(1, len(sizes), figsize=view['figsize'], sharey=False, squeeze=False)
+    fig.subplots_adjust(left=.085, right=.985, top=.84 if len(sizes) == 2 else .82,
+                        bottom=.30 if len(sizes) == 2 else .25,
                         wspace=.25)
     fig.suptitle(view['title'], fontsize=15, y=.98)
     series, panels = [], []
     styles = [s for s in original.STYLES if any((r['scope'], r['pressure']) == s[:2] for r in rows)]
+    styles = [(s, p, r'$T_1/P_1$' if (s, p) == ('1', 'h') else label, c, ls)
+              for s, p, label, c, ls in styles]
     for ax, size, letter in zip(axes[0], sizes, 'ab'):
         trained = [r for r in rows if r['model'] == size]
         clipping = [r for r in clips if r['model'] == size]
-        assert len(trained) == {'14M': 40, '70M': 22, '410M': 12}[size]
+        assert len(trained) == {'14M': 36, '70M': 22, '410M': 12}[size]
         assert len(clipping) == 20
         for scope, pressure, label, color, ls in styles:
             group = [r for r in trained if (r['scope'], r['pressure']) == (scope, pressure)]
@@ -70,17 +73,19 @@ def draw(data, view):
                        '410M': (35., 5.85, 28)}[size]
         ax.text(x, y, 'Post-hoc', rotation=angle, color='#6C7177', fontsize=10,
                 rotation_mode='anchor', ha='left', va='bottom')
-        ax.set(xlim=original.LIMITS[size], ylim=view['loss_limits'],
+        ax.set(xlim=original.LIMITS[size], ylim=view['loss_limits'][size],
                xlabel=r'Model-wide sparsity $S_{\mathrm{model}}$ (%)')
         if len(sizes) > 1:
             ax.set_title(f'({letter}) Pythia-{size}', loc='left', pad=10)
         ax.set_xticks({'14M': [0, 10, 20, 30], '70M': [0, 10, 20, 30, 40, 50],
                        '410M': [0, 15, 30, 45, 60, 75, 90]}[size])
-        ax.set_yticks([4., 4.5, 5., 5.5, 6.] if size != '410M' else [5., 6., 7., 8., 9.])
+        ax.set_yticks({'14M': [5., 5.2, 5.4, 5.6, 5.8, 6., 6.2],
+                      '70M': [4., 4.25, 4.5, 4.75, 5., 5.25, 5.5],
+                      '410M': [5., 6., 7., 8., 9.]}[size])
         ax.tick_params(length=3, width=.65, labelleft=True)
         ax.grid(axis='y', color='#E8EAED', lw=.6, zorder=0)
         ax.set_axisbelow(True)
-        lo, hi = view['loss_limits']
+        lo, hi = view['loss_limits'][size]
         assert all(lo <= r['loss'] <= hi for r in trained)
         outside = [p['id'] for p in clipping if not lo <= p['loss'] <= hi]
         if size == '410M':
@@ -92,10 +97,9 @@ def draw(data, view):
                     mfc='white' if s == '0' else c, mec=c if s == '0' else 'white',
                     mew=1 if s == '0' else .5, lw=1.55, label=label)
                for s, p, label, c, ls in styles]
-    order = [0, 5, 1, 6, 2, 7, 3, 8, 4, 9] if len(styles) == 10 else list(range(len(styles)))
-    fig.legend(handles=[handles[i] for i in order], loc='lower center', ncol=5 if len(styles) == 10 else 4,
+    fig.legend(handles=handles, loc='lower center', ncol=3 if len(styles) == 9 else 4,
                frameon=False, fontsize=11, handlelength=2., columnspacing=1.35,
-               labelspacing=.9, bbox_to_anchor=(.52, .035))
+               labelspacing=.9, bbox_to_anchor=(.52, .02 if len(sizes) == 2 else .035))
     output = HERE / 'figures' / view['name']
     fig.savefig(output, metadata={'Title': view['title'], 'CreationDate': None, 'ModDate': None})
     plt.close(fig)
@@ -114,14 +118,19 @@ def main():
                         'axes.spines.top': False, 'axes.spines.right': False,
                         'axes.linewidth': .65, 'pdf.fonttype': 42, 'mathtext.fontset': 'dejavusans'})
     outputs = [draw(data, v) for v in VIEWS]
-    assert sum(len(v['trained_points']) for v in outputs) == len(data['trained_points']) == 74
+    excluded = [p for p in data['trained_points'] if p['pressure'] == 'L1']
+    assert len(excluded) == 4 and all(p['model'] == '14M' and p['scope'] == '1' for p in excluded)
+    retained = [p for v in outputs for p in v['trained_points']] + excluded
+    assert len(retained) == len(data['trained_points']) == 74
+    assert {p['source_attempt']: p for p in retained} == {p['source_attempt']: p for p in data['trained_points']}
     assert sum(len(v['clipping_points']) for v in outputs) == len(data['clipping_points']) == 60
     assert preserved == {p.name: original.sha(p) for p in (HERE/'figures').glob('*.pdf') if p.name not in names}
     result = {'source': SOURCE.relative_to(ROOT).as_posix(), 'source_sha256': original.sha(SOURCE),
               'script': Path(__file__).name, 'script_sha256': original.sha(Path(__file__)),
               'style_source_sha256': original.sha(Path(original.__file__)), 'outputs': outputs,
               'coverage': data['coverage'], 'preserved_pdf_sha256': preserved,
-              'note': 'Exact partition of the retained 74 trained and 60 control-clipping records; no measurement or loss convention changed.'}
+              'excluded_trained_points': excluded,
+              'note': 'Plots retain 70 trained and all 60 control-clipping records; four historical 14M naive-L1 records are retained here but omitted from the main figure. No measurement or loss convention changed.'}
     (HERE/'data/quality-main-appendix.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8', newline='\n')
     print(json.dumps({v['name']: v['panels'] for v in outputs}))
 

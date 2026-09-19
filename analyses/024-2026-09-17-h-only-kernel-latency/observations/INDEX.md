@@ -1,5 +1,9 @@
 # Observations
 
+- [032: OL1-only quality overview layout](032-quality-ol1-layout.md):
+  36/22 trained conditions, independent loss scales, taller/narrower PDF and
+  three-row legend. Four naive-L1 records remain in the data but are not plotted.
+
 - [031: Main/appendix quality split](031-quality-main-appendix.md):
   all 14M/70M recipes directly after Table 1, followed by base-model speedup;
   complete 410M panel in the appendix. Exact partition of all 74 trained

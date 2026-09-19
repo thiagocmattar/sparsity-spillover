@@ -1,5 +1,10 @@
 # Quality overview: 14M/70M main text and complete 410M appendix
 
+**Subsequent figure revision:** [observation 032](032-quality-ol1-layout.md)
+records the current OL1-only pressure view, independent loss scales and
+three-row legend. Details below describe the original main/appendix split;
+the source measurements and complete 410M appendix figure remain unchanged.
+
 ## Question and authorized scope
 
 Focus the main quality overview on 14M and 70M, directly after Table 1,

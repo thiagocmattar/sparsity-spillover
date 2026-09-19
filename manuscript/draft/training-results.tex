@@ -1,18 +1,18 @@
 % Main/appendix split: Analysis024 observations/031-quality-main-appendix.md;
+% OL1-only pressure legend and layout: observations/032-quality-ol1-layout.md.
 % generating analysis: 23_plot_quality_main_appendix.py.
 % This figure immediately follows Table 1 in experimental-study.tex.
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/14-14m-70m-quality-sparsity.pdf}
+\includegraphics[width=0.9\linewidth]{figures/14-14m-70m-quality-sparsity.pdf}
 \caption{\textbf{Quality--sparsity trade-offs at 14M and 70M.}
-All 40/22 trained conditions, with a shared loss scale.
+36/22 trained conditions, with loss scales fitted separately to each size.
 Colors distinguish executed recipes; lines connect separate threshold
 settings ($\kappa=0,.01,.05,.1,.5$), or pressure weights
-($\lambda=.05,.1,.5,1$) for $T_1/P_1$. Its L1 and OL1 variants are shown
-separately; all other pressured recipes use OL1. Dotted paths apply post-hoc
+($\lambda=.05,.1,.5,1$) for $T_1/P_1$. Dotted paths apply post-hoc
 clipping at $a,m,h,z$ to the fixed base and ReLU controls.
 Vertical guides mark the $T_4/T_7$ analytic sparsity ceilings.
-All trained points are visible; 8/5 high-loss clipping evaluations continue
+All trained points are visible; 8/7 high-loss clipping evaluations continue
 above the view (complete paths in Figures~\ref{fig:clipping-14m} and~\ref{fig:clipping-70m}).
 Trained losses use ordinary final-checkpoint evaluation; sparsity uses pooled
 FP16 logical counts over all 338 complete validation blocks.}
@@ -25,7 +25,7 @@ FP16 logical counts over all 338 complete validation blocks.}
 
 \textbf{The interventions extend the attainable sparsity range, sometimes
 close to the architectural ceiling, at a quality cost.}
-Figure~\ref{fig:quality-sparsity-14m-70m} summarizes all 62 trained
+Figure~\ref{fig:quality-sparsity-14m-70m} summarizes 58 trained
 conditions at 14M and 70M. At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ reaches
 $27.48\%$ and $40.60\%$ model-wide sparsity: $91.8\%$ and $82.2\%$
 of the respective seven-site ceilings. Validation loss increases by
