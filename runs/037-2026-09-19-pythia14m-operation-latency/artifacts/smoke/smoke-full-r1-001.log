@@ -1,0 +1,17 @@
+{"utc": "2026-09-19T13:57:38Z", "stage": "imports", "elapsed_seconds": 0.12935132591519505}
+{"utc": "2026-09-19T13:57:54Z", "stage": "loading", "elapsed_seconds": 16.37857858289499, "mode": "native"}
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 5336.18it/s]
+{"utc": "2026-09-19T13:58:09Z", "stage": "capture", "elapsed_seconds": 31.237849753000773, "mode": "native"}
+{"utc": "2026-09-19T13:58:09Z", "stage": "loading", "elapsed_seconds": 31.723594807903282, "mode": "candidate"}
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights: 100%|██████████| 76/76 [00:00<00:00, 3851.52it/s]
+{"utc": "2026-09-19T13:58:09Z", "stage": "capture", "elapsed_seconds": 31.9936950559495, "mode": "candidate"}
+ninja: no work to do.
+ninja: no work to do.
+ninja: no work to do.
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run037_attention_c9274194df57 -DTORCH_API_INCLUDE_EXTENSION_H -I/workspace/run037/candidate -I/workspace/run037/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/workspace/run037/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /workspace/run037/runtime/venv/lib/python3.12/site-packages/torch/include -isystem /workspace/run037/runtime/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --expt-relaxed-constexpr --expt-extended-lambda -DRUN037_SKIP_QK=1 -DRUN037_SKIP_PV=1 -std=c++17 -c /workspace/run037/candidate/kernel.cu -o kernel.cuda.o 
+[2/2] c++ kernel.cuda.o -shared -L/workspace/run037/runtime/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run037_attention_c9274194df57.so
+ninja: no work to do.
+{"utc": "2026-09-19T14:00:50Z", "stage": "timing", "elapsed_seconds": 192.9472037939122, "inputs": 4, "passes": 2}
+{"utc": "2026-09-19T14:00:50Z", "stage": "validation", "elapsed_seconds": 192.97735796391498, "target_blocks": 8}
+{"utc": "2026-09-19T14:00:51Z", "stage": "diagnostics", "elapsed_seconds": 193.38622328999918, "loss": {"native": 5.075195670302577, "native_graph": 5.075195670302577, "candidate_graph": 5.075195670302577}}
+{"utc": "2026-09-19T14:00:51Z", "stage": "complete", "elapsed_seconds": 193.94938065798488, "qualified": true, "loss": {"native": 5.075195670302577, "native_graph": 5.075195670302577, "candidate_graph": 5.075195670302577}, "timing": {"candidate_graph": {"samples": 8, "median_host_ms": 0.5175634869374335, "paired_geomean_speedup": 1.7529425946478132, "input_tokens_per_second": null}, "native_graph": {"samples": 8, "median_host_ms": 0.9130514808930457, "paired_geomean_speedup": 1.0, "input_tokens_per_second": null}}}

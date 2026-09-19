@@ -1,9 +1,16 @@
 # Run037: conditional operation latency at 14M T7/Pall, kappa=0.5
 
-Status: design approved by the user on 19 September 2026; implemented and
-CPU-verified, awaiting launch approval. **No new GPU measurements exist yet.**
-The manuscript's current Table2 contains retained Run029 measurements, not
-results from this run. Its revision is committed as `24b2854`.
+Status: **completed and recovered on 19 September 2026**. The user approved
+both design and launch. All 20 direct CUDA checks, ten smoke modes and thirty
+scientific processes passed. All 365 archived files and final worker records
+are verified locally; the Pod is deleted. Estimated incremental cost: USD1.15.
+
+The [conditional-effect table](results/conditional-effects.md) and
+[scientific observation](observations/001-operation-latency.md) contain the
+new result. h/z skipping saves 150.07/28.96 microseconds conditionally; enabling
+QK and PV together adds 7.04 microseconds. These effects are not additive.
+The manuscript's existing Table2 still contains retained Run029 measurements,
+not this new run. Its earlier revision is committed as `24b2854`.
 
 ## Question and approved contract
 
@@ -15,17 +22,17 @@ matrix instructions. See the complete
 The exact Run029 c30 final checkpoint is retained: random Pythia-14M,
 seed1234, step712, 1493172224 training input tokens, original AdamW and data
 order. One-sided gates at a,m,h,z; symmetric gates at q_post,k_post,v;
-kappa0.5, training orthogonal-L1 pressure at all seven sites, lambda=b=1.
+kappa=0.5, training orthogonal-L1 pressure at all seven sites, lambda=b=1.
 No optimizer or backward pass runs here. Weights, gates and thresholds never
 change across execution controls. Weight SHA256:
 `f83aef36ddbddbd94efb915d574c4645c687206bb68f51886ffc6e979985b425`.
 
-BF16, batch1, length2048, uncached causal full-model inference with all50304
+BF16, batch 1, length2048, uncached causal full-model inference with all 50304
 logits. One RTX5090 with no concurrent scientific workload. Pinned Run029
 Python3.12/PyTorch2.11.0/Transformers5.12.1/CUDA12.8 environment and exact lock.
-Runtime seed2801; timing seed2504; same64 validation identities, seven paired
-passes, three fresh processes. Correctness covers all338 complete validation
-blocks from500 MiniPile documents:692224 input tokens,691886 prediction tokens,
+Runtime seed2801; timing seed2504; same 64 validation identities, seven paired
+passes, three fresh processes. Correctness covers all 338 complete validation
+blocks from 500 MiniPile documents:692224 input tokens, 691886 prediction tokens,
 1444-token excluded tail. Original logit atol0.25/rtol0.02/relative-L2 0.02
 and pooled-loss atol0.001 apply without relaxation.
 
@@ -65,7 +72,7 @@ limit or refute it. No other recipe, threshold, model size or device is tested.
 - Full bootstrap suite: **242 passed** (8.06s).
 - Original source/input and derived-code hash checks pass; bundle inventory
   and receipt are retained under `bundles/` (93.6 MB input tar).
-- CUDA compilation/direct tests/smokes have **not run**: this Windows machine
+- At the launch proposal, CUDA compilation/direct tests/smokes had not run: this Windows machine
   has an RTX5070Ti Laptop with12GB, no WSL distribution, and does not match the
   approved RTX5090 hardware. GPU qualification is the first bounded cloud phase.
 - Planned smoke:20 direct h/z cases, then10 full-model processes, each with
@@ -129,5 +136,48 @@ diagnostics and reductions. `08_collect.py` packages even incomplete outcomes;
 Confirm required counts/coverage, then delete only this new Pod and check for
 unintended billable resources. Preserve the pre-existing network volume.
 
-The launch approval should also confirm this diagnostic inventory is sufficient
-or name any additional measurement needed before the GPU is released.
+The user's subsequent launch approval covered this diagnostic inventory.
+
+## Execution and verified closeout
+
+One Secure RTX5090 in EUR-NO-1, Pod `ay9uq9m2nmdxmb`, ran from
+13:28:50.832 to 14:38:04 UTC: 69.22 GPU-minutes, within the approved 90min/USD2
+envelope. The retained [teardown record](artifacts/closeout/teardown.json)
+estimates GPU USD1.142 and temporary storage USD0.007; this is not a settled
+invoice. Post-deletion inventory contains no Pods. The pre-existing 100GB
+shared network volume is unchanged; the local deadline guard was stopped.
+
+Infrastructure adjustments are recorded under `prelaunch/attempts/` and
+`artifacts/infrastructure/`: add the already installed Ninja binary to PATH;
+copy and hash-verify the runtime/cache on local disk to reduce FUSE startup
+delay; correct cache modification times; then invoke the same scientific
+controller from the local executable while retaining original compiler paths.
+No checkpoint, gate, weight, kernel source, validation coverage, tolerance,
+timing input, seed, mode, replicate or job order changed. All scientific
+processes used the same final runtime arrangement. Smoke data are excluded
+from the scientific table. The intentionally replaced idle shell's exit137
+is preserved separately from the successful final worker's exit0.
+
+Scientific execution took about 18.5 minutes, averaging 37.06 seconds per fresh process.
+The local audit independently rebuilds every timing mean from26,880 raw
+candidate/native records and checks all ten full diagnostic passes. All 30
+processes covered 338 blocks; the maximum absolute logit difference was 0.0,
+and every measured/reference pooled BF16 loss was5.83130066301001.
+Disabled paths have zero bypass/scalar counts; enabled paths retain the full
+mode's counts, and logical sparsity counts do not change across controls.
+
+Full/frozen latencies are 0.521078/0.518482ms (ratio1.005007), with overlapping
+three-process ranges: the predeclared fidelity rule passes. All-off latency
+is 0.671637ms; projection-only latency is 0.514037ms. The a, m and QK effects
+overlap zero under the conservative process-extrema comparison; h/z savings
+and PV overhead do not. This comparison is descriptive, not a confidence
+interval or a claim that conditional effects partition total runtime.
+
+The 3,412,378-byte output archive has SHA256
+`320784c42dcb1c561c7d86e319f97e09e64ee0a6ac646c5eb7ce4630d4bced1c`.
+See `artifacts/verification.json`, `transfer/inventory-001.json`, and
+`artifacts/closeout/final-files.json`. The final checkpoint and validation
+cache remain hash-verified locally under the ignored input directory.
+Reproduce the post-retrieval audit/table with `.venv/Scripts/python.exe
+runs/037-2026-09-19-pythia14m-operation-latency/12_report.py` from the repository
+root. Do not rerun the GPU controllers or overwrite the retrieved raw artifacts.

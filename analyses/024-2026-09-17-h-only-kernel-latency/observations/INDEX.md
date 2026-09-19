@@ -1,9 +1,13 @@
 # Observations
 
+- [Run037: Direct conditional operation latency](../../../runs/037-2026-09-19-pythia14m-operation-latency/observations/001-operation-latency.md):
+  completed approved 14M T7/Pall kappa=0.5 experiment; h/z benefits and grouped
+  attention overhead, with process variation and verified recovery documented.
+
 - [033: Kernel mechanism evidence table](033-kernel-mechanism-table.md):
   two 14M kappa=0.5 endpoints, six operation bypass rates and three grouped
-  timing modes. Replaces the main-text bar chart; individual-site timings
-  remain a proposed new experiment, not a result inferred from counters.
+  timing modes. Replaces the main-text bar chart; its timings are grouped
+  retained controls. Subsequent direct operation timings are in Run037 above.
 
 - [032: OL1-only quality overview layout](032-quality-ol1-layout.md):
   36/22 trained conditions, independent loss scales, taller/narrower PDF and

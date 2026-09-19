@@ -7,7 +7,13 @@ timing modes for 14M T4/Ph and T7/Pall at kappa=0.5, and explains why h/z can
 avoid weight reads while attention skipping retains operand loading and softmax.
 All earlier figures and evidence remain available. The
 [single-checkpoint per-operation attribution design](PER-SITE-LATENCY-DESIGN.md)
-was approved at kappa=0.5 on 19 September; no new timings have been collected.
+was approved at kappa=0.5 on 19 September and is now complete as
+[Run037](../../runs/037-2026-09-19-pythia14m-operation-latency/README.md).
+Its [direct operation-level evidence](../../runs/037-2026-09-19-pythia14m-operation-latency/observations/001-operation-latency.md)
+reports 30 qualified processes, clear h/z benefits and grouped attention
+overhead, with small individual a/m/QK effects unresolved against process
+variation. All artifacts were recovered and the Pod deleted (estimated USD1.15).
+These new measurements have not been inserted into the manuscript table.
 Older adoption notes below retain their historical figure placements.
 
 The current [14M/70M quality figure](figures/14-14m-70m-quality-sparsity.pdf)

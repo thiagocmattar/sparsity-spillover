@@ -1,9 +1,11 @@
 # Proposed 14M T7/Pall latency attribution
 
-Status: the user explicitly approved this design at kappa=0.5 on 19 September
-2026. Implementation is authorized; a separate launch proposal follows tests
-and resource assessment. The manuscript revision uses only the existing
-group-level timings in Observation 033 until new measurements are qualified.
+Status: design and launch explicitly approved on 19 September 2026;
+[Run037 completed](../../runs/037-2026-09-19-pythia14m-operation-latency/README.md)
+all 30 scientific processes and recovered all 365 archived files before Pod
+deletion. See the [conditional-effect table and limits](../../runs/037-2026-09-19-pythia14m-operation-latency/observations/001-operation-latency.md).
+The design below is retained as approved. The manuscript table still uses
+the earlier group-level measurements in Observation 033.
 
 ## Question and interpretation
 
