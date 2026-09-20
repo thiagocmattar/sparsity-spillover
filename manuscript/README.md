@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+20 September 2026, requested 70M T2 figure update:
+`draft/figures/23-70m-quality-sparsity-native-latency.pdf` now includes all five
+T2/Ph thresholds, including Run046's kappa=0.5 endpoint, giving 27 trained
+checkpoints. Historical points, clipping curves and the native Base reference
+are unchanged. The caption records the later Run043/Run046 GPU sessions;
+the figure and supplementary JSON are exact copies of
+[Analysis029](../analyses/029-2026-09-20-70m-t2-figure/README.md).
+Only this figure and its caption are updated; `draft/main.pdf` is not rebuilt.
+Other author edits and the separate optimized-grid work remain preserved.
+
 20 September 2026, requested rebuild with the AI-use statement:
 `draft/main.pdf` contains the current author-edited sources and the disclosure
 on page 9. The 20-page build has resolved references/citations and no overfull

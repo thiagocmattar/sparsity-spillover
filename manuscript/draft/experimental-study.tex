@@ -15,10 +15,11 @@ For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu20
 \centering
 \includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
 \caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
-\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 22 trained checkpoints: Base, GeLU $\rightarrow$ ReLU, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
+% T2 update: Analysis029 observations/001-70m-t2-figure.md; 01_collect.py and 02_plot.py.
+\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 27 trained checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
 Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
 Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
-In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.664\,ms); all other markers use the original 70M port of the 14M kernel. All trained timings use the same RTX\,5090 session, batch one, 2,048 tokens and full output logits. Later optimization results are reported separately in Appendix~\ref{app:kernel-transfer}.}
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.664\,ms); all other markers use the original 70M port of the 14M kernel. The original 22 checkpoints share one RTX\,5090 session; $T_2/P_h$ uses later Run043/Run046 sessions, so cross-session absolute differences are descriptive. All timings use batch one, 2,048 tokens and full output logits. Later optimization results are reported separately in Appendix~\ref{app:kernel-transfer}.}
 \label{fig:70m-quality-latency}
 \end{figure}
 \FloatBarrier
