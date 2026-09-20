@@ -96,3 +96,24 @@ The detached workstation guard therefore performs the scoped provider stop at
 15:21:20 UTC; a separate credential-free remote guard ends the workload process
 group at the same deadline. The remote guard alone cannot stop billing. Source
 snapshot 002 captures this infrastructure-only correction before training.
+
+### Preflight retry 002: preserve the approved initializer
+
+Cache construction verified both complete hashes. All four first preflights
+stopped before any optimizer boundary: native H100 initialization produced
+`25f2a630ae0abe9b37938c3c12d615af01a09be44210a0d4017549d8a159d2fc`
+instead of the approved historical random parameter hash. The corrected
+initializer replays only the retained Run032 **step-zero** tensor bytes, with
+strict safetensors and parameter hashes, into the newly constructed HZ model.
+It copies no historical topology, optimizer state, or trained/released weights.
+The original small_init/Wang recipe metadata and explicit random-snapshot
+provenance are retained. The old trainer's `loaded_checkpoint_weights=false`
+field denotes absence of released/trained checkpoint weights; the separate
+`random_initialization_replay` record identifies this byte-exact random replay.
+Scientific inputs (including the agreed initialization hash) do not change.
+The failed preflights and first deployment remain preserved as infrastructure
+attempt 001; a clean deployment snapshot captures the correction before training.
+
+Retry verification: 14 focused tests and 242 bootstrap tests passed. The first
+retry test invocation hit a pre-existing Windows temporary-directory permission
+error; rerunning with fresh, run-specific temporary directories passed.

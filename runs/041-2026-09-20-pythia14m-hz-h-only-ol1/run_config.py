@@ -190,6 +190,7 @@ def run_code_identity() -> dict[str, Any]:
         "_reuse_run004.py", "run041_capture.py", "run_config.py", "initialization.py",
         "optimizer_boundary.py", "diagnostics.py", "smoke.py", "training.py",
         "verification.py",
+        "inputs/random-initialization/provenance.json",
         "../004-2026-08-29-pythia14m-full-pass-l1n/run_config.py",
         "../004-2026-08-29-pythia14m-full-pass-l1n/initialization.py",
         "../004-2026-08-29-pythia14m-full-pass-l1n/optimizer_boundary.py",

@@ -337,3 +337,22 @@ def test_hz_gate_equality_gradients_and_serialization(modules,tmp_path):
     assert topology_metadata(loaded)['active_sites']==['h','z']
     ids=torch.tensor([[1,2,3]])
     with torch.no_grad():assert torch.equal(model(ids).logits,loaded(ids).logits)
+
+
+def test_approved_random_bytes_replay_preserves_hz_topology(modules):
+    from transformers import GPTNeoXConfig,GPTNeoXForCausalLM
+    from sparsity_research.pythia import apply_activation_topology,topology_metadata
+    rc,_,_,_=modules
+    initialization=_module('initialization')
+    source=ROOT/'runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef/checkpoints/step_000000/config.json'
+    cfg=GPTNeoXConfig.from_dict(json.loads(source.read_text()))
+    cfg.topology_id='HZ';cfg.site_gate=None;cfg.site_gates=rc.site_gates(.1)
+    model=apply_activation_topology(GPTNeoXForCausalLM(cfg),torch=torch)
+    metadata=initialization.apply_pythia_14m_initialization(model,torch=torch)
+    assert rc.parameter_sha256(model)==rc.EXPECTED_INITIAL_PARAMETER_SHA256
+    assert topology_metadata(model)['active_sites']==['h','z']
+    assert metadata['random_initialization_replay']['trained_updates']==0
+    assert not metadata['random_initialization_replay']['released_weights']
+    for layer in model.gpt_neox.layers:
+        assert layer.mlp.act.kappa==.1 and layer.attention.z_gate.kappa==.1
+        assert not hasattr(layer,'a_gate') and not hasattr(layer,'m_gate')

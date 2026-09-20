@@ -25,6 +25,7 @@ def main():
     paths+=[ROOT/'runs/013-2026-08-30-pythia14m-full-pass-a7/artifacts/verification.json']
     paths+=[p for p in RUN.iterdir() if p.is_file() and p.suffix in {'.py','.sh','.ps1','.yaml','.md'}]
     paths+=[RUN/'.gitignore']
+    paths+=[RUN/'inputs/random-initialization/provenance.json']
     source=[]
     for path in sorted(set(paths)):
         rel=path.relative_to(ROOT);target=stage/rel;target.parent.mkdir(parents=True,exist_ok=True)

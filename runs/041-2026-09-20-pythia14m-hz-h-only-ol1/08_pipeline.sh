@@ -7,10 +7,14 @@ mkdir -p "$control"
 export PYTHONPATH="$PWD/$run:$PWD/src"
 export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 TOKENIZERS_PARALLELISM=true RAYON_NUM_THREADS=16
 export HF_HOME=/workspace/run041-hf
-bash "$run/00_setup_remote.sh" > "$control/setup.log" 2>&1
+if test ! -e "$control/environment-ready"; then
+  bash "$run/00_setup_remote.sh" > "$control/setup.log" 2>&1
+fi
 python=/workspace/run041-venv/bin/python
-"$python" "$run/06_build_cache_from_hf.py" > "$control/cache.log" 2>&1
-touch "$control/cache-ready"
+if test ! -e "$control/cache-ready"; then
+  "$python" "$run/06_build_cache_from_hf.py" > "$control/cache.log" 2>&1
+  touch "$control/cache-ready"
+fi
 workers=(hz-h-ol1-kappa-0 hz-h-ol1-kappa-0p01 hz-h-ol1-kappa-0p05 hz-h-ol1-kappa-0p1)
 pids=()
 for i in 0 1 2 3; do
