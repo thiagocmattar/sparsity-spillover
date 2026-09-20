@@ -1,5 +1,16 @@
 # Living Manuscript Draft
 
+20 September 2026, second appendix prose pass: the OL1, sparsity-accounting
+and experimental-setup sections use shorter explanations and consistent
+terminology, preserving equations, numerical results and table entries.
+The L1/OL1 comparison distinguishes a single-seed observation from evidence
+about variation across seeds; the geometry interpretation does not attribute
+the effect to individual attention sites. The OL1 figure no longer permits
+ordinary float-only placement, which produced the stretched table/figure page
+13. Following appendix sections can share its page. Source checks pass;
+`draft/main.pdf` is unchanged and recompilation/layout verification awaits
+the user's instruction. Other author edits are preserved.
+
 20 September 2026, experimental-setup rewrite: `experimental-appendix.tex`
 now contains the compact architecture, ceiling, training and evaluation
 details. T/P names replace the rendered A* labels; explicit per-recipe counts

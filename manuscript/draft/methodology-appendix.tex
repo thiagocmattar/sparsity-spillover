@@ -1,4 +1,4 @@
-% General definitions and counters. Concrete graph and protocol: experimental-appendix.tex.
+% General definitions; architecture and training settings: experimental-appendix.tex.
 \section{Intervention definitions}
 \label{app:interventions}
 
@@ -16,33 +16,31 @@ estimator nor a top-$k$ selection rule. Unselected sites retain their original t
 \label{app:pressure}
 
 \textbf{Objective and update.}
-For the $J$ site--layer tensors $A_j$ targeted by $\mathcal P$, each containing
-$n_j$ entries after any thresholding, activation pressure is
+For $J$ activation tensors $A_j$ at the sites and layers targeted by
+$\mathcal P$, each with $n_j$ entries after any thresholding, define
 \begin{equation}
 \ell_1(\theta;\mathcal P)=\frac{1}{J}\sum_{j=1}^{J}\frac{1}{n_j}
 \sum_{i=1}^{n_j}|A_{j,i}|.
 \end{equation}
-Each tensor receives equal weight; changing $\mathcal P$ changes both the
-targets and their normalization. Ordinary L1 pressure applies AdamW~\citep{loshchilov2019adamw} to the
-globally clipped gradient of $\mathcal L_{\mathrm{task}}+\lambda\ell_1$.
-OL1 instead separates the two updates: AdamW uses only the task gradient,
-then a pressure correction removes conflict with the adaptive task direction
-and limits its magnitude. This prevents pressure from directly entering
-Adam's moment estimates and controls how strongly it can modify the task step.
+Each tensor has equal weight, so changing $\mathcal P$ changes both the
+targets and normalization. Ordinary L1 applies AdamW~\citep{loshchilov2019adamw}
+to the globally clipped gradient of $\mathcal L_{\mathrm{task}}+\lambda\ell_1$.
+OL1 separates task and pressure updates: task-only AdamW is followed by a
+pressure correction that removes the opposing component and limits its norm.
+Pressure therefore does not directly enter Adam's moment estimates.
 
-Both gradients are averaged over the same microbatches at the same parameters.
-We clip the task gradient and take its AdamW step, obtaining the updated,
-bias-corrected moments $\widehat m_t,\widehat v_t$. The unweighted pressure
-gradient $g_1=\nabla_\theta\ell_1$ remains unclipped. Using the task's
-preconditioner, define
+Both gradients are evaluated at the same parameters and averaged over the
+same microbatches. The clipped task gradient updates AdamW's bias-corrected
+moments $\widehat m_t,\widehat v_t$; the pressure gradient
+$g_1=\nabla_\theta\ell_1$ is unclipped and has no momentum. Using the same
+preconditioner for both directions gives
 \begin{equation}
 u=\frac{\widehat m_t}{\sqrt{\widehat v_t}+\epsilon_A},
 \qquad
 w=\frac{g_1}{\sqrt{\widehat v_t}+\epsilon_A}.
 \end{equation}
-The pressure direction has no momentum buffer. Norms and inner products pool
-parameters having both gradients and initialized Adam state. With
-$c=\langle u,w\rangle$, $q=\|u\|_2^2$, and numerical stabilizer $\epsilon>0$,
+Norms and inner products include parameters with both gradients and initialized
+Adam state. For $c=\langle u,w\rangle$, $q=\|u\|_2^2$ and stabilizer $\epsilon>0$,
 \begin{equation}
 \widetilde w=
 \begin{cases}
@@ -51,56 +49,52 @@ w, & \text{otherwise}.
 \end{cases}
 \label{eq:ol1-projection}
 \end{equation}
-Thus, only the component opposing the Adam direction is removed; aligned
-pressure is retained. For weight $\lambda\geq0$ and relative norm budget $b>0$,
+Aligned pressure is retained. For weight $\lambda\geq0$ and relative norm budget $b>0$,
 \begin{equation}
 r=\frac{\lambda\|\widetilde w\|_2}{\|u\|_2+\epsilon},
 \qquad
 s=\min\!\left\{1,\frac{b}{r+\epsilon}\right\}\quad(r>0),
 \end{equation}
-with $s=1$ when $r=0$. After the task-only AdamW step, parameter group $p$
-receives $\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$,
-where $\alpha_p$ is its learning rate. Ignoring stabilizers, the correction
-norm before the learning rate is
-$\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$: increasing $\lambda$
-no longer changes it once the cap binds at a fixed optimizer state.
+with $s=1$ when $r=0$. After task-only AdamW, each parameter group $p$ receives
+$\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$, where
+$\alpha_p$ is its learning rate. Before learning-rate scaling and ignoring
+stabilizers, the correction norm is
+$\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$. At a fixed optimizer state,
+increasing $\lambda$ has no further effect once the cap is active.
 
-OL1 adapts conflict projection~\citep{yu2020pcgrad} and smoothed primary
-directions~\citep{hsieh2024bloop} to Adam's preconditioned geometry.
-The stabilized projection is approximately orthogonal under conflict;
-the geometry excludes group learning rates and decoupled weight decay.
-Non-opposition to the Adam direction does not guarantee preservation of task
-or validation loss.
+OL1 combines conflict projection~\citep{yu2020pcgrad} and a smoothed task
+direction~\citep{hsieh2024bloop} in Adam's preconditioned coordinates.
+The stabilizer makes orthogonality approximate. This calculation excludes
+group learning rates and decoupled weight decay; avoiding opposition to the
+Adam direction does not guarantee unchanged task or validation loss.
 
 % Evidence: analyses/024-2026-09-17-h-only-kernel-latency/observations/039-ol1-appendix.md.
 % Generated table and geometry: Analysis024/29_ol1_appendix.py; data/ol1-appendix.json.
 \textbf{L1 versus OL1.}
-Table~\ref{tab:l1-ol1} compares the two updates at $T_1/P_1$ on 14M, with
-matched initialization, data order and training budget. Sparsity differs by
-less than $0.02$ percentage points at each $\lambda$. OL1 has slightly lower
-loss at $\lambda\in\{0.05,0.1,0.5\}$, but higher loss at $\lambda=1$.
-This single-seed comparison does not establish universal quality superiority.
+At 14M $T_1/P_1$, matched initialization, data order and training budget yield
+similar results (Table~\ref{tab:l1-ol1}). Sparsity differs by less than
+$0.02$ percentage points at every $\lambda$. OL1 has slightly lower loss at
+$\lambda\in\{0.05,0.1,0.5\}$ and higher loss at $\lambda=1$.
+One seed cannot establish whether these small loss differences persist across seeds.
 
 \input{tables/t1-l1-ol1}
 
-\textbf{Realized geometry and budget saturation.}
+\textbf{Update geometry and budget saturation.}
 \label{app:pressure-budget-diagnostics}
-We measure $\rho_{\mathrm{opp}}=\max(0,-c)/(q+\epsilon)$: the norm of the
-removed component divided by $\|u\|_2$, before capping. All recorded steps
+We measure $\rho_{\mathrm{opp}}=\max(0,-c)/(q+\epsilon)$, the removed
+component's norm relative to $\|u\|_2$ before capping. All recorded steps
 satisfy $q>\epsilon$; aligned steps contribute zero. Figure~\ref{fig:ol1-geometry}
-shows this diagnostic and $r/b$ for the 20 14M OL1 conditions in
-Figure~\ref{fig:quality-sparsity-overview}, using all 712 optimizer-step records
-per condition at $\lambda=b=1$.
+shows $\rho_{\mathrm{opp}}$ and $r/b$ for the 20 14M OL1 conditions in
+Figure~\ref{fig:quality-sparsity-overview}, using all 712 updates per condition
+at $\lambda=b=1$. The cap is active ($s<1$) on $96.99\%$ of
+$T_7/P_{\mathrm{all}}$ steps, compared with $0.51\%$ for
+$T_4/P_{\mathrm{all}}$ and $0.25\%$ for either $P_h$ recipe.
+The diagnostics are consistent with stronger pressure--task conflict when
+attention sites are included, but do not isolate each site's contribution.
 
-The cap is active ($s<1$) on $96.99\%$ of $T_7/P_{\mathrm{all}}$ steps,
-but only $0.51\%$ for $T_4/P_{\mathrm{all}}$ and $0.25\%$ for either $P_h$
-recipe. Each fraction pools 3,560 steps across five thresholds,
-including the first step with zero learning rate. Budget saturation therefore
-depends strongly on the target set: $\lambda$-invariance after saturation
-does not imply that $\lambda$ is irrelevant in all recipes. These diagnostics
-describe the update geometry, without identifying the cause of loss differences.
-
-\begin{figure}[!htbp]
+% Keep this figure with text rather than on a stretched float-only page;
+% the following appendix section may begin below it.
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\linewidth]{figures/18-14m-70m-ol1-geometry.pdf}
 \caption{\textbf{OL1 geometry depends on pressure placement at 14M.}
@@ -122,71 +116,57 @@ and $\lambda=b=1$ throughout.}
 
 \subsection{Activation and model-wide sparsity}
 
-Activation sparsity at a site is the number of zero activations divided by
-the total number of activations at that site. We sum both counts across
-layers and validation sequences before dividing.
+Activation sparsity is the fraction of zero entries at a site, pooling
+counts across layers and validation sequences before dividing.
 
-Model-wide sparsity counts the scalar multiplications involving zero
-activations:
+Model-wide sparsity counts scalar multiplications with a zero activation input:
 \begin{equation}
 \Smodel=\frac{N_0}{N_{\mathrm{model}}}.
 \end{equation}
-$N_0$ counts scalar multiplications
-with at least one zero activation input within the Pythia blocks.
-$N_{\mathrm{model}}$ counts all scalar multiplications in those blocks
-and the final output projection to the vocabulary. This final projection
-contributes only to the denominator. Both counts are summed across all
-layers and validation sequences; reported percentages multiply the ratio
-by 100.
+$N_0$ counts these multiplications within Pythia blocks;
+$N_{\mathrm{model}}$ counts all multiplications in those blocks and the
+final vocabulary projection. The latter contributes only to the denominator.
+Counts are pooled across layers and validation sequences; percentages are
+$100\Smodel$.
 
-For a linear projection within a Pythia block, each input activation is
-multiplied by one weight per output feature. An input matrix with $n$ rows and
-$d_{\mathrm{in}}$ features, projected to $d_{\mathrm{out}}$ features,
-contributes $n d_{\mathrm{in}}d_{\mathrm{out}}$ multiplications to the
-denominator. Each zero input contributes $d_{\mathrm{out}}$ to $N_0$.
-Zero weights are not counted as activation sparsity.
+For a block's linear projection from $d_{\mathrm{in}}$ to
+$d_{\mathrm{out}}$ features over $n$ rows, the denominator contribution is
+$n d_{\mathrm{in}}d_{\mathrm{out}}$. Each zero input contributes
+$d_{\mathrm{out}}$ to $N_0$, one multiplication per output feature.
+Zero weights do not count as activation sparsity.
 
-In attention, both inputs to each multiplication are activations. A product
-is counted once if either input is zero, including when both are zero.
-With queries $q$, keys $k$, values $v$ and attention probabilities $p$,
-the counts for one head in one sequence are
+In attention, both operands are activations. We count each multiplication
+once if either or both are zero. For queries $q$, keys $k$, values $v$ and
+attention probabilities $p$, one head in one sequence contributes
 \begin{align}
 N_{0,\mathrm{QK}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
 \mathbf{1}\{q_{tj}=0\ \lor\ k_{uj}=0\},\label{eq:qk-count}\\
 N_{0,\mathrm{PV}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
 \mathbf{1}\{p_{tu}=0\ \lor\ v_{uj}=0\}.\label{eq:pv-count}
 \end{align}
-Here $T$ is sequence length, $d_h$ is the dimension of each head, $t$ is
-the query position and $u$ the key/value position. The restriction $u\leq t$
-excludes masked future positions from both numerator and denominator.
-These counts are summed over heads, layers and validation sequences.
-We use the activation values entering each matrix multiplication, after
-any thresholding or intervening transformation.
+Here $T$ is sequence length, $d_h$ the head dimension, $t$ the query position
+and $u$ the key/value position. Restricting $u\leq t$ excludes masked future
+positions from both counts. We sum over heads, layers and validation sequences,
+using the actual operands after thresholding and intervening transformations.
 
-Other operations, such as normalization, softmax, activation functions,
-additions and memory transfers, are excluded. Thus, $\Smodel$ does not
-directly measure latency or speedup.
+Normalization, softmax, activation functions, additions and memory transfers
+are excluded, so $\Smodel$ does not directly measure latency or speedup.
 
 \subsection{Model-wide sparsity ceiling}
 \label{app:ceiling}
 
-To compute the ceiling, assume that every activation at the selected
-thresholding sites $\mathcal{N}$ is zero. Let $N_{\mathrm{reach}}(\mathcal{N})$
-count the scalar multiplications that must then have a zero activation
-input. Using the same denominator as measured model-wide sparsity,
+Assume all activations at the thresholding sites $\mathcal{N}$ are zero.
+If $N_{\mathrm{reach}}(\mathcal{N})$ counts the multiplications that must
+then have a zero activation input, the ceiling is
 \begin{equation}
 \Smax=\frac{N_{\mathrm{reach}}(\mathcal{N})}{N_{\mathrm{model}}}.
 \end{equation}
-Each multiplication is counted once, even if several selected sites make
-it zero. We also include downstream activations forced to zero: for
-example, setting all values $v$ to zero makes the attention context $z$
-zero, affecting both the probability--value product and the attention-output
-projection. Zero attention scores, however, do not imply zero attention
-probabilities.
+The denominator is unchanged, and each multiplication is counted once.
+The numerator includes downstream activations forced to zero: setting
+$v=0$ also makes $z=0$, affecting both $PV$ and the attention-output projection.
+Zero attention scores do not imply zero softmax probabilities.
 
-The ceiling depends on the architecture, selected sites and sequence length,
-without using a trained model's activation values. Natural zeros at other
-sites also contribute to $\Smodel$, so measured model-wide sparsity can
-exceed this ceiling. The ceiling does not predict the quality cost of
-approaching it. Appendix~\ref{app:architecture-counts} gives the operation
-counts and site assignments used for each Pythia model size.
+The ceiling depends only on architecture, selected sites and sequence length.
+Natural zeros outside those sites can raise measured $\Smodel$ above it;
+the ceiling does not predict the associated quality cost.
+Appendix~\ref{app:architecture-counts} gives the counts for each Pythia size.

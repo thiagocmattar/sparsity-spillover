@@ -1,5 +1,12 @@
 # Experimental-section scope and provenance
 
+20 September 2026, second prose pass: the setup retains all architecture,
+optimizer, schedule, batch and recipe-coverage information in fewer words.
+Both tables, the ceiling equations, reference labels and figure are unchanged.
+The size comparison explicitly retains the lower 410M learning-rate caveat.
+TeX structure and references pass static checks; `main.pdf` is unchanged pending
+the user's instruction to recompile.
+
 20 September 2026: the experimental-setup appendix is consolidated in
 `experimental-appendix.tex`, with the training subsection moved from
 `results-appendix.tex`. The training-settings table is retained and clarifies

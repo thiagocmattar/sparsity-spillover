@@ -1,5 +1,16 @@
 # Methodology provenance and editorial scope
 
+20 September 2026, readability pass: OL1 and sparsity accounting are shortened
+without changing the equations, diagnostics or numerical results. The author's
+single-seed interpretation is stated without assuming statistical equivalence;
+the attention-conflict hypothesis remains qualified because the diagnostics
+do not isolate individual sites. Evidence remains Analysis024 Observation039
+and the counting implementation cited below. The geometry figure changes from
+`[!htbp]` to `[!htb]` so it can share a page with the following section instead
+of joining the table on a vertically stretched float-only page. Labels and
+included artifacts are preserved. No PDF is generated or replaced; the resulting
+layout still requires a build after user authorization.
+
 5 September 2026. The compact main methodology defines interventions,
 model-wide sparsity, and selected-site reach. Its appendix contains general
 gate, pressure, counter, and reach definitions. The separate experimental

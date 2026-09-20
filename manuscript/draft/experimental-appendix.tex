@@ -9,11 +9,10 @@
 \subsection{Pythia architecture and intervention sites}
 \label{app:sites}
 
-Table~\ref{tab:sites} specifies the dimensions and positions of the sites in
-Figure~\ref{fig:pythia-block}, for one sequence. Here $T$ is sequence length,
-$d$ the hidden width, $d_f$ the FFN width, and $H$ the number of attention
-heads, each of dimension $d_h=d/H$. The same sites and threshold are used
-in every layer of a model.
+Table~\ref{tab:sites} gives the shapes and positions of the sites in
+Figure~\ref{fig:pythia-block}. Here $T$ is sequence length, $d$ hidden width,
+$d_f$ FFN width and $H$ the number of heads, each with dimension $d_h=d/H$.
+Sites and threshold are shared across layers.
 
 \begin{table}[ht]
 \centering\small
@@ -38,11 +37,10 @@ $z$ & $T\!\times\!d$ & Attention-output projection & Concatenated attention cont
 \subsection{Architecture-specific sparsity ceilings}
 \label{app:architecture-counts}
 
-For one sequence, a Pythia block contains $3Td^2$ scalar multiplications
+For one sequence, each Pythia block uses $3Td^2$ scalar multiplications
 in the QKV projection, $Td^2$ in the attention-output projection,
 $Td d_f$ in each FFN projection, and $dT(T+1)/2$ in each of $QK$ and $PV$.
-With $L$ layers and vocabulary size $V_{\mathrm{vocab}}$, the per-sequence
-counts are
+With $L$ layers and vocabulary size $V_{\mathrm{vocab}}$, the totals are
 \begin{equation}
 \begin{split}
 C_{\mathrm{block}}&=T(4d^2+2dd_f)+dT(T+1),\\
@@ -50,13 +48,10 @@ C_{\mathrm{model}}&=LC_{\mathrm{block}}+TdV_{\mathrm{vocab}}.
 \end{split}
 \label{eq:denominator}
 \end{equation}
-The ceiling can be calculated from these per-sequence counts because
-numerator and denominator scale equally with the number of sequences.
-Since $d_f=4d$, the counts contributing to the ceiling in each layer are
-$0$ for $T_0/P_0$, $4Td^2$ for $T_1/P_0$ and $T_1/P_1$, $12Td^2$ for
-all $T_4$ recipes, and $C_{\mathrm{block}}$ for all $T_7$ recipes.
-Multiplying by $L$ and dividing by $C_{\mathrm{model}}$ gives $\Smax$;
-pressure placement does not change this calculation.
+Sequence count cancels from the ceiling ratio. For $d_f=4d$, per-layer counts
+in the ceiling numerator are $0$ for $T_0/P_0$, $4Td^2$ for $T_1/P_0$ and
+$T_1/P_1$, $12Td^2$ for $T_4$, and $C_{\mathrm{block}}$ for $T_7$.
+Multiplying by $L/C_{\mathrm{model}}$ gives $\Smax$, independent of pressure placement.
 
 Table~\ref{tab:interventions} uses $V_{\mathrm{vocab}}=50{,}304$ and
 $(L,d)=(6,128),(6,512),(24,1{,}024)$ for 14M, 70M and 410M, respectively,
@@ -70,15 +65,14 @@ with the common sequence length in Table~\ref{tab:training-settings}.%
 \label{app:training-protocol}
 \label{app:evaluation}
 
-All sizes use the Pythia-14M-deduped tokenizer, initialization and data-order
-seeds of 1234, and one training seed per condition. Shared optimizer settings
-are AdamW with $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight decay $0.1$,
-gradient-norm limit $1$, and zero attention and hidden dropout. Training
-lasts 712 optimizer updates, with 1\% linear warmup followed by cosine
-learning-rate decay. Table~\ref{tab:training-settings} separates
-the size-dependent learning rates and microbatches from the common effective
-batch size. The microbatch size is the number of sequences processed together;
-gradient accumulation combines several microbatches before one optimizer update.
+All sizes use the Pythia-14M-deduped tokenizer and seeds of 1234 for
+initialization and data order, with one seed per condition. AdamW settings
+are shared: $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight decay $0.1$
+and gradient clipping at norm $1$. Attention and hidden dropout are zero.
+Training uses 712 updates with 1\% linear warmup followed by cosine
+learning-rate decay. Table~\ref{tab:training-settings} gives the learning rates,
+microbatch sizes and shared effective batch. Gradients accumulate over the
+listed microbatches before each optimizer update.
 
 \begin{table}[htbp]
 \centering\small
@@ -103,18 +97,17 @@ Tokens per parameter & 106.14 & 21.20 & 3.68 \\
 \end{table}
 \FloatBarrier
 
-The 14M study includes $T_0/P_0$, $T_1/P_0$, $T_1/P_1$ with either L1 or
-OL1, and the $T_4$ and $T_7$ recipes with $P_0$, $P_h$ or $P_{\mathrm{all}}$.
-The 70M study includes both controls and the $T_4$ and $T_7$ recipes with $P_h$
-or $P_{\mathrm{all}}$; at 410M, only the controls and $P_{\mathrm{all}}$
-recipes are run. All sweeps use the grids in Table~\ref{tab:interventions}.
-We evaluate final checkpoints without validation-based checkpoint selection.
-The main figures report validation loss and model-wide sparsity over the
-same validation sequences, as defined in Appendix~\ref{app:accounting}.
+All sizes include the $T_0/P_0$ and $T_1/P_0$ controls. The 14M study adds
+$T_1/P_1$ with L1 or OL1, and $T_4$ and $T_7$ with $P_0$, $P_h$ or
+$P_{\mathrm{all}}$. At 70M, $T_4$ and $T_7$ use $P_h$ or $P_{\mathrm{all}}$;
+at 410M, only $P_{\mathrm{all}}$. Parameter grids are given in
+Table~\ref{tab:interventions}. We evaluate the final checkpoint, without
+validation-based selection. The main figures measure loss and model-wide
+sparsity on the same validation sequences (Appendix~\ref{app:accounting}).
 
-Figure~\ref{fig:a0-optimization} provides training context for the cross-size
-loss comparison. These trajectories do not establish convergence, and the
-410M learning-rate range differs from that of the smaller models.
+Figure~\ref{fig:a0-optimization} shows the training trajectories. They do not
+establish convergence, and the lower learning rates at 410M limit comparisons
+that attribute loss differences to model size alone.
 
 \begin{figure}[htbp]
 \centering
