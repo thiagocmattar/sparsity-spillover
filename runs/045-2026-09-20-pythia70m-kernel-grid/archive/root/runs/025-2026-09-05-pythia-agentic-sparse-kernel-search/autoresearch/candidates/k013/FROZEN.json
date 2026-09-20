@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "candidate_id": "k013",
+  "frozen_utc": "2026-09-06T01:07:15.5609741+00:00",
+  "policy": {
+    "architecture": "Pythia-14M",
+    "kernel": "K001 fused signed-exact warp compaction",
+    "site_selection": "A0=all linear sites; A1-H=h; A4/A7=topology-active linear sites",
+    "layer_indices": [3, 4, 5],
+    "runtime_density_dispatch": false,
+    "checkpoint_identity_dispatch": false,
+    "additional_pruning": false
+  },
+  "selection_evidence": {
+    "used_for_tuning": [
+      "K011 fixed 12-mask development screen and top-two confirmation",
+      "K012 six-development-condition final evaluation, which exposed complete-validation failures",
+      "K011 predeclared six-mask complete-validation search over development checkpoints only"
+    ],
+    "search_protocol": "autoresearch/candidates/k011/FULL_VALIDATION_SEARCH.json",
+    "selection_artifact": {
+      "path": "artifacts/k011-complete-validation-selection-rtxpro4500-002/selection.json",
+      "bytes": 12420,
+      "sha256": "96025bbafd880aab6ed350649b566f5015422f5cab182fa76dbdcdffdbb49f1a"
+    },
+    "qualified_masks": ["suffix1", "suffix2", "suffix3"],
+    "screening_winner": {
+      "mask": "suffix3",
+      "layer_indices": [3, 4, 5],
+      "sparse_endpoint_geometric_mean_speedup": 1.0581191097150038,
+      "selection_rule": "highest four-sparse-endpoint geometric mean; within 0.005 choose fewer layers, then lexical mask id"
+    },
+    "development_evaluation": [
+      {"condition": "14m/a0", "R_model": 0.000000011415112639303073, "speedup": 0.9948786570215585, "validation_loss_delta": -0.000004449949011053889},
+      {"condition": "14m/a1h", "R_model": 0.027141299328466276, "speedup": 0.9864092756146575, "validation_loss_delta": 0.000022092721245314806},
+      {"condition": "14m/a4-0", "R_model": 0.0781004229286857, "speedup": 1.0691675100017877, "validation_loss_delta": -0.0000005151792521473908},
+      {"condition": "14m/a4-0p5", "R_model": 0.12713448684742273, "speedup": 1.0444934167038358, "validation_loss_delta": 0.0},
+      {"condition": "14m/a7-0", "R_model": 0.0705422917861371, "speedup": 1.0738975822268273, "validation_loss_delta": -0.00003598068359522699},
+      {"condition": "14m/a7-0p5", "R_model": 0.27482684296304843, "speedup": 1.0452589788941173, "validation_loss_delta": -0.0000000042343506478914605}
+    ],
+    "development_linear_fit": {
+      "n": 6,
+      "slope": 0.16135462373024823,
+      "intercept": 1.0201472560085796,
+      "pearson_r": 0.4267589734554791,
+      "r_squared": 0.1821232214247743
+    },
+    "infrastructure_retry": {
+      "reason": "persistent-volume quota interrupted suffix3 A7 and later masks",
+      "scientific_change": false,
+      "completed_artifacts_reused": ["suffix3 A0", "suffix3 A4 kappa=0"],
+      "new_attempts": "suffix3 A7 and confirmations; suffix4 and odd",
+      "space_recovery_record": "autoresearch/launch-control/rtxpro4500-002/space-recovery-001.json"
+    }
+  },
+  "heldout_boundary": {
+    "conditions": [
+      "14m/a4-0p01",
+      "14m/a4-0p05",
+      "14m/a4-0p1",
+      "14m/a7-0p01",
+      "14m/a7-0p05",
+      "14m/a7-0p1"
+    ],
+    "checkpoint_conditions_present_remote_at_freeze": 6,
+    "heldout_result_artifacts_present_remote_at_freeze": 0,
+    "staged_but_unevaluated_at_freeze": true,
+    "selection_artifact_heldout_inspected": false,
+    "note": "The sealed transfer was extracted before this freeze; no 14M held-out model result was evaluated or used for K013 selection."
+  },
+  "sources": [
+    {"path": "autoresearch/candidates/k013/candidate.py", "bytes": 2724, "sha256": "999e57874000bfa595ae6c60f0dc2c378184ebd5205a1175759a8a1e2796c7bf"},
+    {"path": "autoresearch/candidates/k013/README.md", "bytes": 1163, "sha256": "bf9a4f66ffc0ee367f4c0f7e4ad089a810e1254c315564b6fbaaf0e930c7510e"},
+    {"path": "autoresearch/probe_k013_final.py", "bytes": 697, "sha256": "783eccd62fd941612a1a576306b8efe898de5dc5213b0c0ee9ef71c3a86d8c6b"},
+    {"path": "autoresearch/probe_frozen_final.py", "bytes": 16705, "sha256": "4fa7c1b50d8a4f07ad72ae1402f7c99f8231426c6b2d82aae1b4e9bf9873526d"},
+    {"path": "autoresearch/select_k011_complete_validation.py", "bytes": 6001, "sha256": "5ed9f810ce1bcf0ded42028d2299b12af8b5f7088924f9dc386bc4c051c680d6"},
+    {"path": "autoresearch/candidates/k011/FULL_VALIDATION_SEARCH.json", "bytes": 2062, "sha256": "2a1d72ccfe1691531bb5397f2af29b50e98ee32eefcb0b51ba05414e50941c09"},
+    {"path": "autoresearch/candidates/k001/candidate.py", "bytes": 5081, "sha256": "ac335d05e5686eed57fbbf7929bc6731e1c38ea96cceed1b56d37877004d6ee9"},
+    {"path": "autoresearch/candidates/k001/kernel.cu", "bytes": 5371, "sha256": "a0977732cd87d26bec619f43f60872f5726c08ab97f6d5194952d4655aaf87f2"},
+    {"path": "measurement.py", "bytes": 4149, "sha256": "1bee7bf5579de65979d9e22330d218625a3f1415fe135613ac3e62db35d55329"},
+    {"path": "config.json", "bytes": 1661, "sha256": "1326eedf4e3b48c1919a427c4cfe50eb383e047f39c3788ee0b8877c970ce56d"}
+  ]
+}

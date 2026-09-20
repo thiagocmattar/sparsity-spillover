@@ -1,0 +1,57 @@
+"""Frozen K010 410M development probe using the v1 measurement machinery."""
+
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+
+import probe_models as base
+
+
+HERE = Path(__file__).resolve().parent
+RUN = HERE.parent
+FIXED_SITES = frozenset(("z",))
+
+
+def select_sites(selection, topology):
+    if selection != "active":
+        raise ValueError("K010 requires --sites active")
+    return FIXED_SITES
+
+
+def create_adapter(model, implementation, sites):
+    if implementation != "k010" or frozenset(sites) != FIXED_SITES:
+        raise ValueError("This append-only probe accepts only K010 at z")
+    source = HERE / "candidates/k010/candidate.py"
+    spec = importlib.util.spec_from_file_location("run025_probe_k010", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return base.SiteAdapter(module.Adapter(model), implementation, sites)
+
+
+def source_records(implementation):
+    if implementation != "k010":
+        raise ValueError("This append-only probe accepts only K010")
+    sources = [
+        Path(__file__),
+        HERE / "probe_models.py",
+        HERE / "dense_probe/probe.py",
+        RUN / "measurement.py",
+        RUN / "run025_common.py",
+        RUN / "config.json",
+        HERE / "candidates/k010/candidate.py",
+        HERE / "candidates/k004/candidate.py",
+        HERE / "candidates/k004/kernels.py",
+    ]
+    sources += sorted((RUN.parents[1] / "src/sparsity_research").glob("*.py"))
+    return [base.record(source) for source in sources]
+
+
+base.IMPLEMENTATIONS = ("k010",)
+base.select_sites = select_sites
+base.create_adapter = create_adapter
+base.source_records = source_records
+
+
+if __name__ == "__main__":
+    base.main()
