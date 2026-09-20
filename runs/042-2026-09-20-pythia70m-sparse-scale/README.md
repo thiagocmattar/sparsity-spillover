@@ -104,3 +104,26 @@ bytes and SHA256 remain unchanged. Software installation ran concurrently.
 The safer deadline mechanism and approval-review decision are recorded in
 prelaunch/guard-decision.md. Infrastructure overlays are inventoried before the
 scientific pipeline begins.
+
+
+## Follow-up development and attribution
+
+Candidates019--021 make neighboring lanes read neighboring output-column
+weights, with scalar limits2/4/8. Candidates022--024 test smaller query tiles
+and reversed causal-block scheduling. Candidates025--028 change only the dense
+full-vocabulary GEMM schedule; the unchanged sparse h/z implementation remains
+separately identifiable. The final decomposition includes restoring the native
+output projection, and fresh14M native-h/z replacements at both dense and sparse
+checkpoints. These conditional controls must not be added as independent gains.
+
+The extended-row checker added a large-cancellation synthetic case absent from
+the original48-case suite. At its first failure, the new and retained frozen
+kernels were bitwise identical while both differed from the native operator.
+The original failures are preserved. `candidates/audit_short.py` independently
+runs all80 cases, including the original candidate, to distinguish inherited
+reference rounding from a new numerical regression. This audit does not alter
+qualification or any final-model tolerance.
+
+Each overlay is hashed and verified on the Pod; sequential pipelines prevent
+simultaneous GPU timing. Updated harness files retain their per-attempt hashes.
+Compilation and failed candidates count against the original time/cost budget.

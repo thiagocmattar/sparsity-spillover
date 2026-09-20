@@ -39,5 +39,9 @@ PY'''
 
 if __name__=='__main__':
     client=remote.connect()
-    print(json.dumps(json.loads(remote.execute(client,COMMAND)),indent=2))
+    data=json.loads(remote.execute(client,COMMAND))
+    data['development_ranking']=data['development_ranking'][:6]
+    data['operator_passed']=sum(r['status']=='passed' for r in data['operators'])
+    data['operator_other']=[r for r in data.pop('operators') if r['status']!='passed']
+    print(json.dumps(data,indent=2))
     client.close()

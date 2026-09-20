@@ -28,6 +28,22 @@ def native_mapping(events,hidden):
             for key,value in mapping.items()}
 
 
+def custom_head_mapping(events):
+    """Match launches inside the explicit output-projection CPU annotation."""
+    spans=[e for e in events if e.get('name')=='run042_dense_head' and 'dur' in e]
+    launches={e['args']['correlation']:e for e in events
+              if e.get('cat')=='cuda_runtime' and 'correlation' in e.get('args',{})}
+    mapping={}
+    for event in events:
+        if event.get('cat')!='kernel':continue
+        launch=launches.get(event['args'].get('correlation'))
+        if launch and any(span['tid']==launch['tid'] and
+                          span['ts']<=launch['ts']<=span['ts']+span['dur'] for span in spans):
+            mapping[signature(event)]='head'
+    if spans:assert mapping,'Annotated head found, but no correlated GPU launch'
+    return mapping
+
+
 def summarize(events,mapping,custom,inputs=4,layers=6):
     rows=defaultdict(lambda:{'calls':0,'duration_us':0.})
     for event in events:
@@ -62,9 +78,12 @@ def main():
         hidden=128 if result['condition'].startswith('m14-') else 512
         mapping=native_mapping(read(path)['traceEvents'],hidden)
         sources.append(record(path));groups={}
+        eager=folder/'profile-candidate-eager.json'
+        custom_mapping={**mapping,**custom_head_mapping(read(eager)['traceEvents'])}
+        sources.append(record(eager))
         for mode in ('native','candidate'):
             path=folder/f'profile-{mode}-graph.json'
-            groups[mode]=summarize(read(path)['traceEvents'],mapping,mode=='candidate')
+            groups[mode]=summarize(read(path)['traceEvents'],custom_mapping if mode=='candidate' else mapping,mode=='candidate')
             sources.append(record(path))
         rows.append({'attempt':folder.name,'condition':result['condition'],
                      'candidate':result['candidate'],'hidden':hidden,'groups':groups})
