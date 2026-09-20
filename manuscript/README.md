@@ -1,5 +1,22 @@
 # Living Manuscript Draft
 
+20 September 2026, approved matched optimized 70M integration:
+`draft/main-updated.pdf` is rebuilt from the current author sources (21 pages, resolved
+references/citations, no overfull boxes). The original `draft/main.pdf` remains
+unchanged because Windows denies replacement while its viewer has it open.
+The user was asked to close that tab; no process was forcibly closed.
+Figure 3 uses only the 26 matched
+Run045 checkpoints; the additional Run046 T2/Ph kappa=.5 endpoint is retained
+in its own appendix table with original-port timing and unmeasured optimized
+latency. Full results contain 84 endpoints (45/27/12). All 78 final processes
+qualify; the best optimized 70M endpoint reaches 1.481x a fixed native Base,
+versus 1.013x for the original port. Additional optimization was necessary, and
+dense components also contribute. All artifacts are verified locally and both
+owned Pods are deleted. Figures, tables, numerical checks and PDF hash:
+[Analysis028](../analyses/028-2026-09-20-70m-optimized-grid/README.md).
+This release supersedes the 27-point original-port figure below. Unrelated
+author edits remain preserved in the working tree.
+
 20 September 2026, requested 70M T2 figure update:
 `draft/figures/23-70m-quality-sparsity-native-latency.pdf` now includes all five
 T2/Ph thresholds, including Run046's kappa=0.5 endpoint, giving 27 trained

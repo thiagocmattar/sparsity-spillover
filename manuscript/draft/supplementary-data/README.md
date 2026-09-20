@@ -1,5 +1,20 @@
 # Manuscript results data
 
+## Matched optimized 70M sweep, 20 September 2026
+
+The current full-results export contains 84 trained endpoints (45/27/12).
+The 70M figure export contains exactly 26 matched Run045 checkpoints, with
+native/original-port/opt073 timings from one session. Run046 T2/Ph kappa=.5
+is retained only in the full export and a separate appendix table; its original
+port is measured in a separate session and optimized latency is unmeasured.
+No historical quality, logical-count or clipping value is changed.
+`paired-pressure-figure-data.json` uses optimized 70M timings; its 14M
+contrasts are unchanged. `kernel/70m-retained-controls.json` keeps Run042's
+separate dense/component controls with explicit conditional-effect limits.
+All copies and source hashes are recorded in SOURCES.json and verified by
+[Analysis028](../../../analyses/028-2026-09-20-70m-optimized-grid/README.md).
+Earlier releases below are historical.
+
 ## Completed T2/Ph grid, 20 September 2026
 
 The current 14m-main-quality-sparsity-latency.json export has 41 Figure 1

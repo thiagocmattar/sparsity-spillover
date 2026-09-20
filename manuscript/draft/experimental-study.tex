@@ -1,13 +1,13 @@
-% Evidence: analyses/024-2026-09-17-h-only-kernel-latency/observations/046-70m-native-reference.md.
-% Figure/data: Analysis024/36_plot_70m_native_reference.py.
-% Optimization: Run040 observations/001-overhead-and-optimization.md; results/component-overhead.json.
+% Evidence: analyses/028-2026-09-20-70m-optimized-grid/observations/001-matched-70m-grid.md.
+% Figure/data: Analysis028/02_figures.py; data/full-trained-results.json.
+% Optimization: Run042 retained controls; Run045 matched grid; Analysis028 observations/001-matched-70m-grid.md.
 \section{Experimental study}
 \label{sec:experiments}
 
 We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}. Each run receives 712 optimizer steps and 1.493 billion input tokens. Within each size, runs share initialization, data order and training budget. We evaluate final-checkpoint validation loss and $\Smodel$ on the full validation set. Table~\ref{tab:interventions} lists the intervention recipes; Appendix~\ref{app:training-protocol} gives the full protocol.
 
 \textbf{Roles of the three model sizes.}
-The 14M study provides controlled intervention comparisons; 70M tests whether the observed regimes recur at a larger size. We retain 410M as a fixed-token sparsity stress test, rather than a quality-scaling result. Its base-model loss exceeds 70M's under a smaller token-to-parameter ratio and a lower learning rate; these effects are not isolated. Appendix~\ref{app:410m-results} reports all 410M endpoints and clipping curves, and Figure~\ref{fig:a0-optimization} shows the training trajectories. The detailed intervention and runtime analyses therefore focus on 14M and 70M.
+The 14M study provides controlled intervention comparisons; 70M tests whether the observed sparse structures remain exploitable after adapting the implementation. We retain 410M as a fixed-token sparsity stress test, rather than a quality-scaling result. Its base-model loss exceeds 70M's under a smaller token-to-parameter ratio and a lower learning rate; these effects are not isolated. Appendix~\ref{app:410m-results} reports all 410M endpoints and clipping curves, and Figure~\ref{fig:a0-optimization} shows the training trajectories. The detailed intervention and runtime analyses therefore focus on 14M and 70M.
 
 For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal} at $a,m,h,z$, using percentile targets $p=0,0.1,\ldots,0.9$. Site--layer thresholds are calibrated separately on ten training blocks. Figures~\ref{fig:quality-sparsity-overview} and~\ref{fig:70m-quality-latency} show the quality--sparsity trade-offs and full-model latencies at 14M and 70M, respectively.
 
@@ -15,11 +15,11 @@ For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu20
 \centering
 \includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
 \caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
-% T2 update: Analysis029 observations/001-70m-t2-figure.md; 01_collect.py and 02_plot.py.
-\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 27 trained checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
+% Source: Analysis028 observations/001-matched-70m-grid.md; 02_figures.py.
+\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 26 matched checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$ at $\kappa=0,.01,.05,.1$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
 Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
 Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
-In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.664\,ms); all other markers use the original 70M port of the 14M kernel. The original 22 checkpoints share one RTX\,5090 session; $T_2/P_h$ uses later Run043/Run046 sessions, so cross-session absolute differences are descriptive. All timings use batch one, 2,048 tokens and full output logits. Later optimization results are reported separately in Appendix~\ref{app:kernel-transfer}.}
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. All 26 checkpoints share one RTX\,5090 session, three fresh processes per checkpoint, batch one, 2,048 tokens and full output logits. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations. The additional $T_2/P_h$, $\kappa=0.5$ endpoint is retained separately in Table~\ref{tab:70m-additional-endpoint}.}
 \label{fig:70m-quality-latency}
 \end{figure}
 \FloatBarrier
@@ -27,8 +27,8 @@ In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.664\
 \textbf{Interventions extend sparsity at a quality cost.}
 At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ reaches $27.48\%$ and $40.60\%$ model-wide sparsity at 14M and 70M: $91.8\%$ and $82.2\%$ of the respective ceilings. Validation loss rises by $0.62$ and $1.12$ relative to each size's base model. At moderate thresholds ($\kappa\leq0.1$), pressure confined to $h$ gives lower loss than global pressure at similar sparsity; Section~\ref{sec:paired-results} examines the matched comparisons.
 
-\textbf{Kernel efficiency does not transfer automatically.}
-The original 70M port takes 3.313\,ms on the base model versus 1.664\,ms for native PyTorch; even its best sparse checkpoint reaches only $1.028\times$ the native base-model speed. Controlled component replacements locate most overhead at $h,z$: their implementation repeats sparsity checks and pads eight real rows to sixteen-row matrix instructions, making dense computation expensive at 70M. A separate optimization retained sparse $h,z$ execution with wider output tiles and restored native $a,m$ projections and attention. For $T_7/P_h$ at $\kappa=0.5$, it reached 1.329\,ms versus a same-session native base of 1.589\,ms ($1.195\times$), with unchanged weights and thresholds. This two-checkpoint follow-up does not replace the grid in Figure~\ref{fig:70m-quality-latency} or establish a scale-dependent speedup trend. Appendix~\ref{app:kernel-transfer} gives the diagnosis, numerical checks and scope.
+\textbf{The 14M kernel does not transfer efficiently to 70M.}
+The direct adaptation of the 14M kernel to 70M can exploit the additional sparsity to reduce inference latency, but its overhead largely offsets these gains. In the matched sweep, the original port takes 3.325\,ms on the base model, compared with 1.611\,ms for native PyTorch, and its best sparse recipe reaches only $1.013\times$ the native base-model speed. Additional optimization reduces repeated sparsity checks at $h,z$, uses a scalar path for very sparse rows, and improves dense projections, attention and the output head. On $T_7/P_h$ at $\kappa=0.5$, this reduces latency from 1.590 to 1.088\,ms ($1.481\times$ the native base-model speed). All 26 checkpoints pass full-validation numerical checks in three fresh processes (Appendix~\ref{app:kernel-transfer}). The lower-loss $T_2/P_h$ points, however, remain slower than native: loss is only $0.029$--$0.093$ above Base, but optimized latency is 1.956--2.504\,ms. Thus, the favorable 14M quality--latency balance does not transfer directly.
 
 \input{training-results}
 \input{kernel-autoresearch}

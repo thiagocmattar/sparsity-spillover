@@ -38,6 +38,11 @@ opportunity without producing profitable attention skipping at the tested
 14M shapes. The computational value of a sparse representation therefore
 depends not only on how many zeros it contains, but also on where they occur
 and the granularity at which the implementation can exploit them.
+At 70M, exploiting this structure required an additional optimization step:
+the 14M implementation did not transfer efficiently, and dense-kernel improvements
+also contribute to the measured gains (Appendix~\ref{app:kernel-transfer}).
+The low-loss $T_2/P_h$ points remain slower than native Base at 70M, although
+this recipe provides a favorable quality--latency balance at 14M.
 
 Cross-size comparisons use a common token budget rather than equal tokens
 per parameter, and 410M also uses a lower peak learning rate; the A0
@@ -47,9 +52,9 @@ Accordingly, the scale experiment tests recurrence of within-size recipe
 relationships rather than quality scaling with parameter count.
 These conclusions concern MiniPile pretraining. The distribution diagnostics cover 14M and describe responses
 rather than isolating a causal pathway for the nonlocal response. The kernel results use RTX5090 hardware,
-full-sequence inference, native SDPA and matched fusion controls; Figure~\ref{fig:quality-sparsity-overview}
-adds 70M execution and post-hoc clipping measurements from separate physical
-GPU/host sessions. Transfer to cached decoding, 410M execution and other
+full-sequence inference, native SDPA and matched fusion controls. Figure~\ref{fig:70m-quality-latency}
+adds the 26-checkpoint optimized 70M comparison; all three implementations
+share one session, separate from the retained 14M measurements. Transfer to cached decoding, 410M execution and other
 hardware remains untested. The 70M port is shape-specific; the two sizes do
 not constitute an equal-budget kernel optimization comparison.
 

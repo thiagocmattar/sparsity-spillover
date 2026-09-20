@@ -5,6 +5,13 @@
 
 ## Current status
 
+Run045 completed the matched 70M native/original-port/opt073 sweep: 26 checkpoints,
+78/78 qualified processes, 819 returned artifacts verified, both Pods deleted
+(estimated total below USD2.60). Optimized peak 1.481x native Base versus 1.013x
+for the port; dense improvements also contribute. Analysis028 updates the
+manuscript with 26 matched points and retains Run046 separately in the appendix.
+See the [verified integration](../analyses/028-2026-09-20-70m-optimized-grid/README.md).
+
 Run044 completed the missing Pythia-14M T2/Ph kappa=.5 endpoint, matching
 Run041's h/z gates and h-only OL1: validation loss5.536255, R_model5.339%,
 and qualified K050 speedup1.4189x. All checkpoints and diagnostics are local;
@@ -142,7 +149,7 @@ Evidence is local and hash-verified; zero Pods/endpoints remain and the existing
 Run 024 completed and independently verified the six Pythia-410M sparse-kernel
 sentinels on the exact physical H100 NVL used by Run 023. The official
 SparseLM0.5B control reached 1.2739x, but none of 432 linear primitives, 48 A7
-attention compositions, or 12 full-model condition × batch timings broke
+attention compositions, or 12 full-model condition Ãƒâ€” batch timings broke
 even. Best full-model speedup was 0.3275x at batch one and 0.4989x at batch 32.
 All six batch-one endpoints were worse than their matched 70M results; only
 high-threshold A7 improved slightly at batch 32 and remained a 2.32x slowdown.
@@ -260,7 +267,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `045`. Next analysis number: `026`. Next finding number: `F003`.
+Next run number: `047`. Next analysis number: `030`. Next finding number: `F003`.
 
 ## Where we stopped
 
@@ -274,7 +281,7 @@ Next run number: `045`. Next analysis number: `026`. Next finding number: `F003`
 - 2026-09-04: Run 024 completed the matched Pythia-410M sparse-kernel sentinel
   on Run 023's physical H100 NVL. All six conditions and full validation pass;
   no primitive, attention composition, or full model breaks even. Analysis 014
-  records the negative 70M→410M systems scaling result. The result archive and
+  records the negative 70MÃ¢â€ â€™410M systems scaling result. The result archive and
   internal hashes were independently verified; the Pod and guard are deleted.
 - 2026-09-04: Run 023 completed and verified the six Pythia-70M sparse-kernel
   sentinels. The official control accelerates, but every derived Pythia path is
@@ -486,5 +493,5 @@ These are manuscript-led goals, not accepted findings or approved runs.
 
 ## Key documents
 
-`DEFINITIONS.md` · `DATA.md` · `METHODS.md` · `METRICS.md` · `MANUSCRIPT.md` ·
-`WORKFLOW.md` · `COMPUTE.md` · `RUNPOD.md` · `PLOTTING.md`
+`DEFINITIONS.md` Ã‚Â· `DATA.md` Ã‚Â· `METHODS.md` Ã‚Â· `METRICS.md` Ã‚Â· `MANUSCRIPT.md` Ã‚Â·
+`WORKFLOW.md` Ã‚Â· `COMPUTE.md` Ã‚Â· `RUNPOD.md` Ã‚Â· `PLOTTING.md`

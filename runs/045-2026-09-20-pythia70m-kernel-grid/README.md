@@ -1,7 +1,9 @@
 # Run045: matched 70M kernel comparison across 26 trained checkpoints
 
-Status: design approved; implementation and local checks complete; launch pending.
-No GPU launch or new cloud spend is authorized yet.
+Status: complete and verified locally; both owned Pods deleted.
+26 checkpoints / 78 qualified fresh processes; all 819 returned artifacts verified.
+The preparation and proposal sections below preserve the pre-launch history;
+the user subsequently approved launch and the diagnostic inventory.
 
 The user confirmed the 26-checkpoint, three-implementation comparison on
 20 September 2026. The question is whether Run042's frozen opt073 improvement
@@ -108,3 +110,71 @@ from Git. Its README is the initial preparation snapshot; this section and
 the launch proposal record the subsequent completed checks without changing
 the packaged scientific sources. The staged retained-source bytes were checked
 against their on-disk hashes before commit.
+
+## Authorized execution
+
+The user explicitly approved the quoted launch after preparation and confirmed
+the diagnostic inventory. The first host, `xxefw0t9wvs74n`, was released before
+any scientific execution because transfer was only about 25KB/s. Its setup logs
+and teardown receipt remain in `prelaunch/`; no checkpoint or scientific output
+was lost. The unchanged input bundle moved to `jl2raf9qd96iau` in EU-RO-1,
+also one Secure RTX5090 at USD0.99/hour. The original absolute deadline,
+2026-09-20 21:50:35 UTC, applies to both attempts cumulatively.
+
+On the second host, a bounded native-SCP probe succeeded while Paramiko SFTP
+remained slow. Native SCP replaced only the transfer method. Pinned runtime
+setup completed successfully while the same hash-frozen archive uploaded.
+The detached pipeline verifies its SHA256 and all retained inputs before
+preflight and final execution. The local provider-stop guard and on-host
+workload guard are armed for the original deadline. No kernel, checkpoint,
+threshold, measurement coverage or scientific source changed for this retry.
+
+All three preflight cases passed. Warm processes still spent about a minute
+re-reading the frozen vendor tree from network storage before kernel loading.
+Two infrastructure-only caches address this setup overhead: the identical
+runtime/extensions (23,168 files) and the archived sources/vendor tree (1,374
+frozen files, plus generated Python caches) are hash-verified on local container
+disk, while their original copies remain on persistent storage. The controller
+waited between full processes for the source-cache change. The changed include
+paths caused a one-time rebuild using the same source bytes, compiler and flags.
+All integrity checks remain enabled. No model activations are cached, and this
+pre-timing setup improvement is not counted as an inference-latency gain.
+The cache verification manifests are included in persistent provenance.
+
+## Verified completion and teardown
+
+The first controller stopped conservatively after 71 complete processes because
+its worst-case leaf timeout plus transfer reserve exceeded the remaining window.
+The bounded `tail001` continuation retained all 71 and completed the remaining
+seven with unchanged frozen scientific inputs, seeds, protocol, original absolute
+deadline and 20-minute recovery reserve. `pipeline.exit=1` records that conservative
+stop; `tail.exit=0` records successful completion. The tail's SSH response initially
+timed out, but its single controller/worker identity was verified before monitoring;
+no duplicate workload was launched. See `provenance/tail-continuation.json`.
+
+All GPU measurements completed by 21:18:59 UTC. `results/local-verification.json`
+records 819 verified returned artifacts. The local reducer exactly reproduces
+`results/matched-grid.json` (SHA256
+`d7838110e86a08bb098b38fb9716248005d8de70ff0991a0688fe512240ba582`).
+The recovered archive is 8,557,501 bytes, SHA256
+`fbf35fd42a68b03f1ad6effb554ba15e9f872ca8dd9f98c0520f531726b03964`.
+All 26 original checkpoints remained local throughout this inference-only task.
+Raw timings, numerical checks, activation/weight/logical/work diagnostics and
+runtime provenance are retained. The three preflight cases were eight-block
+smokes; all 78 final processes used the complete 338-block numerical checks.
+
+Both owned Pods were confirmed absent at 21:23:11 UTC; no Pods remained.
+The provider-stop guard was then stopped after checking its process identity.
+No network volume was created; existing shared storage was not changed.
+Estimated GPU cost is at most USD2.52 and total below USD2.60, including the
+failed infrastructure host and temporary storage; these are conservative estimates,
+not settled invoice amounts. See `prelaunch/teardown-final.json`.
+
+Read-only monitoring changed to five-minute sleeps at the user's request; no
+run-by-run approvals or orchestration were needed during normal controller progress.
+The original three-hour / USD5 authorization and deadline were respected.
+
+[Observation 001](observations/001-final-results.md) records the results and caveats.
+[Analysis028](../../analyses/028-2026-09-20-70m-optimized-grid/README.md) owns the
+approved figures, manuscript tables and surgical text integration. The additional
+Run046 endpoint is appendix-only and has no optimized Run045 latency.
