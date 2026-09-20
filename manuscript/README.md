@@ -1,5 +1,17 @@
 # Living Manuscript Draft
 
+20 September 2026, 70M execution comparison and experimental-study revision:
+Figure 3 now shows 70M quality and latency versus model-wide sparsity, using
+the native PyTorch base latency (1.664 ms). The former Figure 4 speedup graph
+is removed. The text distinguishes the original transfer (best 1.028x native
+base speedup) from Run040's separate two-checkpoint optimization (1.195x),
+adds its controlled diagnosis to Appendix E, and explicitly links the 410M
+stress-test results in Appendix D.3. See [Observation 046](../analyses/024-2026-09-17-h-only-kernel-latency/observations/046-70m-native-reference.md).
+The temporary 21-page build has resolved references/citations, no overfull
+boxes and three existing underfull horizontal-box warnings; all pages were
+visually checked. This source/figure edit does not replace `draft/main.pdf`.
+Other author edits are preserved and remain uncommitted.
+
 20 September 2026, requested rebuild after moving Table 1:
 `draft/main.pdf` is updated to the current author-edited sources. Table 1
 appears directly above Figure 2 on page 4, in Sparsification interventions.

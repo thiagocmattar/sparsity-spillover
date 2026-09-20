@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+The [70M native-reference figure](observations/046-70m-native-reference.md) is now
+Figure 3 in the manuscript: quality and latency against sparsity, with the native
+PyTorch base at 1.664 ms. The 22-checkpoint original port is separate from the
+verified two-checkpoint Run040 optimization. The old main speedup graph and
+unsupported twofold native-speedup claim are removed. A temporary manuscript
+build is checked; `main.pdf` is unchanged.
+
 The [14M-only main figure](observations/045-main-figure-ten-recipes.md)
 shows all 40 trained checkpoints across ten recipes. Post-hoc clipping
 frontiers are restored only in panel (a); panel (b) spans 0.445--0.665 ms

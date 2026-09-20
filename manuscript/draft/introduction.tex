@@ -29,7 +29,7 @@ To address this gap, we pretrain Pythia-family models from scratch~\citep{biderm
 % Editorial revision: reviews/2026-09-20-introduction-abstract/README.md (surgical revision).
 % Evidence: Analysis024 observations 015, 028, 034, 041; Analysis021 pressure-scope O016.
 Across 40 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
-First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figure~\ref{fig:quality-sparsity-14m-70m}).
+First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figures~\ref{fig:quality-sparsity-overview} and~\ref{fig:70m-quality-latency}).
 Second, \textbf{sparsity and speedup increase together within recipes}, but a larger $\Smodel$ does not directly translate into a larger speedup. The main requirement for lower latency is the location and structure of zeros and whether the kernel can exploit them, with most gains coming from skipped computation at $h$ and $z$ (Table~\ref{tab:kernel-mechanisms}).
 % Scale-check evidence: Analysis024 observation 044 and Run040 observation 001.
 Third, \textbf{sparsity remains exploitable across the tested scales}: skipping computations can reduce latency at both 14M and 70M, but a sparse kernel does not transfer directly and requires adaptation to the larger model.

@@ -129,3 +129,7 @@ separately in [the checkpoint table](data/paper-checkpoints.json).
 All thirteen previous PDFs are preserved, byte-for-byte, in
 [figures/.archive](figures/.archive/README.md). Historical observation links now
 point there; their scientific claims and historical source-hash records are retained.
+
+## Current manuscript Figure 3: 70M native reference
+
+[23-70m-quality-sparsity-native-latency.pdf](figures/23-70m-quality-sparsity-native-latency.pdf) shows quality versus sparsity and original-port latency versus sparsity. The Base latency is native PyTorch/SDPA, with post-hoc frontiers only in the quality panel. [Observation 046](observations/046-70m-native-reference.md) contains the full caption, source verification, and associated experimental-study/transfer discussion. The former main-text speedup figure is removed; its historical artifact is retained.

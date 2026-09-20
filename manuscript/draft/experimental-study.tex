@@ -1,24 +1,33 @@
-% Pressure-scope revision: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md; evidence.py, figures.py, tables.py.
-% Experimental setup/comparison logic and the user-authorized kernel case study.
-% Provenance and scope: experimental-notes.md.
+% Evidence: analyses/024-2026-09-17-h-only-kernel-latency/observations/046-70m-native-reference.md.
+% Figure/data: Analysis024/36_plot_70m_native_reference.py.
+% Optimization: Run040 observations/001-overhead-and-optimization.md; results/component-overhead.json.
 \section{Experimental study}
 \label{sec:experiments}
 
-We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model and training for one full-pass. We evaluate validation loss and $\Smodel$ over all complete validation sequences. The intervention recipes are listed in Table~\ref{tab:interventions}.
+We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}. Each run receives 712 optimizer steps and 1.493 billion input tokens. Within each size, runs share initialization, data order and training budget. We evaluate final-checkpoint validation loss and $\Smodel$ on the full validation set. Table~\ref{tab:interventions} lists the intervention recipes; Appendix~\ref{app:training-protocol} gives the full protocol.
 
-\textbf{Experiments across model sizes.}
-The 14M runs provide the most extensive controlled ablation, used to identify threshold and pressure regimes. The 70M runs test whether these regimes persist in a larger model. We also attempted to extend this analysis to 410M, but the fixed-token protocol leaves this model substantially less trained per parameter: all models receive 712 optimizer steps and 1.493B input tokens, corresponding to 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M, and 410M, respectively. The 410M run also follows the Pythia learning-rate schedule, with a lower peak learning rate. It had a higher final loss and larger late-training gradient norm, which evidentiate a different training regime. We therefore treat the 410M result as a limited, partial scale-up, and base the detailed intervention analysis on the 14M and 70M runs (Appendix~\ref{app:training-protocol}).
+\textbf{Roles of the three model sizes.}
+The 14M study provides controlled intervention comparisons; 70M tests whether the observed regimes recur at a larger size. We retain 410M as a fixed-token sparsity stress test, rather than a quality-scaling result. Its base-model loss exceeds 70M's under a smaller token-to-parameter ratio and a lower learning rate; these effects are not isolated. Appendix~\ref{app:410m-results} reports all 410M endpoints and clipping curves, and Figure~\ref{fig:a0-optimization} shows the training trajectories. The detailed intervention and runtime analyses therefore focus on 14M and 70M.
 
+For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal} at $a,m,h,z$, using percentile targets $p=0,0.1,\ldots,0.9$. Site--layer thresholds are calibrated separately on ten training blocks. Figures~\ref{fig:quality-sparsity-overview} and~\ref{fig:70m-quality-latency} show the quality--sparsity trade-offs and full-model latencies at 14M and 70M, respectively.
 
-
-% 70M extension: runs/034-2026-09-17-pythia70m-h-only-ol1/README.md;
-% Figure 1 evidence: Analysis024 observations/025-matched-quality-latency.md.
-Within each size, runs share initialization, data order and training budget.
-Appendix~\ref{app:training-protocol} gives the full protocol.
-For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal}
-at $a,m,h,z$, with percentile targets $p=0,0.1,\ldots,0.9$ and site--layer
-thresholds calibrated separately on ten training blocks.
-
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
+\caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
+\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 22 trained checkpoints: Base, GeLU $\rightarrow$ ReLU, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
+Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
+Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.664\,ms); all other markers use the original 70M port of the 14M kernel. All trained timings use the same RTX\,5090 session, batch one, 2,048 tokens and full output logits. Later optimization results are reported separately in Appendix~\ref{app:kernel-transfer}.}
+\label{fig:70m-quality-latency}
+\end{figure}
 \FloatBarrier
+
+\textbf{Interventions extend sparsity at a quality cost.}
+At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ reaches $27.48\%$ and $40.60\%$ model-wide sparsity at 14M and 70M: $91.8\%$ and $82.2\%$ of the respective ceilings. Validation loss rises by $0.62$ and $1.12$ relative to each size's base model. At moderate thresholds ($\kappa\leq0.1$), pressure confined to $h$ gives lower loss than global pressure at similar sparsity; Section~\ref{sec:paired-results} examines the matched comparisons.
+
+\textbf{Kernel efficiency does not transfer automatically.}
+The original 70M port takes 3.313\,ms on the base model versus 1.664\,ms for native PyTorch; even its best sparse checkpoint reaches only $1.028\times$ the native base-model speed. Controlled component replacements locate most overhead at $h,z$: their implementation repeats sparsity checks and pads eight real rows to sixteen-row matrix instructions, making dense computation expensive at 70M. A separate optimization retained sparse $h,z$ execution with wider output tiles and restored native $a,m$ projections and attention. For $T_7/P_h$ at $\kappa=0.5$, it reached 1.329\,ms versus a same-session native base of 1.589\,ms ($1.195\times$), with unchanged weights and thresholds. This two-checkpoint follow-up does not replace the grid in Figure~\ref{fig:70m-quality-latency} or establish a scale-dependent speedup trend. Appendix~\ref{app:kernel-transfer} gives the diagnosis, numerical checks and scope.
+
 \input{training-results}
 \input{kernel-autoresearch}

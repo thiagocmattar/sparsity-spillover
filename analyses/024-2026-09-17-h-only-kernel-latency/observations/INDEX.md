@@ -174,3 +174,5 @@ proposed manuscript writing, limitations, and generating source. See also
   A0/A1-H post-hoc clipping frontiers, showing all 40 clipping measurements.
 
 - [045](045-main-figure-ten-recipes.md): Figure22 with all 40 trained checkpoints, T2/Ph nomenclature, a 2x5 legend, and 90% fonts; post-hoc frontiers restored only in (a), with a focused 0.445--0.665 ms latency scale in (b).
+
+- [046](046-70m-native-reference.md): 70M Figure 3 uses the native PyTorch baseline; original-port and two-checkpoint optimization results are separated, and the main speedup graph is removed.

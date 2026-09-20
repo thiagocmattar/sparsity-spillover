@@ -44,7 +44,7 @@ input loading, masking, softmax and output processing. \\
 
 The scalar path requires finite weights and biases, with nonzero magnitudes
 between $2^{-50}$ and $2^{50}$; selected activations obey the same magnitude
-bounds. Other rows use the matrix path. The two sizes retain these rules,
+bounds. Other rows use the matrix path. The original 70M port retains these rules,
 with projection dimensions adapted from $(d,d_f)=(128,512)$ to $(512,2048)$.
 The 14M attention kernel uses $64\times256$ query/key tiles and two key/value
 partitions; 70M uses $128\times128$ tiles without partitioning to match its
@@ -77,13 +77,69 @@ GPU sessions, so common normalization does not remove session effects.
 For comparisons across recipes, Figure~\ref{fig:kernel-diagnostics} uses
 \emph{one native base-model latency per size}:
 $t_{\mathrm{native},T_0/P_0}/t_{\mathrm{specialized},r}$ for recipe $r$.
-The native references are 0.65544\,ms at 14M and 1.66388\,ms at 70M.
-This differs from Figure~\ref{fig:base-model-speedup}, which uses the
-specialized base-model latencies, 0.65157 and 3.31325\,ms.
-The best trained-recipe gains are therefore $1.427\times$ and $1.028\times$
-over the native base, versus $1.418\times$ and $2.047\times$ over the
-specialized base. The latter 70M ratio reflects a slow dense path in the
-ported implementation and does not establish a twofold gain over native inference.
+The native references are 0.65544\,ms at 14M and 1.66388\,ms at 70M;
+Figure~\ref{fig:70m-quality-latency} uses the latter reference directly.
+The specialized base-model latencies are 0.65157 and 3.31325\,ms.
+Thus the best trained-recipe gains are $1.427\times$ and $1.028\times$
+over the native base. Dividing by the specialized base instead would give
+$1.418\times$ and $2.047\times$: the larger 70M ratio reflects a slow dense
+path, not a twofold gain over native inference. The Base marker in the 14M
+latency figure uses specialized execution; its native reference is reported here.
+
+% Follow-up evidence: Run040 observations/001-overhead-and-optimization.md;
+% results/component-overhead.json, profile-attribution.json and closeout-verification.json.
+% Integration and verification: Analysis024 observations/046-70m-native-reference.md.
+\paragraph{Adapting the kernel to 70M.}
+\label{app:kernel-transfer}
+A separate follow-up tested the base model and $T_7/P_h$ at $\kappa=0.5$.
+Replacing only $h,z$ with native operations reduced the ported base-model
+latency by 1.661\,ms, nearly its entire 1.674\,ms deficit. This identifies
+the expensive component, not an additive breakdown of causes. Its general
+matrix path pads eight real rows to sixteen and, at width 512, repeats
+activation inspection across four output-column blocks rather than one at
+14M. It also lacks a shared-memory weight pipeline. Sparse inputs can avoid
+much of this fallback: $94.88\%$ of $h$ rows and $99.59\%$ of $z$ rows have
+at most two nonzeros in the tested sparse checkpoint, versus none in the base model.
+
+We selected a revised implementation using sixteen fixed training blocks,
+then froze it before full-validation testing. It retains sparse $h,z$,
+fused normalization and RoPE, uses native $a,m$ projections and attention,
+and widens the $h,z$ output tile from 128 to 256 columns, reducing repeated
+inspection from four column blocks to two. A 512-column candidate was slower.
+These are output-column changes: the eight-row input grouping and sparse
+skipping rule are unchanged, so this comparison does not test whether larger
+activation groups skip less often.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{70M implementation follow-up.} All rows use one RTX\,5090
+session and the same timing and numerical-check protocol as above.
+Speedup uses the fixed native base-model reference in the first row.
+These measurements are separate from the original grid in
+Figure~\ref{fig:70m-quality-latency}; absolute timings are not pooled across sessions.}
+\label{tab:70m-kernel-transfer}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Checkpoint & Implementation & Latency (ms) & Native-base speedup \\
+\midrule
+$T_0/P_0$ & Native PyTorch & 1.589 & $1.000\times$ \\
+$T_0/P_0$ & Original port & 3.263 & $0.487\times$ \\
+$T_0/P_0$ & Revised & 2.960 & $0.537\times$ \\
+$T_7/P_h$, $\kappa=0.5$ & Original port & 1.571 & $1.011\times$ \\
+$T_7/P_h$, $\kappa=0.5$ & Revised & 1.329 & $1.195\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both checkpoints passed all 338 validation sequences in three fresh
+processes with unchanged weights and thresholds. The revised sparse model's
+mean loss differs from native execution by less than $4\times10^{-8}$;
+outputs satisfy the numerical bounds above, without a claim of bitwise
+identity. Table~\ref{tab:70m-kernel-transfer} establishes a native-base gain
+for this checkpoint, not the full 70M grid. The revised dense path remains
+slower than PyTorch, and native attention in this revision does not exploit
+activation-induced $QK/PV$ skipping. The original-port diagnostics below
+remain distinct from this follow-up.
 
 \paragraph{What MMA bypass measures.}
 Bypass is the number of omitted MMA instructions divided by issued plus
@@ -133,8 +189,9 @@ Table~\ref{tab:kernel-mechanisms} provides the direct 14M test: disable one
 skipping path while keeping weights, gates and fusion fixed. Its min--max
 spans cover all pairs of three independent off/on process means; effects are
 conditional and non-additive. These tests do not separately time memory reads,
-zero checks or softmax. No corresponding operation-level ablation was run at
-70M, so its scatter is descriptive evidence, not causal attribution.
+zero checks or softmax. The 70M follow-up above uses native component replacements, rather than this
+six-operation skip-toggle decomposition. The original-grid scatter remains
+descriptive evidence, not causal attribution.
 
 \paragraph{Alternatives tested.}
 Porting the $h,z$ strategy to $a,m$ was correct but slower in the tested 14M
@@ -143,7 +200,7 @@ $1.90\times$ and $2.00\times$ as many matrix instructions, respectively.
 Attention shortcuts using cumulative value sums for zero queries, disjoint
 query/key supports, or cheaper conditional execution either failed numerical
 checks or did not establish a reliable gain. Disabling attention skipping
-improved all 35 historical 14M comparisons. The retained implementation is
+improved all 35 historical 14M comparisons. The original grid implementation is
 therefore not latency-optimal; it preserves one common execution policy across
-recipes. Earlier detection that avoids attention operand reads, fused post-hoc
+recipes. The 70M follow-up instead retains native attention. Earlier detection that avoids attention operand reads, fused post-hoc
 masking and sparsification of softmax probabilities remain untested here.
