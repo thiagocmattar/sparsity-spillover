@@ -11,7 +11,7 @@ from io_utils import RUN, read, write
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--phase', choices=('baseline','development','final'), required=True)
+    parser.add_argument('--phase', choices=('baseline','development','final','decomposition'), required=True)
     parser.add_argument('--candidates', nargs='+', default=[f'opt{i:03d}' for i in range(1,7)])
     parser.add_argument('--tag', default='001')
     parser.add_argument('--deadline-epoch', type=float, required=True)
@@ -24,9 +24,14 @@ def main():
         jobs = [(c,'full',r) for c in cfg['conditions'] for r in (1,2,3)]
     elif args.phase == 'development':
         jobs = [(c,k,1) for k in args.candidates for c in ('c00','c21')]
-    else:
+    elif args.phase == 'final':
         k = read(RUN/'provenance/final-selection.json')['candidate']
         jobs = [(c,k,r) for c in ('c00','c21','c16') for r in (1,2,3)]
+    else:
+        read(RUN/'provenance/final-selection.json')
+        modes = ('selected-no-skip','selected-native-hz','selected-native-attention',
+                 'selected-native-am','selected-native-norm','selected-native-rope')
+        jobs = [(c,k,r) for c in ('c00','c21') for k in modes for r in (1,2,3)]
     random.Random(2801).shuffle(jobs)
     write(out/f'order-{args.tag}.json', jobs)
     rows = []
@@ -34,12 +39,19 @@ def main():
     with lock.open('x') as f: f.write(str(os.getpid()))
     try:
         for condition,candidate,replicate in jobs:
+            if args.phase == 'development' and (RUN/'candidates'/candidate/'spec.json').exists():
+                operator = RUN/'artifacts/development'/f'operator-{candidate}.json'
+                if not operator.exists() or read(operator).get('status') != 'passed':
+                    rows.append({'condition':condition,'candidate':candidate,'status':'operator-check-failed-or-missing'})
+                    write(out/f'summary-{args.tag}.json',rows)
+                    continue
             if time.time() > args.deadline_epoch-1200:
                 raise TimeoutError('Recovery reserve reached')
             attempt = f'{args.phase}-{condition}-{candidate}-r{replicate}-{args.tag}'
             command = [sys.executable,'-u',str(RUN/'02_benchmark.py'),'--condition',condition,
                        '--candidate',candidate,'--replicate',str(replicate),'--attempt',attempt]
             if args.phase == 'development': command += ['--development']
+            if args.phase == 'final': command += ['--final']
             started = time.monotonic()
             with (RUN/'runtime'/f'{attempt}.log').open('x') as log:
                 completed = subprocess.run(command, cwd=RUN, stdout=log, stderr=subprocess.STDOUT,

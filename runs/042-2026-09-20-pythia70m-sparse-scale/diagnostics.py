@@ -5,12 +5,13 @@ from sparsity_research.capture import ActivationCapture
 from sparsity_research.metrics import ActivationAccumulator, weight_statistics
 from frozen_diagnostics import projection_counts, hybrid_counts, attention_opportunities
 from io_utils import write
+from tile_oracle import counts as instruction_counts
 
 
 def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
     accumulator = ActivationAccumulator((0., .001, .01))
     histograms, counts, hybrid, attention = {}, {}, {}, {}
-    input_instructions, tile_occupancy = {}, {}
+    input_instructions, tile_occupancy, actual_layouts = {}, {}, {}
     originals = []
     started = time.monotonic()
 
@@ -34,9 +35,11 @@ def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
                 try: output = op(h, z, residual)
                 finally: op.count = old
                 stat = op.stats.sum(tuple(range(op.stats.ndim - 1))).cpu().tolist()
-                assert stat[0] + stat[1] == 2097152 and stat[2] + stat[3] == 524288
+                tile_rows = h.reshape(-1,2048).shape[0] // op.stats.shape[0]
+                actual_layouts[str(self.index)] = {'row_group':tile_rows,'instruction_shape':[16,8,16],
+                    'padded_rows_per_instruction':16-tile_rows}
                 for site, offset, scalar in [('h', 0, 4), ('z', 2, 5)]:
-                    expected = hybrid_counts(capture.activations[f'{site}.layer_{self.index}'], op.fast_weights, op.skip)
+                    expected = instruction_counts(capture.activations[f'{site}.layer_{self.index}'], tile_rows, op.fast_weights, op.skip)
                     assert [stat[offset], stat[offset + 1], stat[scalar]] == expected
                 pooled = hybrid.setdefault(str(self.index), [0] * 6)
                 for i, value in enumerate(stat): pooled[i] += int(value)
@@ -121,6 +124,8 @@ def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
                                      'PV uses V zeros as a lower bound, not full model-wide sparsity.',
            'hybrid_fields': ['h_issued', 'h_bypassed', 'z_issued', 'z_bypassed', 'h_scalar_products', 'z_scalar_products'],
            'hybrid_counts_by_layer': hybrid, 'attention_counts_by_layer': attention,
+           'actual_output_projection_layouts': actual_layouts,
+           'cross_layout_counter_caution':'Compare absolute issued instructions and scalar products; M8 and M16 have different potential-instruction denominators.',
            'attention_fields': ['qk_issued', 'qk_bypassed', 'pv_issued', 'pv_bypassed'],
            'native_instruction_counts': 'unmeasured; absent entries are not zeros',
            'input_projection_instructions_by_layer': input_instructions,

@@ -34,6 +34,7 @@ def main():
             'candidate':a.candidate,'checkpoint':checkpoint,'config':record(RUN/'config.json'),
             'run_sources': [record(p) for p in sorted(RUN.glob('*.py'))],
             'archive':record(RUN/'provenance/archive.json'),'controls':record(RUN/'controls.py'),
+            'starting_kernel_sources': {p.relative_to(RUN).as_posix(): record(p) for p in sorted((RUN/'base70').rglob('*')) if p.is_file() and '__pycache__' not in p.parts},
             'port_sources': {p.relative_to(RUN).as_posix(): record(p) for p in sorted((RUN/'kernel').rglob('*')) if p.is_file() and '__pycache__' not in p.parts}}
     def emit(stage,**fields):
         row={'utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'stage':stage,
@@ -142,7 +143,7 @@ def main():
                 emit('diagnostics',loss=quality['loss'])
                 diagnostic.collect(models['candidate'],models['native'],validation,dest/'diagnostics.json',emit,
                     checkpoint['canonical_logical_products']['architecture_maximum'],blocks=blocks)
-            if (a.candidate in ('full', 'legacy', 'selected')) and not a.smoke and not a.development:
+            if (a.candidate in ('full', 'legacy', 'selected') or a.candidate.startswith('opt')) and a.replicate==1 and not a.smoke and not a.development:
                 from profiling import collect
                 collect(models,runners,inputs[:4],dest)
             result.update(status='complete',peak_allocated_bytes=torch.cuda.max_memory_allocated())

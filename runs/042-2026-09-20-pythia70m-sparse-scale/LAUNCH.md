@@ -35,8 +35,9 @@ use one GPU UUID and common native references per size. Sources are committed
 before launch; candidates remain immutable after registration. Detached logs
 and artifacts live on /workspace. Monitor every60 seconds, with refreshed
 phase progress, validation loss, throughput, ETC and spend; investigate failed
-numerics, stale activity, low memory/disk. Remote and local stop guards preserve
-storage at the deadline. Delete only after archive and member hashes verify.
+numerics, stale activity, low memory/disk. A scoped local Pod stop guard and
+credential-free remote job deadlines enforce the time limit. Provider
+credentials remain local. Delete only after archive and member hashes verify.
 
 No further approval is needed within the user's explicit launch authorization.
 No manuscript edit or PDF rebuild is included.

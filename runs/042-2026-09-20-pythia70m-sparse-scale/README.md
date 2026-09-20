@@ -68,8 +68,29 @@ hours cost USD3.96 plus storage, within the USD15 total ceiling. Hard deadline
 is the earlier of four hours from this goal's start or four Pod hours;
 reserve the last30 minutes for final checks/recovery. Stop before exceeding
 either cap. Existing Run041 and the shared network volume are unrelated.
-Use detached persistent processes and remote/local stop guards. Monitor at
+Use detached persistent processes, a local Pod stop guard and credential-free
+remote command deadlines. No provider credential is uploaded. Monitor at
 60-second intervals and refresh ETC/spend. Numerical failure, stale worker,
 memory below8GiB or disk below10GB trigger investigation. Transfer archives
-and verify every hash before deleting the owned Pod. No paid resource exists
-for this run yet; the launch packet will record checks and actual placement.
+and verify every hash before deleting the owned Pod. The owned Pod is
+`nujok8uu8is06b`, created at13:56:18UTC on20 September; exact placement and
+price are retained in prelaunch/lease-001.json.
+
+## Initial development candidates and transfer retry
+
+The first six candidates change h/z row groups (8/16) and output columns
+(128/256/512). Candidates007--011 test dense attention scheduling separately:
+query/key tiles64/64,64/128,128/64,64/256 and128/128 with eight warps.
+Candidates012--014 inspect h/z once per row and reuse fresh summaries across
+output-column blocks. All inspection launches and temporary reads/writes are
+timed; no activation result persists between inputs. Candidate definitions are
+immutable after registration. Attention changes must pass causal/output tests
+and the original end-to-end numerical bounds; altered softmax reduction order
+is a qualification risk, not grounds to loosen tolerances.
+
+The first archive upload and a native SCP probe were below0.1MB/s. They were
+replaced by32 resumable SSH streams to the same owned Pod; all original archive
+bytes and SHA256 remain unchanged. Software installation ran concurrently.
+The safer deadline mechanism and approval-review decision are recorded in
+prelaunch/guard-decision.md. Infrastructure overlays are inventoried before the
+scientific pipeline begins.

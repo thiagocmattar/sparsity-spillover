@@ -3,7 +3,9 @@ from types import MethodType
 import torch
 
 MODES = ("native", "full", "all-skips-off", "hz-skips-off", "native-hz",
-         "native-am", "native-attention", "native-norm", "native-rope")
+         "native-am", "native-attention", "native-norm", "native-rope", "legacy",
+         "selected", "selected-no-skip", "selected-native-hz", "selected-native-am",
+         "selected-native-attention", "selected-native-norm", "selected-native-rope")
 
 
 class NativeJoint:
