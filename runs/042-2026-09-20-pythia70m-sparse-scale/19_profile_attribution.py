@@ -52,6 +52,7 @@ def summarize(events,mapping,custom,inputs=4,layers=6):
         if 'flash' in name and ('kernel<' in name or 'kernel(' in name):group='attention'
         if custom:
             if 'joint<' in name:group='fused_h_z'
+            elif 'scalar_only<' in name:group='h_z_scalar_path'
             elif 'inspect_rows(' in name:group='h_z_inspection'
             elif 'norm_pair(' in name:group='paired_norm'
             elif 'rope_gate(' in name:group='rope_and_gates'

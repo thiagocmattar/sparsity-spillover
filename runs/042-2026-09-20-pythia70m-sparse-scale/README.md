@@ -127,3 +127,19 @@ qualification or any final-model tolerance.
 Each overlay is hashed and verified on the Pod; sequential pipelines prevent
 simultaneous GPU timing. Updated harness files retain their per-attempt hashes.
 Compilation and failed candidates count against the original time/cost budget.
+
+## Author-requested continuation after the initial sweep
+
+At 15:30 UTC the author instructed: "Keep going until you achieve the goal or
+ends the authorized deadline." The initial 32-candidate sweep had completed.
+This continuation extends the search with new immutable candidates while
+preserving the original 17:47:59 UTC deadline, USD15 envelope, training-only
+selection, one frozen final candidate, and every scientific/numerical constraint.
+The original config records the initial sweep limit; it is not rewritten.
+
+The training-only profiler `29_profile_development.py` attributes about0.441ms
+to the output head,0.324ms to attention and0.145ms to fused h/z in opt032.
+These instrumented durations diagnose costs and are not benchmark latency.
+Candidates033--040 test eight dense full-vocabulary Triton schedules on top of
+the same opt032 sparse components. Dense-head gains remain separate from sparse
+skipping in the final attribution. No final-validation inputs are used to tune.

@@ -30,7 +30,7 @@ for condition,k,development in groups:
   'loss':sparse[-1][1]['loss']['candidate_graph'],'loss_delta':sparse[-1][1]['loss_delta']['candidate_graph']})
 screen.sort(key=lambda x:x['latency_ms'])
 operators=[]
-for p in sorted(Path('artifacts/development').glob('operator-*.json')):
+for p in sorted(Path('artifacts/development').glob('operator-opt*.json')):
  d=json.loads(p.read_text());operators.append({'candidate':p.stem,'status':d['status']})
 print(json.dumps({'utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'baseline_full_validation':baseline,
  'development_ranking':screen,'operators':operators,'failures':failures,
@@ -40,6 +40,7 @@ PY'''
 if __name__=='__main__':
     client=remote.connect()
     data=json.loads(remote.execute(client,COMMAND))
+    data['development_latest']=sorted(data['development_ranking'],key=lambda r:r['latest_epoch'],reverse=True)[:4]
     data['development_ranking']=data['development_ranking'][:6]
     data['operator_passed']=sum(r['status']=='passed' for r in data['operators'])
     data['operator_other']=[r for r in data.pop('operators') if r['status']!='passed']

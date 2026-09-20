@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--phase', choices=('baseline','development','final','decomposition'), required=True)
     parser.add_argument('--candidates', nargs='+', default=[f'opt{i:03d}' for i in range(1,7)])
     parser.add_argument('--tag', default='001')
+    parser.add_argument('--development-replicates', type=int, choices=(1,2,3), default=1)
     parser.add_argument('--deadline-epoch', type=float, required=True)
     args = parser.parse_args()
     cfg = read(RUN/'config.json')
@@ -23,7 +24,8 @@ def main():
     if args.phase == 'baseline':
         jobs = [(c,'full',r) for c in cfg['conditions'] for r in (1,2,3)]
     elif args.phase == 'development':
-        jobs = [(c,k,1) for k in args.candidates for c in ('c00','c21')]
+        jobs = [(c,k,r) for k in args.candidates for c in ('c00','c21')
+                for r in range(1,args.development_replicates+1)]
     elif args.phase == 'final':
         k = read(RUN/'provenance/final-selection.json')['candidate']
         jobs = [(c,k,r) for c in ('c00','c21','c16') for r in (1,2,3)]
