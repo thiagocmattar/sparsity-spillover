@@ -26,11 +26,12 @@ def main():
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
     assert sha(HERE / source["output"]) == source["output_sha256"]
     trained = [r for r in source["trained_points"] if r["model"] == "14M"]
+    clips = [r for r in source["clipping_points"] if r["model"] == "14M"]
     series = [s for s in source["series"] if s["model"] == "14M"]
     panels = [p for p in source["panels"] if p["model"] == "14M"]
     limits = source["limits"]["14M"]
     ceilings = source["ceilings"]["14M"]
-    assert len(trained) == 22 and len(series) == 6
+    assert len(trained) == 22 and len(clips) == 20 and len(series) == 6
     assert len(panels) == 2
     assert panels[0]["trained_keys"] == panels[1]["trained_keys"]
     added = json.loads(ADDED_SOURCE.read_text(encoding="utf-8"))
@@ -73,11 +74,12 @@ def main():
     assert {r["checkpoint_key"] for r in trained} == {r["checkpoint_key"] for r in added["trained_points"]}
     for panel in panels:
         panel["trained_keys"] = [r["checkpoint_key"] for r in trained]
-        panel["clipping_ids"] = []
-        panel["clipping_outside_y"] = []
+        if panel["metric"] != "loss":
+            panel["clipping_ids"] = []
+            panel["clipping_outside_y"] = []
     ceilings["2"] = added["ceilings"]["hz"]
     limits["loss"] = [5.06, 6.19]
-    limits["latency_ms"] = [.435, .7]
+    limits["latency_ms"] = [.445, .665]
     index = {r["checkpoint_key"]: r for r in trained}
 
     plt.rcParams.update({
@@ -109,6 +111,14 @@ def main():
                     **style, zorder=5 if control else 4)
         handles.append(Line2D([], [], **style, label=s["label"]))
 
+    # Restore the earlier quality frontiers; latency remains trained checkpoints only.
+    for scope, color in (("0", series[0]["color"]), ("1", series[1]["color"])):
+        group = sorted((p for p in clips if p["scope"] == scope), key=lambda p: p["target"])
+        assert [p["target"] for p in group] == [p / 10 for p in range(10)]
+        axes[0].plot([p["sparsity"] for p in group], [p["loss"] for p in group],
+                     color=color, lw=1.3, ls=":", zorder=2)
+    axes[0].text(4., 5.62, "Post-hoc", rotation=78, rotation_mode="anchor",
+                 color="#646970", fontsize=9.5 * FONT_SCALE, ha="left", va="bottom")
     for scope in ("2", "4", "7"):
         ceiling = ceilings[scope]["R_model_max_percent"]
         axes[0].axvline(ceiling, color="#92969B", lw=.8, ls=(0, (2, 3)), alpha=.8, zorder=1)
@@ -129,6 +139,8 @@ def main():
         ax.set_axisbelow(True)
         lo, hi = limits[metric]
         assert all(lo <= r[metric] <= hi for r in trained)
+        shown_clips = [p for p in clips if p["id"] in panel["clipping_ids"]]
+        assert [p["id"] for p in shown_clips if not lo <= p[metric] <= hi] == panel["clipping_outside_y"]
     axes[0].set_yticks([5.2, 5.4, 5.6, 5.8, 6.0])
     fig.legend(handles=handles, loc="lower center", ncol=5, frameon=False,
                fontsize=10.2 * FONT_SCALE, handlelength=2.1, columnspacing=1.4,
@@ -145,15 +157,15 @@ def main():
                    "legend_rows": 2, "legend_columns": 5, "font_scale": FONT_SCALE,
                    "axes_bounds": [ax.get_position().bounds for ax in axes]},
         "limits": limits, "series": series, "panels": panels,
-        "trained_points": trained, "clipping_points": [], "ceilings": ceilings,
-        "scope": "14M only; all 40 endpoints and ten recipes from Analysis026. Both panels show trained interventions and controls only; post-hoc clipping paths are omitted. No new evaluation or timing.",
+        "trained_points": trained, "clipping_points": clips, "ceilings": ceilings,
+        "scope": "14M only; all 40 endpoints and ten recipes from Analysis026. Panel (a) also shows the Base/ReLU post-hoc clipping frontiers; panel (b) shows trained checkpoints only. No new evaluation or timing.",
         "display_nomenclature": {"T2": "One-sided gates at h,z and OL1 pressure at h; raw scope hz. This is not the operational A2=m,h topology."},
         "dose_note": "T1/Ph varies lambda=.05,.1,.5,1; T2/Ph varies kappa=0,.01,.05,.1; T4/T7 vary kappa=0,.01,.05,.1,.5.",
-        "quality_view_note": "All 40 trained checkpoints lie within panel (a).",
-        "latency_note": "K050; Run029/Run033/Run041 trained timings. Different physical GPU/host sessions; small cross-session latency differences are descriptive. Panel (b) ends at 0.7 ms.",
+        "quality_view_note": "All 40 trained checkpoints lie within panel (a). Eight high-loss clipping points extend above the view; all 20 clipping records are retained.",
+        "latency_note": "K050; Run029/Run033/Run041 trained timings. Different physical GPU/host sessions; small cross-session latency differences are descriptive. Panel (b) spans 0.445 to 0.665 ms and excludes clipping timings.",
     }
     DATA_OUTPUT.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")
-    print(json.dumps({"output": str(OUTPUT), "trained": len(trained), "clipping": 0}))
+    print(json.dumps({"output": str(OUTPUT), "trained": len(trained), "clipping_per_panel": [len(p["clipping_ids"]) for p in panels]}))
 
 
 if __name__ == "__main__":

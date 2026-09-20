@@ -1,9 +1,9 @@
 # H-only pressure: final K050 latency extension
 
 The [14M-only main figure](observations/045-main-figure-ten-recipes.md)
-shows all 40 trained checkpoints across ten recipes. Post-hoc paths are omitted
-from both panels, and the latency axis ends at 0.7 ms to focus on the T/P
-interventions. The introduction treats 70M as a scale check and distinguishes
+shows all 40 trained checkpoints across ten recipes. Post-hoc clipping
+frontiers are restored only in panel (a); panel (b) spans 0.445--0.665 ms
+to fit the trained checkpoints. The introduction treats 70M as a scale check and distinguishes
 useful skipping from direct kernel transfer. Source measurements are unchanged;
 the standalone figure is checked without recompiling the manuscript PDF.
 

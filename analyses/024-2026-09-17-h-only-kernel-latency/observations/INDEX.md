@@ -173,4 +173,4 @@ proposed manuscript writing, limitations, and generating source. See also
 - [012](012-quality-sparsity-clipping.md): Figure11's cohort plus four complete
   A0/A1-H post-hoc clipping frontiers, showing all 40 clipping measurements.
 
-- [045](045-main-figure-ten-recipes.md): Figure22 with all 40 trained checkpoints, T2/Ph nomenclature, a 2x5 legend, and 90% fonts; post-hoc paths omitted and latency capped at 0.7 ms.
+- [045](045-main-figure-ten-recipes.md): Figure22 with all 40 trained checkpoints, T2/Ph nomenclature, a 2x5 legend, and 90% fonts; post-hoc frontiers restored only in (a), with a focused 0.445--0.665 ms latency scale in (b).

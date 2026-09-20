@@ -1,8 +1,8 @@
 # Living Manuscript Draft
 
 20 September 2026, Figure 1 intervention focus:
-all 40 trained checkpoints and ten recipe styles are preserved. Post-hoc paths
-are removed from both panels; panel (b) ends at 0.7 ms. The caption and figure
+all 40 trained checkpoints and ten recipe styles are preserved. Post-hoc
+frontiers are restored only in panel (a); panel (b) spans 0.445--0.665 ms. The caption and figure
 reference are updated. See [Observation 045](../analyses/024-2026-09-17-h-only-kernel-latency/observations/045-main-figure-ten-recipes.md).
 `draft/main.pdf` is unchanged and has not been recompiled.
 
