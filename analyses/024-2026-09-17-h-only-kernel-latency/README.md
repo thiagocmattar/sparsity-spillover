@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+The [14M-only main figure](observations/044-14m-main-figure-scale-check.md)
+retains the previous Figure 1's 22 trained and 20 clipped 14M settings.
+The introduction now treats 70M as a scale check and distinguishes useful
+skipping from direct kernel transfer. Existing data and historical PDFs are
+preserved. Four evidence tests pass; the standalone figure is visually checked.
+The manuscript PDF is not recompiled, as requested.
+
 The approved [Run040 diagnostic and optimization](../../runs/040-2026-09-20-pythia70m-kernel-overhead/observations/001-overhead-and-optimization.md)
 is complete and recovered. Replacing h/z with native operations removes
 1.66ms from the original dense 70M path. A training-selected combination of

@@ -11,46 +11,18 @@ Activation sparsity can improve language-model inference efficiency when special
 
 Existing approaches induce activation sparsity in different ways. TEAL applies post-hoc thresholding to pretrained models, ProSparse uses L1 regularization on feed-forward (FFN) activations during training, and Q-Sparse applies top-k sparsification to both FFN and attention activations~\citep{liu2024teal,song2024prosparse,wang2024qsparse}. While each approach is effective in its own setting, it remains unclear how they compare under a common setup and how their effects interact when combined.% An intervention that works well in isolation may add little on top of another or incur a different quality cost when applied at additional sites, making sparsity alone insufficient to identify which choices drive the improvement.
 
-In this work, we study the effects of (i) activation L1 pressure and (ii) \emph{thresholding}, which maps small activations exactly to zero. Pressure encourages smaller activation magnitudes; thresholding converts small values into exact zeros. Their placement defines separate design choices. We evaluate their individual and combined effects at different sites within the same transformer block.
+To address this gap, we pretrain Pythia-family models from scratch~\citep{biderman2023pythia} to study the effects of (i) activation $\ell_1$ pressure ($P$) and (ii) \emph{thresholding} ($T$). We focus on Pythia-14M and use Pythia-70M as a scale check. While pressure adds a gradient component to induce smaller activation magnitudes, thresholding maps small values into exact zeros. Each one of them can be placed in different activation sites, giving a combinatorial design set of sparse interventions. For each combination of $P$ and $T$, we derive an architecture-dependent maximum achievable sparsity ($\Smax$), and measure model-wide attained activation sparsity ($\Smodel$) and the final inference latency under a specialized sparse kernel. Figure~\ref{fig:quality-sparsity-overview} presents sparsity vs. quality trade-offs and inference latency for Pythia-14M, across $P/T$ combinations and post-hoc clipping of baselines.
 
-To measure their effects, rather than report sparsity locally at individual activation sites, we define model-wide activation sparsity, $\Smodel$, as the fraction of forward matrix-multiplication products with a zero activation operand. We additionally derive an architecture-dependent maximum sparsity that can be achieved through the intervention set ($\Smax$).
-
-%% Comments:
-%- Briefly justify the pythia-family choice (controlled recipe accross model sizes)
-%- Do a list of findings, e.g.
-%(i) thresholding seems to be more effective in generating sparsity, because the pressure creates smaller activation density mass, but without thresholing it does not convergen to zero altought we're using L1;
-%(ii) FFNs seems more prone to sparsification. When applied the same thresholding and pressure, FFNs achieve a higher local sparsity then self-attention sites;
-%(iii) accross model sizes, the more aggressive thresholding+pressure recipes achieve higher model-wide sparsity than post-hoc thresholding over the baseline. But just changing the GeLU to ReLU (A1-H) improves de post-hoc thresholding frontier.. which gets better and better with increased sizes.
-% Paragraph evidence: introduction-findings.md; Analysis 020 observations/O003-cross-size.md.
-% Evidence: Analysis024 observations/025-matched-quality-latency.md; 16_plot_matched_quality_latency.py.
-We pretrain Pythia-family models from scratch for controlled comparisons across model sizes~\citep{biderman2023pythia}. Across 40 conditions at 14M, we separate threshold placement from pressure placement. Figure~\ref{fig:quality-sparsity-overview} compares the same six recipe families at 14M and 70M, using 22 trained checkpoints at each size alongside post-hoc clipping of the controls. Narrow pressure at the FFN hidden site gives favorable moderate-threshold trade-offs at 14M. At the highest threshold, expanding seven-site pressure from $h$ to all selected sites increases sparsity at both sizes, but raises loss at 14M and lowers it at 70M. The more sparse 70M model nevertheless has higher optimized latency. These results distinguish the quality cost of inducing zeros from their value to the execution kernel.
-
-% User-selected main figure, adopted 18 September 2026; copy hash in figures/SOURCES.json.
-% Figure source: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py
-% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/025-matched-quality-latency.md
-% Checkpoint identities and coordinates: analyses/024-2026-09-17-h-only-kernel-latency/data/14m-70m-quality-sparsity-latency.json
+% 14M-only main figure, authorized 20 September 2026; copy hash in figures/SOURCES.json.
+% Figure source: analyses/024-2026-09-17-h-only-kernel-latency/34_plot_14m_main_figure.py
+% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/044-14m-main-figure-scale-check.md
+% Checkpoint identities and coordinates: analyses/024-2026-09-17-h-only-kernel-latency/data/14m-main-quality-sparsity-latency.json
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.9\linewidth]{figures/08-14m-70m-quality-sparsity-latency.pdf}
-\caption{\textbf{Quality and execution depend on threshold and pressure placement.}
-Rows show Pythia-14M \textbf{(a,b)} and 70M \textbf{(c,d)}; columns show
-final validation loss and full-model latency versus $\Smodel$.
-Each row contains 22 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU
-at $h$ ($T_1/P_0$), and $T_4/T_7$ thresholding at four/seven sites with OL1 pressure
-at $h$ ($P_h$, dashed) or all thresholded sites ($P_{\mathrm{all}}$, solid).
-Pressure curves connect separate $\kappa\in\{0,.01,.05,.1,.5\}$ runs,
-each with one seed and one final checkpoint.
-Dotted post-hoc paths clip the fixed controls at $a,m,h,z$ for
-$p=0,.1,\ldots,.9$. All 40 clipping latencies are measured, including recurring
-clipping operators at positive targets. Eight 14M and seven 70M high-loss clipping points lie above the
-quality views (full paths in Figures~\ref{fig:clipping-14m} and~\ref{fig:clipping-70m}).
-Vertical guides mark analytic sparsity ceilings. Loss and count-pooled
-sparsity use FP16 validation over all 338 complete blocks from 500 documents,
-excluding the 1,444-token tail. Latencies use K050 at 14M and its qualified
-70M port: RTX5090, BF16, batch one, 2,048-token uncached inference, all 50,304
-logits, and a geometric mean over 1,344 host timings per setting.
-Timing sessions differ across cohorts; small cross-session differences are
-descriptive. Axes have independent ranges between model sizes.}
+\includegraphics[width=0.9\linewidth]{figures/22-14m-main-quality-sparsity-latency.pdf}
+\caption{\textbf{Quality, sparsity and execution on Pythia-14M.}
+\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for the same 22 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU at the hidden FFN activation ($h$) ($T_1/P_0$), and $T_4/T_7$ thresholding at four/seven sites with pressure applied either at $h$ ($P_h$, dashed) or at all thresholded sites ($P_{\mathrm{all}}$, solid). Figure~\ref{fig:pythia-block} and Table~\ref{tab:interventions} describe the intervention sites. The $T/P$ curves connect separate runs at $\kappa=0,.01,.05,.1,.5$; dotted post-hoc paths clip the fixed controls for $p=0,.1,\ldots,.9$. High-loss clipping tails extend beyond panel (a), with full paths in Figure~\ref{fig:clipping-14m}. Vertical dashed lines mark the analytic sparsity ceilings. Latencies use RTX5090, batch one and 2,048-token sequences, and include clipping costs.
+}
 \label{fig:quality-sparsity-overview}
 \end{figure}
 
@@ -59,7 +31,8 @@ descriptive. Axes have independent ranges between model sizes.}
 Across 36 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
 First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figure~\ref{fig:quality-sparsity-14m-70m}).
 Second, \textbf{sparsity and speedup increase together within recipes}, but a larger $\Smodel$ does not directly translate into a larger speedup. The main requirement for lower latency is the location and structure of zeros and whether the kernel can exploit them, with most gains coming from skipped computation at $h$ and $z$ (Table~\ref{tab:kernel-mechanisms}).
-Third, for exploitable sparse structures, \textbf{increasing model scale can increase the opportunity for latency reductions}, although the measured gain depends on the kernel implementation and reference latency (Appendix~\ref{app:kernel-results}).
+% Scale-check evidence: Analysis024 observation 044 and Run040 observation 001.
+Third, \textbf{sparsity remains exploitable across the tested scales}: skipping computations can reduce latency at both 14M and 70M, but a sparse kernel does not transfer directly and requires adaptation to the larger model.
 Fourth, \textbf{local pressure at $h$ provides a more favorable balance between quality, sparsity and latency than global pressure} when combined with broader thresholding. It lowers loss in all 16 matched comparisons at moderate thresholds, and latency in 18 of 20 across the full grid (Figure~\ref{fig:paired-intervention-effects}).
 Finally, \textbf{local pressure can induce global changes in sparsity}: at 14M and $\kappa=0.05$, pressure at $h$ increases sparsity at $z$, which receives no direct pressure (Figure~\ref{fig:pressure-layer-sparsity}).
 Taken together, these results indicate that activation sparsification should not be treated as an isolated training objective: training interventions and deployment kernels must be co-designed so that the induced sparsity is both high and structurally exploitable at inference time.

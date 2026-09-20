@@ -1,5 +1,12 @@
 # Manuscript draft: ICLR 2027 format
 
+20 September 2026: Figure 1's source now uses the 14M-only two-panel
+`figures/22-14m-main-quality-sparsity-latency.pdf`. The introduction treats
+70M as a scale check and replaces the scale-up speedup claim with useful
+skipping and the need to adapt kernels. See [Observation 044](../../analyses/024-2026-09-17-h-only-kernel-latency/observations/044-14m-main-figure-scale-check.md).
+`main.pdf` has not been recompiled, as requested; its current figure still
+reflects the previous source. Earlier notes below describe prior versions.
+
 The current Figure 3 contains the 14M/70M quality overview directly after
 Table 1 (page 5), followed by Figure 4's base-model speedup plot (page 6).
 The complete 410M panel is appendix Figure 15 (page 26); its existing full

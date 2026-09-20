@@ -1,5 +1,10 @@
 # Observations
 
+- [044: 14M main figure and 70M scale check](044-14m-main-figure-scale-check.md):
+  Figure 1 retains the exact 22 trained/20 clipped 14M settings; the introduction
+  replaces the scale-up speedup claim with useful skipping and kernel adaptation.
+  Standalone figure verified; main.pdf is unchanged at the author's request.
+
 - [Run040: completed 70M overhead diagnosis and optimization](../../../runs/040-2026-09-20-pythia70m-kernel-overhead/observations/001-overhead-and-optimization.md):
   dense h/z dominates the original overhead; selected native a/m and attention
   plus N256 sparse h/z gives1.195x native-base speedup for T7/Ph at kappa0.5.

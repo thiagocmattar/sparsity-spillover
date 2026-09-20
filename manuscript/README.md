@@ -1,5 +1,16 @@
 # Living Manuscript Draft
 
+20 September 2026, Figure 1 and introduction scale correction:
+Figure 1 is now a 14M-only quality/sparsity/latency view with 22 trained
+checkpoints and 20 clipping settings, preserving all corresponding values.
+The caption describes the new two-panel figure, and the introduction makes
+14M the main study and 70M a scale check. The third observation now states
+that skipping can reduce latency at both sizes but kernels require adaptation.
+See [Observation 044](../analyses/024-2026-09-17-h-only-kernel-latency/observations/044-14m-main-figure-scale-check.md).
+The standalone figure and data are checked. `draft/main.pdf` is unchanged and
+has not been recompiled, as explicitly requested. Other sections await the
+author's later guidelines.
+
 20 September 2026, requested rebuild of the author's latest abstract:
 the two remaining sparsity placeholders are filled with the previously checked
 27.48% (14M T7/Pall) and 12.71% (T4/Pall). Other author wording is preserved.
