@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import shlex
+import socket
 import subprocess
 import sys
 import time
@@ -17,7 +18,7 @@ DEST='/workspace/run041-latency'
 
 
 def launch(client,lease):
-    remote.execute(client,f'mkdir -p {CONTROL}; test ! -e {DEST}')
+    remote.execute(client,f'mkdir -p {CONTROL}; test ! -e {DEST} || test -e {DEST}/runtime/environment-ready')
     sftp=paramiko.SFTPClient.from_transport(client.get_transport(),window_size=64*1024**2,max_packet_size=1024**2)
     try:
         sftp.put(str(RUN/'12_deadline_guard.py'),CONTROL+'/12_deadline_guard.py')
@@ -34,10 +35,20 @@ def launch(client,lease):
                 print(json.dumps({'upload_bytes':done,'total':total,
                     'MiB_per_second':done/1024**2/max(.01,now-started)}),flush=True)
                 last[0]=now
-        sftp.put(str(RUN/receipt['path']),'/workspace/run041-latency-input.tar.gz',callback=progress)
+        transport=client.get_transport()
+        transport.sock.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+        transport.sock.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,4*1024**2)
+        channel=transport.open_session(window_size=64*1024**2,max_packet_size=1024**2)
+        channel.settimeout(120);channel.exec_command('cat > /workspace/run041-latency-input.tar.gz')
+        done=0
+        with (RUN/receipt['path']).open('rb') as handle:
+            while chunk:=handle.read(1024**2):
+                channel.sendall(chunk);done+=len(chunk);progress(done,receipt['bytes'])
+        channel.shutdown_write();assert channel.recv_exit_status()==0
+        channel.close()
         digest=remote.execute(client,'sha256sum /workspace/run041-latency-input.tar.gz').split()[0]
         assert digest==receipt['sha256'],'Input archive transfer mismatch'
-        remote.execute(client,f'mkdir {DEST}; tar -xzf /workspace/run041-latency-input.tar.gz -C {DEST}')
+        remote.execute(client,f'mkdir -p {DEST}; tar -xzf /workspace/run041-latency-input.tar.gz -C {DEST}')
         guard=remote.execute(client,f'cat {CONTROL}/guard.log; test ! -e {settings}')
         assert '"event": "armed"' in guard
         pipeline=f'''set -euo pipefail

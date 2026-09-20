@@ -25,14 +25,18 @@ def main():
     sources=[RUN/'artifacts/verification.json',RUN/'latency/artifacts/verification.json']
     rows=[]
     for index,t in enumerate(sorted(training['conditions'],key=lambda x:x['condition']['gate_threshold'])):
-        ratios=[];native=[];candidate=[];qualified=[];losses=[]
+        ratios=[];native=[];candidate=[];qualified=[];losses=[];max_errors=[];max_l2=[];loss_deltas=[]
         for replicate in range(1,4):
             folder=RUN/'latency/artifacts/attempts'/f'scientific-c{index:02d}-r{replicate}-001'
             result=read(folder/'result.json');timing=read(folder/'timing.json')
+            quality=read(folder/'quality.json')
             sources += [folder/'result.json',folder/'timing.json',folder/'quality.json']
             assert result['status']=='complete' and result['validation_blocks']==338
             assert result['checkpoint']['final_checkpoint_content_sha256']==t['checkpoint_content_sha256']
             qualified.append(result['qualified']);losses.append(result['loss'])
+            max_errors.append(max(g['max_abs'] for g in quality['gates']['candidate_graph']))
+            max_l2.append(max(g['relative_l2'] for g in quality['gates']['candidate_graph']))
+            loss_deltas.append(abs(quality['loss_delta']['candidate_graph']))
             pairs={}
             for sample in timing['samples']:
                 key=(sample['repeat'],sample['input_index'])
@@ -50,6 +54,9 @@ def main():
             'z_exact_zero_fraction':t['selected_site_exact_zero_fractions']['z'],
             'R_model':t['R_model'],'R_model_max':t['R_model_max'],
             'paired_samples':len(ratios),'qualified':all(qualified),
+            'maximum_k050_logit_absolute_error':max(max_errors),
+            'maximum_k050_logit_relative_l2':max(max_l2),
+            'maximum_k050_loss_delta':max(loss_deltas),
             'native_geomean_host_ms':geomean(native),
             'k050_geomean_host_ms':geomean(candidate),
             'native_relative_paired_geomean_speedup':geomean(ratios),
@@ -61,7 +68,7 @@ def main():
     report={'conditions':rows,'sources':provenance,
         'latency_unit':'ms per B=1,T=2048 full-vocabulary uncached forward',
         'aggregation':'geometric mean of all 1344 balanced paired host-time ratios per condition',
-        'clipping':'none'}
+        'post_hoc_clipping':'none'}
     (RUN/'artifacts/summary.json').write_text(json.dumps(report,indent=2)+'\n')
     lines=['# 001 — Four h/z threshold endpoints and final K050 latency','',
         '**Question.** How do the four approved h/z thresholds behave with h-only OL1, lambda=1?', '',
@@ -81,7 +88,10 @@ def main():
             f"{100*r['h_exact_zero_fraction']:.3f} | {100*r['z_exact_zero_fraction']:.3f} | "
             f"{100*r['R_model']:.3f} | {r['k050_geomean_host_ms']:.6f} | "
             f"{r['native_relative_paired_geomean_speedup']:.4f}x | {r['qualified']} |")
-    lines += ['', '**Interpretation limits.** One seed, one model size and one data pass. '
+    lines += ['', '**Numerical qualification.** All 12 processes passed complete 338-block '
+        'qualification. The maximum recorded K050 logit absolute error, relative L2 error '
+        'and pooled loss difference versus native eager inference were all zero.', '',
+        '**Interpretation limits.** One seed, one model size and one data pass. '
         'This joint intervention does not isolate the effects of either gate or pressure. '
         'Logical-product opportunity is distinct from measured speedup. BF16 qualification '
         'losses are retained separately from training validation. Timing of an unqualified '

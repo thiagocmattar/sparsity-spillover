@@ -5,6 +5,7 @@ export PATH=/usr/local/cuda/bin:$PATH
 export CUDA_HOME=/usr/local/cuda
 export UV_CACHE_DIR=/workspace/run041-latency-uv-cache
 mkdir -p "$RUN041/runtime"
+if test ! -e "$RUN041/runtime/environment-ready"; then
 python3 -m venv "$RUN041/runtime/bootstrap"
 "$RUN041/runtime/bootstrap/bin/pip" install uv==0.8.15
 export PATH="$RUN041/runtime/bootstrap/bin:$PATH"
@@ -13,5 +14,8 @@ uv pip install --python "$RUN041/runtime/venv/bin/python" --index-url https://py
 uv pip freeze --python "$RUN041/runtime/venv/bin/python" > "$RUN041/runtime/pip-freeze.txt"
 nvcc --version > "$RUN041/runtime/nvcc.txt"
 nvidia-smi -q > "$RUN041/runtime/nvidia-smi-initial.txt"
+touch "$RUN041/runtime/environment-ready"
+fi
+if test "${1:-}" = --environment-only; then exit 0; fi
 "$RUN041/runtime/venv/bin/python" "$RUN041/01_prepare.py" verify
 touch "$RUN041/runtime/setup-complete"

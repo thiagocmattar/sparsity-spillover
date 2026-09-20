@@ -3,7 +3,9 @@
 Design and launch approved on 20 September 2026. The user confirmed one-sided
 h/z gates and h-only orthogonal L1, and explicitly excluded post-hoc clipping.
 Exactly four conditions: kappa 0, 0.01, 0.05, 0.1; lambda=1 and trust budget=1.
-Status: implementation and local verification in progress; no result yet.
+Status: complete. All four parallel trainings and all 12 final latency processes
+passed verification; all retained artifacts are local and both Run041 Pods are
+deleted. Results: [observation 001](observations/001-final-results.md).
 
 ## Scientific contract
 
@@ -77,8 +79,9 @@ Canonical training FP16 counters and BF16 runtime diagnostics are separate.
 
 ## Verification record
 
-13 focused tests passed; full bootstrap suite242 passed (7.61s). Remote preflight
-will execute six real-data boundaries per condition (one warmup, five timed),
+Initial verification:13 focused tests passed; full bootstrap suite242 passed
+(7.61s). The remote preflight was specified to execute six real-data boundaries
+per condition (one warmup, five timed),
 full validation and checkpoint serialization; the kappa.1 worker also calibrates
 complete activation/logical diagnostics. Local CPU checks do not qualify CUDA.
 The K050 compatibility adapter extends only the topology allowlist to HZ; all
@@ -117,3 +120,76 @@ attempt 001; a clean deployment snapshot captures the correction before training
 Retry verification: 14 focused tests and 242 bootstrap tests passed. The first
 retry test invocation hit a pre-existing Windows temporary-directory permission
 error; rerunning with fresh, run-specific temporary directories passed.
+
+### Scientific execution started
+
+Deployment `b6cc11bf5ad725d9274963c82bb92f41a2359332` passed all four
+real-data preflights on Pod `mqykdkc8coy2ny`. Five timed boundaries after one
+warmup took median 3.381-3.393 seconds, approximately 618k-620k input tokens/s
+per worker. Reserved memory was 61,412,999,168 bytes of 85,017,493,504 (72.24%).
+The full validation, checkpoint save, and kappa=0.1 activation/logical passes
+completed. All workers restored the approved initializer and data-order hashes;
+no preflight optimizer step was skipped. The four independent scientific
+workers launched automatically after the forecast fit the unchanged deadline.
+
+At 12:52 UTC, workers were at step 20-21/712 with losses 8.80-8.89 and no
+overflows. End-to-end throughput was approximately 611k-613k tokens/s per GPU,
+projecting about 40 minutes of remaining training. Artifact sealing is queued
+immediately after full training verification. The initialization upload's slow
+SFTP path was replaced by verified, resumable SSH streaming; the remaining
+28.9MB plus checks completed in 8.92 seconds. Source and artifact identities
+were preserved throughout this transport retry.
+
+### Completion and retrieval
+
+All four workers completed 712/712 updates with zero skipped steps or overflows.
+Median throughput was 619k-620k input tokens/s per GPU; each scientific condition
+took 2,426-2,430 seconds. Full validation, activation, weight, logical-product and
+boundary diagnostics passed local `03_verify.py` after retrieval. All 48 model
+checkpoints and 12 optimizer/scaler/RNG recovery states remain local. The training
+archive contains 282 files (4,059,415,071 payload bytes); its 3,758,793,441 compressed
+bytes and every member passed SHA-256 verification. See
+`transfer/training-receipt-001.json` and `prelaunch/retrieval-training-001.json`.
+
+The RTX5090 environment was installed while training finished. Its 58 package
+pins exactly match `latency/provenance/pip-freeze.txt`; no frozen K050 arithmetic
+source was changed. The first smoke incurred 537 seconds of cold compilation;
+the second took 71 seconds. Both qualified. All 12 scientific processes then
+completed and qualified, averaging 77 seconds each including process setup and
+full validation. Every K050 versus eager-native logit absolute error, relative
+L2 error and pooled loss delta was zero in the recorded BF16 qualification.
+The final measurements contain 1,344 paired samples per condition, 5,376 total.
+The 140-file latency archive (746,160 compressed bytes, 6,715,472 payload bytes)
+and each member were hash-verified locally before teardown. See
+`latency/artifacts/verification.json` and `latency/transfer/receipt-001.json`.
+
+`17_report.py` reduces these terminal artifacts into `artifacts/summary.json`
+and observation 001. Validation losses for kappa 0/.01/.05/.1 are respectively
+5.128602/5.130649/5.134379/5.151098. Geometric-mean K050 host latencies are
+0.612348/0.608618/0.590124/0.573427 ms, with paired native-graph speedups
+1.1670x/1.1755x/1.2125x/1.2464x. No post-hoc clipping was performed.
+The inherited verification field mentioning a "three-way reduction" is legacy
+wording; this report contains exactly the four approved Run041 conditions.
+
+### Teardown and cost record
+
+Training Pod `mqykdkc8coy2ny` was deleted after local verification (delete request
+13:39:05 UTC, response 204). Latency Pod `mw3hubdwa1nflw` was deleted after local
+verification (request 14:09:37 UTC, response 204 confirmed 14:09:40 UTC). Both local
+deadline guards were closed. A final live Pod list contains neither Run041 Pod.
+The separate `run042-sparse-scale-001` Pod and pre-existing shared volume were
+left untouched; Run041 created no network volume or serverless endpoint.
+
+Creation-to-deletion-request duration at the quoted GPU rates estimates about
+USD18.92 total GPU spend, within the USD45 envelope, plus temporary disk charges.
+This is an estimate, not a final invoice: at closeout the billing API had posted
+USD10.423605 for training and no latency records yet. Exact responses, times and
+estimation inputs are retained in `prelaunch/closeout-training-001.json` and
+`prelaunch/closeout-latency-001.json`.
+
+Closeout review parsed all 41 retained Python source files, confirmed all 58
+runtime package pins, and reconciled the four summary rows with 5,376 raw pairs.
+No dataset, model/recovery binary, archive, cache, credential, or active log is
+included in Git. The two raw `nvidia-smi` text captures retain their original
+trailing whitespace so their inventory hashes remain valid; code and narrative
+pass the whitespace check.

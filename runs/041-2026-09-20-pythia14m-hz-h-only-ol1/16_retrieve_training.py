@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import socket
+import shlex
 import tarfile
 import time
 import paramiko
@@ -22,6 +23,7 @@ def main():
     client,_=remote.connect('training')
     transport=client.get_transport()
     transport.sock.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+    transport.sock.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,8*1024**2)
     sftp=paramiko.SFTPClient.from_transport(transport,window_size=64*1024**2,max_packet_size=1024**2)
     started=time.monotonic();last=[0.]
     def progress(done,total):
@@ -38,8 +40,17 @@ def main():
         assert receipt['path']=='transfer/training-001.tar.gz'
         if not destination.exists():
             part=destination.with_suffix('.gz.part')
-            sftp.get(remote_root+'/'+receipt['path'],str(part),callback=progress,
-                     max_concurrent_prefetch_requests=128)
+            offset=part.stat().st_size if part.exists() else 0
+            assert 0<=offset<=receipt['bytes']
+            channel=transport.open_session(window_size=64*1024**2,max_packet_size=1024**2)
+            channel.settimeout(120)
+            channel.exec_command(f'tail -c +{offset+1} '+shlex.quote(remote_root+'/'+receipt['path']))
+            done=offset
+            with part.open('ab') as handle:
+                while chunk:=channel.recv(1024**2):
+                    handle.write(chunk);done+=len(chunk);progress(done,receipt['bytes'])
+            assert channel.recv_exit_status()==0,'SSH stream failed; partial file retained'
+            channel.close()
             assert part.stat().st_size==receipt['bytes'] and digest(part)==receipt['sha256']
             part.replace(destination)
         assert destination.stat().st_size==receipt['bytes'] and digest(destination)==receipt['sha256']
