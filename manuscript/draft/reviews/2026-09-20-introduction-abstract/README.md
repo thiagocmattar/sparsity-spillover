@@ -1,6 +1,36 @@
 # Introduction findings and abstract
 
-## Current version: surgical revision
+## Current abstract: author-guided findings and takeaway
+
+The author's next instructions specify P/T at first mention, the 14M/70M model
+scope, a comparison of sparsity/ceiling/latency measures, four conclusions with
+data, and the exact training/kernel co-design takeaway. Only the abstract is
+revised in this pass; the surgical introduction below remains unchanged.
+
+The abstract reports T7/Pall at kappa=0.5: 27.5%/40.6% model-wide sparsity,
+92%/82% of the respective ceilings, and 0.62/1.12 additional validation loss
+at 14M/70M. The within-recipe execution trend and cross-recipe counterexample
+follow [Observation 030](../../../../analyses/024-2026-09-17-h-only-kernel-latency/observations/030-base-speedup-clipping.md)
+and `22_plot_base_speedup_clipping.py`. The 14M T7/Pall and T4/Pall endpoint
+latencies are 0.473366 and 0.459476 ms at kappa=0.5 despite greater T7 sparsity.
+
+Direct checks of the existing quality export confirm lower loss and latency
+for T4/Ph versus T4/Pall in all eight moderate-threshold pairs. T4/Ph at
+kappa=0.05 is nondominated in loss/latency among the measured endpoints at
+both sizes. The wording says "some of the best observed" because T7/Ph is
+also competitive and the study does not specify a scalar trade-off objective.
+The 10.7-point spillover result is specifically T4/Ph minus T4/P0 at kappa=0.05
+in 14M, using pooled z exact-zero counts. The 150/29-microsecond kernel effects
+are the separate conditional ablations described below, not additive savings.
+
+All displayed numbers were checked against the retained evidence. The source
+introduction hash is unchanged. The PDF rebuild has 20 pages, resolved
+references/citations, no overfull or underfull vertical boxes, and the same
+three underfull horizontal-box warnings. Opening pages were inspected at high
+resolution and all pages in contact sheets. Related Work still follows the
+introduction on page 2. The installed PDF matches the reviewed build.
+
+## Previous pass: surgical revision
 
 The author's follow-up requests restoring the previous wording and editing it
 surgically. This version starts from the saved pre-edit passages, superseding

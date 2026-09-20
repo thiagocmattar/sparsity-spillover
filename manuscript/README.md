@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, author-guided abstract revision: P/T and the 14M/70M scope
+are explicit, the measures sentence is simplified, and the conclusions now
+include checked data for ceiling attainment and quality cost, the sparsity/
+latency distinction, T4/Ph and nonlocal effects, and h/z execution savings.
+The abstract ends with the requested training/kernel co-design takeaway.
+The introduction is unchanged. The rebuilt 20-page PDF has resolved references
+and checked layout, including the introduction/Related Work transition.
+See the [revision and evidence record](draft/reviews/2026-09-20-introduction-abstract/README.md).
+
 20 September 2026, surgical revision of the introduction and abstract:
 the previous compressed rewrite is superseded. The author's original five
 observations, explanatory flow, metric definitions and closing sentences are
