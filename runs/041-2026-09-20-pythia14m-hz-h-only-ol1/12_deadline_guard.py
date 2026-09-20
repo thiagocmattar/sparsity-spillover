@@ -1,43 +1,43 @@
-"""Scoped on-Pod stop deadline; consume and unlink the temporary credential file."""
+"""End the isolated workload at deadline without handling API credentials.
+
+The independent workstation guard performs provider stop and billing cutoff.
+This guard alone only ends compute processes; an idle Pod remains billable.
+"""
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+import signal
 import sys
 import time
-import urllib.request
 
 
 def main():
-    secret_path=Path(sys.argv[1])
-    settings=json.loads(secret_path.read_text())
-    secret_path.unlink()
-    pod_id=settings['pod_id'];expected_name=settings['name']
-    if not (expected_name.startswith('run041-') and pod_id.isalnum()):
+    settings_path=Path(sys.argv[1])
+    settings=json.loads(settings_path.read_text())
+    settings_path.unlink()
+    pod_id=settings['pod_id'];name=settings['name']
+    if not (name.startswith('run041-') and pod_id.isalnum()):
         raise ValueError('Unscoped target')
-    base='https://api.runpod.io/v2/pods/'+pod_id
-    headers={'Authorization':'Bearer '+settings['api_key'],'Content-Type':'application/json',
-             'User-Agent':'run041-deadline'}
-
-    def request(action=None):
-        req=urllib.request.Request(base if action is None else base+'/action',
-            data=None if action is None else json.dumps({'action':action}).encode(),
-            headers=headers,method='GET' if action is None else 'POST')
-        with urllib.request.urlopen(req,timeout=20) as response:
-            body=response.read()
-            return json.loads(body) if body else {}
-
-    if request().get('name')!=expected_name:
-        raise RuntimeError('Pod identity mismatch')
-    print(json.dumps({'event':'armed','pod_id':pod_id,'deadline_epoch':settings['deadline_epoch'],
-                      'utc':datetime.now(timezone.utc).isoformat()}),flush=True)
+    control=Path(settings['control'])
+    if control != Path('/workspace/run041-control'):
+        raise ValueError('Unscoped process directory')
+    print(json.dumps({'event':'armed','pod_id':pod_id,
+        'kind':'workload-only; provider stop is workstation-managed',
+        'deadline_epoch':settings['deadline_epoch'],
+        'utc':datetime.now(timezone.utc).isoformat()}),flush=True)
     while time.time()<settings['deadline_epoch']:
         time.sleep(min(30,max(0,settings['deadline_epoch']-time.time())))
-    for attempt in range(12):
+    pid_path=control/'pipeline.pid'
+    if pid_path.exists():
+        pid=int(pid_path.read_text())
         try:
-            request('stop');print('STOP_REQUESTED',flush=True);return
-        except Exception as error:
-            print(type(error).__name__,getattr(error,'code',None),flush=True);time.sleep(10)
-    raise RuntimeError('Deadline stop could not reach the provider; independent local guard must intervene')
+            if os.getpgid(pid)!=pid:
+                raise RuntimeError('Workload must have its own process group')
+            os.killpg(pid,signal.SIGTERM)
+            print('WORKLOAD_TERM_SENT',flush=True)
+        except ProcessLookupError:
+            print('WORKLOAD_ALREADY_EXITED',flush=True)
 
 
 if __name__=='__main__':main()

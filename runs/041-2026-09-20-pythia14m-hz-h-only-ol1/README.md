@@ -47,12 +47,13 @@ serialization, exact count ceiling and complete artifacts. No clipping sweep.
 One Secure four-H100-SXM80GB Pod, four independent CUDA_VISIBLE_DEVICES workers,
 no distributed gradients. Current quote13.96 USD/hour total. Pinned image digest
 in config.yaml,40GB container and50GB persistent /workspace. Existing network
-volume and Run040 Pod remain separate. Hard stop3h from creation; total incremental
+volume and Run040 Pod remain separate. Stop deadline3h from creation; total incremental
 cap45 USD including a later RTX5090 at0.99/hour for at most90min and temporary disk.
 Estimated completion1-3h including setup, training, diagnostics and transfer;
 refresh from end-to-end real-data calibration. The unchanged local MB32 workload
 does not fit the local12GB GPU; historical A100 reservation57-62GiB motivates80GB.
-On-Pod and independent local guards stop compute without deleting unretrieved data.
+The local guard requests provider stop; the remote guard ends workload processes.
+Neither deletes unretrieved data.
 Detached jobs write persistent logs. Monitor training every5min, diagnostics60s;
 report progress, loss, throughput and ETC. Warn on nonfinite/skipped updates,
 capture mismatch,10min stale event, insufficient10% VRAM headroom, disk below5GB,
@@ -85,3 +86,13 @@ The K050 compatibility adapter extends only the topology allowlist to HZ; all
 
 An initial recursive bytecode compilation hit Windows path limits inside the
 frozen archive. All Python source syntax was then checked in memory successfully.
+
+### Launch infrastructure note
+
+The account API credential is never uploaded to a Pod. Automatic approval review
+rejected that proposed stop-guard transport before any credential transfer.
+The pinned official image has runpodctl 1.14.15 but no Pod-issued key/config.
+The detached workstation guard therefore performs the scoped provider stop at
+15:21:20 UTC; a separate credential-free remote guard ends the workload process
+group at the same deadline. The remote guard alone cannot stop billing. Source
+snapshot 002 captures this infrastructure-only correction before training.

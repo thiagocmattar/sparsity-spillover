@@ -2,12 +2,10 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import shlex
 import subprocess
 import time
-import tomllib
 import paramiko
 
 RUN=Path(__file__).resolve().parent
@@ -40,24 +38,15 @@ def execute(client,command,timeout=60):
     return stdout+stderr
 
 
-def credential():
-    value=os.environ.get('RUNPOD_API_KEY')
-    if not value:
-        config=tomllib.loads((Path.home()/'.runpod/config.toml').read_text())
-        value=config.get('api_key')
-    if not value:raise RuntimeError('No CLI API key available for independent stop guard')
-    return value
-
-
 def prepare(client,lease,tag):
     control='/workspace/run041-control'
     execute(client,'mkdir -p '+control)
     with client.open_sftp() as sftp:
         sftp.put(str(RUN/'12_deadline_guard.py'),control+'/12_deadline_guard.py')
-        keypath=control+'/guard-secret.json'
+        keypath=control+'/guard-settings.json'
         with sftp.open(keypath,'w') as f:
             f.write(json.dumps({'pod_id':lease['pod']['id'],'name':lease['pod']['name'],
-                'deadline_epoch':lease['deadline_epoch'],'api_key':credential()}))
+                'deadline_epoch':lease['deadline_epoch'],'control':control}))
         sftp.chmod(keypath,0o600)
         execute(client,f'nohup python3 -u {control}/12_deadline_guard.py {keypath} > {control}/guard.log 2>&1 < /dev/null &')
         receipt=json.loads((RUN/'prelaunch'/f'source-{tag}.receipt.json').read_text())
@@ -71,12 +60,12 @@ def prepare(client,lease,tag):
         with sftp.open(excludes,'a') as f:
             f.write('\nruns/'+RUN.name+'/prelaunch/\nruns/'+RUN.name+'/artifacts/\n')
         guard=execute(client,f'cat {control}/guard.log; test ! -e {keypath}')
-        if '"event": "armed"' not in guard:raise RuntimeError('Independent guard not armed')
+        if '"event": "armed"' not in guard:raise RuntimeError('Workload guard not armed')
         pipeline=f'{REMOTE}/runs/{RUN.name}/08_pipeline.sh'
         wrapper=f'export RUN041_DEADLINE_EPOCH={lease["deadline_epoch"]}; bash {shlex.quote(pipeline)}; code=$?; printf "%s\\n" "$code" > {control}/pipeline.exit'
-        result=execute(client,f'nohup bash -c {shlex.quote(wrapper)} > {control}/pipeline.log 2>&1 < /dev/null & echo $! > {control}/pipeline.pid')
+        result=execute(client,f'nohup setsid bash -c {shlex.quote(wrapper)} > {control}/pipeline.log 2>&1 < /dev/null & echo $! > {control}/pipeline.pid')
         (RUN/'prelaunch/upload-training-001.json').write_text(json.dumps({'source_sha256':actual,'source_bytes':receipt['bytes'],
-            'seconds':time.monotonic()-start,'guard':'armed','pipeline':'detached'},indent=2)+'\n')
+            'seconds':time.monotonic()-start,'workload_guard':'armed','provider_stop_guard':'local-process','pipeline':'detached'},indent=2)+'\n')
         print('Source verified; guard armed; detached pipeline started',flush=True)
 
 
