@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild after the Figure 1 frontier restoration:
+`draft/main.pdf` now includes the latest author edits and the revised
+Figure 1, with post-hoc clipping only in panel (a). The 20-page build has
+resolved references and citations, no overfull boxes, and three underfull
+horizontal-box warnings. All pages were visually checked. The installed
+PDF matches the checked build; no TeX source was edited during this rebuild.
+Existing author edits remain uncommitted. Earlier notes describe prior builds.
+
 20 September 2026, Figure 1 intervention focus:
 all 40 trained checkpoints and ten recipe styles are preserved. Post-hoc
 frontiers are restored only in panel (a); panel (b) spans 0.445--0.665 ms. The caption and figure
