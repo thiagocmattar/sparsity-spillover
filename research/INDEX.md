@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run044 is implemented and locally verified for the missing Pythia-14M T2/Ph
+endpoint at kappa=.5, matching Run041's h/z gates and h-only OL1. It awaits
+launch-envelope confirmation; no Run044 cloud resource exists. See the
+[run contract and checks](../runs/044-2026-09-20-pythia14m-hz-h-only-ol1-kappa05/README.md).
+
 Run036 completed all 40 dense/ReLU post-hoc clipping settings at 14M/70M with
 the final kernels: 120/120 processes qualify, 1,032 outputs are verified locally,
 and the Pod is deleted (estimated GPU USD2.161). See the
@@ -254,7 +259,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `035`. Next analysis number: `026`. Next finding number: `F003`.
+Next run number: `045`. Next analysis number: `026`. Next finding number: `F003`.
 
 ## Where we stopped
 
