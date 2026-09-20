@@ -5,9 +5,9 @@
 
 ## Current status
 
-Run044 is implemented and locally verified for the missing Pythia-14M T2/Ph
-endpoint at kappa=.5, matching Run041's h/z gates and h-only OL1. It awaits
-launch-envelope confirmation; no Run044 cloud resource exists. See the
+Run044 is training the missing Pythia-14M T2/Ph endpoint at kappa=.5, matching
+Run041's h/z gates and h-only OL1. Exact H100 preflight passed, with matched
+input identities, full diagnostics and memory headroom. See the
 [run contract and checks](../runs/044-2026-09-20-pythia14m-hz-h-only-ol1-kappa05/README.md).
 
 Run036 completed all 40 dense/ReLU post-hoc clipping settings at 14M/70M with

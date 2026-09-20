@@ -2,9 +2,9 @@
 
 The user requested an exact repeat of Run041 at kappa=0.5 on RunPod, completing
 its 0/.01/.05/.1/.5 threshold grid. That explicit configuration selects the
-scientific design below. Status: implementation and prelaunch verification;
-the concrete launch envelope is awaiting confirmation. No billable resource
-has been created for this run.
+scientific design below. The user subsequently confirmed the full Run041
+measurement package and explicitly approved the USD10 launch envelope.
+Status: exact remote preflight passed; scientific training is running.
 
 ## Question and matched contract
 
@@ -129,7 +129,39 @@ kernel archive. Reviewed changes from Run041 are the single threshold, worker
 count, bounds/collection count, scoped transport names, atomic initialization
 upload and report wording. The scientific optimizer/diagnostics are unchanged.
 
-The post-hoc question received no reply during preparation; the stated default
-therefore remains the complete inherited Run041 package without clipping.
-The launch proposal is ready for the repository-required confirmation of
-the USD10 envelope, including all artifacts and final latency described above.
+The user confirmed the complete inherited Run041 package without clipping,
+then explicitly stated "Launch approved". The approved training Pod is
+`5zdd1ayw5cep7i`, one H100 SXM in EUR-IS-3 at USD3.49/hour, created
+15:33:09UTC on20September; provider-stop deadline17:33:09UTC. The hidden
+workstation guard is armed. The deployment source is
+`a4cb5f447d956c7c1d69d14b4036e92f56ad6ef3`, from prelaunch commit
+`bdb6244132c51cb2de927bebab840b8af92f0a76`; its receipt is retained. The
+first sandboxed guard process could not access the network and exited; it
+was replaced with the same scoped guard outside the network sandbox before
+deployment. No credential was transferred to the Pod.
+
+Source bundle001 passed its remote SHA256 check and the detached pipeline
+started. The first step-zero upload was slow (about1MiB after several minutes);
+its transport process was interrupted without stopping the remote pipeline.
+Infrastructure-only helper `20_upload_initialization.py` resumed that partial
+file with TCP_NODELAY and a4MiB send buffer. The remaining55MB transferred
+and verified in10.5s. Both the complete file hash and56,279,344-byte size
+match the approved random snapshot; no scientific input changed. Runtime
+installation finished and the full validation cache hash matched before
+training-cache construction. Training waits for the complete train hash.
+
+Both rebuilt caches passed the full historical hashes. The H100 preflight
+passed all six real-data boundaries, with five timed updates of
+3.3815/3.3759/3.3718/3.3734/3.3712 seconds (median3.3734s, about622k input
+tokens/s). Peak reserved memory61,412,999,168 bytes is72.23% of85,028,372,480.
+Full338-block validation took0.407s, checkpoint serialization0.221s, complete
+activation diagnostics1.011s and logical diagnostics6.966s. The approved
+initial parameter hash, schedule hash, h/z kappa=.5 gates and six h-only
+pressure tensors were all verified; no preflight boundary overflowed/skipped.
+`prelaunch/remote-preflight-hz-h-ol1-kappa-0p5.json` retains the complete record.
+
+Scientific training started fresh after preflight. At15:53:49UTC it was at
+step6/712, loss10.47114, approximately580k input tokens/s including early
+checkpoint/validation overhead, with zero overflows and57.2GiB peak reserved.
+The refreshed training ETC was43min; the final training diagnostics and
+RTX5090 latency remain queued. The full artifact/teardown contract is unchanged.
