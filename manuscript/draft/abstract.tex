@@ -1,30 +1,8 @@
-% Pressure-scope revision: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md; evidence.py, figures.py, tables.py.
-% Revision/source crosswalk: analyses/018-2026-09-08-results-materials/observations/O014-manuscript-polish.md
-% Evidence: Analysis 018 observations O002/O003/O007/O011; no new measurements.
+% Evidence and editorial scope: reviews/2026-09-20-introduction-abstract/README.md.
+% Analysis024 observations 015 (pressure pairs), 034 (kernel ablation),
+% and 028 (quality/ceiling); Analysis021 pressure-scope observation O016 (nonlocal effects).
 \begin{abstract}
-% Activation sparsity can reduce inference cost, but the value of a
-% sparsification intervention depends on where it acts and what accompanies it.
-% We study pressure toward zero, thresholding and site placement through
-% 54 matched pretraining conditions on MiniPile, using Pythia-14M, 70M and
-% 410M. We measure validation loss, activation
-% distributions and model-wide sparsity: the fraction of counted scalar multiplications
-% with a zero activation operand. Pressure's added value changes with threshold
-% and target sites. A seven-site recipe can yield greater model-wide sparsity
-% than a four-site recipe despite fewer feed-forward (FFN) zeros, because it also sparsifies
-% internal attention products. At the largest tested threshold, the seven-site
-% recipe with pressure improves both loss and sparsity over its four-site
-% counterpart at all three sizes. On one RTX5090, a selected fused implementation
-% achieves a $1.234\times$ geometric mean full-model speedup across the 30
-% 14M checkpoints for uncached, 2,048-token inference. Sparse paths add only
-% $1.043\times$ over the same fusion on average, and attention skipping slows
-% every checkpoint. By connecting matched intervention effects to activation
-% distributions, affected computation and measured execution, the study provides
-% a basis for choosing where and how to induce useful sparsity.
-
-Activation sparsity can accelerate language-model inference when specialized kernels skip computation associated with zero activations. Existing methods obtain sparsity through different combinations of training-time pressure, thresholding, and placement, but their relative and combined effects have not been isolated under a common setup. As a result, it remains unclear which interventions drive the gains, when they are complementary or redundant, and how much model-wide computation they actually expose to sparsification. We study these interventions under matched pretraining conditions across Pythia models. To measure their computational potential, %% we may discuss here that train-time metrics and inference optimization are disconnect fields.. and having a proxy that maps to speedup and can be evaluated at train-time is very very useful?
-we define model-wide activation sparsity $\Smodel$ as the fraction of forward matrix-multiplication products with a zero activation operand, together with an architecture-dependent sparsity ceiling $\Smax$. %% sparstiy ceiling is bad.. maybe something like architectural reach
-Pressure placement changes the quality--sparsity trade-off: in the 14M sweep, h-only pressure gives favorable moderate-threshold operating points, while broad seven-site pressure becomes useful for extreme sparsity. The broad-pressure recipes reach $27.48\%$, $40.60\%$, and $80.62\%$ $\Smodel$ at 14M, 70M, and 410M parameters, corresponding to $0.918$, $0.822$, and $0.924$ of their respective sparsity ceilings. Selected trained recipes also outperform uniform post-hoc thresholding at high sparsity across all model sizes. %% results: update after the 70M, 410M tests
-For 35 measured 14M checkpoints on an RTX5090, structured projection work bypass is more strongly associated with projection-skipping gain ($R^2=0.941$) than scalar projection sparsity ($R^2=0.425$); larger logical sparsity need not imply lower optimized latency. These results show that activation sparsification is governed by the interaction between how zeros are induced, where they are placed, and how much of that zero structure can be exploited by sparse execution.
-%% improve the ending and update the latency excerpts
-
+Activation sparsity promises cheaper inference, but interventions that create zeros need not produce execution gains. We isolate pressure, thresholding and their placement through matched Pythia-14M/70M pretraining on MiniPile, connecting validation loss to model-wide activation sparsity, its architectural ceiling, and measured latency. Broad interventions approach the sparsity ceiling at a quality cost.
+\textbf{Local pressure can outperform broad pressure:} at moderate thresholds, FFN-hidden pressure lowers loss in all 16 matched comparisons; across the full threshold grid, it also lowers latency in 18 of 20. It also increases sparsity at unpressured attention outputs.
+\textbf{Execution gains depend on where zeros occur:} in a 14M kernel ablation, skipping FFN-down and attention-output projections reduces latency, whereas joint attention-product skipping increases it. These one-seed results and batch-one RTX5090 measurements support co-designing training interventions and kernels to produce exploitable zero structure.
 \end{abstract}

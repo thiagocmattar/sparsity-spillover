@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+20 September 2026, introduction and abstract rewrite: the introduction closes
+with four bold findings supported by representative values and figure/table
+references. The abstract is approximately half as long and emphasizes local
+pressure, placement-dependent execution gains, and joint training/kernel design.
+The reference-dependent scale claim and older regression statistics are omitted
+from these summaries. See the [editorial review](draft/reviews/2026-09-20-introduction-abstract/README.md)
+for evidence and scope. The rebuilt 20-page `draft/main.pdf` has resolved
+references/citations and no overfull boxes; the opening and remaining page
+layouts were visually checked. Earlier author prose remains unchanged.
+
 20 September 2026, compact results appendix and whitespace correction:
 `draft/results-appendix.tex` now presents all 74 endpoints in three grouped
 T/P tables: 14M-only ablations, side-by-side 14M/70M results, and 410M.
