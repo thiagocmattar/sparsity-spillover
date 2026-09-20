@@ -107,3 +107,19 @@ Final checkpoint inputs will be attached after training verification.
 allowing latency execution to overlap the complete training archive retrieval.
 All model and recovery checkpoints still require full local hash verification
 before training Pod teardown.
+
+All four original GPU preflights passed. The automatic25% timing margin plus
+20-minute reserve exceeded the remaining lease by several minutes, so the
+initial infrastructure pipeline exited before any scientific training. Its
+logs and exit record remain intact. An additional six-boundary calibration
+with one CPU thread per worker also passed in separate
+`prelaunch/thread-calibration-002/` records; it did not improve the slowest
+worker. The original eight-thread setting was retained.
+
+Infrastructure continuation003 starts the same four unchanged scientific
+workers under the original18:46UTC stop deadline. Its reserve uses measured
+validation/diagnostic/checkpoint costs, a15% training-time margin and20minutes
+for archiving/transfer. The resulting bound is12,434.9s versus12,744.7s remaining;
+the unpadded training estimate is9,751.3s. See
+`prelaunch/training-launch-003.json` and `prelaunch/continue-training-003.sh`.
+The detached controller and its process-group guard were updated together.
