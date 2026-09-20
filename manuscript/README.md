@@ -1,5 +1,17 @@
 # Living Manuscript Draft
 
+19 September 2026, OL1 appendix revision: `app:pressure` now introduces the
+code-checked dual update before diagnostics, using the main-text ell_1 notation.
+Table 3 compares L1/OL1 at every retained 14M T1/P1 lambda. Figure 7 extends
+the geometry view to all 20 14M Figure 1 OL1 conditions, using the same
+recipe styles in two panels. The requested existing PDF path is retained. The old 14M-only
+diagnostic subsection is consolidated here. The main-method paragraph now
+distinguishes ordinary L1 from OL1 and qualifies saturation invariance.
+See [Observation 039](../analyses/024-2026-09-17-h-only-kernel-latency/observations/039-ol1-appendix.md)
+for sources and limits. All 16 focused tests pass; the 35-page build has resolved
+references/citations and no overfull boxes. The new figure and appendix pages
+12--13 were visually checked. Other author edits remain in the working tree.
+
 19 September 2026, requested rebuild: `draft/main.pdf` now reflects the current
 author-edited manuscript. A missing closing brace in Figure 1's caption was
 repaired in `draft/introduction.tex`; no wording changed. The 34-page build has

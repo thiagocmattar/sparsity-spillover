@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+The [OL1 appendix figure](figures/18-14m-70m-ol1-geometry.pdf) now covers all
+20 14M Figure 1 OL1 conditions, with a matched eight-endpoint T1/P1 L1--OL1 table.
+The code-checked formulation, all 28,480 optimizer records, captions and
+interpretation limits are documented in [Observation 039](observations/039-ol1-appendix.md).
+Reproduce both artifacts with `29_ol1_appendix.py`.
+
 The [two-panel 70M site-group figure](figures/17-70m-site-groups-sparsity-latency.pdf)
 shows h/z contributions on the left (a) and the complement on the right (b).
 The 20 T/P checkpoints share a latency scale and recipe legend, with focused

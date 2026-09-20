@@ -614,39 +614,6 @@ reads, zero checks or softmax.
 
 \input{tables/pressure-scope/h-only-runtime}
 
-% Source: analyses/021-2026-09-10-training-results-figures/pressure-scope/observations/O016-pressure-placement.md.
-% Moved from Section 4.2 when adopting Analysis024 Figure03; values and artwork retained.
-\subsection{Pressure-budget diagnostics at 14M}
-\label{app:pressure-budget-diagnostics}
-
-\textbf{Pressure scope also changes the realized optimization regime}
-(Figure~\ref{fig:ol1-geometry}). All 20 pressured multisite 14M runs retain 712
-optimizer-step records. We measure the task-relative opposing component
-$\rho_{\mathrm{opp}}=\max(0,-\langle u,w\rangle)/(\|u\|_2^2+\epsilon)$
-in the global AdamW-preconditioned geometry. H-only pressure is capped on
-$0.25\%$ of steps under either threshold scope; broad four-site pressure is
-capped on $0.51\%$, versus $96.99\%$ for broad seven-site pressure.
-The pooled median pre-cap ratio $r/b$ is 0.102 and 0.086 for four-/seven-site
-h-only pressure, compared with 0.253 and 57.49 for broad pressure. These logs
-establish different magnitude and budget regimes; they do not identify the
-cause of the validation-loss differences.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/04-ol1-geometry.pdf}
-\caption{\textbf{H-only and broad pressure operate in different norm-budget regimes at 14M.}
-\textbf{(a)} Median removed opposing component, $100\rho_{\mathrm{opp}}$;
-\textbf{(b)} median pre-cap ratio $r/b$ at $\lambda=b=1$. Each point summarizes
-712 optimizer steps at a fixed threshold, not seed uncertainty. Color denotes
-threshold scope; diamonds/dashed lines denote h-only pressure and
-triangles/dash-dot lines denote broad pressure. \textbf{(c)} Cap-active fractions
-pool 3,560 steps per recipe and use the implemented condition $s<1$.
-The geometry precedes group learning rates and decoupled weight decay, so it
-does not guarantee task-loss preservation. The h-only and broad-pressure
-comparison changes the objective composition and normalization.}
-\label{fig:ol1-geometry}
-\end{figure}
-
 \subsection{Evidence and data accompanying the draft}
 \label{app:result-data}
 

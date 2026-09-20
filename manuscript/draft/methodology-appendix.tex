@@ -15,28 +15,34 @@ estimator nor a top-$k$ selection rule. Unselected sites retain their original t
 \subsection{Activation pressure and OL1}
 \label{app:pressure}
 
-For the $J$ targeted site--layer tensors $A_j$, containing $n_j$ entries each,
-the pressure objective is
-$\mathcal{L}_1=J^{-1}\sum_{j=1}^{J}n_j^{-1}\sum_{i=1}^{n_j}|A_{j,i}|$.
-The tensors contain the executed site activations, after the nonlinearity where one is applied.
-Absolute values and means are evaluated in float32.
-Each tensor receives equal weight regardless of its size; adding pressure
-sites changes both the objective and the weight of existing targets.
-Task and pressure losses are averaged over the same accumulation microbatches.
-For naive L1, the accumulated gradient of
-$\mathcal{L}_{\mathrm{task}}+\lambda\mathcal{L}_1$ is globally norm-clipped
-before AdamW~\citep{loshchilov2019adamw}.
+\textbf{Objective and update.}
+For the $J$ site--layer tensors $A_j$ targeted by $\mathcal P$, each containing
+$n_j$ entries after any thresholding, activation pressure is
+\begin{equation}
+\ell_1(\theta;\mathcal P)=\frac{1}{J}\sum_{j=1}^{J}\frac{1}{n_j}
+\sum_{i=1}^{n_j}|A_{j,i}|.
+\end{equation}
+Each tensor receives equal weight; changing $\mathcal P$ changes both the
+targets and their normalization. Ordinary L1 pressure applies AdamW~\citep{loshchilov2019adamw} to the
+globally clipped gradient of $\mathcal L_{\mathrm{task}}+\lambda\ell_1$.
+OL1 instead separates the two updates: AdamW uses only the task gradient,
+then a pressure correction removes conflict with the adaptive task direction
+and limits its magnitude. This prevents pressure from directly entering
+Adam's moment estimates and controls how strongly it can modify the task step.
 
-For OL1, let $g_t$ and $g_1$ be the accumulated task and unweighted pressure
-gradients. We first clip $g_t$ by its global norm and perform AdamW using only
-that clipped task gradient. Let $\widehat m_t$ and $\widehat v_t$ be its newly
-updated, bias-corrected moments. On parameters having both gradients and
-initialized optimizer state, define the adaptive task and pressure vectors
-$u=\widehat m_t/(\sqrt{\widehat v_t}+\epsilon_A)$ and
-$w=g_1/(\sqrt{\widehat v_t}+\epsilon_A)$. The pressure gradient is unclipped
-and has no first-moment buffer. Inner products and norms below pool all these
-eligible parameters. With $c=\langle u,w\rangle$, $q=\|u\|_2^2$, and numerical
-stabilizer $\epsilon>0$, the conflict-conditioned projection is
+Both gradients are averaged over the same microbatches at the same parameters.
+We clip the task gradient and take its AdamW step, obtaining the updated,
+bias-corrected moments $\widehat m_t,\widehat v_t$. The unweighted pressure
+gradient $g_1=\nabla_\theta\ell_1$ remains unclipped. Using the task's
+preconditioner, define
+\begin{equation}
+u=\frac{\widehat m_t}{\sqrt{\widehat v_t}+\epsilon_A},
+\qquad
+w=\frac{g_1}{\sqrt{\widehat v_t}+\epsilon_A}.
+\end{equation}
+The pressure direction has no momentum buffer. Norms and inner products pool
+parameters having both gradients and initialized Adam state. With
+$c=\langle u,w\rangle$, $q=\|u\|_2^2$, and numerical stabilizer $\epsilon>0$,
 \begin{equation}
 \widetilde w=
 \begin{cases}
@@ -45,36 +51,69 @@ w, & \text{otherwise}.
 \end{cases}
 \label{eq:ol1-projection}
 \end{equation}
-% Diagnostic and guard audit: Analysis 021 O002 and 02_ol1_geometry.py.
-For diagnostics, we define the task-relative opposing component
-\[
-\rho_{\mathrm{opp}}=\frac{\max(0,-c)}{q+\epsilon}.
-\]
-When projection is active, this equals the norm of the component removed
-from $w$, divided by $\|u\|_2$; it is zero when $c\geq0$.
-All reported steps satisfy the guard $q>\epsilon$.
-It is therefore not the fraction of the pressure norm removed.
+Thus, only the component opposing the Adam direction is removed; aligned
+pressure is retained. For weight $\lambda\geq0$ and relative norm budget $b>0$,
+\begin{equation}
+r=\frac{\lambda\|\widetilde w\|_2}{\|u\|_2+\epsilon},
+\qquad
+s=\min\!\left\{1,\frac{b}{r+\epsilon}\right\}\quad(r>0),
+\end{equation}
+with $s=1$ when $r=0$. After the task-only AdamW step, parameter group $p$
+receives $\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$,
+where $\alpha_p$ is its learning rate. Ignoring stabilizers, the correction
+norm before the learning rate is
+$\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$: increasing $\lambda$
+no longer changes it once the cap binds at a fixed optimizer state.
 
-For pressure weight $\lambda\geq0$ and required budget $b>0$, define the norm ratio
-$r=\lambda\|\widetilde w\|_2/(\|u\|_2+\epsilon)$. Set
-$s=\min\{1,b/(r+\epsilon)\}$ when $r>0$, or $s=1$ otherwise. After AdamW,
-each eligible parameter group $p$, with learning rate $\alpha_p$, receives
-$\theta_p\leftarrow\theta_p-\alpha_p\lambda s\widetilde w_p$.
-The experiments' clipping thresholds, $b$, and $\lambda$ are condition
-parameters.
-We report the norm budget as active when the implemented scale satisfies $s<1$.
+OL1 adapts conflict projection~\citep{yu2020pcgrad} and smoothed primary
+directions~\citep{hsieh2024bloop} to Adam's preconditioned geometry.
+The stabilized projection is approximately orthogonal under conflict;
+the geometry excludes group learning rates and decoupled weight decay.
+Non-opposition to the Adam direction does not guarantee preservation of task
+or validation loss.
 
-Ignoring numerical stabilizers, the correction norm before the learning rate is
-$\min\{\lambda\|\widetilde w\|_2,b\|u\|_2\}$.
-For a fixed optimizer state, once the cap binds, further increases in
-$\lambda$ leave this ideal correction unchanged.
+% Evidence: analyses/024-2026-09-17-h-only-kernel-latency/observations/039-ol1-appendix.md.
+% Generated table and geometry: Analysis024/29_ol1_appendix.py; data/ol1-appendix.json.
+\textbf{L1 versus OL1.}
+Table~\ref{tab:l1-ol1} compares the two updates at $T_1/P_1$ on 14M, with
+matched initialization, data order and training budget. Sparsity differs by
+less than $0.02$ percentage points at each $\lambda$. OL1 has slightly lower
+loss at $\lambda\in\{0.05,0.1,0.5\}$, but higher loss at $\lambda=1$.
+This single-seed comparison does not establish universal quality superiority.
 
-This procedure is related to gradient-conflict projection~\citep{yu2020pcgrad}
-and the use of smoothed primary directions~\citep{hsieh2024bloop}, but defines
-a particular correction in AdamW-preconditioned coordinates. The stabilized
-projection is only approximately orthogonal under conflict. Its geometry and
-budget precede multiplication by group learning rates and exclude decoupled
-weight decay. They therefore do not guarantee task-loss descent or preservation.
+\input{tables/t1-l1-ol1}
+
+\textbf{Realized geometry and budget saturation.}
+\label{app:pressure-budget-diagnostics}
+We measure $\rho_{\mathrm{opp}}=\max(0,-c)/(q+\epsilon)$: the norm of the
+removed component divided by $\|u\|_2$, before capping. All recorded steps
+satisfy $q>\epsilon$; aligned steps contribute zero. Figure~\ref{fig:ol1-geometry}
+shows this diagnostic and $r/b$ for the 20 14M OL1 conditions in
+Figure~\ref{fig:quality-sparsity-overview}, using all 712 optimizer-step records
+per condition at $\lambda=b=1$.
+
+The cap is active ($s<1$) on $96.99\%$ of $T_7/P_{\mathrm{all}}$ steps,
+but only $0.51\%$ for $T_4/P_{\mathrm{all}}$ and $0.25\%$ for either $P_h$
+recipe. Each fraction pools 3,560 steps across five thresholds,
+including the first step with zero learning rate. Budget saturation therefore
+depends strongly on the target set: $\lambda$-invariance after saturation
+does not imply that $\lambda$ is irrelevant in all recipes. These diagnostics
+describe the update geometry, without identifying the cause of loss differences.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/18-14m-70m-ol1-geometry.pdf}
+\caption{\textbf{OL1 geometry depends on pressure placement at 14M.}
+\textbf{(a)} Median removed opposing component, $100\rho_{\mathrm{opp}}$;
+bars span the 25th--75th percentiles over 712 training steps per condition,
+not confidence intervals. \textbf{(b)} Pre-cap norm ratio $r/b$:
+faint curves show individual thresholds, and bold curves their pointwise
+median. The dotted line marks the norm cap. Colors and line styles match
+Figure~\ref{fig:quality-sparsity-overview}; both y-axes are logarithmic,
+and $\lambda=b=1$ throughout.}
+\label{fig:ol1-geometry}
+\end{figure}
+
 
 \section{Sparsity accounting}
 \label{app:accounting}

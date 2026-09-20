@@ -1,5 +1,9 @@
 # Observations
 
+- [039: OL1 formulation and 14M geometry](039-ol1-appendix.md):
+  code-checked dual update, eight-endpoint L1/OL1 comparison and all 20
+  14M Figure 1 OL1 conditions; budget saturation is strongly target-dependent.
+
 - [038: Two-panel 70M site-group comparison](038-70m-site-groups-latency.md):
   h/z on the left and complementary sites on the right, with shared latency
   scale and recipe legend; the two contributions sum to S_model.
