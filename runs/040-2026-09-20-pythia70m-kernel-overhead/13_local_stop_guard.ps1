@@ -27,7 +27,8 @@ for ($run040Try=1; $run040Try -le 5; $run040Try++) {
   & $run040Cli pod stop $PodId
   if ($LASTEXITCODE -ne 0) { throw 'Stop failed' }
   $run040After = Read-Target
-  if ($run040After.desiredStatus -notin @('EXITED','STOPPED')) { throw 'Stop unconfirmed' }
+  if ($run040After.status -notin @('EXITED','STOPPED') -and
+      $run040After.desiredStatus -notin @('EXITED','STOPPED')) { throw 'Stop unconfirmed' }
   Add-Content -LiteralPath $LogPath -Value "STOP_CONFIRMED $PodId; volume retained for retrieval"
   exit 0
  } catch {
