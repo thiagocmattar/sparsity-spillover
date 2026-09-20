@@ -1,5 +1,11 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild: `draft/main.pdf` reflects the current
+author-edited sources. The 35-page build has no undefined references/citations
+or overfull boxes; pages 4, 12 and 13 were visually checked. The installed
+PDF hash matches the reviewed build. No TeX source was changed; author edits
+remain uncommitted in the working tree.
+
 19 September 2026, OL1 appendix revision: `app:pressure` now introduces the
 code-checked dual update before diagnostics, using the main-text ell_1 notation.
 Table 3 compares L1/OL1 at every retained 14M T1/P1 lambda. Figure 7 extends
