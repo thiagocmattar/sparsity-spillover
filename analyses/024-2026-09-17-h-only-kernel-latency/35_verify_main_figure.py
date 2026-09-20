@@ -24,8 +24,9 @@ def main():
     assert data['layout']['legend_rows'] == 2 and data['layout']['legend_columns'] == 5
     assert data['layout']['font_scale'] == .9
     assert data['panels'][0]['trained_keys'] == data['panels'][1]['trained_keys']
-    prior = json.loads((HERE / 'data/14m-70m-quality-sparsity-latency.json').read_text())
-    assert data['clipping_points'] == [r for r in prior['clipping_points'] if r['model'] == '14M']
+    assert data['clipping_points'] == []
+    assert all(p['clipping_ids'] == [] and p['clipping_outside_y'] == [] for p in data['panels'])
+    assert data['limits']['latency_ms'] == [.435, .7]
     assert [s['label'] for s in data['series']][2:4] == [r'$T_1/P_h$', r'$T_2/P_h$']
     pdf = HERE / data['output']
     manuscript = ROOT / 'manuscript/draft'
@@ -38,6 +39,7 @@ def main():
     doc = fitz.open(pdf)
     assert len(doc) == 1
     page = doc[0]
+    assert 'Post-hoc' not in page.get_text()
     assert all(page.rect.contains(fitz.Rect(block[:4])) for block in page.get_text('blocks'))
     fonts = page.get_fonts(full=True)
     assert fonts and all(doc.extract_font(font[0])[3] for font in fonts)
@@ -47,7 +49,8 @@ def main():
     assert math.isclose(label['size'], 11 * .9, abs_tol=1e-5)
     result = dict(status='verified', trained_checkpoints_per_panel=40,
                   legend_rows=2, legend_columns=5, font_scale=.9,
-                  exact_source_records=True, posthoc_settings_per_panel=20,
+                  exact_source_records=True, posthoc_settings_per_panel=0,
+                  latency_y_max_ms=.7,
                   embedded_fonts=len(fonts), text_within_page=True,
                   pdf_sha256=sha(pdf), verifier_sha256=sha(Path(__file__)),
                   visual_review='Final rendered page checked: complete 2x5 legend and no text overlaps. No manuscript recompilation.')
