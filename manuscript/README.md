@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+20 September 2026, approved AI-use disclosure:
+`draft/main.tex` includes an unnumbered AI use statement after the conclusion
+and before the references. It records the approved research, coding, analysis
+and writing assistance, references kernel validation, and states author
+responsibility. This follows the [ICLR 2027 AI policy](https://iclr.cc/Conferences/2027/AIPolicyForAuthors).
+Only the source is updated; `draft/main.pdf` has not been recompiled.
+
 20 September 2026, Run044 integration: Figure 1 now includes the missing
 14M T2/Ph kappa=0.5 endpoint (41 checkpoints). The complete-results table and
 data also restore the four existing Run041 T2 points, giving 79 endpoints
