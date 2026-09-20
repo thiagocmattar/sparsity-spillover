@@ -1,5 +1,9 @@
 # Observations
 
+- [041: Consolidated kernel appendix and fixed native base](041-kernel-appendix.md):
+  exact implementation/counter definitions, 84 matched settings, and a six-panel
+  diagnostic without fits; native-base gains are 1.427x/1.028x at 14M/70M.
+
 - [040: Compact setup and T/P baseline labels](040-experimental-setup.md):
   shared settings verified across 74 retained runs; baseline trajectory labels
   updated without changing data, and the 34-page manuscript is rebuilt and checked.

@@ -1,5 +1,18 @@
 # Living Manuscript Draft
 
+20 September 2026, kernel-appendix refactor: `draft/kernel-appendix.tex` now
+contains one section covering execution rules, numerical checks, timing,
+instruction counts and unsuccessful alternatives. The old search figure,
+native-per-checkpoint fit and detailed historical runtime tables are removed
+from the paper, with their source artifacts retained. A new 14M/70M diagnostic
+uses one native base latency per size and no fitted lines. The audit identifies
+the material 70M reference difference: maximum native-base gain is 1.028x,
+versus 2.047x relative to the slower specialized base implementation.
+The main figure and its scale claim are pending separate author direction;
+the appendix makes both definitions explicit. See [Observation 041](../analyses/024-2026-09-17-h-only-kernel-latency/observations/041-kernel-appendix.md).
+Seven focused checks pass and the standalone figure is visually checked.
+`draft/main.pdf` is unchanged, awaiting authorization to recompile.
+
 20 September 2026, second appendix prose pass: the OL1, sparsity-accounting
 and experimental-setup sections use shorter explanations and consistent
 terminology, preserving equations, numerical results and table entries.

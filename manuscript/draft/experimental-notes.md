@@ -1,5 +1,17 @@
 # Experimental-section scope and provenance
 
+20 September 2026, kernel appendix: the kernel material formerly spread across
+the final three subsections of `results-appendix.tex` is consolidated in
+`kernel-appendix.tex`. It replaces research identifiers and stale export lists
+with execution rules, bounded numerical agreement, test settings, instruction
+accounting and tested alternatives. Non-kernel results before this material are
+unchanged. The new figure uses native T0/P0 as a fixed reference within each size;
+both native- and specialized-base normalization are recorded and distinguished.
+The latter produces the main figure's apparent increase to 2.047x at 70M,
+whereas native-base maximum speedup is 1.028x. Main-text revision remains pending
+author direction. [Observation 041](../../analyses/024-2026-09-17-h-only-kernel-latency/observations/041-kernel-appendix.md)
+owns the audit, provenance and caption. No manuscript build was performed.
+
 20 September 2026, second prose pass: the setup retains all architecture,
 optimizer, schedule, batch and recipe-coverage information in fewer words.
 Both tables, the ceiling equations, reference labels and figure are unchanged.

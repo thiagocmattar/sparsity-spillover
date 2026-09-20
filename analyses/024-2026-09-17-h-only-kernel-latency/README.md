@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+The [consolidated kernel appendix](observations/041-kernel-appendix.md)
+replaces the historical fit with a [fixed-native-base diagnostic](figures/20-kernel-structure-native-base-speedup.pdf).
+All 84 matched trained/clipping settings retain their measured latency and
+counts. The audit distinguishes native-base gains (best 1.427x/1.028x at
+14M/70M) from specialized-base gains (1.418x/2.047x); the difference materially
+limits the 70M scale claim. Seven tests pass; the manuscript is not recompiled.
+
 The [base-model training figure](figures/19-base-model-optimization.pdf)
 relabels the existing training trajectories T0/P0, preserving every plotted
 value and the original style. It accompanies the compact experimental-setup
