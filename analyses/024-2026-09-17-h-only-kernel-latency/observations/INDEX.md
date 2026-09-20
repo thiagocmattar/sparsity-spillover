@@ -172,3 +172,5 @@ proposed manuscript writing, limitations, and generating source. See also
   sparsity for 44 matched 14M/70M checkpoints, including both 1-site controls.
 - [012](012-quality-sparsity-clipping.md): Figure11's cohort plus four complete
   A0/A1-H post-hoc clipping frontiers, showing all 40 clipping measurements.
+
+- [045](045-main-figure-ten-recipes.md): Figure22 with all 40 checkpoints, T2/Ph nomenclature, a 2x5 legend, and 90% fonts.

@@ -15,20 +15,20 @@ To address this gap, we pretrain Pythia-family models from scratch~\citep{biderm
 
 % 14M-only main figure, authorized 20 September 2026; copy hash in figures/SOURCES.json.
 % Figure source: analyses/024-2026-09-17-h-only-kernel-latency/34_plot_14m_main_figure.py
-% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/044-14m-main-figure-scale-check.md
+% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/045-main-figure-ten-recipes.md
 % Checkpoint identities and coordinates: analyses/024-2026-09-17-h-only-kernel-latency/data/14m-main-quality-sparsity-latency.json
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/22-14m-main-quality-sparsity-latency.pdf}
 \caption{\textbf{Quality, sparsity and execution on Pythia-14M.}
-\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for the same 22 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU at the hidden FFN activation ($h$) ($T_1/P_0$), and $T_4/T_7$ thresholding at four/seven sites with pressure applied either at $h$ ($P_h$, dashed) or at all thresholded sites ($P_{\mathrm{all}}$, solid). Figure~\ref{fig:pythia-block} and Table~\ref{tab:interventions} describe the intervention sites. The $T/P$ curves connect separate runs at $\kappa=0,.01,.05,.1,.5$; dotted post-hoc paths clip the fixed controls for $p=0,.1,\ldots,.9$. High-loss clipping tails extend beyond panel (a), with full paths in Figure~\ref{fig:clipping-14m}. Vertical dashed lines mark the analytic sparsity ceilings. Latencies use RTX5090, batch one and 2,048-token sequences, and include clipping costs.
+\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for the same 40 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU ($T_1/P_0$), $T_1/P_h$, $T_2/P_h$ with thresholds at $h,z$, and $T_4/T_7$ with no pressure ($P_0$, dash-dot), pressure at $h$ ($P_h$, dashed), or pressure at all thresholded sites ($P_{\mathrm{all}}$, solid). Curves connect separate trained settings: $\lambda=.05,.1,.5,1$ for $T_1/P_h$; $\kappa=0,.01,.05,.1$ for $T_2/P_h$; and $\kappa=0,.01,.05,.1,.5$ for $T_4/T_7$. Dotted paths apply post-hoc clipping to the fixed controls at $p=0,.1,\ldots,.9$; high-loss tails extend beyond panel (a). Vertical dotted lines mark analytic sparsity ceilings. Latencies include clipping costs and use RTX5090, batch one and 2,048-token sequences. Measurements span separate GPU sessions, so small latency differences are descriptive.
 }
 \label{fig:quality-sparsity-overview}
 \end{figure}
 
 % Editorial revision: reviews/2026-09-20-introduction-abstract/README.md (surgical revision).
 % Evidence: Analysis024 observations 015, 028, 034, 041; Analysis021 pressure-scope O016.
-Across 36 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
+Across 40 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
 First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figure~\ref{fig:quality-sparsity-14m-70m}).
 Second, \textbf{sparsity and speedup increase together within recipes}, but a larger $\Smodel$ does not directly translate into a larger speedup. The main requirement for lower latency is the location and structure of zeros and whether the kernel can exploit them, with most gains coming from skipped computation at $h$ and $z$ (Table~\ref{tab:kernel-mechanisms}).
 % Scale-check evidence: Analysis024 observation 044 and Run040 observation 001.
