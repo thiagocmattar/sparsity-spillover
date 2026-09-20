@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild after moving Table 1:
+`draft/main.pdf` is updated to the current author-edited sources. Table 1
+appears directly above Figure 2 on page 4, in Sparsification interventions.
+The 20-page build has resolved references/citations and no overfull boxes;
+three existing underfull horizontal-box warnings remain. Changed pages
+were visually checked and all other pages match the previous reviewed PDF.
+The installed PDF hash matches the checked build. No TeX source was changed;
+the existing author edits remain uncommitted.
+
 20 September 2026, Table 1 placement:
 the intervention table now appears in Methodology, under Sparsification
 interventions, directly before Figure 2. The text introduces the table there
