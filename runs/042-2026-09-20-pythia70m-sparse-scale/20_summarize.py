@@ -51,6 +51,11 @@ def main():
                         'separated_process_ranges':conservative70>optimistic14,
                         'range_interpretation':'Extrema across three process medians, not a statistical confidence interval.',
                         'reference':'Each size uses native T0/P0 full-logit graph latency on this same GPU; never the sparse implementation at T0/P0.'}
+            other14=keyed.get(('m14-c35','full'))
+            if other14 and other14['all_processes_complete']:
+                best14_ms=min(l14,other14['candidate_ms'])
+                comparison['best_of_both_fresh14_controls']={'latency_ms':best14_ms,'speedup':b14/best14_ms}
+                comparison['higher_than_both_fresh14_controls']=s70>b14/best14_ms
     write(RUN/'results/summary.json',{'full_validation':table,'development':development,
         'failures':failures,'comparison':comparison,'sources':sources,'script':record(__file__),
         'limits':'Development timings use16 training blocks; final timing uses64 inputs x7 passes x3 fresh processes. Profile durations and skip toggles do not replace the native-base comparison.'})
