@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run047 is implemented and locally verified, awaiting separate launch approval:
+measure the later 70M T2/Ph kappa=.5 with frozen opt073 and repeat Base/kappa=.1
+as session references. Nine final processes are proposed on one RTX5090,
+90min / USD2 maximum. See the [launch proposal](../runs/047-2026-09-20-pythia70m-t2-kappa05-optimized-latency/prelaunch/launch-proposal.md).
+
 Run045 completed the matched 70M native/original-port/opt073 sweep: 26 checkpoints,
 78/78 qualified processes, 819 returned artifacts verified, both Pods deleted
 (estimated total below USD2.60). Optimized peak 1.481x native Base versus 1.013x
@@ -267,7 +272,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `047`. Next analysis number: `030`. Next finding number: `F003`.
+Next run number: `048`. Next analysis number: `030`. Next finding number: `F003`.
 
 ## Where we stopped
 

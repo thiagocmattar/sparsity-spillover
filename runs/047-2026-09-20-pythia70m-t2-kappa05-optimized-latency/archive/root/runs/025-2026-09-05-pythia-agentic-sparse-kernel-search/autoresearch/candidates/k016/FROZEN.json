@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "candidate_id": "k016",
+  "frozen_utc": "2026-09-06T02:17:07.8198844+00:00",
+  "policy": {
+    "architecture": "Pythia-70M",
+    "kernel": "K001 fused signed-exact warp compaction",
+    "topology_dispatch": true,
+    "runtime_density_dispatch": false,
+    "checkpoint_identity_dispatch": false,
+    "kappa_dispatch": false,
+    "additional_pruning": false,
+    "topology_policies": {
+      "A0": {"implementation": "native fallback", "layer_indices": [], "sites": []},
+      "A1-H": {"implementation": "K001", "layer_indices": [4, 5], "sites": ["h"]},
+      "A4-Z": {"implementation": "K001", "layer_indices": [3, 4, 5], "sites": ["a", "m", "h", "z"]},
+      "A7-Z-POST": {"implementation": "K001", "layer_indices": [3, 4, 5], "sites": ["h", "z"]}
+    },
+    "attention_qk_pv": "unchanged dense SDPA",
+    "lm_head": "unchanged dense"
+  },
+  "selection_evidence": {
+    "development_evaluation": [
+      {"condition": "70m/a0", "source": "predeclared native fallback"},
+      {"condition": "70m/a1h", "source": "K014 suffix2", "speedup": 0.9482231228031847},
+      {"condition": "70m/a4-0", "source": "K014 suffix3", "speedup": 0.9062732904546004},
+      {"condition": "70m/a4-0p5", "source": "K014 suffix3", "speedup": 1.0342153987816738},
+      {"condition": "70m/a7-0", "source": "K015 suffix3-hz", "speedup": 0.9704661884541995},
+      {"condition": "70m/a7-0p5", "source": "K015 suffix3-hz", "speedup": 1.0064728438626627}
+    ],
+    "topology_scores": {
+      "A1-H": 0.9482231228031847,
+      "A4-OL1": 0.9681331481220361,
+      "A7-OL1": 0.9883055522286905
+    },
+    "selection_artifacts": [
+      {
+        "path": "artifacts/k014-complete-validation-selection-rtxpro4500-002/selection.json",
+        "bytes": 20848,
+        "sha256": "01eade5be40364d01b0d77dc93cd3ccd8bc74d71b23a49b2aea5dae52701e619"
+      },
+      {
+        "path": "artifacts/k015-complete-validation-selection-rtxpro4500-002/selection.json",
+        "bytes": 9203,
+        "sha256": "257162f6bc9133b974fc2c273824f0191ace3c260236b769f72694ca88255feb"
+      }
+    ],
+    "rule": "one static policy per topology, reused across kappas; complete-validation qualification; fixed score/tie-break rules from K014 and K015"
+  },
+  "heldout_boundary": {
+    "conditions": [
+      "70m/a4-0p01", "70m/a4-0p05", "70m/a4-0p1",
+      "70m/a7-0p01", "70m/a7-0p05", "70m/a7-0p1"
+    ],
+    "fresh_holdout_available": false,
+    "reason": "K009 outcomes on these checkpoints were inspected before K014/K015/K016",
+    "k016_result_artifacts_present_remote_at_freeze": 0,
+    "use": "retrospective transfer evaluation only; never fresh confirmation"
+  },
+  "sources": [
+    {"path": "autoresearch/candidates/k016/candidate.py", "bytes": 3397, "sha256": "b046654af95179950a47640cac9d1c69faa788f3fba883846693953165c30772"},
+    {"path": "autoresearch/candidates/k016/README.md", "bytes": 544, "sha256": "cae3cbfdbe34b309413fbdb58f5afa16d422ce60139ba6310a39c9578488ca65"},
+    {"path": "autoresearch/probe_k016_final.py", "bytes": 697, "sha256": "f5645c8d0a84426da6c898d221ab9840bb2eb55c42661e7321aaef1db41e715f"},
+    {"path": "autoresearch/probe_frozen_final.py", "bytes": 16705, "sha256": "4fa7c1b50d8a4f07ad72ae1402f7c99f8231426c6b2d82aae1b4e9bf9873526d"},
+    {"path": "autoresearch/candidates/k001/candidate.py", "bytes": 5081, "sha256": "ac335d05e5686eed57fbbf7929bc6731e1c38ea96cceed1b56d37877004d6ee9"},
+    {"path": "autoresearch/candidates/k001/kernel.cu", "bytes": 5371, "sha256": "a0977732cd87d26bec619f43f60872f5726c08ab97f6d5194952d4655aaf87f2"},
+    {"path": "measurement.py", "bytes": 4149, "sha256": "1bee7bf5579de65979d9e22330d218625a3f1415fe135613ac3e62db35d55329"},
+    {"path": "config.json", "bytes": 1661, "sha256": "1326eedf4e3b48c1919a427c4cfe50eb383e047f39c3788ee0b8877c970ce56d"}
+  ]
+}
