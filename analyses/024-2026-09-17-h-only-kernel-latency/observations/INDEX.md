@@ -1,5 +1,10 @@
 # Observations
 
+- [Run040: completed 70M overhead diagnosis and optimization](../../../runs/040-2026-09-20-pythia70m-kernel-overhead/observations/001-overhead-and-optimization.md):
+  dense h/z dominates the original overhead; selected native a/m and attention
+  plus N256 sparse h/z gives1.195x native-base speedup for T7/Ph at kappa0.5.
+  Both checkpoints pass full validation; dense fallback remains inefficient.
+
 - [043: Compact detailed-results appendix](043-compact-results-appendix.md):
   all 74 endpoints in three grouped tables, restyled 14M clipping paths,
   preserved 410M stress test, and a verified 20-page manuscript with corrected spacing.

@@ -1,5 +1,14 @@
 # H-only pressure: final K050 latency extension
 
+The approved [Run040 diagnostic and optimization](../../runs/040-2026-09-20-pythia70m-kernel-overhead/observations/001-overhead-and-optimization.md)
+is complete and recovered. Replacing h/z with native operations removes
+1.66ms from the original dense 70M path. A training-selected combination of
+native a/m and attention with N256 sparse h/z reaches1.328912ms for T7/Ph at
+kappa0.5: **1.195408x relative to native T0/P0**, with unchanged checkpoint
+loss. The optimized dense path remains slower than PyTorch. This two-checkpoint
+result does not replace the earlier grid or establish a scale trend; manuscript
+integration remains a separate task. The pod was deleted within the USD6 cap.
+
 The [compact results appendix](observations/043-compact-results-appendix.md)
 retains all 74 endpoints in three tables and all 300 existing 14M post-hoc
 evaluations in a restyled figure, while removing redundant historical displays.
@@ -9,9 +18,9 @@ the manuscript is rebuilt at 20 pages with verified layout and references.
 The [70M overhead audit](observations/042-70m-overhead-audit.md) rechecks raw
 host/device timings and identifies padded h/z arithmetic, repeated inspection
 and inherited projection schedules. The 1.649ms host deficit is also present
-on the GPU (1.644ms); component latency attribution still needs the
-[proposed diagnostic](70M-OVERHEAD-DIAGNOSTIC-DESIGN.md). Reproduce the saved-data
-audit with `32_audit_70m_overhead.py`. No new GPU experiment has been launched.
+on the GPU (1.644ms). Its proposed component diagnosis is now completed in
+Run040 above. Reproduce the original saved-data audit with
+`32_audit_70m_overhead.py`; it predates the new optimization measurements.
 
 The [consolidated kernel appendix](observations/041-kernel-appendix.md)
 replaces the historical fit with a [fixed-native-base diagnostic](figures/20-kernel-structure-native-base-speedup.pdf).

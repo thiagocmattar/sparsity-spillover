@@ -1,6 +1,16 @@
 # Run040: diagnose and reduce 70M kernel overhead
 
-Status: launch approved under the USD6/four-GPU-hour cap; provisioning next.
+Status: complete, recovered and verified; the Run040 pod was deleted on
+20 September 2026 at 12:58:51 UTC. Estimated total cost: USD1.57, below the
+approved USD6 cap (provider billing was still partially posted at teardown).
+
+The [final observation](observations/001-overhead-and-optimization.md) gives
+the complete diagnostic and optimization results. T7/Ph at kappa0.5 takes
+1.328912ms with the selected implementation, a **1.195408x speedup over the
+native T0/P0 base model** (1.588592ms). The original kernel takes1.571075ms.
+The optimized dense T0/P0 path remains slow at2.959854ms. These are two
+checkpoint results, not a replacement for the earlier full-grid benchmark.
+
 The user approved both checkpoints in the nine-mode diagnostic on20 September
 2026 and additionally authorized optimization toward native-PyTorch speedups.
 The [design](../../analyses/024-2026-09-17-h-only-kernel-latency/70M-OVERHEAD-DIAGNOSTIC-DESIGN.md)
@@ -46,8 +56,10 @@ deadline for retrieval. Failures stop the dependent matrix and remain visible.
 `10_test_operators.py` reuses the frozen CUDA primitive checks.
 `06_control_checks.py` compares all nine controls against native outputs on
 four training blocks for both models (72 full-output checks). Smokes use
-four timing inputs, two passes and eight correctness blocks. These GPU checks
-are pending launch; CPU tests do not substitute for them.
+four timing inputs, two passes and eight correctness blocks. All28 initial
+operator checks,72 control checks and18 smokes passed, followed by all54
+diagnostic processes. Both revised h/z tile variants passed48 additional
+operator cases each, including exact counter/oracle agreement.
 
 `diagnostics.py` runs after timing in replicate1, pooling actual-operand zero,
 near-zero, RMS/L2, row-occupancy and logical-product counts over full validation.
@@ -106,5 +118,22 @@ temporary directory. The initial bootstrap invocation had11 setup errors
 because the repository's default temporary directory was inaccessible; no
 scientific test failed, and the isolated rerun passed all242.
 
-The launch packet supplies live price/availability, ETC, cost ceiling,
-storage/transfer, monitoring and the stop guard. No main.pdf rebuild.
+Three candidates were developed on training inputs; opt002 was frozen before
+its six final full-validation processes, all of which passed. The effective
+selected policy uses native a/m and attention, sparse M8/N256 h/z, and the
+original fused normalization/RoPE paths. Inherited installation flags in
+metadata precede the native replacements; the explicit effective policy is
+recorded in `provenance/effective-optimization-policy.json`.
+
+Recovery verified754 archive members plus the separately recovered selection
+helper, then reverified all1404 immutable input/source copies. The local
+reduction reproduces the remote final result byte-for-byte. The Run040 pod
+and both deadline guards are gone; the independent Run041 pod and existing
+network volume were left untouched. See `prelaunch/teardown-001.json`.
+
+Reproduce the summaries with `07_reduce.py`, `14_profile_attribution.py`, and
+`15_verify_closeout.py`. Raw results, full per-block qualification, timings,
+traces and counters remain in `artifacts/`; hashes and the sealed transfer
+inventory remain in `transfer/`. Large input/checkpoint copies and the recovery
+archive are retained locally and excluded from Git. No manuscript edits or
+main.pdf rebuild were made by Run040.

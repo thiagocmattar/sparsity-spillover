@@ -1,4 +1,10 @@
-# Run040 launch packet — awaiting launch approval
+# Run040 launch packet — approved and completed
+
+Closeout: all diagnostic and selected-candidate evaluations passed; outputs
+were recovered and hash-verified before pod deletion at12:58:51 UTC on
+20 September 2026. Estimated total spend USD1.57 of the approved USD6 cap.
+See [results and limitations](observations/001-overhead-and-optimization.md).
+The packet below records the implementation and checks at launch time.
 
 Design and both checkpoints are approved. The user additionally authorized
 kernel optimization. The user explicitly approved this USD6 launch envelope. Provisioning follows
