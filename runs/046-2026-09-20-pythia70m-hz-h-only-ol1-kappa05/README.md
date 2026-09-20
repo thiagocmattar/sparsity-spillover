@@ -115,3 +115,20 @@ benchmark cache/settings during the training tail. No model or scientific
 measurement is used by this preparation. Its4,631,715-byte archive receipt and
 syntax-checked infrastructure helpers are retained; the scientific training
 source and configuration remain unchanged after launch.
+
+Both caches match their pinned full hashes. Preflight passed all six boundaries;
+the five timed updates were6.7389/6.7482/6.7487/6.7325/6.7251 seconds, median
+6.7389s (about311k input tokens/s). Full validation took0.6264s, checkpoint save
+0.4541s, full activation diagnostics2.9362s and logical diagnostics6.6947s. Peak
+reserved10,492,051,456 of150,121,545,728 GPU bytes leaves ample headroom. Initial
+parameter hash, schedule hash, both kappa=.5 gates and six h-only pressure tensors
+matched, with no overflow/skipped boundary. The complete calibration is retained
+in `prelaunch/remote-preflight-hz-h-ol1-kappa-0p5.json`.
+
+Fresh scientific training was at3/712 updates at19:00:04UTC: task loss10.411805,
+zero overflows, GPU97% busy and9.77GiB peak reserved. Early throughput277k tokens/s
+includes step1 validation and checkpoint overhead; the preflight predicts about
+80 minutes of steady training. The scientific code/configuration remain frozen.
+The local reporting helper derives its runtime conclusion from the actual future
+measurement and qualification status, without carrying forward Run043's slowdown
+conclusion as a presumption about the new endpoint.

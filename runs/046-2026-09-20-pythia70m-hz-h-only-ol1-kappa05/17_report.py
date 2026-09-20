@@ -96,8 +96,13 @@ def main():
         f"difference: {max(r['maximum_k050_loss_delta'] for r in rows):.9g}. "
         'The fixed logit bound is abs(error) <= 0.25 + 0.02 * abs(reference), '
         'with relative L2 <= 0.02 and absolute pooled loss difference <= 0.001.', '',
-        '**Runtime result.** The frozen specialized kernel is slower than native graph '
-        'inference for this condition on this workload.', '',
+        '**Runtime result.** ' + (
+            'The numerically qualified specialized kernel is '
+            + ('faster than' if rows[0]['native_relative_paired_geomean_speedup']>1 else
+               'slower than' if rows[0]['native_relative_paired_geomean_speedup']<1 else 'as fast as')
+            + ' native graph inference for this condition on this workload.'
+            if rows[0]['qualified'] else
+            'The specialized kernel did not qualify; its timing is not evidence of valid acceleration.'), '',
         '**Interpretation limits.** One seed, one model size and one data pass. '
         'This joint intervention does not isolate the effects of either gate or pressure. '
         'Logical-product opportunity is distinct from measured speedup. BF16 qualification '
