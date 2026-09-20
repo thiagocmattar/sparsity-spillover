@@ -6,6 +6,7 @@ from sparsity_research.metrics import ActivationAccumulator, weight_statistics
 from frozen_diagnostics import projection_counts, hybrid_counts, attention_opportunities
 from io_utils import write
 from tile_oracle import counts as instruction_counts
+from parallel_work_oracle import extra_scalar_products
 
 
 def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
@@ -37,9 +38,15 @@ def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
                 stat = op.stats.sum(tuple(range(op.stats.ndim - 1))).cpu().tolist()
                 tile_rows = h.reshape(-1,2048).shape[0] // op.stats.shape[0]
                 actual_layouts[str(self.index)] = {'row_group':tile_rows,'instruction_shape':[16,8,16],
-                    'padded_rows_per_instruction':16-tile_rows,'short_row_limit':getattr(op,'short_limit',2)}
+                    'padded_rows_per_instruction':16-tile_rows,'short_row_limit':getattr(op,'short_limit',2),
+                    'duplicate_prepass_work_counted':getattr(op,'parallel_prepass_duplicates',False)}
+                extra = extra_scalar_products(capture.activations[f'h.layer_{self.index}'],
+                    capture.activations[f'z.layer_{self.index}'], rows=tile_rows,
+                    limit=getattr(op,'short_limit',2),fast_weights=op.fast_weights,skip=op.skip
+                    ) if getattr(op,'parallel_prepass_duplicates',False) else [0,0]
                 for site, offset, scalar in [('h', 0, 4), ('z', 2, 5)]:
                     expected = instruction_counts(capture.activations[f'{site}.layer_{self.index}'], tile_rows, op.fast_weights, op.skip, getattr(op,'short_limit',2))
+                    expected[2] += extra[0 if site == 'h' else 1]
                     assert [stat[offset], stat[offset + 1], stat[scalar]] == expected
                 pooled = hybrid.setdefault(str(self.index), [0] * 6)
                 for i, value in enumerate(stat): pooled[i] += int(value)
