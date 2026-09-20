@@ -7,8 +7,8 @@ recipe legend. Ceiling guides and the graphic footer are removed. The caption
 follows the author's revised introduction argument and defines the timing
 ablation and whiskers; surrounding prose is preserved. The checked build has
 21 pages, resolved references and no overfull boxes, with the figure on page 2.
-It is installed as `draft/main-updated.pdf`; the open viewer still locks
-`draft/main.pdf`, preventing replacement of that older build.
+After the user closed the viewer, the verified preview was installed as
+`draft/main.pdf`; its SHA256 matches `draft/main-updated.pdf` exactly.
 Evidence and provenance: [Analysis031](../analyses/031-2026-09-20-quality-sites-quality/README.md).
 
 20 September 2026, approved later 70M optimized measurement:
@@ -20,10 +20,9 @@ appendix table reports repeated Base/kappa=.1 references. The original 26
 timings are unchanged; no session pooling or rescaling is performed.
 Canonical loss/sparsity are unchanged. All nine final processes qualify;
 217 files are verified and the Pod is deleted. Current author edits are
-preserved. The checked 22-page build is `draft/main-updated.pdf`, with resolved
-references and no overfull boxes. Windows currently prevents replacing
-`draft/main.pdf` because its viewer has the file open; installation awaits
-the user's requested tab closure. See
+preserved. The checked 22-page build was superseded by the verified 21-page
+build above, which retains these results and is now installed as `draft/main.pdf`.
+See
 [Analysis030](../analyses/030-2026-09-20-70m-t2-optimized-endpoint/README.md).
 
 20 September 2026, approved matched optimized 70M integration:

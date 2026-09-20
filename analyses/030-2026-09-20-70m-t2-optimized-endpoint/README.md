@@ -24,9 +24,10 @@ manuscript prose identify the later session. See [the observation and
 caption](observations/001-later-70m-endpoint.md), `data/verification.json` and
 `data/build-verification.json` for evidence and final PDF checks.
 
-The checked build is `manuscript/draft/main-updated.pdf` (22 pages, no unresolved
-references or overfull boxes; two underfull-box warnings). `main.pdf` remains
-the earlier build because Windows reports a viewer lock. The user has been
-asked to close that tab before installation. The PDF was compiled from a fixed
+The checked build had 22 pages, no unresolved references or overfull boxes,
+and two underfull-box warnings. Analysis031's later verified 21-page build
+retains these results and adds the approved three-panel introduction figure;
+it is now installed as `manuscript/draft/main.pdf` after the user closed the
+viewer. The original Analysis030 PDF was compiled from a fixed
 snapshot of the latest saved sources while the author continued editing the
 introduction; only its 26-to-27 count change is staged by this task.

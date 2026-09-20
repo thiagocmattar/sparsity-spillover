@@ -32,6 +32,8 @@ The manuscript copy and supplementary data are hash-linked in their SOURCES.json
 manifests. A clean 21-page compilation resolves all references with no overfull
 boxes; the figure and caption on page 2 were visually inspected. See
 `data/manuscript-verification.json` for the checked source and PDF hashes.
+After the user closed the PDF viewer, the checked preview was installed as
+`manuscript/draft/main.pdf` and verified byte-identical to `main-updated.pdf`.
 
 Reproduce:
 
