@@ -87,3 +87,23 @@ compressed archives and latency inputs. The validated configuration is ready
 for the already-authorized launch. Calibration, allocations and receipts follow.
 Executed scientific source remains frozen; infrastructure retries get separate
 attempt records.
+
+The allocated training Pod is `25a3geba9jatml`, four H200s in EUR-IS-4 at
+USD18.36/hour, created14:46:01UTC on20September. Its provider-stop deadline is
+18:46:01UTC. The isolated deployment commit is
+`1685e87948cc57314ba3252e6b1dbbb4092e7cc0`, based on prelaunch commit
+`02c9b1eb92af2cb7bd524c71bdeb28d744f8258e`; the source bundle and both canonical
+initialization files passed remote SHA256 verification. See the sanitized
+`prelaunch/lease-training-001.json`, source receipt and initialization upload
+receipt. Runtime setup overlaps the initialization upload; execution is detached.
+
+`19_prepare_latency_sources.py` freezes1374 historical source files and the
+Run035 70M port. All CUDA/header/operator sources are byte-identical to its
+qualified v2. The composition file redirects only the adapter import to the HZ
+allowlist bridge. Three local latency-contract tests pass, covering the12-process
+matrix, unchanged tolerances, exact kernel source identities and the bridge.
+Final checkpoint inputs will be attached after training verification.
+`20_retrieve_endpoints.py` copies and verifies the four terminal models first,
+allowing latency execution to overlap the complete training archive retrieval.
+All model and recovery checkpoints still require full local hash verification
+before training Pod teardown.

@@ -72,10 +72,11 @@ def main():
     (RUN/'artifacts/summary.json').write_text(json.dumps(report,indent=2)+'\n')
     lines=['# 001 — Four h/z threshold endpoints and final K050 latency','',
         '**Question.** How do the four approved h/z thresholds behave with h-only OL1, lambda=1?', '',
-        '**Method and coverage.** Four random-initialized Pythia14M models share initialization, '
+        '**Method and coverage.** Four random-initialized Pythia70M models share initialization, '
         'seed, MiniPile order and 712-step budget. Gates act only at h and z; pressure acts '
         'only at post-gate h. No post-hoc clipping. Training validation covers all 338 complete '
-        'blocks from 500 documents (1,444 tail tokens excluded). K050 uses RTX5090, BF16, '
+        'blocks from 500 documents (1,444 tail tokens excluded). The frozen Run035 '
+        'k050-70m-v2 kernel, with the HZ allowlist bridge, uses RTX5090, BF16, '
         'B=1, T=2048, full logits, three fresh processes and 64 inputs × 7 passes each. '
         'Every process receives complete numerical qualification against native eager logits. '
         'The speedup denominator is native CUDA-graph inference of the same checkpoint.', '',
@@ -88,9 +89,11 @@ def main():
             f"{100*r['h_exact_zero_fraction']:.3f} | {100*r['z_exact_zero_fraction']:.3f} | "
             f"{100*r['R_model']:.3f} | {r['k050_geomean_host_ms']:.6f} | "
             f"{r['native_relative_paired_geomean_speedup']:.4f}x | {r['qualified']} |")
-    lines += ['', '**Numerical qualification.** All 12 processes passed complete 338-block '
-        'qualification. The maximum recorded K050 logit absolute error, relative L2 error '
-        'and pooled loss difference versus native eager inference were all zero.', '',
+    lines += ['', f"**Numerical qualification.** {sum(r['qualified'] for r in latency['scientific_processes'])}/12 "
+        'processes passed complete 338-block qualification. Maximum kernel logit absolute '
+        f"error: {max(r['maximum_k050_logit_absolute_error'] for r in rows):.9g}; relative L2: "
+        f"{max(r['maximum_k050_logit_relative_l2'] for r in rows):.9g}; absolute pooled loss "
+        f"difference: {max(r['maximum_k050_loss_delta'] for r in rows):.9g}.", '',
         '**Interpretation limits.** One seed, one model size and one data pass. '
         'This joint intervention does not isolate the effects of either gate or pressure. '
         'Logical-product opportunity is distinct from measured speedup. BF16 qualification '
