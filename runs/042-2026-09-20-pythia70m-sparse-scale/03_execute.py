@@ -6,7 +6,7 @@ import subprocess
 import sys
 import time
 import random
-from io_utils import RUN, read, write
+from io_utils import RUN, read, write, verify
 
 
 def main():
@@ -44,7 +44,15 @@ def main():
         for condition,candidate,replicate in jobs:
             if args.phase == 'development' and (RUN/'candidates'/candidate/'spec.json').exists():
                 operator = RUN/'artifacts/development'/f'operator-{candidate}.json'
-                if not operator.exists() or read(operator).get('status') != 'passed':
+                regression = RUN/'artifacts/development'/f'operator-regression-qualification-{candidate}.json'
+                eligible=operator.exists() and read(operator).get('status') == 'passed'
+                if not eligible and regression.exists():
+                    evidence=read(regression)
+                    assert evidence['status']=='passed-bitwise-regression-control'
+                    assert evidence['candidate']==candidate
+                    for name in ('manifest','baseline_audit','candidate_audit'):verify(evidence[name])
+                    eligible=True
+                if not eligible:
                     rows.append({'condition':condition,'candidate':candidate,'status':'operator-check-failed-or-missing'})
                     write(out/f'summary-{args.tag}.json',rows)
                     continue
