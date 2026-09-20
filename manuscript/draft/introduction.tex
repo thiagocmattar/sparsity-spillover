@@ -14,21 +14,21 @@ Existing approaches induce activation sparsity in different ways. TEAL applies p
 To address this gap, we pretrain Pythia-family models from scratch~\citep{biderman2023pythia} to study the effects of (i) activation $\ell_1$ pressure ($P$) and (ii) \emph{thresholding} ($T$). We focus on Pythia-14M and use Pythia-70M as a scale check. While pressure adds a gradient component to induce smaller activation magnitudes, thresholding maps small values into exact zeros. Each one of them can be placed in different activation sites, giving a combinatorial design set of sparse interventions. For each combination of $P$ and $T$, we derive an architecture-dependent maximum achievable sparsity ($\Smax$), and measure model-wide attained activation sparsity ($\Smodel$) and the final inference latency under a specialized sparse kernel. Figure~\ref{fig:quality-sparsity-overview} presents sparsity vs. quality trade-offs and inference latency for Pythia-14M, across $P/T$ combinations and baseline controls.
 
 % 14M-only main figure, authorized 20 September 2026; copy hash in figures/SOURCES.json.
-% Figure source: analyses/024-2026-09-17-h-only-kernel-latency/34_plot_14m_main_figure.py
-% Observation: analyses/024-2026-09-17-h-only-kernel-latency/observations/045-main-figure-ten-recipes.md
-% Checkpoint identities and coordinates: analyses/024-2026-09-17-h-only-kernel-latency/data/14m-main-quality-sparsity-latency.json
+% Figure source: analyses/027-2026-09-20-run044-manuscript/02_plot.py
+% Observation: analyses/027-2026-09-20-run044-manuscript/observations/001-run044-integration.md
+% Checkpoint identities and coordinates: analyses/027-2026-09-20-run044-manuscript/data/figure-data.json
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/22-14m-main-quality-sparsity-latency.pdf}
 \caption{\textbf{Quality, sparsity and execution on Pythia-14M.}
-\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for the same 40 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU ($T_1/P_0$), $T_1/P_h$, $T_2/P_h$ with thresholds at $h,z$, and $T_4/T_7$ with no pressure ($P_0$, dash-dot), pressure at $h$ ($P_h$, dashed), or pressure at all thresholded sites ($P_{\mathrm{all}}$, solid). Curves connect separate trained settings: $\lambda=.05,.1,.5,1$ for $T_1/P_h$; $\kappa=0,.01,.05,.1$ for $T_2/P_h$; and $\kappa=0,.01,.05,.1,.5$ for $T_4/T_7$. Dotted curves in (a) show post-hoc clipping of the Base/ReLU controls at $p=0,.1,\ldots,.9$; high-loss tails extend beyond the view. Panel (b) shows trained checkpoints only. Vertical dotted lines mark analytic sparsity ceilings. Latencies use RTX5090, batch one and 2,048-token sequences. Measurements span separate GPU sessions, so small latency differences are descriptive.
+\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for the same 41 checkpoints: the Base Model ($T_0/P_0$), GeLU $\rightarrow$ ReLU ($T_1/P_0$), $T_1/P_h$, $T_2/P_h$ with thresholds at $h,z$, and $T_4/T_7$ with no pressure ($P_0$, dash-dot), pressure at $h$ ($P_h$, dashed), or pressure at all thresholded sites ($P_{\mathrm{all}}$, solid). Curves connect separate trained settings: $\lambda=.05,.1,.5,1$ for $T_1/P_h$; $\kappa=0,.01,.05,.1,.5$ for $T_2/P_h$; and $\kappa=0,.01,.05,.1,.5$ for $T_4/T_7$. Dotted curves in (a) show post-hoc clipping of the Base/ReLU controls at $p=0,.1,\ldots,.9$; high-loss tails extend beyond the view. Panel (b) shows trained checkpoints only. Vertical dotted lines mark analytic sparsity ceilings. Latencies use RTX5090, batch one and 2,048-token sequences. Measurements span separate GPU sessions, so small latency differences are descriptive.
 }
 \label{fig:quality-sparsity-overview}
 \end{figure}
 
 % Editorial revision: reviews/2026-09-20-introduction-abstract/README.md (surgical revision).
 % Evidence: Analysis024 observations 015, 028, 034, 041; Analysis021 pressure-scope O016.
-Across 40 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
+Across 41 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
 First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figures~\ref{fig:quality-sparsity-overview} and~\ref{fig:70m-quality-latency}).
 Second, \textbf{sparsity and speedup increase together within recipes}, but a larger $\Smodel$ does not directly translate into a larger speedup. The main requirement for lower latency is the location and structure of zeros and whether the kernel can exploit them, with most gains coming from skipped computation at $h$ and $z$ (Table~\ref{tab:kernel-mechanisms}).
 % Scale-check evidence: Analysis024 observation 044 and Run040 observation 001.

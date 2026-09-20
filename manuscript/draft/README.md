@@ -1,5 +1,14 @@
 # Manuscript draft: ICLR 2027 format
 
+20 September 2026, Run044 update: main.pdf is rebuilt and checked at 21 pages.
+Figure 1 has 41 checkpoints and the complete T2/Ph kappa grid through 0.5.
+The compact appendix and full-data export now cover 79 conditions, including
+the four existing T2 points previously omitted there. All historical values,
+other figures and clipping paths are unchanged. See
+[Analysis027](../../analyses/027-2026-09-20-run044-manuscript/README.md) for
+the source checks and exact edit scope. Earlier entries below describe
+prior versions; the current PDF includes this update.
+
 20 September 2026: Figure 1's source now uses the 14M-only two-panel
 `figures/22-14m-main-quality-sparsity-latency.pdf`. The introduction treats
 70M as a scale check and replaces the scale-up speedup claim with useful

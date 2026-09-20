@@ -1,5 +1,10 @@
 # H-only pressure: final K050 latency extension
 
+The current manuscript Figure 1 and complete-results export are extended by
+[Analysis027](../027-2026-09-20-run044-manuscript/README.md): Run044 completes
+the T2/Ph grid at kappa=.5. This folder's earlier source measurements,
+figures and exports are retained unchanged.
+
 The [70M native-reference figure](observations/046-70m-native-reference.md) is now
 Figure 3 in the manuscript: quality and latency against sparsity, with the native
 PyTorch base at 1.664 ms. The 22-checkpoint original port is separate from the

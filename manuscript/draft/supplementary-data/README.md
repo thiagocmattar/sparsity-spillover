@@ -1,5 +1,23 @@
 # Manuscript results data
 
+## Completed T2/Ph grid, 20 September 2026
+
+The current 14m-main-quality-sparsity-latency.json export has 41 Figure 1
+checkpoints, adding Run044 at kappa=0.5. The current
+all-model-quality-sparsity.json export has 79 complete-results endpoints:
+45 at 14M, 22 at 70M and 12 at 410M. It restores the four existing Run041 T2/Ph
+points as well as the new endpoint; the four historical naive-L1 ablations
+remain in the full data and outside Figure 1.
+
+Both files are byte-identical copies from
+[Analysis027](../../../analyses/027-2026-09-20-run044-manuscript/README.md),
+with source hashes in SOURCES.json. All previous endpoint values and clipping
+records are unchanged. The exports retain integer counts, coverage, checkpoint
+identity, timing session and raw-source provenance. Run044 additionally records
+its native same-checkpoint latency and paired speedup; these do not use the
+fixed base-model reference of other plots. No T2/Ph clipping sweep is added.
+Earlier entries below document the historical releases and display scopes.
+
 ## Main/appendix quality split, 18 September 2026
 
 `quality-main-appendix.json` is copied unchanged from Analysis024. After

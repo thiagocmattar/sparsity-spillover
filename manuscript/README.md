@@ -1,5 +1,16 @@
 # Living Manuscript Draft
 
+20 September 2026, Run044 integration: Figure 1 now includes the missing
+14M T2/Ph kappa=0.5 endpoint (41 checkpoints). The complete-results table and
+data also restore the four existing Run041 T2 points, giving 79 endpoints
+(45/22/12 at 14M/70M/410M). Historical measurements and clipping data are
+unchanged. The compact table preserves the 21-page layout; Figure 1 is on
+page 2 and the complete 14M table on page 16. The installed PDF has resolved
+references/citations, no overfull boxes and three pre-existing underfull-box
+warnings. A label alias fixes an existing dangling kernel-appendix reference.
+Other author edits remain preserved and uncommitted. See
+[Analysis027](../analyses/027-2026-09-20-run044-manuscript/README.md).
+
 20 September 2026, requested rebuild after the 70M manuscript revision:
 `draft/main.pdf` now contains the current author-edited sources, the revised
 Figure 3 with the native PyTorch reference, and the separate 70M optimization
