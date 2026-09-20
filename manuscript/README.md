@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild of the author's latest abstract:
+the two remaining sparsity placeholders are filled with the previously checked
+27.48% (14M T7/Pall) and 12.71% (T4/Pall). Other author wording is preserved.
+The rebuilt 20-page `draft/main.pdf` has resolved references/citations and no
+overfull boxes; all pages were visually reviewed. Three existing underfull
+horizontal-box warnings remain. Only the comparison sentence, PDF and this
+build note are committed; the other author edits remain in the working tree.
+
 20 September 2026, author-guided abstract revision: P/T and the 14M/70M scope
 are explicit, the measures sentence is simplified, and the conclusions now
 include checked data for ceiling attainment and quality cost, the sparsity/
