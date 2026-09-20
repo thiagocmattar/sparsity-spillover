@@ -1,223 +1,55 @@
-% Source observation: analyses/018-2026-09-08-results-materials/observations/O012-manuscript-results.md
-% Evidence: Analysis 018 O001--O004/O007/O011, figure_data.json and tables/training-protocol.md.
-% Complete clipping: Run 030 observations/O001--O003 and results/*.
-% Signed distributions: Run 031 results/histograms/*.json.gz.
-% Composite density/accounting figure: Analysis 021 observations/O005-distributions-and-operations.md; 04_distributions_and_operations.py.
-% Kernel contract: Run 029 observations/06-implementation-and-claim-audit.md.
-% Kernel compatibility/predicate revision: Analysis 018 O015; Run 022 README, Run 025 SOURCE_AUDIT.md.
-% Kernel adoption: Analysis 021 observations/O009-kernel-realization-v2.md;
-% investigation/observations/O001-kernel-investigation.md and 01_extract.py--03_plot.py.
-% Per-checkpoint latency table: Analysis 021 / 08_kernel_manuscript_table.py.
-% Generated tables: Analysis 018 / 03_manuscript_tables.py.
-% Figure 1 two-size extension: analyses/024-2026-09-17-h-only-kernel-latency/observations/025-matched-quality-latency.md;
-% generating analysis: analyses/024-2026-09-17-h-only-kernel-latency/16_plot_matched_quality_latency.py.
-% A0 histories: analyses/021-2026-09-10-training-results-figures/06_a0_optimization.py;
-% observations/O007-a0-optimization.md; data/a0-optimization.json.
+% Source: Analysis024 observations/043-compact-results-appendix.md.
+% Generator: Analysis024 / 33_compact_results_appendix.py.
+% Endpoints: data/all-model-quality-sparsity.json (same final losses as the main figures).
+% Post-hoc evaluations: Run030 results/clipping-points.json; no new measurements.
+\clearpage
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
 
-The following tables report the original 64 trained endpoints and the ten
-additional 70M h-only endpoints, the 29 original paired
-14M contrasts, 25 additional pressure-scope contrasts, and all 15 cross-scale
-broad-pressure recipe comparisons. They retain
-dominated settings as well as favorable ones. Each entry summarizes one
-trained model on complete validation. Sparsity percentages are formed from pooled integer
-product counts. The endpoint table uses the common seven-site sparsity-ceiling
-denominator from Table~\ref{tab:interventions}, rather than a different denominator
-for each recipe. Here $U_{\mathrm{arch}}=\Smodel/\Smax(\mathrm{A7})$ denotes
-this common-reference ratio, retained for the complete endpoint table.
+\subsection{Detailed trained results}
+\label{app:endpoint-results}
 
-\input{tables/pressure-scope/trained-endpoints}
-\input{tables/70m-h-only-endpoints}
-\input{tables/paired-effects}
-\input{tables/pressure-scope/pressure-scope-contrasts}
-\input{tables/scale-contrasts-full}
+Tables~\ref{tab:endpoints-14m-only}--\ref{tab:endpoints-410m} report all 74
+trained conditions, including settings outside the favorable
+quality--sparsity trade-off. Loss and model-wide sparsity use the same
+definitions and final checkpoints as the main figures, with one training
+seed and complete validation per condition. Values are rounded.
 
-\subsection{Activation sparsity and signed-density coverage}
-\label{app:density-results}
-
-The seven frozen-checkpoint evaluations in
-Figure~\ref{fig:activation-density-full} record signed values after the trained
-nonlinearities, with Q/K measured after RoPE. Each checkpoint contributes
-2,658,140,160 FFN elements and 1,594,884,096 attention elements across the
-complete validation set. Summing integer counts gives the 80:20 weighting
-of $h:m$ and equal weighting of $q:k:v$. These pooled distributions are
-element-weighted mixtures, not distributions of layer means.
-
-Exact zeros are stored separately from the nonzero histogram. The native
-grid spans $[-8,8]$ with 16,000 bins of nominal width 0.001; the figure
-combines ten bins at a time and divides by the actual floating-point bin
-width and the count of all captured elements. Consequently, a curve's full
-integral is the recorded nonzero mass inside that grid, not one. Table~\ref{tab:density-mass}
-reports the zero mass and the fractions outside the displayed and native
-ranges. Underflow and overflow counts are retained rather than folded into
-edge bins. The displayed limits are $[-2.5,3]$ for FFN and $[-4,4]$ for
-attention in Figure~\ref{fig:activation-density-full}. The largest omitted
-display tail is $6.6719\%$; the native-grid tail is at most $0.7607\%$.
-These historical densities cover no h-only multisite checkpoints.
-Figures~\ref{fig:moderate-structure} and~\ref{fig:pressure-layer-zeros}
-use retained final-validation site counters for all six threshold/pressure
-combinations, separating $m$ and $h$. These counts were measured independently
-of the signed histogram reruns; small pass-to-pass rounding differences remain
-visible. The retained logical-product counters separately decompose model-wide
-sparsity into operation contributions at $\kappa=0.05$ and $0.5$.
-
-The diagnostic reruns use FP32 parameters with FP16 autocast and no
-additional thresholding. Their maximum absolute validation-loss difference
-from the retained reference is $6.89\times10^{-5}$, below the specified
-$5\times10^{-4}$ tolerance; all 108 threshold-consistency checks pass. Small
-rounding differences in exact-zero counts between evaluation passes do not
-change the displayed conclusions. Complete per-site and pooled histograms,
-counts and checkpoint hashes accompany the data release.
-
-% Source: Analysis 021 pressure-scope/observations/O016-pressure-placement.md.
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\linewidth]{figures/pressure-scope/appendix-moderate-structure.pdf}
-\caption{\textbf{Pressure-scope effects at the moderate threshold $\kappa=0.05$.}
-The six 14M recipes use pooled counts and the full-model operation denominator
-defined in Appendix~\ref{app:accounting}. H-only pressure concentrates zeros at
-$h$ while preserving a different pattern at $m$ and Q/K/V from broad pressure.
-Rounded percentages do not establish all-zero or fully dense tensors.}
-\label{fig:moderate-structure}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\linewidth,page=1]{figures/pressure-scope/appendix-layer-zeros.pdf}
-\includegraphics[width=\linewidth,page=2]{figures/pressure-scope/appendix-layer-zeros.pdf}
-\caption{\textbf{Site-by-layer zero fractions under matched pressure scopes.}
-The six recipes at $\kappa=0.05$ (top) and $0.5$ (bottom). Each cell pools
-integer counts over all 338 validation blocks at one site and layer.
-Q/K are post-RoPE; values are rounded to whole percentages, so a displayed
-100 does not imply an all-zero tensor. The complete five-threshold counters
-and source identities accompany the supplementary data.}
-\label{fig:pressure-layer-zeros}
-\end{figure}
-
-% Full threshold grid moved from the main text; original Analysis 018 PDF unchanged.
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\linewidth]{figures/05-v3-activation-density-grid.pdf}
-\caption{\textbf{Interventions reshape FFN and attention distributions differently.}
-\textbf{Exact zeros are omitted from the curves and reported in
-Table~\ref{tab:density-mass}.} Columns pool FFN $(h,m)$ and attention
-$(q,k,v)$ activations; rows use trained thresholds $\kappa=0,0.05,0.5$.
-A0 is repeated across rows. Counts are pooled across all layers and validation
-blocks, weighting $h:m$ by 80:20 and $q:k:v$ equally. Density divides nonzero
-bin counts by all captured elements and bin width, without renormalizing
-the visible range. The vertical scale is symlog, linear below 0.01; filled
-areas on this scale do not represent probability mass. Dashed lines mark
-$+\kappa$ for A4/A7 FFN thresholds and $\pm\kappa$ for A7 attention thresholds.
-Q/K are measured after RoPE. A4 leaves $q,k,v$ without direct thresholding or pressure;
-A7 targets them directly. The seven checkpoints use no additional post-hoc thresholding.}
-\label{fig:activation-density-full}
-\end{figure}
-
-\begin{table}[htbp]
-\centering\small
-\caption{Activation sparsity (the probability mass at zero) omitted from the
-density curves, and mass outside their
-displayed range (view tail) and the native $[-8,8]$ histogram (grid tail).
-Grid tails are a subset of view tails, not an additional mass to add.
-All percentages divide integer counts by all captured elements. A0 is
-listed once although it is repeated in each figure row. These 14 groups
-come from seven checkpoints.}
-\label{tab:density-mass}
-\input{tables/density-mass}
-\end{table}
-
+\input{tables/compact-results/14m-only}
+\input{tables/compact-results/14m-70m}
 \FloatBarrier
-\subsection{Operation contributions to model-wide sparsity}
-\label{app:operation-results}
 
-An operation's contribution to $\Smodel$ is its zero-product count divided
-by the full model product count. Summing these contributions recovers the
-model-wide fraction; summing local activation percentages would not.
-Table~\ref{tab:operation-contributions} gives this decomposition at
-$\kappa=0.5$. At 14M, extending from A4-OL1(all) to A7-OL1(all) adds attention
-opportunity while reducing the contribution from some projections.
-At larger sizes, projection work carries more weight in the workload, so
-an equal change in activation sparsity need not yield an equal change in
-model-wide sparsity. Figure~\ref{fig:operation-accounting} displays the
-operation-level view at the same threshold and all three sizes.
-
-\begin{table}[htbp]
-\centering\small\setlength{\tabcolsep}{4pt}
-\caption{Contributions to $100\Smodel$ in percentage points at
-$\kappa=0.5$. All six operations share the same model denominator within
-each size. The dense LM head contributes to that denominator but receives
-no zero credit. Differences in rounded entries can affect the displayed sum.}
-\label{tab:operation-contributions}
-\input{tables/operation-contributions}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/04-operation-accounting.pdf}
-\caption{Operation accounting for A4-OL1(all) and A7-OL1(all) at $\kappa=0.5$ across
-14M, 70M and 410M. Zero-operand
-products are counted over causally valid positions and pooled across all
-338 validation blocks. Each contribution uses the full model denominator,
-including the dense LM head without zero credit. At 14M, attention contributes
-more under A7-OL1(all), outweighing smaller contributions from several projections.
-The bars show logical multiplication opportunities, not runtime savings.}
-\label{fig:operation-accounting}
-\end{figure}
-
-\FloatBarrier
-\subsection{Complete historical post-hoc thresholding trajectories}
+\subsection{Post-hoc clipping at 14M}
 \label{app:clipping-results}
 
-Historical plot legends retain ``clipping'' for post-hoc thresholding and
-``A4-OL1/A7-OL1'' for the all-site pressure recipes. They do not include
-the newly integrated h-only conditions.
-The historical post-hoc release contains 540 evaluations: ten thresholding
-targets for each of the original 54 trained checkpoints. The ten newly
-included h-only endpoints have no corresponding post-hoc sweep. The release joins 350 evaluations with 190
-retained evaluations matched by checkpoint content hash. Calibration uses
-the first ten complete training blocks in source order, separately for
-each layer's $a,m,h,z$ activations. Evaluation zeros values satisfying
-$|x|\leq t$ after the trained nonlinearities, without changing weights or A7's
-internal attention nonlinearities. The target $p$ controls a calibration quantile;
-it is not the achieved model-wide sparsity. In particular, an existing
-zero mass can make several targets identical.
+Figure~\ref{fig:clipping-14m} extends the base/ReLU comparison in
+Figure~\ref{fig:quality-sparsity-14m-70m} to the trained checkpoints with
+retained post-hoc sweeps. The detailed view resolves the trade-offs near the
+trained models; the full-range view shows the loss cost of aggressive
+clipping. These are changes to fixed models at evaluation, rather than
+additional training conditions. The clipping protocol is the same as in
+Section~\ref{sec:experiments}. No corresponding sweep was collected for
+$T_4/P_h$ or $T_7/P_h$.
 
-Figures~\ref{fig:clipping-14m}--\ref{fig:clipping-410m} retain the full
-loss range and every target, including dominated points and ties. Each
-path begins at its actually measured $p=0$ evaluation. Small numerical
-differences from the canonical training endpoint can change strict
-nondominance without implying a substantive improvement. Numerical
-frontier memberships are stored separately from the lines connecting
-evaluated settings. All evaluations use complete validation with FP32
-parameters, FP16 autocast, eager attention, batch one and $T=2{,}048$.
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth]{figures/appendix/14m-posthoc-frontiers.pdf}
-\caption{Complete 14M training and post-hoc thresholding results: 30 trained
-endpoints and 300 post-hoc thresholding evaluations. Large filled markers denote trained
-endpoints; bold lines connect their settings, solid for unpressured recipes
-and dashed for L1/OL1. Each faint open-marker path follows one fixed
-checkpoint through $p=0,0.1,\ldots,0.9$. Colors and symbols identify its
-source recipe. The full loss range is shown. Connections order evaluated
-settings and do not interpolate attainable models or fitted Pareto envelopes.}
+\includegraphics[width=\linewidth]{figures/appendix/21-14m-posthoc-quality-sparsity.pdf}
+\caption{\textbf{Post-hoc clipping on trained Pythia-14M models.}
+Thirty trained checkpoints and ten clipping targets per checkpoint
+($p=0,0.1,\ldots,0.9$). Both panels show the same settings, with different
+loss ranges. Prominent markers and recipe lines identify trained models;
+dotted paths with small open markers follow each fixed model through
+increasing clipping targets. Colors and recipe labels match the main
+figures, with the L1 comparison included explicitly. Each path starts at
+its measured $p=0$ point. Lines connect evaluated settings, not fitted
+frontiers.}
 \label{fig:clipping-14m}
 \end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/70m-posthoc-frontiers.pdf}
-\caption{Complete 70M training and post-hoc thresholding results: 12 trained
-endpoints and 120 post-hoc thresholding evaluations. Large filled markers and bold
-lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing thresholding targets. All points, including
-overlaps and high-loss settings, are retained. The evaluation and line
-conventions match Figure~\ref{fig:clipping-14m}.}
-\label{fig:clipping-70m}
-\end{figure}
-
 \FloatBarrier
+
+\subsection{410M results}
+\label{app:410m-results}
+
 \paragraph{410M as a fixed-token stress test.}
 % Source: Analysis024 observations/031-quality-main-appendix.md;
 % generating analysis: 23_plot_quality_main_appendix.py; original evidence: 20_plot_quality_all_sizes.py.
@@ -239,33 +71,19 @@ not isolated. The training trajectories are retained in
 Figure~\ref{fig:a0-optimization}. We therefore treat 410M as a limited
 stress test and use 14M/70M for detailed intervention and runtime analysis.
 
-\begin{figure}[!htbp]
+\input{tables/compact-results/410m}
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{figures/appendix/A5-410m-quality-sparsity.pdf}
-\caption{\textbf{Complete 410M quality--sparsity stress-test panel.}
+\caption{\textbf{410M quality--sparsity stress test.}
 All twelve trained conditions: Base, ReLU, and $T_4/P_{\mathrm{all}}$ and
-$T_7/P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$. Dotted paths retain
+$T_7/P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$. Dotted paths show
 all ten post-hoc targets for each fixed Base/ReLU control, including their
-full loss range. Vertical guides mark the four- and seven-site sparsity
-ceilings. Trained losses use ordinary final-checkpoint validation;
-clipping retains its original FP16 pass. Sparsity pools logical counts over
-all 338 complete validation blocks. Figure~\ref{fig:clipping-410m} additionally
-retains the historical clipping sweeps of every trained recipe.}
+full loss range. Vertical guides mark the $T_4$ and $T_7$ sparsity ceilings.}
 \label{fig:quality-sparsity-410m}
 \end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/410m-posthoc-frontiers.pdf}
-\caption{Complete 410M training and post-hoc thresholding results: 12 trained
-endpoints and 120 post-hoc thresholding evaluations. Large filled markers and bold
-lines identify the trained recipes; faint open-marker paths follow each
-checkpoint through ten increasing thresholding targets. All points, including
-overlaps and high-loss settings, are retained. The evaluation and line
-conventions match Figure~\ref{fig:clipping-14m}.}
-\label{fig:clipping-410m}
-\end{figure}
-
 \FloatBarrier
+
 % Consolidated implementation and evidence: Analysis024 Observation041.
 \input{kernel-appendix}

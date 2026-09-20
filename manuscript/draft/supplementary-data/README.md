@@ -160,9 +160,11 @@ for A1-H-L1/A1-H-OL1 and kappa for A4/A7 variants; A0/A1-H use null.
 `clipping_target_p` (legacy `dose` on clipping records) is a calibration
 quantile, not achieved model-wide sparsity. It takes 0,.1,...,.9 with fixed
 checkpoint weights. `delta_loss_from_p0` uses that sweep's measured p=0.
-The stored `U_arch` uses recipe/site-union reach and is NOT the common A7
-normalization used in the manuscript's cross-scale figure and endpoint table.
-For the latter compute R_model / the same-size A7 ceiling explicitly.
+The stored `U_arch` uses recipe/site-union reach. Historical endpoint tables
+instead used a common seven-site ceiling within each size. The current compact
+manuscript tables omit that ratio and report loss and model-wide sparsity only;
+their [source and convention audit](../../../analyses/024-2026-09-17-h-only-kernel-latency/observations/043-compact-results-appendix.md)
+also records alignment with the main figures' ordinary final-checkpoint losses.
 
 Histogram exact zeros are separate from nonzero bins. Divide bin counts by
 all captured elements and actual bin width; do not normalize the nonzero

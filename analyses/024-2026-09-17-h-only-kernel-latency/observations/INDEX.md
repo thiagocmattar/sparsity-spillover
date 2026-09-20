@@ -1,5 +1,9 @@
 # Observations
 
+- [043: Compact detailed-results appendix](043-compact-results-appendix.md):
+  all 74 endpoints in three grouped tables, restyled 14M clipping paths,
+  preserved 410M stress test, and a verified 20-page manuscript with corrected spacing.
+
 - [042: 70M implementation-overhead audit](042-70m-overhead-audit.md):
   raw host/device timing checks, dense projection padding and repeated h/z
   inspection; separates verified extra work from unmeasured latency attribution.

@@ -1,5 +1,22 @@
 # Living Manuscript Draft
 
+20 September 2026, compact results appendix and whitespace correction:
+`draft/results-appendix.tex` now presents all 74 endpoints in three grouped
+T/P tables: 14M-only ablations, side-by-side 14M/70M results, and 410M.
+The old contrast/density/accounting displays and full 70M/410M clipping
+sweeps are removed from the paper. A restyled two-panel 14M clipping figure
+retains all 300 measured settings. The 410M stress-test artwork and its two
+discussion paragraphs are preserved. See [Observation 043](../analyses/024-2026-09-17-h-only-kernel-latency/observations/043-compact-results-appendix.md)
+for the editorial rationale, loss-convention reconciliation and provenance.
+Tables 6--7 share page 16; Figure 9 is on page 17, and Table 8/Figure 10 are
+on page 18. Normal vertical spacing and targeted figure/table placement remove
+large gaps; Related Work now follows the introduction on page 2.
+Eight focused tests pass. The 20-page `draft/main.pdf` has resolved references
+and citations, no overfull or underfull vertical boxes, and visually checked
+layout. Three underfull horizontal-box warnings remain. Existing author prose
+is preserved; only the requested layout edits are committed in the affected
+main-text files. Earlier entries describe previous versions.
+
 20 September 2026, requested rebuild after the appendix revisions:
 `draft/main.pdf` now reflects the current author-edited sources, including
 the kernel appendix and OL1/accounting/setup revisions. The 30-page build

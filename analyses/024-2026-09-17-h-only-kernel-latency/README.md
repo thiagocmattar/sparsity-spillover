@@ -1,5 +1,11 @@
 # H-only pressure: final K050 latency extension
 
+The [compact results appendix](observations/043-compact-results-appendix.md)
+retains all 74 endpoints in three tables and all 300 existing 14M post-hoc
+evaluations in a restyled figure, while removing redundant historical displays.
+The 410M stress-test artwork and discussion are preserved. Eight checks pass;
+the manuscript is rebuilt at 20 pages with verified layout and references.
+
 The [70M overhead audit](observations/042-70m-overhead-audit.md) rechecks raw
 host/device timings and identifies padded h/z arithmetic, repeated inspection
 and inherited projection schedules. The 1.649ms host deficit is also present
