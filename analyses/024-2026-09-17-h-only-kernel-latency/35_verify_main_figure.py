@@ -52,7 +52,7 @@ def main():
                   pdf_sha256=sha(pdf), verifier_sha256=sha(Path(__file__)),
                   visual_review='Final rendered page checked: complete 2x5 legend and no text overlaps. No manuscript recompilation.')
     (HERE / 'data/main-figure-ten-recipes-verification.json').write_text(
-        json.dumps(result, indent=2) + '\n', encoding='utf-8')
+        json.dumps(result, indent=2) + '\n', encoding='utf-8', newline='\n')
     print(json.dumps(result, indent=2))
 
 
