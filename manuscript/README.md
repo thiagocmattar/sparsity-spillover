@@ -1,5 +1,15 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild after the appendix revisions:
+`draft/main.pdf` now reflects the current author-edited sources, including
+the kernel appendix and OL1/accounting/setup revisions. The 30-page build
+has resolved references and citations and no overfull boxes. All pages were
+reviewed in contact sheets; pages 12--13 and 28--29 were checked at higher
+resolution. Six underfull-box warnings remain. The installed PDF's SHA256
+matches the reviewed build. No TeX source was changed; existing author edits
+remain uncommitted in the working tree. Earlier rebuild notes describe
+previous versions.
+
 20 September 2026, kernel-appendix refactor: `draft/kernel-appendix.tex` now
 contains one section covering execution rules, numerical checks, timing,
 instruction counts and unsuccessful alternatives. The old search figure,
