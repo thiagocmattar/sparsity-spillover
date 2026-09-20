@@ -94,3 +94,24 @@ The full bootstrap suite passed242 tests in7.79s. Commands were
 and `--basetemp tmp/run046-bootstrap-001`. The1374 historical kernel files and
 17 port/bridge source identities verified during preparation. These CPU tests
 do not substitute for the mandatory exact GPU preflight before training.
+
+The allocated training Pod is `v7py0cfr2jd0ft`, one Secure H200 in US-NC-1 at
+USD4.59/hour, created18:42:20UTC on20September2026. Its provider-stop deadline
+is22:42:20UTC. The hidden workstation guard is armed. All42 Python files parse;
+local free disk is766.8GiB. Prelaunch commit is
+`b2f7e1838d4f5cf8eccf2c60c050aa1bba2fc910`; isolated deployment commit is
+`e2b73c5b71bd52c3ce0d7565cebe76262a274649`. Source bundle001 is160526 bytes,
+SHA256 `e9805bc86820dfc718f1c2e680c46b06cae66b5ab1dbab62d36583731ed1da5b`.
+No account credentials are sent to the Pod. The live pre-creation audit found
+no existing Pods, only the unrelated shared volume, which remains untouched.
+
+The source bundle passed its remote hash check and the detached pipeline started.
+Both canonical random tensor files uploaded in21.8s and passed full SHA256
+verification before releasing preflight. The local stop guard PID is recorded
+in an ignored file. The source-only latency bootstrap verifies all historical
+and port sources; it will install the same runtime and precompile the five
+unchanged norm, projection, RoPE, attention and joint builders with the final
+benchmark cache/settings during the training tail. No model or scientific
+measurement is used by this preparation. Its4,631,715-byte archive receipt and
+syntax-checked infrastructure helpers are retained; the scientific training
+source and configuration remain unchanged after launch.
