@@ -1,5 +1,18 @@
 # Experimental-section scope and provenance
 
+20 September 2026: the experimental-setup appendix is consolidated in
+`experimental-appendix.tex`, with the training subsection moved from
+`results-appendix.tex`. The training-settings table is retained and clarifies
+microbatch versus effective batch. All 74 retained conditions match the shared
+optimizer, seed, sequence-length and effective-batch settings; learning-rate
+ranges and microbatches remain size-dependent. The baseline trajectory figure
+is relabeled T0/P0 without changing coordinates. Packing, precision history,
+repeated definitions and supplementary-file references are removed from the
+setup prose. [Observation 040](../../analyses/024-2026-09-17-h-only-kernel-latency/observations/040-experimental-setup.md)
+records the scope and figure provenance. Following the user's subsequent request,
+`main.pdf` was rebuilt at 34 pages, with resolved references/citations, no overfull
+boxes and a visual check of the revised appendix on pages 15--16.
+
 18 September 2026, subsequent placement revision: protocol and calibration
 precede Table 1, immediately followed by the 14M/70M quality overview and
 then base-model speedup. The agentic-development discussion is preserved.

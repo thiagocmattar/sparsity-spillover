@@ -1,120 +1,131 @@
-% Concrete setup definitions, relocated from the prior methodology appendix.
-% Source identities and evidence boundary: experimental-notes.md.
+% Definitions: research/METHODS.md, research/METRICS.md; src/sparsity_research/ceilings.py.
+% Training settings: Analysis018 tables/training-protocol.md; Runs004/018/019/032/034 configs and manifests.
+% Cohorts/evaluation: Analysis024 data/paper-checkpoints.json; Analysis018 figure_data.json.
+% Baseline trajectories: Analysis021 observations/O007-a0-optimization.md;
+% relabeled without changing data in Analysis024 observations/040-experimental-setup.md.
 \section{Experimental setup details}
 \label{app:experiment}
 
-\subsection{Pythia sites and nonlinearities}
+\subsection{Pythia architecture and intervention sites}
 \label{app:sites}
 
-Pythia uses parallel attention and FFN branches with separate LayerNorms.
-For batch size $B$, sequence length $T$, residual width $d$, FFN width $d_f$,
-and $H$ heads, let $d_h=d/H$. Table~\ref{tab:sites} identifies the actual
-operands recorded after the selected nonlinearity. The same site mapping is applied
-in every layer, with one common threshold per condition.
-Figure~\ref{fig:pythia-block} shows the shared block;
-Table~\ref{tab:interventions} gives its thresholding and pressure assignments.
+Table~\ref{tab:sites} specifies the dimensions and positions of the sites in
+Figure~\ref{fig:pythia-block}, for one sequence. Here $T$ is sequence length,
+$d$ the hidden width, $d_f$ the FFN width, and $H$ the number of attention
+heads, each of dimension $d_h=d/H$. The same sites and threshold are used
+in every layer of a model.
 
 \begin{table}[ht]
 \centering\small
-\caption{Intervention sites and the matrix products that consume them directly.}
+\caption{Activation shapes and intervention positions for one sequence.}
 \label{tab:sites}
 \vspace{4pt}
 \begin{tabularx}{\linewidth}{@{}lllX@{}}
 \toprule
-Site & Shape & Consuming operation & Placement \\
+Site & Shape & Following matrix product & Position \\
 \midrule
-$a$ & $B\!\times\!T\!\times\!d$ & QKV projection & After attention LayerNorm \\
-$m$ & $B\!\times\!T\!\times\!d$ & FFN up projection & After FFN LayerNorm \\
-$h$ & $B\!\times\!T\!\times\!d_f$ & FFN down projection & Nonlinearity output \\
-$q,k$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Attention scores & After partial RoPE \\
-$v$ & $B\!\times\!H\!\times\!T\!\times\!d_h$ & Probability--value & After the QKV split \\
-$z$ & $B\!\times\!T\!\times\!d$ & Attention output & Concatenated context, before output projection \\
+$a$ & $T\!\times\!d$ & QKV projection & After attention LayerNorm \\
+$m$ & $T\!\times\!d$ & FFN up projection & After FFN LayerNorm \\
+$h$ & $T\!\times\!d_f$ & FFN down projection & Activation-function output \\
+$q,k$ & $H\!\times\!T\!\times\!d_h$ & Attention scores & After RoPE \\
+$v$ & $H\!\times\!T\!\times\!d_h$ & Probability--value & After the QKV split \\
+$z$ & $T\!\times\!d$ & Attention-output projection & Concatenated attention context \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-At $h$, the selected nonlinearity replaces GELU. Other sites retain their
-original activations unless a thresholding nonlinearity is applied.
-At zero threshold, A7's additional symmetric query/key/value nonlinearities are exact
-identities in both values and gradients. They therefore do not change A4's
-mathematical forward map in the absence of pressure. A7-OL1(all) still differs
-from A4-OL1(all) in its pressure targets and their equal-tensor normalization.
-
-Query and key counts use actual
-post-RoPE operands: rotation can repopulate an individual zero coordinate.
-Likewise, the output projection uses actual post-nonlinearity context $z$, rather than
-inferring its zeros from the value mask.
 \FloatBarrier
-\subsection{Architecture-specific counts and sparsity ceilings}
+\subsection{Architecture-specific sparsity ceilings}
 \label{app:architecture-counts}
 
-The operation inventory comprises QKV projection, attention scores ($QK$),
-probability--value products ($PV$), attention-output projection, and the two
-FFN projections. For one uncached, unpadded sequence, each block contributes $3Td^2$ products
-from QKV projection, $Td^2$ from the attention-output projection, $Td d_f$ from
-each FFN projection, and $dT(T+1)/2$ from each of $QK$ and $PV$.
-Thus, for $L$ blocks and vocabulary size $V_{\!\mathrm{vocab}}$,
+For one sequence, a Pythia block contains $3Td^2$ scalar multiplications
+in the QKV projection, $Td^2$ in the attention-output projection,
+$Td d_f$ in each FFN projection, and $dT(T+1)/2$ in each of $QK$ and $PV$.
+With $L$ layers and vocabulary size $V_{\mathrm{vocab}}$, the per-sequence
+counts are
 \begin{equation}
 \begin{split}
 C_{\mathrm{block}}&=T(4d^2+2dd_f)+dT(T+1),\\
-C_{\mathrm{model}}&=LC_{\mathrm{block}}+TdV_{\!\mathrm{vocab}}.
+C_{\mathrm{model}}&=LC_{\mathrm{block}}+TdV_{\mathrm{vocab}}.
 \end{split}
 \label{eq:denominator}
 \end{equation}
-Over $B$ sequences, $N_{\mathrm{model}}=BC_{\mathrm{model}}$; the dense head
-contributes only to the denominator, as defined in Section~\ref{sec:measurement}.
+The ceiling can be calculated from these per-sequence counts because
+numerator and denominator scale equally with the number of sequences.
+Since $d_f=4d$, the counts contributing to the ceiling in each layer are
+$0$ for $T_0/P_0$, $4Td^2$ for $T_1/P_0$ and $T_1/P_1$, $12Td^2$ for
+all $T_4$ recipes, and $C_{\mathrm{block}}$ for all $T_7$ recipes.
+Multiplying by $L$ and dividing by $C_{\mathrm{model}}$ gives $\Smax$;
+pressure placement does not change this calculation.
 
-Let $\mathcal{O}(\mathcal{N})$ be the union of operations reachable when the
-selected sites have 100\% activation sparsity: $a$ reaches QKV; $m$ reaches FFN up; $h$ reaches
-FFN down; either $q$ or $k$ reaches $QK$; $v$ reaches $PV$ and attention output;
-and $z$ reaches attention output. Each operation is counted once.
-The $v$ rule includes the exact closure $V=0\Rightarrow PV=0$. No further
-propagation is assumed: QKV biases can survive $a=0$, and zero scores do not
-imply zero softmax probabilities. For the same site set in every layer,
-$N_{\mathrm{reach}}=BL\sum_{o\in\mathcal{O}(\mathcal{N})}C_o$, where $C_o$
-is that operation's per-sequence count. Division by $N_{\mathrm{model}}$ gives
-$\Smax$.
+Table~\ref{tab:interventions} uses $V_{\mathrm{vocab}}=50{,}304$ and
+$(L,d)=(6,128),(6,512),(24,1{,}024)$ for 14M, 70M and 410M, respectively,
+with the common sequence length in Table~\ref{tab:training-settings}.%
+\footnote{Pinned architecture configurations:
+\href{https://huggingface.co/EleutherAI/pythia-14m-deduped/blob/7386d9a4ae45aef494a6e704910394def3037fc5/config.json}{14M},
+\href{https://huggingface.co/EleutherAI/pythia-70m-deduped/blob/e93a9faa9c77e5d09219f6c868bfc7a1bd65593c/config.json}{70M}, and
+\href{https://huggingface.co/EleutherAI/pythia-410m-deduped/blob/b5e8535141902c0e985cea61fd02afe7fe86af32/config.json}{410M}.}
 
-With Pythia's $d_f=4d$, the per-block reachable counts for A0, A1-H, A4, and A7
-are $0$, $4Td^2$, $12Td^2$, and $C_{\mathrm{block}}$, respectively. The ladder
-evaluates these formulas at $T=2{,}048$, $V_{\!\mathrm{vocab}}=50{,}304$, and
-the pinned $(L,d)$ configurations $(6,128)$, $(6,512)$, and $(24,1{,}024)$.%
-\footnote{Architecture configurations: EleutherAI's
-\href{https://huggingface.co/EleutherAI/pythia-14m-deduped/blob/7386d9a4ae45aef494a6e704910394def3037fc5/config.json}{Pythia-14M-deduped},
-\href{https://huggingface.co/EleutherAI/pythia-70m-deduped/blob/e93a9faa9c77e5d09219f6c868bfc7a1bd65593c/config.json}{Pythia-70M-deduped}, and
-\href{https://huggingface.co/EleutherAI/pythia-410m-deduped/blob/b5e8535141902c0e985cea61fd02afe7fe86af32/config.json}{Pythia-410M-deduped}.
-Links identify immutable configuration revisions; released weights are not used.}
-No checkpoint enters this calculation. For example, A0 has zero selected-site
-reach but may have positive observed sparsity from natural zeros.
-
-\subsection{Evaluation scope}
+\subsection{Training and evaluation}
+\label{app:training-protocol}
 \label{app:evaluation}
 
-The original 54 endpoints pair quality and logical counts in the same
-eager-attention evaluation. For the ten 14M h-only endpoints, we retain the
-author-approved ordinary final-validation losses and separately evaluated
-logical counts from the same checkpoint. Both passes cover the complete
-validation set; across the 30 multisite 14M endpoints, their largest absolute
-loss difference is $0.000106$ nats. Both loss versions and uniform-pass
-contrasts are retained in the supplementary pressure-placement data.
-% Source: Analysis024 observations/025-matched-quality-latency.md; 16_plot_matched_quality_latency.py.
-Figure~\ref{fig:quality-sparsity-overview} uses ordinary reloaded
-final-checkpoint loss uniformly for all 44 trained checkpoints, including
-the ten added 70M h-only conditions, with separately evaluated canonical
-FP16 logical counts. Its post-hoc paths preserve the historical FP16
-quality/count measurements. BF16 timing and qualification do not replace
-those validation losses. Figures~\ref{fig:quality-sparsity-14m-70m} and
-\ref{fig:quality-sparsity-410m} extend the same convention to all 74 trained
-models, with 410M shown in the appendix; small
-differences from the historical endpoint tables reflect the stated loss pass.
-The complete
-MiniPile validation split contains 500 documents. Concatenation and packing
-produce 338 complete blocks of 2,048 tokens (692,224 input tokens); the final
-1,444-token tail is excluded. Each block contributes 2,047 next-token targets
-to cross-entropy, while product accounting includes all 2,048 input positions.
-Loss is averaged over the equally sized blocks, and sparsity is count-pooled.
-This workload uses no key--value cache. Condition-specific training budgets,
-optimizer settings, seeds, and checkpoint selection accompany their results;
-they are not implied by the ladder's list of candidate conditions.
+All sizes use the Pythia-14M-deduped tokenizer, initialization and data-order
+seeds of 1234, and one training seed per condition. Shared optimizer settings
+are AdamW with $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight decay $0.1$,
+gradient-norm limit $1$, and zero attention and hidden dropout. Training
+lasts 712 optimizer updates, with 1\% linear warmup followed by cosine
+learning-rate decay. Table~\ref{tab:training-settings} separates
+the size-dependent learning rates and microbatches from the common effective
+batch size. The microbatch size is the number of sequences processed together;
+gradient accumulation combines several microbatches before one optimizer update.
 
+\begin{table}[htbp]
+\centering\small
+\caption{\textbf{Training settings across model sizes.}
+Effective batch size equals microbatch size times gradient accumulation.
+The common training budget gives fewer tokens per parameter at larger sizes.}
+\label{tab:training-settings}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Setting & 14M & 70M & 410M \\
+\midrule
+Parameters & 14,067,712 & 70,426,624 & 405,334,016 \\
+Peak learning rate & $10^{-3}$ & $10^{-3}$ & $3\!\times\!10^{-4}$ \\
+Minimum learning rate & $10^{-4}$ & $10^{-4}$ & $3\!\times\!10^{-5}$ \\
+Microbatch (sequences) & 32 & 4 & 4 \\
+Gradient accumulation (microbatches) & 32 & 256 & 256 \\
+Effective batch (sequences/update) & 1,024 & 1,024 & 1,024 \\
+Sequence length & 2,048 & 2,048 & 2,048 \\
+Tokens per parameter & 106.14 & 21.20 & 3.68 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\FloatBarrier
+
+The 14M study includes $T_0/P_0$, $T_1/P_0$, $T_1/P_1$ with either L1 or
+OL1, and the $T_4$ and $T_7$ recipes with $P_0$, $P_h$ or $P_{\mathrm{all}}$.
+The 70M study includes both controls and the $T_4$ and $T_7$ recipes with $P_h$
+or $P_{\mathrm{all}}$; at 410M, only the controls and $P_{\mathrm{all}}$
+recipes are run. All sweeps use the grids in Table~\ref{tab:interventions}.
+We evaluate final checkpoints without validation-based checkpoint selection.
+The main figures report validation loss and model-wide sparsity over the
+same validation sequences, as defined in Appendix~\ref{app:accounting}.
+
+Figure~\ref{fig:a0-optimization} provides training context for the cross-size
+loss comparison. These trajectories do not establish convergence, and the
+410M learning-rate range differs from that of the smaller models.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/19-base-model-optimization.pdf}
+\caption{\textbf{Base-model ($T_0/P_0$) training across model sizes.}
+\textbf{(a)} Training loss and \textbf{(b)} gradient norm before clipping
+(logarithmic scale). Faint lines show individual updates; solid lines show
+centered nine-update means, with shorter windows at the ends. Gradient norms
+are computed after accumulation and are not normalized by parameter count.}
+\label{fig:a0-optimization}
+\end{figure}
+
+\FloatBarrier
 \input{results-appendix}

@@ -1,5 +1,9 @@
 # Observations
 
+- [040: Compact setup and T/P baseline labels](040-experimental-setup.md):
+  shared settings verified across 74 retained runs; baseline trajectory labels
+  updated without changing data, and the 34-page manuscript is rebuilt and checked.
+
 - [039: OL1 formulation and 14M geometry](039-ol1-appendix.md):
   code-checked dual update, eight-endpoint L1/OL1 comparison and all 20
   14M Figure 1 OL1 conditions; budget saturation is strongly target-dependent.

@@ -1,5 +1,10 @@
 # H-only pressure: final K050 latency extension
 
+The [base-model training figure](figures/19-base-model-optimization.pdf)
+relabels the existing training trajectories T0/P0, preserving every plotted
+value and the original style. It accompanies the compact experimental-setup
+appendix and its clarified training table; see [Observation 040](observations/040-experimental-setup.md).
+
 The [OL1 appendix figure](figures/18-14m-70m-ol1-geometry.pdf) now covers all
 20 14M Figure 1 OL1 conditions, with a matched eight-endpoint T1/P1 L1--OL1 table.
 The code-checked formulation, all 28,480 optimizer records, captions and

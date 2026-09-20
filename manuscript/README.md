@@ -1,5 +1,17 @@
 # Living Manuscript Draft
 
+20 September 2026, experimental-setup rewrite: `experimental-appendix.tex`
+now contains the compact architecture, ceiling, training and evaluation
+details. T/P names replace the rendered A* labels; explicit per-recipe counts
+replace the operation-set notation. The training table retains its numerical
+entries and adds effective batch size and sequence length. Shared settings
+were checked across all 74 retained runs. Base-model trajectory panel titles
+now read T0/P0, with unchanged data. See [Observation 040](../analyses/024-2026-09-17-h-only-kernel-latency/observations/040-experimental-setup.md).
+After the user's follow-up authorization, `draft/main.pdf` was rebuilt at
+34 pages, with resolved references/citations and no overfull boxes. The revised
+appendix and training table/figure were visually checked on pages 15--16.
+The subsequent complete-results section and unrelated author edits are preserved.
+
 20 September 2026, sparsity-accounting rewrite: `app:accounting` now uses the
 main text's model-wide sparsity, ceiling and lowercase q/k/v/p notation. The
 section explains counts for linear projections and causal attention, the
