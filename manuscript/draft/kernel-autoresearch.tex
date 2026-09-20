@@ -6,57 +6,43 @@
 % and results/mechanism.json; reducers: Run039/07_reduce.py and 12_mechanism.py.
 % Mechanism: Run028 candidates/k049/joint.cu, k042/projection.cu,
 % k035/sparse_gemm.h and k035/flash_fwd_kernel.h; Run029 implementation audit.
-\subsection{When model-wide sparsity translates to speedup}
+\subsection{When sparsity translates to speedup}
 \label{sec:activation-reshaping}
 \label{sec:kernel-autoresearch}
 
-Sparsity reduces latency when avoided work exceeds the cost of detecting and
-skipping zeros. At $h,z$, our kernel checks $8\times16$ activation groups
-before loading their weights: empty groups avoid both weight reads and matrix
-multiplications. At $a,m$, the $16\times16$ checks occur after both operands
-are loaded, so skipping saves only arithmetic.
-A follow-up test supports this choice: applying the $h/z$ strategy separately
-at $a$ and $m$ increased full-model latency by $17.2\%$ and $27.4\%$ on
-14M $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$, with unchanged outputs.
+Sparsity reduces latency when avoided work exceeds the overhead cost of detecting and skipping it. 
+At $h,z$, the sparse kernel checks $8\times16$ activation tiles
+before loading their associated weights, so empty tiles avoid both weight load from memory and the matrix multiplications. This strategy, however, doesn't extend to other sites. Applying it at $a$ and $m$ increased full-model latency by $17.2\%$ and $27.4\%$ on 14M $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$, with unchanged outputs.
 Only $11.12\%$ of $a$'s $8\times16$ tiles were empty, and none at $m$, so
-most groups still required matrix multiplication. Padding eight real rows to
-sixteen-row matrix instructions increased issued instructions by $1.90\times$
-at $a$ and $2\times$ at $m$. At $h/z$, most rows instead have at most two
-nonzero activations, making the cheaper scalar path useful much more often.
+most groups still required matrix multiplication and the additional overhead was not justified.
 
 Attention follows FlashAttention's tiled sequence \citep{dao2022flashattention}:
-load $Q,K$, compute scores, apply masking and softmax, then multiply
-probabilities by $V$. Our checks occur after operand loads; skipping an empty
-tile's multiplication cannot recover those reads. Softmax still runs and
-turns zero scores into nonzero probabilities, so $Q/K$ sparsity does not
-automatically propagate to $PV$. Zeros in $V$ remain usable; sparsifying the
-probabilities is a further opportunity, untested here.
+load $q,k$, compute scores, apply masking and softmax, then multiply
+probabilities by $v$. Our implementation add additional overhead after the checks, so skipping an empty tile's multiplication cannot recover the latency from reading from memory. Softmax still runs and
+turns zero scores into nonzero probabilities, so $q/k$ sparsity does not
+automatically propagate to $pv$. Zeros in $v$ remain usable, and sparsifying the probabilities is a further untested opportunity.
 
-We isolate each path's effect at 14M by disabling it while holding weights,
-gates and all other skipping paths fixed (Table~\ref{tab:kernel-mechanisms}).
-\emph{Bypass} counts skipped matrix instructions divided by issued plus
-skipped instructions; it does not measure the fraction of runtime saved.
-
-\begin{table}[!htbp]
-\centering\small
-\caption{\textbf{Conditional latency savings: 14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$.}
-Times are per 2,048-token sequence on RTX\,5090 (BF16, batch one).
-Saved time is full-model latency with one skipping path off minus latency
-with all paths on; positive values indicate a benefit.
-Brackets give [minimum, maximum] savings across all off/on pairs of three
-independent timing runs per mode, not confidence intervals.
-Each run reports the geometric mean over 64 sequences and seven passes.
-Effects are not additive.}
-\label{tab:kernel-mechanisms}
-\input{tables/operation-latency}
-\end{table}
-
-The clear savings come from $h$ ($150\,\mu$s) and $z$ ($29\,\mu$s).
-Individual $a,m,QK$ effects remain unresolved against process variation,
-whereas $PV$ skipping adds latency. Enabling $QK/PV$ skipping together raises
+We isolate each site's effect at 14M by disabling it during inference time. Table~\ref{tab:kernel-mechanisms} reports the \emph{bypass} (i.e. percentage of skipped matrix instructions) and saved time per-site sparse operation for the sparser 14M recipe $T_7/P_{\mathrm{all}}$, $\kappa=0.5$. It makes clear that savings come from $h$ ($150\,\mu$s) and $z$ ($29\,\mu$s).
+Individual $a,m,q,k$ effects remain unresolved against process variation,
+whereas $pv$ skipping adds latency. Enabling $qk/pv$ skipping together raises
 full-model latency from 0.514 to 0.521\,ms despite substantial bypass.
 Thus, for this checkpoint and implementation, attention's arithmetic savings
 do not offset its overhead, while $h/z$ benefit from avoiding weight reads
 as well as computation.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{Conditional latency savings}: 14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$.
+Latency is measured per 2,048-token sequence on RTX\,5090 (BF16, batch one).
+Saved time is full-model latency with one skipping path off minus latency
+with all paths on; positive values indicate a benefit (reduced latency).
+Brackets give [minimum, maximum] savings across all off/on pairs of three
+independent timing runs.
+Each run reports the geometric mean over 64 sequences.}
+\label{tab:kernel-mechanisms}
+\input{tables/operation-latency}
+\end{table}
+
+
 
 \FloatBarrier

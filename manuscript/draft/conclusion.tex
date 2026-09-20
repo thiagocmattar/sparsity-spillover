@@ -9,62 +9,10 @@
 \section{Discussion and conclusion}
 \label{sec:conclusion}
 
-Where zeros are exposed need not equal where sparsity pressure is applied.
-In our 14M sweep, threshold scope and pressure scope define distinct operating
-regimes: h-only pressure is favorable at moderate thresholds, whereas broad
-seven-site pressure exposes the highest sparsity at $\kappa=0.5$. Holding
-h-only pressure fixed gives a cleaner threshold-placement comparison, with
-the broader threshold scope adding $6.44$ pp sparsity for $+0.0094$ loss.
+Our results suggest that sparsification should be understood as a joint training-and-deployment problem rather than as a property of activation distributions alone. First, \textbf{local pressure does not imply a local response}: applying pressure only at the FFN hidden site can alter sparsity at other sites, showing that the network can reorganize its internal representations in response to a localized training intervention. More broadly, \textbf{sparsity is useful only if the resulting zero structure can be exploited by the inference system}. $S_{\mathrm{model}}$ is best viewed as a training-time proxy for computational opportunity, not as a direct predictor of latency. In the controlled 14M measurements, the largest latency gains come from $(h,z)$ sites, which were the ones more susceptible to sparsification, with higher achieved sparsity. At 70M, exploiting this structure required an additional optimization step: the 14M implementation did not transfer efficiently, and dense-kernel improvements also contribute to the measured gains (Appendix~\ref{app:kernel-transfer}). One hypothesis is that we must achieve a high ($>90\%$) level of site-layer sparsity, so the zeros gets a exploitable tiled structure with higher probability. 
 
-These observations suggest a scoped rule of thumb: in our 14M sweep, use
-threshold placement to expose computational reach; start pressure narrowly
-at the FFN hidden site when quality preservation matters, and broaden it
-when the target operating point requires extreme sparsity. This is not yet
-a recommendation across model sizes. In the 70M extension, broadening
-seven-site pressure at the highest threshold increases sparsity and lowers
-loss relative to h-only pressure, reversing the 14M quality cost. The
-410M cohort serves as a fixed-token stress test of attainable sparsity,
-with a limited broad-pressure sweep rather than a test of quality scaling.
+Transformers appear sufficiently flexible to adapt their internal representations to architectural and optimization constraints, suggesting that larger gains may come from \textbf{designing training objectives around inference requirements}, rather than first maximizing a generic sparsity metric and only afterward attempting to accelerate it. The same principle may extend beyond activation sparsity: training could be used to shape representations for properties required by weight sparsity, quantization, batched execution, or other hardware-specific constraints. In this view, deployment requirements are not merely constraints imposed after training, but potential signals for deciding what properties the network should learn.
 
-% Kernel evidence: Analysis 021 observations/O009-kernel-realization-v2.md
-% and investigation/observations/O001-kernel-investigation.md.
-Product accounting and kernel timing answer different questions.
-$\Smodel$ measures how much matrix-product work is logically exposed to zero
-operands; the kernel study asks how much of that opportunity can be
-profitably realized. The distinction matters across sites: high-threshold
-projection sparsity produces structured work that K050 can skip with a net
-latency benefit, while additional Q/K/V sparsity increases the logical
-opportunity without producing profitable attention skipping at the tested
-14M shapes. The computational value of a sparse representation therefore
-depends not only on how many zeros it contains, but also on where they occur
-and the granularity at which the implementation can exploit them.
-At 70M, exploiting this structure required an additional optimization step:
-the 14M implementation did not transfer efficiently, and dense-kernel improvements
-also contribute to the measured gains (Appendix~\ref{app:kernel-transfer}).
-The low-loss $T_2/P_h$ points remain slower than native Base at 70M, although
-this recipe provides a favorable quality--latency balance at 14M.
+Several limitations define the scope of these conclusions and point to concrete directions for further work. Our scaling evidence is limited: although the 410M experiments demonstrate that high model-wide sparsity remains attainable, the fixed token budget leaves 410M in a substantially different optimization regime, so it should be interpreted as a stress test rather than a clean scaling experiment. Our runtime study is also restricted to batch-one, full-sequence inference on an RTX5090; we do not study how sparsity interacts with batched inference, cached decoding, or other hardware.
 
-Cross-size comparisons use a common token budget rather than equal tokens
-per parameter, and 410M also uses a lower peak learning rate; the A0
-optimization trajectories in Appendix Figure~\ref{fig:a0-optimization}
-show that the three sizes finish in different realized optimization regimes.
-Accordingly, the scale experiment tests recurrence of within-size recipe
-relationships rather than quality scaling with parameter count.
-These conclusions concern MiniPile pretraining. The distribution diagnostics cover 14M and describe responses
-rather than isolating a causal pathway for the nonlocal response. The kernel results use RTX5090 hardware,
-full-sequence inference, native SDPA and matched fusion controls. Figure~\ref{fig:70m-quality-latency}
-adds the 26-checkpoint optimized 70M comparison; all three implementations
-share one session, separate from the retained 14M measurements. Transfer to cached decoding, 410M execution and other
-hardware remains untested. The 70M port is shape-specific; the two sizes do
-not constitute an equal-budget kernel optimization comparison.
-
-The pressure-scope controls sharpen identification but do not complete it.
-Each condition has one training seed, and the shared validation set is not
-an independent confirmation set. Because $T_7/P_4$ is absent, the
-$P_h\rightarrow P_7$ contrast jointly changes pressure at $a,m,z,q,k,v$
-and the objective normalization; it cannot isolate Q/K/V pressure.
-The 70M h-only comparison lacks multisite no-pressure controls, and h-only
-training remains untested at 410M. The new full-model timings in
-Figure~\ref{fig:quality-sparsity-overview} do not extend the historical
-skipping-ablation cohort. Clipping latency includes recurring mask operators
-and uses a separate session, limiting small cross-session comparisons.
+In addition, the full intervention space is combinatorial, and under the available compute budget we evaluate only a selected set of threshold and pressure placements rather than an exhaustive factorial study. The nonlocal response visible in Figure~\ref{fig:pressure-layer-sparsity} motivates interventions concentrated at $h$ and $z$. The $T_2/P_h$ results at 14M support this direction: they preserve much of the execution benefit while avoiding thresholding at sites whose sparsity is expensive in quality or unprofitable for the current kernel. Whether this balance transfers depends on the implementation as well as the sparse structure. Related extensions include learning or tuning different thresholds $\kappa$ at different sites and directly sparsifying attention probabilities after softmax, which could expose work in $pv$ without relying on $q/k$ zeros to propagate through softmax. More generally, rather than asking where the model can be made sparse, a productive systems-guided approach is to decompose full-model inference into individual operations, identify where latency and removable work are concentrated, determine what structured representation would allow those operations to be skipped efficiently, and then design training-time interventions that encourage precisely that structure.

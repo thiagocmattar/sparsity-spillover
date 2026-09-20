@@ -1,0 +1,46 @@
+
+we need to:
+- use a standard definitoon. Istead of A*, let's use 1-site, 4-site, 7-site ...
+- give a clear recomendation for researchers ... how should they use the infomation provided by the article?
+- state limitations and future research
+* 1-batch speedup
+
+observations:
+(i) fig 3
+- for 4-site, the pressure adds additional ~3pp of S_model gain.. at an increasing validation loss?
+- for 7-site, it creates the highest sparsity.. so it can combine with thresholding
+
+(ii) fig 4
+- 7-site pressure has greater norm and opposing component to the task loss..
+-> so it therefore has more resistance of something like that?
+-> what if we break the opposing component per site? can we see it? and maybe identify whose sites has the lower resistance / effect on the loss?
+-> would be a nice form of decomposition architectural view
+
+(iii) fig 5 (spillover)
+- pressuring 7-site reduces the sparsity on 4-site. Maybe due to the norm cap
+- add new bars on panel (b) without OL1
+-> the spillover effect
+- add the density baseline. pressuring 4-site affects the distribution accross attention
+- the attention reshape itself
+-> what if we use different thresholding per-sites? it may work
+-> pressure only a few sub-sites
+
+(iv) fig 6
+- accross 14M to 70M transfer it has the expected effect (what we were expecting) -> lower loss, higher sparsity and dominance over post-hoc clipping
+-> therefore, scaling this method would bring gains.. lower loss at higher sparsity
+-> the trade-off gets better with scale
+- the 410M however brings a different view. we speculate its due to premature convergence and relation between tokens and parameters.. which is supported by the gradient norm and higher loss for baseline vs. 70M
+-> what happens with the ceiling at big sizes?
+
+(v) fig 7
+- if the highest projection-skipping gains comes from 4-site kappa=0.5 with OL1.. then why the fasters full-model speedup is with 7-site? where does this additional benefit comes from?
+- at similar levels of sparsity, 4-site+OL1 has a stronger projection-skipping gain.. which probably comes from higher structured sparsity
+-> should we look at the matrix sparsity structure?
+- if we get 1.8x speedup at 14M model (~10-15% model-wide sparsity), then projecting this trend to ~80-90% sparsity gives XX speedup 
+-> adjustments to the figure:
+(i) use +OL1/ no OL1 in both graphs
+
+
+
+
+

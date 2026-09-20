@@ -10,15 +10,13 @@
 A sparsification intervention specifies where activations are thresholded (thresholding sites $\mathcal{N}$) and where activation pressure is applied (pressure sites $\mathcal{P}$). The sets $\mathcal{N}$ and $\mathcal{P}$ need not coincide, and the thresholding and pressure functions may take different forms. Together, these choices define a combinatorial space of training interventions. We restrict this space to keep the computational cost manageable while addressing the central research questions.
 
 
-For thresholding, we avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark} and instead use one-sided and symmetric fixed-threshold operators $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$. The constant $\kappa$ controls the strength of the intervention and is held fixed within each training condition. At $\kappa=0$, $G_{+,\kappa}$ reduces to ReLU, whereas $G_{\pm,\kappa}$ reduces to the identity. Appendix~\ref{app:interventions} specifies the boundary and derivative conventions.
+For thresholding, we avoid the overhead of exact top-$k$ selection~\citep{wang2024qsparse,you2025spark} and instead use one-sided and symmetric fixed-threshold operators $G_{+,\kappa}(x)=x\mathbf{1}\{x\geq\kappa\}$ and $G_{\pm,\kappa}(x)=x\mathbf{1}\{|x|\geq\kappa\}$, with $\kappa\geq0$. The constant $\kappa$ controls the strength of the intervention and is held fixed within each training condition. At $\kappa=0$, $G_{+,\kappa}$ reduces to ReLU, whereas $G_{\pm,\kappa}$ reduces to the identity. 
 
 For activation pressure, $\ell_1$ averages across targeted sites and layers the mean absolute activation at each site after any thresholding. Ordinary L1 pressure minimizes
 $\mathcal{L}_{\mathrm{task}}+\lambda \ell_1$,
-where $\lambda$ controls the pressure intensity~\citep{song2024prosparse,cetin2026sparser}. To limit conflict between the $\ell_1$ pressure and the task update while reducing the need to tune an additional hyperparameter, we introduce orthogonal $\ell_1$ pressure (OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}. OL1 adds a separately preconditioned pressure correction after the task-only AdamW update, projects away its component opposing the adaptive task direction, and caps its norm relative to that direction. At a fixed optimizer state, once the norm budget is active, further increasing $\lambda$ leaves the pressure correction unchanged up to numerical stabilizers. To keep the multisite intervention study tractable, we use a common $\lambda=1$ and budget $b=1$ and directly measure whether the budget becomes active during training. Appendix~\ref{app:pressure} gives the full formulation, a brief comparison between L1 and OL1, and shows that budget saturation depends strongly on the target set rather than occurring universally.
+where $\lambda$ controls the pressure intensity~\citep{song2024prosparse,cetin2026sparser}. To limit conflict between the $\ell_1$ pressure and the task update while reducing the need to tune an additional hyperparameter, we introduce orthogonal $\ell_1$ pressure (OL1), inspired by gradient-conflict projection methods~\citep{yu2020pcgrad,hsieh2024bloop}. OL1 adds a separately preconditioned pressure correction after the task-only AdamW update, projects away its component opposing the adaptive task direction, and caps its norm relative to that direction. At a fixed optimizer state, once the norm budget is active, further increasing $\lambda$ leaves the pressure correction unchanged up to numerical stabilizers. To keep the multisite intervention study tractable, we use a common $\lambda=1$ and budget $b=1$ and directly measure whether the budget becomes active during training. Appendix~\ref{app:pressure} gives the full formulation, a brief comparison and shows that budget saturation depends strongly on the target set.
 
-Figure~\ref{fig:pythia-block} locates the intervention sites within the Pythia architecture. The variables $a$ and $m$ denote the normalized inputs to the attention and FFN branches, respectively; $h$ is the FFN hidden activation; $z$ is the concatenated attention context before the output projection; and $q$, $k$, and $v$ are the query, key, and value operands, with $q$ and $k$ taken after RoPE. Attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at selected sites in $\{a,m,h,z\}$ and $G_{\pm,\kappa}$ at selected sites in $\{q,k,v\}$. When $h$ is targeted, the thresholding nonlinearity replaces GELU.
-
-Table~\ref{tab:interventions} summarizes the studied thresholding and pressure assignments and their sparsity ceilings across model sizes. Section~\ref{sec:measurement} defines these ceilings.
+Figure~\ref{fig:pythia-block} locates the intervention sites within the Pythia architecture. The variables $a$ and $m$ denote the normalized inputs to the attention and FFN branches, respectively; $h$ is the FFN hidden activation; $z$ is the concatenated attention context before the output projection; and $q$, $k$, and $v$ are the query, key, and value operands. Attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at selected sites in $\{a,m,h,z\}$ and $G_{\pm,\kappa}$ at selected sites in $\{q,k,v\}$. When $h$ is targeted, the thresholding nonlinearity replaces GELU. Table~\ref{tab:interventions} summarizes the studied thresholding and pressure assignments and their sparsity ceilings across model sizes. Section~\ref{sec:measurement} defines these ceilings.
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
@@ -26,17 +24,8 @@ Table~\ref{tab:interventions} summarizes the studied thresholding and pressure a
 % Observation: analyses/027-2026-09-20-run044-manuscript/observations/002-table1-t2.md.
 \begin{table}[H]
 \centering\small
-\caption{\textbf{Thresholding, pressure and sparsity ceilings.}
-$T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
-$h$, and $P_{\mathrm{all}}$ matches the thresholding sites
-($\mathcal{P}=\mathcal{N}$). For $T_2/T_4/T_7$, threshold strength is swept over
-$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
-and task-relative norm budget $b=1$ fixed. The matched 70M latency sweep for
-$T_2/P_h$ stops at $\kappa=0.1$; its additional $\kappa=0.5$ endpoint is
-reported separately in Appendix~\ref{app:endpoint-results}. Only the 14M $T_1/P_1$ ablation sweeps
-$\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
-Ceilings are $100\cdot\Smax$ at 2,048 tokens; executed recipes by model size
-are listed in Appendix~\ref{app:training-protocol}.}
+\caption{\textbf{Intervention recipes and analytic sparsity ceilings.}
+$T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1. For $T_2/T_4/T_7$, we sweep $\kappa\in{0,.01,.05,.1,.5}$ with $\lambda=1$ and $b=1$; the matched 70M latency sweep for $T_2/P_h$ stops at $\kappa=0.1$, with its additional $\kappa=0.5$ endpoint reported separately in Appendix~\ref{app:endpoint-results}; the 14M $T_1/P_1$ ablation instead sweeps $\lambda\in{.05,.1,.5,1}$ at $b=1$. Ceilings are $100\cdot\Smax$ at 2,048 tokens. Executed recipes by model size are listed in Appendix~\ref{app:training-protocol}.}
 \label{tab:interventions}
 \vspace{4pt}
 \setlength{\tabcolsep}{5pt}
@@ -67,7 +56,7 @@ $T_7/P_{\mathrm{all}}$ & $a,m,h,z,q,k,v$ & $\mathcal{N}$ & 29.95 & 49.42 & 87.25
 % Source artwork and observation: figures/pythia-architecture-map.tex and .md.
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{figures/pythia-architecture-map.pdf}
+\includegraphics[width=0.8\linewidth]{figures/pythia-architecture-map.pdf}
 \caption{\textbf{Intervention sites in a shared Pythia block.}
 The attention and FFN branches use separate LayerNorms and join the residual path.
 Green nodes denote activation sites, and purple nodes denote learned weights.
@@ -79,6 +68,6 @@ Table~\ref{tab:interventions} specifies the thresholding and pressure assignment
 \subsection{Sparsity measure and architectural reach}
 \label{sec:measurement}
 
-\emph{Activation sparsity} is the fraction of zero activations at a site. We define \emph{model-wide sparsity} as $\Smodel=N_0/N_{\mathrm{model}}$, where $N_0$ counts scalar multiplications with a zero activation operand in Pythia-block matrix products, and $N_{\mathrm{model}}$ counts all scalar multiplications in those blocks and the final output projection. We aggregate counts over validation data, excluding masked attention pairs (Appendix~\ref{app:accounting}).
+\emph{Activation sparsity} is the fraction of zero activations at a site. We define \emph{model-wide sparsity} as $\Smodel=N_0/N_{\mathrm{model}}$, where $N_0$ counts scalar multiplications with a zero activation operand in Pythia-block matrix products, and $N_{\mathrm{model}}$ counts all scalar multiplications in those blocks and the final output projection. We aggregate counts over validation data, excluding masked attention pairs. 
 
-To quantify intervention potential a priori, we define the \emph{model-wide sparsity ceiling} as $\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, where $N_{\mathrm{reach}}(\mathcal{N})$ counts scalar multiplications guaranteed a zero activation operand if all selected thresholding sites are 100\% sparse. Thus, $\Smax$ is the maximum sparsity directly attributable to $\mathcal{N}$. It depends on architecture, selected sites, and sequence length. Table~\ref{tab:interventions} shows that larger models can have higher ceilings at fixed sequence length, because FFN layers are more representative on the model total computations. Natural zeros outside the intervention reach can make $\Smodel>\Smax$. Appendix~\ref{app:ceiling} gives the precise accounting.
+To quantify intervention potential a priori, we define the \emph{model-wide sparsity ceiling} as $\Smax=N_{\mathrm{reach}}(\mathcal{N})/N_{\mathrm{model}}$, where $N_{\mathrm{reach}}(\mathcal{N})$ counts scalar multiplications guaranteed a zero activation operand if all selected thresholding sites are 100\% sparse. Thus, $\Smax$ is the maximum sparsity directly attributable to $\mathcal{N}$. It depends on architecture, selected sites, and sequence length. Appendix~\ref{app:accounting} gives the precise accounting and definitions.

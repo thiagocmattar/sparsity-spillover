@@ -1,84 +1,118 @@
 % Evidence: Analysis028 observations/001-matched-70m-grid.md; 01_collect.py and 02_figures.py.
 % Original 14M development: Run029 observations/06-implementation-and-claim-audit.md.
 % Clipping latency: Run036 results/clipping-final-kernel.json.
-\subsection{From sparsity to speedups}
+% \subsection{From sparsity to speedups}
+\subsection{Results at 70M}
 \label{sec:quality-sparsity-results}
 
-\textbf{Agentic kernel development.}
-We used Codex with GPT-6 Astra~\citep{openaigpt6astra} to develop specialized GPU kernels under human guidance, starting from the implementation of \citet{cetin2026sparser} and adapting it to Pythia. The agent proposed and tested changes on a fixed subset of training sequences, comparing outputs with the unmodified model. Each selected implementation was frozen before evaluation on the final checkpoints. We checked outputs on the full validation set against declared numerical tolerances, and timed a fixed subset of sequences. The 14M kernel and its initial 70M port were tested across their respective grids; the subsequent optimized 70M implementation is now evaluated on all 26 matched checkpoints. Appendix~\ref{app:kernel-results} specifies the execution paths, correctness checks and timing protocol. This case illustrates how agentic coding can make direct execution tests practical for a representation-learning study.
+Figure~\ref{fig:70m-quality-latency} shows that the 70M model follows the same broad pattern observed at 14M: stronger interventions extend the attainable sparsity range, but at increasing quality cost. At $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ reaches $27.48\%$ and $40.60\%$ model-wide sparsity at 14M and 70M, corresponding to $91.8\%$ and $82.2\%$ of their respective ceilings, while validation loss increases by $0.62$ and $1.12$ relative to the base models. At moderate thresholds ($\kappa\leq0.1$), pressure confined to $h$ maintains lower loss than global pressure at similar sparsity.
 
-\textbf{More sparsity need not mean lower latency.}
-Within the tested recipes, higher sparsity generally accompanies lower latency, but placement matters. At 14M and $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ is much sparser than $T_4/P_{\mathrm{all}}$ ($27.48\%$ versus $12.71\%$), yet slower (0.473 versus 0.459\,ms; Figure~\ref{fig:quality-sparsity-overview}). Figure~\ref{fig:70m-quality-latency} further shows that even the optimized implementation remains slower than native for many checkpoints. The benefit depends on where zeros occur, whether they form skippable groups, and the cost of detecting them. Section~\ref{sec:kernel-autoresearch} isolates these mechanisms.
-
-\textbf{Post-hoc zeros alone do not ensure acceleration.}
-The retained clipping measurements reach at most $1.025\times$ the native base-model speed at 14M (Appendix~\ref{app:kernel-results}). The small 14M difference spans GPU sessions and does not establish a reliable clipping benefit. Our implementation adds a separate masking pass, and the resulting zeros must still form groups the kernel can skip. We did not optimize fused clipping, so these results describe this implementation rather than a general limit of post-hoc sparsification.
-
-\FloatBarrier
-
-\subsection{Paired effects of pressure placement}
-\label{sec:paired-results}
-
-% Source: analyses/024-2026-09-17-h-only-kernel-latency/observations/015-pressure-scope-caption.md;
-% generating analysis: paper_effect_figures.py / 13_rebuild_paper_figures.py;
-% adoption and checked claims: manuscript/draft/reviews/2026-09-18-paired-pressure/README.md.
-One question raised during sparse intervetion design is wheater activation pressure should be applied over the entire network, or are there local sites more suceptible to sparsification? To answer this, we combine the clipping accross multiple sites ($T_4$ and $T_7$) with global and local FFN hidden pressure ($P_{all}$ and $P_h$).
-
-We find that \textbf{local h-only pressure gives a more favorable quality--sparsity trade-off at moderate thresholds in both model sizes}.
-For $\kappa\leq0.1$, $P_h$ lowers loss relative to $P_{\mathrm{all}}$ in all 16 matched four-/seven-site comparisons at 14M and 70M
-(Figure~\ref{fig:paired-intervention-effects}). The loss reduction is
-$0.19$--$0.32$, with sparsity differing by at most $3.36$ percentage points.
-At $\kappa=0.5$, all-site pressure instead gives substantially more sparsity,
-especially for $T_7$; at 70M it also lowers the $T_7$ loss by $0.121$.
-
-H-only pressure has lower measured latency in 18 of the 20 pairs, including
-all ten 70M pairs. The two small reversals occur at 14M and $\kappa=0.5$:
-all-site pressure is faster by $2.78\,\mu$s for $T_4$ and $0.52\,\mu$s for
-$T_7$. Thus, the extra sparsity from broader pressure does not consistently
-translate into lower latency. Detailed 14M pressure-budget diagnostics are
-reported in Appendix~\ref{app:pressure-budget-diagnostics}.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\linewidth]{figures/03-pressure-scope-threshold.pdf}
-\caption{\textbf{Paired effects of broadening pressure from $P_h$ to $P_{\mathrm{all}}$.}
-Every point is all-site minus h-only pressure at matched model size, threshold
-scope and $\kappa$, with $\lambda=b=1$. Rows show 14M/70M; columns show loss
-change, sparsity change (pp), and full-model latency change ($\mu$s).
-Positive loss or latency differences favor $P_h$; positive sparsity
-differences favor $P_{\mathrm{all}}$. Latencies subtract checkpoint geometric
-means: RTX5090, BF16, batch one, 2,048 tokens, full logit head and 1,344 timings
-per checkpoint. The 14M $T_7$ pairs span GPU sessions; 70M uses the qualified
-K050 port. Small timing differences are descriptive. Lines connect separate
-single-seed runs with matched initialization, data order and training budget.}
-\label{fig:paired-intervention-effects}
-\end{figure}
-
-% Source: Analysis021 pressure-scope/observations/O016-pressure-placement.md
-% and O017-layer-sparsity-style.md; figure: pressure-scope/plot_layer_sparsity.py.
-Additionally, \textbf{local pressure can produce nonlocal sparsity changes}.
-At $\kappa=0.05$ in 14M, $P_h$ increases sparsity at both $h$ and $z$
-relative to $P_0$ under $T_4$ and $T_7$, although $z$ receives no direct
-pressure (Figure~\ref{fig:pressure-layer-sparsity}). Under $T_7$, $P_h$ also
-produces higher sparsity at $h$ and $z$ than $P_{\mathrm{all}}$, despite
-the latter targeting both sites. More frequent activation of the OL1 norm
-cap under $T_7/P_{\mathrm{all}}$ offers a possible explanation
-(Appendix~\ref{app:pressure-budget-diagnostics}), but these diagnostics do
-not isolate its contribution. At $\kappa=0.5$, $h$ and $z$ are nearly
-fully sparse under every pressure scope; the larger differences instead
-appear at $q,k,v$.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
-\includegraphics[width=0.94\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
+\includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
+\caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
+% Source: Analysis028 observations/001-matched-70m-grid.md; 02_figures.py.
+\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 26 matched checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$ at $\kappa=0,.01,.05,.1$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
+Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
+Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. All 26 checkpoints share one RTX\,5090 session, three fresh processes per checkpoint, batch one, 2,048 tokens and full output logits. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations. The additional $T_2/P_h$, $\kappa=0.5$ endpoint is retained separately in Table~\ref{tab:70m-additional-endpoint}.}
+\label{fig:70m-quality-latency}
+\end{figure}
+
+\textbf{The 14M kernel does not transfer efficiently to 70M.}
+The direct adaptation of the 14M kernel to 70M can exploit the additional sparsity to reduce inference latency, but its overhead largely offsets these gains. In the matched sweep, the original port takes 3.325\,ms on the base model, compared with 1.611\,ms for native PyTorch, and its best sparse recipe reaches only $1.013\times$ the native base-model speed. Additional optimization reduces repeated sparsity checks at $h,z$, uses a scalar path for very sparse rows, and improves dense projections, attention and the output head. On $T_7/P_h$ at $\kappa=0.5$, this reduces latency from 1.590 to 1.088\,ms ($1.481\times$ the native base-model speed). All 26 checkpoints pass full-validation numerical checks in three fresh processes (Appendix~\ref{app:kernel-transfer}). The lower-loss $T_2/P_h$ points, however, remain slower than native: loss is only $0.029$--$0.093$ above Base, but optimized latency is 1.956--2.504\,ms. Thus, the favorable 14M quality--latency balance does not transfer directly.
+
+\textbf{More sparsity does not necessarily imply lower latency.}
+Within a fixed recipe, increasing sparsity generally reduces latency, but model-wide sparsity alone is not predictive. At 14M and $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ is substantially sparser than $T_4/P_{\mathrm{all}}$ ($27.48\%$ versus $12.71\%$), yet slightly slower (0.473 versus 0.459\,ms). The 70M results show the same dependency on implementation: additional sparsity generally lowers latency within each recipe, but even the optimized implementation remains slower than native for many checkpoints. Speedup therefore depends on where zeros occur, whether they form groups the kernel can skip, and the cost of exploiting that structure.
+
+\textbf{Post-hoc sparsity does not automatically translate into speedup.}
+Post-hoc clipping reaches at most $1.025\times$ the native base-model speed at 14M (Appendix~\ref{app:kernel-results}); this small difference spans GPU sessions and does not establish a reliable clipping benefit. In our implementation, clipping adds a separate masking pass, and the resulting zeros must still form groups that the kernel can skip. Since we did not optimize fused clipping, these results characterize the current execution path rather than a general limit of post-hoc sparsification.
+
+
+\FloatBarrier
+
+
+
+
+%\subsection{Paired effects of global vs. local pressure}
+\subsection{Spillover: Local pressure induces nonlocal sparsity}
+\label{sec:paired-results}
+
+\textbf{Local pressure produces a nonlocal response.}
+Figure~\ref{fig:pressure-layer-sparsity} present the sparsity by site and layer accross $T_4$ and $T_7$, for all pressures at 14M. 
+At $\kappa=0.05$, applying pressure only at $h$ increases $h$ sparsity from 75--85\% to 94--99\% under $T_4$, and from 74--85\% to 94--99\% under $T_7$.
+The response is not confined to the pressured site: sparsity at the unpressured $z$ activation rises from 71--85\% to 83--92\% under $T_4$, and from 70--87\% to 84--94\% under $T_7$, while changes at $a$ and $m$ are comparatively small.
+Under $T_7$, broadening pressure to $P_{\mathrm{all}}$ does not further increase sparsity at $h$ or $z$; instead, both become less sparse than under $P_h$ across all layers. One possible explanation is that (q,k,v) increases $\ell_1$ pressure norms, and $P_{all}$ caps the OL1 norm more frequently (Appendix~\ref{app:pressure-budget-diagnostics}), reducing the local pressure at $h$.
+Thus, a local site pressure may spillover and affect the distributions of other sites, and we speculate that it sparsify sites more succeptible to sparsification.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
+\includegraphics[width=0.9\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
 \caption{\textbf{Activation sparsity by site and layer in Pythia-14M.}
 The six threshold/pressure recipes at $\kappa=0.05$ (top) and $0.5$ (bottom).
-Each cell gives the percentage of zero activations, pooling integer counts
-over all 338 complete validation sequences at one site and layer.
+Each cell gives the percentage of zero activations over all complete validation sequences at one site and layer.
 Q/K are post-RoPE; all panels share a 0--100\% color scale.
-Values are rounded to whole percentages, so 0 or 100 does not establish
-a completely dense or all-zero tensor.}
+Values are rounded to whole percentages, so 0 or 100 does not establish a completely dense or all-zero tensor.}
 \label{fig:pressure-layer-sparsity}
 \end{figure}
 
-\FloatBarrier
+
+
+
+% \textbf{Threshold strength changes which sites remain responsive to pressure.}
+% At $\kappa=0.5$, $h$ and $z$ already round to 100\% sparsity without pressure, whereas under $T_7/P_0$ the other sites remain substantially denser: $a,m$ lie between 57--70\%, and $q,k,v$ between 13--36\%.
+% Broad pressure then primarily increases sparsity at these remaining sites rather than at the already saturated $h$ and $z$ activations.
+% The strong site dependence in Figure~\ref{fig:pressure-layer-sparsity} motivates asking whether sparsity at different locations also differs in its value for execution.
+
+
+% % Source: analyses/024-2026-09-17-h-only-kernel-latency/observations/015-pressure-scope-caption.md;
+% % generating analysis: paper_effect_figures.py / 13_rebuild_paper_figures.py;
+% % adoption and checked claims: manuscript/draft/reviews/2026-09-18-paired-pressure/README.md.
+% One question raised during sparse intervention design is wheater \textbf{activation pressure should be applied over the entire network, or are there local sites more suceptible to sparsification?} To answer this, we compare thresholding accross multiple sites ($T_4$ and $T_7$) with global and local FFN hidden pressure ($P_{all}$ and $P_h$) at Figure~\ref{fig:paired-intervention-effects}.
+
+% \begin{figure}[!htbp]
+% \centering
+% \includegraphics[width=\linewidth]{figures/03-pressure-scope-threshold.pdf}
+% \caption{\textbf{Paired effects of broadening pressure from $P_h$ to $P_{\mathrm{all}}$.}
+% Every point is $P_{all}$ minus $P_h$ at matched model size, threshold sites and $\kappa$, with $\lambda=b=1$. Rows show 14M/70M; columns show loss change, sparsity change (pp), and full-model latency change ($\mu$s).
+% Positive loss or latency differences favor $P_h$; positive sparsity differences favor $P_{\mathrm{all}}$.
+% }
+% \label{fig:paired-intervention-effects}
+% \end{figure}
+
+
+% \textbf{Global pressure achieves higher sparsity at a greater quality cost, without translating this additional sparsity into lower latency.} At moderate thresholds ($\kappa\leq0.1$), local h-only pressure ($P_h$) provides a more favorable quality--sparsity trade-off than global pressure ($P_{\mathrm{all}}$) in both model sizes: $P_h$ lowers loss in all 16 matched comparisons at 14M and 70M (Figure~\ref{fig:paired-intervention-effects}), with reductions of $0.19$--$0.32$ while sparsity differs by at most $3.36$ percentage points. Although broader pressure can achieve higher sparsity, this gain does not translate into lower measured latency: h-only pressure is faster in 18 of the 20 matched pairs, including all ten 70M pairs. Thus, applying sparsity pressure globally trades model quality for additional sparsity without yielding a corresponding inference-time benefit.
+
+
+% % \textbf{Local h-only pressure gives a more favorable quality--sparsity trade-off at moderate thresholds in both model sizes}.
+% % For $\kappa\leq0.1$, $P_h$ lowers loss relative to $P_{\mathrm{all}}$ in all 16 matched comparisons at 14M and 70M
+% % (Figure~\ref{fig:paired-intervention-effects}). The loss reduction is $0.19$--$0.32$, with sparsity differing by at most $3.36$ percentage points.
+% % % At $\kappa=0.5$, all-site pressure instead gives substantially more sparsity,
+% % % especially for $T_7$; at 70M it also lowers the $T_7$ loss by $0.121$.
+
+% % \textbf{The additional sparsity from global pressure does not imply in lower latency}. H-only pressure has lower measured latency in 18 of the 20 pairs, including all ten 70M pairs. 
+% % % The two small reversals occur at 14M and $\kappa=0.5$: all-site pressure is faster by $2.78\,\mu$s for $T_4$ and $0.52\,\mu$s for $T_7$. 
+% % Thus, the extra sparsity from broader pressure does not consistently translate into lower latency.
+
+
+% % Source: Analysis021 pressure-scope/observations/O016-pressure-placement.md
+% % and O017-layer-sparsity-style.md; figure: pressure-scope/plot_layer_sparsity.py.
+% \textbf{Local pressure can produce nonlocal sparsity changes}. Figure~\ref{fig:pressure-layer-sparsity} present the sparsity by site and layer accross $T_4$ and $T_7$ interventions, for all pressures at 14M. At $\kappa=0.05$, $P_h$ increases sparsity at both $h$ and $z$ relative to $P_0$, although $z$ receives no direct pressure. Under $T_7$, $P_h$ also produces higher sparsity at $h$ and $z$ than $P_{\mathrm{all}}$, despite the latter targeting both sites. One possible explanation is that (q,k,v) increases $\ell_1$ pressure norms, and $P_{all}$ caps the OL1 norm more frequently (Appendix~\ref{app:pressure-budget-diagnostics}), reducing the local at $h$. The takeaway is that a local site pressure may spillover and affect the distributions of other sites.
+
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=0.9\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
+% \includegraphics[width=0.9\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
+% \caption{\textbf{Activation sparsity by site and layer in Pythia-14M.}
+% The six threshold/pressure recipes at $\kappa=0.05$ (top) and $0.5$ (bottom).
+% Each cell gives the percentage of zero activations over all complete validation sequences at one site and layer.
+% Q/K are post-RoPE; all panels share a 0--100\% color scale.
+% Values are rounded to whole percentages, so 0 or 100 does not establish a completely dense or all-zero tensor.}
+% \label{fig:pressure-layer-sparsity}
+% \end{figure}
+
+% \textbf{(h, z) are more succeptible to sparsification}. At higher threshold ($\kappa=0.5$) (h,z) sites become fully sparse, even if no pressure is applied; while (q,k,v) sites are in the $[14, 36]$ and (a,m) are in $[57,70]$ sparsity range. This implies the distribution of (q,k,v) and (a,m) may have different ranges and require different threshold values than (h,z).
+
+% \FloatBarrier
