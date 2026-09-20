@@ -58,3 +58,6 @@ measurements, clipping tails and the native Base reference are unchanged.
 The canonical PDF is `../figures/23-70m-quality-sparsity-native-latency.pdf`;
 the manuscript figure and supplementary data are exact copies. No broader
 finding or manuscript narrative is promoted by this update.
+
+**Display revision.** At the user's request, the rotated "Post-hoc" annotation
+was removed. Both clipping curves, all data, axes and other labels are unchanged.

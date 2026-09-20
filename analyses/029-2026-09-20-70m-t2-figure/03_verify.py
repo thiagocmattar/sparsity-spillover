@@ -58,7 +58,7 @@ def main():
     assert len(doc) == 1
     page = doc[0]
     text = page.get_text()
-    assert 'PyTorch base: 1.664 ms' in text and len(page.search_for('Post-hoc')) == 1
+    assert 'PyTorch base: 1.664 ms' in text and not page.search_for('Post-hoc')
     assert text.count('ceiling') == 3
     assert all(page.rect.contains(fitz.Rect(b[:4])) for b in page.get_text('blocks'))
     assert all(doc.extract_font(f[0])[3] for f in page.get_fonts(full=True))

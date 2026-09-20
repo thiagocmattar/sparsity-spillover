@@ -56,8 +56,6 @@ def main():
         assert [r["target"] for r in group] == [p / 10 for p in range(10)]
         axes[0].plot([r["sparsity"] for r in group], [r["loss"] for r in group],
                      color=color, ls=":", lw=1.3, zorder=2)
-    axes[0].text(15.5, 4.72, "Post-hoc", rotation=68, rotation_mode="anchor",
-                 color="#646970", fontsize=9.5 * FONT_SCALE, ha="left", va="bottom")
     for scope in ("hz", "4", "7"):
         ceiling = data["ceilings"][scope]["R_model_max_percent"]
         axes[0].axvline(ceiling, color="#92969B", lw=.8, ls=(0, (2, 3)), alpha=.8, zorder=1)
