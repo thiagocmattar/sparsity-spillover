@@ -123,3 +123,11 @@ for archiving/transfer. The resulting bound is12,434.9s versus12,744.7s remainin
 the unpadded training estimate is9,751.3s. See
 `prelaunch/training-launch-003.json` and `prelaunch/continue-training-003.sh`.
 The detached controller and its process-group guard were updated together.
+
+The latency Pod `0pdyeln5tfjzt4` was allocated at17:41:45UTC: one RTX5090 in
+EUR-NO-1 atUSD0.99/hour,40GB container and40GB persistent workspace, with the
+same pinned image. Its provider-stop deadline is19:11:45UTC. The previous
+Run042 Pod was already absent at this discovery; no unrelated resource was
+modified. `21_prepare_latency_runtime.py` starts detached runtime installation
+while the training workers finish, without uploading scientific inputs yet.
+The final input archive is still hash-verified before any benchmark executes.
