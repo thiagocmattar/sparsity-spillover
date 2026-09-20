@@ -77,7 +77,10 @@ logits and input-dependent preprocessing are included. Post-hoc masks also
 remain inside timing; no activations are cached. The original 14M measurements
 and the new 70M sweep use separate GPU sessions. At 70M, native inference,
 the original port and the optimized implementation are paired in every
-process for all 26 checkpoints; absolute timings are not pooled across sessions.
+process for all 26 original checkpoints. A later session repeats Base and
+$T_2/P_h$ at $\kappa=0.1$ and measures its additional $\kappa=0.5$ checkpoint
+with the same frozen protocol (Table~\ref{tab:70m-additional-endpoint});
+absolute timings are not pooled across sessions.
 
 For comparisons across recipes, we use
 \emph{one native base-model latency per size and measurement session}:
@@ -116,7 +119,8 @@ These additional dense optimizations also contribute to latency reduction.
 \input{tables/compact-results/70m-kernel-transfer}
 
 Table~\ref{tab:70m-kernel-transfer} compares representative checkpoints;
-Table~\ref{tab:endpoints-14m-70m} gives the complete 26-checkpoint comparison.
+Table~\ref{tab:endpoints-14m-70m} gives all 27 checkpoints, identifying
+the later $T_2/P_h$, $\kappa=0.5$ measurement separately.
 Every implementation preserves the weights and thresholds and is checked on
 all 338 validation sequences in three fresh processes. This tests whether
 the observed sparse structures remain exploitable at 70M after implementation

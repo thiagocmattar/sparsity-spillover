@@ -1,4 +1,5 @@
 % Evidence: Analysis028 observations/001-matched-70m-grid.md; 01_collect.py and 02_figures.py.
+% Later endpoint: Analysis030 observations/001-later-70m-endpoint.md; 01_integrate.py and 02_plot.py.
 % Original 14M development: Run029 observations/06-implementation-and-claim-audit.md.
 % Clipping latency: Run036 results/clipping-final-kernel.json.
 % \subsection{From sparsity to speedups}
@@ -12,16 +13,18 @@ Figure~\ref{fig:70m-quality-latency} shows that the 70M model follows the same b
 \centering
 \includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
 \caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
-% Source: Analysis028 observations/001-matched-70m-grid.md; 02_figures.py.
-\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 26 matched checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$ at $\kappa=0,.01,.05,.1$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$.
+% Source: Analysis030 observations/001-later-70m-endpoint.md; 02_plot.py.
+\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 27 checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$, each thresholded recipe at $\kappa=0,.01,.05,.1,.5$.
 Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
 Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
-In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. All 26 checkpoints share one RTX\,5090 session, three fresh processes per checkpoint, batch one, 2,048 tokens and full output logits. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations. The additional $T_2/P_h$, $\kappa=0.5$ endpoint is retained separately in Table~\ref{tab:70m-additional-endpoint}.}
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. The original 26 checkpoints share one RTX\,5090 session. Diamonds mark $T_2/P_h$ at $\kappa=0.5$, measured later with the same frozen kernel and protocol: three fresh processes, batch one, 2,048 tokens and full output logits. Timings are not pooled or rescaled across sessions; Table~\ref{tab:70m-additional-endpoint} reports the repeated references. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations.}
 \label{fig:70m-quality-latency}
 \end{figure}
 
 \textbf{The 14M kernel does not transfer efficiently to 70M.}
-The direct adaptation of the 14M kernel to 70M can exploit the additional sparsity to reduce inference latency, but its overhead largely offsets these gains. In the matched sweep, the original port takes 3.325\,ms on the base model, compared with 1.611\,ms for native PyTorch, and its best sparse recipe reaches only $1.013\times$ the native base-model speed. Additional optimization reduces repeated sparsity checks at $h,z$, uses a scalar path for very sparse rows, and improves dense projections, attention and the output head. On $T_7/P_h$ at $\kappa=0.5$, this reduces latency from 1.590 to 1.088\,ms ($1.481\times$ the native base-model speed). All 26 checkpoints pass full-validation numerical checks in three fresh processes (Appendix~\ref{app:kernel-transfer}). The lower-loss $T_2/P_h$ points, however, remain slower than native: loss is only $0.029$--$0.093$ above Base, but optimized latency is 1.956--2.504\,ms. Thus, the favorable 14M quality--latency balance does not transfer directly.
+The direct adaptation of the 14M kernel to 70M can exploit the additional sparsity to reduce inference latency, but its overhead largely offsets these gains. In the matched sweep, the original port takes 3.325\,ms on the base model, compared with 1.611\,ms for native PyTorch, and its best sparse recipe reaches only $1.013\times$ the native base-model speed. Additional optimization reduces repeated sparsity checks at $h,z$, uses a scalar path for very sparse rows, and improves dense projections, attention and the output head. On $T_7/P_h$ at $\kappa=0.5$, this reduces latency from 1.590 to 1.088\,ms ($1.481\times$ the native base-model speed). All 27 checkpoints pass full-validation numerical checks in three fresh processes, across the original sweep and later measurement (Appendix~\ref{app:kernel-transfer}).
+
+The lower-loss $T_2/P_h$ points at $\kappa\leq0.1$, however, remain slower than native: loss is only $0.029$--$0.093$ above Base, but optimized latency is 1.956--2.504\,ms. At $\kappa=0.5$, the later measurement reaches 1.214\,ms ($1.364\times$ its same-session native Base at 1.656\,ms), but loss rises to 4.838. Thus, the favorable 14M quality--latency balance does not transfer directly.
 
 \textbf{More sparsity does not necessarily imply lower latency.}
 Within a fixed recipe, increasing sparsity generally reduces latency, but model-wide sparsity alone is not predictive. At 14M and $\kappa=0.5$, $T_7/P_{\mathrm{all}}$ is substantially sparser than $T_4/P_{\mathrm{all}}$ ($27.48\%$ versus $12.71\%$), yet slightly slower (0.473 versus 0.459\,ms). The 70M results show the same dependency on implementation: additional sparsity generally lowers latency within each recipe, but even the optimized implementation remains slower than native for many checkpoints. Speedup therefore depends on where zeros occur, whether they form groups the kernel can skip, and the cost of exploiting that structure.

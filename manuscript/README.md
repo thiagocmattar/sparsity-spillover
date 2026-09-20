@@ -1,5 +1,20 @@
 # Living Manuscript Draft
 
+20 September 2026, approved later 70M optimized measurement:
+Figure 3 and the complete tables include all 27 trained 70M checkpoints.
+The added T2/Ph kappa=.5 point takes 1.214 ms with the frozen optimized kernel
+versus 1.696 ms with the original port; its same-session native Base is
+1.656 ms (1.364x speedup). Diamonds identify the later session, and a compact
+appendix table reports repeated Base/kappa=.1 references. The original 26
+timings are unchanged; no session pooling or rescaling is performed.
+Canonical loss/sparsity are unchanged. All nine final processes qualify;
+217 files are verified and the Pod is deleted. Current author edits are
+preserved. The checked 22-page build is `draft/main-updated.pdf`, with resolved
+references and no overfull boxes. Windows currently prevents replacing
+`draft/main.pdf` because its viewer has the file open; installation awaits
+the user's requested tab closure. See
+[Analysis030](../analyses/030-2026-09-20-70m-t2-optimized-endpoint/README.md).
+
 20 September 2026, approved matched optimized 70M integration:
 `draft/main.pdf` contains the verified build from the current author sources
 (21 pages, resolved references/citations, no overfull boxes). After the user

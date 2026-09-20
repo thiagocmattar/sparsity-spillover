@@ -11,7 +11,7 @@
 \subsection{Detailed trained results}
 \label{app:endpoint-results}
 
-% Updated cohort: Analysis028 / 01_collect.py; observations/001-matched-70m-grid.md.
+% Updated cohort: Analysis030 / 01_integrate.py; observations/001-later-70m-endpoint.md.
 Tables~\ref{tab:endpoints-14m-only}--\ref{tab:endpoints-410m} report all 84
 trained conditions, including settings outside the favorable
 quality--sparsity trade-off. Loss and model-wide sparsity use the same
@@ -19,11 +19,14 @@ definitions and final checkpoints as the main figures, with one training
 seed and complete validation per condition. Values are rounded.
 
 \input{tables/compact-results/14m-only}
-The additional 70M $T_2/P_h$ checkpoint at $\kappa=0.5$ completes its
-training grid but falls outside the 26-checkpoint optimized-kernel sweep.
-Table~\ref{tab:70m-additional-endpoint} retains its quality, sparsity and
-original-port timing; its optimized latency is unmeasured. Its separate
-session is not pooled into Figure~\ref{fig:70m-quality-latency}.
+The additional 70M $T_2/P_h$ checkpoint at $\kappa=0.5$ was measured in a
+later session with the same frozen optimized kernel. It reaches
+$15.427\%$ sparsity at loss 4.8380, with latency reduced from 1.696\,ms
+for the original port to 1.214\,ms. Table~\ref{tab:70m-additional-endpoint}
+reports Base and $\kappa=0.1$ repeated in that session: optimized latency
+changes by $2.19\%$ and $0.20\%$, respectively, while native Base changes
+by $2.80\%$. Figure~\ref{fig:70m-quality-latency} retains the original
+26 timings and marks this later endpoint separately, without pooling or rescaling.
 \input{tables/compact-results/70m-additional-endpoint}
 \input{tables/compact-results/14m-70m}
 \FloatBarrier

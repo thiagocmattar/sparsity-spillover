@@ -1,7 +1,15 @@
 # Run047: optimized latency of the later 70M T2/Ph kappa=0.5 checkpoint
 
-Status: design confirmed 20 September 2026; implementation and local checks complete.
-Separate launch approval is required. No cloud resource has been created.
+Status: complete and verified. All nine final processes qualify; all 217
+returned files pass size/SHA256 checks and local reduction exactly reproduces
+the remote summary. The later endpoint takes 1.214368 ms with opt073 versus
+1.695806 ms with the original port, or 1.363778x its same-session native Base.
+Pod `e2njhw4wy9d9uo` ran from 22:26:40 to 22:48:34 UTC on 20 September
+and was deleted after retrieval. Zero Pods remain; shared storage is unchanged.
+Estimated total below USD0.37 (not a settled invoice), within the approved
+90-minute/USD2 cap. See [the result and limits](observations/001-final-results.md).
+The frozen configuration retains its prelaunch authorization snapshot; the
+actual approval, Pod identity and deadline are recorded in `prelaunch/lease-001.json`.
 
 ## Question and approved scope
 
