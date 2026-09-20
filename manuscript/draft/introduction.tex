@@ -54,10 +54,12 @@ descriptive. Axes have independent ranges between model sizes.}
 \label{fig:quality-sparsity-overview}
 \end{figure}
 
-% Evidence and editorial scope: reviews/2026-09-20-introduction-abstract/README.md.
-% Analysis024 observations 015, 028, 034; Analysis021 pressure-scope observation O016.
-\textbf{High sparsity has a quality cost.} At 14M, $T_7/P_{\mathrm{all}}$ with $\kappa=0.5$ reaches $92\%$ of its ceiling but raises loss by $0.62$ over the base model (Figure~\ref{fig:quality-sparsity-14m-70m}).
-\textbf{Local pressure improves the trade-off.} Compared with $P_{\mathrm{all}}$, $P_h$ lowers loss by $0.19$--$0.32$ in all 16 matched pairs at $\kappa\leq0.1$, and latency in 18 of 20 pairs overall (Figure~\ref{fig:paired-intervention-effects}).
-\textbf{Local pressure has nonlocal effects.} At 14M and $\kappa=0.05$, $P_h$ increases unpressured $z$ sparsity over $P_0$ under both $T_4$ and $T_7$ (Figure~\ref{fig:pressure-layer-sparsity}).
-
-\textbf{Execution gains depend on placement.} In a 14M ablation, separate $h$ and $z$ skipping saves $150$ and $29\,\mu$s per sequence, while joint $qk/pv$ skipping increases latency (Table~\ref{tab:kernel-mechanisms}). These results support co-designing training and kernels around exploitable zero structure.
+% Editorial revision: reviews/2026-09-20-introduction-abstract/README.md (surgical revision).
+% Evidence: Analysis024 observations 015, 028, 034, 041; Analysis021 pressure-scope O016.
+Across 36 14M-parameter and 22 70M-parameter training and evaluation runs, we identify several insights.
+First, \textbf{the $T/P$ train-time interventions extend the attainable sparsity range relative to post-hoc clipping}, approaching the architectural ceiling for the more aggressive recipes, but at a cost in quality (Figure~\ref{fig:quality-sparsity-14m-70m}).
+Second, \textbf{sparsity and speedup increase together within recipes}, but a larger $\Smodel$ does not directly translate into a larger speedup. The main requirement for lower latency is the location and structure of zeros and whether the kernel can exploit them, with most gains coming from skipped computation at $h$ and $z$ (Table~\ref{tab:kernel-mechanisms}).
+Third, for exploitable sparse structures, \textbf{increasing model scale can increase the opportunity for latency reductions}, although the measured gain depends on the kernel implementation and reference latency (Appendix~\ref{app:kernel-results}).
+Fourth, \textbf{local pressure at $h$ provides a more favorable balance between quality, sparsity and latency than global pressure} when combined with broader thresholding. It lowers loss in all 16 matched comparisons at moderate thresholds, and latency in 18 of 20 across the full grid (Figure~\ref{fig:paired-intervention-effects}).
+Finally, \textbf{local pressure can induce global changes in sparsity}: at 14M and $\kappa=0.05$, pressure at $h$ increases sparsity at $z$, which receives no direct pressure (Figure~\ref{fig:pressure-layer-sparsity}).
+Taken together, these results indicate that activation sparsification should not be treated as an isolated training objective: training interventions and deployment kernels must be co-designed so that the induced sparsity is both high and structurally exploitable at inference time.

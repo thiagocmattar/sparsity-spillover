@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, surgical revision of the introduction and abstract:
+the previous compressed rewrite is superseded. The author's original five
+observations, explanatory flow, metric definitions and closing sentences are
+restored, with targeted cuts, bold findings, supporting references and a few
+evidence updates. See the [revision record](draft/reviews/2026-09-20-introduction-abstract/README.md).
+The rebuilt 20-page `draft/main.pdf` has resolved references/citations and
+no overfull boxes. The entire findings paragraph fits below Figure 1 on page 2,
+with Related Work following normally. Earlier entries describe prior versions.
+
 20 September 2026, introduction and abstract rewrite: the introduction closes
 with four bold findings supported by representative values and figure/table
 references. The abstract is approximately half as long and emphasizes local

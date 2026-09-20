@@ -1,5 +1,37 @@
 # Introduction findings and abstract
 
+## Current version: surgical revision
+
+The author's follow-up requests restoring the previous wording and editing it
+surgically. This version starts from the saved pre-edit passages, superseding
+the compressed rewrite below. The introduction preserves the five observations
+in their original order, their explanatory transitions, and the closing
+co-design statement verbatim. Changes remove redundant numbering and site
+definitions, bold the main clauses, add supporting references and the 16/16
+and 18/20 paired results, give a concrete nonlocal example, and qualify the
+scale statement by implementation and latency reference.
+
+The abstract preserves the original opening, study description, metric
+definitions and concluding sentence. It removes the repeated motivation
+sentence and the three-size numerical catalog, updates the pressure comparison
+to both sizes, and replaces the older regression statistics with direct kernel
+evidence. It remains moderately shorter than the original, with fuller prose
+than the superseded rewrite. The source evidence below remains applicable;
+the current text does not report every audited value.
+
+Checks confirm that the preceding introduction and its closing sentence are
+unchanged from the author's saved version, and that the abstract retains the
+specified original sentences. The 16/16 and 18/20 counts were rechecked against
+the retained endpoint export. The rebuilt PDF remains 20 pages, with resolved
+references/citations, no overfull or underfull vertical boxes, and the same
+three underfull horizontal-box warnings. Contact sheets cover all pages;
+the first two pages were inspected at higher resolution. The complete findings
+paragraph fits below Figure 1 on page 2, followed by Related Work. No layout
+settings or other manuscript prose were changed. The installed PDF matches
+the reviewed build byte-for-byte.
+
+## Superseded compressed version and evidence audit
+
 The author requested a shorter, evidence-backed closing introduction paragraph,
 bold main findings, and a more focused abstract. The revised introduction uses
 four findings: the quality cost of high sparsity, local versus broad pressure,
