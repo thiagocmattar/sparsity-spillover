@@ -143,3 +143,25 @@ These instrumented durations diagnose costs and are not benchmark latency.
 Candidates033--040 test eight dense full-vocabulary Triton schedules on top of
 the same opt032 sparse components. Dense-head gains remain separate from sparse
 skipping in the final attribution. No final-validation inputs are used to tune.
+
+Candidates041--063 test parallel row inspection, longer exact short-row paths,
+dense projection/head schedules, and alternative native attention backends.
+The native attention alternatives failed full-model development bounds and are
+excluded. Candidates041--052 originally counted useful scalar work but omitted
+duplicate prepass work in mixed fallback groups; their timing still includes
+that work. Candidate063 corrects the actual-work counters, with an independent
+oracle and focused tests. Original sources and results remain unchanged.
+
+Candidates064--074 investigate token-major attention output, joint h/z
+inspection, and attention launch ordering. The K16 head candidates065--069
+are unsupported by the installed CUTLASS pipeline and retain their compilation
+failures. Candidate073 schedules the longest causal query blocks across all
+heads before shorter blocks; this changes dense scheduling only. Candidate074
+tests a warp vote for the existing fallback decision. All selection remains on
+the fixed first16 training blocks, with unchanged weights, gates and tolerances.
+
+`42_profile_attribution.py` additionally identifies the parallel h/z prepass in
+the profiler, keeping it separate from the fallback kernel. The final evidence
+checker `43_verify_final_evidence.py` requires all planned fresh processes,
+complete validation and timing coverage, one physical GPU, full logits,
+diagnostics and nonadditive replacement controls before reporting completion.
