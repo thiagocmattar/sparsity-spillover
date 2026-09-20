@@ -1,10 +1,10 @@
 # Living Manuscript Draft
 
 20 September 2026, approved matched optimized 70M integration:
-`draft/main-updated.pdf` is rebuilt from the current author sources (21 pages, resolved
-references/citations, no overfull boxes). The original `draft/main.pdf` remains
-unchanged because Windows denies replacement while its viewer has it open.
-The user was asked to close that tab; no process was forcibly closed.
+`draft/main.pdf` contains the verified build from the current author sources
+(21 pages, resolved references/citations, no overfull boxes). After the user
+closed its viewer tab, the checked build was installed and its SHA256 verified;
+it is byte-identical to the retained `draft/main-updated.pdf` preview.
 Figure 3 uses only the 26 matched
 Run045 checkpoints; the additional Run046 T2/Ph kappa=.5 endpoint is retained
 in its own appendix table with original-port timing and unmeasured optimized
