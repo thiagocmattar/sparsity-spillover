@@ -117,59 +117,76 @@ and $\lambda=b=1$ throughout.}
 
 \section{Sparsity accounting}
 \label{app:accounting}
+% Definitions: methodology.tex, Section sec:measurement; research/METRICS.md.
+% Implementation: src/sparsity_research/metrics.py and ceilings.py.
 
-\subsection{Exact counters}
+\subsection{Activation and model-wide sparsity}
 
-Activation sparsity at site $s$ is
-$\mathcal{Z}_s=\sum_{\ell,e,i}\mathbf{1}\{A^{(\ell,e)}_{s,i}=0\}/
-\sum_{\ell,e}|A_s^{(\ell,e)}|$, where $\ell$ indexes layers, $e$ evaluation
-batches, $i$ tensor entries, and $|A|$ the number of elements in tensor $A$. Near-zero mass replaces equality by
-$|A_{s,i}|\leq\varepsilon$ for a stated tolerance; it does not contribute to
-exact-zero counts unless the value is zero. All aggregate fractions pool
-integer numerators and denominators across batches and layers before division.
+Activation sparsity at a site is the number of zero activations divided by
+the total number of activations at that site. We sum both counts across
+layers and validation sequences before dividing.
 
-The atomic unit of model-wide accounting is one scalar multiplication in a
-matrix product. If $X\in\mathbb{R}^{n\times p}$ feeds a linear projection with
-$q$ outputs, the count is $N=npq$, with $N_0=q\sum_{i,j}\mathbf{1}\{X_{ij}=0\}$.
-Zero weights receive no credit. For the multihead attention graph specified in Appendix~\ref{app:sites},
-both operands are activations,
-so a product is credited once if either is zero. Within one block and
-evaluation batch, for query position $t$,
-key position $u\leq t$, and within-head coordinate $j$,
+Model-wide sparsity counts the scalar multiplications involving zero
+activations:
+\begin{equation}
+\Smodel=\frac{N_0}{N_{\mathrm{model}}}.
+\end{equation}
+$N_0$ counts scalar multiplications
+with at least one zero activation input within the Pythia blocks.
+$N_{\mathrm{model}}$ counts all scalar multiplications in those blocks
+and the final output projection to the vocabulary. This final projection
+contributes only to the denominator. Both counts are summed across all
+layers and validation sequences; reported percentages multiply the ratio
+by 100.
+
+For a linear projection within a Pythia block, each input activation is
+multiplied by one weight per output feature. An input matrix with $n$ rows and
+$d_{\mathrm{in}}$ features, projected to $d_{\mathrm{out}}$ features,
+contributes $n d_{\mathrm{in}}d_{\mathrm{out}}$ multiplications to the
+denominator. Each zero input contributes $d_{\mathrm{out}}$ to $N_0$.
+Zero weights are not counted as activation sparsity.
+
+In attention, both inputs to each multiplication are activations. A product
+is counted once if either input is zero, including when both are zero.
+With queries $q$, keys $k$, values $v$ and attention probabilities $p$,
+the counts for one head in one sequence are
 \begin{align}
-N_{0,QK}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
-\mathbf{1}\{Q_{bhtj}=0\ \lor\ K_{bhuj}=0\},\label{eq:qk-count}\\
-N_{0,PV}&=\sum_{b,h,t}\sum_{u\leq t}\sum_j
-\mathbf{1}\{P_{bhtu}=0\ \lor\ V_{bhuj}=0\}.\label{eq:pv-count}
+N_{0,\mathrm{QK}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
+\mathbf{1}\{q_{tj}=0\ \lor\ k_{uj}=0\},\label{eq:qk-count}\\
+N_{0,\mathrm{PV}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
+\mathbf{1}\{p_{tu}=0\ \lor\ v_{uj}=0\}.\label{eq:pv-count}
 \end{align}
-Here $P$ is the causal softmax probability tensor; the model numerator sums
-these counts over blocks and evaluation batches. Future masked positions
-are excluded from both counts, while zeros on valid positions, including
-floating-point underflow, are included. Counts use the operands actually consumed by each matrix product; upstream
-masks do not determine those operands' zeros after intervening transformations.
-Earlier value positions participate
-in more causal pairs, so local value sparsity alone does not determine $PV$
-sparsity.
+Here $T$ is sequence length, $d_h$ is the dimension of each head, $t$ is
+the query position and $u$ the key/value position. The restriction $u\leq t$
+excludes masked future positions from both numerator and denominator.
+These counts are summed over heads, layers and validation sequences.
+We use the activation values entering each matrix multiplication, after
+any thresholding or intervening transformation.
 
-\subsection{Sparsity ceiling and normalization}
+Other operations, such as normalization, softmax, activation functions,
+additions and memory transfers, are excluded. Thus, $\Smodel$ does not
+directly measure latency or speedup.
+
+\subsection{Model-wide sparsity ceiling}
 \label{app:ceiling}
 
-For a specified graph and workload, let $N_o$ count the valid scalar
-multiplications in block operation family $o$, pooled over layers and
-examples. Then $N_{\mathrm{model}}=\sum_o N_o+N_{\mathrm{head}}$, while $N_0$
-sums the corresponding zero-operand counts only in block operations.
-The block-only view is $\Sblock=N_0/\sum_o N_o$. Both sparsities are fractions;
-percentages multiply them by 100. Embedding lookup, normalization,
-nonlinearities, softmax, RoPE, bias and residual additions, and data movement
-are outside this accounting.
+To compute the ceiling, assume that every activation at the selected
+thresholding sites $\mathcal{N}$ is zero. Let $N_{\mathrm{reach}}(\mathcal{N})$
+count the scalar multiplications that must then have a zero activation
+input. Using the same denominator as measured model-wide sparsity,
+\begin{equation}
+\Smax=\frac{N_{\mathrm{reach}}(\mathcal{N})}{N_{\mathrm{model}}}.
+\end{equation}
+Each multiplication is counted once, even if several selected sites make
+it zero. We also include downstream activations forced to zero: for
+example, setting all values $v$ to zero makes the attention context $z$
+zero, affecting both the probability--value product and the attention-output
+projection. Zero attention scores, however, do not imply zero attention
+probabilities.
 
-To construct the reach numerator, count products guaranteed to have a zero
-activation operand as a structural consequence of 100\% activation sparsity at the selected sites, independently of checkpoint values or natural zeros elsewhere.
-Include exact zero-preserving propagation under the declared graph rules. Products reached through more
-than one site receive one credit. The resulting count is
-$N_{\mathrm{reach}}(\mathcal{N})$. Division by the same $N_{\mathrm{model}}$
-gives $\Smax$. Natural zeros outside this selected-site reach can contribute
-to observed $\Smodel$, so the ceiling is not an upper bound on every
-observation. Its gap to an observation does not measure sparsity available
-without quality loss. Appendix~\ref{app:architecture-counts} specializes
-the denominator and reach rules to the Pythia graph used in the experiments.
+The ceiling depends on the architecture, selected sites and sequence length,
+without using a trained model's activation values. Natural zeros at other
+sites also contribute to $\Smodel$, so measured model-wide sparsity can
+exceed this ceiling. The ceiling does not predict the quality cost of
+approaching it. Appendix~\ref{app:architecture-counts} gives the operation
+counts and site assignments used for each Pythia model size.

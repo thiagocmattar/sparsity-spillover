@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, sparsity-accounting rewrite: `app:accounting` now uses the
+main text's model-wide sparsity, ceiling and lowercase q/k/v/p notation. The
+section explains counts for linear projections and causal attention, the
+shared denominator and ceiling propagation with a concrete v-to-z example.
+Unused site/block sparsity symbols and graph/workload terminology were removed;
+counting definitions and cross-reference labels are preserved. TeX structure
+and references were checked without compilation. `draft/main.pdf` is unchanged,
+as requested; unrelated author edits remain in the working tree.
+
 20 September 2026, requested rebuild: `draft/main.pdf` reflects the current
 author-edited sources. The 35-page build has no undefined references/citations
 or overfull boxes; pages 4, 12 and 13 were visually checked. The installed
