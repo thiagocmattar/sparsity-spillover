@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild with the AI-use statement:
+`draft/main.pdf` contains the current author-edited sources and the disclosure
+on page 9. The 20-page build has resolved references/citations and no overfull
+boxes; three underfull-box warnings remain. A dangling introduction reference
+to the now-commented paired-pressure figure points to Figure 1 instead.
+All pages were visually checked, and the installed PDF matches the checked
+build. Other author source edits remain preserved and uncommitted.
+
 20 September 2026, approved AI-use disclosure:
 `draft/main.tex` includes an unnumbered AI use statement after the conclusion
 and before the references. It records the approved research, coding, analysis
