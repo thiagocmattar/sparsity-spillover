@@ -1,5 +1,12 @@
 # H-only pressure: final K050 latency extension
 
+The [70M overhead audit](observations/042-70m-overhead-audit.md) rechecks raw
+host/device timings and identifies padded h/z arithmetic, repeated inspection
+and inherited projection schedules. The 1.649ms host deficit is also present
+on the GPU (1.644ms); component latency attribution still needs the
+[proposed diagnostic](70M-OVERHEAD-DIAGNOSTIC-DESIGN.md). Reproduce the saved-data
+audit with `32_audit_70m_overhead.py`. No new GPU experiment has been launched.
+
 The [consolidated kernel appendix](observations/041-kernel-appendix.md)
 replaces the historical fit with a [fixed-native-base diagnostic](figures/20-kernel-structure-native-base-speedup.pdf).
 All 84 matched trained/clipping settings retain their measured latency and

@@ -1,5 +1,9 @@
 # Observations
 
+- [042: 70M implementation-overhead audit](042-70m-overhead-audit.md):
+  raw host/device timing checks, dense projection padding and repeated h/z
+  inspection; separates verified extra work from unmeasured latency attribution.
+
 - [041: Consolidated kernel appendix and fixed native base](041-kernel-appendix.md):
   exact implementation/counter definitions, 84 matched settings, and a six-panel
   diagnostic without fits; native-base gains are 1.427x/1.028x at 14M/70M.
