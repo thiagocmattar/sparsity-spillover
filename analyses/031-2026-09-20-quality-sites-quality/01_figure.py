@@ -1,4 +1,4 @@
-"""Preview: matched 14M/70M quality panels around Table 2's conditional savings."""
+"""Introduction: matched quality panels around Table 2's conditional savings."""
 import hashlib
 import json
 import math
@@ -84,11 +84,6 @@ def main():
             rows = sorted((r for r in panel['clipping'] if r['scope']==scope),key=lambda r:r['target'])
             ax.plot([r['sparsity'] for r in rows],[r['loss'] for r in rows],
                 color=styles[(scope,'none')]['color'],ls=':',lw=1.25,zorder=2)
-        for scope,label in [('2','2'),('4','4'),('7','7')]:
-            ceiling = panel['ceilings'][scope if scope in panel['ceilings'] else 'hz']['R_model_max_percent']
-            ax.axvline(ceiling,color='#A0A5AC',ls=(0,(2,3)),lw=.8,zorder=1)
-            ax.text(ceiling-.25,.985,rf'$T_{label}$',transform=ax.get_xaxis_transform(),
-                ha='right',va='top',color='#767C84',fontsize=10)
         limits = (-.75,31,5.06,6.19) if size=='14M' else (-1.25,51,4,5.58)
         ax.set(xlim=limits[:2],ylim=limits[2:],xlabel=r'Model-wide sparsity $S_{\mathrm{model}}$ (%)',ylabel='Validation loss')
         ax.set_xticks([0,10,20,30] if size=='14M' else [0,10,20,30,40,50])
@@ -117,16 +112,14 @@ def main():
     for ax in axes:ax.tick_params(length=3,width=.65)
     fig.legend(handles=handles,loc='lower center',ncol=4,frameon=False,fontsize=11,
         handlelength=2.2,columnspacing=1.7,labelspacing=.65,bbox_to_anchor=(.52,.075))
-    fig.text(.52,.025,'(b): one skipping path off minus all paths on; whiskers show process extrema. Effects are not additive.',
-        ha='center',fontsize=9,color='#5E6670')
     OUTPUT.parent.mkdir(exist_ok=True)
-    fig.savefig(OUTPUT,metadata={'Title':'Matched quality-sparsity trade-offs and conditional site savings',
+    fig.savefig(OUTPUT,bbox_inches='tight',pad_inches=.04,metadata={'Title':'Matched quality-sparsity trade-offs and conditional site savings',
         'CreationDate':None,'ModDate':None})
     plt.close(fig)
     record=dict(output=OUTPUT.relative_to(HERE).as_posix(),output_sha256=sha(OUTPUT),
         script=Path(__file__).name,script_sha256=sha(Path(__file__)),sources_sha256=sources,
         panels=panels,bar_chart=table,shared_recipes=[dict(scope=k[0],pressure=k[1],style=styles[k]) for k in order],
-        scope='Preview only; manuscript unchanged. Canonical quality, not kernel qualification loss.',
+        scope='Approved introduction figure. Canonical quality, not kernel qualification loss.',
         coverage=dict(validation_blocks=338,validation_documents=500,excluded_tail_tokens=1444),
         note='Panel b uses one 14M checkpoint; bars are not additive site allocations or confidence intervals.')
     (HERE/'data').mkdir(exist_ok=True)

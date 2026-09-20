@@ -1,5 +1,16 @@
 # Living Manuscript Draft
 
+20 September 2026, approved three-panel introduction figure:
+`fig:quality-sparsity-overview` now uses `figures/24-quality-sites-quality.pdf`:
+14M quality, Table 2 conditional site savings, and 70M quality, with a shared
+recipe legend. Ceiling guides and the graphic footer are removed. The caption
+follows the author's revised introduction argument and defines the timing
+ablation and whiskers; surrounding prose is preserved. The checked build has
+21 pages, resolved references and no overfull boxes, with the figure on page 2.
+It is installed as `draft/main-updated.pdf`; the open viewer still locks
+`draft/main.pdf`, preventing replacement of that older build.
+Evidence and provenance: [Analysis031](../analyses/031-2026-09-20-quality-sites-quality/README.md).
+
 20 September 2026, approved later 70M optimized measurement:
 Figure 3 and the complete tables include all 27 trained 70M checkpoints.
 The added T2/Ph kappa=.5 point takes 1.214 ms with the frozen optimized kernel

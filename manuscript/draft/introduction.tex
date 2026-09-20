@@ -19,11 +19,17 @@ To address this gap we pretrain Pythia-family models from scratch~\citep{biderma
 % Figure source: analyses/027-2026-09-20-run044-manuscript/02_plot.py
 % Observation: analyses/027-2026-09-20-run044-manuscript/observations/001-run044-integration.md
 % Checkpoint identities and coordinates: analyses/027-2026-09-20-run044-manuscript/data/figure-data.json
+% Source: analyses/031-2026-09-20-quality-sites-quality/01_figure.py
+% Observation: analyses/031-2026-09-20-quality-sites-quality/observations/001-three-panel-preview.md
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.9\linewidth]{figures/22-14m-main-quality-sparsity-latency.pdf}
-\caption{\textbf{Quality, sparsity and execution on Pythia-14M.}
-\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 41 checkpoints spanning the Base/ReLU controls and the $T/P$ intervention grid. Curves connect separately trained settings over $\lambda=.05,.1,.5,1$ for $T_1/P_h$ and $\kappa=0,.01,.05,.1,.5$ otherwise. Dotted curves in (a) show post-hoc clipping of the Base/ReLU controls; vertical dotted lines mark analytic sparsity ceilings. Latencies use an RTX~5090, batch one, and 2,048-token sequences.
+\includegraphics[width=\linewidth]{figures/24-quality-sites-quality.pdf}
+\caption{\textbf{From broad sparsification to targeted execution and scale transfer.}
+\textbf{(a)} Pythia-14M validation loss versus model-wide logical sparsity $\Smodel$ exposes the quality costs of different thresholding and pressure placements.
+\textbf{(b)} The conditional execution ablations in Table~\ref{tab:kernel-mechanisms}, measured on the 14M $T_7/P_{\mathrm{all}}$ checkpoint at $\kappa=0.5$, identify $h$ and $z$ as the profitable skipping sites, motivating the narrower $T_2/P_h$ recipe.
+Saved time is full-model latency with one skipping path disabled minus latency with all paths enabled; whiskers span all differences between the three process means per mode. These effects are not additive. Timings use BF16 on an RTX~5090, batch one and 2,048 tokens; $q,k$ are ablated jointly.
+\textbf{(c)} Pythia-70M tests the quality--sparsity ordering at a larger scale: $T_2/P_h$ retains near-baseline quality for $\kappa\leq0.1$, while its most aggressive threshold also incurs a quality cost.
+Panels (a,c) each show 27 trained checkpoints from the seven shared recipes in the legend; curves connect $\kappa=0,.01,.05,.1,.5$. Dotted Base/ReLU curves show post-hoc clipping. The two panels use different axis ranges; logical sparsity is not measured speedup.
 }
 \label{fig:quality-sparsity-overview}
 \end{figure}

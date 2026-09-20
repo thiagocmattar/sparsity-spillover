@@ -38,7 +38,7 @@ trade-offs for the 27 trained checkpoints shared by recipe at both sizes.
 Colors and line styles identify Base, GeLU-to-ReLU, T2/Ph, T4/Ph, T7/Ph,
 T4/Pall and T7/Pall; curves connect the five threshold settings. Dotted control
 curves show retained post-hoc clipping; high-loss tails exceed the focused view.
-Vertical guides labeled T2/T4/T7 mark analytic model-wide reach ceilings.
+The approved revision omits vertical ceiling guides and the graphic's footer.
 (b) Conditional saved time by skipping control for 14M T7/Pall at kappa=0.5.
 Positive bars mean reduced full-model latency. Whiskers show process extrema;
 the bars are not additive allocations of total runtime savings.
@@ -54,5 +54,13 @@ recipe in (a). Its process ranges are descriptive and may cross zero.
 cohort, table values, source hashes, PDF bounds and fonts. The exported evidence
 and verification are `../data/figure-data.json` and `../data/verification.json`.
 The rendered one-page PDF was visually checked for labels, whitespace, bar
-extrema, shared legend and clipping. This is a standalone preview; no manuscript
-figure replacement or broader finding promotion has been made.
+extrema, shared legend and clipping. The approved figure replaces
+`fig:quality-sparsity-overview` in the introduction as
+`manuscript/draft/figures/24-quality-sites-quality.pdf`. Its caption explains the
+three panels along the author's revised argument: broad placement trade-offs,
+conditional h/z benefits motivating T2/Ph, and the 70M quality comparison.
+It retains the non-additive interpretation and process-span definition removed
+from the graphic, and qualifies the near-baseline T2/Ph claim to kappa<=0.1.
+The 21-page manuscript build has resolved references and no overfull boxes;
+the figure/caption on page 2 were visually checked. Surrounding author prose
+was preserved byte-for-byte during replacement.
