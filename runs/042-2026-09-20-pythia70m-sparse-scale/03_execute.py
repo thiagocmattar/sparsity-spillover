@@ -30,9 +30,11 @@ def main():
     else:
         read(RUN/'provenance/final-selection.json')
         modes = ('selected-no-skip','selected-native-hz','selected-native-attention',
-                 'selected-native-am','selected-native-norm','selected-native-rope')
+                 'selected-native-am','selected-native-norm','selected-native-rope',
+                 'selected-native-head')
         jobs = [(c,k,r) for c in ('c00','c21') for k in modes for r in (1,2,3)]
         jobs += [('m14-c20',k,r) for k in ('hz-skips-off','native-hz') for r in (1,2,3)]
+        jobs += [('m14-c01','native-hz',r) for r in (1,2,3)]
     random.Random(2801).shuffle(jobs)
     write(out/f'order-{args.tag}.json', jobs)
     rows = []

@@ -91,3 +91,13 @@ def test_extended_short_rows_reassign_work_instead_of_erasing_it():
     value[:,:3]=1
     assert counts(value,8) == [256,256,0]
     assert counts(value,8,max_short=4) == [0,512,32*3*512]
+
+
+def test_native_head_replacement_restores_full_projection():
+    linear = torch.nn.Linear(4, 7, bias=False)
+    model = SimpleNamespace(embed_out=linear)
+    x = torch.randn(2, 4)
+    expected = linear(x).clone()
+    linear.forward = MethodType(lambda self, value: value, linear)
+    substitute(model, 'native-head', [])
+    assert torch.equal(linear(x), expected)

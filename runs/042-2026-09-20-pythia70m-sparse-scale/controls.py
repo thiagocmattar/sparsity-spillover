@@ -5,7 +5,8 @@ import torch
 MODES = ("native", "full", "all-skips-off", "hz-skips-off", "native-hz",
          "native-am", "native-attention", "native-norm", "native-rope", "legacy",
          "selected", "selected-no-skip", "selected-native-hz", "selected-native-am",
-         "selected-native-attention", "selected-native-norm", "selected-native-rope")
+         "selected-native-attention", "selected-native-norm", "selected-native-rope",
+         "native-head", "selected-native-head")
 
 
 class NativeJoint:
@@ -55,6 +56,10 @@ def original_norms(model):
 def substitute(model, mode, saved_norms):
     if mode not in MODES:
         raise ValueError(mode)
+    if mode == "native-head":
+        linear = model.embed_out
+        linear.forward = MethodType(torch.nn.Linear.forward, linear)
+        return
     for layer, (first, second, gates) in zip(model.gpt_neox.layers, saved_norms):
         if mode == "hz-skips-off":
             layer._run026_joint.skip = False
