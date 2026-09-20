@@ -4,7 +4,16 @@ The user requested an exact repeat of Run041 at kappa=0.5 on RunPod, completing
 its 0/.01/.05/.1/.5 threshold grid. That explicit configuration selects the
 scientific design below. The user subsequently confirmed the full Run041
 measurement package and explicitly approved the USD10 launch envelope.
-Status: exact remote preflight passed; scientific training is running.
+Status: complete. Training and all three K050 processes passed verification;
+all agreed artifacts are local and both Run044 Pods are deleted.
+
+Final validation loss is **5.536255**. Pooled h/z exact-zero fractions are
+**99.841%/99.841%** and model-wide logical-product opportunity is **5.339%**.
+K050 takes **0.506323 ms** versus **0.718438 ms** for native CUDA graphs:
+**1.4189x** paired geometric-mean speedup on RTX5090, BF16, B1/T2048.
+See the [result and interpretation limits](observations/001-final-results.md).
+Estimated GPU cost is **USD4.286**, below the approved USD10 cap; provider
+billing is still incomplete and this estimate excludes storage.
 
 ## Question and matched contract
 
@@ -165,3 +174,69 @@ step6/712, loss10.47114, approximately580k input tokens/s including early
 checkpoint/validation overhead, with zero overflows and57.2GiB peak reserved.
 The refreshed training ETC was43min; the final training diagnostics and
 RTX5090 latency remain queued. The full artifact/teardown contract is unchanged.
+
+The live RTX5090 catalog later had LOW stock only in EUR-NO-1, still USD0.99/h.
+To avoid a capacity wait and overlap cold compilation, latency Pod
+`zf5nwv1pva5d21` was created at16:09:17UTC with the unchanged90min deadline
+(17:39:17UTC),40GB container and50GB isolated /workspace. Both scoped provider
+guards are armed; the total USD10 cap is unchanged. Source-only bootstrap
+`22_build_latency_bootstrap.py` verifies the same1,374 archived files and
+bundles the frozen runtime. `latency/00_precompile.py` invokes the existing
+K042/K049/K050 extension builders with their unchanged sources and flags;
+this is non-evidence compilation only, without a model or timed inference.
+`21_prepare_latency_environment.py` verifies the upload hash and runs setup
+and compilation detached. Final smoke and all3 complete-qualification timing
+processes still run after the actual final checkpoint arrives. This starts
+runtime preparation earlier than the initial near-completion estimate while
+remaining inside the approved cost/duration envelope.
+
+Runtime preparation attempt001 installed all pins but could not find Ninja
+because the virtual environment was absent from PATH. Attempt002 corrected
+PATH; it was interrupted after detecting a different extension-cache path
+from the final benchmark. Attempt003 used the exact benchmark PATH, CUDA,
+extension and Triton cache settings and compiled K042/K049/K050 successfully
+in298.6s. Attempt004 precompiles the unchanged K019/K035 dependencies too.
+These are infrastructure retries only; the original sources, compiler flags,
+scientific inputs and final qualification/timing protocol are unchanged.
+All setup and compilation logs are retained for verified retrieval.
+Attempt004 also completed successfully (259.0s); all five historical extension
+builders now have populated the final benchmark cache. All58 installed package
+pins exactly match the frozen Run041 inventory, with a stored verification
+record. No scientific timing was collected during preparation.
+
+Training completed all712 optimizer updates without overflow in2430.25s.
+All712 OL1 boundary records and four full validation passes verified; final
+validation loss is5.5362546204, pooled h/z exact-zero fractions are
+0.9984087352/0.9984094443, and R_model is0.0533863908 (analytic ceiling
+0.0534714680). Median training throughput was622,090 input tokens/s.
+The939,855,159-byte archive and all74 members passed SHA256 verification
+locally, followed by the complete local scientific verifier. All12 model
+checkpoints and3 optimizer/scaler/RNG states are retained locally
+(1,013,222,452 checkpoint bytes). The H100 Pod was then deleted and confirmed
+absent; its obsolete workstation guard was stopped. The final checkpoint
+and all1,382 source/input identities verified before latency submission.
+Local re-verification rewrote only its own verification report with Windows
+CRLF line endings. Its normalized bytes and parsed JSON exactly equal the
+remote report; the original remote bytes are separately retained under
+`transfer/training-verification-remote.json`. All73 other inventory members
+remain byte-identical, as recorded in
+`prelaunch/training-reconciliation-001.json`.
+
+The smoke and all three full K050 processes qualified. Each scientific
+process covered all 338 validation blocks; together they retain 1,344 timing
+pairs. Maximum candidate logit absolute error, relative L2 error and pooled
+loss difference were all zero against the native eager anchor. BF16 pooled
+loss was 5.5384558948 in all modes, kept separate from FP16 training validation.
+The 284,950-byte latency archive and all 65 members verified locally before
+deletion of the RTX5090 Pod. `17_report.py` generated the final summary and
+observation from verified training and latency evidence.
+
+The final account audit confirms both Run044 Pods absent and no Run044
+network volume or endpoint. Both workstation guards were stopped. Existing
+Run043 Pod `25a3geba9jatml` (USD18.36/h) and the pre-existing 100GB shared
+volume `9luykg5yc3` remain untouched. Creation-to-deletion GPU estimates are
+USD3.704186 for H100 and USD0.581693 for RTX5090, total USD4.285879. The latest
+posted billing contains only USD0.461076 for training and no latency bucket;
+it is incomplete and does not supersede the estimate. Storage is excluded
+from that GPU estimate. Scoped teardown, live resource audit and the billing
+snapshot are retained in `prelaunch/closeout-001.json`.

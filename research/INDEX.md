@@ -5,10 +5,11 @@
 
 ## Current status
 
-Run044 is training the missing Pythia-14M T2/Ph endpoint at kappa=.5, matching
-Run041's h/z gates and h-only OL1. Exact H100 preflight passed, with matched
-input identities, full diagnostics and memory headroom. See the
-[run contract and checks](../runs/044-2026-09-20-pythia14m-hz-h-only-ol1-kappa05/README.md).
+Run044 completed the missing Pythia-14M T2/Ph kappa=.5 endpoint, matching
+Run041's h/z gates and h-only OL1: validation loss5.536255, R_model5.339%,
+and qualified K050 speedup1.4189x. All checkpoints and diagnostics are local;
+both Pods are deleted (estimated GPU USD4.286). See the
+[verified result](../runs/044-2026-09-20-pythia14m-hz-h-only-ol1-kappa05/observations/001-final-results.md).
 
 Run036 completed all 40 dense/ReLU post-hoc clipping settings at 14M/70M with
 the final kernels: 120/120 processes qualify, 1,032 outputs are verified locally,
