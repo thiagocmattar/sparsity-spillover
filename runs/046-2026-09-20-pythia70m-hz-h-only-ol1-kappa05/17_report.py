@@ -25,7 +25,7 @@ def main():
     sources=[RUN/'artifacts/verification.json',RUN/'latency/artifacts/verification.json']
     rows=[]
     for index,t in enumerate(sorted(training['conditions'],key=lambda x:x['condition']['gate_threshold'])):
-        ratios=[];native=[];candidate=[];qualified=[];losses=[];max_errors=[];max_l2=[];loss_deltas=[]
+        ratios=[];native=[];candidate=[];qualified=[];losses=[];max_errors=[];max_l2=[];loss_deltas=[];process_ratios=[]
         for replicate in range(1,4):
             folder=RUN/'latency/artifacts/attempts'/f'scientific-c{index:02d}-r{replicate}-001'
             result=read(folder/'result.json');timing=read(folder/'timing.json')
@@ -44,10 +44,13 @@ def main():
                 assert sample['mode'] not in pair
                 pair[sample['mode']]=sample['host_ms']
             assert len(pairs)==64*7 and len(timing['indices'])==64
+            replicate_ratios=[]
             for pair in pairs.values():
                 assert set(pair)=={'native_graph','candidate_graph'}
                 native.append(pair['native_graph']);candidate.append(pair['candidate_graph'])
                 ratios.append(pair['native_graph']/pair['candidate_graph'])
+                replicate_ratios.append(pair['native_graph']/pair['candidate_graph'])
+            process_ratios.append(geomean(replicate_ratios))
         rows.append({'kappa':t['condition']['gate_threshold'],
             'training_validation_loss':t['final_validation_loss'],
             'h_exact_zero_fraction':t['selected_site_exact_zero_fractions']['h'],
@@ -60,6 +63,7 @@ def main():
             'native_geomean_host_ms':geomean(native),
             'k050_geomean_host_ms':geomean(candidate),
             'native_relative_paired_geomean_speedup':geomean(ratios),
+            'per_process_paired_geomean_speedups':process_ratios,
             'bf16_qualification_losses':losses})
     provenance=[]
     for path in sources:
@@ -71,7 +75,7 @@ def main():
         'post_hoc_clipping':'none'}
     (RUN/'artifacts/summary.json').write_text(json.dumps(report,indent=2)+'\n')
     lines=['# 001 — One h/z threshold endpoint and final K050 latency','',
-        '**Question.** How do the approved h/z threshold of 0.5 behave with h-only OL1, lambda=1?', '',
+        '**Question.** How does the approved h/z threshold of 0.5 behave with h-only OL1, lambda=1?', '',
         '**Method and coverage.** One random-initialized Pythia70M model matches Run043 initialization, '
         'seed, MiniPile order and 712-step budget. Gates act only at h and z; pressure acts '
         'only at post-gate h. No post-hoc clipping. Training validation covers all 338 complete '
@@ -97,10 +101,12 @@ def main():
         'The fixed logit bound is abs(error) <= 0.25 + 0.02 * abs(reference), '
         'with relative L2 <= 0.02 and absolute pooled loss difference <= 0.001.', '',
         '**Runtime result.** ' + (
-            'The numerically qualified specialized kernel is '
-            + ('faster than' if rows[0]['native_relative_paired_geomean_speedup']>1 else
-               'slower than' if rows[0]['native_relative_paired_geomean_speedup']<1 else 'as fast as')
-            + ' native graph inference for this condition on this workload.'
+            f"The numerically qualified specialized kernel has a pooled native-relative ratio of {rows[0]['native_relative_paired_geomean_speedup']:.6f}x. "
+            + 'The three process ratios are '
+            + ', '.join(f'{x:.6f}x' for x in rows[0]['per_process_paired_geomean_speedups']) + '. '
+            + ('They straddle unity: this endpoint is effectively at parity under this protocol; no clear runtime advantage is demonstrated.'
+               if min(rows[0]['per_process_paired_geomean_speedups']) <= 1 <= max(rows[0]['per_process_paired_geomean_speedups'])
+               else 'All three process ratios have the same direction relative to unity. These are single-device measurements, not a population-level significance claim.')
             if rows[0]['qualified'] else
             'The specialized kernel did not qualify; its timing is not evidence of valid acceleration.'), '',
         '**Interpretation limits.** One seed, one model size and one data pass. '

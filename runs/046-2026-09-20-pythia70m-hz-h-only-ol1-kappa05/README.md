@@ -3,7 +3,8 @@
 The user explicitly requested one additional matched 70M RunPod run at kappa=0.5,
 as fast as possible. This selects the Run043 design and authorizes its execution
 with the same diagnostic package and no post-hoc clipping. Exactly one training
-condition is implemented: `hz-h-ol1-kappa-0p5`. Status: preparing for launch.
+condition is implemented: `hz-h-ol1-kappa-0p5`. Status: complete, retrieved,
+verified locally, and both run-owned Pods deleted.
 
 ## Question and scientific contract
 
@@ -82,7 +83,7 @@ abs(error)<=.25+.02*abs(reference), relative L2<=.02 and pooled loss delta<=.001
 Retain raw pairs, all qualifications, complete operand/skip-work diagnostics and
 source/runtime identities. These BF16 losses are separate from training validation.
 
-Prelaunch verification and allocation receipts will be appended below.
+Prelaunch verification, allocation receipts and closeout are recorded below.
 
 Prelaunch checks: seven focused tests passed in4.39s, covering the exact matched
 70M recipe, realized data schedule, real70M random parameter identity and h/z
@@ -132,3 +133,55 @@ includes step1 validation and checkpoint overhead; the preflight predicts about
 The local reporting helper derives its runtime conclusion from the actual future
 measurement and qualification status, without carrying forward Run043's slowdown
 conclusion as a presumption about the new endpoint.
+
+The final-latency Pod `5a44rl7iwfi0f9` is one Secure RTX5090 in EUR-IS-2,
+allocated at20:08:21UTC for USD0.99/hour with a21:38:21UTC provider-stop
+deadline. Its local guard was armed before deployment. The4,631,715-byte
+source-only bootstrap passed its remote hash check. Runtime installation and
+all five unchanged kernel builders completed successfully while training was
+still active; compilation took231.5521s. This preparation contains no model
+measurement. The unrelated Run045 Pod was observed and left untouched.
+
+## Completed result and closeout
+
+All712 updates completed in4862.321s, with no overflow or skipped update. Median
+training throughput was309,721 input tokens/s. Final complete validation loss is
+4.838033648. Pooled exact-zero rates are99.907744% at h and99.847285% at z;
+model-wide logical-product opportunity R_model is15.426970%, against the declared
+HZ analytic reach ceiling15.443084%. These logical quantities are not measured
+runtime speedups. Full validation uses338 blocks from500 documents, excluding
+the1,444-token tail, and no post-hoc clipping was performed.
+
+All three fresh final-checkpoint latency processes qualified on all338 blocks.
+Across1,344 paired measurements, the geometric-mean native latency is1.691950ms
+and the frozen K050 latency is1.690154ms, yielding1.001063x. Process ratios are
+1.003766x,0.997529x and1.001903x: effectively parity under this protocol, with no
+clear runtime advantage. The complete operand/skip-work diagnostics from
+replicate1 are retained. See [the final observation](observations/001-final-results.md)
+and its generating script `17_report.py`; machine-readable results and source
+SHA256 values are in `artifacts/summary.json`.
+
+The4,714,244,974-byte training archive and all74 inventoried members passed local
+hash verification, followed by `03_verify.py` reporting `verified 1`. All12 model
+checkpoints and3 optimizer/scaler/RNG recovery states are retained locally,
+totalling5,071,091,284 checkpoint bytes. The328,924-byte latency archive and all77
+members passed verification; all3 scientific processes qualified. Archive hashes,
+per-file hashes and transfer receipts are retained under `transfer/`,
+`latency/transfer/`, and `prelaunch/`. Weights and binary archives are excluded
+from Git. The final checkpoint content identity is
+`d6a3813f83ce080b07637fe422bb7ab1b23a6793e39c365601301a661851d02f`.
+The local verifier's JSON matched the remote result semantically; Windows changed
+only its line endings. Original LF artifact bytes were restored and rehashed,
+as recorded in `prelaunch/local-verification-check.json`, preserving transfer
+provenance. The final report references those retained original bytes.
+
+The H200 Pod was deleted at20:25:36UTC and the RTX5090 Pod at20:25:39UTC on
+20September2026, after local verification. Both local deadline guards were
+disarmed. A fresh resource audit found no Run046 Pods or endpoints; the unrelated
+Run045 Pod and pre-existing100GB shared volume were left untouched. Quoted hourly
+rates times elapsed allocation give USD7.898662 training plus USD0.285266 latency,
+USD8.183928 total GPU estimate, excluding disk. Posted billing is still partial:
+USD3.352652 for training and no latency record at the closeout read, so these are
+not final invoice totals. Scoped deletion, billing snapshots and the final
+resource audit are recorded in `prelaunch/teardown-*-001.json` and
+`prelaunch/final-resource-audit.json`.
