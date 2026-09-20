@@ -88,6 +88,16 @@ immutable after registration. Attention changes must pass causal/output tests
 and the original end-to-end numerical bounds; altered softmax reduction order
 is a qualification risk, not grounds to loosen tolerances.
 
+Candidates015--018 extend the scalar row limit from2 to4/8/16 (M8), or8 (M16).
+The prior Run040 operand histogram gives99.97761% h rows and99.99981% z rows
+with at most8 nonzeros, motivating this specific test. Larger scalar sums can
+differ from MMA reduction order; the new operator checker uses the original
+native bounds and exact independent instruction/scalar-work counts, while
+recording bitwise equality separately. Full-model bounds are unchanged. These
+are new implementations, not a relaxation of the original variants' checks.
+Metadata/specification fields for each candidate supersede inherited starting-
+kernel descriptions. Candidate selection still uses only development inputs.
+
 The first archive upload and a native SCP probe were below0.1MB/s. They were
 replaced by32 resumable SSH streams to the same owned Pod; all original archive
 bytes and SHA256 remain unchanged. Software installation ran concurrently.

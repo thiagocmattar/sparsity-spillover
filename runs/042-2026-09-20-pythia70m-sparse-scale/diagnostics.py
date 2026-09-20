@@ -37,9 +37,9 @@ def collect(model, native, validation, dest, emit, architecture, *, blocks=338):
                 stat = op.stats.sum(tuple(range(op.stats.ndim - 1))).cpu().tolist()
                 tile_rows = h.reshape(-1,2048).shape[0] // op.stats.shape[0]
                 actual_layouts[str(self.index)] = {'row_group':tile_rows,'instruction_shape':[16,8,16],
-                    'padded_rows_per_instruction':16-tile_rows}
+                    'padded_rows_per_instruction':16-tile_rows,'short_row_limit':getattr(op,'short_limit',2)}
                 for site, offset, scalar in [('h', 0, 4), ('z', 2, 5)]:
-                    expected = instruction_counts(capture.activations[f'{site}.layer_{self.index}'], tile_rows, op.fast_weights, op.skip)
+                    expected = instruction_counts(capture.activations[f'{site}.layer_{self.index}'], tile_rows, op.fast_weights, op.skip, getattr(op,'short_limit',2))
                     assert [stat[offset], stat[offset + 1], stat[scalar]] == expected
                 pooled = hybrid.setdefault(str(self.index), [0] * 6)
                 for i, value in enumerate(stat): pooled[i] += int(value)

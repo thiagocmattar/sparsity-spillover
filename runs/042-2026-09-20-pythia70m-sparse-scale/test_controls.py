@@ -83,3 +83,11 @@ def test_short_rows_are_scalar_work_not_disappearing_products():
     assert counts(value,8) == [0,512,32*512]
     assert counts(value,16) == [0,256,32*512]
     assert counts(value,16,skip=False) == [256,0,0]
+
+
+def test_extended_short_rows_reassign_work_instead_of_erasing_it():
+    from tile_oracle import counts
+    value=torch.zeros(32,32)
+    value[:,:3]=1
+    assert counts(value,8) == [256,256,0]
+    assert counts(value,8,max_short=4) == [0,512,32*3*512]
