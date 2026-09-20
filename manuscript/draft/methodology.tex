@@ -1,4 +1,4 @@
-% General definitions; study-specific recipes are in experimental-study.tex.
+% Intervention definitions and study-specific threshold/pressure recipes.
 % Operational provenance: methodology-notes.md.
 % OL1 formulation and evidence: Analysis024 observations/039-ol1-appendix.md; 29_ol1_appendix.py.
 \section{Methodology}
@@ -18,8 +18,48 @@ where $\lambda$ controls the pressure intensity~\citep{song2024prosparse,cetin20
 
 Figure~\ref{fig:pythia-block} locates the intervention sites within the Pythia architecture. The variables $a$ and $m$ denote the normalized inputs to the attention and FFN branches, respectively; $h$ is the FFN hidden activation; $z$ is the concatenated attention context before the output projection; and $q$, $k$, and $v$ are the query, key, and value operands, with $q$ and $k$ taken after RoPE. Attention probabilities are denoted by $p$. We apply $G_{+,\kappa}$ at selected sites in $\{a,m,h,z\}$ and $G_{\pm,\kappa}$ at selected sites in $\{q,k,v\}$. When $h$ is targeted, the thresholding nonlinearity replaces GELU.
 
+Table~\ref{tab:interventions} summarizes the studied thresholding and pressure assignments and their sparsity ceilings across model sizes. Section~\ref{sec:measurement} defines these ceilings.
+
+% Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
+% Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
+\begin{table}[H]
+\centering\small
+\caption{\textbf{Thresholding, pressure and sparsity ceilings.}
+$T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
+$h$, and $P_{\mathrm{all}}$ matches the thresholding sites
+($\mathcal{P}=\mathcal{N}$). For $T_4/T_7$, threshold strength is swept over
+$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
+and task-relative norm budget $b=1$ fixed. Only the 14M $T_1/P_1$ ablation sweeps
+$\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
+Ceilings are $100\cdot\Smax$ at 2,048 tokens; executed recipes by model size
+are listed in Appendix~\ref{app:training-protocol}.}
+\label{tab:interventions}
+\vspace{4pt}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lllrrr@{}}
+\toprule
+Recipe & Threshold sites $\mathcal{N}$ & Pressure sites $\mathcal{P}$ & \multicolumn{3}{c}{Ceiling (\%)} \\
+\cmidrule(l){4-6}
+ & & & 14M & 70M & 410M \\
+\midrule
+$T_0/P_0$ (Base Model) & $\varnothing$ & $\varnothing$ & 0.00 & 0.00 & 0.00 \\
+\midrule
+$T_1/P_0$ & $h$ & $\varnothing$ & 4.28 & 12.35 & 24.93 \\
+$T_1/P_1$ & $h$ & $h$ & 4.28 & 12.35 & 24.93 \\
+\midrule
+$T_4/P_0$ & $a,m,h,z$ & $\varnothing$ & 12.83 & 37.06 & 74.78 \\
+$T_4/P_h$ & $a,m,h,z$ & $h$ & 12.83 & 37.06 & 74.78 \\
+$T_4/P_{\mathrm{all}}$ & $a,m,h,z$ & $\mathcal{N}$ & 12.83 & 37.06 & 74.78 \\
+\midrule
+$T_7/P_0$ & $a,m,h,z,q,k,v$ & $\varnothing$ & 29.95 & 49.42 & 87.25 \\
+$T_7/P_h$ & $a,m,h,z,q,k,v$ & $h$ & 29.95 & 49.42 & 87.25 \\
+$T_7/P_{\mathrm{all}}$ & $a,m,h,z,q,k,v$ & $\mathcal{N}$ & 29.95 & 49.42 & 87.25 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % Source artwork and observation: figures/pythia-architecture-map.tex and .md.
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{figures/pythia-architecture-map.pdf}
 \caption{\textbf{Intervention sites in a shared Pythia block.}

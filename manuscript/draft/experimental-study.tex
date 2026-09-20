@@ -4,7 +4,7 @@
 \section{Experimental study}
 \label{sec:experiments}
 
-We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model and training for one full-pass. We evaluate validation loss and $\Smodel$ over all complete validation sequences. Table~\ref{tab:interventions} defines the thresholding and OL1-pressure recipes and their sparsity ceilings. Across model sizes, Table~\ref{tab:interventions} also shows that, under the same intervention recipe and fixed sequence length, the attainable sparsity ceiling increases with model size.
+We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}, using 1.493 billion input tokens per model and training for one full-pass. We evaluate validation loss and $\Smodel$ over all complete validation sequences. The intervention recipes are listed in Table~\ref{tab:interventions}.
 
 \textbf{Experiments across model sizes.}
 The 14M runs provide the most extensive controlled ablation, used to identify threshold and pressure regimes. The 70M runs test whether these regimes persist in a larger model. We also attempted to extend this analysis to 410M, but the fixed-token protocol leaves this model substantially less trained per parameter: all models receive 712 optimizer steps and 1.493B input tokens, corresponding to 106.14, 21.20, and 3.68 tokens per parameter at 14M, 70M, and 410M, respectively. The 410M run also follows the Pythia learning-rate schedule, with a lower peak learning rate. It had a higher final loss and larger late-training gradient norm, which evidentiate a different training regime. We therefore treat the 410M result as a limited, partial scale-up, and base the detailed intervention analysis on the 14M and 70M runs (Appendix~\ref{app:training-protocol}).
@@ -18,44 +18,6 @@ Appendix~\ref{app:training-protocol} gives the full protocol.
 For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal}
 at $a,m,h,z$, with percentile targets $p=0,0.1,\ldots,0.9$ and site--layer
 thresholds calibrated separately on ten training blocks.
-
-% Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
-% Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
-\begin{table}[H]
-\centering\small
-\caption{\textbf{Thresholding, pressure and sparsity ceilings.}
-$T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
-$h$, and $P_{\mathrm{all}}$ matches the thresholding sites
-($\mathcal{P}=\mathcal{N}$). For $T_4/T_7$, threshold strength is swept over
-$\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
-and task-relative norm budget $b=1$ fixed. Only the 14M $T_1/P_1$ ablation sweeps
-$\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
-Ceilings are $100\cdot\Smax$ at 2,048 tokens; executed recipes by model size
-are listed in Appendix~\ref{app:training-protocol}.}
-\label{tab:interventions}
-\vspace{4pt}
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{@{}lllrrr@{}}
-\toprule
-Recipe & Threshold sites $\mathcal{N}$ & Pressure sites $\mathcal{P}$ & \multicolumn{3}{c}{Ceiling (\%)} \\
-\cmidrule(l){4-6}
- & & & 14M & 70M & 410M \\
-\midrule
-$T_0/P_0$ (Base Model) & $\varnothing$ & $\varnothing$ & 0.00 & 0.00 & 0.00 \\
-\midrule
-$T_1/P_0$ & $h$ & $\varnothing$ & 4.28 & 12.35 & 24.93 \\
-$T_1/P_1$ & $h$ & $h$ & 4.28 & 12.35 & 24.93 \\
-\midrule
-$T_4/P_0$ & $a,m,h,z$ & $\varnothing$ & 12.83 & 37.06 & 74.78 \\
-$T_4/P_h$ & $a,m,h,z$ & $h$ & 12.83 & 37.06 & 74.78 \\
-$T_4/P_{\mathrm{all}}$ & $a,m,h,z$ & $\mathcal{N}$ & 12.83 & 37.06 & 74.78 \\
-\midrule
-$T_7/P_0$ & $a,m,h,z,q,k,v$ & $\varnothing$ & 29.95 & 49.42 & 87.25 \\
-$T_7/P_h$ & $a,m,h,z,q,k,v$ & $h$ & 29.95 & 49.42 & 87.25 \\
-$T_7/P_{\mathrm{all}}$ & $a,m,h,z,q,k,v$ & $\mathcal{N}$ & 29.95 & 49.42 & 87.25 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \FloatBarrier
 \input{training-results}

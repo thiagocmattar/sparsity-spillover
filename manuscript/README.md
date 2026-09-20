@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, Table 1 placement:
+the intervention table now appears in Methodology, under Sparsification
+interventions, directly before Figure 2. The text introduces the table there
+and Experimental study refers back to it. All table entries and its caption
+are unchanged; the figure is kept after the table. Other author edits are
+preserved. A temporary 20-page build confirms Table 1 directly above Figure 2
+on page 4, with resolved references and no overfull boxes. This source edit
+does not replace `draft/main.pdf`.
+
 20 September 2026, requested rebuild after the Figure 1 frontier restoration:
 `draft/main.pdf` now includes the latest author edits and the revised
 Figure 1, with post-hoc clipping only in panel (a). The 20-page build has
