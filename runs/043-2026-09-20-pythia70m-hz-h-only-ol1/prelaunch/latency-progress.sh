@@ -6,11 +6,11 @@ r={'epoch':time.time(),'pipeline_exit':(control/'pipeline.exit').read_text() if 
 for p in sorted((root/'artifacts/attempts').glob('scientific-*')):
  result=p/'result.json'
  if result.exists():
-  row=json.loads(result.read_text());r['completed'].append({'attempt':p.name,'status':row['status'],'qualified':row.get('qualified'),'elapsed_seconds':row.get('elapsed_seconds'),'loss':row.get('loss'),'timing':row.get('timing')})
+  row=json.loads(result.read_text());r['completed'].append({'attempt':p.name,'completed_epoch':result.stat().st_mtime,'status':row['status'],'qualified':row.get('qualified'),'elapsed_seconds':row.get('elapsed_seconds'),'loss':row.get('loss'),'timing':row.get('timing')})
  elif (p/'status.json').exists():r['active'].append({'attempt':p.name,**json.loads((p/'status.json').read_text())})
 r['completed_count']=len(r['completed']);r['qualified_count']=sum(x.get('qualified',False) for x in r['completed'])
 r['mean_completed_process_seconds']=sum(x['elapsed_seconds'] for x in r['completed'])/max(1,len(r['completed']))
-r['completed']=r['completed'][-2:]
+r['completed']=sorted(r['completed'],key=lambda x:x['completed_epoch'])[-2:]
 if r['pipeline_exit'] is not None:
  for name in ['scientific','collection']:
   p=control/(name+'.log')

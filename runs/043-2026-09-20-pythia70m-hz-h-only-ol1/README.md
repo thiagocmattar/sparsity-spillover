@@ -1,5 +1,10 @@
 # Run043: Pythia-70M h/z gates and h-only OL1
 
+**Complete.** Four trainings, all 12 final latency qualification processes,
+artifact retrieval and local verification passed. Both Pods were deleted;
+the final live audit found no Pods or endpoints. Results are in
+[observation 001](observations/001-final-results.md) and `artifacts/summary.json`.
+
 User authorized promotion and parallel RunPod execution on 20 September 2026,
 requesting the fastest completion. This carries forward Run041's four thresholds
 0/.01/.05/.1, one-sided gates at h/z only, h-only OL1 lambda=1, trust budget=1,
@@ -131,3 +136,60 @@ Run042 Pod was already absent at this discovery; no unrelated resource was
 modified. `21_prepare_latency_runtime.py` starts detached runtime installation
 while the training workers finish, without uploading scientific inputs yet.
 The final input archive is still hash-verified before any benchmark executes.
+
+## Completed training and retrieval
+
+All four workers completed 712 updates without overflow-skipped boundaries.
+Remote cohort verification passed, followed by local `03_verify.py` reporting
+`verified 4`. Full validation losses for kappa 0/.01/.05/.1 are respectively
+4.1286689233, 4.1499133110, 4.1925014490, 4.1823170679; observed model-wide logical
+opportunities are 14.629632%, 14.699409%, 15.029591%, 15.212165%.
+
+`22_prefetch_training_archive.py` overlapped compression with an append-only
+archive download. The final 18,830,630,123-byte archive and all 286 members passed
+SHA256 verification through `16_retrieve_training.py`, including all 48 model
+checkpoints and 12 optimizer/scaler/RNG recovery states. The full scientific
+verification then passed locally. Training Pod teardown is recorded in
+`prelaunch/teardown-training-001.json`; its local deadline guard was disarmed
+only after provider deletion. The subsequent live Pod audit contained only
+this run's latency Pod.
+
+The four endpoint models were separately verified before preparing the latency
+input archive; its SHA256 passed remotely, and 1420 source/input identities
+passed setup. Both eight-block latency smoke checks qualified. The first cold
+process took 539.3s including CUDA compilation; the second took 65.5s.
+`latency/config.json` retains the inherited, unused 1800s leaf-timeout field;
+the executed `latency/03_execute.py` enforces the stricter 600s process limit
+and 660s deadline reserve. This infrastructure discrepancy does not change
+the kernel, timing samples, precision, or qualification bounds. The executed
+configuration and controller are retained unchanged.
+
+## Final latency and closeout
+
+All 12 fresh processes passed full 338-block qualification; each condition has
+1344 paired measurements. Kappa 0/.01/.05/.1 respectively measured 2.772560,
+2.728571, 2.451620, 2.302983 ms per full B=1, T=2048 forward under the frozen
+specialized kernel, against native graph times 1.752241, 1.750878, 1.748872,
+1.749263 ms. Native-relative paired geometric-mean speed ratios are 0.631994,
+0.641683, 0.713354, 0.759564. Thus the specialized kernel is numerically qualified
+but slower than native graph inference for every condition. Logical sparsity
+opportunities are not runtime speedups.
+
+The 829,338-byte latency archive and all 159 members passed local SHA256
+verification. All 12 process records, timing pairs and 338-block qualifications,
+four full diagnostic records, source identities and runtime records are retained.
+`17_report.py` joins these measurements to the verified training endpoints and
+writes the result observation with all source hashes. Maximum absolute logit
+error is 0.5, maximum relative L2 is 0.0003220707, and maximum pooled loss
+difference is 1.721969e-7; all satisfy the original combined absolute/relative
+logit bound and the other fixed qualification bounds. No tolerance was changed.
+
+Training Pod deletion completed at 18:16:35 UTC and latency Pod deletion at 18:31:49 UTC.
+Both local guards were disarmed afterward. See the two teardown receipts and
+`prelaunch/final-resource-audit-001.json`: no Pods or serverless endpoints remain;
+the pre-existing 100GB volume `9luykg5yc3` was untouched. Estimated compute cost
+is USD64.4363 training plus USD0.8260 latency, total USD65.2623, based on live hourly
+quotes and creation-to-deletion duration. This is not a posted invoice and
+excludes separately billed storage. The workload finished within its approved
+duration and USD80 envelope. No weights, cache, datasets or archive binaries are
+committed; their verified local copies and transfer inventories are retained.

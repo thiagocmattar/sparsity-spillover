@@ -82,18 +82,22 @@ def main():
         'The speedup denominator is native CUDA-graph inference of the same checkpoint.', '',
         '**Result.** Exact-zero fractions pool integer counts. Latencies and paired speedups '
         'below are geometric means over 1,344 pairs per condition.', '',
-        '| kappa | Training val loss | h zero % | z zero % | R_model % | K050 ms | Speedup | Qualified |',
-        '|---:|---:|---:|---:|---:|---:|---:|:---:|']
+        '| kappa | Training val loss | h zero % | z zero % | R_model % | Native ms | K050 ms | Speedup | Qualified |',
+        '|---:|---:|---:|---:|---:|---:|---:|---:|:---:|']
     for r in rows:
         lines.append(f"| {r['kappa']:g} | {r['training_validation_loss']:.6f} | "
             f"{100*r['h_exact_zero_fraction']:.3f} | {100*r['z_exact_zero_fraction']:.3f} | "
-            f"{100*r['R_model']:.3f} | {r['k050_geomean_host_ms']:.6f} | "
+            f"{100*r['R_model']:.3f} | {r['native_geomean_host_ms']:.6f} | {r['k050_geomean_host_ms']:.6f} | "
             f"{r['native_relative_paired_geomean_speedup']:.4f}x | {r['qualified']} |")
     lines += ['', f"**Numerical qualification.** {sum(r['qualified'] for r in latency['scientific_processes'])}/12 "
         'processes passed complete 338-block qualification. Maximum kernel logit absolute '
         f"error: {max(r['maximum_k050_logit_absolute_error'] for r in rows):.9g}; relative L2: "
         f"{max(r['maximum_k050_logit_relative_l2'] for r in rows):.9g}; absolute pooled loss "
-        f"difference: {max(r['maximum_k050_loss_delta'] for r in rows):.9g}.", '',
+        f"difference: {max(r['maximum_k050_loss_delta'] for r in rows):.9g}. "
+        'The fixed logit bound is abs(error) <= 0.25 + 0.02 * abs(reference), '
+        'with relative L2 <= 0.02 and absolute pooled loss difference <= 0.001.', '',
+        '**Runtime result.** The frozen specialized kernel is slower than native graph '
+        'inference for all four conditions on this workload.', '',
         '**Interpretation limits.** One seed, one model size and one data pass. '
         'This joint intervention does not isolate the effects of either gate or pressure. '
         'Logical-product opportunity is distinct from measured speedup. BF16 qualification '
