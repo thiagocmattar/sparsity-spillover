@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+20 September 2026, requested rebuild after the 70M manuscript revision:
+`draft/main.pdf` now contains the current author-edited sources, the revised
+Figure 3 with the native PyTorch reference, and the separate 70M optimization
+discussion. The former speedup figure is removed. LaTeX confirmed the checked
+21-page build is up to date; references/citations resolve, with no overfull
+boxes and three existing underfull horizontal-box warnings. The installed
+PDF matches the reviewed build byte-for-byte. No TeX source changed during
+this rebuild; other author edits remain uncommitted.
+
 20 September 2026, 70M execution comparison and experimental-study revision:
 Figure 3 now shows 70M quality and latency versus model-wide sparsity, using
 the native PyTorch base latency (1.664 ms). The former Figure 4 speedup graph
