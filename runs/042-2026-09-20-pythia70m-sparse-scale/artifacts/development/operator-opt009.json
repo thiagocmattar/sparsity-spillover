@@ -1,0 +1,87 @@
+{
+  "candidate": {
+    "candidate": "opt009",
+    "files": [
+      {
+        "bytes": 2465,
+        "path": "candidates/opt009/attention/candidate.py",
+        "sha256": "7506a589bb42759fe320a4b16350b8fb724cbcd8cdecfe02eb5d4986f5b811ca"
+      },
+      {
+        "bytes": 78713,
+        "path": "candidates/opt009/attention/flash_fwd_kernel.h",
+        "sha256": "bc5cb8ee74f1c58693a5ac81cffe29a7918192ebec00ee1a9787d59182523d8e"
+      },
+      {
+        "bytes": 3975,
+        "path": "candidates/opt009/attention/kernel.cu",
+        "sha256": "a98636a0892d739e0a65a72f9a202b2689633be3fa7bcc4d88516da37fbcd630"
+      },
+      {
+        "bytes": 1558,
+        "path": "candidates/opt009/attention/LICENSE-FLASH.md",
+        "sha256": "8c9ccb96c065e706135b6cbad279b721da6156e51f3a5f27c6b3329af9416d73"
+      },
+      {
+        "bytes": 3260,
+        "path": "candidates/opt009/attention/sparse_gemm.h",
+        "sha256": "19eda0abf6cc3464eac5cccbe62c909783348638a18a63c39cd378393eaa8984"
+      },
+      {
+        "bytes": 750,
+        "path": "candidates/opt009/candidate.py",
+        "sha256": "1f46860602390e3278cb13b8cb0524efdba0d3ebc74467576bff6707c636f020"
+      },
+      {
+        "bytes": 392,
+        "path": "candidates/opt009/spec.json",
+        "sha256": "c5b446e9ec75ca074632938609bea81995588d18182173ae39161a32ca0cd41e"
+      }
+    ],
+    "selection_data": "fixed first16 training-development blocks only"
+  },
+  "checker": {
+    "bytes": 2563,
+    "path": "candidates/check_attention.py",
+    "sha256": "76de67e2cf7b0b4c5fec56c45d8a7a290116a6a8d533d5f53966ec91275d1660"
+  },
+  "checks": [
+    {
+      "case": "zero",
+      "maximum_absolute_error": 0.0,
+      "pass": true,
+      "relative_l2": 0.0
+    },
+    {
+      "case": "zero_q",
+      "maximum_absolute_error": 4.76837158203125e-07,
+      "pass": true,
+      "relative_l2": 7.468845986124961e-09
+    },
+    {
+      "case": "dense_small",
+      "maximum_absolute_error": 0.000244140625,
+      "pass": true,
+      "relative_l2": 0.0008074896759353578
+    },
+    {
+      "case": "dense",
+      "maximum_absolute_error": 0.00390625,
+      "pass": true,
+      "relative_l2": 0.000992309651337564
+    },
+    {
+      "case": "sparse",
+      "maximum_absolute_error": 0.0009765625,
+      "pass": true,
+      "relative_l2": 0.0013581529492512345
+    },
+    {
+      "case": "gated",
+      "maximum_absolute_error": 0.001953125,
+      "pass": true,
+      "relative_l2": 0.000983443227596581
+    }
+  ],
+  "status": "passed"
+}

@@ -6,6 +6,31 @@ reference and decomposition of the gains. This continues the previously
 discussed h/z layout, inspection reuse and efficient fallback investigation;
 both design and launch are authorized. No additional training is performed.
 
+## Completed result
+
+Frozen opt073 passes every declared final and component check. The primary 70M
+T7/Ph median is 1.136311 ms against1.697655 ms for native T0/P0:1.494005x, or 33.07%
+lower latency. The best fresh 14M control achieves1.426000x, or 29.87% reduction.
+T4/Ph at 70M also qualifies at 1.137580 ms. Loss is unchanged within the original
+kernel bounds; these trained checkpoints are not quality matched to T0/P0.
+
+The full gain includes dense scheduling and fusion. Restoring native h/z on
+the same sparse checkpoint costs0.225561 ms; restoring native RoPE/QKV/gate
+handling costs0.323990 ms. These conditional effects are nonadditive. An
+alternate dense implementation, native h/z plus the other optimized components,
+takes 1.293405 ms on T0/P0. Do not attribute the full 33.07% reduction to sparsity.
+
+All 78 baseline/final/control processes pass complete 338-block qualification.
+All 2584 transferred files and 1435 retained input/source copies are verified;
+the final evidence audit and profile attribution reproduce locally. The owned
+Pod was deleted before 16:35:01 UTC, ahead of 17:47:59 UTC. Approximate GPU cost is
+USD 2.62 plus temporary disk, within the USD 15 authorization; billing is not yet
+fully settled. Unrelated resources are preserved. No manuscript or PDF changed.
+
+See [O001](observations/001-native-base-scale-comparison.md),
+`results/final-verification.json`, `results/profile-attribution-v2.json`,
+`transfer/inventory-final001.json`, and `prelaunch/teardown-final.json`.
+
 ## Question and fixed comparison
 
 Can a numerically qualified 70M implementation exceed the fractional latency

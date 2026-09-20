@@ -1,0 +1,1058 @@
+{
+  "coverage": "Four declared timing inputs, separate profiling passes; first fresh process for each profiled condition.",
+  "limits": "Instrumented summed GPU durations, not full-forward latency. Parallel h/z includes fresh row inspection, scalar projections, gates and residual additions; the separate fused h/z entry includes its fallback and completion checks; native h/z here are GEMMs only. Conditional replacement timings are nonadditive.",
+  "method": "Native addmm/mm operand dimensions map exact GPU kernel/grid/thread-block signatures; ambiguous h/z signatures are pooled.",
+  "rows": [
+    {
+      "attempt": "baseline-c00-full-r1-001",
+      "candidate": "full",
+      "condition": "c00",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 467.26699999999994,
+            "gpu_kernel_time_fraction": 0.038380477520372124,
+            "ms_per_input": 0.11681674999999998
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1337.3179999999998,
+            "gpu_kernel_time_fraction": 0.10984491401401983,
+            "ms_per_input": 0.33432949999999995
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 7294.604999999999,
+            "gpu_kernel_time_fraction": 0.5991658371391391,
+            "ms_per_input": 1.8236512499999997
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2033.7,
+            "gpu_kernel_time_fraction": 0.1670444887680508,
+            "ms_per_input": 0.508425
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 591.2649999999999,
+            "gpu_kernel_time_fraction": 0.04856545196019155,
+            "ms_per_input": 0.14781624999999995
+          },
+          "other": {
+            "calls": 100,
+            "duration_us": 236.07199999999992,
+            "gpu_kernel_time_fraction": 0.01939053279856974,
+            "ms_per_input": 0.05901799999999998
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 74.68900000000002,
+            "gpu_kernel_time_fraction": 0.006134821174016301,
+            "ms_per_input": 0.018672250000000005
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 139.685,
+            "gpu_kernel_time_fraction": 0.011473476625640546,
+            "ms_per_input": 0.03492125
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 479.80099999999993,
+            "gpu_kernel_time_fraction": 0.07376347279796969,
+            "ms_per_input": 0.11995024999999998
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1325.397,
+            "gpu_kernel_time_fraction": 0.20376340515340866,
+            "ms_per_input": 0.33134925
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 827.4530000000002,
+            "gpu_kernel_time_fraction": 0.12721067037604847,
+            "ms_per_input": 0.20686325000000005
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2025.595,
+            "gpu_kernel_time_fraction": 0.3114101923134871,
+            "ms_per_input": 0.50639875
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 588.529,
+            "gpu_kernel_time_fraction": 0.09047905878127871,
+            "ms_per_input": 0.14713225
+          },
+          "other": {
+            "calls": 484,
+            "duration_us": 1257.8129999999987,
+            "gpu_kernel_time_fraction": 0.19337320057780738,
+            "ms_per_input": 0.3144532499999997
+          }
+        }
+      },
+      "hidden": 512
+    },
+    {
+      "attempt": "baseline-c16-full-r1-001",
+      "candidate": "full",
+      "condition": "c16",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 467.0079999999999,
+            "gpu_kernel_time_fraction": 0.08629405887593104,
+            "ms_per_input": 0.11675199999999998
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1336.3489999999995,
+            "gpu_kernel_time_fraction": 0.24693148572356693,
+            "ms_per_input": 0.3340872499999999
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 645.2419999999998,
+            "gpu_kernel_time_fraction": 0.11922825976690656,
+            "ms_per_input": 0.16131049999999997
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2012.6349999999998,
+            "gpu_kernel_time_fraction": 0.3718960771245021,
+            "ms_per_input": 0.50315875
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 590.428,
+            "gpu_kernel_time_fraction": 0.10909969121299469,
+            "ms_per_input": 0.147607
+          },
+          "other": {
+            "calls": 76,
+            "duration_us": 140.57300000000004,
+            "gpu_kernel_time_fraction": 0.025975175453881432,
+            "ms_per_input": 0.03514325000000001
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 79.64800000000001,
+            "gpu_kernel_time_fraction": 0.014717412124310842,
+            "ms_per_input": 0.019912000000000003
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 139.93800000000002,
+            "gpu_kernel_time_fraction": 0.02585783971790642,
+            "ms_per_input": 0.0349845
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 469.41399999999993,
+            "gpu_kernel_time_fraction": 0.06803633907581177,
+            "ms_per_input": 0.11735349999999999
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1325.861,
+            "gpu_kernel_time_fraction": 0.1921688074139137,
+            "ms_per_input": 0.33146525000000004
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 824.096,
+            "gpu_kernel_time_fraction": 0.119443550654689,
+            "ms_per_input": 0.206024
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2016.808,
+            "gpu_kernel_time_fraction": 0.2923138912320677,
+            "ms_per_input": 0.504202
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 588.45,
+            "gpu_kernel_time_fraction": 0.08528928350914426,
+            "ms_per_input": 0.1471125
+          },
+          "other": {
+            "calls": 748,
+            "duration_us": 1674.8309999999947,
+            "gpu_kernel_time_fraction": 0.24274812811437357,
+            "ms_per_input": 0.41870774999999866
+          }
+        }
+      },
+      "hidden": 512
+    },
+    {
+      "attempt": "baseline-c21-full-r1-001",
+      "candidate": "full",
+      "condition": "c21",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 466.65999999999997,
+            "gpu_kernel_time_fraction": 0.08659674745392645,
+            "ms_per_input": 0.11666499999999999
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1336.483,
+            "gpu_kernel_time_fraction": 0.2480072875915356,
+            "ms_per_input": 0.33412074999999997
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 621.9190000000001,
+            "gpu_kernel_time_fraction": 0.11540771135258754,
+            "ms_per_input": 0.15547975000000003
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2015.0120000000002,
+            "gpu_kernel_time_fraction": 0.3739199530292532,
+            "ms_per_input": 0.503753
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 590.3370000000001,
+            "gpu_kernel_time_fraction": 0.10954713089124543,
+            "ms_per_input": 0.14758425000000003
+          },
+          "other": {
+            "calls": 76,
+            "duration_us": 139.138,
+            "gpu_kernel_time_fraction": 0.025819436521759782,
+            "ms_per_input": 0.0347845
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 79.58900000000001,
+            "gpu_kernel_time_fraction": 0.014769100700961203,
+            "ms_per_input": 0.019897250000000002
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 139.74800000000002,
+            "gpu_kernel_time_fraction": 0.025932632458730804,
+            "ms_per_input": 0.034937
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 468.61,
+            "gpu_kernel_time_fraction": 0.06346669180359935,
+            "ms_per_input": 0.1171525
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1321.1879999999996,
+            "gpu_kernel_time_fraction": 0.17893649646958834,
+            "ms_per_input": 0.3302969999999999
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 823.905,
+            "gpu_kernel_time_fraction": 0.11158644653431322,
+            "ms_per_input": 0.20597625
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2013.1550000000002,
+            "gpu_kernel_time_fraction": 0.2726537801964855,
+            "ms_per_input": 0.5032887500000001
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 585.8850000000001,
+            "gpu_kernel_time_fraction": 0.07934995567177784,
+            "ms_per_input": 0.14647125000000003
+          },
+          "other": {
+            "calls": 1036,
+            "duration_us": 2170.8149999999932,
+            "gpu_kernel_time_fraction": 0.2940066293242357,
+            "ms_per_input": 0.5427037499999983
+          }
+        }
+      },
+      "hidden": 512
+    },
+    {
+      "attempt": "baseline-m14-c01-full-r1-001",
+      "candidate": "full",
+      "condition": "m14-c01",
+      "groups": {
+        "candidate": {
+          "attention": {
+            "calls": 24,
+            "duration_us": 417.441,
+            "gpu_kernel_time_fraction": 0.1631409561215816,
+            "ms_per_input": 0.10436024999999999
+          },
+          "custom_a_m": {
+            "calls": 48,
+            "duration_us": 206.14799999999994,
+            "gpu_kernel_time_fraction": 0.0805651141659583,
+            "ms_per_input": 0.051536999999999986
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 888.5070000000002,
+            "gpu_kernel_time_fraction": 0.34723920626080845,
+            "ms_per_input": 0.22212675000000004
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 720.094,
+            "gpu_kernel_time_fraction": 0.28142138327910815,
+            "ms_per_input": 0.1800235
+          },
+          "other": {
+            "calls": 124,
+            "duration_us": 226.39399999999995,
+            "gpu_kernel_time_fraction": 0.08847749411339408,
+            "ms_per_input": 0.05659849999999999
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 42.366,
+            "gpu_kernel_time_fraction": 0.016557141600961396,
+            "ms_per_input": 0.0105915
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 57.824999999999996,
+            "gpu_kernel_time_fraction": 0.022598704458188,
+            "ms_per_input": 0.014456249999999999
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 96.736,
+            "gpu_kernel_time_fraction": 0.039383196350898673,
+            "ms_per_input": 0.024184
+          },
+          "attention": {
+            "calls": 48,
+            "duration_us": 448.708,
+            "gpu_kernel_time_fraction": 0.1826781680886024,
+            "ms_per_input": 0.11217700000000001
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 177.12199999999999,
+            "gpu_kernel_time_fraction": 0.07210997461197356,
+            "ms_per_input": 0.044280499999999993
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 717.699,
+            "gpu_kernel_time_fraction": 0.2921898841986812,
+            "ms_per_input": 0.17942475
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 102.58900000000003,
+            "gpu_kernel_time_fraction": 0.041766071890943855,
+            "ms_per_input": 0.025647250000000007
+          },
+          "other": {
+            "calls": 484,
+            "duration_us": 913.4220000000001,
+            "gpu_kernel_time_fraction": 0.3718727048589002,
+            "ms_per_input": 0.22835550000000004
+          }
+        }
+      },
+      "hidden": 128
+    },
+    {
+      "attempt": "baseline-m14-c20-full-r1-001",
+      "candidate": "full",
+      "condition": "m14-c20",
+      "groups": {
+        "candidate": {
+          "attention": {
+            "calls": 24,
+            "duration_us": 418.613,
+            "gpu_kernel_time_fraction": 0.23511046085498694,
+            "ms_per_input": 0.10465325
+          },
+          "custom_a_m": {
+            "calls": 48,
+            "duration_us": 207.11800000000008,
+            "gpu_kernel_time_fraction": 0.11632607786037033,
+            "ms_per_input": 0.05177950000000002
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 155.92999999999995,
+            "gpu_kernel_time_fraction": 0.08757676938154836,
+            "ms_per_input": 0.03898249999999999
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 710.505,
+            "gpu_kernel_time_fraction": 0.39904914082881443,
+            "ms_per_input": 0.17762624999999999
+          },
+          "other": {
+            "calls": 100,
+            "duration_us": 185.60999999999999,
+            "gpu_kernel_time_fraction": 0.10424629105950872,
+            "ms_per_input": 0.0464025
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 44.145,
+            "gpu_kernel_time_fraction": 0.024793666929702134,
+            "ms_per_input": 0.011036250000000001
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 58.574,
+            "gpu_kernel_time_fraction": 0.03289759308506904,
+            "ms_per_input": 0.0146435
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 96.70800000000003,
+            "gpu_kernel_time_fraction": 0.035494136978417905,
+            "ms_per_input": 0.024177000000000008
+          },
+          "attention": {
+            "calls": 48,
+            "duration_us": 448.9319999999999,
+            "gpu_kernel_time_fraction": 0.16476872546216548,
+            "ms_per_input": 0.11223299999999997
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 176.41899999999995,
+            "gpu_kernel_time_fraction": 0.06474997054634057,
+            "ms_per_input": 0.04410474999999999
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 729.153,
+            "gpu_kernel_time_fraction": 0.2676164997748309,
+            "ms_per_input": 0.18228825
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 100.894,
+            "gpu_kernel_time_fraction": 0.037030498576131186,
+            "ms_per_input": 0.025223500000000003
+          },
+          "other": {
+            "calls": 748,
+            "duration_us": 1172.5130000000006,
+            "gpu_kernel_time_fraction": 0.430340168662114,
+            "ms_per_input": 0.29312825000000015
+          }
+        }
+      },
+      "hidden": 128
+    },
+    {
+      "attempt": "baseline-m14-c35-full-r1-001",
+      "candidate": "full",
+      "condition": "m14-c35",
+      "groups": {
+        "candidate": {
+          "attention": {
+            "calls": 24,
+            "duration_us": 419.361,
+            "gpu_kernel_time_fraction": 0.23429035934566905,
+            "ms_per_input": 0.10484025
+          },
+          "custom_a_m": {
+            "calls": 48,
+            "duration_us": 207.35999999999999,
+            "gpu_kernel_time_fraction": 0.1158487530168946,
+            "ms_per_input": 0.05184
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 168.35299999999998,
+            "gpu_kernel_time_fraction": 0.09405615893447751,
+            "ms_per_input": 0.042088249999999994
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 706.5630000000001,
+            "gpu_kernel_time_fraction": 0.394745575221239,
+            "ms_per_input": 0.17664075
+          },
+          "other": {
+            "calls": 100,
+            "duration_us": 185.49899999999997,
+            "gpu_kernel_time_fraction": 0.10363535800482701,
+            "ms_per_input": 0.04637474999999999
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 44.64,
+            "gpu_kernel_time_fraction": 0.0249396621078037,
+            "ms_per_input": 0.01116
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 58.144,
+            "gpu_kernel_time_fraction": 0.03248413336908912,
+            "ms_per_input": 0.014536
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 95.966,
+            "gpu_kernel_time_fraction": 0.035254166057459665,
+            "ms_per_input": 0.0239915
+          },
+          "attention": {
+            "calls": 48,
+            "duration_us": 448.7350000000001,
+            "gpu_kernel_time_fraction": 0.1648477398848985,
+            "ms_per_input": 0.11218375000000003
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 176.608,
+            "gpu_kernel_time_fraction": 0.06487889209799134,
+            "ms_per_input": 0.044152000000000004
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 727.009,
+            "gpu_kernel_time_fraction": 0.26707475576003686,
+            "ms_per_input": 0.18175225
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 100.962,
+            "gpu_kernel_time_fraction": 0.0370895016307155,
+            "ms_per_input": 0.025240500000000003
+          },
+          "other": {
+            "calls": 748,
+            "duration_us": 1172.8379999999997,
+            "gpu_kernel_time_fraction": 0.4308549445688981,
+            "ms_per_input": 0.29320949999999996
+          }
+        }
+      },
+      "hidden": 128
+    },
+    {
+      "attempt": "final-c00-opt073-r1-024",
+      "candidate": "opt073",
+      "condition": "c00",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 466.75600000000003,
+            "gpu_kernel_time_fraction": 0.041199975002286164,
+            "ms_per_input": 0.116689
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 892.3870000000001,
+            "gpu_kernel_time_fraction": 0.07876989710333696,
+            "ms_per_input": 0.22309675
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 7083.69,
+            "gpu_kernel_time_fraction": 0.6252685577131187,
+            "ms_per_input": 1.7709225
+          },
+          "h_z_parallel_inspection_and_scalar": {
+            "calls": 24,
+            "duration_us": 87.03900000000002,
+            "gpu_kernel_time_fraction": 0.007682824911139837,
+            "ms_per_input": 0.021759750000000005
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 1805.5480000000002,
+            "gpu_kernel_time_fraction": 0.15937348950078367,
+            "ms_per_input": 0.45138700000000004
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 600.8040000000001,
+            "gpu_kernel_time_fraction": 0.05303222621942415,
+            "ms_per_input": 0.15020100000000003
+          },
+          "other": {
+            "calls": 76,
+            "duration_us": 179.3059999999999,
+            "gpu_kernel_time_fraction": 0.01582711891814978,
+            "ms_per_input": 0.04482649999999998
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 74.499,
+            "gpu_kernel_time_fraction": 0.006575934616149158,
+            "ms_per_input": 0.01862475
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 139.007,
+            "gpu_kernel_time_fraction": 0.012269976015611568,
+            "ms_per_input": 0.03475175
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 478.37100000000004,
+            "gpu_kernel_time_fraction": 0.07350019175125438,
+            "ms_per_input": 0.11959275000000001
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1326.9449999999995,
+            "gpu_kernel_time_fraction": 0.20388090403341383,
+            "ms_per_input": 0.33173624999999984
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 828.1320000000001,
+            "gpu_kernel_time_fraction": 0.1272398636107745,
+            "ms_per_input": 0.20703300000000002
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2028.492,
+            "gpu_kernel_time_fraction": 0.31167138260029453,
+            "ms_per_input": 0.507123
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 589.666,
+            "gpu_kernel_time_fraction": 0.09060031663540469,
+            "ms_per_input": 0.1474165
+          },
+          "other": {
+            "calls": 484,
+            "duration_us": 1256.825999999999,
+            "gpu_kernel_time_fraction": 0.19310734136885802,
+            "ms_per_input": 0.3142064999999998
+          }
+        }
+      },
+      "hidden": 512
+    },
+    {
+      "attempt": "final-c16-opt073-r1-024",
+      "candidate": "opt073",
+      "condition": "c16",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 468.15999999999997,
+            "gpu_kernel_time_fraction": 0.10661514451548931,
+            "ms_per_input": 0.11703999999999999
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 891.3279999999997,
+            "gpu_kernel_time_fraction": 0.20298415825936014,
+            "ms_per_input": 0.22283199999999995
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 147.93600000000004,
+            "gpu_kernel_time_fraction": 0.03368980267225614,
+            "ms_per_input": 0.03698400000000001
+          },
+          "h_z_parallel_inspection_and_scalar": {
+            "calls": 24,
+            "duration_us": 234.784,
+            "gpu_kernel_time_fraction": 0.05346789578333186,
+            "ms_per_input": 0.058696
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 1758.1499999999999,
+            "gpu_kernel_time_fraction": 0.4003875092487772,
+            "ms_per_input": 0.43953749999999997
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 595.8110000000001,
+            "gpu_kernel_time_fraction": 0.13568539787448355,
+            "ms_per_input": 0.14895275000000005
+          },
+          "other": {
+            "calls": 52,
+            "duration_us": 78.72399999999998,
+            "gpu_kernel_time_fraction": 0.017927996062964326,
+            "ms_per_input": 0.019680999999999994
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 75.77700000000002,
+            "gpu_kernel_time_fraction": 0.01725686903184859,
+            "ms_per_input": 0.018944250000000003
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 140.45099999999996,
+            "gpu_kernel_time_fraction": 0.03198522655148878,
+            "ms_per_input": 0.03511274999999999
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 468.57699999999994,
+            "gpu_kernel_time_fraction": 0.0679543236356623,
+            "ms_per_input": 0.11714424999999999
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1324.5550000000003,
+            "gpu_kernel_time_fraction": 0.1920906044113021,
+            "ms_per_input": 0.3311387500000001
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 824.2249999999997,
+            "gpu_kernel_time_fraction": 0.11953137349593287,
+            "ms_per_input": 0.2060562499999999
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2015.854,
+            "gpu_kernel_time_fraction": 0.292344684263727,
+            "ms_per_input": 0.5039635
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 586.7560000000001,
+            "gpu_kernel_time_fraction": 0.08509296683184765,
+            "ms_per_input": 0.146689
+          },
+          "other": {
+            "calls": 748,
+            "duration_us": 1675.5029999999945,
+            "gpu_kernel_time_fraction": 0.24298604736152804,
+            "ms_per_input": 0.4188757499999986
+          }
+        }
+      },
+      "hidden": 512
+    },
+    {
+      "attempt": "final-c21-opt073-r1-024",
+      "candidate": "opt073",
+      "condition": "c21",
+      "groups": {
+        "candidate": {
+          "a": {
+            "calls": 24,
+            "duration_us": 467.139,
+            "gpu_kernel_time_fraction": 0.10634443797411067,
+            "ms_per_input": 0.11678475
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 891.6229999999999,
+            "gpu_kernel_time_fraction": 0.2029784428613121,
+            "ms_per_input": 0.22290574999999999
+          },
+          "fused_h_z": {
+            "calls": 24,
+            "duration_us": 145.98499999999999,
+            "gpu_kernel_time_fraction": 0.03323356169716197,
+            "ms_per_input": 0.036496249999999994
+          },
+          "h_z_parallel_inspection_and_scalar": {
+            "calls": 24,
+            "duration_us": 236.67399999999992,
+            "gpu_kernel_time_fraction": 0.053878960037771755,
+            "ms_per_input": 0.05916849999999998
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 1758.7000000000003,
+            "gpu_kernel_time_fraction": 0.4003689759687555,
+            "ms_per_input": 0.4396750000000001
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 596.9630000000001,
+            "gpu_kernel_time_fraction": 0.13589893955833068,
+            "ms_per_input": 0.14924075000000003
+          },
+          "other": {
+            "calls": 52,
+            "duration_us": 78.94699999999999,
+            "gpu_kernel_time_fraction": 0.017972325891741244,
+            "ms_per_input": 0.019736749999999997
+          },
+          "paired_norm": {
+            "calls": 24,
+            "duration_us": 76.22100000000002,
+            "gpu_kernel_time_fraction": 0.017351750564231827,
+            "ms_per_input": 0.019055250000000003
+          },
+          "rope_and_gates": {
+            "calls": 24,
+            "duration_us": 140.446,
+            "gpu_kernel_time_fraction": 0.031972605446584305,
+            "ms_per_input": 0.0351115
+          }
+        },
+        "native": {
+          "a": {
+            "calls": 24,
+            "duration_us": 469.7950000000001,
+            "gpu_kernel_time_fraction": 0.0636280883754526,
+            "ms_per_input": 0.11744875000000002
+          },
+          "attention": {
+            "calls": 24,
+            "duration_us": 1322.341,
+            "gpu_kernel_time_fraction": 0.17909520112066826,
+            "ms_per_input": 0.33058525
+          },
+          "h_z_gemms": {
+            "calls": 48,
+            "duration_us": 823.459,
+            "gpu_kernel_time_fraction": 0.11152762806237149,
+            "ms_per_input": 0.20586474999999999
+          },
+          "head": {
+            "calls": 4,
+            "duration_us": 2013.356,
+            "gpu_kernel_time_fraction": 0.27268488063782653,
+            "ms_per_input": 0.503339
+          },
+          "m": {
+            "calls": 24,
+            "duration_us": 586.0820000000001,
+            "gpu_kernel_time_fraction": 0.07937776538971682,
+            "ms_per_input": 0.14652050000000003
+          },
+          "other": {
+            "calls": 1036,
+            "duration_us": 2168.419999999991,
+            "gpu_kernel_time_fraction": 0.29368643641396425,
+            "ms_per_input": 0.5421049999999977
+          }
+        }
+      },
+      "hidden": 512
+    }
+  ],
+  "script": {
+    "bytes": 5332,
+    "path": "42_profile_attribution.py",
+    "sha256": "a6de0ffd5dadfb48954f762acd30ffc886088566b7c7a01f116b28694ed28eef"
+  },
+  "sources": [
+    {
+      "bytes": 2282415,
+      "path": "artifacts/attempts/baseline-c00-full-r1-001/profile-native-eager.json",
+      "sha256": "6272fc6ecbb652a051f82463fc7c6627abce0bfc5669132e790e3968e23cd953"
+    },
+    {
+      "bytes": 1145547,
+      "path": "artifacts/attempts/baseline-c00-full-r1-001/profile-candidate-eager.json",
+      "sha256": "5842c3ea7d70b38c8ec3ba32e6efdc0217c184294506afab6fdab9706ff28041"
+    },
+    {
+      "bytes": 622751,
+      "path": "artifacts/attempts/baseline-c00-full-r1-001/profile-native-graph.json",
+      "sha256": "cc1b54c59bbcf39e5a0791265534720373d64b8a633b6d6301b7a12a15aa17ce"
+    },
+    {
+      "bytes": 245412,
+      "path": "artifacts/attempts/baseline-c00-full-r1-001/profile-candidate-graph.json",
+      "sha256": "85509c9c5631c0df977f6e2bf14badd235d1772d802cd2f94be78a41dd4a1727"
+    },
+    {
+      "bytes": 2900247,
+      "path": "artifacts/attempts/baseline-c16-full-r1-001/profile-native-eager.json",
+      "sha256": "56822d2642557b8c108bdc9d7948e3f3698645c634d7ccb8d0e997f7367c83ca"
+    },
+    {
+      "bytes": 1103376,
+      "path": "artifacts/attempts/baseline-c16-full-r1-001/profile-candidate-eager.json",
+      "sha256": "bc4e74874d71d8d75d66034c65f147d355a2d80799ae82c99819f4fb8d3448a4"
+    },
+    {
+      "bytes": 849686,
+      "path": "artifacts/attempts/baseline-c16-full-r1-001/profile-native-graph.json",
+      "sha256": "f2599e78f6cbf0bac47c2c3f7f60b6c37f15f145cca29c5576e676cadda18178"
+    },
+    {
+      "bytes": 220882,
+      "path": "artifacts/attempts/baseline-c16-full-r1-001/profile-candidate-graph.json",
+      "sha256": "2a60c8f6f025d46ea6a38bde87062d20211c767cddb745193c09724b59ffa739"
+    },
+    {
+      "bytes": 3644298,
+      "path": "artifacts/attempts/baseline-c21-full-r1-001/profile-native-eager.json",
+      "sha256": "458996159898cf56c98d502e5edc4b395b4ba289550b12dd11823c0891c0b207"
+    },
+    {
+      "bytes": 1103336,
+      "path": "artifacts/attempts/baseline-c21-full-r1-001/profile-candidate-eager.json",
+      "sha256": "5c0844e5b94581c2f74ef6555916a5fe2784870d67d35aa83771c77041da7f05"
+    },
+    {
+      "bytes": 1128828,
+      "path": "artifacts/attempts/baseline-c21-full-r1-001/profile-native-graph.json",
+      "sha256": "862e12298ad15da43a0436fde5b57140091c5bb0a0bfacd2606c0d8107bae89f"
+    },
+    {
+      "bytes": 220897,
+      "path": "artifacts/attempts/baseline-c21-full-r1-001/profile-candidate-graph.json",
+      "sha256": "8c8c88ab46bcf6c9b8d2d477ff8ee47809e86465a24eefed6bd64f1d35caf719"
+    },
+    {
+      "bytes": 2314048,
+      "path": "artifacts/attempts/baseline-m14-c01-full-r1-001/profile-native-eager.json",
+      "sha256": "811e4285293b1afb2029bb7bf47e5e502e260b865b79c7e1875af91672d51df5"
+    },
+    {
+      "bytes": 909070,
+      "path": "artifacts/attempts/baseline-m14-c01-full-r1-001/profile-candidate-eager.json",
+      "sha256": "db9fb75fc8b32e88d8bb0de2a55a43071b661edd69d99f1b852f88b3020edb68"
+    },
+    {
+      "bytes": 641466,
+      "path": "artifacts/attempts/baseline-m14-c01-full-r1-001/profile-native-graph.json",
+      "sha256": "e969ca7acaf6932d43f4cbc46deb248751b120c30b0ad8c4b1e78bc9f815e00b"
+    },
+    {
+      "bytes": 322791,
+      "path": "artifacts/attempts/baseline-m14-c01-full-r1-001/profile-candidate-graph.json",
+      "sha256": "d9c3ec26372c106b56a16c6686d0c0897168f50305268a67eabcb552758d1120"
+    },
+    {
+      "bytes": 2929921,
+      "path": "artifacts/attempts/baseline-m14-c20-full-r1-001/profile-native-eager.json",
+      "sha256": "5c19c68d05311680c67e568b96c7c48fa861b00f546584eb7d4c8ffe7ae8cdbc"
+    },
+    {
+      "bytes": 866978,
+      "path": "artifacts/attempts/baseline-m14-c20-full-r1-001/profile-candidate-eager.json",
+      "sha256": "ea88beb249ea19b3d2a78ef9bd8567f03a1ace0663ebc5fcded93ea185f780eb"
+    },
+    {
+      "bytes": 868291,
+      "path": "artifacts/attempts/baseline-m14-c20-full-r1-001/profile-native-graph.json",
+      "sha256": "f975dbc881da20d3c29c9a220002d91af51ba32cde65bcf20573416ff59320c4"
+    },
+    {
+      "bytes": 298309,
+      "path": "artifacts/attempts/baseline-m14-c20-full-r1-001/profile-candidate-graph.json",
+      "sha256": "9b34fd658a3d21c780a882415c829ae0b3b01addbccb4f2052faba84cfb8e486"
+    },
+    {
+      "bytes": 2930002,
+      "path": "artifacts/attempts/baseline-m14-c35-full-r1-001/profile-native-eager.json",
+      "sha256": "ec13a34917de2cf95d88842d5e93442c654cdc17958087fbe04125b7089d9979"
+    },
+    {
+      "bytes": 867004,
+      "path": "artifacts/attempts/baseline-m14-c35-full-r1-001/profile-candidate-eager.json",
+      "sha256": "6f2fe2e53e885253a0d99aff0a7e52e133a6b95dd4bac523718db974a1927227"
+    },
+    {
+      "bytes": 868293,
+      "path": "artifacts/attempts/baseline-m14-c35-full-r1-001/profile-native-graph.json",
+      "sha256": "0390bff7df9a37dc4ee18fa651155fb2253996ade3994aab7c776ed8e5edf1a9"
+    },
+    {
+      "bytes": 298309,
+      "path": "artifacts/attempts/baseline-m14-c35-full-r1-001/profile-candidate-graph.json",
+      "sha256": "3b4ac79a95d638968f50425c5680eb82af5ebc9a7e784bf81ed15f4c949b576f"
+    },
+    {
+      "bytes": 2292165,
+      "path": "artifacts/attempts/final-c00-opt073-r1-024/profile-native-eager.json",
+      "sha256": "a59217c2ba93b4eaaa187d51dac5f8eca6a3878fadb32214fd45edc313963d00"
+    },
+    {
+      "bytes": 881327,
+      "path": "artifacts/attempts/final-c00-opt073-r1-024/profile-candidate-eager.json",
+      "sha256": "1a8a87bbe3f763d540cece7fb1a50a3f48446b39f69d2d636996437ee964fa36"
+    },
+    {
+      "bytes": 622879,
+      "path": "artifacts/attempts/final-c00-opt073-r1-024/profile-native-graph.json",
+      "sha256": "fe9d82ef09a4299fa5357d6a2105d52976b647b95f2c2df4ec1c0b257da7c781"
+    },
+    {
+      "bytes": 231501,
+      "path": "artifacts/attempts/final-c00-opt073-r1-024/profile-candidate-graph.json",
+      "sha256": "eb1f9656989dd772b141b161805c2a2e017671a269658ba761db74108017f96d"
+    },
+    {
+      "bytes": 2912550,
+      "path": "artifacts/attempts/final-c16-opt073-r1-024/profile-native-eager.json",
+      "sha256": "c5c7dffa3a3f8e8b3e7772fccfc9070712e0e862f8b13feba282cd1dcb351623"
+    },
+    {
+      "bytes": 838963,
+      "path": "artifacts/attempts/final-c16-opt073-r1-024/profile-candidate-eager.json",
+      "sha256": "726512aa050583be342c84ff2f28a0716ba8e9eb3437208af16689e52a42de94"
+    },
+    {
+      "bytes": 849801,
+      "path": "artifacts/attempts/final-c16-opt073-r1-024/profile-native-graph.json",
+      "sha256": "3eaa8354ff8119030e54b68bb5d06c86b7425ec588d69d5911e336df69eda554"
+    },
+    {
+      "bytes": 206951,
+      "path": "artifacts/attempts/final-c16-opt073-r1-024/profile-candidate-graph.json",
+      "sha256": "ab97674959179f40a63b47fbaf4f4cf6644fc0bd04291289c68444821e3233db"
+    },
+    {
+      "bytes": 3659462,
+      "path": "artifacts/attempts/final-c21-opt073-r1-024/profile-native-eager.json",
+      "sha256": "83bebef8864383db7ee5eb3249b5a84cf0bca930e3d7ae6580d9df1f1a821d8a"
+    },
+    {
+      "bytes": 838930,
+      "path": "artifacts/attempts/final-c21-opt073-r1-024/profile-candidate-eager.json",
+      "sha256": "90f5f048f2e3b3b897b86ee3ef25277d5517d87a0a1b7848c7611c2263401dd3"
+    },
+    {
+      "bytes": 1128943,
+      "path": "artifacts/attempts/final-c21-opt073-r1-024/profile-native-graph.json",
+      "sha256": "18e0dc133c5927a67508ad376e63f32c9f23cb07de142e3978a54b4422d59f3f"
+    },
+    {
+      "bytes": 206938,
+      "path": "artifacts/attempts/final-c21-opt073-r1-024/profile-candidate-graph.json",
+      "sha256": "8a1788ba78d66d76b40e3b55970161fbaa6c44de6174126c47fc3e94e502ed1c"
+    }
+  ]
+}

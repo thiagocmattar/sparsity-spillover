@@ -41,3 +41,20 @@ credentials remain local. Delete only after archive and member hashes verify.
 
 No further approval is needed within the user's explicit launch authorization.
 No manuscript edit or PDF rebuild is included.
+
+## Closeout
+
+The author's later continuation authorization extended the initial candidate
+count while preserving the deadline, cost cap and scientific constraints.
+Candidate opt073 was selected on training development inputs, then frozen for
+all final checks. The 78 declared baseline/final/control processes pass full
+qualification. The measured native-base target is met: 33.07% reduction at 70M
+versus 29.87% for the best fresh 14M control. Dense gains remain separately reported.
+
+All 2584 output files and 1435 retained input/source copies are locally verified.
+The evidence audit and profile attribution reproduce locally. Owned Pod
+`nujok8uu8is06b` was deleted before 16:35:01 UTC on20 September, and its absence
+was verified before disarming the local guard. Other Pods remain untouched.
+GPU cost is at most approximately USD 2.62 plus temporary disk, belowUSD15;
+the provider's published billing snapshot is partial. Details and caveats are
+in `observations/001-native-base-scale-comparison.md` and the closeout receipts.
