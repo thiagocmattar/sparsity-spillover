@@ -4,6 +4,14 @@ The user requested that the completed 14M T2/Ph kappa=0.5 result be included
 in Figure 1 and the full manuscript data. This is a local reduction and
 manuscript update; no model, evaluation, timing or cloud execution is added.
 
+The user subsequently requested T2 in Table 1. The h,z / h row and caption
+are now included, with verified analytic ceilings at all three sizes.
+[Observation 002](observations/002-table1-t2.md) and
+[Table 1 verification](data/table1-verification.json) record this follow-up;
+the earlier manuscript-verification.json retains the initial integration's
+build and layout record. Reproduce the additional counts with
+`python analyses/027-2026-09-20-run044-manuscript/05_table1_ceilings.py`.
+
 ## Scope and completed plan
 
 1. Add Run044 to the existing 40-point Figure 1 without changing its ten recipe

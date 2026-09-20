@@ -22,12 +22,14 @@ Table~\ref{tab:interventions} summarizes the studied thresholding and pressure a
 
 % Recipe source: manuscript/artifacts/sparsification-ladder.tex and .md.
 % Exact ceiling counts: reviews/2026-09-05-methodology/ceiling-verification.json.
+% T2 h,z counts: Analysis027 data/table1-t2-ceilings.json; 05_table1_ceilings.py.
+% Observation: analyses/027-2026-09-20-run044-manuscript/observations/002-table1-t2.md.
 \begin{table}[H]
 \centering\small
 \caption{\textbf{Thresholding, pressure and sparsity ceilings.}
 $T_1$ replaces GeLU with ReLU at $h$. Pressure uses OL1: $P_1=P_h$ targets
 $h$, and $P_{\mathrm{all}}$ matches the thresholding sites
-($\mathcal{P}=\mathcal{N}$). For $T_4/T_7$, threshold strength is swept over
+($\mathcal{P}=\mathcal{N}$). For $T_2/T_4/T_7$, threshold strength is swept over
 $\kappa\in\{0,0.01,0.05,0.1,0.5\}$, with OL1 pressure weight $\lambda=1$
 and task-relative norm budget $b=1$ fixed. Only the 14M $T_1/P_1$ ablation sweeps
 $\lambda\in\{0.05,0.1,0.5,1\}$ at $b=1$.
@@ -46,6 +48,8 @@ $T_0/P_0$ (Base Model) & $\varnothing$ & $\varnothing$ & 0.00 & 0.00 & 0.00 \\
 \midrule
 $T_1/P_0$ & $h$ & $\varnothing$ & 4.28 & 12.35 & 24.93 \\
 $T_1/P_1$ & $h$ & $h$ & 4.28 & 12.35 & 24.93 \\
+\midrule
+$T_2/P_h$ & $h,z$ & $h$ & 5.35 & 15.44 & 31.16 \\
 \midrule
 $T_4/P_0$ & $a,m,h,z$ & $\varnothing$ & 12.83 & 37.06 & 74.78 \\
 $T_4/P_h$ & $a,m,h,z$ & $h$ & 12.83 & 37.06 & 74.78 \\
