@@ -8,3 +8,5 @@
   latency on X and validation loss on Y, preserving the simplified styling.
 - [004: Sparsity and latency](004-sparsity-latency.md): the same 40-point
   focused cohort, plotting model-wide sparsity on X and latency on Y.
+- [005: Three-panel manuscript figure](005-three-panel.md): focused quality
+  and sparsity trade-offs around Figure 24's conditional time-savings controls.

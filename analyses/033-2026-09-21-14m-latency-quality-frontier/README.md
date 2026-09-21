@@ -5,6 +5,7 @@ figure style. No training, timing experiment or manuscript edit is performed.
 
 - [Focused overview: Base, T2/Ph and T7/Pall](figures/01-14m-latency-quality-frontier.pdf).
 - [Sparsity versus latency, with the same highlights](figures/03-14m-sparsity-latency.pdf).
+- [Three-panel figure: quality, conditional savings and sparsity](figures/04-14m-quality-savings-sparsity.pdf).
 - [Version 2: latency on X, validation loss on Y](figures/01-14m-latency-quality-frontier-v2.pdf).
 - [Close-up near Base validation loss](figures/02-14m-latency-quality-frontier-near-base.pdf).
 - [Exact coordinates, excluded checkpoint identities and provenance](data/frontier.json).
@@ -33,6 +34,14 @@ with model-wide sparsity (%) on X and full-model latency (ms) on Y. Sparsity is
 recomputed from pooled integer zero-product counts and the full-model product
 denominator, including the dense output head. Its guide marks Base sparsity.
 
+The three-panel figure combines the two focused views with manuscript
+Figure 24(b)'s six conditional time-savings controls. It uses the manuscript's
+panel proportions and typography, one shared legend, and no subtitles. The
+middle panel measures T7/Pall at kappa=0.5 in a separate controlled session;
+its savings are neither additive nor a decomposition of the historical grid
+latencies. Its caption and interpretation are in observation 005, and exact
+coordinates and provenance are in [data/three-panel.json](data/three-panel.json).
+
 The close-up and transposed v2 are unchanged from the earlier simplified
 version: 18 visible points and 41 points respectively, retaining all recipe
 colors and selected dose callouts. They still include the ReLU control.
@@ -56,9 +65,13 @@ Reproduce from the repository root:
 
 ```powershell
 .venv/Scripts/python.exe -X utf8 analyses/033-2026-09-21-14m-latency-quality-frontier/01_plot.py
+.venv/Scripts/python.exe -X utf8 analyses/033-2026-09-21-14m-latency-quality-frontier/02_three_panel.py
 ```
 
 The script verifies pinned source hashes, the 45-checkpoint source inventory,
 all 41 source coordinates, exclusion of the four naive-L1 points and the
 overview's ReLU control, dose-group coverage and timing-session membership. Publication outputs
 are PDF only; layout renders are temporary QA artifacts outside this analysis.
+The second script verifies the shared 40-point cohort, pooled sparsity and all
+six conditional savings and whisker spans against the original Run037 summary.
+It preserves the four standalone PDFs.
