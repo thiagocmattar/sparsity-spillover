@@ -1,9 +1,25 @@
 # Living Manuscript Draft
 
+21 September 2026, approved 14M T2/Ph execution control:
+The abstract, introduction and main results now report the 12.9% conditional
+latency reduction at kappa=0.1 with checkpoint and thresholding fixed.
+Appendix E adds the four execution configurations, unchanged activation/output
+checks, h-dominated and non-additive effects, the untouched-kernel sensitivity,
+and the separate same-checkpoint native-PyTorch comparison. Figure 1(b)'s caption
+identifies the original T7/Pall control. Existing figures, Table 2, historical
+latency measurements and the qualified 70M comparison are preserved.
+Evidence: [Run048 observation](../runs/048-2026-09-21-pythia14m-t2-hz-latency/observations/001-causal-hz-latency.md),
+with reductions in `07_reduce.py` and `11_engineering_comparison.py`.
+The installed `draft/main.pdf` is the visually checked 22-page build, with
+resolved references, no overfull boxes and one pre-existing underfull hbox.
+All displayed new timings and effects were checked against the retained JSON.
+PDF SHA256: `898ad7ed29a8dc07c009852426cb24643a2b5ea92d828574be448cc3154e2c93`.
+
 ## Clean Overleaf export
 
-The current upload package is `overleaf.zip` (34 compilation files, including
-10 figure PDFs). Upload it as an Overleaf project with `main.tex` as the main
+The existing `overleaf.zip` is the pre-Run048-integration snapshot (34 compilation
+files, including 10 figure PDFs); it has not been refreshed for the changes above.
+Upload it as an Overleaf project with `main.tex` as the main
 document and pdfLaTeX as the compiler. The ZIP has no enclosing draft directory,
 archive, compiled manuscript, notes, metadata or build intermediates.
 
