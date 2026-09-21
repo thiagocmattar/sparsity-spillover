@@ -68,4 +68,7 @@ multiple timing sessions and a fixed full-sequence workload limit inference.
 
 The layout follows Figure 24's three-panel proportions, typography and embedded
 TrueType fonts, with one shared three-entry legend and no subtitles. Earlier
-standalone PDFs and the manuscript are unchanged.
+standalone PDFs are unchanged. At the user's request, this figure is now copied
+into `manuscript/draft/figures/` and included at `fig:quality-sparsity-overview`.
+The introduction caption follows the new panel order and annotation; source
+comments link to this observation and the generating script.

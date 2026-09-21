@@ -18,17 +18,16 @@ differ simultaneously in sparsification mechanism, intervention sites, training 
 
 We first use Pythia-14M~\citep{biderman2023pythia} as a controlled design-space exploration. We begin with increasingly broad thresholding recipes, $T_4$ and $T_7$, combined with either pressure concentrated at the feed-forward hidden activation ($P_h$) or pressure distributed across all thresholded sites ($P_{\mathrm{all}}$). We couple these models to a sparse GPU implementation so that the training interventions can be evaluated not only by activation sparsity ($\Smodel$), but also by realized latency execution. The resulting sweep exposes an important mismatch: although increasing sparsity within a fixed recipe generally reduces latency, aggregate sparsity alone does not determine speed. At aggressive thresholding ($\kappa=0.5$), $T_7/P_{\mathrm{all}}$ is substantially sparser than $T_4/P_{\mathrm{all}}$ (27.48\% versus 12.71\%), yet is slightly slower (0.473 versus 0.459\,ms).
 
-% Source: analyses/031-2026-09-20-quality-sites-quality/01_figure.py
-% Observation: analyses/031-2026-09-20-quality-sites-quality/observations/001-three-panel-preview.md
+% Source: analyses/033-2026-09-21-14m-latency-quality-frontier/02_three_panel.py
+% Observation: analyses/033-2026-09-21-14m-latency-quality-frontier/observations/005-three-panel.md
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\linewidth]{figures/24-quality-sites-quality.pdf}
-\caption{\textbf{From broad sparsification to targeted execution and scale transfer.}
-\textbf{(a)} Pythia-14M validation loss versus model-wide logical sparsity $\Smodel$ exposes the quality costs of different thresholding and pressure placements.
-\textbf{(b)} Conditional execution ablations on $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$ identify $h$ and $z$ as the profitable skipping sites, motivating the narrower $T_2/P_h$ recipe.
-% Saved time is full-model latency with one skipping path disabled minus latency with all paths enabled; whiskers span all differences between the three process means per mode. These effects are not additive. Timings use BF16 on an RTX~5090, batch one and 2,048 tokens; $q,k$ are ablated jointly.
-\textbf{(c)} Pythia-70M tests the quality--sparsity trade-off at a larger scale: $T_2/P_h$ retains near-baseline quality for $\kappa\leq0.1$, while its most aggressive threshold also incurs a quality cost.
-Panels (a,c) each show 27 trained checkpoints from the seven shared recipes in the legend; curves connect $\kappa=0,.01,.05,.1,.5$. Dotted Base/ReLU curves show post-hoc clipping.
+\includegraphics[width=\linewidth]{figures/04-14m-quality-savings-sparsity.pdf}
+\caption{\textbf{Sparsity, execution savings and quality on Pythia-14M.}
+\textbf{(a)} Model-wide logical sparsity $\Smodel$ versus full-model latency. The arrow connects $T_7/P_{\mathrm{all}}$ to $T_7/P_h$ at $\kappa=0.5$: 27.48\% and 16.66\% sparsity yield similar latency.
+\textbf{(b)} Conditional execution ablations on $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$ identify $h,z$ as the profitable skipping sites. Saved time is latency with one skipping path disabled minus latency with all paths enabled, holding the checkpoint and thresholding fixed. Whiskers span differences between process means, not confidence intervals; these savings are not additive.
+\textbf{(c)} Validation loss versus latency exposes the quality cost of broader sparsification.
+Panels (a,c) show the same 40 checkpoints: $T_2/P_h$ is blue, $T_7/P_{\mathrm{all}}$ orange, and other recipes gray. Hollow markers and vertical guides denote Base; lines connect settings within recipes. Timings use BF16 on an RTX~5090, batch one and 2,048 tokens; panel (b) uses a separate controlled session.
 }
 \label{fig:quality-sparsity-overview}
 \end{figure}

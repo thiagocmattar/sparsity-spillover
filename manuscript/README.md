@@ -1,5 +1,18 @@
 # Living Manuscript Draft
 
+21 September 2026, approved focused 14M introduction figure:
+`fig:quality-sparsity-overview` now uses
+`draft/figures/04-14m-quality-savings-sparsity.pdf`: sparsity and latency,
+conditional time savings, then the latency-quality trade-off. The caption
+describes the 40-checkpoint cohort, highlighted recipes and same-kappa arrow.
+References relying on the old overview's complete palette or clipping curves
+now point to the detailed 14M figure. Surrounding author introduction edits
+are preserved and remain uncommitted.
+The verified 21-page build has Figure 1 on page 2, resolved references and
+citations, and no LaTeX or box warnings. Windows prevented replacing the open
+`draft/main.pdf`; the completed build is saved as `draft/main-updated.pdf`.
+Evidence and hashes: [Analysis033 integration](../analyses/033-2026-09-21-14m-latency-quality-frontier/data/manuscript-integration.json).
+
 21 September 2026, approved restoration of the 70M execution control:
 Section 4.4 now connects the inefficient 14M-to-70M kernel transfer to the
 additional optimization step and retains the failure to accelerate lower-loss

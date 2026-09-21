@@ -1,7 +1,9 @@
 # Pythia-14M latency-quality frontier
 
 User-requested figures from existing measurements, following the manuscript
-figure style. No training, timing experiment or manuscript edit is performed.
+figure style. No training or timing experiment is performed. The approved
+three-panel figure is also installed in the manuscript at
+`fig:quality-sparsity-overview`, with an updated introduction caption.
 
 - [Focused overview: Base, T2/Ph and T7/Pall](figures/01-14m-latency-quality-frontier.pdf).
 - [Sparsity versus latency, with the same highlights](figures/03-14m-sparsity-latency.pdf).
