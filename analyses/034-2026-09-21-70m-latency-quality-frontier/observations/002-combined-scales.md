@@ -32,8 +32,9 @@ are not pooled or rescaled across sessions or model sizes.
 Circles denote 14M (40 checkpoints) and squares denote 70M (26 checkpoints).
 T2/Ph is blue, T7/Pall orange and other recipes gray. Hollow markers identify
 Base; vertical dotted lines mark its validation loss at each scale. Lines
-connect settings within the same recipe and model size. Both axes are linear,
-with lower values preferred. Latencies use K050 at 14M and opt073 for the 70M
+connect settings within the same recipe and model size. Validation loss is
+linear and latency logarithmic, with lower values preferred. Tick labels retain
+milliseconds. Latencies use K050 at 14M and opt073 for the 70M
 intervention recipes. The 70M Base marker uses native PyTorch; the 14M Base
 marker uses K050, as explicitly identified in the legend.
 
@@ -48,6 +49,6 @@ The Base latencies use different implementations: 0.651573 ms for K050 at 14M
 and 1.611048 ms for native PyTorch at 70M. The optimized 70M Base value is not
 substituted into this view. Different kernels, timing sessions and one training
 seed limit interpretation; this is not a controlled estimate of model-size
-effects or the causal benefit of sparse execution. The full linear latency
-range compresses the smaller variation within the 14M cluster; the separate
-14M figure remains the detailed view. No manuscript text or existing PDF changes.
+effects or the causal benefit of sparse execution. The logarithmic latency axis
+makes variation within the 14M cluster easier to see while retaining the full
+range of both scales. No manuscript text or other PDF changes.

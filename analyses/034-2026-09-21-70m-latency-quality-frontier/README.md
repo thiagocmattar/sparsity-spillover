@@ -23,9 +23,10 @@ kappa=0.5 endpoint, without session rescaling or an extra session marker.
 The original Run045 Base remains the displayed reference.
 
 The combined figure overlays the 40 focused 14M points and these 26 70M points
-on shared linear axes. Circles denote 14M and squares 70M, with the same recipe
+with linear validation loss on X and logarithmic latency on Y. Circles denote
+14M and squares 70M, with the same recipe
 colors and gray context. The legend identifies each model and the differing
-Base implementations. All coordinates are retained without rescaling. See
+Base implementations. All measured values are retained. See
 [observation 002](observations/002-combined-scales.md) and
 [combined data](data/combined-figure.json) for provenance and interpretation.
 

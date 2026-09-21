@@ -1,4 +1,4 @@
-"""Overlay retained 14M and 70M loss-latency measurements without rescaling."""
+"""Overlay retained 14M and 70M losses and latencies on a logarithmic Y axis."""
 import hashlib
 import json
 from pathlib import Path
@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import NullFormatter, NullLocator, ScalarFormatter
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -95,8 +96,12 @@ def main():
     assert all(xlim[0] <= r["loss"] <= xlim[1] and ylim[0] <= r[metrics[size]] <= ylim[1]
                for size, rows in cohorts.items() for r in rows)
     ax.set(xlim=xlim, ylim=ylim, xlabel="Validation loss", ylabel="Full-model latency (ms)")
+    ax.set_yscale("log")
     ax.set_xticks([4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6.0])
     ax.set_yticks([.5, 1., 1.5, 2., 2.5])
+    ax.yaxis.set_major_formatter(ScalarFormatter())
+    ax.yaxis.set_minor_locator(NullLocator())
+    ax.yaxis.set_minor_formatter(NullFormatter())
     ax.set_title("Pythia-14M and Pythia-70M", loc="left", pad=12)
     ax.tick_params(length=3, width=.65)
     ax.grid(axis="y", color="#E8EAED", lw=.6)
@@ -115,11 +120,11 @@ def main():
         output=output.relative_to(HERE).as_posix(), output_sha256=sha(output),
         script=Path(__file__).name, script_sha256=sha(Path(__file__)), sources_sha256=SOURCES,
         cohorts=cohorts, latency_fields=metrics, markers=markers,
-        x_metric="loss", y_unit="milliseconds", axis_scales={"x": "linear", "y": "linear"},
+        x_metric="loss", y_unit="milliseconds", axis_scales={"x": "linear", "y": "log"},
         xlim=xlim, ylim=ylim, labeled_series=[h.get_label() for h in legend],
         baseline_backends={"14M": "K050 specialized", "70M": "native PyTorch"},
         recipe_backends={"14M": "K050", "70M": "opt073"},
-        interpretation="Retained absolute losses and latencies from the two source figures; no normalization or rescaling. This is not a same-kernel or same-session scale comparison.",
+        interpretation="Retained absolute losses and latencies with linear loss and logarithmic latency axes; no session normalization. This is not a same-kernel or same-session scale comparison.",
         verification={"counts": {s: len(r) for s, r in cohorts.items()},
                       "all_66_points_visible": True, "unchanged_previous_pdfs": preserved})
     (HERE / "data/combined-figure.json").write_text(json.dumps(result, indent=2) + "\n",
