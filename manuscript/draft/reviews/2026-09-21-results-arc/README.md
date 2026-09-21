@@ -84,3 +84,27 @@ are recorded in [verification.json](verification.json).
 `manuscript/draft/main.pdf` was not replaced. The temporary review build
 includes the author's introduction edits present at build time; its source
 hash is recorded separately from this edit's files.
+
+## Follow-up: 70M execution control
+
+The author approved promoting the same-checkpoint h,z replacement control to
+the main 70M results and conclusion. Analysis028 `04_controls.py` and
+[`data/retained-controls.json`](../../../../analyses/028-2026-09-20-70m-optimized-grid/data/retained-controls.json)
+give 1.127765964 ms for opt073 and 1.365126858 ms for selected-native-hz on
+Run042 c21 (T7/Ph, kappa=0.5). The conditional full-model reduction is
+`100 * (1 - 1.127765964 / 1.365126858) = 17.38746%`.
+It includes fusion, layout and inspection effects alongside sparsity
+exploitation. The session is separate from the 1.088 ms matched-grid result.
+
+The 1.481x result is explicitly an end-to-end comparison against native Base,
+including a different checkpoint and both sparse and dense implementation
+changes. Figures, Table 2 and the appendix controls are unchanged. Existing
+author edits to the introduction and spillover paragraphs are preserved and
+excluded from this follow-up's source commit.
+
+The requested rebuild installs the checked 22-page PDF with resolved references,
+no overfull boxes and the same two underfull hbox warnings. All pages were
+inspected in contact sheets; the changed results and conclusion were inspected
+at higher resolution. Installed SHA256:
+`ac15cb26f2fe3ef1f9c46aaa6ecd680412a8e00851992bf54e184abd02807c86`.
+This rebuild supersedes the earlier PDF verification above.

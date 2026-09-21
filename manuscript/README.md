@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+21 September 2026, approved promotion of the 70M execution control:
+The main results and conclusion distinguish the 1.481x comparison against
+native Base from the 17.4% conditional benefit of specialized h,z execution
+on the same checkpoint. The separate-session control and its fusion/layout
+qualification are retained. `draft/main.pdf` is rebuilt and visually checked:
+22 pages, resolved references, no overfull boxes, two underfull hbox warnings.
+Installed SHA256: `ac15cb26f2fe3ef1f9c46aaa6ecd680412a8e00851992bf54e184abd02807c86`.
+See the [control audit](draft/reviews/2026-09-21-results-arc/README.md#follow-up-70m-execution-control).
+
 21 September 2026, requested rebuild after the results-argument revision:
 `draft/main.pdf` now contains the latest author introduction and the revised
 14M-to-70M results narrative. LaTeX confirms the visually reviewed 22-page
