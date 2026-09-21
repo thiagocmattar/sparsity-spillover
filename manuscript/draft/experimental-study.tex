@@ -6,7 +6,7 @@
 
 We pretrain Pythia-14M, 70M, and 410M from random initialization~\citep{biderman2023pythia} on MiniPile~\citep{kaddour2023minipile}. Each run receives 712 optimizer steps and 1.493 billion input tokens. Within each size, runs share initialization, data order and training budget. We evaluate loss and $\Smodel$ on the full validation set. Appendix~\ref{app:training-protocol} gives the full protocol. For comparison, we apply TEAL-style post-hoc magnitude thresholding~\citep{liu2024teal} at $a,m,h,z$, using percentile targets $p=0,0.1,\ldots,0.9$. Site--layer thresholds are calibrated separately on ten training blocks. 
 
-\textbf{Experiments accross model sizes.}
+\textbf{Experiments across model sizes.}
 We use 14M for extensive intervention ablations and kernel development, and use 70M as a scale check of whether the observed sparse structures remain exploitable after adapting the implementation. We also evaluated 410M, but it operates in a different optimization regime, exhibiting higher loss than 70M and a larger gradient norm after the same token budget. Because these effects are not isolated, our detailed intervention and runtime analyses focus on 14M and 70M. Appendix~\ref{app:410m-results} reports the 410M results, and Figure~\ref{fig:a0-optimization} shows the corresponding training trajectories.
 
 \textbf{Agentic kernel development.}

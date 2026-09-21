@@ -183,6 +183,15 @@ exception cannot establish a general attention-speedup relation.
 Bypass therefore describes exploitable
 structure without explaining all latency differences.
 
+% Retained clipping latency: Run036 results/clipping-final-kernel.json;
+% moved from the main results in reviews/2026-09-21-results-arc/README.md.
+Post-hoc clipping reaches at most $1.025\times$ the native base-model speed
+at 14M; this small difference spans GPU sessions and does not establish a
+reliable clipping benefit. Clipping adds a separate masking pass, and the
+resulting zeros must still form groups the kernel can skip. Since fused
+clipping was not optimized, this characterizes the current execution path
+rather than a general limit of post-hoc sparsification.
+
 Table~\ref{tab:kernel-mechanisms} provides the direct 14M test: disable one
 skipping path while keeping weights, gates and fusion fixed. Its min--max
 spans cover all pairs of three independent off/on process means; effects are
