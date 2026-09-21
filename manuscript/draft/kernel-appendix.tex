@@ -1,236 +1,110 @@
-% Evidence and audit: analyses/024-2026-09-17-h-only-kernel-latency/observations/041-kernel-appendix.md.
-% Updated 70M evidence: Analysis028 observations/001-matched-70m-grid.md;
-% 01_collect.py, 03_tables.py, 04_controls.py; Run045 results/matched-grid.json.
-% Retained 14M diagnostic: Analysis028 observations/002-retained-14m-diagnostics.md; 02_figures.py.
-% Implementation: Run028 candidates/k050, k049, k042, k035; Run035 kernel/.
-% Controlled tests: Run037 results/conditional-effects-audit.json; Run039 results/mechanism.json.
+% Hand-edited after the approved adversarial review, 21 September 2026.
+% Mechanisms: Analysis024 observations/041-kernel-appendix.md;
+% Run037 observations/001-operation-latency.md; Run039 observations/001-am-port-verdict.md.
+% 70M: Analysis028 observations/001-matched-70m-grid.md; 01_collect.py,
+% 03_tables.py and 04_controls.py; Run045 results/matched-grid.json.
+% 14M T2 control: Run048 observations/001-causal-hz-latency.md;
+% 07_reduce.py and 11_engineering_comparison.py.
 \section{Kernel development and evaluation}
 \label{app:kernel-results}
 \label{app}
 \label{app:kernel-diagnostics}
 
-\paragraph{Implementation.}
-The specialized forward pass preserves each trained model's weights,
-thresholds, biases and residual connections. It combines CUDA, CUTLASS and
-FlashAttention components to fuse operations and skip matrix instructions
-whose activation operands are zero. It introduces no additional pruning.
-One kernel computes the two input LayerNorms from their shared input while
-retaining separate affine parameters and thresholding. QKV layout conversion,
-RoPE and the selected $q,k,v$ gates are fused; $q,k$ gates follow RoPE.
-The FFN-down and attention-output projections are evaluated jointly with
-their biases and residual addition. The final vocabulary projection remains
-dense. Table~\ref{tab:kernel-paths} specifies the sparse execution rules.
+\subsection{Execution mechanisms}
+The specialized implementation preserves the trained weights and thresholding,
+while fusing operations and exploiting zero activations. At $h,z$, \emph{sparse
+execution} includes both skipping empty activation tiles and replacing matrix
+instructions with scalar arithmetic for rows with very few nonzeros. The
+FFN-down and attention-output projections share a fused kernel; the vocabulary
+projection remains dense. Table~\ref{tab:kernel-paths} distinguishes work avoided
+before and after operand loads.
 
 \begin{table}[!htb]
 \centering\small
-\caption{\textbf{Sparse execution rules at 14M and in the original 70M port.} Tile dimensions are tokens by input
-features. A matrix multiply--accumulate (MMA) instruction operates on
-$16\times8\times16$ elements (output rows, output columns, reduction dimension).
-Zero checks and any scalar replacement execute during every forward pass.}
+\caption{\textbf{Sparse execution rules in the 14M and initial 70M implementations.}
+MMA denotes a matrix multiply--accumulate instruction. Tile dimensions are
+tokens by input features. All zero checks execute during the forward pass.}
 \label{tab:kernel-paths}
-\begin{tabularx}{\linewidth}{@{}p{.22\linewidth}XX@{}}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{.24\linewidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
 Operation & Execution rule & Work avoided \\
 \midrule
-QKV, FFN-up ($a,m$) & Test each $16\times16$ activation fragment after both
-operands have been loaded. & Skip the MMA for an empty fragment; retain operand reads. \\
-FFN-down, attention output ($h,z$) & Inspect eight rows; use scalar arithmetic
-for rows with at most two nonzeros when numerical guards pass. Process the
-remaining rows in $8\times16$ tiles padded to 16 rows. & Skip empty tiles
-before loading their weights. Scalar rows read only the corresponding weights. \\
-Attention ($QK,PV$) & After loading the operands, use a warp-wide check to
-test whether either complete MMA fragment is zero. & Skip that MMA; retain
-input loading, masking, softmax and output processing. \\
+QKV, FFN-up ($a,m$) & Check activation fragments after both operands are loaded.
+& Skip matrix instructions for empty fragments; retain operand reads. \\
+FFN-down ($h$), attention-output ($z$) & Check $8\times16$ tiles before loading
+weights. Rows with at most two nonzeros use scalar arithmetic when numerical
+guards allow; other rows use the dense matrix path.
+& Empty tiles avoid weight reads and matrix instructions. Scalar rows read
+only weights paired with nonzero activations. \\
+Attention ($QK,PV$) & Check operand fragments after loading them.
+& Skip matrix instructions if either fragment is zero; retain operand reads,
+masking and softmax. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The scalar path requires finite weights and biases, with nonzero magnitudes
-between $2^{-50}$ and $2^{50}$; selected activations obey the same magnitude
-bounds. Other rows use the matrix path. The original 70M port retains these rules,
-with projection dimensions adapted from $(d,d_f)=(128,512)$ to $(512,2048)$.
-The 14M attention kernel uses $64\times256$ query/key tiles and two key/value
-partitions; the original 70M port uses $128\times128$ tiles without partitioning to match its
-native attention reduction order. This change was needed for numerical
-agreement, rather than selected by a 70M performance search.
+In Table~\ref{tab:kernel-mechanisms}, \emph{bypass} is omitted MMA instructions
+divided by issued plus omitted instructions, pooling counts across layers and
+all 338 validation sequences. Counts include padded work and, at $h,z$, matrix
+instructions replaced by scalar arithmetic. Bypass therefore differs from
+$\Smodel$, the model-wide fraction of zero-operand scalar products, and does not measure the
+fraction of latency saved.
 
-\paragraph{Scope and numerical checks.}
-Tests use one RTX\,5090, BF16 inference, batch size one, 2,048-token causal
-sequences, and all 50,304 output logits, with PyTorch 2.11.0, Transformers
-5.12.1 and CUDA 12.8. The implementation assumes fixed weights, shapes and
-non-overlapping use of its buffers. It is not evaluated for training, cached
-decoding, concurrent serving, arbitrary masks or thresholds outside the tested
-grid. Each final checkpoint must pass in three fresh processes on all 338
-validation sequences. Relative to the unmodified eager implementation, outputs
-must be finite, every logit must satisfy
-$|y-\hat y|\leq0.25+0.02|\hat y|$, the relative $\ell_2$ error of each sequence's
-logits must not exceed $0.02$, and the absolute mean validation-loss difference
-must not exceed $0.001$. These are numerical tolerances, not bitwise equivalence.
+\subsection{Timing and numerical validation}
+Measurements use an RTX\,5090, BF16, batch one, 2,048-token causal sequences,
+and full vocabulary logits for every token (PyTorch 2.11.0, Transformers 5.12.1,
+CUDA 12.8). This is full-sequence inference with fixed weights and shapes;
+cached decoding and concurrent serving are outside the evaluated scope.
+Final checkpoints were checked on all 338 validation sequences in three
+independent processes. Relative to the unmodified eager reference, acceptance
+required finite outputs, $|y-\hat y|\leq0.25+0.02|\hat y|$ for every logit,
+relative $\ell_2$ error at most $0.02$ per sequence, and absolute mean
+validation-loss difference at most $0.001$. Exact agreement in the 14M control
+below is stronger than these general tolerances.
 
-\paragraph{Timing and reference.}
-Native PyTorch/SDPA and specialized inference use CUDA graphs with identical
-inputs. Latency is the geometric mean of host timings over 64 fixed validation
-sequences, seven randomized paired passes and three fresh processes.
-Compilation, static weight layout preparation, graph capture and equal input
-staging are excluded. Embeddings, all blocks, final normalization, vocabulary
-logits and input-dependent preprocessing are included. Post-hoc masks also
-remain inside timing; no activations are cached. The original 14M measurements
-and the new 70M sweep use separate GPU sessions. At 70M, native inference,
-the original port and the optimized implementation are paired in every
-process for all 26 original checkpoints. A later session repeats Base and
-$T_2/P_h$ at $\kappa=0.1$ and measures its additional $\kappa=0.5$ checkpoint
-with the same frozen protocol (Table~\ref{tab:70m-additional-endpoint});
-absolute timings are not pooled across sessions.
+PyTorch/SDPA and specialized implementations use CUDA graphs with identical
+inputs. We report geometric means of synchronized host timings over 64 fixed
+validation sequences, seven randomized paired passes and three independent
+processes. Timing includes embeddings, transformer blocks, final normalization,
+vocabulary logits, thresholding and all input-dependent sparsity checks.
+Compilation, static weight preparation, graph capture and equal input staging
+are excluded. Activations are recomputed on every forward pass.
 
-For comparisons across recipes, we use
-\emph{one native base-model latency per size and measurement session}:
-$t_{\mathrm{native},T_0/P_0}/t_{\mathrm{specialized},r}$ for recipe $r$.
-The native reference is 0.65544\,ms for the retained 14M measurements;
-the new 70M reference is reported in Table~\ref{tab:endpoints-14m-70m}.
-The specialized base-model latency is not used as the speedup denominator:
-an inefficient dense fallback can inflate that ratio. The Base marker in the 14M
-latency figure uses specialized execution; its native reference is reported here.
+Cross-recipe speedups use one PyTorch/SDPA Base reference per model size and
+measurement session: $t_{\mathrm{PyTorch},T_0/P_0}/t_{\mathrm{specialized},r}$.
+The 14M reference is 0.65544\,ms; Figure~\ref{fig:14m-quality-latency}'s Base
+marker instead uses specialized execution. The 70M references are reported in
+Table~\ref{tab:70m-additional-endpoint}. Timings from separate sessions are not
+pooled. The controls below instead compare execution configurations of the same
+checkpoint, with their denominators stated explicitly.
 
-% Follow-up evidence: Run040 observations/001-overhead-and-optimization.md;
-% results/component-overhead.json, profile-attribution.json and closeout-verification.json.
-% Integration and verification: Analysis024 observations/046-70m-native-reference.md.
-\paragraph{Adapting the kernel to 70M.}
-\label{app:kernel-transfer}
-An initial follow-up tested the base model and $T_7/P_h$ at $\kappa=0.5$.
-Replacing only $h,z$ with native operations reduced the ported base-model
-latency by 1.661\,ms, nearly its entire 1.674\,ms deficit. This identifies
-the expensive component, not an additive breakdown of causes. Its general
-matrix path pads eight real rows to sixteen and, at width 512, repeats
-activation inspection across four output-column blocks rather than one at
-14M. It also lacks a shared-memory weight pipeline. Sparse inputs can avoid
-much of this fallback: $94.88\%$ of $h$ rows and $99.59\%$ of $z$ rows have
-at most two nonzeros in the tested sparse checkpoint, versus none in the base model.
-
-We selected the optimized implementation using sixteen fixed training blocks,
-then froze it before full-validation testing. It retains sparse $h,z$,
-fused normalization and RoPE, and native $a,m$ projections. A row prepass
-identifies guarded scalar rows with at most eight nonzeros, accumulated in
-ascending feature order in FP32. Other rows retain the eight-row matrix path,
-with a 256-column output tile. All input-dependent inspection remains inside
-timing. Attention uses a dense tiled kernel without activation-induced MMA
-skipping, and the dense vocabulary projection uses a tuned CUTLASS kernel.
-These additional dense optimizations also contribute to latency reduction.
-
-\input{tables/compact-results/70m-kernel-transfer}
-
-Table~\ref{tab:70m-kernel-transfer} compares representative checkpoints;
-Table~\ref{tab:endpoints-14m-70m} gives all 27 checkpoints, identifying
-the later $T_2/P_h$, $\kappa=0.5$ measurement separately.
-Every implementation preserves the weights and thresholds and is checked on
-all 338 validation sequences in three fresh processes. This tests whether
-the observed sparse structures remain exploitable at 70M after implementation
-adaptation; it does not establish a scale-dependent speedup trend.
-
-\paragraph{Dense optimizations and sparse execution.}
-Retained controls from a separate optimization session distinguish these
-contributions. Replacing $h,z$ with native dense operations while retaining
-the other optimized components reduces base-model latency from 1.701 to
-1.297\,ms, without activation sparsification. The optimized $T_7/P_h$ model at
-$\kappa=0.5$ takes 1.128\,ms, 13.1\% below that alternative dense base, but
-with higher loss. Replacing its sparse $h,z$ implementation with native
-operations raises latency to 1.365\,ms. This conditional difference includes
-fusion, layout and inspection costs; it is not a pure skip-toggle effect.
-Disabling skipping in the custom fallback instead gives 2.704\,ms, illustrating
-why that inefficient path is not a practical dense reference. Component
-effects are conditional and non-additive, and these timings are not pooled
-with the new grid.
-
-\paragraph{What MMA bypass measures.}
-Bypass is the number of omitted MMA instructions divided by issued plus
-omitted instructions, pooling integer counts across layers and validation
-sequences. Projection totals pool the four projection operations; attention
-totals pool $QK$ and $PV$. We keep the two groups separate because equal
-instruction counts need not imply equal costs. At $h,z$, bypass includes
-replacement by scalar arithmetic and counts padded rows; it is not a fraction
-of all arithmetic eliminated. Attention counts include causal padding:
-even the base model bypasses $10.42\%$ of $PV$ instructions at 14M.
-In contrast, $\Smodel$ excludes masked pairs and includes
-the dense vocabulary projection in its denominator.
-
-The figure's projection scalar sparsity pools zero-activation products over
-all projection products in the actual BF16 operands. Both this measure and
-bypass cover all 338 validation sequences; timing uses the 64-sequence subset.
-Thus these diagnostics complement, rather than redefine, the canonical
-model-wide sparsity used in the quality figures.
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=\linewidth]{figures/20-kernel-structure-native-base-speedup.pdf}
-\caption{\textbf{Scalar sparsity, instruction bypass and speedup over a fixed
-native 14M base model.} The retained diagnostic covers 22 trained settings and
-20 post-hoc control settings. Left: projection scalar sparsity versus projection
-MMA bypass. Middle/right: projection/attention bypass versus full-model speedup.
-Every speedup uses the same native $T_0/P_0$ reference of 0.65544\,ms; the
-horizontal line is $1\times$. The Base model marker uses specialized inference,
-so it need not lie on that line. Lines connect measured thresholds, not fitted
-trends; dotted paths are post-hoc clipping. Counts are pooled, include the
-instruction-padding and scalar-substitution conventions above, and do not
-measure saved memory traffic.}
-\label{fig:kernel-diagnostics}
-\end{figure}
-
-\paragraph{Interpretation and controlled tests.}
-Projection bypass tracks speedup at 14M, but high scalar sparsity alone
-need not produce empty instruction tiles. Post-hoc controls show this gap and
-incur separate masking costs. Attention bypass is nearly constant across the
-trained grid except for $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$; this single
-exception cannot establish a general attention-speedup relation.
-Bypass therefore describes exploitable
-structure without explaining all latency differences.
-
-% Retained clipping latency: Run036 results/clipping-final-kernel.json;
-% moved from the main results in reviews/2026-09-21-results-arc/README.md.
-Post-hoc clipping reaches at most $1.025\times$ the native base-model speed
-at 14M; this small difference spans GPU sessions and does not establish a
-reliable clipping benefit. Clipping adds a separate masking pass, and the
-resulting zeros must still form groups the kernel can skip. Since fused
-clipping was not optimized, this characterizes the current execution path
-rather than a general limit of post-hoc sparsification.
-
-Table~\ref{tab:kernel-mechanisms} reports conditional, non-additive effects
-at fixed weights, gates and fusion. Its ranges cover all off/on pairs of
-three process means per mode. The 70M control instead uses native component
-replacements. Neither test separately times memory reads, zero checks or
-softmax. The retained 14M scatter remains descriptive evidence, not causal attribution.
-
-\paragraph{Alternatives tested.}
-Porting the $h,z$ strategy to $a,m$ was correct but slower in the tested 14M
-case (Section~\ref{sec:kernel-autoresearch}). The padded fallback issued
-$1.90\times$ and $2.00\times$ as many matrix instructions, respectively.
-Attention shortcuts using cumulative value sums for zero queries, disjoint
-query/key supports, or cheaper conditional execution either failed numerical
-checks or did not establish a reliable gain. Disabling attention skipping
-improved all 35 historical 14M comparisons. The original grid implementation is
-therefore not latency-optimal; it preserves one common execution policy across
-recipes. The optimized 70M implementation instead uses dense attention.
-Earlier detection that avoids attention operand reads, fused post-hoc
-masking and sparsification of softmax probabilities remain untested here.
-
-% Hand-edited text/table; Run048 observations/001-causal-hz-latency.md;
-% results/hz-latency.json and results/engineering-comparison.json,
-% generated by 07_reduce.py and 11_engineering_comparison.py.
-\paragraph{Zero exploitation at the 14M $T_2/P_h$ operating point.}
+\subsection{14M execution controls}
 \label{app:t2-hz-control}
-Table~\ref{tab:t2-hz-control} toggles $h,z$ sparse execution with weights,
-thresholding, fusion and other paths fixed. Disabled sites use the dense
-matrix path without skipping or scalar substitution. Full-validation diagnostics
-confirm identical $h,z$ values and zero masks in all six layers; logits agree
-exactly on all 338 sequences in three fresh processes.
+Table~\ref{tab:kernel-mechanisms} disables individual sparse paths at fixed
+weights, thresholds and fusion. Its ranges cover all off/on pairs of three
+process means per mode; effects are conditional and non-additive. The common
+14M implementation was not tuned separately for each recipe: it retained
+attention skipping even though disabling it reduced latency in the historical
+grid. These tests measure full-model effects, not separate memory-read,
+inspection or arithmetic costs.
+
+Table~\ref{tab:t2-hz-control} tests the narrower $T_2/P_h$ checkpoint at
+$\kappa=0.1$. Disabling a site's sparse execution removes both empty-tile
+skipping and scalar substitution, retaining the dense matrix path within the
+same fused kernel. Thresholding and all other paths remain active.
+Full-validation diagnostics confirm identical $h,z$ values and zero masks in
+all six layers; logits agree exactly on all 338 sequences in three processes.
 
 \begin{table}[!htbp]
 \centering\small
-\caption{\textbf{Fixed-checkpoint zero-exploitation control}: 14M $T_2/P_h$,
-$\kappa=0.1$, with thresholding active. Full-model geometric means use
-64 sequences, seven paired passes and three processes on RTX\,5090 (BF16).}
+\caption{\textbf{14M $T_2/P_h$ execution control at $\kappa=0.1$.}
+All configurations retain thresholding. Full-model geometric-mean latencies
+follow the timing protocol above; sparse execution includes skipping and
+scalar substitution.}
 \label{tab:t2-hz-control}
 \begin{tabular}{@{}lccr@{}}
 \toprule
-Configuration & $h$ skipping & $z$ skipping & Latency (ms) \\
+Configuration & $h$ sparse execution & $z$ sparse execution & Latency (ms) \\
 \midrule
 A: full execution & On & On & 0.5588 \\
 B: disable $h$ & Off & On & 0.6485 \\
@@ -240,12 +114,46 @@ D: disable both & Off & Off & 0.6415 \\
 \end{tabular}
 \end{table}
 
-Joint savings ($D-A$) are $82.7\,\mu$s ($12.9\%$; process range
-$12.8$--$13.0\%$). Enabling $z$ saves $4.2\,\mu$s with $h$ on but adds
-$7.0\,\mu$s with $h$ off. The untouched kernel takes 0.5614\,ms ($12.5\%$
-below $D$); its $2.6\,\mu$s offset from $A$ matters for the smaller $z$ effect.
+Joint savings ($D-A$) are $82.7\,\mu$s, or $12.9\%$ of $D$'s latency
+($12.8$--$13.0\%$ across processes). Disabling $h$ alone adds $89.7\,\mu$s.
+Enabling $z$ saves $4.2\,\mu$s with $h$ on but adds $7.0\,\mu$s with $h$ off,
+showing why the individual effects cannot be added. The original 14M
+implementation, before adding independent execution switches, takes
+0.5614\,ms ($12.5\%$ below $D$). Its $2.6\,\mu$s offset from $A$ matters when
+interpreting the smaller $z$ effect.
 
-Same-checkpoint native PyTorch takes 0.7018\,ms; $A$ saves $20.4\%$, with
-$D-A$ accounting for $57.9\%$ of this gap. The remainder includes fusion
-and other implementation differences. This separate session's share does
-not apply to the historical native Base comparison.
+PyTorch/SDPA on this same checkpoint takes 0.7018\,ms; $A$ reduces latency by
+$20.4\%$, with $D-A$ accounting for $57.9\%$ of that gap. The remainder
+includes fusion and other implementation differences. This share does not
+apply to the historical comparison against the Base checkpoint.
+
+% Transfer diagnosis: Run040 observations/001-overhead-and-optimization.md.
+% Matched 70M control: Analysis028 data/retained-controls.json; 04_controls.py.
+\subsection{70M adaptation and execution control}
+\label{app:kernel-transfer}
+The initial 70M implementation retained the 14M execution rules. Replacing its
+$h,z$ kernel with PyTorch operations removed almost the entire latency deficit
+on the Base checkpoint, localizing the overhead to these projections. The dense
+matrix path pads eight rows to sixteen and repeats activation inspection across
+more output tiles at 70M. These are plausible sources of overhead; their
+individual costs were not isolated.
+
+We selected the optimized implementation on sixteen fixed training sequences
+and fixed it before full-validation evaluation. It uses a row-sparsity prepass
+for $h,z$, expands scalar execution to more sparse rows and changes the matrix
+tiling. The $a,m$ projections use PyTorch,
+attention uses a dense tiled kernel, and the vocabulary projection uses a tuned
+CUTLASS kernel. Thus dense operations also contribute to the improvement.
+Table~\ref{tab:70m-kernel-transfer} compares the implementations on three
+representative checkpoints; Table~\ref{tab:endpoints-14m-70m} gives the full grid.
+
+\input{tables/compact-results/70m-kernel-transfer}
+
+A separate same-checkpoint control on $T_7/P_h$ at $\kappa=0.5$ measures
+1.128\,ms with specialized $h,z$ execution and 1.365\,ms after replacing only
+those projections with PyTorch dense operations: a $17.4\%$ reduction relative
+to the latter. Both use the same weights, thresholds and other optimized
+components. Unlike the 14M execution switches, this replacement also changes
+fusion and layout, so the difference includes those effects alongside sparse
+execution. It supports an execution benefit after adaptation, not a
+scale-dependent speedup trend.

@@ -1,5 +1,21 @@
 # Living Manuscript Draft
 
+21 September 2026, approved adversarial revision of Appendix E:
+The appendix now follows execution mechanisms, timing/numerical validation,
+14M controls, and 70M adaptation. The older sparsity/bypass figure, clipping
+latency discussion, alternative-baseline chain and failed-candidate catalogue
+are removed from the paper. The 70M comparison retains three checkpoints and
+same-checkpoint PyTorch references, without the mixed-denominator speedup column.
+The 12.9% 14M execution-switch result and qualified 17.4% 70M replacement result
+retain their original measurements. Other manuscript TeX is unchanged.
+Low-level parameters are retained in [implementation notes](kernel-implementation-notes.md).
+The removed figure is hash-verified at
+`draft/.archive/figures/20-kernel-structure-native-base-speedup.pdf`
+(SHA256 `2176de8ef31d4425da6b64a69d0c5bea0a89f6dac522fcf754cb64688759879a`).
+The visually checked build has 21 pages, resolved references/citations and no
+LaTeX or box warnings. Appendix extracted text is approximately 45% shorter.
+PDF SHA256: `12213b6e310ea3578ddfcca81e12d1011d8dee30325a8be126faaf1b0bd50efa`.
+
 21 September 2026, approved 14M T2/Ph execution control:
 The abstract, introduction and main results now report the 12.9% conditional
 latency reduction at kappa=0.1 with checkpoint and thresholding fixed.
@@ -23,12 +39,12 @@ Upload it as an Overleaf project with `main.tex` as the main
 document and pdfLaTeX as the compiler. The ZIP has no enclosing draft directory,
 archive, compiled manuscript, notes, metadata or build intermediates.
 
-Unused draft material (462 files) is retained locally under the gitignored
+The Overleaf cleanup retained 462 unused files locally under the gitignored
 `draft/.archive/`, preserving original relative paths. Its `MANIFEST.json`
-records all archived hashes; commit `dafea08f` preserves the tracked pre-cleanup
+records that cleanup's hashes; commit `dafea08f` preserves the tracked pre-cleanup
 state. Historical links below into draft reviews, notes, unused figures or
 supplementary data now refer to material in that archive or Git history.
-The active draft contains only compilation inputs, the unchanged `main.pdf`,
+The active draft contains only compilation inputs, the compiled `main.pdf`,
 the two Git metadata files and `.archive`.
 
 A fresh extraction of the ZIP compiles independently to 21 pages with resolved

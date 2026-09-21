@@ -1,16 +1,16 @@
-% Source: Analysis028 observations/001-matched-70m-grid.md; 03_tables.py; data/full-trained-results.json.
+% Hand-edited selection from Analysis028 observations/001-matched-70m-grid.md;
+% original generator: 03_tables.py; data/full-trained-results.json. Timings unchanged.
 \begin{table}[!htbp]
 \centering\small
-\caption{\textbf{70M implementation comparison.} Representative rows from the complete 26-checkpoint sweep in Table~\ref{tab:endpoints-14m-70m}. All timings are full-model geometric means from the same RTX\,5090 session. Each implementation preserves the checkpoint and thresholds.}
+\caption{\textbf{70M implementation comparison.} Full-model geometric-mean latencies from the same RTX\,5090 session. Each row holds the checkpoint and thresholding fixed across all three implementations; PyTorch/SDPA is the same-checkpoint reference.}
 \label{tab:70m-kernel-transfer}
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-Checkpoint & Native (ms) & Port (ms) & Optimized (ms) & Native-base speedup \\
+Checkpoint & PyTorch/SDPA (ms) & Initial 70M (ms) & Optimized 70M (ms) \\
 \midrule
-$T_{0}/P_{0}$ & 1.611 & 3.325 & 2.732 & $0.590\times$ \\
-$T_{2}/P_{h}$, $\kappa=0.1$ & 1.662 & 2.258 & 1.956 & $0.824\times$ \\
-$T_{4}/P_{h}$, $\kappa=0.5$ & 1.706 & 1.593 & 1.088 & $1.480\times$ \\
-$T_{7}/P_{h}$, $\kappa=0.5$ & 1.824 & 1.590 & 1.088 & $1.481\times$ \\
+$T_{0}/P_{0}$ (Base) & 1.611 & 3.325 & 2.732 \\
+$T_{2}/P_{h}$, $\kappa=0.1$ & 1.662 & 2.258 & 1.956 \\
+$T_{7}/P_{h}$, $\kappa=0.5$ & 1.824 & 1.590 & 1.088 \\
 \bottomrule
 \end{tabular}
 \end{table}
