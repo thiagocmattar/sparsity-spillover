@@ -108,3 +108,21 @@ inspected in contact sheets; the changed results and conclusion were inspected
 at higher resolution. Installed SHA256:
 `ac15cb26f2fe3ef1f9c46aaa6ecd680412a8e00851992bf54e184abd02807c86`.
 This rebuild supersedes the earlier PDF verification above.
+
+## Approved abstract structure
+
+The author approved replacing the findings list with the introduction's
+diagnostic progression: placement question, broad 14M recipes, spillover and
+conditional execution evidence converging on h,z, targeted T2, and the 70M
+scale check. The abstract defines P/T and h/z once, retains the 150/29-us
+conditional effects and the 14M T2 quality/latency example, and scopes the
+17.4% path benefit to the tested 70M T7/Ph checkpoint. Its fusion/layout/
+inspection qualification is preserved. Evidence is the endpoint and control
+data already audited above; no new scientific claim or measurement is added.
+
+Only the abstract prose changes. The rebuilt 22-page PDF has resolved
+references, no overfull boxes and the same two underfull hbox warnings.
+The opening page was inspected at high resolution and all pages in contact
+sheets. Windows blocked replacement of the open `main.pdf`; the verified
+build is saved as `main-updated.pdf`. The author's ongoing introduction and
+spillover edits remain outside this revision's source commit.

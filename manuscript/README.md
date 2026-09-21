@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+21 September 2026, approved abstract rewrite:
+The abstract follows the placement question through spillover and execution
+diagnostics to T2 and the qualified 70M scale check. The checked 22-page build
+is saved as `draft/main-updated.pdf`; Windows blocks replacement of the open
+`draft/main.pdf`. Preview SHA256:
+`b68ef9420b80a2bbbacead30a63d47b0af59becca13f204120b7dfc7a06b4d3a`.
+See the [abstract review](draft/reviews/2026-09-21-results-arc/README.md#approved-abstract-structure).
+
 21 September 2026, approved promotion of the 70M execution control:
 The main results and conclusion distinguish the 1.481x comparison against
 native Base from the 17.4% conditional benefit of specialized h,z execution
