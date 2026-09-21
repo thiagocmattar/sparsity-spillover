@@ -1,5 +1,13 @@
 # Living Manuscript Draft
 
+21 September 2026, requested rebuild after the author's abstract edits:
+`draft/main.pdf` and `draft/main-updated.pdf` now contain the current sources.
+The 22-page build passes compilation with resolved references, no overfull
+boxes and two existing underfull hbox warnings. The opening page and full
+document contact sheets were visually checked. Both PDFs have SHA256
+`da59e8f0546910ba6b2ed927e66ebff4ceb283f92069dbd0491baa51d1c67f52`.
+Author source edits remain uncommitted.
+
 21 September 2026, approved abstract rewrite:
 The abstract follows the placement question through spillover and execution
 diagnostics to T2 and the qualified 70M scale check. The checked 22-page build
