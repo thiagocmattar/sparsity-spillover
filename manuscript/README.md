@@ -1,5 +1,26 @@
 # Living Manuscript Draft
 
+## Clean Overleaf export
+
+The current upload package is `overleaf.zip` (34 compilation files, including
+10 figure PDFs). Upload it as an Overleaf project with `main.tex` as the main
+document and pdfLaTeX as the compiler. The ZIP has no enclosing draft directory,
+archive, compiled manuscript, notes, metadata or build intermediates.
+
+Unused draft material (462 files) is retained locally under the gitignored
+`draft/.archive/`, preserving original relative paths. Its `MANIFEST.json`
+records all archived hashes; commit `dafea08f` preserves the tracked pre-cleanup
+state. Historical links below into draft reviews, notes, unused figures or
+supplementary data now refer to material in that archive or Git history.
+The active draft contains only compilation inputs, the unchanged `main.pdf`,
+the two Git metadata files and `.archive`.
+
+A fresh extraction of the ZIP compiles independently to 21 pages with resolved
+references and no overfull boxes. Page text and 108-dpi renders match the fresh
+pre-cleanup build exactly. Every retained compilation file and `main.pdf` is
+byte-for-byte unchanged; all moved files pass hash verification. See
+[overleaf-export.json](overleaf-export.json) for the file list and checksums.
+
 21 September 2026, requested rebuild of the latest author revision:
 `draft/main.pdf` and `draft/main-updated.pdf` are updated to the visually
 checked 21-page build, with resolved references, no overfull boxes and one
