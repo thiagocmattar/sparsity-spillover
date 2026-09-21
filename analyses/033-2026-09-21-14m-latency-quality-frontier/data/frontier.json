@@ -1,14 +1,17 @@
 {
-  "question": "How do full-model latency and validation loss vary across the manuscript's 14M recipes?",
+  "question": "How does full-model latency vary with validation loss and model-wide sparsity across the manuscript's 14M recipes?",
   "source_hashes": {
     "analyses/028-2026-09-20-70m-optimized-grid/data/full-trained-results.json": "405f2cc56a6ee9fefcfb0d3135ecbd588feaaf822d62ff7773c33216f2fc18f1",
     "analyses/027-2026-09-20-run044-manuscript/data/figure-data.json": "7259f87a6be42c51d226a18ad4b9e6a895902e4b231bfd6dc1c706916f8c77da",
-    "analyses/027-2026-09-20-run044-manuscript/figures/01-14m-complete-t2-grid.pdf": "bae2b5810341977b419f12a742ad237b7c82436cdb664c213901bf274f4f5ce6"
+    "analyses/027-2026-09-20-run044-manuscript/figures/01-14m-complete-t2-grid.pdf": "bae2b5810341977b419f12a742ad237b7c82436cdb664c213901bf274f4f5ce6",
+    "analyses/030-2026-09-20-70m-t2-optimized-endpoint/02_plot.py": "456b447500c40cfdf4031a49f30f3cafcca80c235f2da9b8af864ce54a0f296c",
+    "analyses/030-2026-09-20-70m-t2-optimized-endpoint/figures/23-70m-quality-sparsity-native-latency.pdf": "e090d2ddbffc283993753dfdcb4ffc0ac39148ffbb8637275f7495ef456976fe"
   },
-  "script_sha256": "7ee3ea01aabada02db4cf7f65d586753a0c7f17237d009ec8f55002fd1e0de43",
-  "display": "User-requested simplification: omit naive L1 and all Pareto markings; recipe lines use 0.85 pt width and 0.4 opacity, with opaque checkpoint markers.",
+  "script_sha256": "caf5d78ca93ff29c8b337334494051e3110668594345fa7084f602bc387c552b",
+  "display": "All views omit naive L1 and Pareto markings. The focused quality-latency and sparsity-latency overviews omit ReLU and point callouts, showing the same 40 checkpoints. Base, T2/Ph and T7/Pall are emphasized and labeled; Base retains a vertical guide for the plotted X metric. Figure 23 supplies 1.6 pt colored lines, 5.8 pt recipe markers and a 9 pt hollow Base marker. Other recipes use #9DA3AB gray with 0.85 pt, 0.65-opacity connections. V2 and the close-up retain their earlier styling and coverage.",
   "timing": "Retained K050 full-model geometric-mean host latency; RTX5090, BF16, batch 1, 2048 tokens, full logits, 64 inputs x 7 passes x 3 processes. Four sessions; no pooling or rescaling across checkpoints.",
   "loss": "Ordinary final-checkpoint FP16 validation on all 338 complete blocks from 500 MiniPile documents; 1444-token tail excluded.",
+  "sparsity": "Percent zero-operand logical products, computed as 100 * pooled integer zero_product_count / model_product_count, including the dense vocabulary-head denominator. It is not an activation zero fraction or measured runtime saving.",
   "scope": "41 trained checkpoints, matching the main manuscript figure. Four naive-L1 appendix checkpoints are excluded at the user's request. Post-hoc clipping and execution ablations are not additional trained recipes. Run048 controls do not replace the historical T2 grid timings.",
   "rows": [
     {
@@ -1702,9 +1705,31 @@
   "outputs": [
     {
       "file": "figures/01-14m-latency-quality-frontier.pdf",
-      "sha256": "c817a4760a45f2732775bb21e92858afdebb21713371b863f2f333a6eb2d93c4",
+      "sha256": "6d65cb3f40ba81a60e09ff705b79bbfafa76f4f54101e5e72ffc1d0c3c8f0b66",
       "x_metric": "loss",
       "y_metric": "latency_ms",
+      "focused": true,
+      "omitted_relu_keys": [
+        "69e7eaf3f23d1c583847a80f20a3bfd3aa8366d21512b154b18cf43ecef0a30d"
+      ],
+      "labeled_recipes": [
+        "Base model",
+        "$T_2/P_h$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ],
+      "highlighted_keys": [
+        "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+        "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d",
+        "c3dd056db0c26258b8414ce86df925b47d5f49502642111f8e061a1c81e17412",
+        "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca",
+        "bc631ed36207c9517825646ed32b86c0a9e34221859f11731db95ead8e0f15cc",
+        "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+        "3af12be81e8d08739e8310872e2ab124cd0da3552a0bbf49d7ca55819ea017a5",
+        "d998cb85add52c8f53e5fb809eaaafbc732dacbbc44de30c6e92b85e730c0857",
+        "213108ada05f0b17586299466bb1ceb6601da138e32e08a69e2fda2fd89845a2",
+        "5b17b232dff765910ea9d622218f23e437668ecfa0411bb5081ff611d6b2a548",
+        "474e4da76122f96c454ef8424dbdb60838dbe3569adf278970e8a56c5d434fe7"
+      ],
       "xlim": [
         5.06,
         6.08
@@ -1715,7 +1740,6 @@
       ],
       "visible_keys": [
         "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
-        "69e7eaf3f23d1c583847a80f20a3bfd3aa8366d21512b154b18cf43ecef0a30d",
         "022bb4b41533958d72dc075aaaf4ec819f15265739cd5770c7b7d2add7ebd860",
         "f8bd4e5b477f6758ee2d57e6b4dcd29bd84e80d99df50b2adb9019c416d9a083",
         "a244726e9ca60f3450968b09554336d7e0f20db7451722d8aa09c7624a9f3acf",
@@ -1762,6 +1786,21 @@
       "sha256": "49931a75f955de2524690b5bc9a9cbdbc6d81f22ab7d13a3c08af624fb78eb4a",
       "x_metric": "loss",
       "y_metric": "latency_ms",
+      "focused": false,
+      "omitted_relu_keys": [],
+      "labeled_recipes": [
+        "Base model",
+        "GeLU $\\rightarrow$ ReLU",
+        "$T_1/P_h$",
+        "$T_2/P_h$",
+        "$T_4/P_0$",
+        "$T_7/P_0$",
+        "$T_4/P_h$",
+        "$T_7/P_h$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ],
+      "highlighted_keys": [],
       "xlim": [
         5.085,
         5.285
@@ -1796,6 +1835,21 @@
       "sha256": "f0a10a006dd41954ecf953ccbf2d3632f12e8e8d479138117bb1f5d089be31b7",
       "x_metric": "latency_ms",
       "y_metric": "loss",
+      "focused": false,
+      "omitted_relu_keys": [],
+      "labeled_recipes": [
+        "Base model",
+        "GeLU $\\rightarrow$ ReLU",
+        "$T_1/P_h$",
+        "$T_2/P_h$",
+        "$T_4/P_0$",
+        "$T_7/P_0$",
+        "$T_4/P_h$",
+        "$T_7/P_h$",
+        "$T_4/P_{\\mathrm{all}}$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ],
+      "highlighted_keys": [],
       "xlim": [
         0.445,
         0.671
@@ -1807,6 +1861,84 @@
       "visible_keys": [
         "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
         "69e7eaf3f23d1c583847a80f20a3bfd3aa8366d21512b154b18cf43ecef0a30d",
+        "022bb4b41533958d72dc075aaaf4ec819f15265739cd5770c7b7d2add7ebd860",
+        "f8bd4e5b477f6758ee2d57e6b4dcd29bd84e80d99df50b2adb9019c416d9a083",
+        "a244726e9ca60f3450968b09554336d7e0f20db7451722d8aa09c7624a9f3acf",
+        "526b008adadcdfee361ee872976afe95210659d8d9f74727487b34e484566bfc",
+        "ef91b18f21d241e3ea2b894f07b6a7ede467cc5ccfc0355d33025b75b75bb98c",
+        "3c506e3c7a0cc561da4f0c998ea486d0e95450576c50f93c281aa9a47ccef260",
+        "9b9fac8fd5efcb28b677902a83eddcde7b7f277d22d0887b51d3c3e22425177b",
+        "66d7db90b7df993caf9e357a09bca133abff5425e2f990d79e8ea1086f05a2f5",
+        "da50052ab18bcd5177cb48eead283af594cb9183ab42f4d83d275b6d988a27ae",
+        "234f675072e8dd19fc48d907f5ac93abeaa0379a490795c327718264f7cc5ecc",
+        "ccb3c6e84432780961f283b06b0214e4075849e3dbee15546c98af09917efd5e",
+        "e7c37b789bff41e1949d1570561f1f8992848751e3651d53b9419e1730cc93ff",
+        "a6a6aa4827ac0cad6d9aceab6992000f49167b812ece9e2d1966d9f74db0b5a3",
+        "a4b457f12a8556ba5efe8447b577da4647417dcd9dbea023553b376bdaa76d82",
+        "aab7589a65152492dea24b1ba80124b9193948fd0e4b806efc8938b82f96ca6c",
+        "3be8f034c78a77a3839b2f7c9b2bb7248e4dae963a84001f172f5766165e4260",
+        "eca6fed92b4d6e80bd62464a5fb961fd9f0d6d7a147603e8753f9684bcd1c947",
+        "ce64f81c6bb18fba27a2cbcac9bc5486e3ae6d017726cf9cc48027388438e48f",
+        "dc4ccb71ca33601ad4b8c18c8468ec224945645b6d9b41d8f2f736ba41a55e10",
+        "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d",
+        "c3dd056db0c26258b8414ce86df925b47d5f49502642111f8e061a1c81e17412",
+        "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca",
+        "bc631ed36207c9517825646ed32b86c0a9e34221859f11731db95ead8e0f15cc",
+        "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+        "791bad2a410975369a114ba382d1e56a377ef6c333ccc83e237387e2a7b8e05e",
+        "82c6212c5e612bd754ea40bcb5d69c15c58ad1863e3f81086021b6d54ad2939b",
+        "3b9d8808f97c0da666e62d67cc3babb986290008ceee2fe250c688a815517a85",
+        "f64e12b5e8d3e5097ed6969387ecec69267b7002f393c1fb73957cab7fb2065f",
+        "8b816ce5e72c4d64f3219788cdabfad37f0531c393523da24985d62e0acc6e59",
+        "3ae7a6cae60940a7c3904ce9671e2c65c998821d39b071adec64ea2f8e2674f2",
+        "dfa714e84761e124682596ea8a8bff6b2f5d6073dd8d60738a147cf720e74bfd",
+        "a7cdaad3f6f304b9d2577a6efa1ffed842a2697411811dcf8d61c6ca16a6607c",
+        "e05353098c7e5991c79e50f7bade1db4ad2615cc1636eefa38d62420923f0365",
+        "f307e23c272062f30a2960f75aa3cb1b9e585c7c3931de57080a05452347ae33",
+        "3af12be81e8d08739e8310872e2ab124cd0da3552a0bbf49d7ca55819ea017a5",
+        "d998cb85add52c8f53e5fb809eaaafbc732dacbbc44de30c6e92b85e730c0857",
+        "213108ada05f0b17586299466bb1ceb6601da138e32e08a69e2fda2fd89845a2",
+        "5b17b232dff765910ea9d622218f23e437668ecfa0411bb5081ff611d6b2a548",
+        "474e4da76122f96c454ef8424dbdb60838dbe3569adf278970e8a56c5d434fe7"
+      ]
+    },
+    {
+      "file": "figures/03-14m-sparsity-latency.pdf",
+      "sha256": "7adb45a733608fda120dcf65ec715fd34c2f23d32cd72984a1a48cfa7cf406a9",
+      "x_metric": "sparsity",
+      "y_metric": "latency_ms",
+      "focused": true,
+      "omitted_relu_keys": [
+        "69e7eaf3f23d1c583847a80f20a3bfd3aa8366d21512b154b18cf43ecef0a30d"
+      ],
+      "labeled_recipes": [
+        "Base model",
+        "$T_2/P_h$",
+        "$T_7/P_{\\mathrm{all}}$"
+      ],
+      "highlighted_keys": [
+        "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+        "ed5b2e85d58a5413c5a60628e5ed96765cf38a6bda1833c82c65c744616e4b0d",
+        "c3dd056db0c26258b8414ce86df925b47d5f49502642111f8e061a1c81e17412",
+        "a60c14c4a8edae60925f20fc0ce80ea148289812b6dff735ca7a6dec3300daca",
+        "bc631ed36207c9517825646ed32b86c0a9e34221859f11731db95ead8e0f15cc",
+        "953d2a7d6c35a4dfaa97e9adf034b7a524ff2cab86d3c101c8f69e568959c0f0",
+        "3af12be81e8d08739e8310872e2ab124cd0da3552a0bbf49d7ca55819ea017a5",
+        "d998cb85add52c8f53e5fb809eaaafbc732dacbbc44de30c6e92b85e730c0857",
+        "213108ada05f0b17586299466bb1ceb6601da138e32e08a69e2fda2fd89845a2",
+        "5b17b232dff765910ea9d622218f23e437668ecfa0411bb5081ff611d6b2a548",
+        "474e4da76122f96c454ef8424dbdb60838dbe3569adf278970e8a56c5d434fe7"
+      ],
+      "xlim": [
+        -1.0,
+        30.0
+      ],
+      "ylim": [
+        0.445,
+        0.671
+      ],
+      "visible_keys": [
+        "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
         "022bb4b41533958d72dc075aaaf4ec819f15265739cd5770c7b7d2add7ebd860",
         "f8bd4e5b477f6758ee2d57e6b4dcd29bd84e80d99df50b2adb9019c416d9a083",
         "a244726e9ca60f3450968b09554336d7e0f20db7451722d8aa09c7624a9f3acf",

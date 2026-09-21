@@ -3,10 +3,11 @@
 ## Question and method
 
 The user requested a second version of the full overview with the axes swapped.
-This figure transposes [Observation 001](001-all-recipes.md)'s exact 41 points,
-axis ranges and ten recipe styles. The recipe lines remain 0.85 pt at 40%
+This figure transposes the earlier overview's exact 41 points, axis ranges
+and ten recipe styles. It is unchanged by the later focused styling of
+[Observation 001](001-all-recipes.md). The recipe lines remain 0.85 pt at 40%
 opacity, markers remain opaque, and neither naive L1 nor a Pareto overlay is
-shown. The original overview and close-up are preserved.
+shown. This version retains the ReLU control and earlier full-color legend.
 
 Generating script: [`../01_plot.py`](../01_plot.py). Inputs and hashes are in
 [`../data/frontier.json`](../data/frontier.json), with per-output axis metadata.

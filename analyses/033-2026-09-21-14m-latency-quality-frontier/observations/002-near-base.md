@@ -7,8 +7,9 @@ around Base validation loss is shown at readable scale?
 
 ## Method and coverage
 
-This is a close-up of [Observation 001](001-all-recipes.md), using the same
-41 checkpoints and historical K050 latencies. Naive L1 and the Pareto overlay
+This retains the earlier 41-checkpoint overview's close-up and historical K050
+latencies; the later focused styling in [Observation 001](001-all-recipes.md)
+does not change this companion. Naive L1 and the Pareto overlay
 are omitted at the user's request. The view covers validation loss
 5.085--5.285 and latency 0.517--0.662 ms; 18 markers fall within these limits.
 Recipe styles remain in the legend, and trajectories toward off-screen
