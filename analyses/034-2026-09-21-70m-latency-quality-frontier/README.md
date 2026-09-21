@@ -12,7 +12,7 @@ The figure shows 26 checkpoints: Base and five threshold settings for each of
 T2/Ph, T4/Ph, T7/Ph, T4/Pall and T7/Pall. It omits GeLU-to-ReLU and post-hoc
 clipping, matching the focused 14M presentation. T2/Ph is blue, T7/Pall orange,
 Base hollow charcoal, and the other recipes gray. There are no subtitles or
-extra recipe labels. The same-kappa arrow compares T7/Pall to T2/Ph at 0.5.
+extra recipe labels, comparison arrows or point annotations.
 
 Latency follows the existing 70M manuscript figure: Base uses native PyTorch
 (1.611048 ms), explicitly identified in the legend and horizontal guides;

@@ -109,18 +109,6 @@ def main():
         ax.tick_params(length=3, width=.65)
         ax.grid(axis="y", color="#E8EAED", lw=.6)
         ax.set_axisbelow(True)
-    arrow_from = next(r for r in rows if (r["scope"], r["pressure"], r["kappa"]) == ("7", "all", .5))
-    arrow_to = next(r for r in rows if (r["scope"], r["pressure"], r["kappa"]) == ("hz", "h", .5))
-    axes[0].annotate("", xy=(arrow_to["sparsity"], arrow_to["displayed_latency_ms"]),
-                     xytext=(arrow_from["sparsity"], arrow_from["displayed_latency_ms"]),
-                     arrowprops={"arrowstyle": "-|>", "color": "#747A81", "lw": 1.,
-                                 "linestyle": (0, (3, 2)), "mutation_scale": 10,
-                                 "shrinkA": 5, "shrinkB": 5}, zorder=3)
-    axes[0].annotate(r"Same $\kappa=0.5$",
-                     xy=((arrow_from["sparsity"] + arrow_to["sparsity"]) / 2,
-                         (arrow_from["displayed_latency_ms"] + arrow_to["displayed_latency_ms"]) / 2),
-                     xytext=(-32, 7), textcoords="offset points", ha="center", va="bottom",
-                     fontsize=8.5, color="#646B73")
     fig.legend(handles=handles, loc="lower center", ncol=3, frameon=False,
                fontsize=11, handlelength=2.2, columnspacing=1.7, bbox_to_anchor=(.52, -.005))
     (HERE / "figures").mkdir(exist_ok=True)
@@ -139,7 +127,6 @@ def main():
                 "b": {"x": "loss", "y": "displayed_latency_ms"}},
         labeled_recipes=[h.get_label() for h in handles],
         base_backend="native_graph", other_markers_backend="candidate_graph (opt073)",
-        arrow={"from_key": arrow_from["checkpoint_key"], "to_key": arrow_to["checkpoint_key"], "kappa": .5},
         coverage=source["coverage"], loss_convention=source["loss_convention"],
         timing_note="25 unchanged Run045 points plus the Run047 T2/Ph kappa=0.5 endpoint; no pooling or rescaling. Base uses native PyTorch, as in the manuscript's 70M figure.",
         verification={"unique_checkpoints": len(rows), "recipes": len(groups),

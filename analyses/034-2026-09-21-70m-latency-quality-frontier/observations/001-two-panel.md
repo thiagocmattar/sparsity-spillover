@@ -31,9 +31,8 @@ and full logits: 64 inputs x seven passes x three independent processes.
 [Publication PDF](../figures/01-70m-sparsity-latency-quality.pdf).
 
 **Sparsity, latency and quality on Pythia-70M.**
-(a) Model-wide logical sparsity and full-model latency. The dashed arrow connects
-T7/Pall to T2/Ph at kappa=0.5, showing that substantially different sparsity can
-yield similar latency. (b) Validation loss and full-model latency for the same
+(a) Model-wide logical sparsity and full-model latency.
+(b) Validation loss and full-model latency for the same
 26 checkpoints. T2/Ph is blue, T7/Pall orange and other recipes gray. Hollow
 markers and dotted vertical and horizontal guides denote Base; its latency
 uses native PyTorch, while the other points use the optimized implementation.
@@ -44,9 +43,8 @@ The later T2/Ph endpoint retains its own timing session without rescaling.
 
 At kappa=0.5, T7/Pall has 40.602% sparsity and latency 1.275788 ms; T2/Ph has
 15.427% sparsity and latency 1.214368 ms. Their validation losses are 5.215976
-and 4.838034. The arrow uses these actual coordinates and does not flatten the
-observed latency difference. It holds kappa fixed, not quality or intervention
-placement, and compares different timing sessions.
+and 4.838034. This comparison holds kappa fixed, not quality or intervention
+placement, and uses different timing sessions.
 
 The lower-loss T2/Ph points, at kappa up to 0.1, have losses 4.129-4.193 but
 latencies 1.956-2.504 ms, exceeding native Base's 1.611 ms. Thus the targeted
