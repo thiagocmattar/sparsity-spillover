@@ -1,5 +1,22 @@
 # Living Manuscript Draft
 
+21 September 2026, approved restoration of the 70M execution control:
+Section 4.4 now connects the inefficient 14M-to-70M kernel transfer to the
+additional optimization step and retains the failure to accelerate lower-loss
+recipes. Appendix E.4 restores the same-implementation sparse h,z switch in
+Table 13: 1.128 ms enabled, 2.704 ms disabled, and 1.365 ms with native h,z
+replacement. The 58.3% reduction is conditional on the inefficient custom
+dense path; the separate 17.4% replacement comparison includes fusion/layout
+differences. Thresholding remains active, with numerical agreement qualified
+to the existing tolerances. No new measurements were made.
+Evidence: [Analysis028 observation](../analyses/028-2026-09-20-70m-optimized-grid/observations/001-matched-70m-grid.md),
+`04_controls.py` and `data/retained-controls.json`; all 54 cited source hashes
+were verified. Both 70M tables and their interpretation fit on the final page.
+The visually checked build has 21 pages, resolved references/citations and no
+LaTeX or box warnings. Only `training-results.tex` and `kernel-appendix.tex`
+changed among the manuscript sources.
+PDF SHA256: `91c02619044b024fe021c807ada617e2df40e4815fc857b01638f5462935eb9b`.
+
 21 September 2026, approved adversarial revision of Appendix E:
 The appendix now follows execution mechanisms, timing/numerical validation,
 14M controls, and 70M adaptation. The older sparsity/bypass figure, clipping

@@ -1,4 +1,5 @@
-% Hand-edited after the approved adversarial review, 21 September 2026.
+% Hand-edited after the approved adversarial review and restoration of the
+% 70M sparse-execution control, 21 September 2026.
 % Mechanisms: Analysis024 observations/041-kernel-appendix.md;
 % Run037 observations/001-operation-latency.md; Run039 observations/001-am-port-verdict.md.
 % 70M: Analysis028 observations/001-matched-70m-grid.md; 01_collect.py,
@@ -129,9 +130,12 @@ apply to the historical comparison against the Base checkpoint.
 
 % Transfer diagnosis: Run040 observations/001-overhead-and-optimization.md.
 % Matched 70M control: Analysis028 data/retained-controls.json; 04_controls.py.
+% Observation: Analysis028 observations/001-matched-70m-grid.md;
+% Run042 observations/001-native-base-scale-comparison.md.
 \subsection{70M adaptation and execution control}
 \label{app:kernel-transfer}
-The initial 70M implementation retained the 14M execution rules. Replacing its
+The initial 70M implementation retained the 14M execution rules; its best
+sparse recipe reaches only $1.013\times$ the native Base speed. Replacing its
 $h,z$ kernel with PyTorch operations removed almost the entire latency deficit
 on the Base checkpoint, localizing the overhead to these projections. The dense
 matrix path pads eight rows to sixteen and repeats activation inspection across
@@ -149,11 +153,34 @@ representative checkpoints; Table~\ref{tab:endpoints-14m-70m} gives the full gri
 
 \input{tables/compact-results/70m-kernel-transfer}
 
-A separate same-checkpoint control on $T_7/P_h$ at $\kappa=0.5$ measures
-1.128\,ms with specialized $h,z$ execution and 1.365\,ms after replacing only
-those projections with PyTorch dense operations: a $17.4\%$ reduction relative
-to the latter. Both use the same weights, thresholds and other optimized
-components. Unlike the 14M execution switches, this replacement also changes
-fusion and layout, so the difference includes those effects alongside sparse
-execution. It supports an execution benefit after adaptation, not a
-scale-dependent speedup trend.
+At the lower-loss $T_2/P_h$, $\kappa=0.1$, optimization reduces latency from
+2.258 to 1.956\,ms, still above the 1.662\,ms PyTorch reference on the same
+checkpoint.
+
+Table~\ref{tab:70m-hz-control} separates two controls on optimized 70M execution.
+Disabling sparse $h,z$ execution removes skipping and scalar substitution,
+retaining the dense matrix path within the same fused kernel. All modes pass
+the full-validation numerical criteria above; bitwise agreement was not
+established.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{70M $T_7/P_h$ execution controls at $\kappa=0.5$.}
+Full-model geometric means with weights, thresholding and other optimized
+components fixed. The session differs from Table~\ref{tab:70m-kernel-transfer}'s.}
+\label{tab:70m-hz-control}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}Xr@{}}
+\toprule
+Execution configuration & Latency (ms) \\
+\midrule
+Optimized implementation, sparse $h,z$ execution enabled & 1.128 \\
+Same implementation, sparse $h,z$ execution disabled & 2.704 \\
+Native PyTorch $h,z$ replacement & 1.365 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Enabling sparse $h,z$ execution reduces latency by $58.3\%$ against the same
+kernel's dense path. This benefit is conditional on that inefficient dense
+reference. Against the faster native replacement, the reduction is $17.4\%$,
+including fusion and layout differences.
