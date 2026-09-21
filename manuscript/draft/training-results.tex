@@ -3,6 +3,79 @@
 % Original 14M development: Run029 observations/06-implementation-and-claim-audit.md.
 % Clipping latency: Run036 results/clipping-final-kernel.json.
 % \subsection{From sparsity to speedups}
+
+\subsection{Extensive ablations at 14M}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/22-14m-main-quality-sparsity-latency.pdf}
+\caption{\textbf{Quality, sparsity and execution on Pythia-14M.}
+\textbf{(a)} Final validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 41 checkpoints spanning the Base/ReLU controls and the $T/P$ intervention grid. Curves connect separately trained settings over $\lambda=.05,.1,.5,1$ for $T_1/P_h$ and $\kappa=0,.01,.05,.1,.5$ otherwise. Dotted curves in (a) show post-hoc clipping of the Base/ReLU controls; vertical dotted lines mark analytic sparsity ceilings. Latencies use an RTX~5090, batch one, and 2,048-token sequences.
+}
+\label{fig:quality-sparsity-overview}
+\end{figure}
+
+
+\subsection{Spillover: Local pressure induces nonlocal sparsity}
+\label{sec:paired-results}
+
+\textbf{Local pressure produces a nonlocal response.}
+Figure~\ref{fig:pressure-layer-sparsity} present the sparsity by site and layer accross $T_4$ and $T_7$, for all pressures at 14M. 
+At $\kappa=0.05$, applying pressure only at $h$ increases $h$ sparsity from 75--85\% to 94--99\% under $T_4$, and from 74--85\% to 94--99\% under $T_7$.
+The response is not confined to the pressured site: sparsity at the unpressured $z$ activation rises from 71--85\% to 83--92\% under $T_4$, and from 70--87\% to 84--94\% under $T_7$, while changes at $a$ and $m$ are comparatively small.
+Under $T_7$, broadening pressure to $P_{\mathrm{all}}$ does not further increase sparsity at $h$ or $z$; instead, both become less sparse than under $P_h$ across all layers. One possible explanation is that (q,k,v) increases $\ell_1$ pressure norms, and $P_{all}$ caps the OL1 norm more frequently (Appendix~\ref{app:pressure-budget-diagnostics}), reducing the local pressure at $h$.
+Thus, a local site pressure may spillover and affect the distributions of other sites, and we speculate that it sparsify sites more succeptible to sparsification.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
+\includegraphics[width=0.9\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
+\caption{\textbf{Activation sparsity by site and layer in Pythia-14M.}
+The six threshold/pressure recipes at $\kappa=0.05$ (top) and $0.5$ (bottom).
+Each cell gives the percentage of zero activations over all complete validation sequences at one site and layer.
+Q/K are post-RoPE; all panels share a 0--100\% color scale.
+Values are rounded to whole percentages, so 0 or 100 does not establish a completely dense or all-zero tensor.}
+\label{fig:pressure-layer-sparsity}
+\end{figure}
+
+\subsection{When sparsity translates to speedup}
+\label{sec:activation-reshaping}
+\label{sec:kernel-autoresearch}
+
+Sparsity reduces latency when avoided work exceeds the overhead cost of detecting and skipping it. 
+At $h,z$, the sparse kernel checks $8\times16$ activation tiles
+before loading their associated weights, so empty tiles avoid both weight load from memory and the matrix multiplications. This strategy, however, doesn't extend to other sites. Applying it at $a$ and $m$ increased full-model latency by $17.2\%$ and $27.4\%$ on 14M $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$, with unchanged outputs.
+Only $11.12\%$ of $a$'s $8\times16$ tiles were empty, and none at $m$, so
+most groups still required matrix multiplication and the additional overhead was not justified.
+
+Attention follows FlashAttention's tiled sequence \citep{dao2022flashattention}:
+load $q,k$, compute scores, apply masking and softmax, then multiply
+probabilities by $v$. Our implementation add additional overhead after the checks, so skipping an empty tile's multiplication cannot recover the latency from reading from memory. Softmax still runs and
+turns zero scores into nonzero probabilities, so $q/k$ sparsity does not
+automatically propagate to $pv$. Zeros in $v$ remain usable, and sparsifying the probabilities is a further untested opportunity.
+
+We isolate each site's effect at 14M by disabling it during inference time. Table~\ref{tab:kernel-mechanisms} reports the \emph{bypass} (i.e. percentage of skipped matrix instructions) and saved time per-site sparse operation for the sparser 14M recipe $T_7/P_{\mathrm{all}}$, $\kappa=0.5$. It makes clear that savings come from $h$ ($150\,\mu$s) and $z$ ($29\,\mu$s).
+Individual $a,m,q,k$ effects remain unresolved against process variation,
+whereas $pv$ skipping adds latency. Enabling $qk/pv$ skipping together raises
+full-model latency from 0.514 to 0.521\,ms despite substantial bypass.
+Thus, for this checkpoint and implementation, attention's arithmetic savings
+do not offset its overhead, while $h/z$ benefit from avoiding weight reads
+as well as computation.
+
+\begin{table}[!htbp]
+\centering\small
+\caption{\textbf{Conditional latency savings}: 14M $T_7/P_{\mathrm{all}}$, $\kappa=0.5$.
+Latency is measured per 2,048-token sequence on RTX\,5090 (BF16, batch one).
+Saved time is full-model latency with one skipping path off minus latency
+with all paths on; positive values indicate a benefit (reduced latency).
+Brackets give [minimum, maximum] savings across all off/on pairs of three
+independent timing runs.
+Each run reports the geometric mean over 64 sequences.}
+\label{tab:kernel-mechanisms}
+\input{tables/operation-latency}
+\end{table}
+
+
 \subsection{Results at 70M}
 \label{sec:quality-sparsity-results}
 
@@ -39,27 +112,6 @@ Post-hoc clipping reaches at most $1.025\times$ the native base-model speed at 1
 
 
 %\subsection{Paired effects of global vs. local pressure}
-\subsection{Spillover: Local pressure induces nonlocal sparsity}
-\label{sec:paired-results}
-
-\textbf{Local pressure produces a nonlocal response.}
-Figure~\ref{fig:pressure-layer-sparsity} present the sparsity by site and layer accross $T_4$ and $T_7$, for all pressures at 14M. 
-At $\kappa=0.05$, applying pressure only at $h$ increases $h$ sparsity from 75--85\% to 94--99\% under $T_4$, and from 74--85\% to 94--99\% under $T_7$.
-The response is not confined to the pressured site: sparsity at the unpressured $z$ activation rises from 71--85\% to 83--92\% under $T_4$, and from 70--87\% to 84--94\% under $T_7$, while changes at $a$ and $m$ are comparatively small.
-Under $T_7$, broadening pressure to $P_{\mathrm{all}}$ does not further increase sparsity at $h$ or $z$; instead, both become less sparse than under $P_h$ across all layers. One possible explanation is that (q,k,v) increases $\ell_1$ pressure norms, and $P_{all}$ caps the OL1 norm more frequently (Appendix~\ref{app:pressure-budget-diagnostics}), reducing the local pressure at $h$.
-Thus, a local site pressure may spillover and affect the distributions of other sites, and we speculate that it sparsify sites more succeptible to sparsification.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\linewidth,page=1]{figures/appendix-14m-layer-sparsity.pdf}
-\includegraphics[width=0.9\linewidth,page=2]{figures/appendix-14m-layer-sparsity.pdf}
-\caption{\textbf{Activation sparsity by site and layer in Pythia-14M.}
-The six threshold/pressure recipes at $\kappa=0.05$ (top) and $0.5$ (bottom).
-Each cell gives the percentage of zero activations over all complete validation sequences at one site and layer.
-Q/K are post-RoPE; all panels share a 0--100\% color scale.
-Values are rounded to whole percentages, so 0 or 100 does not establish a completely dense or all-zero tensor.}
-\label{fig:pressure-layer-sparsity}
-\end{figure}
 
 
 
