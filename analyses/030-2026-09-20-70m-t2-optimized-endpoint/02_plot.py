@@ -52,9 +52,6 @@ def main_70m(data, styles):
             ax.plot([r['sparsity'] for r in group],[r[metric] for r in group],**line,zorder=5 if control else 4)
         handles.append(Line2D([],[],**line,label=s['label']))
     extra, = [r for r in rows if r.get('run047_id')=='c26']
-    for ax, metric in zip(axes, ('loss', 'displayed_latency_ms')):
-        ax.plot(extra['sparsity'], extra[metric], marker='D', ms=8, mfc='none', mec=styles[('hz','h')]['color'], mew=1.1, ls='none', zorder=6)
-    handles.append(Line2D([], [], marker='D', ms=6, mfc='none', mec='#505860', ls='none', label=r'Later session ($\kappa=0.5$)'))
     for scope in ('0','1'):
         group=sorted((r for r in clips if r['scope']==scope),key=lambda r:r['target'])
         axes[0].plot([r['sparsity'] for r in group],[r['loss'] for r in group],

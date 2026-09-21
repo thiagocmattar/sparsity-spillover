@@ -1,5 +1,10 @@
 # Later 70M T2/Ph optimized endpoint
 
+21 September presentation revision: remove the extra diamond overlays and
+"Later session" legend entry from Figure 3, and simplify its caption. All 27
+coordinates and measurement provenance are unchanged. Only the figure PDF and
+caption source are updated; the full manuscript is not recompiled for this edit.
+
 Approved follow-up to Analysis028: add Run046's T2/Ph kappa=.5 checkpoint
 after its Run047 optimized-kernel measurement qualifies. Retain all 26 original
 Run045 coordinates. The later session repeats Base and kappa=.1 as references;

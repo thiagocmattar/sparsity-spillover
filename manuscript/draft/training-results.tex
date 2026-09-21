@@ -17,7 +17,7 @@ Figure~\ref{fig:70m-quality-latency} shows that the 70M model follows the same b
 \textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 27 checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$, each thresholded recipe at $\kappa=0,.01,.05,.1,.5$.
 Colors and line styles match Figure~\ref{fig:quality-sparsity-overview}.
 Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
-In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. The original 26 checkpoints share one RTX\,5090 session. Diamonds mark $T_2/P_h$ at $\kappa=0.5$, measured later with the same frozen kernel and protocol: three fresh processes, batch one, 2,048 tokens and full output logits. Timings are not pooled or rescaled across sessions; Table~\ref{tab:70m-additional-endpoint} reports the repeated references. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations.}
+In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. Measurements use RTX\,5090 GPUs, three fresh processes per checkpoint, batch one, 2,048 tokens and full output logits. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations and reports the timing references.}
 \label{fig:70m-quality-latency}
 \end{figure}
 

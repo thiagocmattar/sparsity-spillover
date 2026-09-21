@@ -15,8 +15,10 @@ loss and full-model latency versus model-wide logical sparsity for 27 trained 70
 checkpoints. The original 26 Run045 rows and historical clipping curves remain
 unchanged. Base marker and horizontal latency reference remain the original
 native 1.611ms. Other latency markers use opt073. The added T2/Ph kappa=.5
-endpoint is enclosed by an open diamond in both panels and the legend identifies
-the later session. Recipe colors, line styles, ceilings and panel ranges retain
+endpoint uses the same circular marker as its recipe in both panels. At the
+user's request on 21 September, the extra diamond overlays and later-session
+legend entry were removed; session provenance remains in the appendix and data.
+Recipe colors, line styles, ceilings and panel ranges retain
 Analysis028's conventions. Lines connect measured thresholds, not fitted trends.
 
 ## Result and interpretation

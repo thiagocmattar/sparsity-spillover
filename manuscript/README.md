@@ -1,5 +1,11 @@
 # Living Manuscript Draft
 
+21 September 2026, requested Figure 3 simplification:
+`draft/figures/23-70m-quality-sparsity-native-latency.pdf` uses the ordinary
+recipe marker for every point; the extra diamonds and "Later session" legend
+entry are removed. The caption is simplified accordingly. All measurements
+and appendix provenance are unchanged. `draft/main.pdf` is not recompiled.
+
 20 September 2026, approved three-panel introduction figure:
 `fig:quality-sparsity-overview` now uses `figures/24-quality-sites-quality.pdf`:
 14M quality, Table 2 conditional site savings, and 70M quality, with a shared
