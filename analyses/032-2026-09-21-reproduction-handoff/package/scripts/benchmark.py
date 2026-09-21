@@ -15,7 +15,6 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--checkpoint", required=True, type=Path)
     p.add_argument("--output", required=True, type=Path)
-    p.add_argument("--backend", choices=["optimized", "port"], default="optimized")
     p.add_argument("--control", choices=["native-hz", "hz-skips-off"])
     p.add_argument(
         "--operation-mode",
@@ -47,7 +46,7 @@ def main():
     from training.config import register_hz
     from measurement import numerical_gate
     from timing import DenseRunner, paired_probe
-    from replay import install
+    from install import install
 
     if torch.cuda.get_device_name() != "NVIDIA GeForce RTX 5090":
         raise RuntimeError("Paper timing contract requires RTX 5090")
@@ -78,7 +77,7 @@ def main():
     status = dict(
         status="running",
         replicate=a.replicate,
-        backend=a.backend,
+        backend="optimized",
         control=a.control,
         operation_mode=a.operation_mode,
         checkpoint=str(a.checkpoint),
@@ -117,7 +116,7 @@ def main():
         checks = []
         with torch.inference_mode():
             status["kernel"] = install(
-                candidate, a.backend, a.control, a.operation_mode
+                candidate, "optimized", a.control, a.operation_mode
             )
             runners = {
                 k: DenseRunner(
@@ -208,9 +207,7 @@ def main():
                     sequence_length=2048,
                     vocabulary_size=50304,
                 )
-                diag = module(
-                    "lean_counters", ROOT / "kernels/ablation14m/diagnostics.py"
-                )
+                diag = module("lean_counters", ROOT / "kernels/ablation/diagnostics.py")
                 diag.collect(
                     candidate,
                     native,

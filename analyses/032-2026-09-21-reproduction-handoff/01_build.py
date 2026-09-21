@@ -3,11 +3,11 @@
 from pathlib import Path
 import hashlib
 import json
-import re
 import subprocess
 import ast
 import sys
-import yaml
+from release_kernels import build as build_kernels
+from release_results import clean_results
 
 sys.dont_write_bytecode = True
 
@@ -26,6 +26,11 @@ def analysis(n):
 
 def main():
     OUT.mkdir(exist_ok=True)
+    previous = (
+        json.loads((OUT / "MANIFEST.json").read_text())["files"]
+        if (OUT / "MANIFEST.json").exists()
+        else []
+    )
     provenance = []
     emitted = set()
 
@@ -51,7 +56,8 @@ def main():
         )
 
     for p in (ROOT / "src/sparsity_research").glob("*.py"):
-        copy(p, "src/sparsity_research/" + p.name)
+        if p.name != "artifacts.py":
+            copy(p, "src/sparsity_research/" + p.name)
     for name in (
         "data",
         "sites",
@@ -63,8 +69,77 @@ def main():
         "pythia_integration",
     ):
         copy(ROOT / f"tests/test_{name}.py", f"tests/test_{name}.py")
+    site_path = OUT / "src/sparsity_research/sites.py"
+    site_text = site_path.read_text(encoding="utf-8")
+    tree = ast.parse(site_text)
+    registry = next(
+        n
+        for n in tree.body
+        if isinstance(n, ast.Assign)
+        and any(isinstance(t, ast.Name) and t.id == "_TOPOLOGY_ROWS" for t in n.targets)
+    )
+    selected = [
+        (name, sites)
+        for name, sites in ast.literal_eval(registry.value)
+        if name in {"A0", "A1-H", "A4-Z", "A7-Z-POST"}
+    ]
+    selected.insert(2, ("HZ", ("h", "z")))
+    replacement = "_TOPOLOGY_ROWS = " + repr(tuple(selected))
+    site_text = site_text.replace(
+        ast.get_source_segment(site_text, registry), replacement
+    )
+    save("src/sparsity_research/sites.py", site_text.encode())
+    next(r for r in provenance if r["path"] == "src/sparsity_research/sites.py")[
+        "changes"
+    ].append("Keep only the five paper topologies, including HZ")
+    for name in ("sites", "pythia_integration"):
+        target = OUT / f"tests/test_{name}.py"
+        text = (
+            target.read_text(encoding="utf-8")
+            .replace("A6-POST", "A7-Z-POST")
+            .replace("a6_post", "a7_post")
+        )
+        text = text.replace(
+            '["a", "m", "h", "q_post", "k_post", "v"]',
+            '["a", "m", "h", "q_post", "k_post", "v", "z"]',
+        )
+        text = (
+            "\n".join(
+                line
+                for line in text.splitlines()
+                if not any(
+                    x in line
+                    for x in (
+                        'TOPOLOGIES["A2"]',
+                        'TOPOLOGIES["A5-QK-PRE"]',
+                        'TOPOLOGIES["A6-POST"]',
+                    )
+                )
+            )
+            + "\n"
+        )
+        # Remove the obsolete six-site suffix assertion after the topology rename.
+        text = text.replace(
+            '    assert TOPOLOGIES["A7-Z-POST"].active_sites[-3:] == ("q_post", "k_post", "v")\n',
+            "",
+        )
+        save(f"tests/test_{name}.py", text.encode())
+        next(r for r in provenance if r["path"] == f"tests/test_{name}.py")[
+            "changes"
+        ].append(
+            "Exercise the seven-site paper topology instead of unused legacy topologies"
+        )
     copy(run(4) / "optimizer_boundary.py", "training/optimizer.py")
-    copy(run(30) / "clipping.py", "training/clipping.py")
+    copy(
+        run(30) / "clipping.py",
+        "training/clipping.py",
+        [
+            (
+                "Run-local retained TEAL helpers, copied from Run 019; see helper-provenance.json.",
+                "Empirical activation-clipping calibration and full-validation evaluation.",
+            )
+        ],
+    )
     source = (run(4) / "diagnostics.py").read_text(encoding="utf-8")
     node = next(
         n
@@ -112,6 +187,19 @@ def main():
                 "def _expected_pressure_capture_names(model: Any, sites)",
             ),
             ("for site in EXPECTED_ACTIVE_SITES", "for site in sites"),
+            (
+                "Run 015 FP16 boundary with verified four-site A4-OL1 capture.",
+                "FP16 optimizer boundary with explicit pressure-site capture.",
+            ),
+            (
+                "Run 015's recipe boundary accepts orthogonal_l1 only.",
+                "This recipe boundary accepts orthogonal_l1 only.",
+            ),
+            (
+                "Run 015 OL1 must capture exactly all four A4 sites.",
+                "OL1 requires at least one pressure site.",
+            ),
+            ("Run 015 pressure capture mismatch:", "Pressure capture mismatch:"),
         ],
     )
     copy(
@@ -131,8 +219,6 @@ def main():
     )
     for size, n in [("70m", 18), ("410m", 19)]:
         copy(run(n) / "architecture_config.json", f"configs/architectures/{size}.json")
-    for doc in ("DATA", "METHODS", "METRICS", "DEFINITIONS"):
-        copy(ROOT / f"research/{doc}.md", f"docs/reference/{doc}.md")
     sources = {
         "endpoints": analysis(30) / "data/full-trained-results.json",
         "14m-figure": analysis(27) / "data/figure-data.json",
@@ -147,96 +233,16 @@ def main():
     }
     for name, source in sources.items():
         copy(source, f"results/{name}.json")
-        d = json.loads(source.read_text(encoding="utf-8"))
+        d = clean_results(name, json.loads(source.read_text(encoding="utf-8")), sources)
         save(
             f"results/{name}.json",
             (json.dumps(d, separators=(",", ":")) + "\n").encode(),
         )
-        provenance[-1]["changes"].append("Compact JSON whitespace; values unchanged")
-    for p in (ROOT / "manuscript/draft").glob("*.tex"):
-        if p.name in {
-            "methodology.tex",
-            "methodology-appendix.tex",
-            "experimental-appendix.tex",
-            "kernel-appendix.tex",
-            "training-results.tex",
-        }:
-            copy(p, "docs/paper/" + p.name)
-    for p in (ROOT / "manuscript/draft/figures").rglob("*.pdf"):
-        copy(
-            p,
-            "results/paper-figures/"
-            + p.relative_to(ROOT / "manuscript/draft/figures").as_posix(),
+        provenance[-1]["changes"].append(
+            "Keep paper measurements; replace archive labels with scientific identifiers"
         )
-    copy(
-        ROOT / "manuscript/artifacts/pythia-architecture-map.tex",
-        "docs/paper/architecture.tex",
-    )
-    pending = ["k050"]
-    seen = set()
-    while pending:
-        name = pending.pop()
-        if name in seen:
-            continue
-        seen.add(name)
-        folder = run(28) / "candidates" / name
-        for p in folder.iterdir():
-            if p.is_file() and (
-                p.suffix in {".py", ".cu", ".h", ".cuh", ".hpp"}
-                or p.name.startswith("LICENSE")
-            ):
-                copy(p, f"kernels/14m/candidates/{name}/{p.name}")
-                if p.suffix == ".py":
-                    pending += re.findall(r"candidates/(k\d+)/", p.read_text())
-    for name in ("k018", "k019"):
-        for p in (run(26) / "autoresearch/candidates" / name).iterdir():
-            if p.is_file() and p.suffix in {".py", ".cu"}:
-                copy(p, f"kernels/base/autoresearch/candidates/{name}/{p.name}")
-    copy(run(45) / "hz_adapter.py", "kernels/base/adapter.py")
-    copy(run(27) / "kernel.cu", "kernels/base/kernel.cu")
-    copy(
-        run(37) / "site_controls.py",
-        "kernels/ablation14m/site_controls.py",
-        [
-            (
-                "from io_utils import RUN, module, sha",
-                "from support import ROOT, module, sha256 as sha\nRUN = ROOT/'ablation14m'",
-            ),
-            ("from frozen_replay import R28", "from replay import R28"),
-        ],
-    )
-    copy(run(37) / "controls.py", "kernels/ablation14m/modes.py")
-    copy(run(37) / "diagnostics.py", "kernels/ablation14m/diagnostics.py")
-    for p in (run(37) / "candidate").iterdir():
-        if p.is_file() and (
-            p.suffix in {".cu", ".h", ".cuh", ".hpp"} or p.name.startswith("LICENSE")
-        ):
-            copy(p, "kernels/ablation14m/candidate/" + p.name)
-    for folder in (
-        "base70",
-        "kernel",
-        *(
-            "candidates/" + c
-            for c in (
-                "opt001",
-                "opt008",
-                "opt019",
-                "opt024",
-                "opt025",
-                "opt032",
-                "opt063",
-                "opt073",
-            )
-        ),
-    ):
-        for p in (run(45) / folder).rglob("*"):
-            if p.is_file() and (
-                p.suffix in {".py", ".cu", ".h", ".cuh", ".hpp", ".json"}
-                or p.name.startswith("LICENSE")
-            ):
-                copy(p, "kernels/70m/" + p.relative_to(run(45)).as_posix())
-    for name in ("controls.py", "hz_adapter.py"):
-        copy(run(45) / name, "kernels/70m/" + name)
+    copy(ROOT / "manuscript/draft/main.pdf", "main.pdf")
+    build_kernels(run, ROOT, save, provenance)
     copy(
         run(28) / "23_dependencies.py",
         "kernels/fetch_dependencies.py",
@@ -277,22 +283,6 @@ def main():
             ],
         }
     )
-    for n in (4, 9, 11, 12, 13, 14, 15, 18, 19, 32, 34, 41, 43, 44, 46):
-        source = run(n) / "config.yaml"
-        d = yaml.safe_load(source.read_text())
-        d.pop("runpod", None)
-        save(
-            f"configs/original/run{n:03}.json",
-            (json.dumps(d, indent=2) + "\n").encode(),
-        )
-        provenance.append(
-            {
-                "path": f"configs/original/run{n:03}.json",
-                "source": source.relative_to(ROOT).as_posix(),
-                "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-                "changes": ["Convert YAML to JSON and omit cloud deployment settings"],
-            }
-        )
     for p in sorted((HERE / "package").rglob("*")):
         if p.is_file() and "__pycache__" not in p.parts:
             copy(p, p.relative_to(HERE / "package").as_posix())
@@ -322,6 +312,15 @@ def main():
             ],
         }
     )
+    (HERE / "source-map.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    public = [
+        {
+            "path": row["path"],
+            "source_sha256": row.get("source_sha256"),
+            "adapted": bool(row.get("changes")),
+        }
+        for row in provenance
+    ]
     save(
         "PROVENANCE.json",
         (
@@ -330,14 +329,27 @@ def main():
                     "source_commit": subprocess.check_output(
                         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
                     ).strip(),
-                    "files": provenance,
-                    "scope": "Lean companion; core primitives and CUDA sources plus portable entry points. No experiment launched.",
+                    "files": public,
+                    "scope": "Final methods and measured paper results. Development history is not distributed.",
                 },
                 indent=2,
             )
             + "\n"
         ).encode(),
     )
+    # Delete only obsolete files from our own previous export, after checking identity.
+    for row in previous:
+        path = (OUT / row["path"]).resolve()
+        if path not in {p.resolve() for p in emitted} and path.exists():
+            assert path.is_relative_to(OUT.resolve()), path
+            assert hashlib.sha256(path.read_bytes()).hexdigest() == row["sha256"], (
+                f"Modified obsolete export file: {path}"
+            )
+            path.unlink()
+    for path in sorted(OUT.rglob("*"), key=lambda p: len(p.parts), reverse=True):
+        if path.is_dir() and not any(path.iterdir()):
+            assert path.resolve().is_relative_to(OUT.resolve())
+            path.rmdir()
     files = []
     for p in sorted(emitted):
         data = p.read_bytes()
@@ -354,7 +366,6 @@ def main():
             {
                 "files": len(files),
                 "bytes": sum(r["bytes"] for r in files),
-                "14m_dependencies": sorted(seen),
             },
             indent=2,
         )

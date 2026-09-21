@@ -17,9 +17,8 @@ python -m training.train --condition 14M-T2-Ph-0.1 --smoke --output outputs/smok
 
 The smoke uses a tiny synthetic CPU model and two updates, testing the actual
 boundary, gates and serialization. Its losses are not paper measurements.
-Read `configs/paper-grid.json` for every resolved condition. `configs/original/`
-contains scientific settings retained for comparison; historical paths in those
-reference configs are provenance, not the portable CLI's input locations.
+Read `configs/paper-grid.json` for every resolved condition. Conditions are named
+by model size, topology, pressure target and threshold, matching the paper.
 
 ## 2. Rebuild the data
 
@@ -31,7 +30,7 @@ python scripts/prepare_data.py --splits train
 The builder checks immutable Hugging Face revisions, all document/token counts,
 and exact token-file hashes. Training tokens occupy about 5.97 GB; allow extra
 space for the source download and checkpoints. Never substitute an arbitrary
-MiniPile split. `docs/reference/DATA.md` records identities and excluded tails.
+MiniPile split. `docs/DATA.md` records identities and excluded tails.
 
 ## 3. Train one paper condition
 
@@ -94,8 +93,7 @@ python scripts/benchmark.py --checkpoint outputs/70m-t7-k05/final --output outpu
 python scripts/benchmark.py --checkpoint outputs/70m-t7-k05/final --output outputs/timing-r3 --replicate 3
 ```
 
-`--backend port` selects the original 70M transfer. The default selects opt073
-at 70M and K050 at 14M. Add `--control native-hz` to replace only h,z execution
+The harness uses the final implementation at each size. Add `--control native-hz` to replace only h,z execution
 on that checkpoint. `--control hz-skips-off` is the inefficient custom fallback
 ablation, not the practical native-dense control. Benchmark the Base checkpoint
 in the same session to obtain the paper's across-recipe denominator. The harness
@@ -124,11 +122,11 @@ For Table 2, use the same 14M T7/Pall κ=.5 checkpoint and run three fresh
 processes for each `--operation-mode full`, `without-a`, `without-m`, `without-h`,
 `without-z`, `without-qk`, and `without-pv`. Also retain `frozen`, `off` and
 `projection` controls. `full` switches on all six paths; `frozen` uses untouched
-K050. Add `--diagnostics` to the first replicate of each mode for full-validation
+final 14M implementation. Add `--diagnostics` to the first replicate of each mode for full-validation
 MMA and actual BF16 operand counters. Saved time is off-mode latency minus full
 latency. Its min/max span is [min(off)−max(full), max(off)−min(full)] across the
 three process means; it is conditional and not additive. This ablation's all-on
-latency is not interchangeable with historical K050 times from another session.
+latency is not interchangeable with published final-kernel times from another session.
 
 ## Read the output before extending the experiment
 

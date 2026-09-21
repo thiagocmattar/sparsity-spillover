@@ -24,6 +24,74 @@ def main():
     assert actual_files == expected_files, (
         f"Unexpected/missing export files: {actual_files ^ expected_files}"
     )
+    assert not list(SOURCE.rglob("*.tex"))
+    assert set(SOURCE.rglob("*.pdf")) == {SOURCE / "main.pdf"}
+    assert (SOURCE / "main.pdf").read_bytes() == (
+        ROOT / "manuscript/draft/main.pdf"
+    ).read_bytes()
+    assert not (SOURCE / "configs/original").exists()
+    assert not list(SOURCE.rglob("candidate.py"))
+    source_map = json.loads((HERE / "source-map.json").read_text())
+    evidence_source = next(
+        r["source"] for r in source_map if r["path"] == "results/endpoints.json"
+    )
+    original_endpoints = json.loads((ROOT / evidence_source).read_text())[
+        "trained_points"
+    ]
+    exported_endpoints = json.loads((SOURCE / "results/endpoints.json").read_text())[
+        "trained_points"
+    ]
+    identity = lambda r: tuple(
+        r.get(k)
+        for k in ("model", "scope", "pressure", "kappa", "local_pressure_weight")
+    )
+    original_by_identity = {identity(r): r for r in original_endpoints}
+    assert len(original_by_identity) == len(exported_endpoints) == 84
+    for row in exported_endpoints:
+        original_row = original_by_identity[identity(row)]
+        for key in (
+            "loss",
+            "sparsity",
+            "zero_product_count",
+            "model_product_count",
+            "latency_ms",
+            "initial_parameter_sha256",
+            "training_schedule_hash",
+            "final_checkpoint_content_sha256",
+        ):
+            assert row.get(key) == original_row.get(key), (row["condition"], key)
+    # Compare selected CUDA tokens independently of the exporter's transformations.
+    cuda_files = 0
+    for row in source_map:
+        path = SOURCE / row["path"]
+        if path.suffix not in {".cu", ".h", ".cuh", ".hpp"}:
+            continue
+        original = (ROOT / row["source"]).read_text(encoding="utf-8")
+        exported = path.read_text(encoding="utf-8")
+
+        def tokens(text):
+            text = re.sub(r"/\*.*?\*/|//[^\n]*", "", text, flags=re.S)
+            text = text.replace("RUN037_SKIP_", "SPARSE_SKIP_")
+            for old, new in [
+                ("run028", "sparse"),
+                ("Run028", "Sparse"),
+                ("run035", "attention"),
+                ("Run035", "Attention"),
+                ("run037", "ablation"),
+                ("Run037", "Ablation"),
+            ]:
+                text = text.replace(old, new)
+            return re.findall(r"[A-Za-z_]\w*|\d+(?:\.\d+)?|[^\s]", text)
+
+        if path.name == "head.cu":
+            original = re.sub(
+                r"switch\(tile\)\{.*?\n \}",
+                'TORCH_CHECK(tile==0,"Only the final vocabulary tile is supported");\n launch<128,128,32,64,64>(x,w,out,stream);',
+                original,
+                flags=re.S,
+            )
+        assert tokens(original) == tokens(exported), f"CUDA arithmetic changed: {path}"
+        cuda_files += 1
     (ROOT / ".tmp").mkdir(exist_ok=True)
     scratch = Path(
         tempfile.mkdtemp(prefix="lean-handoff-", dir=ROOT / ".tmp")
@@ -118,6 +186,9 @@ def main():
         reconstructed_figures=[p.name for p in figures],
         original_bootstrap="242 passed; no scientific source changed",
         gpu_execution="not performed",
+        cuda_source_equivalence_files=cuda_files,
+        unchanged_central_endpoints=84,
+        manuscript_pdf="byte-identical to manuscript/draft/main.pdf; no TeX distributed",
     )
     (HERE / "verification.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k != "checks"}, indent=2))

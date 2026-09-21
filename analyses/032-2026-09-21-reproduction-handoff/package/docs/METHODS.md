@@ -55,8 +55,7 @@ zero. Do not replace it with a generic cosine scheduler.
 
 Training uses dynamic FP16 autocast and FP32 parameters/moments, zero dropout,
 and Flash SDPA. Logical counters use a separate eager attention pass. BF16 is
-used for specialized-kernel inference. The older compact reference documents
-mention BF16 as a possible training recipe; actual paper configs take precedence.
+used for specialized-kernel inference. The final specialized components are described in kernels/README.md.
 
 Initialization uses small_init σ=sqrt(2/(5d)); residual output matrices use
 Wang σ=2/(L sqrt(d)), after the ordinary draw. LayerNorm scales start at one,

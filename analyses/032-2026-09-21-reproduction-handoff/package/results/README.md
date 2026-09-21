@@ -1,9 +1,10 @@
 # Evidence and figure observations
 
-These are compact retained measurements, not new experiments. Source paths and
-hashes identify records in the author archive. They are provenance labels and
-are not files that the portable scripts need to load. JSON was compacted without
-changing numerical values; MANIFEST.json hashes the release bytes.
+These are compact retained paper measurements. Scientific condition names replace
+private experiment IDs; checkpoint, initialization and schedule hashes preserve
+identity. Timing sessions retain distinct descriptive labels. Only fields used
+by the paper companion are included; measured values are unchanged.
+PROVENANCE.json records source hashes and MANIFEST.json hashes release bytes.
 
 | File | Question, coverage and interpretation |
 |---|---|
@@ -13,14 +14,14 @@ changing numerical values; MANIFEST.json hashes the release bytes.
 | pressure-placement.json | Where does h-only pressure change exact zeros? Thirty 14M T4/T7 conditions, seven sites and six layers, with raw per-cell zero/total counts. |
 | ol1-geometry.json | Does pressure saturate its budget? Retained 712-update traces and summaries; plotted 14M settings are distinguished from supporting 70M records. |
 | base-training.json | Base-model loss and gradient trajectories at three sizes; centered nine-update smoothing is retained. Fixed budget does not establish convergence. |
-| 70m-controls.json | Same-checkpoint opt073/native-h,z substitutions in their own session. Conditional difference includes fusion, layout and inspection. |
+| 70m-controls.json | Same-checkpoint final/native-h,z substitutions in their own session. Conditional difference includes fusion, layout and inspection. |
 | 70m-sessions.json | The later T2 κ=.5 measurement and repeated Base/κ=.1 references; no cross-session pooling. |
 | kernel-structure.json | Scalar sparsity versus projection/attention MMA bypass and Base-relative speed. Padding and scalar substitutions are counted; bypass is not FLOPs saved. |
 | clipping.json | All 300 retained 14M post-hoc points (30×10), including unfavorable tails. Clipping is an evaluation intervention on fixed checkpoints. |
 
 `python scripts/reproduce.py figures` writes nine PDF reconstructions to
 `reproduced/`, using these inputs. Source: `scripts/reproduce.py`. The original
-paper figures remain in `paper-figures/`, with identical source bytes.
+figures and captions are in [the manuscript](../main.pdf).
 
 The reconstructed quality plots show loss/latency against count-pooled logical
 sparsity, with recipe lines and dotted Base/ReLU clipping paths. The three-panel

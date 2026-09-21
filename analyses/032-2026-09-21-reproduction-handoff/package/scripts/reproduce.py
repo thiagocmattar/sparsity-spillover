@@ -84,9 +84,9 @@ def results():
     sparse = {
         r["implementation"]: r["candidate_ms"]
         for r in controls
-        if r["condition"] == "c21"
+        if r["condition"] == "70M-T7-Ph-0.5"
     }
-    benefit = 100 * (1 - sparse["opt073"] / sparse["selected-native-hz"])
+    benefit = 100 * (1 - sparse["specialized-70m"] / sparse["native-hz"])
     assert round(benefit, 1) == 17.4
     OUT.mkdir(exist_ok=True)
     fields = [
@@ -344,9 +344,9 @@ def figures():
     finish(fig, "kernel-structure.pdf")
     clip = read("clipping")["posthoc_points"]
     fig, ax = plt.subplots(figsize=(7, 4))
-    for source in dict.fromkeys(r["source_attempt"] for r in clip):
+    for source in dict.fromkeys(r["condition"] for r in clip):
         group = sorted(
-            [r for r in clip if r["source_attempt"] == source],
+            [r for r in clip if r["condition"] == source],
             key=lambda r: r["target"],
         )
         ax.plot(

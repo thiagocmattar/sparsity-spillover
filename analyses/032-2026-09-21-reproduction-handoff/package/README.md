@@ -6,7 +6,7 @@ grid, final CUDA implementations and compact measurements behind the paper.
 It does not contain model weights, tokenized data, cloud tooling or the experiment
 development history.
 
-Start with [the paper-to-code map](docs/PAPER_MAP.md). Humans and agents use the
+Read [the manuscript](main.pdf) and [the paper-to-code map](docs/PAPER_MAP.md). Humans and agents use the
 same entry points; [AGENTS.md](AGENTS.md) records the scientific contracts.
 
 ## Quick start
@@ -28,7 +28,7 @@ python -m training.train --list
 
 These commands need neither weights nor a GPU. `reproduced/` contains a CSV of
 all **84 endpoints (45/27/12 at 14M/70M/410M)**, numerical checks, and central
-figure reconstructions. Original paper PDFs remain in `results/paper-figures/`.
+figure reconstructions. The manuscript and its original figures are in `main.pdf`.
 Reconstructed plots use the same retained numbers; typography is not a
 byte-for-byte reproduction of the manuscript artwork.
 
@@ -56,16 +56,17 @@ There is no public weight download URL in this snapshot.
 |---|---|
 | `src/sparsity_research/` | Gates, hooks, pressure, exact counts, ceilings, validation |
 | `training/` | Small training/evaluation entry points and retained optimizer boundary |
-| `configs/` | Architecture pins, paper grid, original scientific settings |
-| `kernels/` | Final K050/opt073 and their required components; pinned dependency fetcher |
+| `configs/` | Architecture pins and the resolved paper grid |
+| `kernels/` | Final 14M/70M components, direct assembly, published ablations |
 | `scripts/` | Data preparation, CPU result reconstruction, clipping, GPU measurement |
-| `results/` | Compact measured values, integer counts, diagnostic traces and reference PDFs |
+| `results/` | Compact measured values, integer counts and diagnostic traces |
+| `main.pdf` | Complete manuscript, including appendices |
 | `docs/` | Paper map, mathematics, reproducibility limits and working guide |
 | `tests/` | Mathematical behavior, data coverage, hook placement and portable interfaces |
-| `PROVENANCE.json`, `MANIFEST.json` | Source mapping and release SHA-256 inventory |
+| `PROVENANCE.json`, `MANIFEST.json` | Source hashes and release SHA-256 inventory |
 
-The original repository's run names in provenance are historical identifiers,
-not missing runtime dependencies. No original checkout is needed.
+Configs use scientific condition names such as `14M-T2-Ph-0.1`. Kernel folders
+are organized by model size and operation. No original checkout is needed.
 
 ## License and citation
 

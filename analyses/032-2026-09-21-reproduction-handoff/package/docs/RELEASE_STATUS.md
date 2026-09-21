@@ -1,8 +1,7 @@
 # Verification and limits
 
-The companion was built from the manuscript's current source and compact
-evidence, with a cutoff before Run048. Its findings do not include an in-progress
-experiment. Original author files and experiment records were not rewritten.
+The companion packages the supplied manuscript and its measured endpoints.
+Original author files and experiment records were not rewritten.
 
 Verified locally:
 
@@ -11,16 +10,22 @@ Verified locally:
 - All 84 condition identifiers, gate/pressure assignments, 712-update schedule
   identities and pooled endpoint fractions; 15 analytic architecture/topology
   ceilings; the recorded 17.4% conditional 70M h,z effect.
-- Core mathematical/hook/aggregation tests, actual synthetic CPU updates for
-  Base/L1/OL1-HZ/OL1-seven-site, final checkpoint round trips, and final kernel
-  import/assembly on CPU.
+- Paper-topology mathematical/hook/aggregation tests, actual synthetic CPU
+  updates for Base/L1/OL1-HZ/OL1-seven-site, checkpoint round trips, final kernel
+  assembly and extension build-path resolution on CPU.
+- Selected CUDA token streams match the measured sources after identifier and
+  comment cleanup, with only the selected vocabulary tile retained. The included
+  manuscript PDF matches the supplied file byte-for-byte.
 - Offline table/figure reconstruction in a separate copy, outside the source
   repository layout. No access to historical run/analysis folders is required.
 - The original repository's full 242-test bootstrap suite remained green.
 
 Not performed for this release: full pretraining, CUDA compilation/execution,
 fresh latency qualification, or a clean network installation of all pinned
-packages. Source-hash preservation and CPU assembly do not prove GPU equivalence.
+packages. The final assembly imports its components directly; historical
+candidate chains and the superseded 70M port are omitted. Comparison measurements still
+allow reading the paper's port-versus-final result. CPU assembly and preservation
+of the selected CUDA arithmetic do not prove GPU equivalence.
 The supplied portable harness must pass the included full-validation tests on
 the target device before its new timings can be reported.
 
@@ -40,8 +45,7 @@ diagnostic sources also retain logical-pass loss and should not be silently mixe
 Paper notes: the source appendix still describes the later 70M endpoint as
 visually marked separately, while the latest author figure uses ordinary recipe
 markers. This is a presentation discrepancy; the release preserves its separate
-session identity and never pools or rescales those timings. The narrow T2 gate
-is HZ, unrelated to the old registry's A2=(m,h).
+session identity and never pools or rescales those timings. The narrow T2 gate is HZ=(h,z).
 
 Project license remains undecided at the author's request. Author identities,
 final citation metadata and publication URL are intentionally not invented.

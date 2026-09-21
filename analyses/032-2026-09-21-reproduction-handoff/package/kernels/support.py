@@ -7,7 +7,7 @@ import json
 import sys
 
 ROOT = Path(__file__).resolve().parent
-RUN = ROOT / "14m"
+RUN = ROOT
 
 
 def sha256(path):

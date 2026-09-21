@@ -1,8 +1,7 @@
 # Agent guide
 
 Read README.md, docs/PAPER_MAP.md, docs/REPRODUCE.md and docs/RELEASE_STATUS.md.
-Use docs/METHODS.md for the executed definitions; original excerpts in
-docs/paper/ are reading references, not a separately compilable paper project.
+Use docs/METHODS.md for the executed definitions and main.pdf for the paper.
 
 - This is a reproducibility companion. Do not invent a new scientific comparison.
 - CPU checks and reconstruction from results/ are safe default tasks. Ask the
@@ -11,8 +10,7 @@ docs/paper/ are reading references, not a separately compilable paper project.
 - Never load released Pythia weights for a random-pretraining experiment.
 - A new random draw is a new replication, even with seed 1234. Preserve the
   initial parameter and data-order hashes and keep all compared conditions matched.
-- Gates and pressure targets are independent. T2 is HZ=(h,z), NOT the historical
-  registry's A2=(m,h). T7 Q/K are post-RoPE. Gate equality survives.
+- Gates and pressure targets are independent. T2 is HZ=(h,z). T7 Q/K are post-RoPE. Gate equality survives.
 - Keep all 500 validation documents: 338 complete 2,048-token blocks, 1,444-token
   excluded tail. Sum integer counts before dividing.
 - Preserve ordinary loss, logical-pass loss, activation zeros, logical products,

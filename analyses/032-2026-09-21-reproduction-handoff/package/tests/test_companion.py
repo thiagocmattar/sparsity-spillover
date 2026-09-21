@@ -21,6 +21,7 @@ def test_grid_gate_pressure_and_schedule_contracts():
     }
     assert len({identifier(r) for r in rows}) == 84
     for r in rows:
+        assert r["condition"] == identifier(r)
         c = resolve(identifier(r))
         m = c["model"]
         t = c["training"]
@@ -91,21 +92,13 @@ def test_real_portable_boundary_and_serialization(tmp_path, monkeypatch, conditi
 
 def test_final_kernel_source_closure_and_imports(monkeypatch):
     monkeypatch.syspath_prepend(str(ROOT / "kernels"))
-    monkeypatch.syspath_prepend(str(ROOT / "kernels/70m"))
     import support
-    import io_utils
 
-    for folder in (ROOT / "kernels/70m/candidates").iterdir():
-        manifest = folder / "manifest.json"
-        if manifest.exists():
-            for row in json.loads(manifest.read_text())["files"]:
-                io_utils.verify(row)
-    # Importing every final constituent must work without the author's run tree.
-    paths = [ROOT / "kernels/base/adapter.py"]
-    paths += list((ROOT / "kernels/14m/candidates").glob("*/candidate.py"))
-    paths += list((ROOT / "kernels/70m").rglob("*.py"))
-    for index, path in enumerate(paths):
+    for index, path in enumerate(sorted((ROOT / "kernels").rglob("*.py"))):
         support.module(f"closure_check_{index}", path)
+    assert not list((ROOT / "kernels").rglob("candidate.py"))
+    assert not list(ROOT.rglob("*.tex"))
+    assert (ROOT / "main.pdf").read_bytes().startswith(b"%PDF-")
 
 
 def test_clipping_order_statistics_and_equality():
@@ -135,8 +128,7 @@ def test_final_kernel_assembly_without_cuda_execution(
     from sparsity_research.pythia import apply_activation_topology
 
     monkeypatch.syspath_prepend(str(ROOT / "kernels"))
-    monkeypatch.syspath_prepend(str(ROOT / "kernels/70m"))
-    import replay
+    import install as final_kernel
 
     c = GPTNeoXConfig(
         vocab_size=50304,
@@ -155,22 +147,105 @@ def test_final_kernel_assembly_without_cuda_execution(
         .to(dtype=torch.bfloat16)
         .eval()
     )
+    original = [
+        (
+            layer.mlp.dense_4h_to_h,
+            layer.attention.dense,
+            layer.attention.query_key_value,
+            layer.mlp.dense_h_to_4h,
+        )
+        for layer in model.gpt_neox.layers
+    ]
     with torch.inference_mode():
-        metadata = replay.install(
+        metadata = final_kernel.install(
             model, "optimized", None if operation else "native-hz", operation
         )
     assert metadata
+    for layer, (down, output, qkv, up) in zip(model.gpt_neox.layers, original):
+        assert layer._sparsity_joint.w2 is down and layer._sparsity_joint.wo is output
+        assert layer.attention.query_key_value is qkv and layer.mlp.dense_h_to_4h is up
+        assert layer._sparsity_norm_pair.first is layer.input_layernorm
+        assert layer._sparsity_norm_pair.second is layer.post_attention_layernorm
+        assert layer.attention._sparsity_rope.thresholds == [0.0, 0.0, 0.0]
+        assert layer._sparsity_joint.th == layer._sparsity_joint.tz == 0.1
+        assert isinstance(layer.mlp.dense_4h_to_h, torch.nn.Identity)
+    if size == "70M":
+        assert model.embed_out._sparsity_head.weight is model.embed_out.weight
+        assert model.embed_out._sparsity_head.tile == 0
+        assert all(
+            layer.attention._sparsity_attention.native
+            for layer in model.gpt_neox.layers
+        )
+        assert all(
+            not hasattr(layer.attention.query_key_value, "_sparsity_projection")
+            for layer in model.gpt_neox.layers
+        )
     if operation:
         for layer in model.gpt_neox.layers:
             mask = metadata["operation_mask"]
-            assert layer._run026_joint.skip_h == mask["h"]
-            assert layer._run026_joint.skip_z == mask["z"]
-            assert layer.attention._run028_attention.skip_qk == mask["qk"]
-            assert layer.attention._run028_attention.skip_pv == mask["pv"]
-            assert layer.attention.query_key_value._run028_projection.skip == mask["a"]
-            assert layer.mlp.dense_h_to_4h._run028_projection.skip == mask["m"]
+            assert layer._sparsity_joint.skip_h == mask["h"]
+            assert layer._sparsity_joint.skip_z == mask["z"]
+            assert layer.attention._sparsity_attention.skip_qk == mask["qk"]
+            assert layer.attention._sparsity_attention.skip_pv == mask["pv"]
+            assert (
+                layer.attention.query_key_value._sparsity_projection.skip == mask["a"]
+            )
+            assert layer.mlp.dense_h_to_4h._sparsity_projection.skip == mask["m"]
     else:
-        assert all(layer._run026_joint.native for layer in model.gpt_neox.layers)
+        assert all(layer._sparsity_joint.native for layer in model.gpt_neox.layers)
+
+
+def test_final_extension_build_inputs_are_self_contained(monkeypatch):
+    """Exercise build-path resolution without compiling or launching CUDA."""
+    from pathlib import Path
+    from types import SimpleNamespace
+    import torch.utils.cpp_extension
+
+    monkeypatch.syspath_prepend(str(ROOT / "kernels"))
+    import support
+
+    requests = []
+    monkeypatch.setattr(torch.cuda, "get_device_capability", lambda: (12, 0))
+    monkeypatch.setattr(
+        torch.utils.cpp_extension,
+        "load",
+        lambda **kw: requests.append(kw) or SimpleNamespace(),
+    )
+    paths = [
+        *list((ROOT / "kernels/model_14m").rglob("*.py")),
+        *list((ROOT / "kernels/model_70m").rglob("*.py")),
+        ROOT / "kernels/rotary/implementation.py",
+        ROOT / "kernels/ablation/implementation.py",
+    ]
+    for i, path in enumerate(paths):
+        m = support.module(f"build_inputs_{i}", path)
+        # Downloaded headers are covered by the fetcher's hashes, not this CPU check.
+        if hasattr(m, "read_json"):
+            monkeypatch.setattr(m, "read_json", lambda path: {"files": []})
+        if "ablation" in path.parts:
+            m.extension("joint", True, False)
+            m.extension("attention", False, True)
+        else:
+            m.extension()
+    assert len(requests) == 11
+    for request in requests:
+        for source in request["sources"]:
+            path = Path(source).resolve()
+            assert path.is_relative_to(ROOT / "kernels") and path.is_file()
+        for include in request.get("extra_include_paths", []):
+            assert Path(include).resolve().is_relative_to(ROOT / "kernels")
+    switches = [
+        flag
+        for request in requests
+        for flag in request["extra_cuda_cflags"]
+        if flag.startswith("-DSPARSE_SKIP_")
+    ]
+    assert set(switches) == {
+        "-DSPARSE_SKIP_H=1",
+        "-DSPARSE_SKIP_Z=0",
+        "-DSPARSE_SKIP_QK=0",
+        "-DSPARSE_SKIP_PV=1",
+    }
 
 
 def test_timing_pool_and_rejection_of_mixed_or_incomplete_processes(tmp_path):

@@ -113,7 +113,7 @@ def resolve(identifier_):
         expected_schedule_sha256=row.get(
             "training_schedule_hash", reference["training_schedule_hash"]
         ),
-        source_attempt=row["source_attempt"],
+        condition=identifier_,
     )
 
 
