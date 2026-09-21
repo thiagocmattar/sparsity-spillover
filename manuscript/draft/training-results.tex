@@ -32,12 +32,10 @@ Within a fixed recipe, increasing sparsity generally reduces latency, but model-
 
 \textbf{Local pressure produces a nonlocal response.}
 Figure~\ref{fig:pressure-layer-sparsity} shows sparsity by site and layer under $P_0$, $P_h$ and $P_{\mathrm{all}}$ at 14M.
-At $\kappa=0.05$, applying pressure only at $h$ increases $h$ sparsity from 75--85\% to 94--99\% under $T_4$, and from 74--85\% to 94--99\% under $T_7$.
-The response is not confined to the pressured site: sparsity at the unpressured $z$ activation rises from 71--85\% to 83--92\% under $T_4$, and from 70--87\% to 84--94\% under $T_7$, while changes at $a$ and $m$ are comparatively small.
+At $\kappa=0.05$, applying pressure only at $h$ increases $h$ sparsity from 74--85\% to 94--99\% for both $T_4$ and $T_7$.
+The response, however, is not confined to the pressured site: sparsity at the unpressured $z$ activation rises from 71--85\% to 83--92\% under $T_4$, and from 70--87\% to 84--94\% under $T_7$, while changes at $a$ and $m$ are comparatively small.
 
-At this threshold, broadening $T_7$ pressure to $P_{\mathrm{all}}$ makes both $h$ and $z$ less sparse than under $P_h$ in every layer. Broad pressure also reaches the OL1 norm cap much more often: $96.99\%$ of training steps, versus $0.25\%$ under $P_h$ across the threshold grid (Appendix~\ref{app:pressure-budget-diagnostics}). Competition for this budget may weaken pressure at $h$, but these diagnostics do not isolate the contribution of $q,k,v$.
-
-At $\kappa=0.5$, $h$ and $z$ already exceed $99.5\%$ sparsity in every layer without pressure, whereas $T_7$'s $q,k,v$ remain at 13--36\%. Thus, the response depends on both site and threshold: local pressure strongly sparsifies $h,z$ at moderate thresholds, while aggressive thresholding leaves little additional sparsity to induce there.
+In the other hand, broadening $T_7$ pressure to $P_{\mathrm{all}}$ makes both $h$ and $z$ less sparse than under $P_h$ in every layer. We speculate this happens because broad pressure reaches the OL1 norm cap much more often: $96.99\%$ of training steps, versus $0.25\%$ under $P_h$ across the threshold grid (Appendix~\ref{app:pressure-budget-diagnostics}). Competition for this budget may weaken pressure at $h$. Finally, at $\kappa=0.5$, $h$ and $z$ already exceed $99.5\%$ sparsity in every layer without pressure, whereas $T_7$'s $q,k,v$ remain at 13--36\%. Therefore, some sites may be more succeptible to sparsification than others.
 
 \begin{figure}[!htbp]
 \centering
