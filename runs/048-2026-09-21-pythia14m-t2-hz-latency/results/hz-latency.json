@@ -1,0 +1,671 @@
+{
+  "all_logits_equal_to_eager": true,
+  "checkpoint": {
+    "canonical_logical_products": {
+      "architecture_maximum": {
+        "R_model_max_fraction": 0.053471467958893806,
+        "R_model_max_percent": 5.347146795889381,
+        "active_sites": [
+          "h",
+          "z"
+        ],
+        "block_product_count": 5638717440,
+        "ffn_size": 512,
+        "hidden_size": 128,
+        "layers": 6,
+        "lm_head_product_count": 13186891776,
+        "model_product_count": 18825609216,
+        "per_block_operation_products": {
+          "attention_output_projection": 33554432,
+          "mlp_w1": 134217728,
+          "mlp_w2": 134217728,
+          "probability_value": 268566528,
+          "qk_scores": 268566528,
+          "qkv_projection": 100663296
+        },
+        "reachable_operations": [
+          "attention_output_projection",
+          "mlp_w2"
+        ],
+        "reachable_product_count": 1006632960,
+        "sequence_length": 2048,
+        "topology_id": "HZ",
+        "valid_causal_pairs_per_sequence": 2098176,
+        "vocabulary_size": 50304
+      },
+      "coverage": {
+        "batches": 338,
+        "complete_block_coverage": true,
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 5.151123821382692,
+        "sequences": 338,
+        "source_tokens": 693668
+      },
+      "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+      "measured": {
+        "R_block": 0.17276000623288576,
+        "R_model": 0.05174572832691916,
+        "block_product_count": 1905886494720,
+        "block_zero_product_count": 329260962707,
+        "lm_head_product_count": 4457169420288,
+        "model_product_count": 6363055915008,
+        "per_operation": {
+          "attention_output_projection": {
+            "product_count": 68048388096,
+            "zero_product_count": 63101100160,
+            "zero_product_fraction": 0.9272974999933788
+          },
+          "mlp_w1": {
+            "product_count": 272193552384,
+            "zero_product_count": 0,
+            "zero_product_fraction": 0.0
+          },
+          "mlp_w2": {
+            "product_count": 272193552384,
+            "zero_product_count": 266159842816,
+            "zero_product_fraction": 0.9778330180301704
+          },
+          "probability_value": {
+            "product_count": 544652918784,
+            "zero_product_count": 8484,
+            "zero_product_fraction": 1.5576892562958263e-08
+          },
+          "qk_scores": {
+            "product_count": 544652918784,
+            "zero_product_count": 11247,
+            "zero_product_fraction": 2.06498480263545e-08
+          },
+          "qkv_projection": {
+            "product_count": 204145164288,
+            "zero_product_count": 0,
+            "zero_product_fraction": 0.0
+          }
+        }
+      }
+    },
+    "checkpoint": "inputs/checkpoints/c03",
+    "dose": 0.1,
+    "family": "HZ+OL1@h",
+    "files": [
+      {
+        "bytes": 1877,
+        "path": "inputs/checkpoints/c03/config.json",
+        "sha256": "64274c257a04f30f38bba2f487b03aba1336260642bb67b9fc42ff8fb2878beb"
+      },
+      {
+        "bytes": 56279344,
+        "path": "inputs/checkpoints/c03/model.safetensors",
+        "sha256": "84ac8f5931c7231c06afb1bd9b6e5dc165e2b55d306dafef739b2bbeb1114b35"
+      },
+      {
+        "bytes": 308,
+        "path": "inputs/checkpoints/c03/checkpoint_metadata.json",
+        "sha256": "1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9"
+      },
+      {
+        "bytes": 195,
+        "path": "inputs/checkpoints/c03/generation_config.json",
+        "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+      }
+    ],
+    "final_checkpoint_content_sha256": "5b17b232dff765910ea9d622218f23e437668ecfa0411bb5081ff611d6b2a548",
+    "historical": false,
+    "id": "c03",
+    "provenance": [
+      {
+        "bytes": 12903,
+        "path": "provenance/originals/c03/manifest.json",
+        "sha256": "05201417bdbba20781060e799df55b3597961d4a53288927b00c949de2a5802c"
+      },
+      {
+        "bytes": 5285,
+        "path": "provenance/originals/c03/config.yaml",
+        "sha256": "cde694b5e316cad87a87cc66a695c31f0c362876a3e689cff9f8dc6eb6caff6d"
+      },
+      {
+        "bytes": 2441,
+        "path": "provenance/originals/c03/diagnostics/logical_products.json",
+        "sha256": "ef31792d242d85e7953e9772ccd5281ab03df8b0c0cd2160af96febb4694dac6"
+      }
+    ],
+    "source_condition": {
+      "active_sites": [
+        "h",
+        "z"
+      ],
+      "gate_threshold": 0.1,
+      "id": "hz-h-ol1-kappa-0p1",
+      "is_control": false,
+      "label": "kappa=0.1, lambda=1",
+      "one_sided_sites": [
+        "h",
+        "z"
+      ],
+      "order": 4,
+      "pressure_method": "orthogonal_l1",
+      "pressure_sites": [
+        "h"
+      ],
+      "pressure_weight": 1.0,
+      "step_budget": 1.0,
+      "symmetric_sites": [],
+      "topology_id": "HZ"
+    },
+    "topology": {
+      "architectures": [
+        "GPTNeoXForCausalLM"
+      ],
+      "attention_bias": true,
+      "attention_dropout": 0.0,
+      "bos_token_id": 0,
+      "classifier_dropout": 0.1,
+      "dtype": "float32",
+      "eos_token_id": 0,
+      "hidden_act": "gelu",
+      "hidden_dropout": 0.0,
+      "hidden_size": 128,
+      "initializer_range": 0.02,
+      "intermediate_size": 512,
+      "is_decoder": false,
+      "layer_norm_eps": 1e-05,
+      "max_position_embeddings": 2048,
+      "model_type": "gpt_neox",
+      "num_attention_heads": 4,
+      "num_hidden_layers": 6,
+      "pad_token_id": null,
+      "pythia_recipe_initialization": {
+        "ordinary": "small_init",
+        "random_initialization_replay": {
+          "bytes": 56279344,
+          "file_sha256": "9b9134389d30860a6d8f9e4622b23ce0960d05f1e4b263c56eb95e5f77abe24a",
+          "parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+          "reason": "Replay the approved random parameter bytes across GPU RNG implementations; do not change HZ topology or data order.",
+          "released_weights": false,
+          "source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef/checkpoints/step_000000",
+          "step": 0,
+          "trained_updates": 0
+        },
+        "residual_output": "wang_init",
+        "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+        "small_init_std": 0.05590169943749474,
+        "wang_init_std": 0.029462782549439476
+      },
+      "rope_parameters": {
+        "partial_rotary_factor": 0.25,
+        "rope_theta": 10000,
+        "rope_type": "default"
+      },
+      "site_gate": null,
+      "site_gates": {
+        "h": {
+          "kappa": 0.1,
+          "operator": "one_sided_threshold"
+        },
+        "z": {
+          "kappa": 0.1,
+          "operator": "one_sided_threshold"
+        }
+      },
+      "tie_word_embeddings": false,
+      "topology_id": "HZ",
+      "transformers_version": "5.12.1",
+      "use_cache": false,
+      "use_parallel_residual": true,
+      "vocab_size": 50304
+    }
+  },
+  "configuration": {
+    "batch_size": 1,
+    "condition": "c03",
+    "design_status": "User explicitly authorized design and launch on 2026-09-21",
+    "excluded_tail_tokens": 1444,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "leaf_timeout_seconds": 1200,
+    "modes": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "monitor_interval_seconds": 300,
+    "near_zero_thresholds": [
+      0.0,
+      0.001,
+      0.01
+    ],
+    "numerical_bounds": {
+      "logit_atol": 0.25,
+      "logit_relative_l2": 0.02,
+      "logit_rtol": 0.02,
+      "validation_loss_atol": 0.001
+    },
+    "precision": "bfloat16",
+    "process_replicates": 3,
+    "reference_modes": [
+      "frozen",
+      "native"
+    ],
+    "run_id": "048-2026-09-21-pythia14m-t2-hz-latency",
+    "runtime": {
+      "cuda": "12.8",
+      "numpy": "2.5.0",
+      "python": "3.12",
+      "torch": "2.11.0",
+      "transformers": "5.12.1"
+    },
+    "runtime_seed": 2801,
+    "sequence_length": 2048,
+    "timing_design": "All modes paired within each of three fresh processes",
+    "timing_inputs": 64,
+    "timing_passes": 7,
+    "timing_seed": 2504,
+    "validation_blocks": 338,
+    "validation_documents": 500,
+    "vocabulary": 50304
+  },
+  "diagnostic_counters": {
+    "A": {
+      "0": [
+        44296048,
+        6288,
+        3922736,
+        7152848,
+        0,
+        39465856
+      ],
+      "1": [
+        7424080,
+        36878256,
+        9263200,
+        1812384,
+        54765696,
+        0
+      ],
+      "2": [
+        12606736,
+        31695600,
+        10212304,
+        863280,
+        64632192,
+        0
+      ],
+      "3": [
+        14191856,
+        30110480,
+        9419280,
+        1656304,
+        50823424,
+        0
+      ],
+      "4": [
+        22756960,
+        21545376,
+        9308320,
+        1767264,
+        36957568,
+        78848
+      ],
+      "5": [
+        33855872,
+        10446464,
+        9638272,
+        1437312,
+        8557312,
+        0
+      ]
+    },
+    "B": {
+      "0": [
+        44302336,
+        0,
+        3922736,
+        7152848,
+        0,
+        39465856
+      ],
+      "1": [
+        44302336,
+        0,
+        9263200,
+        1812384,
+        0,
+        0
+      ],
+      "2": [
+        44302336,
+        0,
+        10212304,
+        863280,
+        0,
+        0
+      ],
+      "3": [
+        44302336,
+        0,
+        9419280,
+        1656304,
+        0,
+        0
+      ],
+      "4": [
+        44302336,
+        0,
+        9308320,
+        1767264,
+        0,
+        78848
+      ],
+      "5": [
+        44302336,
+        0,
+        9638272,
+        1437312,
+        0,
+        0
+      ]
+    },
+    "C": {
+      "0": [
+        44296048,
+        6288,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "1": [
+        7424080,
+        36878256,
+        11075584,
+        0,
+        54765696,
+        0
+      ],
+      "2": [
+        12606736,
+        31695600,
+        11075584,
+        0,
+        64632192,
+        0
+      ],
+      "3": [
+        14191856,
+        30110480,
+        11075584,
+        0,
+        50823424,
+        0
+      ],
+      "4": [
+        22756960,
+        21545376,
+        11075584,
+        0,
+        36957568,
+        0
+      ],
+      "5": [
+        33855872,
+        10446464,
+        11075584,
+        0,
+        8557312,
+        0
+      ]
+    },
+    "D": {
+      "0": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "1": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "2": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "3": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "4": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ],
+      "5": [
+        44302336,
+        0,
+        11075584,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "effects": {
+    "h_given_z": {
+      "reduction_percent": 13.837447848825882,
+      "saved_ms": 0.08973991412056492,
+      "speedup": 1.160597005350396
+    },
+    "interaction_ms": -0.011199366637704045,
+    "joint_hz": {
+      "reduction_percent": 12.89850579322849,
+      "saved_ms": 0.08274885718747194,
+      "speedup": 1.1480859302207669
+    },
+    "z_given_h": {
+      "reduction_percent": 0.7474824805132743,
+      "saved_ms": 0.004208309704611057,
+      "speedup": 1.0075311185972338
+    }
+  },
+  "interpretation": "Conditional h/z sparse-path savings; no additive allocation or cross-session Base attribution.",
+  "latency": {
+    "A_graph": {
+      "cuda_geomean_ms": 0.5473828443065699,
+      "host_geomean_ms": 0.5587894613898144,
+      "host_median_ms": 0.558450585231185,
+      "process_geomean_range_ms": [
+        0.5548748921916279,
+        0.5615940072688206
+      ],
+      "samples": 1344
+    },
+    "B_graph": {
+      "cuda_geomean_ms": 0.6369280276664199,
+      "host_geomean_ms": 0.6485293755103794,
+      "host_median_ms": 0.6485579069703817,
+      "process_geomean_range_ms": [
+        0.6449078038618653,
+        0.6511654497105125
+      ],
+      "samples": 1344
+    },
+    "C_graph": {
+      "cuda_geomean_ms": 0.5506528242460405,
+      "host_geomean_ms": 0.5629977710944255,
+      "host_median_ms": 0.5619719158858061,
+      "process_geomean_range_ms": [
+        0.5589806290386997,
+        0.5672699405939924
+      ],
+      "samples": 1344
+    },
+    "D_graph": {
+      "cuda_geomean_ms": 0.6284357357863377,
+      "host_geomean_ms": 0.6415383185772864,
+      "host_median_ms": 0.6399326957762241,
+      "process_geomean_range_ms": [
+        0.6363993842463591,
+        0.6457494292407464
+      ],
+      "samples": 1344
+    },
+    "frozen_graph": {
+      "cuda_geomean_ms": 0.5495262859108186,
+      "host_geomean_ms": 0.5614137536407366,
+      "host_median_ms": 0.5609996151179075,
+      "process_geomean_range_ms": [
+        0.5572411425912798,
+        0.5652326103265132
+      ],
+      "samples": 1344
+    },
+    "native_graph": {
+      "cuda_geomean_ms": 0.6904354748696919,
+      "host_geomean_ms": 0.7017876990542194,
+      "host_median_ms": 0.7030165288597345,
+      "process_geomean_range_ms": [
+        0.6983543297851587,
+        0.7044326468250108
+      ],
+      "samples": 1344
+    }
+  },
+  "processes": [
+    {
+      "effects": {
+        "h_given_z": {
+          "reduction_percent": 13.755558204372258,
+          "saved_ms": 0.0895714424416919,
+          "speedup": 1.1594950111332232
+        },
+        "interaction_ms": -0.011091953794937881,
+        "joint_hz": {
+          "reduction_percent": 13.03221004327845,
+          "saved_ms": 0.08415542197192583,
+          "speedup": 1.1498509971308202
+        },
+        "z_given_h": {
+          "reduction_percent": 1.000570084716368,
+          "saved_ms": 0.0056759333251718,
+          "speedup": 1.0101068267319577
+        }
+      },
+      "host_ms": {
+        "A_graph": 0.5615940072688206,
+        "B_graph": 0.6511654497105125,
+        "C_graph": 0.5672699405939924,
+        "D_graph": 0.6457494292407464,
+        "frozen_graph": 0.5652326103265132,
+        "native_graph": 0.7044326468250108
+      },
+      "loss": {
+        "A_graph": 5.15232672967722,
+        "B_graph": 5.15232672967722,
+        "C_graph": 5.15232672967722,
+        "D_graph": 5.15232672967722,
+        "frozen_graph": 5.15232672967722,
+        "native": 5.15232672967722,
+        "native_graph": 5.15232672967722
+      },
+      "replicate": 1
+    },
+    {
+      "effects": {
+        "h_given_z": {
+          "reduction_percent": 13.96058647935385,
+          "saved_ms": 0.09003291167023741,
+          "speedup": 1.162258038590696
+        },
+        "interaction_ms": -0.012614156462578019,
+        "joint_hz": {
+          "reduction_percent": 12.810271988442395,
+          "saved_ms": 0.08152449205473122,
+          "speedup": 1.146924096227761
+        },
+        "z_given_h": {
+          "reduction_percent": 0.7345043162108533,
+          "saved_ms": 0.004105736847071828,
+          "speedup": 1.0073993920158382
+        }
+      },
+      "host_ms": {
+        "A_graph": 0.5548748921916279,
+        "B_graph": 0.6449078038618653,
+        "C_graph": 0.5589806290386997,
+        "D_graph": 0.6363993842463591,
+        "frozen_graph": 0.5572411425912798,
+        "native_graph": 0.6983543297851587
+      },
+      "loss": {
+        "A_graph": 5.15232672967722,
+        "B_graph": 5.15232672967722,
+        "C_graph": 5.15232672967722,
+        "D_graph": 5.15232672967722,
+        "frozen_graph": 5.15232672967722,
+        "native": 5.15232672967722,
+        "native_graph": 5.15232672967722
+      },
+      "replicate": 2
+    },
+    {
+      "effects": {
+        "h_given_z": {
+          "reduction_percent": 13.796061961653207,
+          "saved_ms": 0.08960971833444353,
+          "speedup": 1.1600398111222736
+        },
+        "interaction_ms": -0.009881716589418388,
+        "joint_hz": {
+          "reduction_percent": 12.85287601405878,
+          "saved_ms": 0.08257989779207886,
+          "speedup": 1.1474847984212564
+        },
+        "z_given_h": {
+          "reduction_percent": 0.5067575104659512,
+          "saved_ms": 0.0028518960470537147,
+          "speedup": 1.0050933862218758
+        }
+      },
+      "host_ms": {
+        "A_graph": 0.5599214202144982,
+        "B_graph": 0.6495311385489417,
+        "C_graph": 0.5627733162615519,
+        "D_graph": 0.6425013180065771,
+        "frozen_graph": 0.5617961512856422,
+        "native_graph": 0.7025899765899741
+      },
+      "loss": {
+        "A_graph": 5.15232672967722,
+        "B_graph": 5.15232672967722,
+        "C_graph": 5.15232672967722,
+        "D_graph": 5.15232672967722,
+        "frozen_graph": 5.15232672967722,
+        "native": 5.15232672967722,
+        "native_graph": 5.15232672967722
+      },
+      "replicate": 3
+    }
+  ],
+  "question": "Fixed-checkpoint contribution of h/z zero exploitation",
+  "same_checkpoint_native_over_A_ratio": 1.255907184270694,
+  "status": "verified",
+  "untouched_k050_over_A_ratio": 1.0046963882325108,
+  "zero_patterns_and_values_identical": true
+}

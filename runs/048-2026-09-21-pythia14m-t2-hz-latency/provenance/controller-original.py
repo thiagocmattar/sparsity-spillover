@@ -26,7 +26,7 @@ def main():
     rows = []
     try:
         for replicate in ([1] if args.phase == 'smoke' else [1, 2, 3]):
-            timeout = 1200 if args.phase == 'smoke' else 600
+            timeout = 1200
             if time.time()+timeout+1200 > args.deadline_epoch:
                 raise RuntimeError('Insufficient time before collection reserve')
             attempt = f'{args.phase}-r{replicate}-{args.tag}'

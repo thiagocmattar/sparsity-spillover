@@ -8,6 +8,8 @@ import datetime,json,pathlib,shutil,subprocess
 r=pathlib.Path('/workspace/run048');c=pathlib.Path('/workspace/run048-control')
 print('utc',datetime.datetime.now(datetime.timezone.utc).isoformat())
 print('inputs_verified',(r/'runtime/setup-complete').exists())
+bundle=pathlib.Path('/workspace/run048-input-002.tar.gz')
+print('input_bundle_bytes',bundle.stat().st_size if bundle.exists() else 0)
 for name in ('environment.exit','pipeline.exit'):
  p=c/name
  if p.exists():print(name,p.read_text())
@@ -19,7 +21,7 @@ attempts=sorted((r/'artifacts/attempts').glob('*/status.json'),key=lambda p:p.st
 if attempts:
  d=json.loads(attempts[-1].read_text());d.pop('timing',None)
  print('latest_attempt',attempts[-1].parent.name,json.dumps(d))
-for name in ('environment.log','pipeline.log'):
+for name in ('environment-004.log','pipeline.log'):
  p=c/name
  if p.exists():print(name,p.read_text(errors='replace')[-700:])
 print('disk_free_bytes',{p:shutil.disk_usage(p).free for p in ('/tmp','/workspace')})

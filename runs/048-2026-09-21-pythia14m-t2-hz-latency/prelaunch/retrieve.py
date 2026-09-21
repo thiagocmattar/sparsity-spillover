@@ -33,10 +33,14 @@ def main():
         with client.open_sftp() as sftp:
             for name in (f'receipt-{args.tag}.json',f'inventory-{args.tag}.json'):
                 sftp.get('/workspace/run048/transfer/'+name,str(directory/name))
-            for name in ('environment.log','guard.log','pipeline.log','pipeline.exit','tail.log','tail.exit',
+            for name in ('environment.log','environment-002.log','environment-003.log','environment-004.log',
+                         'pipeline.log.before-version-check','pipeline.exit.before-version-check',
+                         'environment.exit.before-version-check','guard.log','pipeline.log','pipeline.exit','tail.log','tail.exit',
                          'local-runtime-cache.json','local-runtime-cache.log','local-runtime-cache.exit',
                          'local-archive-cache.json','local-archive-cache.log','local-archive-cache.exit'):
-                try:sftp.get('/workspace/run048-control/'+name,str(directory/name))
+                try:
+                    sftp.stat('/workspace/run048-control/'+name)
+                    sftp.get('/workspace/run048-control/'+name,str(directory/name))
                 except FileNotFoundError:pass
     finally:client.close()
     receipt=json.loads((directory/f'receipt-{args.tag}.json').read_text())
@@ -68,10 +72,8 @@ def main():
     transfer=RUN/'transfer';transfer.mkdir(exist_ok=True)
     for name in (f'receipt-{args.tag}.json',f'inventory-{args.tag}.json'):
         shutil.copy2(directory/name,transfer/name)
-    if (directory/'local-runtime-cache.json').exists():
-        shutil.copy2(directory/'local-runtime-cache.json',RUN/'provenance/local-runtime-cache.json')
-    if (directory/'local-archive-cache.json').exists():
-        shutil.copy2(directory/'local-archive-cache.json',RUN/'provenance/local-archive-cache.json')
+    # Canonical provenance is already covered by the sealed member inventory.
+    # Optional control-log downloads must never overwrite those verified files.
     result=dict(status='verified',files=len(inventory['files']),archive=receipt,
                 pod_id=info['id'],tag=args.tag,existing_sources_preserved=True)
     (RUN/'results').mkdir(exist_ok=True)

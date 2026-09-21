@@ -1,7 +1,11 @@
 # Run048: causal h/z latency control at the 14M T2/Ph headline point
 
-Status: implementation and prelaunch verification. The user explicitly authorized
-both design and execution on 21 September 2026. No training or manuscript edit.
+Status: complete and verified. Joint h/z exploitation saves **82.749 microseconds
+(12.899%)**, with the checkpoint, gates, h/z values and zero masks fixed.
+This is 57.867% of the total gain over same-checkpoint native PyTorch.
+See [the results and interpretation limits](observations/001-causal-hz-latency.md).
+All artifacts are local and the Run048 Pod is deleted. The user explicitly
+authorized both design and execution on 21 September 2026. No training or manuscript edit.
 
 ## Question and matched comparison
 
@@ -79,3 +83,66 @@ sooner near projected completion or upon numerical/source failures, less than
 projected deadline overrun. A deadline stop preserves unretrieved artifacts.
 Retrieve every raw result/log/diagnostic and verify archive and member hashes
 before deleting the run-owned Pod. Report any remaining storage and cost.
+
+## Launch record
+
+Local verification passed11 focused tests,242 bootstrap tests (8.86s), and
+real-checkpoint CPU native forwards and all five specialized installations.
+All Python sources and both execution shell scripts parse; the independent
+PowerShell provider-stop guard parses and is armed. These checks do not qualify
+CUDA. The frozen launch implementation is commit5f3924e7.
+
+Pod nol9c179grw1vo was created at11:14:03 UTC on21 September at0.99 USD/hour,
+with a12:44:03 UTC provider-stop deadline. The first SCP upload was progressing
+too slowly (about10MB in several minutes). It was stopped locally before any
+scientific execution. Infrastructure retry002 uses SSH streaming to a separate
+remote archive, preserving the partial first upload and the identical input
+bundle SHA256. Runtime setup continues unchanged. The experiment sources,
+checkpoint, validation inputs and qualification criteria are unchanged.
+
+Runtime downloads from the default host were also slow. Recovery003 copied
+376 files (2,902,749,676 bytes) from exact matching CUDA distributions in the
+pinned image, verifying their wheel RECORD hashes and retaining file SHA256s.
+An earlier recovery002 looked in the bootstrap environment and copied zero
+files; its record is retained. Recovery004 downloads the four remaining exact
+wheels in byte ranges, using NVIDIA's official mirror where the advertised
+SHA256 matches PyPI. Triton's mirror had a different digest, so the original
+PyPI wheel is retained. Every assembled wheel must match the original size and
+SHA256, and the installed58-package list must match the original pins exactly.
+These are infrastructure changes only. Original and retry scripts/logs remain.
+
+Before any scientific execution, the controller's final-process timeout was
+tightened from1200 to600 seconds; smoke retains1200 seconds. This avoids
+rejecting a short final process because an overly broad upper bound overlaps
+the20-minute retrieval reserve. All benchmark settings and source bytes remain
+unchanged; original/revised controller hashes are recorded in provenance/.
+
+## Completion
+
+All 58 installed package versions match the original pins. The final setup
+check initially rejected direct-wheel URL notation in `pip freeze`; a direct
+distribution-version comparison verified the unchanged versions, while retaining
+the exact wheel hashes and raw freeze output. No scientific attempts existed
+before this correction. Pipeline003 then completed successfully.
+
+All 40 direct GPU cases passed. The full-model smoke took 218.21 seconds including
+remaining cold compilation. The three final processes took 84.09, 33.61 and
+32.84 seconds; each qualified all 338 blocks with zero logit error. All modes
+have BF16 validation loss 5.15232672967722. Peak tensor allocation was
+4,494,705,664 bytes. Full diagnostic hashes and counters pass for A–D.
+
+The returned archive and all 85 members passed local size/SHA256 checks; another
+22 terminal infrastructure files were independently verified. Local reduction
+exactly reproduces the remote JSON. Deletion was requested at 12:08 UTC, received
+HTTP204, and was confirmed by an empty Pod list. The workstation deadline guard
+was closed. The pre-existing shared volume remains unchanged. Provisional GPU
+cost is USD0.89; posted billing was still empty, not a zero-cost invoice.
+The run stayed within its 90-minute/USD2 envelope. Details are in
+`results/closeout.json`, `results/local-verification.json` and
+`prelaunch/control-retrieval.json`.
+
+The post-copy audit caught an inherited retrieval-helper issue: a missing
+optional control file left an empty local placeholder, which could overwrite
+the archive-cache metadata sidecar. The sidecar was restored from the sealed
+archive, the helper was corrected, and every one of the 85 member hashes was
+verified again. Scientific measurements and their files were unaffected.
