@@ -1,0 +1,376 @@
+{
+  "installations": [
+    {
+      "frozen_installation": {
+        "attention": "k035 split KV plus coalesced64-token segmented exact-grid prefix",
+        "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+        "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+        "attention_skipping_enabled": true,
+        "dense_operations": [
+          "lm_head"
+        ],
+        "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+        "input_projections": "k042 pinned CUTLASS32x64x64 BF16 MMA sparse atom pipeline",
+        "normalization": "k050 shared-input width128 Welford pair, distinct affine, existing a/m BF16 gates fused",
+        "normalization_attribution": "Identical fusion in all skip controls; compare unfused K049 separately",
+        "output_projection_counter_limits": "MMA bypass includes replacement by SIMT; report executed SIMT products separately",
+        "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+        "output_projections": "k049 M8N128 padded-M16 fallback: <=2 rows use SIMT; complex-row K16 support masks jump over empty tiles",
+        "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+        "prefix_enabled": false,
+        "prefix_safety": "all causal64-token segments through query tile end: K finite, V zero or0.5<=abs(V)<=64;64 queries zero",
+        "projection_skipping_enabled": true,
+        "sparse_operations": [
+          "qkv_projection",
+          "mlp_w1",
+          "mlp_w2",
+          "attention_output_projection",
+          "qk_scores",
+          "probability_value"
+        ]
+      },
+      "gates": [
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        }
+      ],
+      "mode": "frozen",
+      "only_change": "Run037 compile-time h/z zero-exploitation controls",
+      "skip_h_z": [
+        true,
+        true
+      ]
+    },
+    {
+      "frozen_installation": {
+        "attention": "k035 split KV plus coalesced64-token segmented exact-grid prefix",
+        "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+        "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+        "attention_skipping_enabled": true,
+        "dense_operations": [
+          "lm_head"
+        ],
+        "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+        "input_projections": "k042 pinned CUTLASS32x64x64 BF16 MMA sparse atom pipeline",
+        "normalization": "k050 shared-input width128 Welford pair, distinct affine, existing a/m BF16 gates fused",
+        "normalization_attribution": "Identical fusion in all skip controls; compare unfused K049 separately",
+        "output_projection_counter_limits": "MMA bypass includes replacement by SIMT; report executed SIMT products separately",
+        "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+        "output_projections": "k049 M8N128 padded-M16 fallback: <=2 rows use SIMT; complex-row K16 support masks jump over empty tiles",
+        "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+        "prefix_enabled": false,
+        "prefix_safety": "all causal64-token segments through query tile end: K finite, V zero or0.5<=abs(V)<=64;64 queries zero",
+        "projection_skipping_enabled": true,
+        "sparse_operations": [
+          "qkv_projection",
+          "mlp_w1",
+          "mlp_w2",
+          "attention_output_projection",
+          "qk_scores",
+          "probability_value"
+        ]
+      },
+      "gates": [
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        }
+      ],
+      "mode": "A",
+      "only_change": "Run037 compile-time h/z zero-exploitation controls",
+      "skip_h_z": [
+        true,
+        true
+      ]
+    },
+    {
+      "frozen_installation": {
+        "attention": "k035 split KV plus coalesced64-token segmented exact-grid prefix",
+        "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+        "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+        "attention_skipping_enabled": true,
+        "dense_operations": [
+          "lm_head"
+        ],
+        "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+        "input_projections": "k042 pinned CUTLASS32x64x64 BF16 MMA sparse atom pipeline",
+        "normalization": "k050 shared-input width128 Welford pair, distinct affine, existing a/m BF16 gates fused",
+        "normalization_attribution": "Identical fusion in all skip controls; compare unfused K049 separately",
+        "output_projection_counter_limits": "MMA bypass includes replacement by SIMT; report executed SIMT products separately",
+        "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+        "output_projections": "k049 M8N128 padded-M16 fallback: <=2 rows use SIMT; complex-row K16 support masks jump over empty tiles",
+        "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+        "prefix_enabled": false,
+        "prefix_safety": "all causal64-token segments through query tile end: K finite, V zero or0.5<=abs(V)<=64;64 queries zero",
+        "projection_skipping_enabled": true,
+        "sparse_operations": [
+          "qkv_projection",
+          "mlp_w1",
+          "mlp_w2",
+          "attention_output_projection",
+          "qk_scores",
+          "probability_value"
+        ]
+      },
+      "gates": [
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        }
+      ],
+      "mode": "B",
+      "only_change": "Run037 compile-time h/z zero-exploitation controls",
+      "skip_h_z": [
+        false,
+        true
+      ]
+    },
+    {
+      "frozen_installation": {
+        "attention": "k035 split KV plus coalesced64-token segmented exact-grid prefix",
+        "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+        "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+        "attention_skipping_enabled": true,
+        "dense_operations": [
+          "lm_head"
+        ],
+        "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+        "input_projections": "k042 pinned CUTLASS32x64x64 BF16 MMA sparse atom pipeline",
+        "normalization": "k050 shared-input width128 Welford pair, distinct affine, existing a/m BF16 gates fused",
+        "normalization_attribution": "Identical fusion in all skip controls; compare unfused K049 separately",
+        "output_projection_counter_limits": "MMA bypass includes replacement by SIMT; report executed SIMT products separately",
+        "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+        "output_projections": "k049 M8N128 padded-M16 fallback: <=2 rows use SIMT; complex-row K16 support masks jump over empty tiles",
+        "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+        "prefix_enabled": false,
+        "prefix_safety": "all causal64-token segments through query tile end: K finite, V zero or0.5<=abs(V)<=64;64 queries zero",
+        "projection_skipping_enabled": true,
+        "sparse_operations": [
+          "qkv_projection",
+          "mlp_w1",
+          "mlp_w2",
+          "attention_output_projection",
+          "qk_scores",
+          "probability_value"
+        ]
+      },
+      "gates": [
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        }
+      ],
+      "mode": "C",
+      "only_change": "Run037 compile-time h/z zero-exploitation controls",
+      "skip_h_z": [
+        true,
+        false
+      ]
+    },
+    {
+      "frozen_installation": {
+        "attention": "k035 split KV plus coalesced64-token segmented exact-grid prefix",
+        "attention_counter_unit": "issued/skipped MMA atoms; each atom is 2048 FMA-equivalent terms including padding",
+        "attention_skip_granularity": "16x8x16 MMA atoms with a fully zero A or B operand fragment",
+        "attention_skipping_enabled": true,
+        "dense_operations": [
+          "lm_head"
+        ],
+        "input_projection_skip_granularity": "wholly zero 16x16 activation fragment; no weight-fragment test",
+        "input_projections": "k042 pinned CUTLASS32x64x64 BF16 MMA sparse atom pipeline",
+        "normalization": "k050 shared-input width128 Welford pair, distinct affine, existing a/m BF16 gates fused",
+        "normalization_attribution": "Identical fusion in all skip controls; compare unfused K049 separately",
+        "output_projection_counter_limits": "MMA bypass includes replacement by SIMT; report executed SIMT products separately",
+        "output_projection_skip_granularity": "wholly zero gated 16x16 activation fragment",
+        "output_projections": "k049 M8N128 padded-M16 fallback: <=2 rows use SIMT; complex-row K16 support masks jump over empty tiles",
+        "precision": "UNFUSE_FMA, no fast-math, native two-split softmax and recombination",
+        "prefix_enabled": false,
+        "prefix_safety": "all causal64-token segments through query tile end: K finite, V zero or0.5<=abs(V)<=64;64 queries zero",
+        "projection_skipping_enabled": true,
+        "sparse_operations": [
+          "qkv_projection",
+          "mlp_w1",
+          "mlp_w2",
+          "attention_output_projection",
+          "qk_scores",
+          "probability_value"
+        ]
+      },
+      "gates": [
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        },
+        {
+          "h_gate": true,
+          "h_threshold": 0.1,
+          "z_gate": true,
+          "z_threshold": 0.1
+        }
+      ],
+      "mode": "D",
+      "only_change": "Run037 compile-time h/z zero-exploitation controls",
+      "skip_h_z": [
+        false,
+        false
+      ]
+    }
+  ],
+  "scope": "Real CPU checkpoint native forward and all five installations; no CUDA or performance claim",
+  "status": "passed"
+}

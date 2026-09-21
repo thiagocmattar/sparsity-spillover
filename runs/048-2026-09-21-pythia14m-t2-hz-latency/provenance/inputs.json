@@ -1,0 +1,248 @@
+{
+  "checkpoints": [
+    {
+      "canonical_logical_products": {
+        "architecture_maximum": {
+          "R_model_max_fraction": 0.053471467958893806,
+          "R_model_max_percent": 5.347146795889381,
+          "active_sites": [
+            "h",
+            "z"
+          ],
+          "block_product_count": 5638717440,
+          "ffn_size": 512,
+          "hidden_size": 128,
+          "layers": 6,
+          "lm_head_product_count": 13186891776,
+          "model_product_count": 18825609216,
+          "per_block_operation_products": {
+            "attention_output_projection": 33554432,
+            "mlp_w1": 134217728,
+            "mlp_w2": 134217728,
+            "probability_value": 268566528,
+            "qk_scores": 268566528,
+            "qkv_projection": 100663296
+          },
+          "reachable_operations": [
+            "attention_output_projection",
+            "mlp_w2"
+          ],
+          "reachable_product_count": 1006632960,
+          "sequence_length": 2048,
+          "topology_id": "HZ",
+          "valid_causal_pairs_per_sequence": 2098176,
+          "vocabulary_size": 50304
+        },
+        "coverage": {
+          "batches": 338,
+          "complete_block_coverage": true,
+          "excluded_tail_tokens": 1444,
+          "input_tokens": 692224,
+          "loss": 5.151123821382692,
+          "sequences": 338,
+          "source_tokens": 693668
+        },
+        "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+        "measured": {
+          "R_block": 0.17276000623288576,
+          "R_model": 0.05174572832691916,
+          "block_product_count": 1905886494720,
+          "block_zero_product_count": 329260962707,
+          "lm_head_product_count": 4457169420288,
+          "model_product_count": 6363055915008,
+          "per_operation": {
+            "attention_output_projection": {
+              "product_count": 68048388096,
+              "zero_product_count": 63101100160,
+              "zero_product_fraction": 0.9272974999933788
+            },
+            "mlp_w1": {
+              "product_count": 272193552384,
+              "zero_product_count": 0,
+              "zero_product_fraction": 0.0
+            },
+            "mlp_w2": {
+              "product_count": 272193552384,
+              "zero_product_count": 266159842816,
+              "zero_product_fraction": 0.9778330180301704
+            },
+            "probability_value": {
+              "product_count": 544652918784,
+              "zero_product_count": 8484,
+              "zero_product_fraction": 1.5576892562958263e-08
+            },
+            "qk_scores": {
+              "product_count": 544652918784,
+              "zero_product_count": 11247,
+              "zero_product_fraction": 2.06498480263545e-08
+            },
+            "qkv_projection": {
+              "product_count": 204145164288,
+              "zero_product_count": 0,
+              "zero_product_fraction": 0.0
+            }
+          }
+        }
+      },
+      "checkpoint": "inputs/checkpoints/c03",
+      "dose": 0.1,
+      "family": "HZ+OL1@h",
+      "files": [
+        {
+          "bytes": 1877,
+          "path": "inputs/checkpoints/c03/config.json",
+          "sha256": "64274c257a04f30f38bba2f487b03aba1336260642bb67b9fc42ff8fb2878beb"
+        },
+        {
+          "bytes": 56279344,
+          "path": "inputs/checkpoints/c03/model.safetensors",
+          "sha256": "84ac8f5931c7231c06afb1bd9b6e5dc165e2b55d306dafef739b2bbeb1114b35"
+        },
+        {
+          "bytes": 308,
+          "path": "inputs/checkpoints/c03/checkpoint_metadata.json",
+          "sha256": "1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9"
+        },
+        {
+          "bytes": 195,
+          "path": "inputs/checkpoints/c03/generation_config.json",
+          "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+        }
+      ],
+      "final_checkpoint_content_sha256": "5b17b232dff765910ea9d622218f23e437668ecfa0411bb5081ff611d6b2a548",
+      "historical": false,
+      "id": "c03",
+      "provenance": [
+        {
+          "bytes": 12903,
+          "path": "provenance/originals/c03/manifest.json",
+          "sha256": "05201417bdbba20781060e799df55b3597961d4a53288927b00c949de2a5802c"
+        },
+        {
+          "bytes": 5285,
+          "path": "provenance/originals/c03/config.yaml",
+          "sha256": "cde694b5e316cad87a87cc66a695c31f0c362876a3e689cff9f8dc6eb6caff6d"
+        },
+        {
+          "bytes": 2441,
+          "path": "provenance/originals/c03/diagnostics/logical_products.json",
+          "sha256": "ef31792d242d85e7953e9772ccd5281ab03df8b0c0cd2160af96febb4694dac6"
+        }
+      ],
+      "source_condition": {
+        "active_sites": [
+          "h",
+          "z"
+        ],
+        "gate_threshold": 0.1,
+        "id": "hz-h-ol1-kappa-0p1",
+        "is_control": false,
+        "label": "kappa=0.1, lambda=1",
+        "one_sided_sites": [
+          "h",
+          "z"
+        ],
+        "order": 4,
+        "pressure_method": "orthogonal_l1",
+        "pressure_sites": [
+          "h"
+        ],
+        "pressure_weight": 1.0,
+        "step_budget": 1.0,
+        "symmetric_sites": [],
+        "topology_id": "HZ"
+      },
+      "topology": {
+        "architectures": [
+          "GPTNeoXForCausalLM"
+        ],
+        "attention_bias": true,
+        "attention_dropout": 0.0,
+        "bos_token_id": 0,
+        "classifier_dropout": 0.1,
+        "dtype": "float32",
+        "eos_token_id": 0,
+        "hidden_act": "gelu",
+        "hidden_dropout": 0.0,
+        "hidden_size": 128,
+        "initializer_range": 0.02,
+        "intermediate_size": 512,
+        "is_decoder": false,
+        "layer_norm_eps": 1e-05,
+        "max_position_embeddings": 2048,
+        "model_type": "gpt_neox",
+        "num_attention_heads": 4,
+        "num_hidden_layers": 6,
+        "pad_token_id": null,
+        "pythia_recipe_initialization": {
+          "ordinary": "small_init",
+          "random_initialization_replay": {
+            "bytes": 56279344,
+            "file_sha256": "9b9134389d30860a6d8f9e4622b23ce0960d05f1e4b263c56eb95e5f77abe24a",
+            "parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+            "reason": "Replay the approved random parameter bytes across GPU RNG implementations; do not change HZ topology or data order.",
+            "released_weights": false,
+            "source": "runs/032-2026-09-16-pythia14m-a7-h-only-ol1/artifacts/attempts/001-20260916-204150-a19b77ef/checkpoints/step_000000",
+            "step": 0,
+            "trained_updates": 0
+          },
+          "residual_output": "wang_init",
+          "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+          "small_init_std": 0.05590169943749474,
+          "wang_init_std": 0.029462782549439476
+        },
+        "rope_parameters": {
+          "partial_rotary_factor": 0.25,
+          "rope_theta": 10000,
+          "rope_type": "default"
+        },
+        "site_gate": null,
+        "site_gates": {
+          "h": {
+            "kappa": 0.1,
+            "operator": "one_sided_threshold"
+          },
+          "z": {
+            "kappa": 0.1,
+            "operator": "one_sided_threshold"
+          }
+        },
+        "tie_word_embeddings": false,
+        "topology_id": "HZ",
+        "transformers_version": "5.12.1",
+        "use_cache": false,
+        "use_parallel_residual": true,
+        "vocab_size": 50304
+      }
+    }
+  ],
+  "source_manifest": {
+    "bytes": 10359,
+    "path": "artifacts/verification.json",
+    "sha256": "9d83ebf6280ae2ae69d271bca1230777d98f7c5fc7cab4f5ff5e657e7238b6e9"
+  },
+  "validation": {
+    "bytes": 2774672,
+    "path": "inputs/validation.int32.bin",
+    "sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  },
+  "validation_metadata": {
+    "append_eos": true,
+    "block_size": 2048,
+    "complete_blocks": 338,
+    "dataset_name": "JeanKaddour/minipile",
+    "dataset_revision": "18ad1b0c701eaa0de03d3cecfdd769cbc70ffbd0",
+    "documents": 500,
+    "dtype": "int32",
+    "evaluated_complete_block_tokens": 692224,
+    "excluded_tail_tokens": 1444,
+    "split": "validation",
+    "text_column": "text",
+    "tokenizer_name": "EleutherAI/pythia-14m-deduped",
+    "tokenizer_revision": "7386d9a4ae45aef494a6e704910394def3037fc5",
+    "tokens": 693668,
+    "tokens_bytes": 2774672,
+    "tokens_path": "tokens.int32.bin",
+    "tokens_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  }
+}
