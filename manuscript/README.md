@@ -1,5 +1,14 @@
 # Living Manuscript Draft
 
+21 September 2026, requested rebuild after the results-argument revision:
+`draft/main.pdf` now contains the latest author introduction and the revised
+14M-to-70M results narrative. LaTeX confirms the visually reviewed 22-page
+build is current, with resolved references, no overfull boxes and two underfull
+horizontal-box warnings. The installed PDF matches the
+[reviewed build](draft/reviews/2026-09-21-results-arc/verification.json), SHA256
+`213a9e32359751be96105298954781ce84bc9f0e3dedf094ee44c1b3cccdfef4`.
+The author's uncommitted introduction edits remain preserved separately.
+
 21 September 2026, requested Figure 3 simplification:
 `draft/figures/23-70m-quality-sparsity-native-latency.pdf` uses the ordinary
 recipe marker for every point; the extra diamonds and "Later session" legend
