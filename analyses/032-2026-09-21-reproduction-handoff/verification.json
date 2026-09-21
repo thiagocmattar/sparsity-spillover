@@ -1,0 +1,105 @@
+{
+  "status": "passed",
+  "package_files": 212,
+  "package_bytes": 7434066,
+  "heavy_files": 0,
+  "credential_pattern_matches": 0,
+  "isolated_directory": ".tmp/lean-handoff-f93igz7l",
+  "checks": [
+    {
+      "command": [
+        "-c",
+        "from pathlib import Path; import sparsity_research; import training.config; assert Path(sparsity_research.__file__).resolve().is_relative_to(Path.cwd()); assert training.config.ROOT == Path.cwd()"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/reproduce.py",
+        "verify"
+      ],
+      "returncode": 0,
+      "stdout": "Verified 211 release files\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "stdout": "....................................................................     [100%]\n68 passed in 4.85s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/reproduce.py",
+        "results"
+      ],
+      "returncode": 0,
+      "stdout": "Reconstructed 84 endpoints, 15 analytic ceilings, and central execution effects\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/reproduce.py",
+        "figures"
+      ],
+      "returncode": 0,
+      "stdout": "Wrote central figure reconstructions to reproduced/\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/prepare_data.py",
+        "--help"
+      ],
+      "returncode": 0,
+      "stdout": "usage: prepare_data.py [-h]\n                       [--splits {validation,train} [{validation,train} ...]]\n                       [--batch-size BATCH_SIZE]\n                       [--log-every-documents LOG_EVERY_DOCUMENTS]\n\noptions:\n  -h, --help            show this help message and exit\n  --splits {validation,train} [{validation,train} ...]\n                        Build validation first so it serves as a fast\n                        tokenization-equivalence gate.\n  --batch-size BATCH_SIZE\n  --log-every-documents LOG_EVERY_DOCUMENTS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/benchmark.py",
+        "--help"
+      ],
+      "returncode": 0,
+      "stdout": "usage: benchmark.py [-h] --checkpoint CHECKPOINT --output OUTPUT\n                    [--backend {optimized,port}]\n                    [--control {native-hz,hz-skips-off}]\n                    [--operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}]\n                    [--diagnostics] --replicate {1,2,3}\n\nOne fresh-process full-validation qualification and paired CUDA graph\nbenchmark.\n\noptions:\n  -h, --help            show this help message and exit\n  --checkpoint CHECKPOINT\n  --output OUTPUT\n  --backend {optimized,port}\n  --control {native-hz,hz-skips-off}\n  --operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}\n  --diagnostics         Additional untimed 14M actual-operand/MMA counter pass\n  --replicate {1,2,3}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/clip.py",
+        "--help"
+      ],
+      "returncode": 0,
+      "stdout": "usage: clip.py [-h] --checkpoint CHECKPOINT --output OUTPUT\n\nPinned ten-block calibration and ten full-validation post-hoc clipping points.\n\noptions:\n  -h, --help            show this help message and exit\n  --checkpoint CHECKPOINT\n  --output OUTPUT\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/aggregate_timings.py",
+        "--help"
+      ],
+      "returncode": 0,
+      "stdout": "usage: aggregate_timings.py [-h] --output OUTPUT processes processes processes\n\nPool three qualified fresh processes without mixing checkpoint identities.\n\npositional arguments:\n  processes\n\noptions:\n  -h, --help       show this help message and exit\n  --output OUTPUT\n",
+      "stderr": ""
+    }
+  ],
+  "reconstructed_figures": [
+    "14m-quality-latency.pdf",
+    "410m-quality-latency.pdf",
+    "70m-quality-latency.pdf",
+    "base-training.pdf",
+    "kernel-structure.pdf",
+    "layer-sparsity.pdf",
+    "ol1-geometry.pdf",
+    "posthoc-clipping.pdf",
+    "quality-sites-quality.pdf"
+  ],
+  "original_bootstrap": "242 passed; no scientific source changed",
+  "gpu_execution": "not performed"
+}
