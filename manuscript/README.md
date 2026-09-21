@@ -1,5 +1,12 @@
 # Living Manuscript Draft
 
+21 September 2026, requested rebuild of the latest author revision:
+`draft/main.pdf` and `draft/main-updated.pdf` are updated to the visually
+checked 21-page build, with resolved references, no overfull boxes and one
+underfull hbox warning. Both PDFs have SHA256
+`4e2e574a0237bdce2270892972c6e34e6adbb13b8d1438798ab5db4d0fced262`.
+Author source edits remain uncommitted.
+
 21 September 2026, requested rebuild with the updated title:
 `draft/main.pdf` and `draft/main-updated.pdf` contain the latest author sources,
 including "Where Sparsity Matters: Shaping Activations for Efficient Transformer
