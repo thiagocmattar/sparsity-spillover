@@ -119,8 +119,21 @@ def main():
     fig, axes = plt.subplots(1, 3, figsize=(12.2, 3.6),
                              gridspec_kw={"width_ratios": [1, .92, 1]})
     fig.subplots_adjust(left=.06, right=.989, top=.87, bottom=.24, wspace=.36)
-    handles = draw_tradeoff(axes[0], rows, frontier["series"], "loss")
-    draw_tradeoff(axes[2], rows, frontier["series"], "sparsity")
+    handles = draw_tradeoff(axes[0], rows, frontier["series"], "sparsity")
+    draw_tradeoff(axes[2], rows, frontier["series"], "loss")
+    # A single measured pair keeps the same-kappa comparison legible.
+    arrow_from = next(r for r in rows if (r["scope"], r["pressure"], r["kappa"]) == ("7", "all", .5))
+    arrow_to = next(r for r in rows if (r["scope"], r["pressure"], r["kappa"]) == ("7", "h", .5))
+    axes[0].annotate("", xy=(arrow_to["sparsity"], arrow_to["latency_ms"]),
+                     xytext=(arrow_from["sparsity"], arrow_from["latency_ms"]),
+                     arrowprops={"arrowstyle": "-|>", "color": "#747A81", "lw": 1.,
+                                 "linestyle": (0, (3, 2)), "mutation_scale": 10,
+                                 "shrinkA": 5, "shrinkB": 4}, zorder=3)
+    axes[0].annotate(r"Same $\kappa=0.5$",
+                     xy=((arrow_to["sparsity"] + arrow_from["sparsity"]) / 2,
+                         (arrow_to["latency_ms"] + arrow_from["latency_ms"]) / 2),
+                     xytext=(0, -8), textcoords="offset points", ha="center",
+                     va="top", fontsize=8.5, color="#646B73")
 
     ax = axes[1]
     bars = table["rows"]
@@ -140,9 +153,9 @@ def main():
     ax.set(ylim=(-30, 177), ylabel=r"Saved time ($\mu$s)", xlabel="Sparsification site")
     ax.set_xticks(range(6), [r"$a$", r"$m$", r"$h$", r"$z$", r"$q,k$", r"$v$"])
     ax.set_yticks([0, 50, 100, 150])
-    for ax, title in zip(axes, ["(a) Latency-quality trade-off",
+    for ax, title in zip(axes, ["(a) Sparsity and latency",
                                 "(b) Conditional time savings",
-                                "(c) Sparsity and latency"]):
+                                "(c) Latency-quality trade-off"]):
         ax.set_title(title, loc="left", pad=12)
         ax.tick_params(length=3, width=.65)
         ax.grid(axis="y", color="#E8EAED", lw=.6)
@@ -151,7 +164,7 @@ def main():
                fontsize=11, handlelength=2.2, columnspacing=1.7,
                bbox_to_anchor=(.52, -.005))
     fig.savefig(OUTPUT, bbox_inches="tight", pad_inches=.04,
-                metadata={"Title": "Pythia-14M: quality, conditional savings and sparsity",
+                metadata={"Title": "Pythia-14M: sparsity, conditional savings and quality",
                           "CreationDate": None, "ModDate": None})
     plt.close(fig)
     assert all(sha(HERE / "figures" / name) == digest for name, digest in preserved.items())
@@ -159,12 +172,16 @@ def main():
         output=OUTPUT.relative_to(HERE).as_posix(), output_sha256=sha(OUTPUT),
         script=Path(__file__).name, script_sha256=sha(Path(__file__)),
         source_sha256={**SOURCES, **table["source_sha256"]},
-        panels={"a": {"x": "loss", "y": "latency_ms", "keys": keys},
+        panels={"a": {"x": "sparsity", "y": "latency_ms", "keys": keys,
+                      "comparison_arrow": {"from_key": arrow_from["checkpoint_key"],
+                                           "to_key": arrow_to["checkpoint_key"],
+                                           "kappa": .5,
+                                           "label": "Same kappa=0.5"}},
                 "b": {"checkpoint": "Pythia-14M T7/Pall, kappa=0.5", "rows": bars,
                       "source_run": "Run037", "unit": "microseconds",
                       "estimand": "Same-checkpoint skip-disabled latency minus full execution, one path at a time; thresholding stays active.",
                       "whiskers": "Extrema of differences between three process means; not confidence intervals."},
-                "c": {"x": "sparsity", "y": "latency_ms", "keys": keys}},
+                "c": {"x": "loss", "y": "latency_ms", "keys": keys}},
         points=rows,
         labeled_recipes=[h.get_label() for h in handles],
         scope="40 checkpoints in panels a and c; panel b is a separate controlled timing session, not a decomposition of the cross-recipe grid timings. Conditional savings are not additive.",

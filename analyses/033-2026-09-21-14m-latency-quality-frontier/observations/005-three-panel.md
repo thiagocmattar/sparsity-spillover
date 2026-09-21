@@ -1,4 +1,4 @@
-# Quality, conditional time savings and sparsity
+# Sparsity, conditional time savings and quality
 
 ## Question and method
 
@@ -6,7 +6,10 @@ How do the 14M quality-latency and sparsity-latency trade-offs relate to the
 controlled evidence for which execution paths save time?
 
 Panels (a) and (c) reuse the focused figures' same 40 checkpoints across nine
-recipes. Panel (b) reproduces the six conditional controls from manuscript
+recipes, with sparsity on X in (a) and validation loss on X in (c).
+A single arrow in (a) connects T7/Pall to T7/Ph at kappa=0.5 using their actual
+coordinates; neither endpoint is moved or averaged with the gray group.
+Panel (b) reproduces the six conditional controls from manuscript
 Figure 24(b), measured on T7/Pall at kappa=0.5 in Run037. No measurements are
 added or recomputed from rounded table entries. The generating script is
 [`../02_three_panel.py`](../02_three_panel.py); coordinates, unrounded controls,
@@ -33,13 +36,15 @@ This panel is identical in data and bar styling to
 
 [Publication PDF](../figures/04-14m-quality-savings-sparsity.pdf).
 
-**Quality, conditional time savings and sparsity on Pythia-14M.**
-(a) Validation loss and full-model latency across 40 checkpoints.
+**Sparsity, conditional time savings and quality on Pythia-14M.**
+(a) Model-wide sparsity and full-model latency across 40 checkpoints. The dashed
+arrow connects T7/Pall to T7/Ph at the same kappa=0.5, showing comparable
+latency despite different sparsity levels.
 (b) Conditional time saved by each sparse execution path for T7/Pall at
 kappa=0.5, with thresholding retained and other paths enabled. Positive values
 indicate faster execution with that path enabled; whiskers show the span of
 differences between process means, not confidence intervals. The q,k and v
-bars correspond to the QK and PV paths. (c) Model-wide sparsity and full-model
+bars correspond to the QK and PV paths. (c) Validation loss and full-model
 latency for the same checkpoints as (a). Blue highlights T2/Ph and orange
 T7/Pall; other recipes are gray. Hollow markers and vertical guides denote
 Base. Lines connect settings within each recipe. Panel (b) uses a separate
@@ -48,7 +53,12 @@ controlled timing session; its conditional savings are not additive.
 ## Result and limits
 
 The side panels show the quality cost of the highlighted recipes alongside
-their sparsity and latency. The controlled comparison localizes the largest
+their sparsity and latency. The arrow compares T7/Pall's 27.483% sparsity and
+0.473366 ms latency with T7/Ph's 16.664% and 0.473888 ms, both at kappa=0.5.
+This holds kappa fixed, not validation loss or pressure placement;
+the two measurements also come from different timing sessions. It illustrates
+a similar observed latency, without asserting statistical equivalence.
+The controlled comparison localizes the largest
 conditional savings to h (+150.1 microseconds) and z (+29.0 microseconds);
 the other paths do not reliably save time in this checkpoint. These controls
 do not measure T2/Ph or decompose the historical latencies plotted in (a,c).

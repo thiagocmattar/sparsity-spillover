@@ -5,7 +5,7 @@ figure style. No training, timing experiment or manuscript edit is performed.
 
 - [Focused overview: Base, T2/Ph and T7/Pall](figures/01-14m-latency-quality-frontier.pdf).
 - [Sparsity versus latency, with the same highlights](figures/03-14m-sparsity-latency.pdf).
-- [Three-panel figure: quality, conditional savings and sparsity](figures/04-14m-quality-savings-sparsity.pdf).
+- [Three-panel figure: sparsity, conditional savings and quality](figures/04-14m-quality-savings-sparsity.pdf).
 - [Version 2: latency on X, validation loss on Y](figures/01-14m-latency-quality-frontier-v2.pdf).
 - [Close-up near Base validation loss](figures/02-14m-latency-quality-frontier-near-base.pdf).
 - [Exact coordinates, excluded checkpoint identities and provenance](data/frontier.json).
@@ -34,8 +34,11 @@ with model-wide sparsity (%) on X and full-model latency (ms) on Y. Sparsity is
 recomputed from pooled integer zero-product counts and the full-model product
 denominator, including the dense output head. Its guide marks Base sparsity.
 
-The three-panel figure combines the two focused views with manuscript
-Figure 24(b)'s six conditional time-savings controls. It uses the manuscript's
+The three-panel figure orders the focused views as (a) sparsity and latency,
+(b) manuscript Figure 24's six conditional time-savings controls, and
+(c) the latency-quality trade-off. A single dashed arrow connects T7/Pall
+to the gray T7/Ph point at the same kappa=0.5: 27.48% versus 16.66% sparsity,
+with retained latencies of 0.473366 and 0.473888 ms. It uses the manuscript's
 panel proportions and typography, one shared legend, and no subtitles. The
 middle panel measures T7/Pall at kappa=0.5 in a separate controlled session;
 its savings are neither additive nor a decomposition of the historical grid
