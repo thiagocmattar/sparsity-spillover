@@ -37,7 +37,7 @@ for group_index,(scope,pressure) in enumerate(groups):
             if size=='70M' and scope!='0':
                 assert r['qualified']['candidate_graph'] and latency==r['implementation_latency_ms']['candidate_graph']
             dl=r['loss']-base['loss']; dt=latency-base['latency_ms']
-            cells += [f"{r['sparsity']:.2f}",f"{r['loss']:.3f} ({dl:+.3f})",f"{latency:.3f} ({dt:+.3f})"]
+            cells += [f"{r['sparsity']:.2f}",f"{r['loss']:.2f} ({dl:+.3f})",f"{latency:.2f} ({dt:+.3f})"]
             records.append(dict(model=size,scope=scope,pressure=pressure,kappa=kappa,
                                 checkpoint_key=r['checkpoint_key'],loss=r['loss'],sparsity=r['sparsity'],
                                 latency_ms=latency,delta_loss=dl,delta_latency_ms=dt,
