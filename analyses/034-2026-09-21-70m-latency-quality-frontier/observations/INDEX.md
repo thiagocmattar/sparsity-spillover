@@ -8,3 +8,5 @@
 - [003: Combined scale comparison and transfer argument](003-manuscript-integration.md).
 - [004: Lean appendix with native-Base deltas](004-lean-appendix.md): paired
   results with optimized latency and loss/latency changes; obsolete panels removed.
+- [005: Kernel implementation and validation appendix](005-kernel-validation-appendix.md):
+  compressed mechanisms, unchanged validation protocol, and retained execution controls.
