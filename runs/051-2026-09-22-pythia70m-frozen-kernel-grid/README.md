@@ -1,6 +1,17 @@
 # Run051: frozen Run050 kernel across the requested 70M grid
 
-Status: full sweep running on the retained RTX5090 after successful smoke checks.
+Status: complete and verified locally. The Pod remains running at the user's
+request until the existing22:42:28UTC compute-stop deadline.
+
+[Complete table](results/complete-table.md) and
+[observation](observations/001-frozen-kernel-grid.md).
+All33 benchmark processes and21 full-validation diagnostic model passes finished.
+The frozen sparse policy qualifies for all five T2/Ph thresholds and T7/Pall
+kappa.01,.05,.5. T7/Pall kappa0/.1 fail the pointwise logit criterion in all
+three repeats; their measured latencies are retained but are not usable speedups.
+All four controls qualify throughout. Moderate T2/Ph beats PyTorch Base by
+1.391x/1.407x and optimized dense Base by1.062x/1.074x. T7/Pall .01/.05 are
+slower than optimized dense; .5 beats both Base references.
 
 The user requested all kappa values for T2/Ph and T7/Pall, plus PyTorch Base
 and optimized dense Base. This extends the already authorized evaluation;
@@ -79,6 +90,28 @@ at20:57UTC under the unchanged absolute deadline.
 
 Transfer retry: Paramiko SFTP sustained roughly23KB/s to both persistent and
 local disk. Both partial uploads were retained and stopped; the same verified
-archive is now sent through native OpenSSH stdin, whose4MiB probe completed
+archive was sent through native OpenSSH stdin, whose4MiB probe completed
 in4.75seconds including connection setup. This is an infrastructure retry;
 scientific inputs are unchanged.
+
+## Completed execution and retention
+
+The full pipeline completed at21:48:52UTC in3051.98seconds (50.9minutes).
+The local reconciliation verifies73,920 raw timing observations and55,770
+block/backend comparisons:159 of165 graph-backend cells qualify. T7/Pall
+kappa0 fails block332; kappa.1 fails blocks299 and330, identically in every
+repeat. Loss and relative-L2 checks pass in those cases; the predeclared
+pointwise bound remains unchanged.
+
+All1,110 returned files (108,948,788bytes, including nine control records)
+were SHA256-verified. The separate exhaustive artifact audit reconciles1,101
+files in51 attempt directories, with zero missing or different files.
+All agreed full-validation activation, norm, occupancy, work, compiler, profile,
+timing and numerical diagnostics are retained. Hardware traffic counters remain
+unavailable as recorded in Run050 on this same Pod; no traffic claim is added.
+No checkpoint, cache, frozen policy, or manuscript was changed.
+
+Provider state at21:51:05UTC: Pod kym4fmsrbsg1s6 RUNNING at$0.99/hour.
+The existing local guard PID6492 remains active for22:42:28UTC (19:42:28
+Sao Paulo). The Pod is intentionally retained for the user's next instructions;
+no new billable resource or lease extension was created by this evaluation.

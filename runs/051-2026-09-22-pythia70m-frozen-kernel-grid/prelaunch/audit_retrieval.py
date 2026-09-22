@@ -21,6 +21,6 @@ out=run/'retrieval';out.mkdir(exist_ok=True)
 summary={'remote_files':len(manifest['files']),'remote_bytes':sum(r['bytes'] for r in manifest['files']),
          'attempt_directories':manifest['attempt_directories'],'missing':missing,'different':different,'large_root_files':manifest['large_root_files'],
          'manifest_sha256':hashlib.sha256((out/'all-artifacts-manifest.json').read_bytes()).hexdigest(),
-         'scope':'Every regular file in /workspace/run051/artifacts, including failed and incomplete attempts. Checkpoints/cache identities are retained unchanged through Run049. Execution-control logs are retained under prelaunch.'}
+         'scope':'Every regular file in /workspace/run051/artifacts. Immutable checkpoint catalogs are Run045/Run047; validation cache is reused through Run049. Complete identities are in provenance/inputs.json. Execution-control logs are retained under prelaunch.'}
 (run/'results/retention-audit.json').write_text(json.dumps(summary,indent=2)+'\n')
 print(json.dumps(summary,indent=2));assert not missing and not different

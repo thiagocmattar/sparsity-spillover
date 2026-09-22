@@ -5,9 +5,12 @@
 
 ## Current status
 
-Run051 is measuring the frozen Run050 policy across all five kappas of T2/Ph
-and T7/Pall plus both Base references, on the retained Pod within the same lease.
-All245 local checks and the representative GPU smoke passed.
+Run051 completes the frozen-kernel grid: all five T2/Ph thresholds qualify;
+moderate kappa.05/.1 give1.391x/1.407x PyTorch Base speedup and beat optimized
+dense Base. T7/Pall .01/.05 are slower than dense;0/.1 fail pointwise numerical
+qualification; .5 beats both references. All1,110 returned files verified.
+[Complete table](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/complete-table.md).
+Pod remains running under the existing22:42:28UTC guard.
 
 Run050 completes the four-family70M search: gathered tensor-core execution
 at T2/Ph kappa=.05/.1 takes1.1825/1.1752ms,5.55%/6.51% below the strongest

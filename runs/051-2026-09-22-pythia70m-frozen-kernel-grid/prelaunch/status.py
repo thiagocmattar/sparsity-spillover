@@ -26,7 +26,7 @@ try:
   if children:
    child=children[-1]['attempt']
    with s.file(f'/workspace/run051/artifacts/{child}/result.json') as f:last=json.loads(f.read())
-   print('last_completed',json.dumps({'attempt':child,**{k:last[k] for k in ('elapsed_seconds','qualification','loss','implementations') if k in last}}))
+   print('last_completed',json.dumps({'attempt':child,**{k:last[k] for k in ('elapsed_seconds','qualification','loss','implementations') if k in last},'latency_ms':{k:round(v['geomean_host_ms'],6) for k,v in last.get('timing',{}).items()}}))
  except FileNotFoundError:pass
  s.close()
  print(execute(c,f'tail -c 900 /workspace/run051-control/{a.attempt}.log; nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.free --format=csv,noheader'))
