@@ -1,0 +1,108 @@
+{
+  "audited": [
+    {
+      "receipt": "upload-002.json",
+      "files": 14,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-003.json",
+      "files": 16,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-004.json",
+      "files": 19,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-005.json",
+      "files": 20,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-006.json",
+      "files": 22,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-007.json",
+      "files": 23,
+      "matching_original_archive": false
+    },
+    {
+      "receipt": "upload-008.json",
+      "files": 23,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-009.json",
+      "files": 24,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-010.json",
+      "files": 25,
+      "matching_original_archive": false
+    },
+    {
+      "receipt": "upload-011.json",
+      "files": 28,
+      "matching_original_archive": true
+    },
+    {
+      "receipt": "upload-012.json",
+      "files": 28,
+      "matching_original_archive": true
+    }
+  ],
+  "recovered": [
+    {
+      "receipt": "upload-007.json",
+      "original_retained": "upload-007.tar.gz",
+      "recovered": "recovered-upload-007.tar.gz",
+      "mismatches": [
+        {
+          "path": "02_operator_checks.py",
+          "expected": "06b50567dd01cbadc5b776a29fda4951cbbe008fcbb6ec8ef5d0fef6b2d38185",
+          "stored": "9665f5df4cfd3b15be4718a086ba7763ee62268300c09febf9122fa0ab274511"
+        },
+        {
+          "path": "primitives.py",
+          "expected": "a01ddbd7296f40c6a97facc268a1303a23018866ef45a8b3ce2458ed551ad0a6",
+          "stored": "c688f13afd66ff2910181fcc95989b713e8f6663f0ea22462bbc766f1e2a15d8"
+        }
+      ],
+      "recovery_sources": {
+        "02_operator_checks.py": [
+          "upload-006.tar.gz",
+          "02_operator_checks.py"
+        ],
+        "primitives.py": [
+          "recovered-primitives-a01.py",
+          "Reversed compiler-metadata-only edits; verified against the original upload SHA256"
+        ]
+      }
+    },
+    {
+      "receipt": "upload-010.json",
+      "original_retained": "upload-010.tar.gz",
+      "recovered": "recovered-upload-010.tar.gz",
+      "mismatches": [
+        {
+          "path": "05_benchmark.py",
+          "expected": "40e66e339cc921e3e60052bd2b2ab7b2e3970d08ed50cbda33c7fa3aede0617f",
+          "stored": "9f25fa160f95083430f6b1da7328abef7defbda471a0abec062d180b22f3cd93"
+        }
+      ],
+      "recovery_sources": {
+        "05_benchmark.py": [
+          "upload-009.tar.gz",
+          "05_benchmark.py"
+        ]
+      }
+    }
+  ],
+  "missing_required_bytes": false,
+  "cause": "Earlier sender read live local files again while creating its archive. Remote uploads were hash-verified. The sender now uploads and archives one immutable byte snapshot."
+}

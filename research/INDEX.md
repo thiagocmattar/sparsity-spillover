@@ -5,18 +5,18 @@
 
 ## Current status
 
-Analysis036 reviews TEAL, Sakana and two large kernel archives, and proposes
-a bounded four-family search for 70M T2/Ph at kappa=.05/.1. Retained profiles
-show about 203us in h/z GEMMs and 82us in gates/copies against a 69--70us gap to
-efficient Base, motivating a stronger fused-dense control. Design awaiting
-confirmation; no new GPU work or manuscript edit. See the
-[source review and plan](../analyses/036-2026-09-22-70m-kernel-family-exploration/README.md).
+Run050 is executing the user-approved four-family 70M T2/Ph kernel search at
+kappa=.05/.1, following Analysis036's TEAL/Sakana review. Training-only component
+screening precedes shared dispatch selection and full-validation qualification.
+The retained RTX5090 lease is extended to22:42:28UTC on22September; the Pod
+will not be deleted at completion. See the
+[run record](../runs/050-2026-09-22-pythia70m-kernel-families/README.md).
 
 Run049 completed nine final processes;298 returned files verified. Efficient
 dense h/z achieves1.2402x native Base throughput at70M T2/Ph kappa=.1; raising
 the sparse cutoff16/32/64 gives no qualified benefit and all three fail the
 elementwise bound at .05/.1. Pod retained at the user's request, with the
-20:30:06UTC compute-stop guard intact. See the
+original20:30:06UTC guard superseded by Run050's approved extension. See the
 [result and mechanism](../runs/049-2026-09-22-pythia70m-short-row-limits/observations/001-short-row-limits.md).
 
 Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
@@ -294,7 +294,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `050`. Next analysis number: `037`. Next finding number: `F003`.
+Next run number: `051`. Next analysis number: `037`. Next finding number: `F003`.
 
 ## Where we stopped
 
