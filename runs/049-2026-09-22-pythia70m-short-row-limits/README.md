@@ -78,3 +78,46 @@ checkpoints and validation/training-development cache are copied unchanged.
 The pinned CLI was checked against its update endpoint, which still offers
 2.14.0; that version remains fixed for this run. The exact lease, bundle hash,
 resource fit and numerical results will be retained under prelaunch/artifacts.
+
+## Execution and verified outcome
+
+Prepared sources were committed as `0f46d2de`. Pod `kym4fmsrbsg1s6`
+(`run049-70m-short-rows-001`) was created in EU-RO-1 at17:30:12UTC on22 September,
+atUSD.99/hour. The first local launcher used a Python environment without
+Paramiko; restarting it with the repository environment required no new Pod or
+scientific attempt. The788384619-byte input bundle transferred in99.4seconds;
+all1465 retained input/source files verified on the Pod.
+
+All112 GPU operator checks and the four-input six-backend model smoke passed.
+Development selected `native_hz` on the original16 training inputs. A diagnostics
+import collision interrupted the first .05 final replicate after validation.
+The frozen scientific files were preserved; explicit bindings to the intended
+run-local diagnostics/profile modules resumed execution through
+`provenance/recovery-001/`. A complete one-input diagnostic/profile smoke passed
+before the unchanged final schedule resumed. The failed attempt remains intact;
+only its new complete attempt002 enters the final reduction.
+
+All nine final processes completed by18:07:30UTC. All298 output files and the
+archive SHA256 verify locally; the recovery reducer reproduces the remote
+summary exactly. A local optional-control metadata collision was repaired from
+the verified archive and the retriever now preserves inventoried provenance.
+Its repair record is `prelaunch/retrieval-repair-001.json`.
+
+**Result:** efficient dense h/z reaches1.324743ms at T2/Ph .1, versus1.642892ms
+for native Base:1.2402x throughput,19.4% lower latency. Efficient Base itself is
+1.254255ms. Larger sparse limits16/32/64 do not establish an additional benefit:
+all fail full-model elementwise numerical qualification at .05 and .1, and
+limits32/64 are slower. The complete comparison, work/profile explanation and
+limits are in [observation001](observations/001-short-row-limits.md).
+
+Reproduce the returned reduction with:
+`python provenance/recovery-001/reduce.py --verify-only`.
+Rebuild the post-hoc mechanism summary with `python 11_interpret.py`.
+
+**Retention overrides the original teardown plan:** the user explicitly asked
+to keep the Pod available after completion for further instructions. No delete
+or stop was issued at completion. The original provider guard remains armed for
+20:30:06UTC (17:30:06 America/Sao_Paulo); it stops compute while preserving Pod
+files. The existing100GB shared network volume remains untouched. The ongoing
+lease, budget, retention instruction and handoff state are recorded in
+`prelaunch/`; expense continues while the Pod remains running.

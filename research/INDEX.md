@@ -5,10 +5,12 @@
 
 ## Current status
 
-Run049 is prepared under explicit design/launch approval: compare h/z short-row
-limits16/32/64 at 70M T2/Ph kappa=.1, with Base, kappa=.05 and efficient dense
-controls. Seven focused and242 bootstrap tests pass; GPU qualification pending.
-See the [run definition](../runs/049-2026-09-22-pythia70m-short-row-limits/README.md).
+Run049 completed nine final processes;298 returned files verified. Efficient
+dense h/z achieves1.2402x native Base throughput at70M T2/Ph kappa=.1; raising
+the sparse cutoff16/32/64 gives no qualified benefit and all three fail the
+elementwise bound at .05/.1. Pod retained at the user's request, with the
+20:30:06UTC compute-stop guard intact. See the
+[result and mechanism](../runs/049-2026-09-22-pythia70m-short-row-limits/observations/001-short-row-limits.md).
 
 Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
 checkpoints still hit an expensive h/z fallback, while a qualified efficient
