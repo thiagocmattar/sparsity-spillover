@@ -81,3 +81,20 @@ The 34-page manuscript compiles with resolved references and citations and no
 overfull boxes. The subsection spans pages 8-9, with Table 2 and the conclusions
 together on page 9; these pages and the revised appendix pages were visually
 checked. Unrelated user edits in the current draft are preserved.
+
+## 22 September: activation sparsity beside bypass
+
+The user requested an activation-sparsity column immediately before bypass,
+with no surrounding prose or caption changes. This uses Run037's same-session
+BF16 full-mode diagnostics, pooling exact-zero and total activation counts
+over six layers and all 338 validation sequences. The builder verifies the
+pooled counts against the per-layer records before division. Values are
+a=75.6%, m=68.6%, h=99.9%, z=99.9%, q=93.5%, k=94.5%, v=98.7%.
+The joint QK execution row reports q/k separately; it does not average them
+or treat their activation fractions as a zero-product fraction.
+
+These are activation fractions, not contributions to model-wide S_model.
+The original bypass, saved-time and process-span values are unchanged.
+The two table copies are identical and the JSON export retains the integer
+counts. A standalone manuscript-class preview compiles without box warnings
+and was visually checked. The main PDF was not rebuilt.
