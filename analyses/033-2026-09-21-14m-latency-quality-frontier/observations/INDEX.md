@@ -1,5 +1,8 @@
 # Observations
 
+- [006: Aggressive and moderate threshold tables](006-threshold-tables.md): all
+  seven recipes at kappa=0.5 and at 0.05/0.1, with explicit kernel Base references.
+
 - [001: Latency-quality comparison across manuscript recipes](001-all-recipes.md):
   40 checkpoints, with Base, T2/Ph and T7/Pall emphasized and the other recipes gray.
 - [002: Close-up near Base validation loss](002-near-base.md): 18 points from
