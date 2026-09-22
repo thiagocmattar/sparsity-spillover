@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run049 is prepared under explicit design/launch approval: compare h/z short-row
+limits16/32/64 at 70M T2/Ph kappa=.1, with Base, kappa=.05 and efficient dense
+controls. Seven focused and242 bootstrap tests pass; GPU qualification pending.
+See the [run definition](../runs/049-2026-09-22-pythia70m-short-row-limits/README.md).
+
 Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
 checkpoints still hit an expensive h/z fallback, while a qualified efficient
 dense control already exists. It recomputes all 26 Run045 timing triples and
@@ -280,7 +285,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `049`. Next analysis number: `036`. Next finding number: `F003`.
+Next run number: `050`. Next analysis number: `036`. Next finding number: `F003`.
 
 ## Where we stopped
 

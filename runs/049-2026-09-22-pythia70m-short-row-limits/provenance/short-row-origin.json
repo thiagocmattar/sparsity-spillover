@@ -1,0 +1,62 @@
+{
+  "source": "runs/042-2026-09-20-pythia70m-sparse-scale/candidates/opt063/joint.cu",
+  "sha256": "fdc648b7ca5cc85e69031cd1e62a474cf3bc957f210a634dabf2ba5beb501413",
+  "replacements": [
+    [
+      "int count=9,indices[8]={}; float values[8]={};",
+      "int count=SHORT_LIMIT+1,indices[SHORT_LIMIT]={}; float values[SHORT_LIMIT]={};"
+    ],
+    [
+      "out.count+__popc(mask)>8",
+      "out.count+__popc(mask)>SHORT_LIMIT"
+    ],
+    [
+      "out.count=9",
+      "out.count=SHORT_LIMIT+1"
+    ],
+    [
+      "for(int i=1;i<8;++i)if(i<a.count)",
+      "for(int i=1;i<SHORT_LIMIT;++i)if(i<a.count)"
+    ],
+    [
+      "?9:1",
+      "?(SHORT_LIMIT+1):1"
+    ],
+    [
+      "min(total,9)",
+      "min(total,SHORT_LIMIT+1)"
+    ],
+    [
+      "summary->count<=8",
+      "summary->count<=SHORT_LIMIT"
+    ],
+    [
+      "counts[Threads/32],indices[8],cursor",
+      "counts[Threads/32],indices[SHORT_LIMIT],cursor"
+    ],
+    [
+      "ha.count>8",
+      "ha.count>SHORT_LIMIT"
+    ],
+    [
+      "za.count>8",
+      "za.count>SHORT_LIMIT"
+    ],
+    [
+      "row_counts[(first_row+i)*2]<=8",
+      "row_counts[(first_row+i)*2]<=SHORT_LIMIT"
+    ],
+    [
+      "row_counts[(first_row+i)*2+1]<=8",
+      "row_counts[(first_row+i)*2+1]<=SHORT_LIMIT"
+    ],
+    [
+      "row_counts[(first_row+warp)*2]<=8",
+      "row_counts[(first_row+warp)*2]<=SHORT_LIMIT"
+    ],
+    [
+      "row_counts[(first_row+warp)*2+1]<=8",
+      "row_counts[(first_row+warp)*2+1]<=SHORT_LIMIT"
+    ]
+  ]
+}
