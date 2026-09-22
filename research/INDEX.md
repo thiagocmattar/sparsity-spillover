@@ -5,6 +5,12 @@
 
 ## Current status
 
+Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
+checkpoints still hit an expensive h/z fallback, while a qualified efficient
+dense control already exists. It recomputes all 26 Run045 timing triples and
+identifies the missing controls and selection criteria. No new GPU work or
+manuscript change. See the [assessment](../analyses/035-2026-09-22-70m-kernel-assessment/README.md).
+
 Run047 completed the later 70M T2/Ph kappa=.5 optimized measurement: 1.214368ms
 versus 1.695806ms for the port, 1.363778x its same-session native Base.
 All nine processes qualify; 217 returned files verified; Pod deleted, estimated
@@ -274,7 +280,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `048`. Next analysis number: `031`. Next finding number: `F003`.
+Next run number: `049`. Next analysis number: `036`. Next finding number: `F003`.
 
 ## Where we stopped
 
