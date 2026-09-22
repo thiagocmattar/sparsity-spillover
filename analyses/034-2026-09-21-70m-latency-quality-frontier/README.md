@@ -2,7 +2,9 @@
 
 User-requested two-panel counterpart to Analysis033's 14M overview:
 (a) model-wide sparsity versus latency; (b) validation loss versus latency.
-No new training, timing or manuscript edit is performed.
+No new training or timing is performed. The combined figure is now installed
+in the manuscript at `fig:70m-quality-latency`; see the
+[integration and checked claims](observations/003-manuscript-integration.md).
 
 - [Publication PDF](figures/01-70m-sparsity-latency-quality.pdf).
 - [14M and 70M on one loss-latency panel](figures/02-14m-70m-latency-quality.pdf).

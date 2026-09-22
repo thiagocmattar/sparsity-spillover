@@ -149,32 +149,30 @@ In a separate controlled session on the same $T_2/P_h$ checkpoint at $\kappa=0.1
 
 \subsection{Results at 70M}
 \label{sec:quality-sparsity-results}
+% Combined figure: Analysis034/observations/002-combined-scales.md; 02_combined.py.
+% Claim audit: Analysis034/observations/003-manuscript-integration.md.
+% Matched implementations: Analysis028/observations/001-matched-70m-grid.md.
 
-We promote $T_2/P_h$ together with $T_4$ and $T_7$ under local or global pressure to 70M (Figure~\ref{fig:70m-quality-latency}).
-\textbf{$T_2/P_h$ preserves quality best among these three threshold topologies}, with the lowest validation loss at every matched $\kappa$. For $\kappa\leq0.1$, its loss is $4.129$--$4.193$ versus Base's $4.100$, at $14.63$--$15.21\%$ sparsity against a $15.44\%$ ceiling. Broader interventions extend sparsity further at greater quality cost: $T_7/P_{\mathrm{all}}$ reaches $40.60\%$ at $\kappa=0.5$, or $82.2\%$ of its ceiling, with loss $5.216$ ($1.12$ above Base).
-
+\textbf{Increasing model size lowers loss but raises latency.}
+Figure~\ref{fig:70m-quality-latency} compares the 14M and 70M recipes: native Base loss falls from 5.209 to 4.100, while latency rises from 0.655 to 1.611\,ms. As at 14M, aggressive interventions trade quality for lower latency. For example, $T_7/P_{\mathrm{all}}$ at $\kappa=0.5$ increases loss above Base by 1.116 at 70M, versus 0.621 at 14M. Yet $T_2/P_h$ retains the lowest loss among the three threshold topologies at every matched $\kappa$. At 70M and $\kappa\leq0.1$, it reaches 14.63--15.21\% model-wide sparsity against a 15.44\% ceiling, with loss 4.129--4.193. This concentration of sparsity at $h,z$, with a smaller quality penalty, is consistent with their susceptibility extending across the two scales.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.9\linewidth]{figures/23-70m-quality-sparsity-native-latency.pdf}
-\caption{\textbf{Quality, sparsity and execution on Pythia-70M.}
-% Source: Analysis030 observations/001-later-70m-endpoint.md; 02_plot.py.
-\textbf{(a)} Validation loss and \textbf{(b)} full-model latency versus $\Smodel$ for 27 checkpoints: Base, GeLU $\rightarrow$ ReLU, $T_2/P_h$, and $T_4/T_7$ with $P_h$ or $P_{\mathrm{all}}$, each thresholded recipe at $\kappa=0,.01,.05,.1,.5$.
-Colors and line styles match Figure~\ref{fig:14m-quality-latency}.
-Dotted curves in (a) apply post-hoc clipping to the fixed Base/ReLU controls; high-loss tails extend beyond the view. Vertical guides mark sparsity ceilings.
-In (b), the Base marker and horizontal reference use native PyTorch/SDPA (1.611\,ms); all other markers use the optimized 70M kernel. Measurements use RTX\,5090 GPUs, three fresh processes per checkpoint, batch one, 2,048 tokens and full output logits. Appendix~\ref{app:kernel-transfer} compares the native, original-port and optimized implementations and reports the timing references.}
+\includegraphics[width=\linewidth]{figures/02-14m-70m-latency-quality.pdf}
+\caption{\textbf{Validation loss and full-model latency across model sizes.}
+Circles denote 14M and squares 70M; $T_2/P_h$ is blue, $T_7/P_{\mathrm{all}}$ orange, and other recipes gray. Lines connect settings within each recipe and size. Both axes are logarithmic. Each Base checkpoint appears under kernel (hollow) and native PyTorch (filled) execution; vertical guides mark Base loss. The 64 intervention points use the specialized kernels for their respective sizes. Timings use RTX\,5090, BF16, batch one, 2,048 tokens and full logits, retaining the original measurement sessions.}
 \label{fig:70m-quality-latency}
 \end{figure}
 
+\textbf{Threshold strength controls the quality--latency trade-off at both scales.}
+For $T_2/P_h$, increasing $\kappa$ from 0 to 0.1 reduces latency from 0.612 to 0.573\,ms at 14M (0.039\,ms), and from 2.504 to 1.956\,ms at 70M (0.549\,ms). The larger absolute reduction at 70M is a comparison across trained checkpoints, not an isolated skipping effect. Increasing $\kappa$ further to 0.5 brings 70M latency to 1.214\,ms but raises loss from 4.182 to 4.838. This large gap between sampled operating points motivates testing intermediate thresholds; their quality--latency balance remains unmeasured.
+
 \textbf{The 14M kernel does not transfer efficiently to 70M.}
-Although latency decreases as sparsity increases within recipes, implementation overhead leaves the lower-loss recipes slower than native PyTorch. We therefore perform an additional optimization step, improving both sparse $h,z$ execution and dense components. This reduces $T_7/P_h$ latency at $\kappa=0.5$ from 1.590 to 1.088\,ms. The resulting $1.481\times$ speedup over native Base is an \textbf{end-to-end comparison}: it includes both a different checkpoint and sparse and dense implementation changes. All 27 checkpoints pass full-validation numerical checks in three fresh processes (Appendix~\ref{app:kernel-transfer}).
+On the 70M Base checkpoint, the original port takes 3.325\,ms versus native PyTorch's 1.611\,ms, an additional 1.714\,ms. A further search over 74 candidate implementations improves sparse $h,z$ execution and dense components, reducing Base latency to 2.732\,ms; the remaining gap is still 1.121\,ms. The fastest optimized recipe, $T_7/P_h$ at $\kappa=0.5$, reaches 1.088\,ms, 32.5\% below native Base, but its loss is 5.337, or 1.237 higher. This is an end-to-end engineering comparison across different checkpoints, not a gain attributable entirely to sparsity. The lower-loss $T_2/P_h$ at $\kappa=0.1$ remains slower than native execution even on the same checkpoint (1.956 versus 1.662\,ms; Appendix~\ref{app:kernel-transfer}).
 
-% Controlled 70M evidence: Analysis028 observations/001-matched-70m-grid.md;
-% 04_controls.py and data/retained-controls.json, from Run042 (separate session).
-\textbf{The specialized $h,z$ path provides an additional execution benefit at 70M.}
-In a separate controlled session, the optimized $T_7/P_h$ checkpoint at $\kappa=0.5$ takes 1.128\,ms. Replacing only its specialized $h,z$ implementation with native dense operations, while retaining the same weights, thresholds and other optimized components, raises latency to 1.365\,ms. The specialized path therefore reduces full-model latency by \textbf{$17.4\%$} relative to this control. This conditional benefit includes fusion, layout and inspection costs alongside sparsity exploitation. Appendix~\ref{app:kernel-transfer} also reports the control that disables sparse $h,z$ execution within the same optimized implementation.
-
-The lower-loss $T_2/P_h$ points at $\kappa\leq0.1$, however, still take 1.956--2.504\,ms after optimization, slower than the 1.611\,ms native Base. At $\kappa=0.5$, latency falls to 1.214\,ms ($1.364\times$ its same-session native Base at 1.656\,ms), but loss rises to 4.838. The quality ordering therefore transfers to 70M, while the favorable 14M quality--latency balance does not transfer directly.
+% Controlled 70M evidence: Analysis028/04_controls.py and data/retained-controls.json.
+\textbf{Sparse execution remains useful, but its implementation requires adaptation.}
+In a separate session on the same 70M $T_7/P_h$ checkpoint at $\kappa=0.5$, replacing only the specialized $h,z$ path with native operations raises latency from 1.128 to 1.365\,ms: a conditional 0.237\,ms (17.4\%) benefit from the specialized path, including fusion and layout effects. The corresponding skip-disabled control is reported in Appendix~\ref{app:kernel-transfer}. Thus, useful sparse structure can persist while kernel efficiency fails to transfer, even within one model family. Our results motivate kernels adapted to model size and workload, rather than assuming that a published implementation transfers unchanged. Training interventions and kernel execution must therefore be co-designed: training should induce sparse structures that the target kernel can exploit at an acceptable quality cost.
 
 
 \FloatBarrier
