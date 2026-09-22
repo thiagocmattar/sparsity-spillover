@@ -1,6 +1,7 @@
-"""Overlay retained 14M and 70M losses and latencies on a logarithmic Y axis."""
+"""Overlay retained 14M/70M measurements and both Base backends on log axes."""
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import matplotlib
@@ -18,8 +19,10 @@ SOURCES = {
         "77ea1cb237f078838d6a8eb28123c61226caf5a38a2c409c99849d1d914dbbc7",
     "analyses/027-2026-09-20-run044-manuscript/data/figure-data.json":
         "7259f87a6be42c51d226a18ad4b9e6a895902e4b231bfd6dc1c706916f8c77da",
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/results.json":
+        "f4bddaebcf23ba1118b487e951cd89c140149c2eab0dc46ccbc261793fcebd9a",
 }
-HIGHLIGHTS = [("0", "none"), ("hz", "h"), ("7", "all")]
+HIGHLIGHTS = [("hz", "h"), ("7", "all")]
 
 
 def sha(path):
@@ -29,7 +32,7 @@ def sha(path):
 def main():
     for name, digest in SOURCES.items():
         assert sha(ROOT / name) == digest, name
-    small, large, palette = [json.loads((ROOT / name).read_text(encoding="utf-8")) for name in SOURCES]
+    small, large, palette, timing14 = [json.loads((ROOT / name).read_text(encoding="utf-8")) for name in SOURCES]
     cohorts = {"14M": small["points"], "70M": large["points"]}
     metrics = {"14M": "latency_ms", "70M": "displayed_latency_ms"}
     markers = {"14M": "o", "70M": "s"}
@@ -46,6 +49,26 @@ def main():
                 backend = "native_graph" if row["scope"] == "0" else "candidate_graph"
                 assert row["qualified"][backend]
                 assert row[metrics[size]] == row["implementation_latency_ms"][backend]
+    bases = {size: next(r for r in rows if r["scope"] == "0") for size, rows in cohorts.items()}
+    base14, = [r for r in timing14["points"] if r["family"] == "A0"]
+    assert base14["qualified"] and base14["session"] == bases["14M"]["timing_session"]
+    assert base14["k050_gm_ms"] == bases["14M"]["latency_ms"]
+    assert all(f["path"].startswith(bases["14M"]["source_attempt"] + "/") for f in base14["checkpoint_files"])
+    assert len(base14["replicates"]) == 3 and all(r["qualified"] for r in base14["replicates"])
+    for field in ("native_gm_ms", "k050_gm_ms"):
+        mean = math.exp(math.fsum(math.log(r[field]) for r in base14["replicates"]) / 3)
+        assert math.isclose(mean, base14[field], rel_tol=1e-12)
+    assert bases["70M"]["qualified"]["candidate_graph"] and bases["70M"]["qualified"]["native_graph"]
+    references = []
+    for size, base in bases.items():
+        for backend in ("kernel", "PyTorch"):
+            field = ("k050_gm_ms" if backend == "kernel" else "native_gm_ms") if size == "14M" else (
+                "candidate_graph" if backend == "kernel" else "native_graph")
+            latency = base14[field] if size == "14M" else base["implementation_latency_ms"][field]
+            references.append(dict(model=size, backend=backend, loss=base["loss"], latency_ms=latency,
+                                   checkpoint_key=base["checkpoint_key"], timing_session=base["timing_session"],
+                                   implementation=("K050" if size == "14M" else "opt073") if backend == "kernel" else "native_graph",
+                                   source_field=field))
     preserved = {p.name: sha(p) for p in (HERE / "figures").glob("*.pdf")
                  if p.name != "02-14m-70m-latency-quality.pdf"}
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 11,
@@ -61,7 +84,9 @@ def main():
     drawn = []
     for style in styles:
         key = (style["scope"], style["pressure"])
-        highlighted, is_base = key in HIGHLIGHTS, key == ("0", "none")
+        if key == ("0", "none"):
+            continue
+        highlighted = key in HIGHLIGHTS
         for size, rows in cohorts.items():
             points = sorted((r for r in rows if (r["scope"], r["pressure"]) == key),
                             key=lambda r: (r.get("dose") if size == "14M" else r["kappa"]) or 0)
@@ -73,19 +98,30 @@ def main():
             if isinstance(ls, list):
                 ls = (ls[0], tuple(ls[1]))
             width, alpha = (1.6, 1.) if highlighted else (.85, .65)
-            marker = dict(marker=markers[size], ms=9 if is_base else 5.8 if highlighted else 4.2,
-                          mfc="white" if is_base else color, mec=color if is_base else "white",
-                          mew=1.5 if is_base else .7 if highlighted else .5)
+            marker = dict(marker=markers[size], ms=5.8 if highlighted else 4.2,
+                          mfc=color, mec="white", mew=.7 if highlighted else .5)
             x, y = [r["loss"] for r in points], [r[metrics[size]] for r in points]
             ax.plot(x, y, color=color, ls=ls, lw=width, alpha=alpha,
                     zorder=4 if highlighted else 2)
             ax.plot(x, y, color=color, ls="none", **marker, zorder=5 if highlighted else 3)
             if highlighted:
-                label = f"{size} Base ({'K050' if size == '14M' else 'PyTorch'})" if is_base else f"{size} {style['label']}"
+                label = f"{size} {style['label']}"
                 handles[(key, size)] = Line2D([], [], color=color, ls=ls, lw=width,
                                               **marker, label=label)
-    assert len(drawn) == len(set(drawn)) == 66
-    assert set(drawn) == {r["checkpoint_key"] for rows in cohorts.values() for r in rows}
+    assert len(drawn) == len(set(drawn)) == 64
+    assert set(drawn) == {r["checkpoint_key"] for rows in cohorts.values() for r in rows if r["scope"] != "0"}
+    base_handles = {}
+    for reference in references:
+        size, backend = reference["model"], reference["backend"]
+        kernel = backend == "kernel"
+        # Smaller filled PyTorch markers keep both nearly coincident 14M references visible.
+        marker = dict(marker=markers[size], ms=10 if kernel else 5.5,
+                      mfc="white" if kernel else "#52565C", mec="#52565C",
+                      mew=1.5 if kernel else .7)
+        ax.plot(reference["loss"], reference["latency_ms"], color="#52565C", ls="none",
+                **marker, zorder=6 if kernel else 7)
+        base_handles[(backend, size)] = Line2D([], [], color="#52565C", ls="none", **marker,
+                                               label=f"{size} Base ({backend})")
     for size, rows in cohorts.items():
         base = next(r for r in rows if r["scope"] == "0")
         ax.axvline(base["loss"], color="#92969B", lw=.8, ls=(0, (2, 3)), zorder=1)
@@ -95,20 +131,25 @@ def main():
     xlim, ylim = (4.02, 6.10), (.40, 2.85)
     assert all(xlim[0] <= r["loss"] <= xlim[1] and ylim[0] <= r[metrics[size]] <= ylim[1]
                for size, rows in cohorts.items() for r in rows)
+    assert all(xlim[0] <= r["loss"] <= xlim[1] and ylim[0] <= r["latency_ms"] <= ylim[1]
+               for r in references)
     ax.set(xlim=xlim, ylim=ylim, xlabel="Validation loss", ylabel="Full-model latency (ms)")
     ax.set_yscale("log")
+    ax.set_xscale("log")
     ax.set_xticks([4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6.0])
     ax.set_yticks([.5, 1., 1.5, 2., 2.5])
-    ax.yaxis.set_major_formatter(ScalarFormatter())
-    ax.yaxis.set_minor_locator(NullLocator())
-    ax.yaxis.set_minor_formatter(NullFormatter())
+    for axis in (ax.xaxis, ax.yaxis):
+        axis.set_major_formatter(ScalarFormatter())
+        axis.set_minor_locator(NullLocator())
+        axis.set_minor_formatter(NullFormatter())
     ax.set_title("Pythia-14M and Pythia-70M", loc="left", pad=12)
     ax.tick_params(length=3, width=.65)
     ax.grid(axis="y", color="#E8EAED", lw=.6)
     ax.set_axisbelow(True)
-    legend = [handles[(key, size)] for key in HIGHLIGHTS for size in cohorts]
-    fig.legend(handles=legend, loc="lower center", ncol=3, frameon=False,
-               fontsize=10, handlelength=2.2, columnspacing=1.7,
+    legend = [base_handles[(backend, size)] for backend in ("kernel", "PyTorch") for size in cohorts]
+    legend += [handles[(key, size)] for key in HIGHLIGHTS for size in cohorts]
+    fig.legend(handles=legend, loc="lower center", ncol=4, frameon=False,
+               fontsize=9.5, handlelength=2., columnspacing=1.4,
                labelspacing=.9, bbox_to_anchor=(.54, .018))
     output = HERE / "figures/02-14m-70m-latency-quality.pdf"
     fig.savefig(output, bbox_inches="tight", pad_inches=.04,
@@ -120,16 +161,17 @@ def main():
         output=output.relative_to(HERE).as_posix(), output_sha256=sha(output),
         script=Path(__file__).name, script_sha256=sha(Path(__file__)), sources_sha256=SOURCES,
         cohorts=cohorts, latency_fields=metrics, markers=markers,
-        x_metric="loss", y_unit="milliseconds", axis_scales={"x": "linear", "y": "log"},
+        x_metric="loss", y_unit="milliseconds", axis_scales={"x": "log", "y": "log"},
         xlim=xlim, ylim=ylim, labeled_series=[h.get_label() for h in legend],
-        baseline_backends={"14M": "K050 specialized", "70M": "native PyTorch"},
+        base_references=references,
         recipe_backends={"14M": "K050", "70M": "opt073"},
-        interpretation="Retained absolute losses and latencies with linear loss and logarithmic latency axes; no session normalization. This is not a same-kernel or same-session scale comparison.",
+        interpretation="Retained absolute measurements on logarithmic axes, with both kernel and native PyTorch execution for each Base checkpoint; no session normalization. This is not a same-kernel or same-session scale comparison.",
         verification={"counts": {s: len(r) for s, r in cohorts.items()},
-                      "all_66_points_visible": True, "unchanged_previous_pdfs": preserved})
+                      "unique_checkpoints": 66, "intervention_points": 64, "base_execution_points": 4,
+                      "all_68_execution_points_visible": True, "unchanged_previous_pdfs": preserved})
     (HERE / "data/combined-figure.json").write_text(json.dumps(result, indent=2) + "\n",
                                                   encoding="utf-8", newline="\n")
-    print(json.dumps({"pdf": str(output), "points": 66, "markers": markers}))
+    print(json.dumps({"pdf": str(output), "execution_points": 68, "base_references": references}))
 
 
 if __name__ == "__main__":

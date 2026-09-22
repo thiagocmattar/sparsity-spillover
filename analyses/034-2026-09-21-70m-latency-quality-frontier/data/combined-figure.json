@@ -1,12 +1,13 @@
 {
   "output": "figures/02-14m-70m-latency-quality.pdf",
-  "output_sha256": "03e4ae7aca2e4f24d7811c5f527082da62c37eb3a21c3729d11be76caaba8cc9",
+  "output_sha256": "388e07f59e41a20ec068416ca96b5784b09056e74d36cc4c299477125a2f5208",
   "script": "02_combined.py",
-  "script_sha256": "039f95481201f20dc0da9b17a9791021f1235f71c07d25cc7ea26aa667665f1b",
+  "script_sha256": "f62c042bfafcad74e28d61d5754e39fa37565f032ecd40b42652de3ded0e56d8",
   "sources_sha256": {
     "analyses/033-2026-09-21-14m-latency-quality-frontier/data/three-panel.json": "1ca8f595566044777198d9281b6b3f8986c9f2943b2d91054404c89030125d56",
     "analyses/034-2026-09-21-70m-latency-quality-frontier/data/figure-data.json": "77ea1cb237f078838d6a8eb28123c61226caf5a38a2c409c99849d1d914dbbc7",
-    "analyses/027-2026-09-20-run044-manuscript/data/figure-data.json": "7259f87a6be42c51d226a18ad4b9e6a895902e4b231bfd6dc1c706916f8c77da"
+    "analyses/027-2026-09-20-run044-manuscript/data/figure-data.json": "7259f87a6be42c51d226a18ad4b9e6a895902e4b231bfd6dc1c706916f8c77da",
+    "analyses/024-2026-09-17-h-only-kernel-latency/data/results.json": "f4bddaebcf23ba1118b487e951cd89c140149c2eab0dc46ccbc261793fcebd9a"
   },
   "cohorts": {
     "14M": [
@@ -3284,7 +3285,7 @@
   "x_metric": "loss",
   "y_unit": "milliseconds",
   "axis_scales": {
-    "x": "linear",
+    "x": "log",
     "y": "log"
   },
   "xlim": [
@@ -3296,28 +3297,71 @@
     2.85
   ],
   "labeled_series": [
-    "14M Base (K050)",
+    "14M Base (kernel)",
+    "70M Base (kernel)",
+    "14M Base (PyTorch)",
     "70M Base (PyTorch)",
     "14M $T_2/P_h$",
     "70M $T_2/P_h$",
     "14M $T_7/P_{\\mathrm{all}}$",
     "70M $T_7/P_{\\mathrm{all}}$"
   ],
-  "baseline_backends": {
-    "14M": "K050 specialized",
-    "70M": "native PyTorch"
-  },
+  "base_references": [
+    {
+      "model": "14M",
+      "backend": "kernel",
+      "loss": 5.208582500028893,
+      "latency_ms": 0.651573035007824,
+      "checkpoint_key": "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+      "timing_session": "Run029",
+      "implementation": "K050",
+      "source_field": "k050_gm_ms"
+    },
+    {
+      "model": "14M",
+      "backend": "PyTorch",
+      "loss": 5.208582500028893,
+      "latency_ms": 0.6554423980056099,
+      "checkpoint_key": "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+      "timing_session": "Run029",
+      "implementation": "native_graph",
+      "source_field": "native_gm_ms"
+    },
+    {
+      "model": "70M",
+      "backend": "kernel",
+      "loss": 4.099767337889361,
+      "latency_ms": 2.7321117313254226,
+      "checkpoint_key": "b336f8847b1e9b179b4da6bb139d22705dbabc968241070153955c105663a832",
+      "timing_session": "Run045",
+      "implementation": "opt073",
+      "source_field": "candidate_graph"
+    },
+    {
+      "model": "70M",
+      "backend": "PyTorch",
+      "loss": 4.099767337889361,
+      "latency_ms": 1.6110477085782202,
+      "checkpoint_key": "b336f8847b1e9b179b4da6bb139d22705dbabc968241070153955c105663a832",
+      "timing_session": "Run045",
+      "implementation": "native_graph",
+      "source_field": "native_graph"
+    }
+  ],
   "recipe_backends": {
     "14M": "K050",
     "70M": "opt073"
   },
-  "interpretation": "Retained absolute losses and latencies with linear loss and logarithmic latency axes; no session normalization. This is not a same-kernel or same-session scale comparison.",
+  "interpretation": "Retained absolute measurements on logarithmic axes, with both kernel and native PyTorch execution for each Base checkpoint; no session normalization. This is not a same-kernel or same-session scale comparison.",
   "verification": {
     "counts": {
       "14M": 40,
       "70M": 26
     },
-    "all_66_points_visible": true,
+    "unique_checkpoints": 66,
+    "intervention_points": 64,
+    "base_execution_points": 4,
+    "all_68_execution_points_visible": true,
     "unchanged_previous_pdfs": {
       "01-70m-sparsity-latency-quality.pdf": "b452eb5672b70486030836c59a6458625e691a1e2d82cfabcc33811e72959f86"
     }
