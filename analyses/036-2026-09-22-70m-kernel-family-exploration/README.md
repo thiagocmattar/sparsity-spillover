@@ -1,7 +1,10 @@
 # 70M sparse-kernel families: source review and proposed experiment
 
-Status: exploratory review complete; proposed design awaiting confirmation.
-No new GPU experiment, kernel implementation, training, or manuscript edit.
+Status: exploratory review complete. The user approved the design, launch and
+GPU extension; implementation and execution are recorded in
+[Run050](../../runs/050-2026-09-22-pythia70m-kernel-families/README.md).
+This document retains the approved proposal. It introduced no training or
+manuscript edit.
 
 The next search should compare different execution algorithms, not extend the
 Run049 row-capacity sweep. There is a measurable opportunity, but no evidence

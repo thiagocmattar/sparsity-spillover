@@ -14,11 +14,20 @@ def paired_interval(trials,reference,candidate,draws=4000):
  for _ in range(draws):
   ix=rng.integers(0,64,(3,64));stratified.append(x[np.arange(3)[:,None],ix].mean())
   process=rng.integers(0,3,3);hierarchical.append(x[process[:,None],ix].mean())
+ # The same64 input identities recur in all processes. A crossed-cluster
+ # sensitivity interval preserves that input correlation across processes.
+ crossed=[];shared=[];cross_rng=np.random.default_rng(2514)
+ for _ in range(draws):
+  ix=cross_rng.integers(0,64,64);process=cross_rng.integers(0,3,3)
+  shared.append(x[:,ix].mean());crossed.append(x[process[:,None],ix[None,:]].mean())
  return {'speedup':float(np.exp(x.mean())),
          'time_reduction_fraction':float(1-np.exp(-x.mean())),
          'process_speedups':np.exp(x.mean(1)).tolist(),
          'stratified_input_block_95':np.exp(np.quantile(stratified,[.025,.975])).tolist(),
          'hierarchical_process_input_95':np.exp(np.quantile(hierarchical,[.025,.975])).tolist(),
+         'shared_input_block_95':np.exp(np.quantile(shared,[.025,.975])).tolist(),
+         'crossed_process_input_95':np.exp(np.quantile(crossed,[.025,.975])).tolist(),
+         'crossed_method':'Sensitivity to repeated input identities: resample the same64 input IDs jointly across processes and also resample the three processes;4000 draws,seed2514. The shared-input interval keeps the three processes fixed.',
          'method':'Average seven paired log ratios per input. Resample64 whole input blocks within each of three fixed process strata; sensitivity interval also resamples the three processes.4000 draws,seed2504.'}
 
 def main():
@@ -67,10 +76,11 @@ def main():
                 'five_percent_faster_than_best_dense':bool(contrast and contrast['time_reduction_fraction']>=.05),
                 'paired_interval_favors_sparse':bool(contrast and contrast['stratified_input_block_95'][0]>1),
                 'hierarchical_interval_favors_sparse':bool(contrast and contrast['hierarchical_process_input_95'][0]>1),
+                'crossed_interval_favors_sparse':bool(contrast and contrast['crossed_process_input_95'][0]>1),
                 'beats_efficient_Base_each_process':all(x>1 for x in base_ratios),
                 'Base_route_within_two_percent_each_process':all(x<=1.02 for x in base_route)}
   support[cid]['all_support_criteria']=all(support[cid][k] for k in ('qualified','five_percent_faster_than_best_dense','paired_interval_favors_sparse','beats_efficient_Base_each_process','Base_route_within_two_percent_each_process'))
- report={'status':'complete','selection_sha256':sha(RUN/'provenance'/a.selection),'selection_primary':selection['primary'],
+ report={'status':'complete','reduction_source_sha256':sha(RUN/'11_reduce.py'),'selection_sha256':sha(RUN/'provenance'/a.selection),'selection_primary':selection['primary'],
          'coverage':{'documents':500,'blocks':338,'input_tokens':692224,'prediction_tokens':691886,'excluded_tail_tokens':1444,'timing_inputs':64,'timing_passes':7,'processes_per_checkpoint':3},
          'results':results,'support':support,'sources':sources,
          'limits':'Existing checkpoints,one training seed,one RTX5090,BF16 batch1 full2048-token forward. Training-only frozen policies. Confidence intervals do not estimate training-seed or GPU-population uncertainty. Cross-checkpoint Base ratios compare fresh processes within this retained session, not within-process paired timings.'}

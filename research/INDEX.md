@@ -5,12 +5,13 @@
 
 ## Current status
 
-Run050 is executing the user-approved four-family 70M T2/Ph kernel search at
-kappa=.05/.1, following Analysis036's TEAL/Sakana review. Training-only component
-screening precedes shared dispatch selection and full-validation qualification.
-The retained RTX5090 lease is extended to22:42:28UTC on22September; the Pod
-will not be deleted at completion. See the
-[run record](../runs/050-2026-09-22-pythia70m-kernel-families/README.md).
+Run050 completes the four-family70M search: gathered tensor-core execution
+at T2/Ph kappa=.05/.1 takes1.1825/1.1752ms,5.55%/6.51% below the strongest
+same-checkpoint dense controls and1.392x/1.401x native Base speedup. All72
+process/backend evaluations qualify;972 artifacts verified. Sparse h wins;
+z stays dense. Pod retained running until the approved22:42:28UTC compute-stop
+guard on22September. See the
+[result and retained diagnostics](../runs/050-2026-09-22-pythia70m-kernel-families/README.md).
 
 Run049 completed nine final processes;298 returned files verified. Efficient
 dense h/z achieves1.2402x native Base throughput at70M T2/Ph kappa=.1; raising

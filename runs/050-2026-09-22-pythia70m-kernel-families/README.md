@@ -1,8 +1,22 @@
 # Run050: moderate-kappa 70M kernel families
 
-Status: approved design, launch and GPU-period extension; implementation and
-execution in progress. Authorization: user message on 22 September 2026,
+Status: completed and locally verified; Pod retained running at the user's
+request. Authorization: user message on 22 September 2026,
 "Approved the design, launch and GPU period extension."
+
+The gathered sparse policy meets the approved criteria at both kappas:
+1.182477ms at .05 and1.175177ms at .1, respectively5.55% and6.51% lower latency
+than the strongest same-checkpoint dense controls, and1.392x /1.401x native
+Base speedup. It beats efficient Base in every repetition. All72 graph
+process/backend evaluations pass full-validation numerical bounds. The winner
+uses sparse h layers1--5 and dense z, with no extra pruning. See
+[qualified latency](observations/001-qualified-latency.md) and
+[structure, diagnostics and retention](observations/002-structure-and-retention.md).
+
+All972 remote artifacts are hash-verified locally. Hardware traffic counters
+were denied by provider permissions; work counters, compiler reports and
+profiles are retained. Pod kym4fmsrbsg1s6 remains running at$0.99/hour, with the
+approved22:42:28UTC /19:42:28 Sao Paulo compute-stop guard. No deletion occurs.
 
 The approved design is Analysis036 at commit9d6822d8. Test c00 Base and c24/c25
 T2/Ph at kappa .05/.1, unchanged retained step712 checkpoints, seed1234,
@@ -96,6 +110,19 @@ The sender now uploads and archives the same immutable in-memory byte snapshot.
 
 `10_freeze.py` seals the training-selected policy and checks executed kernel
 identities. `12_complete.py` runs nine final processes, full-validation diagnostics
-and four bounded hardware-counter probes sequentially under the absolute lease.
+and up to four hardware-counter probes sequentially under the absolute lease,
+stopping the counter probes on a permission denial.
 `11_reduce.py` reports paired input-block intervals with process strata and a
 hierarchical sensitivity interval; it cannot change the frozen policy.
+
+## Closeout verification
+
+The final scientific workers completed2026-09-22T20:10:53Z. The timing reducer
+asserts338-block coverage,691886 prediction tokens,64 timing inputs, seven
+passes,50304-logit output shapes and three fresh processes. Full-validation
+work counts reconcile with actual metadata and the retained PTX. A crossed
+process/input bootstrap sensitivity preserves the shared input identities;
+it also favors sparse at both kappas. The final CPU suite passes249 tests
+(242 bootstrap and seven run-local tests), including this correlation check.
+No frozen kernel source changed after final selection. Raw artifacts, failed
+attempts and the initial statistical reduction remain retained.

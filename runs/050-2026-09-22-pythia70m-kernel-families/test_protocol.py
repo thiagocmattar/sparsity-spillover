@@ -93,6 +93,20 @@ def test_paired_reducer_preserves_exact_effect_and_rejects_duplicates():
  result=reducer.paired_interval(trials,'dense','sparse',draws=100)
  assert abs(result['speedup']-2)<1e-12
  assert all(abs(v-2)<1e-12 for v in result['stratified_input_block_95'])
+ assert all(abs(v-2)<1e-12 for v in result['crossed_process_input_95'])
  trials[0]['samples'].append(trials[0]['samples'][0])
  import pytest
  with pytest.raises(AssertionError):reducer.paired_interval(trials,'dense','sparse',draws=1)
+
+def test_bootstrap_preserves_repeated_input_correlation():
+ import sys,math
+ sys.path.insert(0,str(RUN))
+ spec=importlib.util.spec_from_file_location('run050_reducer_correlation',RUN/'11_reduce.py');reducer=importlib.util.module_from_spec(spec);spec.loader.exec_module(reducer)
+ samples=[]
+ for repeat in range(7):
+  for index in range(64):
+   samples.extend([{'repeat':repeat,'input_index':index,'mode':'dense','host_ms':math.exp(index/100)},
+                   {'repeat':repeat,'input_index':index,'mode':'sparse','host_ms':1.}])
+ result=reducer.paired_interval([{'samples':samples} for _ in range(3)],'dense','sparse',draws=1000)
+ independent=result['stratified_input_block_95'];shared=result['shared_input_block_95']
+ assert shared[1]-shared[0]>1.4*(independent[1]-independent[0])
