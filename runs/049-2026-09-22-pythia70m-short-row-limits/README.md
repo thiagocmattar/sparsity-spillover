@@ -121,3 +121,14 @@ or stop was issued at completion. The original provider guard remains armed for
 files. The existing100GB shared network volume remains untouched. The ongoing
 lease, budget, retention instruction and handoff state are recorded in
 `prelaunch/`; expense continues while the Pod remains running.
+
+## Subsequent compute closeout, 22 September 2026
+
+The original guard was superseded by Run050's approved extension to22:42:28UTC.
+After Run051 and the user's instruction to end the GPU session, that guard
+stopped compute and the Pod was terminated. At22:43:56UTC, provider lookup
+returned404 and the complete Pod list was empty. All298 Run049 output files
+had already been verified locally; the pre-existing shared100GB network volume
+remains untouched. See the
+[terminal compute evidence](../051-2026-09-22-pythia70m-frozen-kernel-grid/results/compute-closeout.json)
+and the subsequent [F003 finding](../../research/findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md).

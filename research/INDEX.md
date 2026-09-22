@@ -5,27 +5,20 @@
 
 ## Current status
 
-Run051 completes the frozen-kernel grid: all five T2/Ph thresholds qualify;
-moderate kappa.05/.1 give1.391x/1.407x PyTorch Base speedup and beat optimized
-dense Base. T7/Pall .01/.05 are slower than dense;0/.1 fail pointwise numerical
-qualification; .5 beats both references. All1,110 returned files verified.
-[Complete table](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/complete-table.md).
-Pod remains running under the existing22:42:28UTC guard.
+**F003: the current 70M kernel does not demonstrate effective exploitation of
+the broader h/z sparsity.** Run051 shows 5.55%/6.51% lower latency at T2/Ph
+kappa=.05/.1 versus the same checkpoint's optimized dense control, rising to
+8.43% at .5. Sparse execution covers h in five layers; z remains dense.
+Most of the approximately 1.4x gain over PyTorch comes from dense optimization.
+See the [approved finding](findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md)
+and [complete table](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/complete-table.md).
+T7/Pall .01/.05 are slower than matched dense; 0/.1 fail numerical qualification.
 
-Run050 completes the four-family70M search: gathered tensor-core execution
-at T2/Ph kappa=.05/.1 takes1.1825/1.1752ms,5.55%/6.51% below the strongest
-same-checkpoint dense controls and1.392x/1.401x native Base speedup. All72
-process/backend evaluations qualify;972 artifacts verified. Sparse h wins;
-z stays dense. Pod retained running until the approved22:42:28UTC compute-stop
-guard on22September. See the
-[result and retained diagnostics](../runs/050-2026-09-22-pythia70m-kernel-families/README.md).
-
-Run049 completed nine final processes;298 returned files verified. Efficient
-dense h/z achieves1.2402x native Base throughput at70M T2/Ph kappa=.1; raising
-the sparse cutoff16/32/64 gives no qualified benefit and all three fail the
-elementwise bound at .05/.1. Pod retained at the user's request, with the
-original20:30:06UTC guard superseded by Run050's approved extension. See the
-[result and mechanism](../runs/049-2026-09-22-pythia70m-short-row-limits/observations/001-short-row-limits.md).
+Runs049--051 are complete with artifacts verified locally. The retained GPU
+was stopped by its deadline guard and the Pod was terminated at the user's
+request on 22 September 2026. Provider checks confirm no Pods remain; the
+pre-existing shared network volume is retained. See the
+[compute closeout](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/compute-closeout.json).
 
 Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
 checkpoints still hit an expensive h/z fallback, while a qualified efficient
@@ -475,6 +468,7 @@ These are manuscript-led goals, not accepted findings or approved runs.
 | --- | --- | --- | --- |
 | F001 | Former four-site A4-OL1 claim; discarded because Run 012 actually applied OL1 only at `h`. | discarded | `research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md` |
 | F002 | At Pythia-14M, A7 is near-null at `kappa=0`, improves matched A4 loss and `R_model` at `kappa=0.01`, and adds logical opportunity with increasing quality cost at larger thresholds. | tentative | `research/findings/F002-a7-extends-a4-logical-opportunity.md` |
+| F003 | The measured 70M kernel provides limited sparse h acceleration; it does not demonstrate effective exploitation of broader h/z sparsity. | confirmed within measured scope | [Finding](findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md) |
 
 ## Runs
 

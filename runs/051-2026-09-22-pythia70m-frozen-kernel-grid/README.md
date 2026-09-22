@@ -1,7 +1,13 @@
 # Run051: frozen Run050 kernel across the requested 70M grid
 
-Status: complete and verified locally. The Pod remains running at the user's
-request until the existing22:42:28UTC compute-stop deadline.
+Status: complete and verified locally; Pod terminated on 22 September 2026
+after the user's closeout instruction. See the appended compute closeout.
+
+**Approved interpretation: this is not a demonstration of effective exploitation
+of the broader h/z sparsity.** Sparse h in five layers gives modest gains over
+matched dense execution; z remains dense. The approximately 1.4x comparison
+against PyTorch includes substantial dense optimization. See
+[F003](../../research/findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md).
 
 [Complete table](results/complete-table.md) and
 [observation](observations/001-frozen-kernel-grid.md).
@@ -115,3 +121,19 @@ Provider state at21:51:05UTC: Pod kym4fmsrbsg1s6 RUNNING at$0.99/hour.
 The existing local guard PID6492 remains active for22:42:28UTC (19:42:28
 Sao Paulo). The Pod is intentionally retained for the user's next instructions;
 no new billable resource or lease extension was created by this evaluation.
+
+## User-directed compute closeout, 22 September 2026
+
+The user ended the retention instruction and requested this finding be recorded.
+The existing guard stopped compute at its 22:42:28UTC deadline; a concurrent
+manual stop returned 409 because the Pod was already EXITED. Its local log
+confirms STOP_CONFIRMED. After the already verified artifact retrieval, the
+stopped Pod was terminated (provider204); at22:43:56UTC, a fresh lookup returned
+404 and the complete Pod list was empty. The experiment's attached40GB disk
+was released with the Pod. The pre-existing100GB shared network volume
+sparsity-spillover-shared remains untouched and remains a storage resource.
+No additional GPU run or lease extension was launched.
+
+Historical retention records above remain as the handoff state before this
+instruction. [compute-closeout.json](results/compute-closeout.json) records the
+terminal state and points to the existing artifact verification records.

@@ -1,7 +1,8 @@
 # Run050: moderate-kappa 70M kernel families
 
-Status: completed and locally verified; Pod retained running at the user's
-request. Authorization: user message on 22 September 2026,
+Status: completed and locally verified; the subsequently retained Pod was
+terminated at the user's request on 22 September 2026. Launch authorization:
+user message on 22 September 2026,
 "Approved the design, launch and GPU period extension."
 
 The gathered sparse policy meets the approved criteria at both kappas:
@@ -15,8 +16,9 @@ uses sparse h layers1--5 and dense z, with no extra pruning. See
 
 All972 remote artifacts are hash-verified locally. Hardware traffic counters
 were denied by provider permissions; work counters, compiler reports and
-profiles are retained. Pod kym4fmsrbsg1s6 remains running at$0.99/hour, with the
-approved22:42:28UTC /19:42:28 Sao Paulo compute-stop guard. No deletion occurs.
+profiles are retained. Pod kym4fmsrbsg1s6 was retained at$0.99/hour under the
+approved22:42:28UTC /19:42:28 Sao Paulo compute-stop guard, then terminated
+after Run051 and the user's closeout instruction; see the appended closeout.
 
 The approved design is Analysis036 at commit9d6822d8. Test c00 Base and c24/c25
 T2/Ph at kappa .05/.1, unchanged retained step712 checkpoints, seed1234,
@@ -126,3 +128,15 @@ it also favors sparse at both kappas. The final CPU suite passes249 tests
 (242 bootstrap and seven run-local tests), including this correlation check.
 No frozen kernel source changed after final selection. Raw artifacts, failed
 attempts and the initial statistical reduction remain retained.
+
+## Subsequent workstream and compute closeout
+
+Run051 evaluated this frozen policy across the complete requested grid. The
+user-approved [F003](../../research/findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md)
+records that the modest sparse h gain does not demonstrate effective
+exploitation of broader h/z sparsity; all z projections still run dense.
+After the user's instruction to end the GPU session, the deadline guard stopped
+compute and the Pod was terminated. Fresh provider checks at22:43:56UTC on
+22September2026 show no Pods remain. The shared100GB network volume is retained.
+All972 Run050 artifacts had already been hash-verified locally. See
+[terminal compute evidence](../051-2026-09-22-pythia70m-frozen-kernel-grid/results/compute-closeout.json).

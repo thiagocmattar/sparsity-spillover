@@ -98,3 +98,22 @@ Generating sources: [02_benchmark.py](../02_benchmark.py),
 [06_table.py](../06_table.py), and [07_verify.py](../07_verify.py).
 This is a descriptive frozen-policy evaluation, not a new kernel search,
 an equal-loss comparison, or a manuscript/finding promotion.
+
+## User-approved interpretation, 22 September 2026
+
+The user subsequently approved consolidation as
+[F003](../../../research/findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md).
+**This kernel does not demonstrate effective exploitation of the broader h/z
+sparsity.** The supported result is a modest sparse h benefit in five layers:
+5.55%/6.51% lower latency at T2/Ph kappa=.05/.1 against the same checkpoint's
+optimized dense control, rather than attributing the entire approximately
+1.4x PyTorch Base speedup to sparsity.
+
+At kappa=.5, T2/Ph and T7/Pall reduce matched dense latency by8.43%/8.25%.
+T2/Ph h/z are99.9077%/99.8470% zero, but every z projection and the first h
+projection remain dense. Relative to T2/Ph .1, .5 saves only24.75microseconds
+(2.11%) while loss increases from4.1901 to4.8465. This is limited coverage
+and a poor additional quality/latency tradeoff in the measured policy, not
+evidence that the sparse activation structure is intrinsically unusable.
+The policy remains frozen from moderate T2/Ph; broader or separately tuned
+high-threshold exploitation was not demonstrated. No manuscript was changed.
