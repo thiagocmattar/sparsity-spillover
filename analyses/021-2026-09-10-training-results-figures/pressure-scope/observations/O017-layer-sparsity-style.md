@@ -67,3 +67,33 @@ paragraph and inclusion of both heatmap pages in the main results section.
 `fig:pressure-layer-sparsity`; the original appendix inclusion remains unchanged.
 The exact plotted values, source digest,
 and output digest are in [layer-sparsity-review.json](../data/layer-sparsity-review.json).
+
+## 22 September: focused spillover interpretation in the main text
+
+The user requested only page 1 (kappa=0.05) in the main results figure.
+The PDF and appendix remain unchanged. The main caption now identifies the
+T4/T7 rows and P0/Ph/Pall columns, rather than two threshold values.
+
+The revised subsection follows three comparisons: h-only pressure increases
+z sparsity in every layer under both T4 and T7; T4/Pall nearly eliminates z
+in layers 2--4; T7/Pall increases pooled q/k/v sparsity while reducing h/z
+sparsity relative to Ph in every layer. Exact T4/Pall z fractions in those
+layers round to 99.825%, 99.846%, and 99.742%, so the text says near-total,
+not completely zero. Reduced attention communication is proposed as a possible
+contributor to quality loss, not a demonstrated causal mechanism. The quoted
+ordinary validation losses (5.490 and 5.196) are from Analysis033 frontier.json.
+
+The main text again cites `fig:ol1-geometry`, using
+[Analysis024's geometry evidence](../../../024-2026-09-17-h-only-kernel-latency/observations/039-ol1-appendix.md).
+At kappa=0.05, median removed-component/task-norm percentages are
+66.841, 1.122, 0.169, 0.155 for T7/Pall, T4/Pall, T7/Ph, T4/Ph.
+Corresponding median pre-cap norm ratios are 45.997, 0.275, 0.083, 0.102.
+Projection frequency is approximately 100% for all four, so the subsection
+compares magnitude, not a claimed frequency difference. These are adaptive
+task-direction diagnostics, not raw task-gradient measurements.
+
+The combined interpretation supports site-dependent susceptibility and a
+possible shared-budget mechanism. Broadening the target set also changes
+objective composition and normalization; no matched T7/P4 control isolates
+q/k/v. The text therefore does not attribute the geometry solely to those
+sites or identify projection as the cause of endpoint quality differences.
