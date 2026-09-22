@@ -7,43 +7,44 @@
 \usepackage{graphicx,placeins,float}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
+\usepackage{microtype}
 \newcommand{\Smodel}{\mathcal{S}_{\mathrm{model}}}
 \newcommand{\Sblock}{\mathcal{S}_{\mathrm{block}}}
 \newcommand{\Smax}{\mathcal{S}_{\mathrm{model}}^{\max}}
 % \title{Where Sparsity Matters: Targeted Activation Sparsification for Efficient Transformer Inference}
 %\title{Where Sparsity Matters for Transformer Inference}
-\title{Activation Sparsity as Training–Inference Co-Design}
+\title{Activation Sparsity as Training–Inference \mbox{Co-Design}}
 %\iclrfinalcopy % Enable only for an accepted camera-ready version.
 \begin{document}
 % Keep normal paragraph/float gaps instead of stretching sparse pages.
 \raggedbottom
 \setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+% Layout only: keep floats with text and discourage orphaned paragraph lines.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
 \maketitle
-\input{abstract}
-\input{introduction}
-\input{related-work}
-\input{methodology}
-\input{experimental-study}
-\input{conclusion}
-% Author-approved disclosure; policy: https://iclr.cc/Conferences/2027/AIPolicyForAuthors
-\section*{AI use statement}
-We used OpenAI Codex with GPT-6 Astra to assist with experimental
-design refinement, mathematical exposition, implementation and debugging
-of training and evaluation code, GPU-kernel development, experiment
-execution and monitoring, analysis and interpretation of results,
-figure preparation, and manuscript drafting and revision.
-The authors directed the research and approved experimental designs.
-AI-assisted implementations were checked through tests and comparisons
-with reference computations; the kernel validation procedures and their
-limitations are documented in Appendix~\ref{app:kernel-results}.
-The authors take responsibility for the final text, code, results
-and scientific claims.
-
+\input{01-abstract}
+\input{02-introduction}
+\input{03-related-work}
+\input{04-methodology}
+\input{05-experimental-study}
+\input{06-discussion-conclusion}
+\input{07-ai-use-statement}
 % Before submission: shorten the main text to the template's page limit.
 \bibliographystyle{iclr2027_conference}
 \bibliography{references}
 \clearpage
 \appendix
-\input{methodology-appendix}
-\input{experimental-appendix}
+\input{08-appendix-interventions}
+\input{09-appendix-sparsity-accounting}
+\input{10-appendix-experimental-setup}
+\input{11-appendix-complete-results}
+\input{12-appendix-kernel-validation}
 \end{document}

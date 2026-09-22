@@ -1,0 +1,61 @@
+\section{Sparsity accounting}
+\label{app:accounting}
+% Definitions: methodology.tex, Section sec:measurement; research/METRICS.md.
+% Implementation: src/sparsity_research/metrics.py and ceilings.py.
+
+\subsection{Activation and model-wide sparsity}
+
+Activation sparsity is the fraction of zero entries at a site, pooling
+counts across layers and validation sequences before dividing.
+
+Model-wide sparsity counts scalar multiplications with a zero activation input:
+\begin{equation}
+\Smodel=\frac{N_0}{N_{\mathrm{model}}}.
+\end{equation}
+$N_0$ counts these multiplications within Pythia blocks;
+$N_{\mathrm{model}}$ counts all multiplications in those blocks and the
+final vocabulary projection. The latter contributes only to the denominator.
+Counts are pooled across layers and validation sequences; percentages are
+$100\Smodel$.
+
+For a block's linear projection from $d_{\mathrm{in}}$ to
+$d_{\mathrm{out}}$ features over $n$ rows, the denominator contribution is
+$n d_{\mathrm{in}}d_{\mathrm{out}}$. Each zero input contributes
+$d_{\mathrm{out}}$ to $N_0$, one multiplication per output feature.
+Zero weights do not count as activation sparsity.
+
+In attention, both operands are activations. We count each multiplication
+once if either or both are zero. For queries $q$, keys $k$, values $v$ and
+attention probabilities $p$, one head in one sequence contributes
+\begin{align}
+N_{0,\mathrm{QK}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
+\mathbf{1}\{q_{tj}=0\ \lor\ k_{uj}=0\},\label{eq:qk-count}\\
+N_{0,\mathrm{PV}}&=\sum_{t=1}^{T}\sum_{u=1}^{t}\sum_{j=1}^{d_h}
+\mathbf{1}\{p_{tu}=0\ \lor\ v_{uj}=0\}.\label{eq:pv-count}
+\end{align}
+Here $T$ is sequence length, $d_h$ the head dimension, $t$ the query position
+and $u$ the key/value position. Restricting $u\leq t$ excludes masked future
+positions from both counts. We sum over heads, layers and validation sequences,
+using the actual operands after thresholding and intervening transformations.
+
+Normalization, softmax, activation functions, additions and memory transfers
+are excluded, so $\Smodel$ does not directly measure latency or speedup.
+
+\subsection{Model-wide sparsity ceiling}
+\label{app:ceiling}
+
+Assume all activations at the thresholding sites $\mathcal{N}$ are zero.
+If $N_{\mathrm{reach}}(\mathcal{N})$ counts the multiplications that must
+then have a zero activation input, the ceiling is
+\begin{equation}
+\Smax=\frac{N_{\mathrm{reach}}(\mathcal{N})}{N_{\mathrm{model}}}.
+\end{equation}
+The denominator is unchanged, and each multiplication is counted once.
+The numerator includes downstream activations forced to zero: setting
+$v=0$ also makes $z=0$, affecting both $PV$ and the attention-output projection.
+Zero attention scores do not imply zero softmax probabilities.
+
+The ceiling depends only on architecture, selected sites and sequence length.
+Natural zeros outside those sites can raise measured $\Smodel$ above it;
+the ceiling does not predict the associated quality cost.
+Appendix~\ref{app:architecture-counts} gives the counts for each Pythia size.

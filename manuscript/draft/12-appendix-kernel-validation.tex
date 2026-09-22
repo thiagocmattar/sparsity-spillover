@@ -67,7 +67,7 @@ Cross-recipe speedups are $t_{\mathrm{PyTorch},T_0/P_0}/t_{\mathrm{specialized},
 \label{app:t2-hz-control}
 Table~\ref{tab:t2-hz-control} isolates sparse $h,z$ execution at $T_2/P_h$, $\kappa=0.1$, holding checkpoint, thresholding, fusion and other paths fixed. Disabling it removes tile skipping and scalar substitution, retaining the fused kernel's dense path. All six layers have identical $h,z$ values and zero masks; logits agree exactly on all 338 sequences in three processes. These full-model controls do not separate memory-read, inspection and arithmetic costs.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering\small
 \caption{\textbf{14M $T_2/P_h$ execution control at $\kappa=0.1$.}
 All configurations retain thresholding. Full-model geometric-mean latencies
@@ -95,7 +95,7 @@ The same checkpoint takes 0.7018\,ms under PyTorch/SDPA: $A$ reduces latency by 
 \label{app:kernel-transfer}
 Table~\ref{tab:70m-hz-control} holds the 70M checkpoint, thresholding and other components fixed. Disabling sparse $h,z$ execution removes skipping and scalar substitution, retaining the same fused kernel's dense path. All configurations pass the full-validation criteria above; bitwise agreement was not established.
 
-\begin{table}[!htbp]
+\begin{table}[H]
 \centering\small
 \caption{\textbf{70M $T_7/P_h$ execution controls at $\kappa=0.5$.}
 Full-model geometric means with weights, thresholding and other optimized

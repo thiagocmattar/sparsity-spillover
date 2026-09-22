@@ -61,20 +61,7 @@ with the common sequence length in Table~\ref{tab:training-settings}.%
 \href{https://huggingface.co/EleutherAI/pythia-70m-deduped/blob/e93a9faa9c77e5d09219f6c868bfc7a1bd65593c/config.json}{70M}, and
 \href{https://huggingface.co/EleutherAI/pythia-410m-deduped/blob/b5e8535141902c0e985cea61fd02afe7fe86af32/config.json}{410M}.}
 
-\subsection{Training and evaluation}
-\label{app:training-protocol}
-\label{app:evaluation}
-
-All sizes use the Pythia-14M-deduped tokenizer and seeds of 1234 for
-initialization and data order, with one seed per condition. AdamW settings
-are shared: $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight decay $0.1$
-and gradient clipping at norm $1$. Attention and hidden dropout are zero.
-Training uses 712 updates with 1\% linear warmup followed by cosine
-learning-rate decay. Table~\ref{tab:training-settings} gives the learning rates,
-microbatch sizes and shared effective batch. Gradients accumulate over the
-listed microbatches before each optimizer update.
-
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering\small
 \caption{\textbf{Training settings across model sizes.}
 Effective batch size equals microbatch size times gradient accumulation.
@@ -95,13 +82,8 @@ Tokens per parameter & 106.14 & 21.20 & 3.68 \\
 \bottomrule
 \end{tabular}
 \end{table}
-\FloatBarrier
 
-Figure~\ref{fig:a0-optimization} shows the training trajectories. They do not
-establish convergence, and the lower learning rates at 410M limit comparisons
-that attribute loss differences to model size alone.
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/19-base-model-optimization.pdf}
 \caption{\textbf{Base-model ($T_0/P_0$) training across model sizes.}
@@ -112,4 +94,22 @@ are computed after accumulation and are not normalized by parameter count.}
 \label{fig:a0-optimization}
 \end{figure}
 
-\input{results-appendix}
+\subsection{Training and evaluation}
+\label{app:training-protocol}
+\label{app:evaluation}
+
+All sizes use the Pythia-14M-deduped tokenizer and seeds of 1234 for
+initialization and data order, with one seed per condition. AdamW settings
+are shared: $\beta=(0.9,0.95)$, $\epsilon=10^{-8}$, weight decay $0.1$
+and gradient clipping at norm $1$. Attention and hidden dropout are zero.
+Training uses 712 updates with 1\% linear warmup followed by cosine
+learning-rate decay. Table~\ref{tab:training-settings} gives the learning rates,
+microbatch sizes and shared effective batch. Gradients accumulate over the
+listed microbatches before each optimizer update.
+
+
+\FloatBarrier
+
+Figure~\ref{fig:a0-optimization} shows the training trajectories. They do not
+establish convergence, and the lower learning rates at 410M limit comparisons
+that attribute loss differences to model size alone.
