@@ -5,6 +5,10 @@
 
 ## Current status
 
+Run051 is measuring the frozen Run050 policy across all five kappas of T2/Ph
+and T7/Pall plus both Base references, on the retained Pod within the same lease.
+All245 local checks and the representative GPU smoke passed.
+
 Run050 completes the four-family70M search: gathered tensor-core execution
 at T2/Ph kappa=.05/.1 takes1.1825/1.1752ms,5.55%/6.51% below the strongest
 same-checkpoint dense controls and1.392x/1.401x native Base speedup. All72
@@ -295,7 +299,7 @@ post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
 been promoted to a finding or manuscript claim. A live RunPod closeout found
 zero Pods and one intentionally retained 100 GB volume at `$7/month`.
 
-Next run number: `051`. Next analysis number: `037`. Next finding number: `F003`.
+Next run number: `052`. Next analysis number: `037`. Next finding number: `F003`.
 
 ## Where we stopped
 
