@@ -3,7 +3,6 @@
 % Endpoints: data/all-model-quality-sparsity.json (same final losses as the main figures).
 % T2/Ph completion: analyses/027-2026-09-20-run044-manuscript/observations/001-run044-integration.md.
 % Added evidence: Run041 and Run044 observations/001-final-results.md; generators 01_collect.py and 03_table.py.
-% Post-hoc evaluations: Run030 results/clipping-points.json; no new measurements.
 \clearpage
 \section{Complete results and supporting diagnostics}
 \label{app:complete-results}
@@ -11,52 +10,15 @@
 \subsection{Detailed trained results}
 \label{app:endpoint-results}
 
-% Updated cohort: Analysis030 / 01_integrate.py; observations/001-later-70m-endpoint.md.
-Tables~\ref{tab:endpoints-14m-only}--\ref{tab:endpoints-410m} report all 84
-trained conditions, including settings outside the favorable
-quality--sparsity trade-off. Loss and model-wide sparsity use the same
-definitions and final checkpoints as the main figures, with one training
-seed and complete validation per condition. Values are rounded.
+% Source: Analysis034/observations/004-lean-appendix.md; 03_appendix_table.py.
+Table~\ref{tab:endpoints-14m-70m} compares the recipes evaluated at both 14M
+and 70M, including settings outside the favorable quality--latency trade-off.
+Loss and model-wide sparsity use the same definitions and final checkpoints
+as the main figures, with one training seed and complete validation per condition.
+Loss and latency deltas are relative to each size's dense PyTorch Base.
+Values are rounded after computing the differences.
 
-\input{tables/compact-results/14m-only}
-The additional 70M $T_2/P_h$ checkpoint at $\kappa=0.5$ was measured in a
-later session with the same frozen optimized kernel. It reaches
-$15.427\%$ sparsity at loss 4.8380, with latency reduced from 1.696\,ms
-for the original port to 1.214\,ms. Table~\ref{tab:70m-additional-endpoint}
-reports Base and $\kappa=0.1$ repeated in that session: optimized latency
-changes by $2.19\%$ and $0.20\%$, respectively, while native Base changes
-by $2.80\%$. Figure~\ref{fig:70m-quality-latency} retains the original
-26 timings and marks this later endpoint separately, without pooling or rescaling.
-\input{tables/compact-results/70m-additional-endpoint}
 \input{tables/compact-results/14m-70m}
-\FloatBarrier
-
-\subsection{Post-hoc clipping at 14M}
-\label{app:clipping-results}
-
-Figure~\ref{fig:clipping-14m} extends the base/ReLU comparison in
-Figure~\ref{fig:14m-quality-latency} to the trained checkpoints with
-retained post-hoc sweeps. The detailed view resolves the trade-offs near the
-trained models; the full-range view shows the loss cost of aggressive
-clipping. These are changes to fixed models at evaluation, rather than
-additional training conditions. The clipping protocol is the same as in
-Section~\ref{sec:experiments}. No corresponding sweep was collected for
-$T_2/P_h$, $T_4/P_h$ or $T_7/P_h$.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/21-14m-posthoc-quality-sparsity.pdf}
-\caption{\textbf{Post-hoc clipping on trained Pythia-14M models.}
-Thirty trained checkpoints and ten clipping targets per checkpoint
-($p=0,0.1,\ldots,0.9$). Both panels show the same settings, with different
-loss ranges. Prominent markers and recipe lines identify trained models;
-dotted paths with small open markers follow each fixed model through
-increasing clipping targets. Colors and recipe labels match the main
-figures, with the L1 comparison included explicitly. Each path starts at
-its measured $p=0$ point. Lines connect evaluated settings, not fitted
-frontiers.}
-\label{fig:clipping-14m}
-\end{figure}
 \FloatBarrier
 
 \subsection{410M results}
@@ -65,8 +27,7 @@ frontiers.}
 \paragraph{410M as a fixed-token stress test.}
 % Source: Analysis024 observations/031-quality-main-appendix.md;
 % generating analysis: 23_plot_quality_main_appendix.py; original evidence: 20_plot_quality_all_sizes.py.
-Figure~\ref{fig:quality-sparsity-410m} retains all twelve trained 410M
-conditions and both complete control-clipping paths. At $\kappa=0.5$,
+Table~\ref{tab:endpoints-410m} reports all twelve trained 410M conditions. At $\kappa=0.5$,
 $T_7/P_{\mathrm{all}}$ reaches $80.62\%$ model-wide sparsity, or $92.4\%$
 of the seven-site ceiling, at loss $5.121$ versus the base model's $4.547$.
 This tests attainable sparsity under a larger architecture and the same token
@@ -85,16 +46,7 @@ stress test and use 14M/70M for detailed intervention and runtime analysis.
 
 \input{tables/compact-results/410m}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/appendix/A5-410m-quality-sparsity.pdf}
-\caption{\textbf{410M quality--sparsity stress test.}
-All twelve trained conditions: Base, ReLU, and $T_4/P_{\mathrm{all}}$ and
-$T_7/P_{\mathrm{all}}$ at $\kappa=0,.01,.05,.1,.5$. Dotted paths show
-all ten post-hoc targets for each fixed Base/ReLU control, including their
-full loss range. Vertical guides mark the $T_4$ and $T_7$ sparsity ceilings.}
-\label{fig:quality-sparsity-410m}
-\end{figure}
+
 \FloatBarrier
 
 % Consolidated implementation and evidence: Analysis024 Observation041.
