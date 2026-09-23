@@ -223,3 +223,17 @@ these remain diagnostics of a failed implementation. No numerical bound,
 checkpoint, threshold or implementation changes. Local diagnosis budget:
 10minutes maximum, approximately1--2minutes,60second monitoring. All242 tests
 pass in7.80seconds before launch. The original failure and timings remain intact.
+
+The diagnosis completed in17.8seconds and reproduced three logit-bound
+violations. The first discrepancy is one BF16 step in z.1, then downstream
+gate-membership changes. Full .1 diagnostics and separate profiles are now
+retained; all12 files are hash-verified. See
+[observation004](observations/004-model-qualification-failure.md).
+
+Scripts21--24 test four aligned K16 tile-skip variants, row groups16/32 and
+output widths128/256, with the original controls, bounds and selection rule.
+This tests whether preserving feature positions avoids the compaction path's
+rounding problem while keeping the output-width improvement. Same training
+prefixes, checkpoints and gates; no input-specific workaround. Local screen:
+20minute cap, approximately5--6minutes,60second monitoring, operator checks
+before real-input timing. Full-model qualification remains necessary.

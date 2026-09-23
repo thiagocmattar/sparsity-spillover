@@ -8,3 +8,6 @@
   the joint moderate-endpoint promotion rule. Wider output tiles are next.
 - [003: output-width follow-up](003-output-width-follow-up.md): eight sites pass
   the component shortlist; a fixed policy is selected before full validation.
+- [004: model qualification failure](004-model-qualification-failure.md): .05
+  qualifies, .1 fails one input; a one-step BF16 projection difference propagates
+  through hard gates. Full diagnostic inventory retained; no kernel promoted.
