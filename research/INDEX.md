@@ -5,10 +5,12 @@
 
 ## Current status
 
-Run052 implements the approved moderate-kappa70M sparse-attribution design:
-matched14M references, new compaction/scan variants and dense/skip controls.
-Local verification is complete; GPU correctness/performance and separate
-launch approval remain pending. See the [run](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
+Run052 is running the approved moderate-kappa70M sparse-attribution design on
+one RTX5090. All15 matched full-validation reference processes qualify, but the
+existing70M policy does not establish the larger latency drop. Eight new
+compaction/scan variants are undergoing qualification and component screening.
+The approved stop deadline is23 September15:49 UTC; no new speedup claim yet.
+See the [run](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
 
 **F003: the current 70M kernel does not demonstrate effective exploitation of
 the broader h/z sparsity.** Run051 shows 5.55%/6.51% lower latency at T2/Ph

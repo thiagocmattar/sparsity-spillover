@@ -182,3 +182,21 @@ the workload deadline is15:29:34 UTC to reserve retrieval time. See the
 archive, whose1,546 members were verified locally before transfer. No numerical
 or performance result is claimed by this launch update. Subsequent stage evidence
 will be retained in attempt-specific artifacts and observations.
+
+The full reference matrix completed and all15 processes passed numerical
+qualification. The existing policy's Delta70=14.671us and Delta14=14.753us
+do not establish the requested larger70M drop; see
+[observation003](observations/003-matched-references.md). The archive and all190
+members have been retrieved and verified locally.
+
+The first new-operator attempt, `screen-001`, exposed an ambiguous C++ pybind
+function name before any new kernel executed. Its logs and failures are retained
+and retrieved. `fused_sparse_v2.cu` changes only the two host binding names and
+their registration; the CUDA bodies and eight configurations are identical.
+`15_binding_fix.py` selects that version for unchanged measurement scripts;
+`16_execute_v2.py` is the stage driver with that explicit worker prefix. The
+original files remain intact. Nine focused tests and242 bootstrap tests pass.
+All new kernels, dense/prior controls and skip-disabled variants then passed
+the target-GPU operator checks in `screen-002-operators`; complete component
+screening is in progress. This binding correction does not consume a new
+scientific configuration or change the gates, checkpoints or numerical bounds.
