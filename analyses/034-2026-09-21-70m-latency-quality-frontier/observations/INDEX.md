@@ -10,6 +10,6 @@
   results with optimized latency and loss/latency changes; obsolete panels removed.
 - [005: Kernel implementation and validation appendix](005-kernel-validation-appendix.md):
   compressed mechanisms, unchanged validation protocol, and retained execution controls.
-- [006: Newer kernel overlay](006-recent-kernel-overlay.md): preserve all 68
-  original points; add 18 Run051/052 measurements, with failed numerics marked
-  and component-only experimental kernels excluded.
+- [006: Separate newer-kernel figure](006-recent-kernel-overlay.md): restore
+  Figure 02; Figure 03 keeps 41 original 14M executions and only the 18 newer
+  Run051/052 70M measurements, with failed numerics marked.
