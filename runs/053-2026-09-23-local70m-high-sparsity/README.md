@@ -150,3 +150,25 @@ activation counts/moments, weight norms, row/group occupancy, reduction-work
 counts, raw timings, compiler resources and numerical checks are retained;
 full-validation diagnostics remain required for a future frozen candidate.
 All242 bootstrap tests passed again in8.14seconds; GPU checks are pending.
+
+## First component result and bounded output-width follow-up
+
+`components-001` completed in330.6seconds. All96 operator cases,32 graph-input
+changes and13,824 real-input numerical comparisons passed. All1,310 returned
+files /46,426,614bytes are SHA256-verified, including the complete persistent
+Triton cache snapshot. See [observation002](observations/002-wider-component-screen.md).
+The union path improves all six high-kappa z components, but no candidate
+passes the joint moderate-endpoint5% rule. No full-model winner is claimed.
+
+The next four variations keep the union algorithm and increase the output
+tile to128/256 at row groups32/64. `wider-output-config.json` and scripts10--13
+retain the same controls, coverage, bounds and criterion. The scripts are
+immutable copies with filename/config references changed; the derivation
+manifest records both source and resulting hashes. The first screen remains
+intact. Same training prefixes are explicitly reused for adaptive development.
+
+Local follow-up budget:20minutes maximum, approximately6minutes based on the
+first screen, no cloud activity. Operator failures or the timeout stop the
+stage. Monitor every60seconds and retrieve/hash-verify all outputs afterward.
+All242 bootstrap tests passed in8.05seconds before this follow-up. GPU operator
+checks precede its real-input screen; no new full-model deployment is launched.
