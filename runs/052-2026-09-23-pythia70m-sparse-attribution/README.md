@@ -170,3 +170,15 @@ for guidance within the approved period; the hard deadline still stops compute.
 
 Launch controls and transfer inventory are recorded in `prelaunch/`. Do not
 interpret this README or a config parser as resource-creation authorization.
+
+## Execution update: 23 September 2026
+
+The user explicitly approved the launch after preparation commit `7681668c`.
+This supersedes the preparation-status paragraph above. Pod `qa00sm05lmrs7w`
+was created at 11:49:34 UTC in EUR-NO-1 at USD0.99/hour, with an observed32GB
+RTX5090. The independent exact-id/name stop guard is armed for15:49:34 UTC;
+the workload deadline is15:29:34 UTC to reserve retrieval time. See the
+[launch record](prelaunch/launch-001.json). Deployment uses the sealed input
+archive, whose1,546 members were verified locally before transfer. No numerical
+or performance result is claimed by this launch update. Subsequent stage evidence
+will be retained in attempt-specific artifacts and observations.
