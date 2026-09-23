@@ -5,11 +5,13 @@
 
 ## Current status
 
-Run052 is running the approved moderate-kappa70M sparse-attribution design on
-one RTX5090. All15 matched full-validation reference processes qualify, but the
-existing70M policy does not establish the larger latency drop. Eight new
-compaction/scan variants are undergoing qualification and component screening.
-The approved stop deadline is23 September15:49 UTC; no new speedup claim yet.
+Run052 completed its bounded moderate-kappa70M kernel search on one RTX5090.
+All15 matched full-validation reference processes qualify, but the
+existing70M policy does not establish the larger latency drop. All16 new
+configurations passed numerical checks; none met the5% component promotion
+margin at both kappas and splits. Diagnostics and all483 output files are
+verified locally. The GPU is retained for guidance until its approved stop
+deadline,23 September15:49 UTC. The requested kernel goal remains unmet.
 See the [run](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
 
 **F003: the current 70M kernel does not demonstrate effective exploitation of

@@ -200,3 +200,32 @@ All new kernels, dense/prior controls and skip-disabled variants then passed
 the target-GPU operator checks in `screen-002-operators`; complete component
 screening is in progress. This binding correction does not consume a new
 scientific configuration or change the gates, checkpoints or numerical bounds.
+
+## Completed bounded search; GPU retained
+
+Both screens are complete. All16 new configurations and their no-skip controls
+passed operator checks, and every screened component passed numerical checks.
+None met the predeclared5% complete-path improvement at both kappas in both
+training splits. No new full-model candidate was promoted or frozen. The
+requested end-to-end/cross-size sparse-execution goal remains unmet; the
+manuscript argument is not strengthened by this run.
+
+The best follow-up, per-row CTA compaction, has small consistent gains at four
+sites, including z.1; these are below the promotion margin and have not been
+established as full-model gains. See [the outcome](observations/005-bounded-search-outcome.md)
+and [component table](results/component-search-table.md). Initial/follow-up
+sources, configurations, all failures and both selection records are retained.
+The full bootstrap plus focused suite passed251 tests before follow-up launch.
+
+The full-validation reference diagnostic inventory is complete. All483 files
+in the completed-search archive passed local size/SHA256 verification, including
+raw timings, profiles, occupancy/work records and compiled binaries. See
+[diagnostics and retrieval](observations/006-reference-diagnostics-and-retrieval.md).
+No final candidate matrix was run because the promotion requirement was not met.
+
+The requested Pod is still running and idle for user guidance. Its original
+stop deadline remains15:49:34 UTC /12:49:34 Brasilia on23 September2026, with
+no automatic scientific continuation and no silent extension. The historical
+preparation-status fields above and in the sealed config remain unchanged as
+execution provenance; this appended result and the launch record state the
+current status. No manuscript text or consolidated finding was changed.
