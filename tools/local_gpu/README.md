@@ -4,65 +4,101 @@ The user approved local setup on 23 September 2026. This is infrastructure
 preparation, not a kernel experiment launch or a latency result. Keep the
 Windows `.venv` and all prior run definitions unchanged.
 
-## Host and current state
+## Verified state: 23 September 2026
 
-- RTX 5070 Ti Laptop GPU, 12,227 MiB total VRAM, approximately 9.5 GiB free at
-  inspection; Windows driver 572.84. The prior 70M reference processes peaked
-  at 5.26--5.54 GiB of PyTorch allocation on RTX 5090. This suggests local fit;
-  reserved memory, compiler overhead and full-model fit still require a smoke.
-- Windows build 26200.9457, approximately 64 GiB system RAM and 759 GiB free
-  disk at inspection. Windows reports a hypervisor present.
-- WSL 2.7.14.0 is installed from Microsoft's signed x64 MSI. Its SHA-256
-  matches the official release asset; Authenticode reports Microsoft/Valid.
-- VirtualMachinePlatform and Microsoft-Windows-Subsystem-Linux were enabled
-  with `-NoRestart`. Both returned `RestartNeeded=True`.
-- **A Windows restart is required before Linux/GPU setup can continue.** WSL
-  status still reports virtualization unavailable in the current boot. Recheck
-  after restarting; this does not yet establish a firmware problem.
-- CUDA/PyTorch/Triton installation and GPU smoke have not run. Only shell syntax
-  and Python compilation have been checked. No automatic restart is scheduled.
+**Ready for local kernel development.** After the user's Windows restart, the
+dedicated `SparsityGPU` WSL2 distribution was imported from the verified Ubuntu
+24.04 image. The normal Linux user is `researcher`.
 
-Installer receipts, the WSL installation log and the Ubuntu image are kept
-outside Git under `%LOCALAPPDATA%\sparsity-spillover\gpu-setup`. The Windows
-CPU-only environment remains usable. No GPU workload or RunPod restart was
-performed for this setup.
+- RTX 5070 Ti Laptop GPU, 12,227 MiB VRAM, compute capability 12.0;
+  Windows NVIDIA driver 572.84.
+- Windows build 26200.9457, approximately 64 GiB system RAM; WSL 2.7.14.0.
+- Python 3.12.3, PyTorch 2.11.0+cu128, CUDA 12.8, Triton 3.6.0,
+  Transformers 5.12.1 and NumPy 2.5.0. All 58 package pins from Run049 match.
+- BF16 matrix multiplication passed at `(M,K,N)=(2048,512,512)` and
+  `(2048,2048,512)`, with relative L2 errors approximately 0.00166.
+- Triton thresholding passed exact comparison on changed-input CUDA graph
+  replay. A C++/CUDA extension compiled for `sm_120` and passed exact comparison.
+  These checks ran as `researcher`, not root.
+- Windows `.venv` remains PyTorch 2.11.0+cpu. Prior run definitions are unchanged.
 
-## Resume after the user restarts Windows
+[smoke.json](smoke.json) contains the GPU checks.
+[wsl-bootstrap.json](wsl-bootstrap.json) records package/isolation verification,
+source hashes and hashes of seven retrieved log files. Their copies were
+verified byte-for-byte under
+`%LOCALAPPDATA%\sparsity-spillover\gpu-setup\linux-logs`.
+[host-setup.json](host-setup.json) is the historical **pre-restart** receipt;
+its pending status is superseded by the WSL verification record.
 
-Check `wsl --status` and `wsl --list --verbose`. Use the dedicated `SparsityGPU`
-distribution, leaving any subsequently installed distributions alone. From
-PowerShell, after verifying the Ubuntu image against `host-setup.json`:
+This verifies the development environment, not a research kernel or full-model
+fit. The prior 70M reference processes allocated 5.26--5.54 GiB on RTX 5090;
+local full-model memory, numerical qualification and ETC still need calibration.
+Local latency is a separate hardware/environment cohort. Final RTX 5090 claims
+need confirmation there. No new experiment or RunPod restart was performed.
+
+## Storage and Windows access
+
+The Linux disk is under `%LOCALAPPDATA%\sparsity-spillover\wsl`. Environment,
+compiler caches and installation logs are under `/opt/sparsity-gpu` inside Linux.
+Installer files remain outside Git under
+`%LOCALAPPDATA%\sparsity-spillover\gpu-setup`.
+
+`/etc/wsl.conf` disables automatic Windows-drive mounting, fstab processing,
+Windows executable interop and Windows PATH propagation. Verification found no
+mounted `/mnt/<drive>` paths or interop endpoint. GPU driver support remains
+available through WSL's driver mounts; this is not a strict security sandbox.
+Only the explicit setup files and pinned requirements were copied through stdin;
+the Windows repository was not mounted. Future source/data transfers must be
+explicit copies with their own identity checks.
+
+## Use the installed environment
+
+Open the dedicated distro from PowerShell:
 
 ```powershell
-$taskRoot = Join-Path $env:LOCALAPPDATA 'sparsity-spillover'
-$taskImage = Join-Path $taskRoot 'gpu-setup/ubuntu-24.04.5-wsl-amd64.wsl'
-wsl.exe --import SparsityGPU (Join-Path $taskRoot 'wsl') $taskImage --version 2
-$taskScript = (Resolve-Path tools/local_gpu/setup.sh).Path
-$taskLinuxScript = (wsl.exe -d SparsityGPU -u root -- wslpath -u $taskScript).Trim()
-wsl.exe -d SparsityGPU -u root -- bash $taskLinuxScript
+wsl.exe -d SparsityGPU --cd /home/researcher
 ```
 
-Do not import again if `SparsityGPU` already exists. Investigate a partial
-installation rather than deleting or unregistering it automatically. The setup
-script requires the dedicated distro and Ubuntu 24.04. It installs the CUDA
-12.8 toolkit without Linux GPU drivers, then recreates the pinned Run049 Python
-3.12 / PyTorch 2.11.0+cu128 / Triton 3.6.0 / Transformers 5.12.1 environment.
-The environment, compiler caches and setup logs live under `/opt/sparsity-gpu`
-on the Linux filesystem. Subsequent commands source its `activate.sh`.
+Then in Linux:
 
-`smoke.py` checks CUDA visibility, BF16 matrix multiplication at the two 70M
-projection shapes, Triton thresholding with changed-input CUDA graph replay,
-and a compiled C++/CUDA extension. It reports versions and memory usage, but
-does not qualify research kernels or establish full-model latency. A later
-run must separately calibrate local resource fit and retain its own evidence.
+```bash
+source /opt/sparsity-gpu/activate.sh
+python -c 'import torch; print(torch.cuda.get_device_name())'
+```
 
-Expected remaining setup time after reboot is approximately 15--30 minutes,
-depending on package downloads and compilation. Local timings are a separate
-hardware/environment cohort; final RTX 5090 claims need confirmation there.
+To repeat only the small infrastructure check:
+
+```bash
+python /opt/sparsity-gpu/setup/smoke.py \
+  --output /home/researcher/.local/state/sparsity-gpu/smoke-repeat.json
+```
+
+## Setup implementation and corrections
+
+`bootstrap_wsl.py` verifies the downloaded image, imports the distro only when
+absent, configures access, transfers three setup files with LF line endings,
+and runs `setup.sh`. It restarts this distro to apply configuration, so use it
+only when the distro is idle. Do not rerun bootstrap just to use the environment.
+It refuses to overwrite a nonempty unregistered distro directory.
+
+The initial Linux `nohup` launcher did not keep WSL running after the Windows
+caller exited. The corrected launcher keeps the Windows WSL client alive until
+setup finishes. The first actual setup reached Triton, then failed because
+`Python.h` was missing. Adding `python3.12-dev` fixed this; the second setup
+completed with exit code zero. Both the original failure and final success are
+retained in the installation log. Shell syntax and both Python sources also pass
+syntax checks.
+
+`setup.sh` installs `cuda-toolkit-12-8` without a Linux NVIDIA driver, installs
+the pinned Python packages and runs the smoke before reporting readiness.
+Keep its terminal/process alive through installation; it logs persistently to
+`/opt/sparsity-gpu/logs/setup.log`. Research jobs need a separate persistent
+launcher and run-owned logs.
 
 ## Sources
 
 - [Microsoft WSL installation](https://learn.microsoft.com/en-us/windows/wsl/install).
+- [Microsoft WSL configuration](https://learn.microsoft.com/en-us/windows/wsl/wsl-config).
 - [WSL 2.7.14 release](https://github.com/microsoft/WSL/releases/tag/2.7.14).
 - [Official distribution catalog](https://github.com/microsoft/WSL/blob/master/distributions/DistributionInfo.json).
 - [NVIDIA CUDA on WSL](https://docs.nvidia.com/cuda/wsl-user-guide/index.html).
