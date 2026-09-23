@@ -80,3 +80,73 @@ No model, compiler or benchmark process remains running after this stage.
 Implementation checks and actual local smoke results will be appended after
 execution. Environment readiness is recorded separately in
 [tools/local_gpu](../../tools/local_gpu/README.md).
+
+## Execution log: infrastructure retry
+
+All242 bootstrap tests passed in24.10seconds before launch. Run-local Python
+syntax and explicit smoke/full-validation coverage checks passed. Preparation
+commit: `fe8ddcd4`. The first transfer verified1,287 entries, but its enumeration
+had omitted vendor headers whose Windows paths exceeded260characters. The
+first attempt `smoke-001-c00` completed native graph capture, then stopped
+during the legacy backend's dependency verification. No performance conclusion
+comes from this failure; all five returned files are hash-verified and retained.
+
+`04_stage_longpaths.py` is the infrastructure correction; `01_stage.py` remains
+as executed history. Explicit extended Windows paths recover the omitted files.
+The second transfer verifies1,524 files /1,162,863,494bytes, followed by all900
+entries in the frozen vendor inventory. `smoke-002` retries identical checkpoints,
+gates, numerical bounds, model code and kernel sources. The first transfer
+inventory and source state remain in the ignored artifact directory.
+
+Use `python -X utf8 03_local.py status --tag smoke-002` from this directory
+for Windows console status, avoiding cp1252 errors from library progress text.
+
+## Completed local calibration and component continuation
+
+The unchanged second smoke completed all four checkpoints in307.1seconds.
+All80 graph/block numerical comparisons passed (bitwise logits on these four
+training blocks). Peak PyTorch allocation was4.923GiB and peak reservation
+5.502GiB with all five graph implementations resident. This establishes local
+development fit; the smoke does not establish full-validation quality.
+All72 output files /16,764,028bytes are retrieved and hash-verified.
+See [the calibration table](results/smoke-002-table.md) and its source-hashed JSON.
+
+The high-kappa adaptation is faster than native in this small smoke, while
+the moderate endpoints remain slower. Instrumented profiles identify the
+h/z fallback as a major cost at moderate thresholds. Profiling durations
+are not benchmark latency. Prior Run042 already tested basic M8/M16 layout
+changes, so those are not introduced as a new discovery.
+
+The next bounded implementation step under the approved adaptive local kernel
+direction is `wide_sparse.py`: two wider feature-union groups (32/64 rows,
+compared with the previous family's maximum16) and two tile-support paths
+(16/32 rows,16 features). The latter materializes a gated tensor and tile
+support once, then skips activation/weight reads and dot operations for empty
+tiles. The former compacts the active feature union and gathers only those
+weights. Both rebuild metadata on every invocation and have controls that keep
+that producer but force all reduction tiles. No new gate or sparsity is added.
+
+`06_component_operators.py` checks both input widths, zero/short/mixed/dense/
+boundary/empty-tile inputs, independent reduction-work counts, count-on/off
+agreement and changed-input graph replay. `07_component_screen.py` then uses
+training blocks0:16 and16:32 at kappa .5/.05/.1, all12 sites, five randomized
+paired passes. These are development/confirmation prefixes, not an untouched
+holdout. Each graph contains20 complete operator invocations to amortize WSL
+submission overhead; host and CUDA times per invocation are retained. This is
+component throughput evidence, not interchangeable with full-model latency.
+
+Controls include native gated PyTorch, fused gate plus native GEMM, dense
+Triton dot and the prior Run050 selected site policy. Shortlist only candidates
+that pass numerics and beat the best qualified dense/prior control by at least
+5% at both moderate kappas in both training prefixes. Retain high-kappa and
+skip-control effects separately; integration must establish the high-kappa
+benefit and both endpoint targets before promotion. A component win is not a
+full-model win. Absence of a winner only rejects these tested variants.
+
+This separate bounded component stage has a20minute maximum and an initial
+5--10minute ETC. It stops if its operator checks fail or time expires. Same
+checkpoints/cache and diagnostic inventory persist. New training-prefix
+activation counts/moments, weight norms, row/group occupancy, reduction-work
+counts, raw timings, compiler resources and numerical checks are retained;
+full-validation diagnostics remain required for a future frozen candidate.
+All242 bootstrap tests passed again in8.14seconds; GPU checks are pending.
