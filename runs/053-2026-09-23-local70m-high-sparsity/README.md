@@ -172,3 +172,35 @@ first screen, no cloud activity. Operator failures or the timeout stop the
 stage. Monitor every60seconds and retrieve/hash-verify all outputs afterward.
 All242 bootstrap tests passed in8.05seconds before this follow-up. GPU operator
 checks precede its real-input screen; no new full-model deployment is launched.
+
+## Wider-output result and full-model integration
+
+`wider-outputs-001` completed in301.8seconds. All operator and real-input
+numerical checks passed. The32-row/256-output union variant passes the joint
+moderate-endpoint rule at three h and five z sites. See
+[observation003](observations/003-output-width-follow-up.md). All2,334 outputs
+are hash-verified. The large-cache pipe stall and its infrastructure-only
+retrieval correction are retained in that observation; no measurements changed.
+
+`provenance/local-policy.json` freezes one policy from training data before
+validation. `local_policy.py` integrates it without changing gates or residual
+rounding. `15_full_model.py` compares native, opt073, the strongest tested local
+dense policy, the strongest tested prior/dense policy, the candidate, and its
+all-sparse-skip-disabled control. Base retains the native h/z fallback. All
+six graph models must retain at least1.5GiB free GPU memory after capture.
+
+`16_model_local.py` first runs four-block smokes for Base/.5/.05/.1, stopping
+on failure, then runs all338 validation blocks for each checkpoint. Each final
+cell retains64 timing inputs with seven randomized paired passes. Profiles
+are separate from timing. `full_diagnostics.py` additionally retains full
+candidate activation counts/moments, weight norms, row/group occupancy and
+independently checked executed reduction tiles at all eight new sites on all
+338 blocks of each T2/Ph checkpoint. Prior sparse sites have occupancy
+histograms; counters are software reduction tiles, not hardware DRAM traffic.
+
+This local integration has a20minute global cap and a10--15minute ETC. Monitor
+every60seconds; stop on numerical/headroom/nonfinite/timeout failures. The
+controller survives terminal disconnects. Retrieve and verify all outputs
+afterward. All242 bootstrap tests passed in8.21seconds; target-device component
+checks passed before this launch, and full-model smoke remains its first gate.
+This is one process per checkpoint, not a replicated final14M/70M comparison.

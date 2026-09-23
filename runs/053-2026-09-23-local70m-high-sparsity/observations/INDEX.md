@@ -6,3 +6,5 @@
 - [002: wider component screen](002-wider-component-screen.md): strong
   high-kappa component gains and two z-site gains at .1; no candidate passes
   the joint moderate-endpoint promotion rule. Wider output tiles are next.
+- [003: output-width follow-up](003-output-width-follow-up.md): eight sites pass
+  the component shortlist; a fixed policy is selected before full validation.
