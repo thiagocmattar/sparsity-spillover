@@ -9,6 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.ticker import NullFormatter, NullLocator, ScalarFormatter
+import recent_runs
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -34,6 +35,7 @@ def main():
         assert sha(ROOT / name) == digest, name
     small, large, palette, timing14 = [json.loads((ROOT / name).read_text(encoding="utf-8")) for name in SOURCES]
     cohorts = {"14M": small["points"], "70M": large["points"]}
+    additions = recent_runs.load(cohorts['70M'])
     metrics = {"14M": "latency_ms", "70M": "displayed_latency_ms"}
     markers = {"14M": "o", "70M": "s"}
     assert [len(cohorts[size]) for size in cohorts] == [40, 26]
@@ -77,8 +79,8 @@ def main():
                          "axes.spines.top": False, "axes.spines.right": False,
                          "axes.linewidth": .65, "pdf.fonttype": 42,
                          "mathtext.fontset": "dejavusans"})
-    fig, ax = plt.subplots(figsize=(8.6, 5.2))
-    fig.subplots_adjust(left=.10, right=.985, top=.90, bottom=.23)
+    fig, ax = plt.subplots(figsize=(9.2, 6.5))
+    fig.subplots_adjust(left=.095, right=.985, top=.92, bottom=.385)
     styles = sorted(palette["series"], key=lambda s: (s["scope"], s["pressure"]) in HIGHLIGHTS)
     handles = {}
     drawn = []
@@ -128,11 +130,16 @@ def main():
         ax.text(base["loss"] + .025, .98, f"{size} Base loss",
                 transform=ax.get_xaxis_transform(), color="#747A81", fontsize=8.5,
                 ha="left", va="top")
+    colors = {'T2/Ph': next(s['color'] for s in styles if (s['scope'], s['pressure']) == ('hz', 'h')),
+              'T7/Pall': next(s['color'] for s in styles if (s['scope'], s['pressure']) == ('7', 'all'))}
+    added_handles = recent_runs.draw(ax, additions, colors)
     xlim, ylim = (4.02, 6.10), (.40, 2.85)
     assert all(xlim[0] <= r["loss"] <= xlim[1] and ylim[0] <= r[metrics[size]] <= ylim[1]
                for size, rows in cohorts.items() for r in rows)
     assert all(xlim[0] <= r["loss"] <= xlim[1] and ylim[0] <= r["latency_ms"] <= ylim[1]
                for r in references)
+    assert all(xlim[0] <= r['loss'] <= xlim[1] and ylim[0] <= r['latency_ms'] <= ylim[1]
+               for r in additions['points'])
     ax.set(xlim=xlim, ylim=ylim, xlabel="Validation loss", ylabel="Full-model latency (ms)")
     ax.set_yscale("log")
     ax.set_xscale("log")
@@ -148,9 +155,18 @@ def main():
     ax.set_axisbelow(True)
     legend = [base_handles[(backend, size)] for backend in ("kernel", "PyTorch") for size in cohorts]
     legend += [handles[(key, size)] for key in HIGHLIGHTS for size in cohorts]
-    fig.legend(handles=legend, loc="lower center", ncol=4, frameon=False,
-               fontsize=9.5, handlelength=2., columnspacing=1.4,
-               labelspacing=.9, bbox_to_anchor=(.54, .018))
+    old_legend = fig.legend(handles=legend, loc="lower center", ncol=4, frameon=False,
+               fontsize=8.5, handlelength=2., columnspacing=1.4,
+               labelspacing=.8, bbox_to_anchor=(.54, .19),
+               title='Existing measurements: K050 (14M), opt073 (70M)', title_fontsize=9)
+    new_legend = fig.legend(handles=added_handles, loc='lower center', ncol=3, frameon=False,
+               fontsize=8.5, handlelength=2., columnspacing=2., labelspacing=.7,
+               bbox_to_anchor=(.54, .055), title='Added 70M measurements: C = sparse h in five layers, dense z',
+               title_fontsize=9)
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    assert not ax.xaxis.label.get_window_extent(renderer).overlaps(old_legend.get_window_extent(renderer))
+    assert not old_legend.get_window_extent(renderer).overlaps(new_legend.get_window_extent(renderer))
     output = HERE / "figures/02-14m-70m-latency-quality.pdf"
     fig.savefig(output, bbox_inches="tight", pad_inches=.04,
                 metadata={"Title": "Pythia-14M and Pythia-70M: validation loss and full-model latency",
@@ -164,14 +180,19 @@ def main():
         x_metric="loss", y_unit="milliseconds", axis_scales={"x": "log", "y": "log"},
         xlim=xlim, ylim=ylim, labeled_series=[h.get_label() for h in legend],
         base_references=references,
+        added_measurements=additions,
+        added_legend=[h.get_label() for h in added_handles],
         recipe_backends={"14M": "K050", "70M": "opt073"},
-        interpretation="Retained absolute measurements on logarithmic axes, with both kernel and native PyTorch execution for each Base checkpoint; no session normalization. This is not a same-kernel or same-session scale comparison.",
+        interpretation="All 68 original execution points retained, plus 18 Run051/052 measurements (two unqualified). Absolute measurements on logarithmic axes; no session normalization, pooling or inferred full-model timings. This is not a same-kernel or same-session scale comparison.",
         verification={"counts": {s: len(r) for s, r in cohorts.items()},
                       "unique_checkpoints": 66, "intervention_points": 64, "base_execution_points": 4,
-                      "all_68_execution_points_visible": True, "unchanged_previous_pdfs": preserved})
+                      "all_68_execution_points_visible": True, 'added_execution_points': 18,
+                      'added_qualified_points': 16, 'added_unqualified_points': 2,
+                      'all_86_execution_points_visible': True, "unchanged_previous_pdfs": preserved})
     (HERE / "data/combined-figure.json").write_text(json.dumps(result, indent=2) + "\n",
                                                   encoding="utf-8", newline="\n")
-    print(json.dumps({"pdf": str(output), "execution_points": 68, "base_references": references}))
+    print(json.dumps({"pdf": str(output), "execution_points": 86, 'added_qualified': 16,
+                      'added_unqualified': 2, 'verified_raw_sources': len(additions['raw_evidence_sha256'])}))
 
 
 if __name__ == "__main__":

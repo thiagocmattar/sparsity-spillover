@@ -1,5 +1,8 @@
 # Validation loss and full-model latency across 14M and 70M
 
+Historical 68-point version. The 23 September additive update is documented in
+[observation 006](006-recent-kernel-overlay.md); all original coordinates remain.
+
 ## Question and method
 
 Where do the retained 14M and 70M measurements lie on the same validation-loss
