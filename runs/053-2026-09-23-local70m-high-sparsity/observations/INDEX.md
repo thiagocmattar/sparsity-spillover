@@ -11,3 +11,6 @@
 - [004: model qualification failure](004-model-qualification-failure.md): .05
   qualifies, .1 fails one input; a one-step BF16 projection difference propagates
   through hard gates. Full diagnostic inventory retained; no kernel promoted.
+- [005: aligned-tile outcome](005-aligned-tile-outcome.md): bitwise component
+  agreement on the training prefix, but no joint moderate speed winner.
+  Twelve-configuration local iteration is complete; all workers are terminal.

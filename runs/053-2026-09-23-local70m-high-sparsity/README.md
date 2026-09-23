@@ -237,3 +237,28 @@ rounding problem while keeping the output-width improvement. Same training
 prefixes, checkpoints and gates; no input-specific workaround. Local screen:
 20minute cap, approximately5--6minutes,60second monitoring, operator checks
 before real-input timing. Full-model qualification remains necessary.
+
+## Completed bounded local iteration
+
+`aligned-001` completed in287.1seconds. All96 operator cases,32 graph checks
+and13,824 real-input comparisons pass; all9,216 new-path/skip-off real-input
+comparisons are bitwise equal. No variant passes the joint moderate5% rule.
+All648 outputs are retrieved and hash-verified, including the compiler delta
+and complete local C++ extension cache. The242 bootstrap tests passed in
+8.01seconds before this final component stage. See
+[observation005](observations/005-aligned-tile-outcome.md).
+
+The local GPU fits six simultaneous full-model graph implementations with
+peak reservation6.049GiB. Twelve configurations were screened, eight sites
+were promoted to one full-model candidate, and full validation caught its .1
+numerical failure. The original failure, subsequent diagnosis and negative
+aligned-tile screen remain retained. `20_reduce_model_with_failure.py` is the
+appropriate reducer for that failed cohort; `17_reduce_model.py` was prepared
+for an all-qualified outcome and was not executed against the failed results.
+
+All workers are terminal; WSL and the Linux caches remain ready for future
+iteration. No cloud resources were created or modified. No new kernel meets
+both moderate endpoints with numerical qualification, no local14M comparison
+or process-replicated attribution has been completed, and no manuscript claim
+is promoted. The next precision, dense-control and timing priorities are
+recorded in observation005.

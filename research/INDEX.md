@@ -5,14 +5,19 @@
 
 ## Current status
 
-Run052 completed its bounded moderate-kappa70M kernel search on one RTX5090.
-All15 matched full-validation reference processes qualify, but the
-existing70M policy does not establish the larger latency drop. All16 new
-configurations passed numerical checks; none met the5% component promotion
-margin at both kappas and splits. Diagnostics and all483 output files are
-verified locally. The GPU is retained for guidance until its approved stop
-deadline,23 September15:49 UTC. The requested kernel goal remains unmet.
-See the [run](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
+Run053 establishes local70M iteration on the RTX5070Ti Laptop under WSL.
+Wider feature unions pass eight component shortlists, but the full model fails
+the .1 numerical gate on one input: a small z-projection rounding difference
+propagates through hard thresholds. Full diagnostics and failed timings are
+retained. The aligned-tile follow-up has bitwise training-prefix component
+agreement but misses the moderate speed margin. The bounded local iteration
+is complete, all workers are terminal, and no new kernel is promoted.
+See the [local workstream](../runs/053-2026-09-23-local70m-high-sparsity/README.md).
+
+Run052's RTX5090 search passed all15 full-validation reference processes but
+did not establish the larger70M latency drop; none of16 candidates met its
+component margin. All483 output files are verified locally. See the
+[completed search](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
 
 **F003: the current 70M kernel does not demonstrate effective exploitation of
 the broader h/z sparsity.** Run051 shows 5.55%/6.51% lower latency at T2/Ph
