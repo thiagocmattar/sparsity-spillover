@@ -4,7 +4,7 @@ Question: was repeated consumer work from narrow output tiles suppressing the
 wide-union algorithm's benefit at moderate thresholds?
 
 Method: retain the feature-union algorithm and test row groups32/64 with output
-tiles128/256. Same three checkpoints, two32-block training prefixes split16/16,
+tiles128/256. Same three checkpoints,32 training blocks split into16/16 prefixes,
 five paired passes,20 complete invocations per graph, dense/prior controls,
 skip-disabled variants, numerical bounds and joint5% promotion rule as
 observation002. The same inputs are reused for adaptive development; this is

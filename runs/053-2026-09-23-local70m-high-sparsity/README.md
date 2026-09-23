@@ -204,3 +204,22 @@ controller survives terminal disconnects. Retrieve and verify all outputs
 afterward. All242 bootstrap tests passed in8.21seconds; target-device component
 checks passed before this launch, and full-model smoke remains its first gate.
 This is one process per checkpoint, not a replicated final14M/70M comparison.
+
+## Full-model qualification outcome and numerical diagnosis
+
+`model-001` stopped after430.5seconds at the numerical gate. Base, kappa .5
+and .05 completed full validation and diagnostics. At .1, all338 inputs were
+evaluated: only the new candidate fails, on input78's elementwise logit bound
+(maximum absolute difference .5, relativeL2 .00056935). Its pooled loss delta
+is -0.0000107655, within the loss bound; that does not override the failed
+per-logit requirement. Native, opt073, dense, prior and skip-disabled controls
+all pass. All153 available outputs /39,710,437bytes are retrieved/hash-verified.
+The failed candidate is not a qualified moderate-endpoint kernel.
+
+Scripts18--19 trace input78 through the unchanged reference and candidate to
+distinguish projection roundoff from downstream gate changes. They also collect
+the missing full338-block candidate inventory and separate profiles at .1;
+these remain diagnostics of a failed implementation. No numerical bound,
+checkpoint, threshold or implementation changes. Local diagnosis budget:
+10minutes maximum, approximately1--2minutes,60second monitoring. All242 tests
+pass in7.80seconds before launch. The original failure and timings remain intact.
