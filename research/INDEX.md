@@ -5,6 +5,11 @@
 
 ## Current status
 
+Run052 implements the approved moderate-kappa70M sparse-attribution design:
+matched14M references, new compaction/scan variants and dense/skip controls.
+Local verification is complete; GPU correctness/performance and separate
+launch approval remain pending. See the [run](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
+
 **F003: the current 70M kernel does not demonstrate effective exploitation of
 the broader h/z sparsity.** Run051 shows 5.55%/6.51% lower latency at T2/Ph
 kappa=.05/.1 versus the same checkpoint's optimized dense control, rising to
