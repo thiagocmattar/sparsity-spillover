@@ -1,6 +1,8 @@
 # Run 055: 31M T7/Ph
 
-Status: implementation and preflight. On 24 September the user confirmed the
+Status: completed and retrieved on 24 September 2026. All five training
+conditions and all 15 final timing processes are verified; all task Pods are
+terminated. On 24 September the user confirmed the
 five-condition design and explicitly requested immediate, fastest parallel
 RunPod execution. This supplies design and launch authorization. The previously
 approved complete retention package carries forward. No manuscript edit.
@@ -82,3 +84,91 @@ at14M/31M/70M,36 execution points from33 checkpoints. Historical coordinates
 remain unchanged. PDF only, exact source data, observation and index. No claim
 promotion or manuscript edit is authorized. Live allocation, test/ETC evidence,
 deadline/cost envelope and transfer receipts belong under prelaunch/.
+
+## Execution notes
+
+Initial training allocation was five H200 GPUs across three Pods. Two GPUs on
+the US-CA host measured about18s/update; no scientific run started there. Their
+conditions moved to independently preflighted single-GPU replacements. The
+US-NC replacement measured5.65s/update. The Iceland replacement measured10.46s,
+so its three-update attempt was retained separately and restarted canonically
+on an already freed US-NC GPU at5.62s/update. No scientific input was changed.
+Interrupted attempt files retain their original state under
+`artifacts/retired-attempts/`; they are excluded from the completed cohort.
+
+RTX5090 allocations001/003/004/006 never exposed a runtime or SSH endpoint and
+received no task files. All were deleted and absence verified. Several other
+requests failed for lack of capacity without creating a Pod. Allocation011
+booted on a distinct CUDA12.8 Community host at17:35UTC, at$0.69/hour. It is the
+dedicated timing host. The common hard stop is21:43:56UTC; the total billable
+envelope is$160, with artifact-preserving stop guards.
+
+An extra idle-H200 check passed34 component cases (24 paired-normalization and
+10 joint arithmetic/counter cases). The earlier58-case label double-counted
+normalization branches. A full338-block H200 check of the trained kappa0 model
+failed the elementwise tolerance despite a pooled loss difference of2.61e-5.
+Substitution on failed block15 isolated the difference to custom Flash attention:
+native attention, or fused RoPE with native SDPA, restored bitwise-equal logits;
+native normalization, RoPE alone, joint projections or head did not. These are
+non-evidence diagnostics. Final qualification remains on the prescribed RTX5090,
+with the original tolerances and unchanged fixed kernel policy.
+
+On RTX5090 the34 component cases and four initial checkpoints passed. Initial
+kappa0.5 failed only block323 (max logit difference0.569824, relativeL2.004596,
+pooled loss difference1.02e-7). Native-joint or MMA-only substitution removed
+the difference; it arose in the short-row path. The actual trained kappa0.5
+checkpoint then passed all338 blocks with bitwise-equal logits. The additional
+all-initial-checkpoint launch gate was replaced by full qualification of the
+endpoint that is actually measured; all failed preflight evidence is retained.
+`prelaunch/kernel-preflight-acceptance.json` records the scope explicitly.
+Kernel code, numerical bounds, workload and final15-process qualification were
+unchanged. Qualification is checkpoint-specific, not a universal claim of exact
+short-row equivalence for arbitrary weights and inputs.
+
+## Verified results and closeout
+
+All five conditions completed 712 updates without skipped optimizer steps.
+The complete local `03_verify.py` cohort check passed, including source identity,
+initialization, data order, validation coverage, every gradient boundary,
+checkpoint cadence, integer-count aggregation and retained artifact hashes.
+The launch checks were 10 focused tests, 242 bootstrap tests and actual cloud
+lifecycle smokes at kappa 0 and 0.5; see `prelaunch/tests.json` and retained
+preflight artifacts. Median training throughput ranged from 366,310 to 387,390
+input tokens/s. The final condition completed by 18:25:45 UTC.
+
+| Kappa | Validation loss | Kernel latency (ms) | Native latency (ms) | R_model |
+| --- | ---: | ---: | ---: | ---: |
+| 0 | 4.894259 | 0.986853 | 1.076050 | 0.153365 |
+| 0.01 | 4.874077 | 0.985217 | 1.191179 | 0.157420 |
+| 0.05 | 4.893721 | 0.895587 | 1.190956 | 0.167749 |
+| 0.1 | 4.942717 | 0.800644 | 1.189999 | 0.175327 |
+| 0.5 | 5.520965 | 0.606869 | 1.190163 | 0.226573 |
+
+Loss is canonical final-checkpoint FP16-autocast validation. Latencies are
+BF16 CUDA-graph geometric means over three fresh processes, each with 448
+paired samples per backend. All 15 processes passed the unchanged full
+338-block qualification on one physical RTX 5090 and one kernel source identity.
+All five replicate-1 runtime diagnostic and independent work-counter checks
+passed. `R_model` is a logical-product opportunity, not a measured speedup.
+
+The retained completed cohort contains 60 model checkpoints and 15 recovery
+states, totaling 10,979,972,348 checkpoint bytes, plus the agreed per-update,
+activation, weight, logical-product and kernel-work evidence. Calibration,
+interrupted-attempt and failed preflight evidence is retained separately.
+The final seed-Pod download hit Windows' path-length limit during extraction;
+the helper retried with extended filesystem paths and verified the same sealed
+archive and every file before teardown. No scientific input or result changed.
+
+The original 21:43:56 UTC deadline was sufficient; the user's extension
+authorization was not needed. All ten allocated Pods, including empty capacity
+retries, are confirmed absent. The pre-existing stopped Run052 Pod and shared
+100 GB volume were left untouched. The conservative creation-to-confirmed-
+absence compute rental estimate is $55.44, below the $160 envelope. This is
+not an invoice and does not infer storage charges or account credits. See
+`prelaunch/compute-closeout.json`, the individual verified transfer/termination
+receipts and `prelaunch/final-resource-audit.json`.
+
+The [Analysis038 scale comparison](../../analyses/038-2026-09-24-base-t2-t7-scale-frontier/README.md)
+contains the PDF, exact 36-point data and observation. At this measured resolution,
+the new kappa 0.05 and 0.1 points extend the cross-scale Pareto frontier.
+Historical endpoints are unchanged; no scaling law is fitted.
