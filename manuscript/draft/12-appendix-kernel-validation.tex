@@ -41,7 +41,28 @@ masking and softmax. \\
 
 In Table~\ref{tab:kernel-mechanisms}, \emph{bypass} is omitted MMA instructions divided by issued plus omitted instructions, pooled across layers and all 338 validation sequences. It includes padded work and, at $h,z$, instructions replaced by scalar arithmetic. Bypass differs from $\Smodel$, the model-wide fraction of zero-operand scalar products, and is not the fraction of latency saved.
 
+% Source: Analysis038/observations/003-manuscript-integration.md; 04_manuscript_evidence.py.
+The initial 70M port of the 14M kernel takes 3.325\,ms on Base versus
+1.611\,ms natively. A subsequent optimization pass improves sparse $h,z$
+execution and dense components, reducing Base latency to 2.732\,ms while
+leaving a 1.121\,ms gap. The main figure retains this partially optimized
+measurement series; it does not substitute the separate-session controls below.
+
+The 31M implementation ports that optimized 70M policy (Run045,
+\texttt{opt073}) to hidden width 256, FFN width 1,024 and head dimension 32.
+It uses paired LayerNorm, native dense input projections, $h,z$ output
+projections with empty-tile skipping, scalar execution for rows containing at most eight nonzeros
+and a matrix-instruction fallback, dense FlashAttention, and a dense
+full-vocabulary output head. Dimension-specific tiling and masks are adapted
+without a new optimization search. Base and $T_2/P_h$ use
+\texttt{opt073-31m-v1} (Run054); the gate-aware
+\texttt{opt073-31m-t7-v1} (Run055) retains the same policy while applying
+the seven-site thresholds, including $a,m$ gates in the paired normalization.
+Table~\ref{tab:kernel-paths} describes the historical implementations, not
+every path in these later variants.
+
 \subsection{Numerical validation and timing protocol}
+\label{app:timing-protocol}
 Measurements use an RTX\,5090, BF16, batch one, 2,048-token causal sequences,
 and full vocabulary logits for every token (PyTorch 2.11.0, Transformers 5.12.1,
 CUDA 12.8). This is full-sequence inference with fixed weights and shapes;
@@ -51,7 +72,7 @@ independent processes. Relative to the unmodified eager reference, acceptance
 required finite outputs, $|y-\hat y|\leq0.25+0.02|\hat y|$ for every logit,
 relative $\ell_2$ error at most $0.02$ per sequence, and absolute mean
 validation-loss difference at most $0.001$. Exact agreement in the 14M control
-below is stronger than these general tolerances.
+below is stronger than these general tolerances. At 31M, all eleven final checkpoints pass these criteria on all 338 sequences in three processes each: 18 Base/$T_2/P_h$ processes in Run054 and 15 $T_7/P_h$ processes in Run055 (33 total). This qualification applies to the measured checkpoints, not every possible weight or activation pattern.
 
 PyTorch/SDPA and specialized implementations use CUDA graphs with identical
 inputs. We report geometric means of synchronized host timings over 64 fixed
@@ -61,7 +82,7 @@ vocabulary logits, thresholding and all input-dependent sparsity checks.
 Compilation, static weight preparation, graph capture and equal input staging
 are excluded. Activations are recomputed on every forward pass.
 
-Cross-recipe speedups are $t_{\mathrm{PyTorch},T_0/P_0}/t_{\mathrm{specialized},r}$, using one native Base per size and session. Table~\ref{tab:endpoints-14m-70m} uses fixed references of 0.65544\,ms at 14M and 1.61105\,ms at 70M. The controls below compare execution configurations of the same checkpoint, with explicit denominators.
+Cross-recipe speedups are $t_{\mathrm{PyTorch},T_0/P_0}/t_{\mathrm{specialized},r}$, using a fixed native Base reference per size. Table~\ref{tab:endpoints-14m-70m} uses 0.65544\,ms at 14M and 1.61105\,ms at 70M; Table~\ref{tab:31m-results} uses 1.02386\,ms at 31M. The specialized 14M Base takes 0.65157\,ms (0.652\,ms rounded), a different denominator from native Base. The 31M Base/$T_2/P_h$ and $T_7/P_h$ timings come from separate sessions on different RTX\,5090 devices, with the Run054 native Base held fixed for both; small cross-session differences should not be overinterpreted. The controls below compare execution configurations of the same checkpoint, with explicit denominators.
 
 \subsection{Controlled 14M execution ablations}
 \label{app:t2-hz-control}

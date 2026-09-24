@@ -26,6 +26,14 @@ contents to the owning numbered section when updating results.
 `figures/` contains the PDF figure assets. `references.bib` and the bundled
 conference style files are required for compilation. `.archive/` is ignored.
 
+The scale comparison in Figure 5 now uses Analysis038 Figure 01, copied to
+the stable asset path `figures/02-14m-70m-latency-quality.pdf`. Figure 6 uses
+Analysis038 Figure 03, adding the 31M Base trajectory. The 31M result table
+is embedded in `11-appendix-complete-results.tex` as `tab:31m-results`.
+Evidence, generators and the approved change checklist are linked from
+[Analysis038 O003](../../analyses/038-2026-09-24-base-t2-t7-scale-frontier/observations/003-manuscript-integration.md).
+The Analysis038 Figure 02 companion is not used in this draft.
+
 From this directory, run:
 
 ```powershell

@@ -1,0 +1,948 @@
+{
+  "architecture": {
+    "architectures": [
+      "GPTNeoXForCausalLM"
+    ],
+    "bos_token_id": 0,
+    "classifier_dropout": 0.1,
+    "eos_token_id": 0,
+    "hidden_act": "gelu",
+    "hidden_size": 256,
+    "initializer_range": 0.02,
+    "intermediate_size": 1024,
+    "layer_norm_eps": 1e-05,
+    "max_position_embeddings": 2048,
+    "model_type": "gpt_neox",
+    "num_attention_heads": 8,
+    "num_hidden_layers": 6,
+    "rotary_emb_base": 10000,
+    "rotary_pct": 0.25,
+    "tie_word_embeddings": false,
+    "torch_dtype": "float16",
+    "transformers_version": "4.29.2",
+    "use_cache": true,
+    "use_parallel_residual": true,
+    "vocab_size": 50304
+  },
+  "initialization": {
+    "architecture": "EleutherAI/pythia-31m-deduped",
+    "model": {
+      "bytes": 121987512,
+      "path": "prelaunch/initialization/pythia31m-seed1234.safetensors",
+      "sha256": "07526731f46031c921b66a035d730c46d3a3a0bebadb427922bbc76d2bdb257a"
+    },
+    "origin": "Locally generated random step-zero weights; never released/trained weights",
+    "parameter_count": 30494720,
+    "parameter_sha256": "731554f7a0e11b2056650f5928fc8dc79db5b0738f49f360ae33a91d631b767e",
+    "recipe": {
+      "bias_elements_zeroed": 13824,
+      "normalization_elements_initialized": 6656,
+      "ordinary": "small_init",
+      "ordinary_weight_elements": 28508160,
+      "residual_output": "wang_init",
+      "residual_output_weight_elements": 1966080,
+      "rng_note": "Transformers module traversal; not GPT-NeoX-bitwise draw order",
+      "small_init_std": 0.03952847075210474,
+      "wang_init_std": 0.020833333333333332
+    },
+    "revision": "b7782556ba7adfb4730d9bda7d12aa44d88fa132",
+    "rng": {
+      "bytes": 14610,
+      "path": "prelaunch/initialization/pythia31m-seed1234-rng.pt",
+      "sha256": "884c30631073e89b71ae87cc0da182d4da2fdb9be7c75f3ee15d64b7f63565fe"
+    },
+    "runtime": {
+      "python": "3.12.10",
+      "torch": "2.11.0+cpu",
+      "transformers": "5.12.1"
+    },
+    "seed": 1234
+  },
+  "matched_identity": {
+    "initial_parameter_sha256": "731554f7a0e11b2056650f5928fc8dc79db5b0738f49f360ae33a91d631b767e",
+    "training_schedule_sha256": "d17a6c0c0d4aacff4b477e6d576f511c12c04ebbc37468f08e6fe61ff1c6ad8e"
+  },
+  "training": {
+    "max_steps": 712,
+    "peak_learning_rate": 0.001,
+    "minimum_learning_rate": 0.0001,
+    "global_batch_size": 1024,
+    "micro_batch_size": 4,
+    "gradient_accumulation_steps": 256,
+    "optimizer": "adamw",
+    "adamw_betas": [
+      0.9,
+      0.95
+    ],
+    "adamw_eps": 1e-08,
+    "weight_decay": 0.1,
+    "gradient_clip_norm": 1.0,
+    "warmup_fraction": 0.01,
+    "precision": "float16_dynamic",
+    "parameter_dtype": "float32",
+    "initial_loss_scale_power": 12,
+    "loss_scale_window": 1000,
+    "loss_scale_hysteresis": 2,
+    "minimum_loss_scale": 1.0,
+    "fp16_ol1_overflow_policy": "skip_entire_boundary",
+    "hidden_dropout": 0.0,
+    "attention_dropout": 0.0,
+    "activation_checkpointing": false,
+    "device": "cuda",
+    "log_every_steps": 1
+  },
+  "tokens_per_parameter": 48.964942914707855,
+  "ceilings_31m": {
+    "T0": {
+      "reachable_product_count": 0,
+      "model_product_count": 42483056640,
+      "percent": 0.0,
+      "unit": "scalar products per full uncached sequence"
+    },
+    "T1": {
+      "reachable_product_count": 3221225472,
+      "model_product_count": 42483056640,
+      "percent": 7.582376897445391,
+      "unit": "scalar products per full uncached sequence"
+    },
+    "T2": {
+      "reachable_product_count": 4026531840,
+      "model_product_count": 42483056640,
+      "percent": 9.477971121806739,
+      "unit": "scalar products per full uncached sequence"
+    },
+    "T4": {
+      "reachable_product_count": 9663676416,
+      "model_product_count": 42483056640,
+      "percent": 22.74713069233617,
+      "unit": "scalar products per full uncached sequence"
+    },
+    "T7": {
+      "reachable_product_count": 16109273088,
+      "model_product_count": 42483056640,
+      "percent": 37.91928915216587,
+      "unit": "scalar products per full uncached sequence"
+    }
+  },
+  "rows_31m": [
+    {
+      "recipe": "Base",
+      "kappa": null,
+      "loss": 4.565514347256993,
+      "delta_loss": 0.0,
+      "latency_ms": 1.0238611173053367,
+      "delta_latency_ms": 0.0,
+      "S_model_percent": 1.825352142588638e-05,
+      "zero_product_count": 2621073,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/001-20260924-131935-fc20305e",
+      "checkpoint_sha256": "f4f65abbf6eae727cdcddc9a1d7c5b146b8c452111cbd7e70752c3d76ab25310"
+    },
+    {
+      "recipe": "T2/Ph",
+      "kappa": 0.0,
+      "loss": 4.688475834547416,
+      "delta_loss": 0.12296148729042233,
+      "latency_ms": 1.020590855498442,
+      "delta_latency_ms": -0.0032702618068947142,
+      "S_model_percent": 8.588719472725117,
+      "zero_product_count": 1233277688688,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/002-20260924-131935-52b2ec52",
+      "checkpoint_sha256": "fa1616c1724cb7af2c60b2459844f26dc0637d3ae25d3e31e058a7b1e18b5282"
+    },
+    {
+      "recipe": "T2/Ph",
+      "kappa": 0.01,
+      "loss": 4.701283584685015,
+      "delta_loss": 0.13576923742802194,
+      "latency_ms": 1.0172934530641367,
+      "delta_latency_ms": -0.006567664241200033,
+      "S_model_percent": 8.732630112576508,
+      "zero_product_count": 1253942210548,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/003-20260924-131733-12736c13",
+      "checkpoint_sha256": "a9d2bb672b7c8c6b0d1b85a8a50b9d031f4c0a75085cb81813bd4650ec1c4537"
+    },
+    {
+      "recipe": "T2/Ph",
+      "kappa": 0.05,
+      "loss": 4.702920687974557,
+      "delta_loss": 0.13740634071756386,
+      "latency_ms": 0.9693833290716584,
+      "delta_latency_ms": -0.054477788233678326,
+      "S_model_percent": 9.056342883402843,
+      "zero_product_count": 1300425011514,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/004-20260924-131732-063e72d1",
+      "checkpoint_sha256": "b57e55d7d5f1ad952cf528c412a63a4fdce62ab97f30e133cb69a4568d5acb84"
+    },
+    {
+      "recipe": "T2/Ph",
+      "kappa": 0.1,
+      "loss": 4.757208101848174,
+      "delta_loss": 0.19169375459118054,
+      "latency_ms": 0.9084180598683518,
+      "delta_latency_ms": -0.11544305743698491,
+      "S_model_percent": 9.259300514392182,
+      "zero_product_count": 1329568252115,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/005-20260924-134241-3b66fc99",
+      "checkpoint_sha256": "48ebc375413af6445c313e251be62345bf2b2f2bafbbd01d588ba9647ff46192"
+    },
+    {
+      "recipe": "T2/Ph",
+      "kappa": 0.5,
+      "loss": 5.220418063846566,
+      "delta_loss": 0.6549037165895726,
+      "latency_ms": 0.6811175196596156,
+      "delta_latency_ms": -0.34274359764572104,
+      "S_model_percent": 9.465328139507053,
+      "zero_product_count": 1359152321558,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/006-20260924-131944-bf47015e",
+      "checkpoint_sha256": "d4d1852db12d6b5ad0922e341e221549ad9674b55ed9ee457422fe9ba2e765ec"
+    },
+    {
+      "recipe": "T7/Ph",
+      "kappa": 0.0,
+      "loss": 4.894259040877664,
+      "delta_loss": 0.3287446936206706,
+      "latency_ms": 0.9868528641564038,
+      "delta_latency_ms": -0.03700825314893286,
+      "S_model_percent": 15.33652885332232,
+      "zero_product_count": 2202214068906,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/001-20260924-160333-725d9d09",
+      "checkpoint_sha256": "a72779793b593fa4b3575d548e1f14cf463a33fa5ae7b0559964480789fb8931"
+    },
+    {
+      "recipe": "T7/Ph",
+      "kappa": 0.01,
+      "loss": 4.874076736043897,
+      "delta_loss": 0.30856238878690334,
+      "latency_ms": 0.9852173665042964,
+      "delta_latency_ms": -0.03864375080104032,
+      "S_model_percent": 15.741957609248091,
+      "zero_product_count": 2260430691375,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/002-20260924-160334-363a42c2",
+      "checkpoint_sha256": "e7cb8ba0b3acbc5f84832a42f32c03d7eb8e31c65860a30b2e714302c5167186"
+    },
+    {
+      "recipe": "T7/Ph",
+      "kappa": 0.05,
+      "loss": 4.893720787657789,
+      "delta_loss": 0.3282064404007956,
+      "latency_ms": 0.8955874277606994,
+      "delta_latency_ms": -0.12827368954463725,
+      "S_model_percent": 16.774879713036263,
+      "zero_product_count": 2408750797626,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/003-20260924-164515-32400f4c",
+      "checkpoint_sha256": "877294e27116c4706870217fa675eea01ede883d2368954929126a5f83c314e1"
+    },
+    {
+      "recipe": "T7/Ph",
+      "kappa": 0.1,
+      "loss": 4.942717382893759,
+      "delta_loss": 0.37720303563676616,
+      "latency_ms": 0.8006442240483171,
+      "delta_latency_ms": -0.22321689325701954,
+      "S_model_percent": 17.532663204201636,
+      "zero_product_count": 2517562998965,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/004-20260924-171625-fd614589",
+      "checkpoint_sha256": "b4323a4fe9b6a654d7dd11ac3b10a59fec025491d451eae255fc02ebc037e476"
+    },
+    {
+      "recipe": "T7/Ph",
+      "kappa": 0.5,
+      "loss": 5.520964921578853,
+      "delta_loss": 0.9554505743218602,
+      "latency_ms": 0.6068688637232821,
+      "delta_latency_ms": -0.4169922535820546,
+      "S_model_percent": 22.65731212695773,
+      "zero_product_count": 3253425335471,
+      "model_product_count": 14359273144320,
+      "source_attempt": "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/005-20260924-160753-fe75b9c7",
+      "checkpoint_sha256": "5c01144c241bc792adda29602612ec22f3c4e4d4e7077e4cb17d7e2402c08c9d"
+    }
+  ],
+  "base_kernel_latency_ms": 1.1062549786115434,
+  "base_native_latency_ms": 1.0238611173053367,
+  "illustrative_kappa": 0.1,
+  "illustrative_selection_rule": "Same moderate threshold as the main 14M comparison; fixed before extracting numbers.",
+  "cross_scale_claims": {
+    "14M": {
+      "t2_lower_loss_at_all_matched_kappas": true,
+      "t7_lower_minimum_sweep_latency": true,
+      "t2_kappa0_to_01_latency_reduction_ms": 0.038921261568599874,
+      "base_references": [
+        {
+          "model": "14M",
+          "backend": "kernel",
+          "loss": 5.208582500028893,
+          "latency_ms": 0.651573035007824,
+          "checkpoint_key": "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+          "timing_session": "Run029",
+          "implementation": "K050",
+          "source_field": "k050_gm_ms",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        },
+        {
+          "model": "14M",
+          "backend": "PyTorch",
+          "loss": 5.208582500028893,
+          "latency_ms": 0.6554423980056099,
+          "checkpoint_key": "42e1d13a222f601407511bb55dcc7c35c79cc8d9d0e5cb87e8738c59f1148a11",
+          "timing_session": "Run029",
+          "implementation": "native_graph",
+          "source_field": "native_gm_ms",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        }
+      ]
+    },
+    "31M": {
+      "t2_lower_loss_at_all_matched_kappas": true,
+      "t7_lower_minimum_sweep_latency": true,
+      "t2_kappa0_to_01_latency_reduction_ms": 0.1121727956300902,
+      "base_references": [
+        {
+          "model": "31M",
+          "backend": "kernel",
+          "loss": 4.565514347256993,
+          "latency_ms": 1.1062549786115434,
+          "checkpoint_key": "f4f65abbf6eae727cdcddc9a1d7c5b146b8c452111cbd7e70752c3d76ab25310",
+          "timing_session": "Run054",
+          "implementation": "opt073-31m-v1",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        },
+        {
+          "model": "31M",
+          "backend": "PyTorch",
+          "loss": 4.565514347256993,
+          "latency_ms": 1.0238611173053367,
+          "checkpoint_key": "f4f65abbf6eae727cdcddc9a1d7c5b146b8c452111cbd7e70752c3d76ab25310",
+          "timing_session": "Run054",
+          "implementation": "native_graph",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        }
+      ]
+    },
+    "70M": {
+      "t2_lower_loss_at_all_matched_kappas": true,
+      "t7_lower_minimum_sweep_latency": true,
+      "t2_kappa0_to_01_latency_reduction_ms": 0.5485160377610978,
+      "base_references": [
+        {
+          "model": "70M",
+          "backend": "kernel",
+          "loss": 4.099767337889361,
+          "latency_ms": 2.7321117313254226,
+          "checkpoint_key": "b336f8847b1e9b179b4da6bb139d22705dbabc968241070153955c105663a832",
+          "timing_session": "Run045",
+          "implementation": "opt073",
+          "source_field": "candidate_graph",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        },
+        {
+          "model": "70M",
+          "backend": "PyTorch",
+          "loss": 4.099767337889361,
+          "latency_ms": 1.6110477085782202,
+          "checkpoint_key": "b336f8847b1e9b179b4da6bb139d22705dbabc968241070153955c105663a832",
+          "timing_session": "Run045",
+          "implementation": "native_graph",
+          "source_field": "native_graph",
+          "scope": "0",
+          "pressure": "none",
+          "kappa": null
+        }
+      ]
+    }
+  },
+  "qualified_processes": [
+    {
+      "session": "Run054",
+      "attempt": "final-001-base-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.567767732913077,
+        "native": 4.567767732913077,
+        "native_graph": 4.567767732913077
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-base-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.567767732913077,
+        "native": 4.567767732913077,
+        "native_graph": 4.567767732913077
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-base-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.567767732913077,
+        "native": 4.567767732913077,
+        "native_graph": 4.567767732913077
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.691256071366323,
+        "native": 4.691255798956471,
+        "native_graph": 4.691255798956471
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.691256071366323,
+        "native": 4.691255798956471,
+        "native_graph": 4.691255798956471
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.691256071366323,
+        "native": 4.691255798956471,
+        "native_graph": 4.691255798956471
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p01-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.703771762738348,
+        "native": 4.703771860128398,
+        "native_graph": 4.703771860128398
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p01-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.703771762738348,
+        "native": 4.703771860128398,
+        "native_graph": 4.703771860128398
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p01-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.703771762738348,
+        "native": 4.703771860128398,
+        "native_graph": 4.703771860128398
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p05-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.705316237322017,
+        "native": 4.7053188407415565,
+        "native_graph": 4.7053188407415565
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p05-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.705316237322017,
+        "native": 4.7053188407415565,
+        "native_graph": 4.7053188407415565
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p05-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.705316237322017,
+        "native": 4.7053188407415565,
+        "native_graph": 4.7053188407415565
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p1-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.75987064111492,
+        "native": 4.759870408225669,
+        "native_graph": 4.759870408225669
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p1-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.75987064111492,
+        "native": 4.759870408225669,
+        "native_graph": 4.759870408225669
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p1-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 4.75987064111492,
+        "native": 4.759870408225669,
+        "native_graph": 4.759870408225669
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p5-r1",
+      "replicate": 1,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 5.222517310389871,
+        "native": 5.222517310389871,
+        "native_graph": 5.222517310389871
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p5-r2",
+      "replicate": 2,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 5.222517310389871,
+        "native": 5.222517310389871,
+        "native_graph": 5.222517310389871
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run054",
+      "attempt": "final-001-hz-h-ol1-kappa-0p5-r3",
+      "replicate": 3,
+      "gpu_uuid": "5b62058e-b425-10b5-cbe4-f3c6cd36f80a",
+      "losses": {
+        "kernel_graph": 5.222517310389871,
+        "native": 5.222517310389871,
+        "native_graph": 5.222517310389871
+      },
+      "source_identity": "4f4898f5ce82a239ffb5812fa80fc815e3fdee143b596fee1e43ea553b55c3b3"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0-r1",
+      "replicate": 1,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.897008919223596,
+        "native": 4.897008919223596,
+        "native_graph": 4.897008919223596
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0-r2",
+      "replicate": 2,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.897008919223596,
+        "native": 4.897008919223596,
+        "native_graph": 4.897008919223596
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0-r3",
+      "replicate": 3,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.897008919223596,
+        "native": 4.897008919223596,
+        "native_graph": 4.897008919223596
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p01-r1",
+      "replicate": 1,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.876745911788688,
+        "native": 4.876748309842251,
+        "native_graph": 4.876748309842251
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p01-r2",
+      "replicate": 2,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.876745911788688,
+        "native": 4.876748309842251,
+        "native_graph": 4.876748309842251
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p01-r3",
+      "replicate": 3,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.876745911788688,
+        "native": 4.876748309842251,
+        "native_graph": 4.876748309842251
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p05-r1",
+      "replicate": 1,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.896273549888118,
+        "native": 4.896273490607218,
+        "native_graph": 4.896273490607218
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p05-r2",
+      "replicate": 2,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.896273549888118,
+        "native": 4.896273490607218,
+        "native_graph": 4.896273490607218
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p05-r3",
+      "replicate": 3,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.896273549888118,
+        "native": 4.896273490607218,
+        "native_graph": 4.896273490607218
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p1-r1",
+      "replicate": 1,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.945575339161839,
+        "native": 4.945575374448089,
+        "native_graph": 4.945575374448089
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p1-r2",
+      "replicate": 2,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.945575339161839,
+        "native": 4.945575374448089,
+        "native_graph": 4.945575374448089
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p1-r3",
+      "replicate": 3,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 4.945575339161839,
+        "native": 4.945575374448089,
+        "native_graph": 4.945575374448089
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p5-r1",
+      "replicate": 1,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 5.52548279691985,
+        "native": 5.52548279691985,
+        "native_graph": 5.52548279691985
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p5-r2",
+      "replicate": 2,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 5.52548279691985,
+        "native": 5.52548279691985,
+        "native_graph": 5.52548279691985
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    },
+    {
+      "session": "Run055",
+      "attempt": "final-001-a7-h-ol1-kappa-0p5-r3",
+      "replicate": 3,
+      "gpu_uuid": "d77f736c-1ebe-6277-380f-b544e7271074",
+      "losses": {
+        "kernel_graph": 5.52548279691985,
+        "native": 5.52548279691985,
+        "native_graph": 5.52548279691985
+      },
+      "source_identity": "9e3330ca380d0e2e24d14dc7adf66bc4d3105630d5962d628a53ad0b9dd8435e"
+    }
+  ],
+  "source_sha256": {
+    "runs/054-2026-09-24-pythia31m-t2-ph/architecture_config.json": "3a6bc92e94cd3dca46e2a3eef81a8ebb17185ffb4d5ad16bb01fd67021ccd5b6",
+    "runs/054-2026-09-24-pythia31m-t2-ph/prelaunch/initialization/metadata.json": "e6f84b24d6f1df2cf1aa77f3959283a624de9e2f104ea621ad8bd33fe9ba7baf",
+    "analyses/037-2026-09-24-14m-31m-70m-latency-quality/data/31m-results.json": "053af3179f2d529ffb2f9b802c20b5491aea5e7aad603d723fc7099c83768f9e",
+    "analyses/038-2026-09-24-base-t2-t7-scale-frontier/data/31m-t7-results.json": "9e6d2d18ff51a7a409384c182c4bf1679a3d09db35da87ea2050e457b2c17d2e",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/verification.json": "b0d9c88bd30cbffcbc0b1d26bfc186eae70747b9354812ce8a4f5a79b34794b5",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-base-grid.json": "5e21a347c9f2b6e45e36ea2cb69cfc46a1e969e04f26523cbb15c1e3e3e3d7b0",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r1/runtime-diagnostics.json": "3c770bcf879bbdd12b3564972a2ed9947d88ea6ac405fe0db0dc0aa17eb3f4c6",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r1/manifest.json": "02ce166bf80ce780d1b5117d571bdabab8a068bde6a8ba1158f5ffd6c9203285",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r1/quality.json": "22d5898aa6d69bf5c1dcfe4cf332363aa06fab92154075c12ba6b1eb541e2f76",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r1/timing.json": "aa65c7c17e09d7e09a7c59c373345441a6986919c941ab8c2b84728f891ecc48",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r2/manifest.json": "a2822559e82380ba4f306ceccc1e51fa26ee761c60c6e4811168c7803d3ab037",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r2/quality.json": "22d5898aa6d69bf5c1dcfe4cf332363aa06fab92154075c12ba6b1eb541e2f76",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r2/timing.json": "a56ea29dbca6b42a98c988a9cb3aebe25ee1c4872290fe67c379214a069d9bf8",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r3/manifest.json": "65f45f0c5a124366c22777430c3c58aa34454becb27782fe1c0c2585d2843092",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r3/quality.json": "22d5898aa6d69bf5c1dcfe4cf332363aa06fab92154075c12ba6b1eb541e2f76",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-base-r3/timing.json": "6c405a463a43d38e4dd59cdd9a3524d72f35e7e78cacb042e30bc966676152d7",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-hz-h-ol1-kappa-0-grid.json": "4726c7af2066e85c48eda0ab5faa93e88fc7d1896084411d886a4ca59edba411",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r1/runtime-diagnostics.json": "cc9180de12d5badca2b47681d5a59796fbe01002d309ad5f20f87ab99c38bb59",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r1/manifest.json": "006a5daae99c83b3da0d7d30b6bc16ed625384968c7b0aa9225ddbe8c21a076d",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r1/quality.json": "ae8c2d121881768d09f074dc6f7eaf849ad938a6cd90e9641a06c8c4533e3f0b",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r1/timing.json": "86faeefa0ce1825ea101fdfa5dfcbecb8fe8ea3cd21ba8e8f9fee4d9ec23dc63",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r2/manifest.json": "edd07fa690a0b1c794dfbcb23d83e62c4fdb294f06cf9334a277754020cf66bf",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r2/quality.json": "ae8c2d121881768d09f074dc6f7eaf849ad938a6cd90e9641a06c8c4533e3f0b",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r2/timing.json": "d414b1c4088d0d8a61aaf9cc0e6672823db33d0da73ec9af20330ca6ff5929e1",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r3/manifest.json": "daf22d59bc802db74646a6d5e90dfeb1048cbc1f46907d3f8b3046165b2424a5",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r3/quality.json": "ae8c2d121881768d09f074dc6f7eaf849ad938a6cd90e9641a06c8c4533e3f0b",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0-r3/timing.json": "4ca34dfc6a8c306bf80280b5d898aab73ea86ba2016518f52372ee3306c1d700",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-hz-h-ol1-kappa-0p01-grid.json": "84e7af24ece30eac0be3638ec197418307da8efc0885d4239b8a5a733d13b115",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r1/runtime-diagnostics.json": "70a6b48bd4090280d8e619f75cf06accce8b6063c3a713e25d04a387dd53796f",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r1/manifest.json": "9250312a5c6071b8c2f0710a9276a125338f5cffedfa71b939cd4fb8cc28dcb5",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r1/quality.json": "6a4be4f5a1ea1af521c98a789ab5a484cf7565d8ef9d23208b604fa280448612",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r1/timing.json": "399f2b1d8caa123e2c8c8e1042c80de9fc5e5d9037d244400b25034cadf835d7",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r2/manifest.json": "ba0b676c2d39370b4b256fa567ed8963c8769b47ae0979d25f22e782c98b1888",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r2/quality.json": "6a4be4f5a1ea1af521c98a789ab5a484cf7565d8ef9d23208b604fa280448612",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r2/timing.json": "3ec4bcbe683d83fbfd94f06eb6bfcddad7adcc515e50e9fe0eb46f804b083bb7",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r3/manifest.json": "247f6fc6d9c923c5e99c21b36a534c774e1ace5f23cf50619a9b6838523d877a",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r3/quality.json": "6a4be4f5a1ea1af521c98a789ab5a484cf7565d8ef9d23208b604fa280448612",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p01-r3/timing.json": "00b3a2bb90a419c0eece2205480afcad0f8f0339f6fd75263f93b94598cb158e",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-hz-h-ol1-kappa-0p05-grid.json": "7f50b3818b2113b397379acceec9c46da099c9b14c7aca6676b69425cfe1ceac",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r1/runtime-diagnostics.json": "b01a4daf6b9312c5eca7bf8e45e1725253da28224cb4a4bd9a6e4edebe5b57ec",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r1/manifest.json": "8c356851a4b22ba79ac8d8d64e1c123d3208c1e4354340f1d27d1c480afc00e7",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r1/quality.json": "fe3283a984c4cdbb27f9d90138402933e018be902c42c9981bcc49b1550cf915",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r1/timing.json": "c3ded61cc395e42b0b983a172081f016a24fa8daab3904d4eb0ead7f41604b87",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r2/manifest.json": "cedd3110d949a364ac896145b4206cc9aa46e8078e96047d02b9146637e016ab",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r2/quality.json": "fe3283a984c4cdbb27f9d90138402933e018be902c42c9981bcc49b1550cf915",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r2/timing.json": "6f0a28664565572f5156c91c39f8e8d31f4abe92e1c31b4bc6f547bcfb40f139",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r3/manifest.json": "dcfd8d3daeedfd83728b1f237431259194c85a0505c1eed175cf7122c70f934d",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r3/quality.json": "fe3283a984c4cdbb27f9d90138402933e018be902c42c9981bcc49b1550cf915",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p05-r3/timing.json": "23f53f951dd24df469017ae39389b72015591c1e1f0a7c7e8b48ba8fbdaaf326",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-hz-h-ol1-kappa-0p1-grid.json": "af185bd39d6c49fffdd02ff7a8ca869175fe03de997f4bc4f5cc29fef4e5d67c",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r1/runtime-diagnostics.json": "e4a2be701a41a2a2cca7ca5ae9487a1d4dfd9198eacddc4d9e42008f0cd58226",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r1/manifest.json": "62f682d967f617a6b6c585a2296c96704ae4cc1c01441d19c9224cf64ef38bb1",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r1/quality.json": "93c37a69c852dab8de830bd65e50a78daf6958d29e269b21b8d386f5ff7d6045",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r1/timing.json": "bef8a44e1491a8cf9b07a611f2e80f45ec650bd2462e7b2036ab70e2e4ce613a",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r2/manifest.json": "d7d88ebcbc7aa9c25976752f622039e32aec9a8659ada4c6502aade2f50950ea",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r2/quality.json": "93c37a69c852dab8de830bd65e50a78daf6958d29e269b21b8d386f5ff7d6045",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r2/timing.json": "0f3b5f10f81e26d85a41f7245724f72653a7ca7a39cb2428036ac24c8be87c95",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r3/manifest.json": "695f4426eb269897c5dd49e81e739307d4053a14157d52cccc52729e54cf6fed",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r3/quality.json": "93c37a69c852dab8de830bd65e50a78daf6958d29e269b21b8d386f5ff7d6045",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p1-r3/timing.json": "867c3fab9c612c6d3a1b99893e30a48f4e18ce6a881c7e716a2db552dbf7028a",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/final-001-hz-h-ol1-kappa-0p5-grid.json": "366010f201fb844da49dfb387036cd2e6f6a04c21267c04ada264cc20c3e97f7",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r1/runtime-diagnostics.json": "badb7bf9dd5fc73785ff8fac4a7bc040896a55234dcbe28573ac1f5adef9db65",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r1/manifest.json": "cb362cf02b47f336fb4d91243da71836998036f975fd46aad6356e43081ccce1",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r1/quality.json": "82c8ca0e6c1d104af44efbcf2357bda5849a848ea0ceb7332ca58afeefd4e932",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r1/timing.json": "11c30cb8dca2255dba432af6bd389aa01d092f7f2cd04f2476d9b1b8bdb8e2b2",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r2/manifest.json": "ff3fc8ecedd43326ac6e5ee1c6d7057154fa39b4d56be88d2106886451b02009",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r2/quality.json": "82c8ca0e6c1d104af44efbcf2357bda5849a848ea0ceb7332ca58afeefd4e932",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r2/timing.json": "84312626764a2e18a0785d21a3f5fecfeb4f004c723a1d8ca85849793892606c",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r3/manifest.json": "934f584f21a9e192b36c05b4d281e4a170dc67e61d302914ee529234599735fd",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r3/quality.json": "82c8ca0e6c1d104af44efbcf2357bda5849a848ea0ceb7332ca58afeefd4e932",
+    "runs/054-2026-09-24-pythia31m-t2-ph/latency/artifacts/attempts/final-001-hz-h-ol1-kappa-0p5-r3/timing.json": "c01bf0020ee01b956b876ca6270f2444ce6d2d523981f64e775b6ce10587c557",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/verification.json": "ff21e2581979d4d3c3417df35370b072a5ad435fa8bae4160f2032539bec560b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/final-001-a7-h-ol1-kappa-0-grid.json": "0c4fbdd1b5815a23fc750846a3c9b3d930e3eb939e3d619af08b0187e9321b63",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r1/runtime-diagnostics.json": "8874d815600d778a6f4251d2f4530a055903d17e9ea1c2209e2c7784ced1cdfb",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r1/manifest.json": "23947d2db731032a23b32c91e150fbf5a3e8401f217ef9cbf46a2f6621605a0b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r1/quality.json": "16533cff52e0d07369d88c3d67772679ac70273b7269fb3a57670deba18872bf",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r1/timing.json": "129e5682b24ccd01c1b091ffc206cb90260efbd4ab1a177b38e07883ffa6228e",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r2/manifest.json": "6db77f4a678a7933aa53f04ea40aa151fe684f11410f7782323cac24d438a6e3",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r2/quality.json": "16533cff52e0d07369d88c3d67772679ac70273b7269fb3a57670deba18872bf",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r2/timing.json": "8067855f29373635c1a07e709402fbbf0dda37cdc8e8012c58123f2390a6f50c",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r3/manifest.json": "bd998502985aa1f324f9251c1f8898326c514ed33d5def5493f0412ebce13778",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r3/quality.json": "16533cff52e0d07369d88c3d67772679ac70273b7269fb3a57670deba18872bf",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0-r3/timing.json": "5175c9c418448e8112214de6187a1789c2eaa4ae1b49679c8d634cab74bfd58a",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/final-001-a7-h-ol1-kappa-0p01-grid.json": "4299a0110f3e5941cc1f0bc58dbd56ea52ad4caf08876077bc37a0d4b5dec979",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r1/runtime-diagnostics.json": "d5ea059c36d0a8b64042f63240d0e2d021a50ce26e5976f9789660bf0bf64447",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r1/manifest.json": "a7bba1a2fac40c297fc257784f852234c6813bf89f020793ff275ee69c1b01b2",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r1/quality.json": "282f66a542cb844a6ecb5517ae0405b0e03fb20600b6b29680ea0b1a9b39f8e8",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r1/timing.json": "e3b9163ff1def6f7823e7628661a9fe11ac69d3566cd84894704d882d91b1aab",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r2/manifest.json": "868909ef915c948c2005a81275aeddf9ab670e5952865b1d24f9d212ce46202b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r2/quality.json": "282f66a542cb844a6ecb5517ae0405b0e03fb20600b6b29680ea0b1a9b39f8e8",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r2/timing.json": "cdcaaa27d992c767556bf8b2f0f0c946ba3d9b329ff4cecab37e7208e2355618",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r3/manifest.json": "927cf2c9ab147a8e5809a152da41f929dffc8cbc5f38a191f2024ebd9d14050c",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r3/quality.json": "282f66a542cb844a6ecb5517ae0405b0e03fb20600b6b29680ea0b1a9b39f8e8",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p01-r3/timing.json": "4d4c0d84aafe818f5c9b3a76220a0341df70aeb1b8488ba3b6f1c7d4545e9ad4",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/final-001-a7-h-ol1-kappa-0p05-grid.json": "daddbd2db84bc19b315cd431b6ddeeb0ff91c202f1be97213532c45c0382b7ec",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r1/runtime-diagnostics.json": "02d790d908574e01ade876748af31a8b0f855cc61f802c378e47b5b0fceb4ee8",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r1/manifest.json": "d5d061c4643f36fdebbd68f01201bb76271f538b29f1794f7842c25343d86ba2",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r1/quality.json": "decee06e15e3ef4f68d7ba639e8f7be06e50250cc1ad0b338c97fb3c2172270f",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r1/timing.json": "e8481ecb439768f57e914d3900c5b4ae17bb9c78e6b34e23b2cdd4333293686b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r2/manifest.json": "9593d6aa093dd88be110bc9dbf9fba1e16d45c9d53adcea1c21134c3e7afe993",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r2/quality.json": "decee06e15e3ef4f68d7ba639e8f7be06e50250cc1ad0b338c97fb3c2172270f",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r2/timing.json": "f56f940d5a852fbee21f69975fd534035248df6cf88901c03e9a7bf61d60500c",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r3/manifest.json": "8a9c5fbc706ea7c8ce3a64f35888261a74ab1c153fab8b00264fdf7afc79f73f",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r3/quality.json": "decee06e15e3ef4f68d7ba639e8f7be06e50250cc1ad0b338c97fb3c2172270f",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p05-r3/timing.json": "c118385ed96cd9a4c62726756b52952e0cb1183626e50136048b2c13909466d2",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/final-001-a7-h-ol1-kappa-0p1-grid.json": "bb5495d075a376c05d57acf99520a961b559f66386b4f74b917815edf2a3554d",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r1/runtime-diagnostics.json": "970475b9e9bda8be21ad994d1b9bd99d1ac0206ace722e258c3eae71b5161286",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r1/manifest.json": "b76f2d997fec9465b664d26386aec6cce8e58ae77ae66e8d6ba2700ccf4a6c8b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r1/quality.json": "a872e3df0b0f500a6b0039fd2a8b72f9fdf3e038f38a19785374022a8bca4a19",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r1/timing.json": "b80837d8d94ab737808fc9c1c6a0a6e5518cdae395b62db7290a87cf86970545",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r2/manifest.json": "a53a0e52cfbcfce85756404048ebec5d9e8e549058887b21e0dcddc191dd27db",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r2/quality.json": "a872e3df0b0f500a6b0039fd2a8b72f9fdf3e038f38a19785374022a8bca4a19",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r2/timing.json": "e85d0f3960cf03d1be46b19f46422ae9e058904b5a22c604c349353e51e0330c",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r3/manifest.json": "d8d0a23400e38efd05c7573fe9ebeadae3d444f9518b1758600c3cbdbcb1502b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r3/quality.json": "a872e3df0b0f500a6b0039fd2a8b72f9fdf3e038f38a19785374022a8bca4a19",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p1-r3/timing.json": "9bb71c705c6ed699844191beb01c904c35f95adb7d2864da0806921c26e3abe2",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/final-001-a7-h-ol1-kappa-0p5-grid.json": "080f65b05b63435948def2c4a0201aae94a8f28e94f0306457c21b8c02b4c2b4",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r1/runtime-diagnostics.json": "0a93ceb7cda49a8312dfd879c7de0e42f9a4f96273ab124b291a4179a60446ab",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r1/manifest.json": "ba3ce99316091d9b4fdfc293fd9f5428d2ad3e629398b7037032df21c56a7ede",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r1/quality.json": "bc5d442bf01415693d6311b37846c5e226593bd921cd0ac4bc4d15bbed56a665",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r1/timing.json": "eb73fc0cfdfc990061698ac930a246f3da77c761f04204ed6e4432998e4f9f3e",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r2/manifest.json": "785260fe36fe98c204b7b12f91f9b769b7dda2adfc01140b9b2ea9ed9cfb2657",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r2/quality.json": "bc5d442bf01415693d6311b37846c5e226593bd921cd0ac4bc4d15bbed56a665",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r2/timing.json": "68d3b3b956986227c17bdbf6227cbe27144085eb4ed389b79fcebe51d069774c",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r3/manifest.json": "e25b28c757f5ba7a8e2c62094b1401702d3b202da4911530ce45ed935914e2b8",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r3/quality.json": "bc5d442bf01415693d6311b37846c5e226593bd921cd0ac4bc4d15bbed56a665",
+    "runs/055-2026-09-24-pythia31m-t7-ph/latency/artifacts/attempts/final-001-a7-h-ol1-kappa-0p5-r3/timing.json": "b7592eda763557e1921f70605057a20b0d01f0d038bc739eb79c82d04c50cc6d",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/001-20260924-131935-fc20305e/manifest.json": "8f45c3bc85c4a8c94964c4d03ea21324b7a2611f7b0e9d83a971e744987a8782",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/001-20260924-131935-fc20305e/metrics.json": "81afd8e0b39f52cacf61a205509b81a2cc7bf1a81b9f58166655eb1ad19ad4e4",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/001-20260924-131935-fc20305e/diagnostics/logical_products.json": "5ae9f2d588a275b5fae1e85c84d5f473024acf0344580effb232df6b0623fcce",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/001-20260924-131935-fc20305e/config.yaml": "de135039dc6129458024700b3d054e21ca0c529ce27857af83b5b05e86a6a293",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/002-20260924-131935-52b2ec52/manifest.json": "0906bebd5e05d80b04a12bfac3ded7695f9138fdada0a92b6adca77477334278",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/002-20260924-131935-52b2ec52/metrics.json": "9ff012d6bd73b702abef7ec4cf06f787bf12301ca052d546932735d7e3fcbae8",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/002-20260924-131935-52b2ec52/diagnostics/logical_products.json": "31e76e8438791709e5cea9d00194f4a512072868b5a6442c416d66604f907710",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/002-20260924-131935-52b2ec52/config.yaml": "c2d86cd6cafa2409a5c7081995941a8c46f91a5c908fb4a98a793fd44de8722f",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/003-20260924-131733-12736c13/manifest.json": "af65a61d2be0b1db7ed676e591f17ac6d8d0916e9ab153909c518bc80ad3302d",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/003-20260924-131733-12736c13/metrics.json": "0d58806c0b5589e2edab4ac67c1ec2767ab9e103c66711e3e9b75c714a1173b3",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/003-20260924-131733-12736c13/diagnostics/logical_products.json": "591119b8eb5f67cfe3f50f718f749016175ce5ac814e5c59b16667cfae609ab6",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/003-20260924-131733-12736c13/config.yaml": "e7ea4a1cc65c23d0b626938180b5c69204f9cd1b43b43b9d7ea47cda18fa4aa2",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/004-20260924-131732-063e72d1/manifest.json": "0bec484c7a0f08e56fc95bd67742977f9bdd2a745a7910000612776ffeb04f84",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/004-20260924-131732-063e72d1/metrics.json": "37c83e3460ed80e8b4cc5a865b4579122f8dae66e822ba78ba491335d339e8af",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/004-20260924-131732-063e72d1/diagnostics/logical_products.json": "91e6e7859b102ae53823e3c58a3e18d519997066cc93bacfd580b5e22227f633",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/004-20260924-131732-063e72d1/config.yaml": "542571ba57cab633f1ba74ec3bd5f9d258fc48241fdbdf444bbe7049f9ae5d77",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/005-20260924-134241-3b66fc99/manifest.json": "613a8f3dc74e66e1662b1408adaf272a5583909f6451cb5a1c313456c84a5dbf",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/005-20260924-134241-3b66fc99/metrics.json": "8e4c5983388cefc26b8850a6d1fd28a0d3f671920f62b8939cbb9afddec3a862",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/005-20260924-134241-3b66fc99/diagnostics/logical_products.json": "4c58f87c97121a96dfa22a3471ae31fab03e6a1f27cc8e8509f6ef5169437c49",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/005-20260924-134241-3b66fc99/config.yaml": "cc709882db01458954f336a3568dbcf4644eb5ba4c9dc0bb4edfcc847ca83b92",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/006-20260924-131944-bf47015e/manifest.json": "09bf0077cc4c431d1991433f0d92bc46b40ed24e517e0e0b0aca308b010e1ac1",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/006-20260924-131944-bf47015e/metrics.json": "e7f3634da39114bd97ca39b33cd4d3a525498462656a2722e76e1c42032a7c3e",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/006-20260924-131944-bf47015e/diagnostics/logical_products.json": "0a4f0321049f6647df89f8e2345f412e34f22b4c15aa46fa39a16326efc6b8a2",
+    "runs/054-2026-09-24-pythia31m-t2-ph/artifacts/attempts/006-20260924-131944-bf47015e/config.yaml": "fac5ca479276645a5a0a53f713c703a01f3fa14374d9f4c68f5b081776573b64",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/001-20260924-160333-725d9d09/manifest.json": "71e2a7a089f7d18c104dc4987a227ba5de4444cc099375d17298bca1a6c1b0df",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/001-20260924-160333-725d9d09/metrics.json": "4875071890610eef5d4f5296777ff28124192684ee5962d23343861da0fb35e6",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/001-20260924-160333-725d9d09/diagnostics/logical_products.json": "7303f125c1d7cd206f66525e90ab3842f63c1cd98b571a8e4db3bc28e6589e36",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/001-20260924-160333-725d9d09/config.yaml": "a18f4bfe0f9f0e534d80dd704ac7d873fd74ceceb9fa2d76ecba0a7b2a48f6aa",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/002-20260924-160334-363a42c2/manifest.json": "0ddef0a2997701e4e0ea887d840ae67433f5a78f90403fad6365b46ad88e88a6",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/002-20260924-160334-363a42c2/metrics.json": "aea5b4e00f94e0fbf0839454ecfbc937270626f20c77538bc7d335c604712a62",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/002-20260924-160334-363a42c2/diagnostics/logical_products.json": "498bc249dc6ed6e9c7de76041558e76c67af9e0354ea90d8ca7c3e35e8b20f3e",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/002-20260924-160334-363a42c2/config.yaml": "dc0a47745cc3c1a3b04048d91e773173ec8158ec5188ea4a10650d632bdfb9a9",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/003-20260924-164515-32400f4c/manifest.json": "007c0ab8912f02163f598a37f49f4bd058fa20a39686760b99b2435baf2829e4",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/003-20260924-164515-32400f4c/metrics.json": "d9eced5a2d93a33b332a75b2f056c8a6fdfd52207e4dd9058c80f64226a47e30",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/003-20260924-164515-32400f4c/diagnostics/logical_products.json": "9c83850311251e84dd3c51a1fe138ecbbd58d405e08b613c20aeb65fcbe31bf0",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/003-20260924-164515-32400f4c/config.yaml": "c4b091671d65ea19db2d029a41ee963d96097c45aa0fd912d86008e9ed84834f",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/004-20260924-171625-fd614589/manifest.json": "2dbc747caafbb7a6c0567c555c2c2450b4b3861724ca2ba0912de5636056fb93",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/004-20260924-171625-fd614589/metrics.json": "d46698e288c24f70fc084500cf8799b82e9f58522cc1c723c7fbf1c702462d63",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/004-20260924-171625-fd614589/diagnostics/logical_products.json": "e4eb5ad17d2891dcc13c8725a2e0fcfd34fec1e9912b1d6dda3fe5ec0d99cc73",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/004-20260924-171625-fd614589/config.yaml": "4b1bfb434a32c9b428949abec4628bd43ecc02baa815c38f8ca8a608ba90da0b",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/005-20260924-160753-fe75b9c7/manifest.json": "895aae1e0b005d14ceb02f612604fd606790a24271069493aca91c8b3b8a39bd",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/005-20260924-160753-fe75b9c7/metrics.json": "44b8af6c89a5f1c20d4489315539d67de6e9e293c289cb24170860c2d1e0c434",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/005-20260924-160753-fe75b9c7/diagnostics/logical_products.json": "c6bb409b01741f69ca78b7f637d57cad762ee9f4531096cd547eae82e44e21a3",
+    "runs/055-2026-09-24-pythia31m-t7-ph/artifacts/attempts/005-20260924-160753-fe75b9c7/config.yaml": "07f0514159de970928c10775f1f39624fde2e8031c2870cdf4a0a91523eab6cd",
+    "analyses/038-2026-09-24-base-t2-t7-scale-frontier/data/scale-figure.json": "c352e3f9073ea2996172b32b6ea31880e8f078c629e7560a3becdc71184efcd8"
+  },
+  "source_script_sha256": "c98ffa3ec10d7b1bea0700b22eb4673dae0a81896840c88c9363a9b599e0d4f2"
+}

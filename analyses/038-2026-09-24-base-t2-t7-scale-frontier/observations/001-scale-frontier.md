@@ -42,7 +42,7 @@ Pythia-70M. Circles, triangles and squares denote the three scales. Dashed blue
 curves denote T2/Ph and solid orange curves T7/Ph; hollow gray points denote
 Base kernel and filled gray points Base PyTorch. Colored lines connect
 kappa 0, 0.01, 0.05, 0.1 and 0.5 within each recipe and scale. Three vertical
-gray guides mark the Base losses. Both axes are logarithmic. Timings use
+gray guides, labeled by model size, mark the Base losses. Both axes are logarithmic. Timings use
 RTX 5090, BF16, batch one, 2,048 tokens and full logits. No curve is fitted.
 
 The paper-ready presentation adopts the reference manuscript figure's
@@ -87,7 +87,8 @@ One seed, three sizes, fixed token budget, different timing sessions and
 size-specific kernels. Small latency differences require caution; the point
 ordering is descriptive. Greater logical sparsity does not imply lower latency.
 T7-vs-T2 changes five gate sites together and does not isolate an individual
-site's causal effect. No finding promotion or manuscript update.
+site's causal effect. The user-approved manuscript integration is documented
+separately in [O003](003-manuscript-integration.md).
 
 Numerical qualification is specific to the reported checkpoints and validation
 coverage. Run055 retained an unqualified H200 preflight and one failed block of

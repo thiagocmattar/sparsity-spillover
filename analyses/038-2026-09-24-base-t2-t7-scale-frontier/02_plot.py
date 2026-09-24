@@ -12,7 +12,7 @@ ROOT=HERE.parents[1]
 OLD=ROOT/'analyses/037-2026-09-24-14m-31m-70m-latency-quality'
 OLD_HASH='5d6d88d24d32ff9ebadc76a2653fed1b517becedf06beda1cecbdd84bc27f55a'
 TITLE='Quality\u2013latency trade-offs across model scales'
-STYLE_REFERENCE=ROOT/'manuscript/draft/figures/02-14m-70m-latency-quality.pdf'
+STYLE_REFERENCE=ROOT/'analyses/034-2026-09-21-70m-latency-quality-frontier/figures/02-14m-70m-latency-quality.pdf'
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -59,6 +59,9 @@ def main():
         assert len(losses)==1
         base_loss_guides[scale]=losses.pop()
         ax.axvline(base_loss_guides[scale],color='#92969B',lw=.8,ls=(0,(2,3)),zorder=1)
+        ax.text(base_loss_guides[scale],.018,scale,transform=ax.get_xaxis_transform(),
+                ha='center',va='bottom',fontsize=9,color='#65696F',
+                bbox=dict(facecolor='white',edgecolor='none',pad=1.5),zorder=8)
     for backend in ('kernel','PyTorch'):
         points=sorted([p for p in refs if p['backend']==backend],key=lambda p:p['latency_ms'])
         for p in points:
@@ -87,7 +90,7 @@ def main():
     result=dict(executions=executions,measured_pareto_frontier=frontier,counts=dict(checkpoints=33,execution_points=36),
         source_sha256={old_path.relative_to(ROOT).as_posix():OLD_HASH,new_path.relative_to(ROOT).as_posix():sha(new_path)},
         output=output.relative_to(HERE).as_posix(),output_sha256=sha(output),historical_coordinates_unchanged=True,
-        presentation=dict(title=TITLE,model_labels=list(markers),base_loss_guides=base_loss_guides,
+        presentation=dict(title=TITLE,model_labels=list(markers),base_loss_guides=base_loss_guides,base_guide_labels=True,
             style_reference=STYLE_REFERENCE.relative_to(ROOT).as_posix(),style_reference_sha256=sha(STYLE_REFERENCE),
             kappa_annotations=False,workload_subtitle=False,legend_footer=False),
         interpretation='Absolute session-specific measurements. Colored segments connect threshold settings within each recipe and scale; vertical guides mark Base loss. No scaling law fitted.')
