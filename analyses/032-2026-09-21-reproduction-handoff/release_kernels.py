@@ -115,6 +115,7 @@ from sparsity_research.sites import FixedOneSidedThreshold, FixedSymmetricThresh
 
     small = run(28) / "candidates"
     large = run(45)
+    middle = run(55) / "latency/kernel"
     for folder, source, parts in [
         (
             "model_14m/normalization",
@@ -126,6 +127,16 @@ from sparsity_research.sites import FixedOneSidedThreshold, FixedSymmetricThresh
         (
             "model_14m/attention/implementation",
             small / "k035",
+            ("extension", "Attention"),
+        ),
+        (
+            "model_31m/normalization",
+            middle / "norm",
+            ("extension", "gate_spec", "NormPair", "bind_pair"),
+        ),
+        (
+            "model_31m/attention/implementation",
+            middle / "attention",
             ("extension", "Attention"),
         ),
         (
@@ -151,6 +162,16 @@ from sparsity_research.sites import FixedOneSidedThreshold, FixedSymmetricThresh
                 "LICENSE"
             ):
                 cuda(p, dest + "/" + p.name)
+    extract(middle / "joint/joint.py", "kernels/model_31m/output_projection.py",
+            ("extension", "Joint"), "Width256 sparse output projections")
+    cuda(middle / "joint/joint.cu", "kernels/model_31m/joint.cu")
+    extract(middle / "head/head.py", "kernels/model_31m/vocabulary.py",
+            ("extension", "Head"), "Width256 full-vocabulary projection")
+    original = (middle / "head/head.cu").read_text()
+    start = original.index(" switch(tile){")
+    end = original.index("\n C10_CUDA_KERNEL_LAUNCH_CHECK();", start)
+    cuda(middle / "head/head.cu", "kernels/model_31m/head.cu", [(original[start:end],
+         ' TORCH_CHECK(tile==0,"Only the final vocabulary tile is supported");\n launch<128,128,32,64,64>(x,w,out,stream);')])
     extract(
         large / "candidates/opt063/joint.py",
         "kernels/model_70m/output_projection.py",

@@ -8,6 +8,7 @@ import ast
 import sys
 from release_kernels import build as build_kernels
 from release_results import clean_results
+from release_supplement import extend_results
 
 sys.dont_write_bytecode = True
 
@@ -217,7 +218,7 @@ def main():
         "scripts/prepare_data.py",
         [("RUN_DIR.parents[1]", "RUN_DIR.parent")],
     )
-    for size, n in [("70m", 18), ("410m", 19)]:
+    for size, n in [("31m", 54), ("70m", 18), ("410m", 19)]:
         copy(run(n) / "architecture_config.json", f"configs/architectures/{size}.json")
     sources = {
         "endpoints": analysis(30) / "data/full-trained-results.json",
@@ -225,7 +226,7 @@ def main():
         "operation-latency": analysis(24) / "data/operation-latency.json",
         "pressure-placement": analysis(21) / "pressure-scope/data/evidence.json",
         "ol1-geometry": analysis(24) / "data/ol1-appendix.json",
-        "base-training": analysis(21) / "data/a0-optimization.json",
+        "base-training": analysis(38) / "data/base-model-training.json",
         "70m-controls": analysis(28) / "data/retained-controls.json",
         "70m-sessions": analysis(30) / "data/session-comparison.json",
         "kernel-structure": analysis(24) / "data/kernel-appendix.json",
@@ -241,6 +242,7 @@ def main():
         provenance[-1]["changes"].append(
             "Keep paper measurements; replace archive labels with scientific identifiers"
         )
+    extend_results(ROOT, OUT, analysis, run, save, copy, provenance)
     copy(ROOT / "manuscript/draft/main.pdf", "main.pdf")
     build_kernels(run, ROOT, save, provenance)
     copy(
@@ -308,7 +310,7 @@ def main():
             "path": "configs/paper-grid.json",
             "sources": ["training/config.py", "results/endpoints.json"],
             "changes": [
-                "Resolve the executed 84-condition grid using the bundled config resolver"
+                "Resolve the executed 95-condition grid using the bundled config resolver"
             ],
         }
     )
@@ -330,7 +332,7 @@ def main():
                         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
                     ).strip(),
                     "files": public,
-                    "scope": "Final methods and measured paper results. Development history is not distributed.",
+                    "scope": "Final methods and measured paper results. source_commit is the base checkout; individual source hashes identify the exported working-tree snapshot. Development history is not distributed.",
                 },
                 indent=2,
             )

@@ -33,6 +33,8 @@ def clean_results(name, data, sources):
         "Run037": "14m-operation-ablation",
         "Run035": "70m-reference-port",
         "Run039": "14m-mechanism",
+        "Run054": "31m-base-t2",
+        "Run055": "31m-seven-site-h-pressure",
     }
     fields = {
         "endpoints": [
@@ -96,7 +98,7 @@ def clean_results(name, data, sources):
         data["rows"] = [
             r
             for r in data["rows"]
-            if r["implementation"] in {"selected-native-hz", "opt073"}
+            if r["implementation"] in {"selected-native-hz", "selected-no-skip", "opt073"}
         ]
     omitted = {
         "run",
@@ -168,6 +170,7 @@ def clean_results(name, data, sources):
             value = re.sub(r"\b(?:K050|k050)\b", "specialized-14m", value)
             value = re.sub(r"\bopt073\b", "specialized-70m", value)
             value = value.replace("selected-native-hz", "native-hz")
+            value = value.replace("selected-no-skip", "hz-skips-off")
             if name in {"70m-controls", "70m-sessions"}:
                 value = {
                     "c00": "70M-T0-P0",

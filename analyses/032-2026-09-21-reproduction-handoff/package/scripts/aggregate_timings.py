@@ -15,6 +15,7 @@ def aggregate(folders):
         "backend",
         "control",
         "operation_mode",
+        "hz_mode",
         "gpu",
         "runtime",
     ):

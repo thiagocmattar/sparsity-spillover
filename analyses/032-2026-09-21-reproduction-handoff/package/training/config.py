@@ -1,4 +1,4 @@
-"""The paper's executed 84-condition grid, separated from deployment choices."""
+"""The paper's executed 95-condition grid, separated from deployment choices."""
 
 import hashlib
 import json
@@ -15,6 +15,7 @@ SITES = {
 }
 REVISIONS = {
     "14M": "7386d9a4ae45aef494a6e704910394def3037fc5",
+    "31M": "b7782556ba7adfb4730d9bda7d12aa44d88fa132",
     "70M": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
     "410M": "b5e8535141902c0e985cea61fd02afe7fe86af32",
 }

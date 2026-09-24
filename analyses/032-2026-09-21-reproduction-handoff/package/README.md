@@ -1,7 +1,7 @@
-# Where Sparsity Matters
+# Activation Sparsity as Training–Inference Co-Design
 
-A lean code companion for **Where Sparsity Matters: Shaping Activations for
-Efficient Transformer Execution**. It contains the methods, executed condition
+A supplementary code and evidence companion for **Activation Sparsity as
+Training–Inference Co-Design**. It contains the methods, executed condition
 grid, final CUDA implementations and compact measurements behind the paper.
 It does not contain model weights, tokenized data, cloud tooling or the experiment
 development history.
@@ -27,8 +27,11 @@ python -m training.train --list
 ```
 
 These commands need neither weights nor a GPU. `reproduced/` contains a CSV of
-all **84 endpoints (45/27/12 at 14M/70M/410M)**, numerical checks, and central
-figure reconstructions. The manuscript and its original figures are in `main.pdf`.
+all **95 endpoints (45/11/27/12 at 14M/31M/70M/410M)**, the 36 execution
+coordinates in the three-scale comparison, numerical checks, and central
+figure reconstructions. The manuscript is in `main.pdf`; exact paper figure
+assets are in `figures/`. Start with [the reviewer guide](docs/REVIEWER_GUIDE.md)
+for the claim-to-evidence map and a short CPU-only review route.
 Reconstructed plots use the same retained numbers; typography is not a
 byte-for-byte reproduction of the manuscript artwork.
 
@@ -57,10 +60,11 @@ There is no public weight download URL in this snapshot.
 | `src/sparsity_research/` | Gates, hooks, pressure, exact counts, ceilings, validation |
 | `training/` | Small training/evaluation entry points and retained optimizer boundary |
 | `configs/` | Architecture pins and the resolved paper grid |
-| `kernels/` | Final 14M/70M components, direct assembly, published ablations |
+| `kernels/` | Final 14M/31M/70M components, direct assembly, published ablations |
 | `scripts/` | Data preparation, CPU result reconstruction, clipping, GPU measurement |
 | `results/` | Compact measured values, integer counts and diagnostic traces |
 | `main.pdf` | Complete manuscript, including appendices |
+| `figures/` | Six exact figure assets used by the manuscript |
 | `docs/` | Paper map, mathematics, reproducibility limits and working guide |
 | `tests/` | Mathematical behavior, data coverage, hook placement and portable interfaces |
 | `PROVENANCE.json`, `MANIFEST.json` | Source hashes and release SHA-256 inventory |

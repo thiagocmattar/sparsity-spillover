@@ -47,10 +47,11 @@ def results():
     rows = data["trained_points"]
     assert collections.Counter(r["model"] for r in rows) == {
         "14M": 45,
+        "31M": 11,
         "70M": 27,
         "410M": 12,
     }
-    assert len({identifier(r) for r in rows}) == 84
+    assert len({identifier(r) for r in rows}) == 95
     for r in rows:
         assert math.isclose(
             100 * r["zero_product_count"] / r["model_product_count"],
@@ -63,7 +64,7 @@ def results():
         )
         resolve(identifier(r))
     ceilings = {}
-    for size, l, d in [("14M", 6, 128), ("70M", 6, 512), ("410M", 24, 1024)]:
+    for size, l, d in [("14M", 6, 128), ("31M", 6, 256), ("70M", 6, 512), ("410M", 24, 1024)]:
         for topology in ("A0", "A1-H", "HZ", "A4-Z", "A7-Z-POST"):
             ceilings[size + "-" + topology] = architecture_ceiling(
                 topology,
@@ -88,6 +89,8 @@ def results():
     }
     benefit = 100 * (1 - sparse["specialized-70m"] / sparse["native-hz"])
     assert round(benefit, 1) == 17.4
+    from scripts.verify_scale import verify_scale
+    verify_scale()
     OUT.mkdir(exist_ok=True)
     fields = [
         "condition",
@@ -117,7 +120,7 @@ def results():
     save(
         "checks.json",
         dict(
-            endpoints=84,
+            endpoints=95,
             coverage=dict(validation_documents=500, blocks=338, tail=1444),
             ceilings=ceilings,
             conditional_70m_hz_reduction_percent=benefit,
@@ -126,7 +129,7 @@ def results():
         ),
     )
     print(
-        "Reconstructed 84 endpoints, 15 analytic ceilings, and central execution effects"
+        "Reconstructed 95 endpoints, 20 analytic ceilings, and central execution effects"
     )
 
 
@@ -155,7 +158,7 @@ def figures():
     def label(key):
         return styles[key]["label"] if key in styles else str(key)
 
-    def groups(ax, items, y, only_shared=False):
+    def groups(ax, items, y, only_shared=False, x="sparsity"):
         for key in dict.fromkeys((r["scope"], r["pressure"]) for r in items):
             if only_shared and key not in [
                 ("0", "none"),
@@ -178,7 +181,7 @@ def figures():
             ls = s.get("linestyle", "-")
             ls = tuple(ls) if isinstance(ls, list) else ls
             ax.plot(
-                [r["sparsity"] for r in group],
+                [r[x] for r in group],
                 [r[y] for r in group],
                 marker="o",
                 ms=3,
@@ -187,12 +190,12 @@ def figures():
                 color=s.get("color"),
                 ls=ls,
             )
-        ax.set_xlabel("Model-wide logical sparsity (%)")
+        ax.set_xlabel("Validation loss" if x == "loss" else "Model-wide logical sparsity (%)")
         ax.set_ylabel("Validation loss" if y == "loss" else "Full-model latency (ms)")
         ax.grid(alpha=0.15)
 
-    def finish(fig, name):
-        fig.tight_layout()
+    def finish(fig, name, bottom=0):
+        fig.tight_layout(rect=(0, bottom, 1, 1))
         fig.savefig(OUT / name, metadata={"CreationDate": None, "ModDate": None})
         plt.close(fig)
 
@@ -235,8 +238,9 @@ def figures():
         finish(fig, size.lower() + "-quality-latency.pdf")
     op = read("operation-latency")["rows"]
     fig, axes = plt.subplots(1, 3, figsize=(13, 4))
-    groups(axes[0], [r for r in rows if r["model"] == "14M"], "loss", True)
-    groups(axes[2], [r for r in rows if r["model"] == "70M"], "loss", True)
+    current = read("14m-paper-figure")["points"]
+    groups(axes[0], current, "latency_ms")
+    groups(axes[2], current, "latency_ms", x="loss")
     ys = [r["saved_microseconds"] for r in op]
     errors = [
         [y - r["cross_process_difference_span_us"][0] for y, r in zip(ys, op)],
@@ -245,7 +249,9 @@ def figures():
     axes[1].bar([r["operation"] for r in op], ys, yerr=errors, capsize=3)
     axes[1].set_ylabel("Conditional saved time (μs)")
     axes[1].axhline(0, color="gray", lw=0.5)
-    finish(fig, "quality-sites-quality.pdf")
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=5, frameon=False, fontsize=7)
+    finish(fig, "quality-savings-sparsity.pdf", bottom=.15)
     layer = read("pressure-placement")["rows"]
     sites = ["a", "m", "h", "q_post", "k_post", "v", "z"]
     families = ["A4", "A4-OL1-H", "A4-OL1", "A7", "A7-OL1-H", "A7-OL1"]
@@ -362,6 +368,8 @@ def figures():
         title="14M post-hoc clipping: 30 × 10 settings",
     )
     finish(fig, "posthoc-clipping.pdf")
+    from scripts.plot_scale import main as plot_scale
+    plot_scale()
     print("Wrote central figure reconstructions to reproduced/")
 
 

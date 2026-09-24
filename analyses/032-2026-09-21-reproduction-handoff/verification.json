@@ -1,10 +1,11 @@
 {
   "status": "passed",
-  "package_files": 109,
-  "package_bytes": 4905215,
+  "package_files": 141,
+  "manifest_sha256": "44e3c119fe1643c3f13b531c9724185ab0d1ecc3f4c8eedc550847599d95610f",
+  "package_bytes": 6788797,
   "heavy_files": 0,
   "credential_pattern_matches": 0,
-  "isolated_directory": ".tmp/lean-handoff-jq5iffec",
+  "isolated_directory": "tmp/lean-handoff-w0hwnnsg",
   "checks": [
     {
       "command": [
@@ -21,7 +22,7 @@
         "verify"
       ],
       "returncode": 0,
-      "stdout": "Verified 108 release files\n",
+      "stdout": "Verified 140 release files\n",
       "stderr": ""
     },
     {
@@ -31,7 +32,7 @@
         "-q"
       ],
       "returncode": 0,
-      "stdout": "............................................................             [100%]\n60 passed in 4.54s\n",
+      "stdout": "..................................................................       [100%]\n66 passed in 5.51s\n",
       "stderr": ""
     },
     {
@@ -40,7 +41,7 @@
         "results"
       ],
       "returncode": 0,
-      "stdout": "Reconstructed 84 endpoints, 15 analytic ceilings, and central execution effects\n",
+      "stdout": "{\"executions\": 36, \"checkpoints\": 33, \"matched_kappa_comparisons\": 15, \"qualified_31m_processes\": 33, \"raw_timing_samples\": 29568, \"t2_hz_reduction_percent\": 12.898505793228487, \"t2_hz_share_of_native_gap_percent\": 57.867046852472996, \"t7_70m_skips_off_reduction_percent\": 58.29921692245343}\nReconstructed 95 endpoints, 20 analytic ceilings, and central execution effects\n",
       "stderr": ""
     },
     {
@@ -67,7 +68,7 @@
         "--help"
       ],
       "returncode": 0,
-      "stdout": "usage: benchmark.py [-h] --checkpoint CHECKPOINT --output OUTPUT\n                    [--control {native-hz,hz-skips-off}]\n                    [--operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}]\n                    [--diagnostics] --replicate {1,2,3}\n\nOne fresh-process full-validation qualification and paired CUDA graph\nbenchmark.\n\noptions:\n  -h, --help            show this help message and exit\n  --checkpoint CHECKPOINT\n  --output OUTPUT\n  --control {native-hz,hz-skips-off}\n  --operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}\n  --diagnostics         Additional untimed 14M actual-operand/MMA counter pass\n  --replicate {1,2,3}\n",
+      "stdout": "usage: benchmark.py [-h] --checkpoint CHECKPOINT --output OUTPUT\n                    [--control {native-hz,hz-skips-off}] [--hz-mode {A,B,C,D}]\n                    [--operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}]\n                    [--diagnostics] --replicate {1,2,3}\n\nOne fresh-process full-validation qualification and paired CUDA graph\nbenchmark.\n\noptions:\n  -h, --help            show this help message and exit\n  --checkpoint CHECKPOINT\n  --output OUTPUT\n  --control {native-hz,hz-skips-off}\n  --hz-mode {A,B,C,D}   14M h,z factorial switches; all other kernels stay\n                        frozen\n  --operation-mode {frozen,full,off,projection,without-a,without-m,without-h,without-z,without-qk,without-pv}\n  --diagnostics         Additional untimed 14M actual-operand/MMA counter pass\n  --replicate {1,2,3}\n",
       "stderr": ""
     },
     {
@@ -87,6 +88,16 @@
       "returncode": 0,
       "stdout": "usage: aggregate_timings.py [-h] --output OUTPUT processes processes processes\n\nPool three qualified fresh processes without mixing checkpoint identities.\n\npositional arguments:\n  processes\n\noptions:\n  -h, --help       show this help message and exit\n  --output OUTPUT\n",
       "stderr": ""
+    },
+    {
+      "command": [
+        "-m",
+        "training.train",
+        "--list"
+      ],
+      "returncode": 0,
+      "stdout": "14M-T0-P0\n14M-T1-P0\n14M-T1-L1-0.05\n14M-T1-L1-0.1\n14M-T1-L1-0.5\n14M-T1-L1-1\n14M-T1-Ph-0.05\n14M-T1-Ph-0.1\n14M-T1-Ph-0.5\n14M-T1-Ph-1\n14M-T4-P0-0\n14M-T4-P0-0.01\n14M-T4-P0-0.05\n14M-T4-P0-0.1\n14M-T4-P0-0.5\n14M-T4-Pall-0\n14M-T4-Pall-0.01\n14M-T4-Pall-0.05\n14M-T4-Pall-0.1\n14M-T4-Pall-0.5\n14M-T7-P0-0\n14M-T7-P0-0.01\n14M-T7-P0-0.05\n14M-T7-P0-0.1\n14M-T7-P0-0.5\n14M-T7-Pall-0\n14M-T7-Pall-0.01\n14M-T7-Pall-0.05\n14M-T7-Pall-0.1\n14M-T7-Pall-0.5\n14M-T4-Ph-0\n14M-T4-Ph-0.01\n14M-T4-Ph-0.05\n14M-T4-Ph-0.1\n14M-T4-Ph-0.5\n14M-T7-Ph-0\n14M-T7-Ph-0.01\n14M-T7-Ph-0.05\n14M-T7-Ph-0.1\n14M-T7-Ph-0.5\n70M-T0-P0\n70M-T1-P0\n70M-T4-Pall-0\n70M-T4-Pall-0.01\n70M-T4-Pall-0.05\n70M-T4-Pall-0.1\n70M-T4-Pall-0.5\n70M-T7-Pall-0\n70M-T7-Pall-0.01\n70M-T7-Pall-0.05\n70M-T7-Pall-0.1\n70M-T7-Pall-0.5\n70M-T4-Ph-0\n70M-T4-Ph-0.01\n70M-T4-Ph-0.05\n70M-T4-Ph-0.1\n70M-T4-Ph-0.5\n70M-T7-Ph-0\n70M-T7-Ph-0.01\n70M-T7-Ph-0.05\n70M-T7-Ph-0.1\n70M-T7-Ph-0.5\n410M-T4-Pall-0\n410M-T4-Pall-0.01\n410M-T4-Pall-0.05\n410M-T4-Pall-0.1\n410M-T4-Pall-0.5\n410M-T7-Pall-0\n410M-T7-Pall-0.01\n410M-T7-Pall-0.05\n410M-T7-Pall-0.1\n410M-T7-Pall-0.5\n410M-T0-P0\n410M-T1-P0\n14M-T2-Ph-0\n14M-T2-Ph-0.01\n14M-T2-Ph-0.05\n14M-T2-Ph-0.1\n14M-T2-Ph-0.5\n70M-T2-Ph-0\n70M-T2-Ph-0.01\n70M-T2-Ph-0.05\n70M-T2-Ph-0.1\n70M-T2-Ph-0.5\n31M-T0-P0\n31M-T2-Ph-0\n31M-T2-Ph-0.01\n31M-T2-Ph-0.05\n31M-T2-Ph-0.1\n31M-T2-Ph-0.5\n31M-T7-Ph-0\n31M-T7-Ph-0.01\n31M-T7-Ph-0.05\n31M-T7-Ph-0.1\n31M-T7-Ph-0.5\n",
+      "stderr": ""
     }
   ],
   "reconstructed_figures": [
@@ -98,11 +109,14 @@
     "layer-sparsity.pdf",
     "ol1-geometry.pdf",
     "posthoc-clipping.pdf",
-    "quality-sites-quality.pdf"
+    "quality-savings-sparsity.pdf",
+    "scale-frontier.pdf"
   ],
-  "original_bootstrap": "242 passed; no scientific source changed",
+  "original_bootstrap": "Not rerun for this packaging change; isolated package suite executed below",
   "gpu_execution": "not performed",
-  "cuda_source_equivalence_files": 17,
+  "cuda_source_equivalence_files": 23,
   "unchanged_central_endpoints": 84,
+  "added_31m_endpoints": 11,
+  "paper_figure_assets": 6,
   "manuscript_pdf": "byte-identical to manuscript/draft/main.pdf; no TeX distributed"
 }

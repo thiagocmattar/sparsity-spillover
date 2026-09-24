@@ -38,6 +38,7 @@ For a new independent replication with the paper's seed and initializer:
 
 ```bash
 python -m training.train --condition 14M-T2-Ph-0.1 --fresh-initialization --output outputs/14m-t2-k01
+python -m training.train --condition 31M-T7-Ph-0.1 --fresh-initialization --output outputs/31m-t7-k01
 python -m training.train --condition 70M-T7-Ph-0.5 --fresh-initialization --output outputs/70m-t7-k05
 ```
 
@@ -94,7 +95,7 @@ python scripts/benchmark.py --checkpoint outputs/70m-t7-k05/final --output outpu
 ```
 
 The harness uses the final implementation at each size. Add `--control native-hz` to replace only h,z execution
-on that checkpoint. `--control hz-skips-off` is the inefficient custom fallback
+on that checkpoint (14M/70M only). `--control hz-skips-off` is the inefficient custom fallback
 ablation, not the practical native-dense control. Benchmark the Base checkpoint
 in the same session to obtain the paper's across-recipe denominator. The harness
 reports a same-checkpoint native ratio; do not relabel it as Base-relative speed.
@@ -118,7 +119,7 @@ Aggregate the three qualified processes with:
 python scripts/aggregate_timings.py outputs/timing-r1 outputs/timing-r2 outputs/timing-r3 --output outputs/timing-summary.json
 ```
 
-For Table 2, use the same 14M T7/Pall κ=.5 checkpoint and run three fresh
+For Table 4, use the same 14M T7/Pall κ=.5 checkpoint and run three fresh
 processes for each `--operation-mode full`, `without-a`, `without-m`, `without-h`,
 `without-z`, `without-qk`, and `without-pv`. Also retain `frozen`, `off` and
 `projection` controls. `full` switches on all six paths; `frozen` uses untouched
@@ -127,6 +128,15 @@ MMA and actual BF16 operand counters. Saved time is off-mode latency minus full
 latency. Its min/max span is [min(off)−max(full), max(off)−min(full)] across the
 three process means; it is conditional and not additive. This ablation's all-on
 latency is not interchangeable with published final-kernel times from another session.
+
+For the 14M T2/Ph ?=.1 control, `--hz-mode A`, `B`, `C`, or `D`
+selects (h on, z on), (h off, z on), (h on, z off), or (h off, z off).
+Only output-projection switches change; other kernels stay frozen. These modes
+are mutually exclusive with other controls. The portable CLI pairs each mode
+with native execution, whereas the recorded factorial experiment paired all
+four modes within each process. Its historical paired effects are reconstructed
+from `14m-t2-execution-controls.json`; separate CLI jobs are new measurements,
+not an exact replay of that pairing. No 31M skip-control result is claimed.
 
 ## Read the output before extending the experiment
 

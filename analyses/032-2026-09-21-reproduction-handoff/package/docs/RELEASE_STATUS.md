@@ -1,51 +1,56 @@
 # Verification and limits
 
-The companion packages the supplied manuscript and its measured endpoints.
-Original author files and experiment records were not rewritten.
+This supplement packages the current manuscript, six exact figure assets and
+95 measured endpoints at 14M/31M/70M/410M. The 84 historical endpoint rows retain
+their original numerical values; the 11 added rows are the approved 31M cohort.
 
-Verified locally:
+Verified in an isolated copy with no author run or analysis tree:
 
-- Package file hashes and absence of datasets, model weights, binaries and
-  credential-like strings in the export.
-- All 84 condition identifiers, gate/pressure assignments, 712-update schedule
-  identities and pooled endpoint fractions; 15 analytic architecture/topology
-  ceilings; the recorded 17.4% conditional 70M h,z effect.
-- Paper-topology mathematical/hook/aggregation tests, actual synthetic CPU
-  updates for Base/L1/OL1-HZ/OL1-seven-site, checkpoint round trips, final kernel
-  assembly and extension build-path resolution on CPU.
-- Selected CUDA token streams match the measured sources after identifier and
-  comment cleanup, with only the selected vocabulary tile retained. The included
-  manuscript PDF matches the supplied file byte-for-byte.
-- Offline table/figure reconstruction in a separate copy, outside the source
-  repository layout. No access to historical run/analysis folders is required.
-- The original repository's full 242-test bootstrap suite remained green.
+- Every distributed file's size and SHA-256; no weights, token caches, compiled
+  binaries, cloud configuration or credential-like content.
+- All 95 conditions and their gate/pressure assignments; the exact training
+  order hashes; pooled endpoint fractions; 20 analytic topology/size ceilings.
+- The 36 scale-figure coordinates and 33 checkpoint identities; all 15 matched
+  threshold loss comparisons; both Base execution backends at each latency scale.
+- Every retained 31M timing sample, all 33 full-validation qualifications,
+  and the process-to-endpoint geometric means. The ordinary FP16 validation
+  loss used for quality is distinct from the BF16 kernel-qualification loss.
+- Recorded 14M T2 execution effects and both 70M control denominators; the
+  current 40-point Figure 1 identities; all 2,848 Base update records.
+- Mathematical/hook/aggregation tests, actual tiny synthetic CPU optimizer
+  updates and checkpoint round trips; 31M seven-site gate wiring; h,z-only
+  control wiring; all extension build paths resolved on CPU.
+- CUDA source token equivalence after identifier/comment cleanup, with only
+  the selected vocabulary tile retained. The 31M gate-aware wrapper supports
+  both ungated a/m (Base/T2) and gated a/m (T7) without changing the kernel policy.
+- Ten offline PDF reconstructions. The six distributed original figure assets
+  and manuscript match the author's current files byte-for-byte.
 
-Not performed for this release: full pretraining, CUDA compilation/execution,
-fresh latency qualification, or a clean network installation of all pinned
-packages. The final assembly imports its components directly; historical
-candidate chains and the superseded 70M port are omitted. Comparison measurements still
-allow reading the paper's port-versus-final result. CPU assembly and preservation
-of the selected CUDA arithmetic do not prove GPU equivalence.
-The supplied portable harness must pass the included full-validation tests on
-the target device before its new timings can be reported.
+Not performed for this packaging update: full pretraining, CUDA compilation or
+execution, new latency qualification, or a clean network installation of all
+pinned packages. CPU assembly and preservation of CUDA arithmetic do not prove
+GPU equivalence. The portable benchmark must pass the included full-validation
+numerical gate on the target device before its new timings can be reported.
 
-Exact historical initialization bytes are not bundled. No public model/initial
-state download URL has been provided. Historical RNG/backend differences are
-known, so a fresh random draw has an explicit CLI flag and distinct provenance.
-Even matching initial weights does not guarantee bitwise training trajectories
-across accelerators and runtime builds.
+Historical random tensors and final weights are not bundled, and there is no
+public weight download URL in this snapshot. A seed alone does not establish
+identical initial tensors across RNG backends or module traversal orders. Use
+`--fresh-initialization` for an explicitly new replication, or supply canonical
+untrained tensors whose parameter hash matches the recorded cohort. Even
+matching weights does not guarantee bitwise training across runtime builds.
 
-`results/` contains compact published-measurement reductions, diagnostic traces,
-integer counts and source hashes. It does not contain every raw training event,
-every timing sample, or every rejected kernel candidate from the author archive.
-Fresh runs do write their full boundary records, qualification rows and raw
-timings. Canonical published loss is ordinary final validation loss; some older
-diagnostic sources also retain logical-pass loss and should not be silently mixed.
+`results/` contains compact published measurements, integer counts and diagnostic
+traces. All 31M raw timing samples and per-block qualifications are included in
+one gzip JSON file. Historical 14M/70M reductions preserve their process summaries
+and ranges but do not include every original raw event or timing sample. The
+portable trainer saves initial/final checkpoints, not the full historical cadence.
+The portable h,z-control CLI pairs each mode with native execution; the original
+14M factorial process paired all four switch modes. The difference is documented
+in REPRODUCE.md and does not change the retained historical measurements.
 
-Paper notes: the source appendix still describes the later 70M endpoint as
-visually marked separately, while the latest author figure uses ordinary recipe
-markers. This is a presentation discrepancy; the release preserves its separate
-session identity and never pools or rescales those timings. The narrow T2 gate is HZ=(h,z).
+The later 70M T2/Ph ?=.5 point retains its separate session identity. No timing
+session is pooled or rescaled into another. There is no measured 410M latency,
+no 31M skip-control experiment, and no fitted scaling law in this supplement.
 
-Project license remains undecided at the author's request. Author identities,
-final citation metadata and publication URL are intentionally not invented.
+Project license remains undecided. No author identities, final citation metadata
+or publication URL are invented. Third-party license notices are preserved.

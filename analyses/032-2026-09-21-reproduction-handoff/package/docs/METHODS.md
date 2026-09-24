@@ -48,8 +48,8 @@ Ordinary L1 instead clips and optimizes the combined task+λL1 gradient.
 
 All paper conditions use 712 updates, seed 1234, length 2048, effective batch
 1024, AdamW β=(.9,.95), ε=1e−8, weight decay .1 excluding biases/LayerNorm.
-Microbatch/accumulation are 32×32 (14M) and 4×256 (70M/410M). Peak LR is .001
-for 14M/70M and .0003 for 410M, with a 10% floor. The exact historical pre-step
+Microbatch/accumulation are 32×32 (14M) and 4×256 (31M/70M/410M). Peak LR is .001
+for 14M/31M/70M and .0003 for 410M, with a 10% floor. The exact historical pre-step
 cosine/warmup function is retained in training/optimizer.py; update one has LR
 zero. Do not replace it with a generic cosine scheduler.
 
@@ -67,3 +67,11 @@ schedule consumes 729,088 and wraps 714 blocks. Complete validation uses all
 500 documents: 338 blocks / 692,224 input tokens, with 1,444 tail tokens excluded.
 One training seed, one token budget and selected topologies support descriptive
 comparisons, not a convergence or scaling-law claim.
+
+The 31M architecture has 30,494,720 parameters, six layers, hidden width 256,
+FFN width 1,024, eight heads of width 32, and an untied 50,304-token vocabulary.
+Its 11 conditions are Base and T2/Ph and T7/Ph at κ={0,.01,.05,.1,.5}.
+They share the recorded random initialization and training order. At every
+matched κ, T2/Ph has lower loss than T7/Ph at all three measured latency scales;
+T7/Ph reaches a lower minimum latency at each scale. These are observed endpoint
+comparisons, not a fitted scaling law or a statement about converged quality.

@@ -16,6 +16,8 @@ def main():
     p.add_argument("--checkpoint", required=True, type=Path)
     p.add_argument("--output", required=True, type=Path)
     p.add_argument("--control", choices=["native-hz", "hz-skips-off"])
+    p.add_argument("--hz-mode", choices=["A", "B", "C", "D"],
+                   help="14M h,z factorial switches; all other kernels stay frozen")
     p.add_argument(
         "--operation-mode",
         choices=[
@@ -80,6 +82,7 @@ def main():
         backend="optimized",
         control=a.control,
         operation_mode=a.operation_mode,
+        hz_mode=a.hz_mode,
         checkpoint=str(a.checkpoint),
         weight_sha256=file_sha256(a.checkpoint / "model.safetensors"),
         gpu=torch.cuda.get_device_name(),
@@ -116,7 +119,7 @@ def main():
         checks = []
         with torch.inference_mode():
             status["kernel"] = install(
-                candidate, "optimized", a.control, a.operation_mode
+                candidate, "optimized", a.control, a.operation_mode, a.hz_mode
             )
             runners = {
                 k: DenseRunner(

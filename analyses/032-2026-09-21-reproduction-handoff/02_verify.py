@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import gzip
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -25,13 +26,16 @@ def main():
         f"Unexpected/missing export files: {actual_files ^ expected_files}"
     )
     assert not list(SOURCE.rglob("*.tex"))
-    assert set(SOURCE.rglob("*.pdf")) == {SOURCE / "main.pdf"}
+    assert len(list(SOURCE.rglob("*.pdf"))) == 7
     assert (SOURCE / "main.pdf").read_bytes() == (
         ROOT / "manuscript/draft/main.pdf"
     ).read_bytes()
     assert not (SOURCE / "configs/original").exists()
     assert not list(SOURCE.rglob("candidate.py"))
     source_map = json.loads((HERE / "source-map.json").read_text())
+    for row in source_map:
+        if row["path"].startswith("figures/"):
+            assert (SOURCE / row["path"]).read_bytes() == (ROOT / row["source"]).read_bytes()
     evidence_source = next(
         r["source"] for r in source_map if r["path"] == "results/endpoints.json"
     )
@@ -46,8 +50,10 @@ def main():
         for k in ("model", "scope", "pressure", "kappa", "local_pressure_weight")
     )
     original_by_identity = {identity(r): r for r in original_endpoints}
-    assert len(original_by_identity) == len(exported_endpoints) == 84
+    assert len(original_by_identity) == 84 and len(exported_endpoints) == 95
     for row in exported_endpoints:
+        if row["model"] == "31M":
+            continue
         original_row = original_by_identity[identity(row)]
         for key in (
             "loss",
@@ -92,11 +98,11 @@ def main():
             )
         assert tokens(original) == tokens(exported), f"CUDA arithmetic changed: {path}"
         cuda_files += 1
-    (ROOT / ".tmp").mkdir(exist_ok=True)
+    (ROOT / "tmp").mkdir(exist_ok=True)
     scratch = Path(
-        tempfile.mkdtemp(prefix="lean-handoff-", dir=ROOT / ".tmp")
+        tempfile.mkdtemp(prefix="lean-handoff-", dir=ROOT / "tmp")
     ).resolve()
-    assert scratch.is_relative_to((ROOT / ".tmp").resolve())
+    assert scratch.is_relative_to((ROOT / "tmp").resolve())
     secrets = re.compile(
         rb"(?:AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----|(?:hf_|ghp_|github_pat_|rpa_)[A-Za-z0-9_]{24,}|sk-[A-Za-z0-9]{32,})"
     )
@@ -121,6 +127,8 @@ def main():
             and hashlib.sha256(data).hexdigest() == row["sha256"]
         ), source
         assert not secrets.search(data), f"Credential-like content: {source}"
+        if source.suffix == ".gz":
+            assert not secrets.search(gzip.decompress(data)), source
         target = scratch / row["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
@@ -148,6 +156,7 @@ def main():
         ["scripts/benchmark.py", "--help"],
         ["scripts/clip.py", "--help"],
         ["scripts/aggregate_timings.py", "--help"],
+        ["-m", "training.train", "--list"],
     ]
     checks = []
     for command in commands:
@@ -172,11 +181,16 @@ def main():
             print(result.stderr)
             break
     figures = sorted((scratch / "reproduced").glob("*.pdf"))
+    if all(c["returncode"] == 0 for c in checks):
+        assert len(figures) == 10
+        for name in ("endpoints", "scale-frontier", "31m-results"):
+            assert (scratch / "reproduced" / (name + ".csv")).read_bytes() == (SOURCE / "results" / (name + ".csv")).read_bytes()
     summary = dict(
         status="passed"
         if all(c["returncode"] == 0 for c in checks) and len(checks) == len(commands)
         else "failed",
         package_files=len(records) + 1,
+        manifest_sha256=hashlib.sha256((SOURCE / "MANIFEST.json").read_bytes()).hexdigest(),
         package_bytes=sum(r["bytes"] for r in records)
         + (SOURCE / "MANIFEST.json").stat().st_size,
         heavy_files=0,
@@ -184,10 +198,12 @@ def main():
         isolated_directory=scratch.relative_to(ROOT).as_posix(),
         checks=checks,
         reconstructed_figures=[p.name for p in figures],
-        original_bootstrap="242 passed; no scientific source changed",
+        original_bootstrap="Not rerun for this packaging change; isolated package suite executed below",
         gpu_execution="not performed",
         cuda_source_equivalence_files=cuda_files,
         unchanged_central_endpoints=84,
+        added_31m_endpoints=11,
+        paper_figure_assets=6,
         manuscript_pdf="byte-identical to manuscript/draft/main.pdf; no TeX distributed",
     )
     (HERE / "verification.json").write_text(json.dumps(summary, indent=2) + "\n")

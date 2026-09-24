@@ -16,10 +16,11 @@ def test_grid_gate_pressure_and_schedule_contracts():
     rows = paper_rows()
     assert collections.Counter(r["model"] for r in rows) == {
         "14M": 45,
+        "31M": 11,
         "70M": 27,
         "410M": 12,
     }
-    assert len({identifier(r) for r in rows}) == 84
+    assert len({identifier(r) for r in rows}) == 95
     for r in rows:
         assert r["condition"] == identifier(r)
         c = resolve(identifier(r))
@@ -38,7 +39,7 @@ def test_grid_gate_pressure_and_schedule_contracts():
             assert c["pressure"]["sites"] == ["h"]
         assert t["micro_batch_size"] * t["gradient_accumulation_steps"] == 1024
         assert c["expected_initial_parameter_sha256"] and c["expected_schedule_sha256"]
-    for size in ("14M", "70M", "410M"):
+    for size in ("14M", "31M", "70M", "410M"):
         c = resolve(next(identifier(r) for r in rows if r["model"] == size))
         t = c["training"]
         _, sha, meta = build_training_schedule(
@@ -115,6 +116,7 @@ def test_clipping_order_statistics_and_equality():
     [
         ("14M", 128, 4, None),
         ("70M", 512, 8, None),
+        ("31M", 256, 8, None),
         ("14M", 128, 4, "full"),
         ("14M", 128, 4, "without-h"),
         ("14M", 128, 4, "without-pv"),
@@ -158,7 +160,7 @@ def test_final_kernel_assembly_without_cuda_execution(
     ]
     with torch.inference_mode():
         metadata = final_kernel.install(
-            model, "optimized", None if operation else "native-hz", operation
+            model, "optimized", None if operation or size == "31M" else "native-hz", operation
         )
     assert metadata
     for layer, (down, output, qkv, up) in zip(model.gpt_neox.layers, original):
@@ -169,7 +171,7 @@ def test_final_kernel_assembly_without_cuda_execution(
         assert layer.attention._sparsity_rope.thresholds == [0.0, 0.0, 0.0]
         assert layer._sparsity_joint.th == layer._sparsity_joint.tz == 0.1
         assert isinstance(layer.mlp.dense_4h_to_h, torch.nn.Identity)
-    if size == "70M":
+    if size in {"31M", "70M"}:
         assert model.embed_out._sparsity_head.weight is model.embed_out.weight
         assert model.embed_out._sparsity_head.tile == 0
         assert all(
@@ -191,7 +193,7 @@ def test_final_kernel_assembly_without_cuda_execution(
                 layer.attention.query_key_value._sparsity_projection.skip == mask["a"]
             )
             assert layer.mlp.dense_h_to_4h._sparsity_projection.skip == mask["m"]
-    else:
+    elif size != "31M":
         assert all(layer._sparsity_joint.native for layer in model.gpt_neox.layers)
 
 
@@ -214,6 +216,7 @@ def test_final_extension_build_inputs_are_self_contained(monkeypatch):
     paths = [
         *list((ROOT / "kernels/model_14m").rglob("*.py")),
         *list((ROOT / "kernels/model_70m").rglob("*.py")),
+        *list((ROOT / "kernels/model_31m").rglob("*.py")),
         ROOT / "kernels/rotary/implementation.py",
         ROOT / "kernels/ablation/implementation.py",
     ]
@@ -227,7 +230,7 @@ def test_final_extension_build_inputs_are_self_contained(monkeypatch):
             m.extension("attention", False, True)
         else:
             m.extension()
-    assert len(requests) == 11
+    assert len(requests) == 15
     for request in requests:
         for source in request["sources"]:
             path = Path(source).resolve()
@@ -246,6 +249,42 @@ def test_final_extension_build_inputs_are_self_contained(monkeypatch):
         "-DSPARSE_SKIP_QK=0",
         "-DSPARSE_SKIP_PV=1",
     }
+
+
+@pytest.mark.parametrize("condition,width,heads,hz_mode", [
+    ("31M-T7-Ph-0.1", 256, 8, None),
+    *(('14M-T2-Ph-0.1', 128, 4, m) for m in ('A', 'B', 'C', 'D')),
+])
+def test_seven_site_gates_and_hz_only_switches(monkeypatch, condition, width, heads, hz_mode):
+    from transformers import GPTNeoXConfig, AutoModelForCausalLM
+    from sparsity_research.pythia import apply_activation_topology
+    monkeypatch.syspath_prepend(str(ROOT / "kernels"))
+    import install
+    recipe = resolve(condition)["model"]
+    c = GPTNeoXConfig(vocab_size=50304, hidden_size=width, intermediate_size=4*width,
+                     num_hidden_layers=6, num_attention_heads=heads, max_position_embeddings=2048)
+    c.topology_id, c.site_gates = recipe["topology_id"], recipe["site_gates"]
+    model = apply_activation_topology(AutoModelForCausalLM.from_config(c), torch=torch).bfloat16().eval()
+    with torch.inference_mode():
+        install.install(model, hz_mode=hz_mode)
+    for layer in model.gpt_neox.layers:
+        pair = layer._sparsity_norm_pair
+        if hz_mode:
+            assert (layer._sparsity_joint.skip_h, layer._sparsity_joint.skip_z) == {
+                'A': (True, True), 'B': (False, True), 'C': (True, False), 'D': (False, False)}[hz_mode]
+            assert layer.attention._sparsity_attention.skip
+            assert not hasattr(layer.attention._sparsity_attention, 'skip_qk')
+            assert layer.attention.query_key_value._sparsity_projection.skip
+            assert layer.mlp.dense_h_to_4h._sparsity_projection.skip
+            assert not pair.ga and not pair.gm
+        else:
+            threshold = float(torch.tensor(.1, dtype=torch.bfloat16))
+            assert pair.ga and pair.gm and pair.ta == pair.tm == threshold
+            # RoPE converts thresholds inside CUDA; normalization preconverts BF16 scalars.
+            assert layer.attention._sparsity_rope.thresholds == [.1] * 3
+            assert layer.attention._sparsity_attention.native
+        assert layer._sparsity_joint.gh and layer._sparsity_joint.gz
+        assert layer._sparsity_joint.th == layer._sparsity_joint.tz == .1
 
 
 def test_timing_pool_and_rejection_of_mixed_or_incomplete_processes(tmp_path):

@@ -1,4 +1,4 @@
-"""Assemble the final 14M or 70M implementation directly from its components."""
+"""Assemble the final 14M, 31M or 70M implementation from its components."""
 
 from types import MethodType, SimpleNamespace
 import torch
@@ -7,7 +7,7 @@ from sparsity_research.pythia import expose_attention_sites, topology_metadata
 from sparsity_research.sites import FixedOneSidedThreshold
 
 
-def install(model, backend="optimized", control=None, operation_mode=None):
+def install(model, backend="optimized", control=None, operation_mode=None, hz_mode=None):
     if backend == "native":
         return {"implementation": "native SDPA"}
     if backend != "optimized":
@@ -20,15 +20,20 @@ def install(model, backend="optimized", control=None, operation_mode=None):
         c.intermediate_size,
         c.num_attention_heads,
         c.num_hidden_layers,
-    ) not in {(128, 512, 4, 6), (512, 2048, 8, 6)} or not c.use_parallel_residual:
-        raise ValueError("Fixed 14M/70M parallel-residual architectures required")
+    ) not in {(128, 512, 4, 6), (256, 1024, 8, 6), (512, 2048, 8, 6)} or not c.use_parallel_residual:
+        raise ValueError("Fixed 14M/31M/70M parallel-residual architectures required")
     small = c.hidden_size == 128
     if operation_mode and (not small or control):
         raise ValueError("Operation ablations require 14M and no additional control")
     if control not in {None, "native-hz", "hz-skips-off"}:
         raise ValueError("Unknown control")
+    if c.hidden_size == 256 and control:
+        raise ValueError("No published 31M execution-control experiment")
+    if hz_mode and (not small or operation_mode or control or hz_mode not in {"A", "B", "C", "D"}):
+        raise ValueError("h,z factorial controls require 14M and no other control")
     expose_attention_sites(model, torch=torch)
-    folder = ROOT / ("model_14m" if small else "model_70m")
+    size = {128: "14m", 256: "31m", 512: "70m"}[c.hidden_size]
+    folder = ROOT / ("model_" + size)
     norm = module("normalization", folder / "normalization.py")
     joint = module("output_projection", folder / "output_projection.py")
     attention = module("attention_kernel", folder / "attention/implementation.py")
@@ -88,7 +93,7 @@ def install(model, backend="optimized", control=None, operation_mode=None):
             lambda obj, x: obj._sparsity_head(x), model.embed_out
         )
     metadata = dict(
-        implementation="specialized-14m" if small else "specialized-70m",
+        implementation="specialized-" + size,
         topology=topology_metadata(model),
         sparse_sites=["a", "m", "h", "z", "qk", "pv"] if small else ["h", "z"],
     )
@@ -107,6 +112,13 @@ def install(model, backend="optimized", control=None, operation_mode=None):
                     mask["qk"], mask["pv"]
                 )
         metadata.update(operation_mask=mask, operation_mode=operation_mode)
+    if hz_mode:
+        switches = module("hz_switches", ROOT / "ablation/implementation.py")
+        skip_h, skip_z = {"A": (True, True), "B": (False, True),
+                          "C": (True, False), "D": (False, False)}[hz_mode]
+        for layer in model.gpt_neox.layers:
+            layer._sparsity_joint = switches.Joint(layer._sparsity_joint, skip_h, skip_z)
+        metadata.update(hz_mode=hz_mode, skip_h=skip_h, skip_z=skip_z)
     if control == "native-hz":
         controls = module("projection_control", ROOT / "controls.py")
         for layer in model.gpt_neox.layers:
