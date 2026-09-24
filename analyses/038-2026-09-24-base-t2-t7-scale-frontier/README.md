@@ -45,12 +45,14 @@ footer are omitted. The user corrected the earlier 30M label to 31M; all
 36 measured coordinates and the Pareto set are unchanged.
 
 The [two-panel companion](figures/02-absolute-relative-scale-frontier.pdf)
-retains the absolute comparison and adds `L - L_Base` versus
-`t / t_PyTorch_Base`, using each scale's own Base references. All three
-PyTorch Bases coincide at (0, 1); kernel Base ratios remain measured. The
-relative panel uses linear axes and retains negative loss changes. Generate
+retains the absolute comparison in panel (a). Panel (b) uses only T2/Ph,
+with paired boxplots of `L - L_Base` and `t - t_PyTorch_Base` for each model
+size. Each box summarizes the five kappa settings. Purple loss-change boxes
+use the left Y axis; teal latency-change boxes use the right Y axis, in
+milliseconds. Both axes are linear and zero-aligned. Boxes span the middle
+50%, whiskers use 1.5 IQR, and outliers remain visible. Generate
 it with `python analyses/038-2026-09-24-base-t2-t7-scale-frontier/03_absolute_relative.py`
 from the repository root. See [O002](observations/002-absolute-relative.md)
-for its caption and denominator provenance, and
+for its caption and Base-reference provenance, and
 `data/absolute-relative-figure.json` for exact values. The single-panel PDF
 and its source coordinates are preserved unchanged.
