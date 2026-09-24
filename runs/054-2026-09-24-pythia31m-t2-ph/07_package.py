@@ -29,7 +29,7 @@ def make_archive(name, paths, repository):
         for relative,path in sorted(selected.items()):
             archive.add(path,arcname=relative,recursive=False)
         payload = json.dumps(manifest,indent=2).encode()
-        item = tarfile.TarInfo("deployment.json" if name=="input-source" else "data-transfer.json")
+        item = tarfile.TarInfo("data-transfer.json" if name=="input-data" else "deployment.json")
         item.size = len(payload)
         archive.addfile(item,io.BytesIO(payload))
     with target.open("rb") as handle:
@@ -42,6 +42,7 @@ def make_archive(name, paths, repository):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--data",action="store_true")
+    p.add_argument("--training-only",action="store_true",help="Omit unused kernel/vendor files on training Pods")
     args = p.parse_args()
     if subprocess.run(["git","status","--porcelain","--",str(RUN_DIR)],cwd=REPO_ROOT,
                       check=True,capture_output=True,text=True).stdout.strip():
@@ -49,9 +50,11 @@ def main():
     repository = git_identity()
     repository["packaged_scientific_files_committed"] = True
     identity()  # Validate the shape-port provenance before packaging.
-    paths = scientific_source_paths()+source_paths()+list((RUN_DIR/"prelaunch/initialization").glob("*"))
+    paths = scientific_source_paths()+list((RUN_DIR/"prelaunch/initialization").glob("*"))
+    if not args.training_only:
+        paths += source_paths()
     paths += [REPO_ROOT/"pyproject.toml", REPO_ROOT/"README.md", RUN_DIR/"00_setup_remote.sh"]
-    make_archive("input-source",paths,repository)
+    make_archive("input-training" if args.training_only else "input-source",paths,repository)
     if args.data:
         paths = [REPO_ROOT/"data/tokenized/minipile-pythia-14m-full"/split/name
                  for split in ("train","validation") for name in ("metadata.json","tokens.int32.bin")]

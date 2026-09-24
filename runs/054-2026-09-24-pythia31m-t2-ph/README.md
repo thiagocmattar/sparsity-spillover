@@ -1,7 +1,9 @@
 # Run 054: 31M Base and T2/Ph
 
-Status: design approved; implementation and local non-evidence preflights verified.
-Scientific training and cloud provisioning await separate launch approval.
+Status: design and launch approved. The user replaced the sequential budget
+proposal with fastest available RunPod execution and concurrent conditions.
+Six H200 GPUs and a separate Community RTX 5090 are provisioned; remote setup
+and preflights precede scientific training. See `prelaunch/parallel-fleet-001.json`.
 The user reconfirmed the full diagnostic/checkpoint retention package.
 
 ## Question and approved comparison
@@ -68,6 +70,10 @@ the deadline, then trains and verifies six conditions and invokes the latency
 grid. `10_seal.py` seals terminal files; `11_retrieve.py` checks the downloaded
 archive, every file, training cohort and latency qualification before teardown.
 The external workstation stop guard is `13_local_stop_guard.ps1`.
+`15_parallel_train.py` implements the approved parallel launch: one condition per
+GPU, concurrent preflights, and a verified condition before retrieval. All six
+training conditions use H200; only execution placement changes. MB4/GAS256,
+initialization, order, pressure, precision and validation remain unchanged.
 
 ## Kernel and latency contract
 

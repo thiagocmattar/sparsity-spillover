@@ -155,7 +155,7 @@ def scientific_source_paths():
     paths = [*RUN_DIR.glob("*.py"), DEFAULT_CONFIG, RUN_DIR/"architecture_config.json"]
     paths += list((REPO_ROOT/"src/sparsity_research").glob("*.py"))
     old = RUN_DIR.parent/"004-2026-08-29-pythia14m-full-pass-l1n"
-    paths += [old/name for name in ("run_config.py", "training.py", "optimizer_boundary.py", "diagnostics.py")]
+    paths += [old/name for name in ("run_config.py", "training.py", "optimizer_boundary.py", "diagnostics.py", "06_build_cache_from_hf.py")]
     paths += [RUN_DIR.parent/"043-2026-09-20-pythia70m-hz-h-only-ol1/optimizer_boundary.py"]
     if INITIALIZATION_METADATA.exists():
         paths.append(INITIALIZATION_METADATA)
