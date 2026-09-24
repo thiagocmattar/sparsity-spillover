@@ -6,7 +6,7 @@ grid, final CUDA implementations and compact measurements behind the paper.
 It does not contain model weights, tokenized data, cloud tooling or the experiment
 development history.
 
-Read [the manuscript](main.pdf) and [the paper-to-code map](docs/PAPER_MAP.md). Humans and agents use the
+Read the separately submitted paper and [the paper-to-code map](docs/PAPER_MAP.md). Humans and agents use the
 same entry points; [AGENTS.md](AGENTS.md) records the scientific contracts.
 
 ## Quick start
@@ -29,8 +29,8 @@ python -m training.train --list
 These commands need neither weights nor a GPU. `reproduced/` contains a CSV of
 all **95 endpoints (45/11/27/12 at 14M/31M/70M/410M)**, the 36 execution
 coordinates in the three-scale comparison, numerical checks, and central
-figure reconstructions. The manuscript is in `main.pdf`; exact paper figure
-assets are in `figures/`. Start with [the reviewer guide](docs/REVIEWER_GUIDE.md)
+figure reconstructions. The manuscript is submitted separately and is not bundled;
+supporting figure assets are in `figures/`. Start with [the reviewer guide](docs/REVIEWER_GUIDE.md)
 for the claim-to-evidence map and a short CPU-only review route.
 Reconstructed plots use the same retained numbers; typography is not a
 byte-for-byte reproduction of the manuscript artwork.
@@ -63,7 +63,6 @@ There is no public weight download URL in this snapshot.
 | `kernels/` | Final 14M/31M/70M components, direct assembly, published ablations |
 | `scripts/` | Data preparation, CPU result reconstruction, clipping, GPU measurement |
 | `results/` | Compact measured values, integer counts and diagnostic traces |
-| `main.pdf` | Complete manuscript, including appendices |
 | `figures/` | Six exact figure assets used by the manuscript |
 | `docs/` | Paper map, mathematics, reproducibility limits and working guide |
 | `tests/` | Mathematical behavior, data coverage, hook placement and portable interfaces |

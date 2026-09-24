@@ -1,7 +1,8 @@
 # Paper-to-code map
 
-Read [main.pdf](../main.pdf) for the complete manuscript and appendices. This map
-uses section titles and result descriptions so it survives float renumbering.
+Read the separately submitted paper for the manuscript and appendices. This map
+uses topic descriptions; figure/table numbers refer to this evidence snapshot
+and may shift during final editing. The manuscript is not bundled.
 
 | Paper topic | Code / command | Evidence |
 |---|---|---|

@@ -25,7 +25,8 @@ After the user's cleanup review, `release_kernels.py` extracts only the final
 component bodies and `package/kernels/install.py` assembles them directly.
 Intermediate installers, candidate manifests, unused CUDA versions, original
 run-numbered configs, historical reference documents and TeX are excluded.
-`main.pdf` is copied byte-for-byte. Only the five paper topologies are exposed.
+The manuscript PDF is excluded because it is submitted separately. Only the five
+paper topologies are exposed.
 `release_results.py` replaces private run IDs with scientific condition names
 and descriptive session labels while retaining measured values and identity
 hashes. The detailed author-archive mapping lives here in `source-map.json`,
@@ -35,8 +36,9 @@ outside the handoff. See `observations/002-clean-public-layout.md`.
 ## Current submission supplement (2026-09-24)
 
 The current user request is a ZIP supplement supportive of the revised paper,
-with a maximum size of 100 MB. The exporter now includes the current manuscript
-and six exact figure assets, all 95 conditions (45/11/27/12 at 14M/31M/70M/410M),
+with a maximum size of 100 MB. The manuscript is excluded at the user's request
+so its writing can evolve independently. The exporter includes six figure
+assets, all 95 conditions (45/11/27/12 at 14M/31M/70M/410M),
 the 31M kernels/configuration, 36 cross-scale execution coordinates, 31M full
 qualification/raw timing records, four Base trajectories, and the retained
 same-checkpoint execution controls. The rejected absolute/relative companion
@@ -57,13 +59,13 @@ Build, verify in isolation, and package from the repository root:
 ```
 
 The ZIP builder requires a passing verification of the current manifest, writes
-`/handoff.zip`, enforces the conservative decimal limit of 100,000,000 bytes,
+`/suplementary.zip`, enforces the conservative decimal limit of 100,000,000 bytes,
 checks CRCs and every extracted file hash, and runs result reconstruction from
 the extracted ZIP. It includes only manifest-owned files plus the manifest.
-Both `/handoff/` and `/handoff.zip` are ignored; tracked export sources and
+Both `/handoff/` and `/suplementary.zip` are ignored; tracked export sources and
 verification records reproduce the delivery. Rebuilding after source edits
 requires repeating verification. `source_commit` identifies the base checkout;
 per-file hashes identify the exported working-tree snapshot.
 
-See `observations/003-submission-supplement.md`, `verification.json` and
+See `observations/004-separate-paper.md`, `verification.json` and
 `zip-verification.json` for the tested snapshot and its remaining limits.

@@ -1,7 +1,8 @@
 # Agent guide
 
 Read README.md, docs/PAPER_MAP.md, docs/REPRODUCE.md and docs/RELEASE_STATUS.md.
-Use docs/METHODS.md for the executed definitions and main.pdf for the paper.
+Use docs/METHODS.md for the executed definitions and the separately submitted paper
+for its narrative. The manuscript is not bundled; its writing may evolve independently.
 
 - This is a reproducibility companion. Do not invent a new scientific comparison.
 - CPU checks and reconstruction from results/ are safe default tasks. Ask the

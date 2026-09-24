@@ -1,7 +1,8 @@
 # Reviewer guide
 
 This supplement supports **Activation Sparsity as Training–Inference Co-Design**.
-The included manuscript and figures match the submission draft. No account,
+The paper is submitted separately; this archive contains its supporting code,
+evidence and figure assets. Its prose may evolve independently. No account,
 GPU, weights or dataset download is needed to inspect or reconstruct the results.
 Ready-to-read CSV tables are also included in `results/` and can be opened
 without Python. Python dependencies must already be installed for offline
@@ -9,7 +10,7 @@ execution; see README.md.
 
 ## A short review route
 
-1. Read `main.pdf` and `docs/PAPER_MAP.md`.
+1. Read the separately submitted paper and `docs/PAPER_MAP.md`.
 2. Run `python scripts/reproduce.py verify` to check all distributed SHA-256 hashes.
 3. Run `python scripts/reproduce.py results` to reconstruct CSV tables, logical
    ceilings and the current paper's numerical checks.

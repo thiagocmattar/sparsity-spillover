@@ -1,6 +1,6 @@
 # Verification and limits
 
-This supplement packages the current manuscript, six exact figure assets and
+The paper is submitted separately. This supplement packages six figure assets and
 95 measured endpoints at 14M/31M/70M/410M. The 84 historical endpoint rows retain
 their original numerical values; the 11 added rows are the approved 31M cohort.
 
@@ -23,8 +23,8 @@ Verified in an isolated copy with no author run or analysis tree:
 - CUDA source token equivalence after identifier/comment cleanup, with only
   the selected vocabulary tile retained. The 31M gate-aware wrapper supports
   both ungated a/m (Base/T2) and gated a/m (T7) without changing the kernel policy.
-- Ten offline PDF reconstructions. The six distributed original figure assets
-  and manuscript match the author's current files byte-for-byte.
+- Ten offline PDF reconstructions. The six distributed figure assets match their
+  source files byte-for-byte. No manuscript PDF or TeX is distributed.
 
 Not performed for this packaging update: full pretraining, CUDA compilation or
 execution, new latency qualification, or a clean network installation of all

@@ -26,10 +26,9 @@ def main():
         f"Unexpected/missing export files: {actual_files ^ expected_files}"
     )
     assert not list(SOURCE.rglob("*.tex"))
-    assert len(list(SOURCE.rglob("*.pdf"))) == 7
-    assert (SOURCE / "main.pdf").read_bytes() == (
-        ROOT / "manuscript/draft/main.pdf"
-    ).read_bytes()
+    assert len(list(SOURCE.rglob("*.pdf"))) == 6
+    assert not (SOURCE / "main.pdf").exists()
+    assert all(p.parent == SOURCE / "figures" for p in SOURCE.rglob("*.pdf"))
     assert not (SOURCE / "configs/original").exists()
     assert not list(SOURCE.rglob("candidate.py"))
     source_map = json.loads((HERE / "source-map.json").read_text())
@@ -204,7 +203,7 @@ def main():
         unchanged_central_endpoints=84,
         added_31m_endpoints=11,
         paper_figure_assets=6,
-        manuscript_pdf="byte-identical to manuscript/draft/main.pdf; no TeX distributed",
+        manuscript_pdf="excluded; paper submitted separately; no TeX distributed",
     )
     (HERE / "verification.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k != "checks"}, indent=2))

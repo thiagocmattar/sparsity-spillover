@@ -1,8 +1,8 @@
 # Exact paper figure assets
 
-These PDFs are copied byte-for-byte from the current manuscript assets.
-Their captions and scientific caveats are in `main.pdf`; `docs/PAPER_MAP.md`
-links each claim to its data and executable reconstruction.
+These PDFs retain the figure assets for this evidence snapshot. The paper is
+submitted separately; its captions and numbering may evolve during editing.
+`docs/PAPER_MAP.md` links each topic to its data and executable reconstruction.
 
 | Asset | Paper use | Evidence / source |
 |---|---|---|

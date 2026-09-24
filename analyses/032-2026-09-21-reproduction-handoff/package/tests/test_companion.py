@@ -99,7 +99,7 @@ def test_final_kernel_source_closure_and_imports(monkeypatch):
         support.module(f"closure_check_{index}", path)
     assert not list((ROOT / "kernels").rglob("candidate.py"))
     assert not list(ROOT.rglob("*.tex"))
-    assert (ROOT / "main.pdf").read_bytes().startswith(b"%PDF-")
+    assert not (ROOT / "main.pdf").exists()
 
 
 def test_clipping_order_statistics_and_equality():

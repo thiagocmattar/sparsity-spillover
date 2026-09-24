@@ -8,3 +8,6 @@
 - [003 ? Current submission supplement](003-submission-supplement.md): revised
   manuscript, 31M evidence and kernels, reviewer map, isolated checks and ZIP
   integrity/size verification against the 100 MB limit.
+
+- [004 - Paper submitted separately](004-separate-paper.md): manuscript removed;
+  `suplementary.zip` rebuilt with verified contents and updated reviewer guidance.

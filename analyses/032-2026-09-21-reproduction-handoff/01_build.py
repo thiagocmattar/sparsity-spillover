@@ -243,7 +243,6 @@ def main():
             "Keep paper measurements; replace archive labels with scientific identifiers"
         )
     extend_results(ROOT, OUT, analysis, run, save, copy, provenance)
-    copy(ROOT / "manuscript/draft/main.pdf", "main.pdf")
     build_kernels(run, ROOT, save, provenance)
     copy(
         run(28) / "23_dependencies.py",

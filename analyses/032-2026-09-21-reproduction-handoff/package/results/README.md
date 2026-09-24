@@ -25,7 +25,7 @@ PROVENANCE.json records source hashes and MANIFEST.json hashes release bytes.
 
 `python scripts/reproduce.py figures` writes ten PDF reconstructions to
 `reproduced/`, using these inputs. Source: `scripts/reproduce.py`. Exact original figure assets are in `figures/`;
-captions are in [the manuscript](../main.pdf).
+captions are in the separately submitted paper.
 
 The reconstructed quality plots show loss/latency against count-pooled logical
 sparsity, with recipe lines and dotted Base/ReLU clipping paths. The three-panel
