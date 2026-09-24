@@ -1,0 +1,106 @@
+{
+  "arguments": {
+    "attempt": "local-port-full-001",
+    "checkpoint": "runs/054-2026-09-24-pythia31m-t2-ph/prelaunch/calibration-local-mb4-001/checkpoint/step_000006",
+    "condition": "calibration-hz-0p1",
+    "local_calibration": true,
+    "replicate": 1,
+    "smoke": false
+  },
+  "cache_sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451",
+  "checkpoint_files": [
+    {
+      "bytes": 391,
+      "path": "checkpoint_metadata.json",
+      "sha256": "5e1e4ad8b4d07ca09e34b0a784c6b337400215445cbc0be00026d46c11c1274b"
+    },
+    {
+      "bytes": 1451,
+      "path": "config.json",
+      "sha256": "6d30a410ebc7e3ea04465f15e134fcbd734ffbd786e8a87df3c179f13d54ce78"
+    },
+    {
+      "bytes": 195,
+      "path": "generation_config.json",
+      "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+    },
+    {
+      "bytes": 121987544,
+      "path": "model.safetensors",
+      "sha256": "0d2206372c659de00ba5a610167e14cfa1478c8ad7e9879b7f43e38571243b2f"
+    }
+  ],
+  "config": {
+    "batch_size": 1,
+    "fresh_processes": 3,
+    "full_logits": true,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "logit_atol": 0.25,
+    "logit_rtol": 0.02,
+    "pooled_loss_delta_max": 0.001,
+    "precision": "bfloat16",
+    "relative_l2_max": 0.02,
+    "runtime_seed": 2801,
+    "sequence_length": 2048,
+    "source_candidate": "opt073",
+    "source_run": "045-2026-09-20-pythia70m-kernel-grid",
+    "timing_inputs": 64,
+    "timing_passes": 7,
+    "timing_seed": 2504
+  },
+  "elapsed_seconds": 44.698759333000005,
+  "implementation": {
+    "attention": "dense Flash M64 N128, four warps, head32, token-major output",
+    "dimensions": {
+      "d": 256,
+      "ffn": 1024,
+      "head_dim": 32,
+      "heads": 8
+    },
+    "head": "CUTLASS 128x128x32 full50304",
+    "identity": "opt073-31m-v1",
+    "input_projections": "native dense, as opt073",
+    "new_optimization_search": false,
+    "normalization": "shared-input width256 paired LayerNorm",
+    "output_projections": "M8 N256 K16, <=8-entry scalar rows, parallel inspection and native-order MMA fallback",
+    "parent": "Run045 opt073",
+    "same_policy_all_checkpoints": true
+  },
+  "losses": {
+    "kernel_graph": 9.867241787190194,
+    "native": 9.867241787190194,
+    "native_graph": 9.867241787190194
+  },
+  "peak_reserved_bytes": 3770679296,
+  "qualification": {
+    "kernel_graph": true,
+    "native": true,
+    "native_graph": true
+  },
+  "qualified": true,
+  "runtime": {
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "gpu_uuid": "f88fa6c7-d365-208f-29f2-f6c7a1c47de7",
+    "python": "3.12.3",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1"
+  },
+  "scientific_measurement": false,
+  "setup_seconds": {
+    "kernel_graph": 0.4364039840000018,
+    "native": 9.03990000011845e-05,
+    "native_graph": 0.3799657940000003
+  },
+  "status": "completed",
+  "timing": {
+    "kernel_graph": {
+      "geomean_host_ms": 3.0242752840753058,
+      "samples": 448
+    },
+    "native_graph": {
+      "geomean_host_ms": 2.762639673318823,
+      "samples": 448
+    }
+  }
+}
