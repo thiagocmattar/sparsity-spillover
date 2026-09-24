@@ -117,4 +117,8 @@ Pause further conditions on a scientific failure and preserve evidence. No
 automatic scientific recipe changes or expansion of the billable envelope.
 
 The user explicitly retained the approved post-hoc package; no extra measurements
-were requested. Separate launch approval is still required by `AGENTS.md`.
+were requested. The subsequent instruction to use available RunPod GPUs for the
+fastest execution authorized the parallel launch and superseded this sequential
+proposal. See `parallel-fleet-001.json` and the run README for the executed
+placement, $200 cap, 19:01 UTC deadline, infrastructure retry and parallel
+retrieval entry points.

@@ -111,3 +111,51 @@ a loss improvement is assumed. The manuscript will not be edited in this task.
 See `prelaunch/launch-proposal.md` for checks, measured local fit, billable
 envelope, artifact transfer and monitoring. Calibration checkpoints and timings
 are infrastructure evidence only and must never enter the final figure.
+
+## Parallel execution record (2026-09-24)
+
+The user's fastest-completion instruction superseded the sequential proposal and
+authorized launch. Six H200s ($4.59 per GPU-hour) train one condition each, with
+a separate Community RTX 5090 ($0.69/hour) for timing. The initial fleet rate is
+$28.23/hour; the fleet cap is $200 and the external stop deadline is 19:01 UTC.
+No scientific batch, optimizer, validation, initialization or data-order input
+changed. `prelaunch/parallel-fleet-001.json` records the initial deployment.
+
+The EUR-IS-4 H200 required about 13.3 seconds per T2 update; the US workers
+required about 5.3 seconds. Cache assembly measured under 0.01 seconds, so moving
+the cache would not solve the observed bottleneck. A replacement H200 in US-NC-1
+passed its preflight and reached about 400,000 tokens/s. The original kappa-0.1
+attempt was stopped with SIGTERM at 13:47:59 UTC (inherited SIGINT was ignored).
+Its original manifest, events and checkpoints are retained unchanged; the
+terminal pipeline and `prelaunch/retired-training-attempts.json` identify this
+infrastructure failure. The replacement restarts the same canonical inputs.
+This placement decision used throughput, not model quality. The extra host is
+removed after all of its evidence has been copied and hash-verified.
+The retired Pod was terminated at 13:53 UTC after 1,342,224,756 bytes of training
+and preflight artifacts plus its control logs were verified locally. Its control
+archive omitted `pip-freeze.txt`; the failed attempt still records its pinned
+runtime and source identities. Retrieval now explicitly includes that file for
+every completed training/timing Pod.
+
+Initial cache upload won a race against a pinned remote rebuild, and its archive
+and four files were verified before use. Training Pods use a compact source
+package; unused archived CUDA headers delayed extraction on the first host.
+The latency compile retry added the virtual environment's `bin` directory to
+PATH so the installed Ninja executable was discoverable. These were setup
+retries before scientific measurements, and their logs are retained.
+
+For this parallel execution, `prelaunch/retrieve-sealed.py` retrieves terminal
+Pod archives into isolated directories, checks archive and per-file hashes,
+then merges only verified evidence. It supersedes the sequential retrieval
+entry point. `prelaunch/verify-cohort.py` calls the unchanged scientific verifier
+for all six completed conditions and requires retained evidence for the recorded
+infrastructure interruption. `prelaunch/stage-final-latency.py` transfers only
+verified final-model files to the RTX 5090; optimizer history is retained locally.
+`latency/03_final_grid.py` runs three fresh timing processes per condition under
+an exclusive GPU lock. This overlaps timing and retrieval with remaining
+training without concurrent benchmarks on the same device.
+
+The cross-run output is Analysis 037. Its collector requires six verified final
+training endpoints, 18 fully qualified timing processes, one GPU UUID, one
+runtime source identity and exact final-checkpoint hashes. The plot preserves
+all 68 historical execution coordinates and adds seven for the new model.
