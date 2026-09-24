@@ -11,7 +11,7 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 OLD=ROOT/'analyses/037-2026-09-24-14m-31m-70m-latency-quality'
 OLD_HASH='5d6d88d24d32ff9ebadc76a2653fed1b517becedf06beda1cecbdd84bc27f55a'
-TITLE='Targeted sparsification exhibits scale-dependent quality\u2013latency trade-offs'
+TITLE='Quality\u2013latency trade-offs across model scales'
 STYLE_REFERENCE=ROOT/'manuscript/draft/figures/02-14m-70m-latency-quality.pdf'
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()

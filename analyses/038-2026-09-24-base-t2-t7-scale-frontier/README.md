@@ -37,8 +37,8 @@ visually inspected; source coordinates and historical PDFs remain unchanged.
 
 The paper-ready revision follows the typography, colors, line weights and
 compact layout of `manuscript/draft/figures/02-14m-70m-latency-quality.pdf`.
-Its title is "Targeted sparsification exhibits scale-dependent quality–latency
-trade-offs". Dashed blue T2/Ph and solid orange T7/Ph curves use circles,
+Its approved title is "Quality–latency trade-offs across model scales".
+Dashed blue T2/Ph and solid orange T7/Ph curves use circles,
 triangles and squares for 14M, 31M and 70M. Three vertical gray guides mark
 the respective Base losses. Kappa labels, the workload subtitle and the legend
 footer are omitted. The user corrected the earlier 30M label to 31M; all

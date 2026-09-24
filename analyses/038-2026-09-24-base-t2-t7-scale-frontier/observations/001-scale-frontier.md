@@ -36,7 +36,7 @@ Base PyTorch means CUDA-graph replay with the same full-model workload.
 
 ## Legend and caption
 
-**Targeted sparsification exhibits scale-dependent quality–latency trade-offs.**
+**Quality–latency trade-offs across model scales.**
 Validation loss versus full-model latency for Pythia-14M, Pythia-31M and
 Pythia-70M. Circles, triangles and squares denote the three scales. Dashed blue
 curves denote T2/Ph and solid orange curves T7/Ph; hollow gray points denote
