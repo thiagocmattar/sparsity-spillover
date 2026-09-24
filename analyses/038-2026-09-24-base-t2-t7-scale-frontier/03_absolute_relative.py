@@ -8,7 +8,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 from matplotlib.cbook import boxplot_stats
 from matplotlib.ticker import NullLocator, ScalarFormatter
 
@@ -73,12 +72,16 @@ def main():
         'axes.labelsize': 11, 'axes.titlesize': 11, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
         'axes.spines.top': False, 'axes.spines.right': False, 'axes.linewidth': .65,
         'pdf.fonttype': 42, 'mathtext.fontset': 'dejavusans'})
-    fig, axes = plt.subplots(1, 2, figsize=(10.4, 5.3))
-    fig.subplots_adjust(left=.08, right=.985, bottom=.24, top=.84, wspace=.32)
+    fig = plt.figure(figsize=(10.4, 6.1))
+    grid = fig.add_gridspec(2, 2, left=.08, right=.985, bottom=.23, top=.84,
+        width_ratios=[1.1, 1], wspace=.40, hspace=.28)
+    absolute_ax = fig.add_subplot(grid[:, 0])
+    loss_ax = fig.add_subplot(grid[0, 1])
+    time_ax = fig.add_subplot(grid[1, 1], sharex=loss_ax)
     fig.suptitle(TITLE, x=.08, y=.965, ha='left', fontsize=12)
     panels = [dict(rows=points, x='loss', y='latency_ms', title='(a) Absolute',
         xlim=(4.02, 5.86), ylim=(.43, 2.85))]
-    for ax, panel in zip(axes, panels):
+    for ax, panel in zip([absolute_ax], panels):
         rows, x, y = panel['rows'], panel['x'], panel['y']
         for scale, marker in MARKERS.items():
             for scope in COLORS:
@@ -105,44 +108,36 @@ def main():
         ax.grid(axis='y', color='#E8EAED', lw=.6)
         ax.set_axisbelow(True)
         ax.tick_params(length=3, width=.65)
-    loss_ax = axes[1]
-    position = loss_ax.get_position()
-    loss_ax.set_position([position.x0, position.y0, position.width-.06, position.height])
-    time_ax = loss_ax.twinx()
-    for ax, metric, color, offset in [(loss_ax, 'loss_delta', LOSS_COLOR, -.17),
-            (time_ax, 'latency_delta_ms', TIME_COLOR, .17)]:
+    for ax, metric, color in [(loss_ax, 'loss_delta', LOSS_COLOR),
+            (time_ax, 'latency_delta_ms', TIME_COLOR)]:
         stats = [boxes[scale][metric] for scale in MARKERS]
-        ax.bxp(stats, positions=[i+offset for i in range(3)], widths=.27,
-            patch_artist=True, manage_ticks=False, showfliers=True, zorder=4,
-            boxprops=dict(facecolor=matplotlib.colors.to_rgba(color, .22), edgecolor=color, linewidth=1.2),
-            medianprops=dict(color=color, linewidth=1.5), whiskerprops=dict(color=color, linewidth=1.1),
-            capprops=dict(color=color, linewidth=1.1),
-            flierprops=dict(marker='o', markersize=4.5, markerfacecolor='white', markeredgecolor=color, markeredgewidth=1.))
-        ax.tick_params(axis='y', colors=color, length=3, width=.65)
+        ax.bxp(stats, positions=[0, 1, 2], widths=.38,
+            patch_artist=True, manage_ticks=False, showfliers=False, zorder=3,
+            boxprops=dict(facecolor=matplotlib.colors.to_rgba(color, .16), edgecolor=color, linewidth=1.1),
+            medianprops=dict(color=color, linewidth=1.5), whiskerprops=dict(color=color, linewidth=1.),
+            capprops=dict(color=color, linewidth=1.))
+        # Fixed offsets expose all five endpoints without changing any Y value.
+        for i, scale in enumerate(MARKERS):
+            ax.scatter([i+offset for offset in (-.10, -.05, 0, .05, .10)],
+                boxes[scale][metric]['values'], s=19, color=color,
+                edgecolor='white', linewidth=.5, zorder=4)
+        ax.tick_params(length=3, width=.65, labelsize=9.5)
         ax.yaxis.set_minor_locator(NullLocator())
-    # Different units, with zero aligned at one quarter of each axis height.
-    loss_ax.set(ylim=(-.30, .90), xlim=(-.6, 2.6), xlabel='Model size',
-        ylabel=r'Loss change, $L-L_{\mathrm{Base}}$')
-    time_ax.set(ylim=(-.45, 1.35), ylabel=r'Latency change, $t-t_{\mathrm{PyTorch\,Base}}$ (ms)')
-    loss_ax.set_xticks([0, 1, 2], list(MARKERS))
-    loss_ax.set_yticks([-.2, 0, .2, .4, .6, .8])
-    time_ax.set_yticks([-.3, 0, .3, .6, .9, 1.2])
+        ax.axhline(0, color='#92969B', lw=.8, ls=(0, (2, 3)), zorder=2)
+        ax.grid(axis='y', color='#E8EAED', lw=.6)
+        ax.set_axisbelow(True)
+        ax.set_xlim(-.55, 2.55)
+    loss_ax.set(ylim=(-.14, .83), ylabel='Loss change\n'+r'$L-L_{\mathrm{Base}}$')
+    time_ax.set(ylim=(-.48, 1.02), xlabel='Model size',
+        ylabel='Latency change (ms)\n'+r'$t-t_{\mathrm{PyTorch\,Base}}$')
+    time_ax.set_xticks([0, 1, 2], list(MARKERS))
+    loss_ax.tick_params(axis='x', bottom=False, labelbottom=False)
+    loss_ax.spines['bottom'].set_visible(False)
+    loss_ax.set_yticks([0, .2, .4, .6, .8])
+    time_ax.set_yticks([-.4, 0, .4, .8])
     loss_ax.yaxis.label.set_color(LOSS_COLOR)
     time_ax.yaxis.label.set_color(TIME_COLOR)
-    loss_ax.spines['left'].set_color(LOSS_COLOR)
-    time_ax.spines['left'].set_visible(False)
-    time_ax.spines['right'].set_visible(True)
-    time_ax.spines['right'].set_color(TIME_COLOR)
-    loss_ax.axhline(0, color='#92969B', lw=.8, ls=(0, (2, 3)), zorder=2)
-    loss_ax.grid(axis='y', color='#E8EAED', lw=.6)
-    loss_ax.set_axisbelow(True)
-    loss_ax.tick_params(axis='x', length=3, width=.65)
     loss_ax.set_title(r'(b) $T_2/P_h$: changes from Base', loc='left', pad=10)
-    loss_ax.legend(handles=[Patch(facecolor=matplotlib.colors.to_rgba(c, .22), edgecolor=c, label=label)
-        for c, label in [(LOSS_COLOR, 'Loss change'), (TIME_COLOR, 'Latency change')]],
-        loc='upper left', frameon=False, fontsize=8.5, handlelength=1.3)
-    assert math.isclose(-loss_ax.get_ylim()[0]/(loss_ax.get_ylim()[1]-loss_ax.get_ylim()[0]),
-        -time_ax.get_ylim()[0]/(time_ax.get_ylim()[1]-time_ax.get_ylim()[0]))
     for row in changes:
         assert loss_ax.get_ylim()[0] < row['loss_delta'] < loss_ax.get_ylim()[1]
         assert time_ax.get_ylim()[0] < row['latency_delta_ms'] < time_ax.get_ylim()[1]
@@ -164,12 +159,13 @@ def main():
         script_sha256=sha(Path(__file__)), output=output.relative_to(HERE).as_posix(), output_sha256=sha(output),
         counts=dict(absolute_execution_points=36, absolute_checkpoints=33, boxplot_checkpoints=15,
             boxes=6, observations_per_box=5), bases=bases, absolute_points=points, points=changes, boxplots=boxes,
-        formulas=dict(x='model size', left_y='loss - same-scale Base loss',
-            right_y='latency_ms - same-scale PyTorch Base latency_ms'),
+        formulas=dict(x='model size', upper_y='loss - same-scale Base loss',
+            lower_y='latency_ms - same-scale PyTorch Base latency_ms'),
         boxplot_method=dict(quartiles='linear interpolation', whiskers='most extreme observations within 1.5 IQR',
-            show_fliers=True, sampling_unit='one trained endpoint per kappa; not replicate uncertainty'),
-        axis_scales=dict(absolute=dict(x='log', y='log'), boxplot=dict(x='categorical', left_y='linear', right_y='linear')),
-        interpretation='Panel (b) includes only T2/Ph. Each box summarizes the five kappa settings. Loss and latency use separate zero-aligned axes; latency is an absolute difference in milliseconds. No fitted scaling law.')
+            separate_flier_artist=False, overlay_all_observations=True,
+            point_offsets=[-.10, -.05, 0, .05, .10], sampling_unit='one trained endpoint per kappa; not replicate uncertainty'),
+        axis_scales=dict(absolute=dict(x='log', y='log'), boxplot=dict(x='categorical', upper_y='linear', lower_y='linear')),
+        interpretation='Panel (b) includes only T2/Ph in two vertically aligned mini-panels, loss above and latency below. Each box summarizes five kappa settings, all shown as dots. Each metric has its own zero reference; latency is an absolute difference in milliseconds. No fitted scaling law.')
     (HERE/'data/absolute-relative-figure.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8', newline='\n')
     print(json.dumps(dict(pdf=str(output), boxes=6, observations_per_box=5,
         medians={scale:{metric:stats['med'] for metric,stats in rows.items()} for scale,rows in boxes.items()})))

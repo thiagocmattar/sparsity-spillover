@@ -14,18 +14,23 @@ and T7/Ph at kappa 0, 0.01, 0.05, 0.1 and 0.5 for 14M, 31M and 70M.
 Panel (a) retains these 36 execution points. Panel (b) uses only the 15 T2/Ph
 checkpoints: five threshold settings per size. No new training or timing is added.
 
-In panel (b), X is categorical model size: 14M, 31M and 70M. Each size has
-two boxes. Loss change is `validation loss - Base validation loss`, plotted
-on the left Y axis. Latency change is
+In panel (b), two aligned mini-panels share categorical model size: 14M, 31M
+and 70M. Each size has one box in each mini-panel. Loss change is
+`validation loss - Base validation loss`, plotted above. Latency change is
 `kernel full-model latency - PyTorch Base full-model latency`, in milliseconds,
-plotted on the right Y axis. Both references come from the same model size.
-Latency is now an absolute difference, replacing the earlier ratio panel.
+plotted below. Both references come from the same model size. Each mini-panel
+has its own linear Y axis and zero reference. This user-selected stacked
+layout replaces the earlier paired boxes with two Y axes. The absolute
+differences and all boxplot statistics are unchanged.
 
 Each box has five observations, one per kappa. The box spans Q1 to Q3 and
 the line marks the median. Quartiles use linear interpolation; for n = 5,
 Q1, median and Q3 are the second, third and fourth sorted observations.
-Whiskers reach the most extreme observed values within 1.5 IQR of the box;
-observations outside those bounds appear as hollow circular outliers.
+Whiskers reach the most extreme observed values within 1.5 IQR of the box.
+All five observations, including outliers, are overlaid as filled dots.
+Small fixed horizontal offsets separate the dots within each size category;
+their vertical values are unmodified. A separate flier marker is omitted
+to avoid drawing the same outlying observation twice.
 All settings contribute equally, without pooling the timing replicates as
 additional observations.
 
@@ -44,16 +49,17 @@ qualification boundaries of [O001](001-scale-frontier.md) apply unchanged.
 
 **Targeted sparsification exhibits scale-dependent quality–latency trade-offs.**
 (a) Absolute validation loss and full-model latency, on logarithmic axes.
-(b) Paired boxplots of T2/Ph changes across five kappas per model size.
-Purple boxes show loss change from Base on the left axis; teal boxes show
-latency change from PyTorch Base in milliseconds on the right axis. Both
-axes are linear and zero-aligned. Boxes show the interquartile range and
-median, with 1.5 IQR whiskers and explicit outliers. In panel (a), circles,
+(b) Two aligned T2/Ph boxplot mini-panels across five kappas per model size.
+Purple boxes above show loss change from Base; teal boxes below show latency
+change from PyTorch Base in milliseconds. Each mini-panel has a linear Y
+axis; model size is shared. Boxes show the interquartile range and median,
+with 1.5 IQR whiskers. All five values are overlaid as dots. In panel (a), circles,
 triangles and squares denote 14M, 31M and 70M; dashed blue curves denote
 T2/Ph and solid orange curves T7/Ph. Hollow gray markers denote Base kernel
 execution and filled gray markers PyTorch Base. Lines join threshold settings
 within each recipe and size. Vertical guides in panel (a) mark Base loss;
-the horizontal guide in panel (b) marks zero change. No curve is fitted.
+the horizontal guides in panel (b) mark zero change for each metric. No curve
+is fitted.
 
 ## Result and checks
 
@@ -65,23 +71,24 @@ the horizontal guide in panel (b) marks zero change. No curve is fitted.
 
 Negative changes indicate improvement relative to the corresponding Base
 reference. All 30 changes from the 15 checkpoints are represented through
-the boxes, whiskers and outliers; the data artifact retains every value.
+the boxes, whiskers and individual dots; the data artifact retains every value.
 
 The generator checks source hashes, the full 36-point/33-checkpoint inventory,
 complete threshold families, matching Base checkpoint identities, reversible
 subtraction and visibility of every coordinate. Independent checks recompute
 all six sets of quartiles, medians, whiskers and outliers from the source values.
 The original single-panel PDF is preserved byte-for-byte. The new PDF was
-rendered and visually inspected, including both panels, the two colored axes
-and their legends. Panel (a)'s source coordinates are unchanged.
+rendered and visually inspected, including both mini-panels, all 30 dots and
+their labels. The statistics match the preceding paired-boxplot revision
+exactly. Panel (a)'s source coordinates are unchanged.
 
 ## Caveats
 
 The boxes describe variation across deliberately chosen thresholds, not
 uncertainty across seeds or timing replicates. Five settings give a small,
 discrete distribution; the threshold-ordered curves remain available in
-panel (a). Separate axes have different units, so box heights are read against
-their matching colored axis. Zero is aligned on both axes.
+panel (a). The two mini-panels have different units and ranges, so box heights
+are read against their own Y axis. Each has a visible zero reference.
 
 Base subtraction is by model scale, not by timing session. It does not remove
 session variability or differences in the specialized kernels. One seed and

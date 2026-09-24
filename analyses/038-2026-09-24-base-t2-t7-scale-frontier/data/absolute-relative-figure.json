@@ -3,9 +3,9 @@
   "source_sha256": "8f574d93cecdcd90caa181c44542e1cdcf269ed60f9e70c4149a3cd622d50789",
   "preserved_absolute_pdf_sha256": "fc8b5a5db46e9e61168ece267ad9bf29671502a124ba8c5eb0dd299bb2409499",
   "script": "03_absolute_relative.py",
-  "script_sha256": "641c7bc16108121d799691cda5cfeafafc08df102f0ac321b89dd8c2708617b9",
+  "script_sha256": "23d33782a4f9e869b7d2e84b30e6598c44533b21bb414f8deaf4487f66b6bc4a",
   "output": "figures/02-absolute-relative-scale-frontier.pdf",
-  "output_sha256": "f41ef7794863eb844723691c1b0cb8fba5b7b0c6cad733d43276c893793f5411",
+  "output_sha256": "5a914b4522f0eac3c26df043a429cfce85c36a71c0dbe9e3384dba3507a98ea2",
   "counts": {
     "absolute_execution_points": 36,
     "absolute_checkpoints": 33,
@@ -751,13 +751,21 @@
   },
   "formulas": {
     "x": "model size",
-    "left_y": "loss - same-scale Base loss",
-    "right_y": "latency_ms - same-scale PyTorch Base latency_ms"
+    "upper_y": "loss - same-scale Base loss",
+    "lower_y": "latency_ms - same-scale PyTorch Base latency_ms"
   },
   "boxplot_method": {
     "quartiles": "linear interpolation",
     "whiskers": "most extreme observations within 1.5 IQR",
-    "show_fliers": true,
+    "separate_flier_artist": false,
+    "overlay_all_observations": true,
+    "point_offsets": [
+      -0.1,
+      -0.05,
+      0,
+      0.05,
+      0.1
+    ],
     "sampling_unit": "one trained endpoint per kappa; not replicate uncertainty"
   },
   "axis_scales": {
@@ -767,9 +775,9 @@
     },
     "boxplot": {
       "x": "categorical",
-      "left_y": "linear",
-      "right_y": "linear"
+      "upper_y": "linear",
+      "lower_y": "linear"
     }
   },
-  "interpretation": "Panel (b) includes only T2/Ph. Each box summarizes the five kappa settings. Loss and latency use separate zero-aligned axes; latency is an absolute difference in milliseconds. No fitted scaling law."
+  "interpretation": "Panel (b) includes only T2/Ph in two vertically aligned mini-panels, loss above and latency below. Each box summarizes five kappa settings, all shown as dots. Each metric has its own zero reference; latency is an absolute difference in milliseconds. No fitted scaling law."
 }
