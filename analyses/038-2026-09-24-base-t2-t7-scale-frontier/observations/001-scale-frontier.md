@@ -36,16 +36,24 @@ Base PyTorch means CUDA-graph replay with the same full-model workload.
 
 ## Legend and caption
 
-Validation loss versus full-model latency for Pythia14M, approximately30M
-(the30,494,720-parameter Pythia-31M architecture), and70M. Shape denotes scale;
-blue denotes T2/Ph and orange T7/Ph; hollow gray points denote Base kernel and
-filled gray points Base PyTorch. Colored lines connect a threshold sweep within
-each scale, with endpoint labels0 and0.5. Gray segments join measured Base
-scales as visual guides. Both axes are logarithmic. No curve is fitted.
+**Targeted sparsification exhibits scale-dependent quality–latency trade-offs.**
+Validation loss versus full-model latency for Pythia-14M, Pythia-31M and
+Pythia-70M. Circles, triangles and squares denote the three scales. Dashed blue
+curves denote T2/Ph and solid orange curves T7/Ph; hollow gray points denote
+Base kernel and filled gray points Base PyTorch. Colored lines connect
+kappa 0, 0.01, 0.05, 0.1 and 0.5 within each recipe and scale. Three vertical
+gray guides mark the Base losses. Both axes are logarithmic. Timings use
+RTX 5090, BF16, batch one, 2,048 tokens and full logits. No curve is fitted.
+
+The paper-ready presentation adopts the reference manuscript figure's
+typography, colors, line weights and compact layout, with no kappa labels,
+workload subtitle or footer. The user corrected the earlier 30M label to 31M;
+the middle model still has 30,494,720 parameters. All numerical coordinates
+and the measured Pareto set are unchanged.
 
 ## Results
 
-| 30M T7/Ph kappa | Validation loss | Kernel latency (ms) | On measured cross-scale frontier |
+| 31M T7/Ph kappa | Validation loss | Kernel latency (ms) | On measured cross-scale frontier |
 | --- | ---: | ---: | --- |
 | 0 | 4.894259 | 0.986853 | No |
 | 0.01 | 4.874077 | 0.985217 | No |
@@ -54,24 +62,24 @@ scales as visual guides. Both axes are logarithmic. No curve is fitted.
 | 0.5 | 5.520965 | 0.606869 | No |
 
 Two new middle-scale T7/Ph endpoints extend the discrete measured Pareto set.
-Kappa 0.05 is 1.41% faster than the previous 30M T2/Ph kappa 0.1 point,
+Kappa 0.05 is 1.41% faster than the previous 31M T2/Ph kappa 0.1 point,
 with 0.136513 higher loss; kappa 0.1 gives a larger latency reduction at
 loss 4.942717. Neither point is dominated by any of the 36 execution points.
-The 0 and 0.01 points are dominated by 30M T2/Ph 0.1; the 0.5 point is
+The 0 and 0.01 points are dominated by 31M T2/Ph 0.1; the 0.5 point is
 dominated by 14M T2/Ph 0.05. This supports a limited extension of the observed
 frontier, not uniform superiority of the wider topology.
 
-At each matched kappa, 30M T7/Ph is 3.15-11.86% faster than 30M T2/Ph, with
+At each matched kappa, 31M T7/Ph is 3.15-11.86% faster than 31M T2/Ph, with
 0.172793-0.300547 higher validation loss. Across the full sweep, T7/Ph latency
 ranges from 0.606869 to 0.986853 ms. The exact data retain all three process
 values and both backends. Base kernel/PyTorch references remain present at
-all three sizes; the 30M Base is (4.565514, 1.106255/1.023861 ms).
+all three sizes; the 31M Base is (4.565514, 1.106255/1.023861 ms).
 
 The complete 36-point Pareto set contains 15 execution points. This uses
 literal coordinate dominance with no uncertainty margin; it is a description
 of the measurements, not a statistically established ranking. In particular,
 the 1.41% gap above is between different timing sessions. Connecting lines
-and the three Base-scale guide points are not a fitted scaling curve.
+within recipes and the vertical Base-loss guides are not a fitted scaling curve.
 
 ## Caveats
 
