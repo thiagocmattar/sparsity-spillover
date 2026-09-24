@@ -1,5 +1,6 @@
 """Read one bounded fleet snapshot; no remote mutations."""
 from concurrent.futures import ThreadPoolExecutor
+import argparse
 from datetime import datetime,timezone
 import json
 from pathlib import Path
@@ -32,6 +33,13 @@ for a in sorted((r/'artifacts/attempts').glob('*')):
 out['gpus']=subprocess.run(['nvidia-smi','--query-gpu=name,utilization.gpu,memory.used,memory.total,power.draw,temperature.gpu','--format=csv,noheader,nounits'],capture_output=True,text=True).stdout.strip()
 out['disk']=subprocess.run(['df','-h','/workspace'],capture_output=True,text=True).stdout.strip().splitlines()[-1]
 out['kernel_ready']=pathlib.Path('/workspace/run054-control/kernel-ready').exists()
+out['latency']=[]
+for p in sorted((r/'latency/artifacts/attempts').glob('final-*')):
+ try:
+  m=json.loads((p/'manifest.json').read_text());events=(p/'events.jsonl').read_text().splitlines()
+  out['latency'].append(dict(attempt=p.name,status=m['status'],qualified=m.get('qualified'),
+   latest=json.loads(events[-1]) if events else None,timing=m.get('timing')))
+ except (ValueError,OSError):pass
 print(json.dumps(out))
 '''
 
@@ -47,12 +55,26 @@ def read(node):
 
 
 def main():
+    p=argparse.ArgumentParser();p.add_argument('--latency-only',action='store_true');args=p.parse_args()
+    retired={json.loads(path.read_text())['pod'] for path in (RUN/'prelaunch').glob('terminated-*.json')
+        if json.loads(path.read_text())['status']=='terminated'}
+    nodes=[node for node in (NODES[4:] if args.latency_only else NODES) if node['id'] not in retired]
     with ThreadPoolExecutor(max_workers=5) as pool:
-        rows=list(pool.map(read,NODES))
+        rows=list(pool.map(read,nodes))
     stamp=datetime.now(timezone.utc)
     folder=RUN/'prelaunch/monitoring';folder.mkdir(exist_ok=True)
-    (folder/(stamp.strftime('%Y%m%d-%H%M%S')+'.json')).write_text(json.dumps(dict(utc=stamp.isoformat(),pods=rows),indent=2)+'\n')
-    for row in rows:print(json.dumps(row),flush=True)
+    name=('latency-' if args.latency_only else '')+stamp.strftime('%Y%m%d-%H%M%S')+'.json'
+    (folder/name).write_text(json.dumps(dict(utc=stamp.isoformat(),pods=rows),indent=2)+'\n')
+    for row in rows:
+        if 'error' in row:print(json.dumps(row),flush=True);continue
+        summary=dict(pod=row['pod'],training=[dict(condition=c['id'],step=c['step'],loss=round(c['loss'],6),
+            tokens_per_second=round(c['tokens_per_second']),remaining_minutes=round(c['remaining_minutes'],1),
+            status=c['status'],skipped_steps=c['skipped_steps'],finite=c['all_losses_finite']) for c in row['conditions']],
+            pipelines=[dict(status=p['status'],workers={k:v['stage'] for k,v in p['workers'].items()},error=p.get('error')) for p in row['pipelines']],
+            latency=[dict(attempt=l['attempt'],status=l['status'],qualified=l['qualified'],
+                stage=(l['latest'] or {}).get('stage'),
+                ms={k:round(v['geomean_host_ms'],6) for k,v in (l['timing'] or {}).items()}) for l in row['latency']])
+        print(json.dumps(summary),flush=True)
 
 
 if __name__=='__main__':main()

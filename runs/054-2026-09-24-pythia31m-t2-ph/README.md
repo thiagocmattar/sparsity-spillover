@@ -1,10 +1,11 @@
 # Run 054: 31M Base and T2/Ph
 
-Status: design and launch approved. The user replaced the sequential budget
-proposal with fastest available RunPod execution and concurrent conditions.
-Six H200 GPUs and a separate Community RTX 5090 are provisioned; remote setup
-and preflights precede scientific training. See `prelaunch/parallel-fleet-001.json`.
-The user reconfirmed the full diagnostic/checkpoint retention package.
+Status: complete. All six conditions finished 712 updates, full validation and
+diagnostics; all 18 RTX 5090 timing processes passed numerical qualification.
+The complete cohort and transferred artifacts were verified locally. All six
+task-created Pods, including the replaced host, are terminated. The user
+authorized fastest available RunPod execution and retained the full package.
+See `prelaunch/parallel-fleet-001.json` and `prelaunch/compute-closeout.json`.
 
 ## Question and approved comparison
 
@@ -159,3 +160,53 @@ The cross-run output is Analysis 037. Its collector requires six verified final
 training endpoints, 18 fully qualified timing processes, one GPU UUID, one
 runtime source identity and exact final-checkpoint hashes. The plot preserves
 all 68 historical execution coordinates and adds seven for the new model.
+
+## Verified results and closeout
+
+| Condition | Validation loss | Kernel ms | PyTorch ms | R_model (%) |
+|---|---:|---:|---:|---:|
+| Base | 4.565514 | 1.106255 | 1.023861 | 0.000018 |
+| T2/Ph, kappa=0 | 4.688476 | 1.020591 | 1.068473 | 8.588719 |
+| T2/Ph, kappa=0.01 | 4.701284 | 1.017293 | 1.071115 | 8.732630 |
+| T2/Ph, kappa=0.05 | 4.702921 | 0.969383 | 1.072476 | 9.056343 |
+| T2/Ph, kappa=0.1 | 4.757208 | 0.908418 | 1.071218 | 9.259301 |
+| T2/Ph, kappa=0.5 | 5.220418 | 0.681118 | 1.067923 | 9.465328 |
+
+Latencies are geometric means across three fresh processes, each containing
+448 paired samples per backend. PyTorch means CUDA-graph replay, matching the
+historical figure. R_model is a count-pooled logical-product fraction, not a
+runtime gain. The training-loss curve is not substituted for final validation.
+
+The [updated PDF](../../analyses/037-2026-09-24-14m-31m-70m-latency-quality/figures/01-14m-31m-70m-latency-quality.pdf)
+and [observation](../../analyses/037-2026-09-24-14m-31m-70m-latency-quality/observations/001-combined-scales.md)
+contain the cross-scale interpretation and limits. The exact endpoints are in
+`artifacts/verification.json` and Analysis037's `data/31m-results.json`.
+
+All 72 scientific model snapshots and 18 recovery states are retained locally:
+13,175,935,092 checkpoint bytes. The verified evidence archives total
+16,741,091,156 bytes including preflights, the interrupted infrastructure attempt
+and latency evidence, before the small separate control-log archives. Checkpoint
+weights, recovery binaries and duplicate transfer archives are excluded from Git.
+All six final models share the canonical initialization and data schedule; no
+optimizer update was skipped. Every final condition has 48 canonical activation
+rows, weight statistics, logical counts, and all 712 optimizer-boundary records.
+Every timing condition has 42 BF16 runtime activation rows and 12 h/z work and
+occupancy records over the complete 338-block validation set.
+
+All task Pods were absent in the provider audit at 14:50:52 UTC. The pre-existing
+stopped Run052 Pod and 100 GB shared volume are unchanged. All task stop guards
+are stopped. The conservative compute estimate is USD45.63, using nominal rates
+from Pod creation through deletion (including provisioning time), excluding
+storage. Posted task billing was USD25.00 but covered only the buckets through
+14:00 UTC; it is not the final invoice. See the complete closeout JSON.
+
+One kappa-zero SFTP upload stalled before measurement began. Only that transfer
+was restarted using an SSH stream; archive and model-file hashes were checked
+again. No completed scientific measurement was discarded or repeated.
+
+Verification: 11 focused checks and the 242-test bootstrap suite passed before
+launch; production-shaped preflights ran concurrently on assigned GPUs; all six
+completed attempts passed the unchanged scientific verifier locally; all 18
+timing processes passed full-block qualification and exact checkpoint checks.
+The PDF was rendered and visually inspected, with all 75 execution points in
+range and the historical PDF unchanged. No manuscript or finding was promoted.

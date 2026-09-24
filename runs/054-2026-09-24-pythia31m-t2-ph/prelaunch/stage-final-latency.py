@@ -59,8 +59,10 @@ print(json.dumps(dict(condition=C,attempt=row['attempt'],final_loss=row['final_l
     for row in catalog['conditions'][0]['files']:
         path=local_model/row['path'];assert path.stat().st_size==row['bytes'] and sha(path)==row['sha256']
     target,ssh,scp=connection(nodes[4])
-    for name in ('final.tar','catalog.json'):
-        subprocess.run(scp+[str(folder/name),f'{target}:/workspace/run054-control/{args.condition}-{name}'],check=True)
+    # Stream the model through SSH: one SFTP upload suffered a severe per-connection stall.
+    with archive.open('rb') as handle:
+        subprocess.run(ssh+[f'cat > /workspace/run054-control/{args.condition}-final.tar'],stdin=handle,check=True)
+    subprocess.run(scp+[str(folder/'catalog.json'),f'{target}:/workspace/run054-control/{args.condition}-catalog.json'],check=True)
     code='R='+repr(REMOTE)+'\nC='+repr(args.condition)+'\n'+'''
 import pathlib,json,hashlib,tarfile,subprocess,os
 control=pathlib.Path('/workspace/run054-control');marker=control/(C+'-latency.pid')

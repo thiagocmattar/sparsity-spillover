@@ -33,8 +33,8 @@ def main():
         raise ValueError('Exactly one complete verified result per approved condition required')
     if {r['attempt'] for r in found_excluded}!=set(excluded_by_id):
         raise ValueError('An excluded infrastructure attempt was not retrieved')
-    write_json(RUN/'artifacts/verification.json',dict(status='verified',conditions=results,
-        excluded_infrastructure_attempts=found_excluded))
+    (RUN/'artifacts/verification.json').write_text(json.dumps(dict(status='verified',conditions=results,
+        excluded_infrastructure_attempts=found_excluded),indent=2)+'\n',encoding='utf-8',newline='\n')
     print('Six conditions verified; infrastructure-failure evidence retained')
 
 

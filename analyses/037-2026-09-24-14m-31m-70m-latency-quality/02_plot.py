@@ -92,12 +92,20 @@ def main():
     fig.savefig(output,bbox_inches='tight',pad_inches=.04,metadata={'Title':'Pythia-14M, Pythia-31M and Pythia-70M: loss and latency','CreationDate':None,'ModDate':None})
     plt.close(fig)
     assert sha(OLD/old['output'])==old['output_sha256']
+    executions=[dict(model=size,scope=p['scope'],pressure=p['pressure'],kappa=p.get('kappa'),dose=p.get('dose'),
+        loss=p['loss'],latency_ms=p[metric[size]],checkpoint_key=p['checkpoint_key'],backend='kernel')
+        for size,rows in cohorts.items() for p in rows if p['scope']!='0']
+    executions += [dict(p,scope='0',pressure='none') for p in refs]
+    assert len(executions)==75
+    frontier=sorted([p for p in executions if not any(q['loss']<=p['loss'] and q['latency_ms']<=p['latency_ms']
+        and (q['loss']<p['loss'] or q['latency_ms']<p['latency_ms']) for q in executions)],key=lambda p:p['loss'])
     result=dict(cohorts=cohorts,base_references=refs,latency_fields=metric,markers=markers,xlim=xlim,ylim=ylim,
         counts=dict(checkpoints=72,interventions=69,base_executions=6,execution_points=75),
+        measured_pareto_frontier=frontier,
         sources_sha256={str((OLD/'data/combined-figure.json').relative_to(ROOT)):OLD_HASH,str(new_path.relative_to(ROOT)):sha(new_path)},
         output=str(output.relative_to(HERE)),output_sha256=sha(output),historical_pdf_unchanged=True,
         interpretation='Absolute session-specific measurements; no rescaling or fitted scaling law.')
-    (HERE/'data/combined-figure.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+    (HERE/'data/combined-figure.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(output)
 
 

@@ -70,6 +70,8 @@ print(json.dumps(dict(bytes=(r/'control-evidence.tar').stat().st_size,sha256=dig
     control=json.loads(subprocess.run(ssh+['python3 -'],input=code,text=True,capture_output=True,check=True).stdout)
     subprocess.run(scp+[f'{host}:/workspace/run054-control/control-evidence.tar',str(folder/'control-evidence.tar')],check=True)
     assert (folder/'control-evidence.tar').stat().st_size==control['bytes'] and digest(folder/'control-evidence.tar')==control['sha256']
+    control_dest=RUN/'prelaunch/cloud-controls'/args.tag;control_dest.mkdir(parents=True,exist_ok=True)
+    with tarfile.open(folder/'control-evidence.tar') as handle:handle.extractall(control_dest,filter='data')
     result=dict(status='verified',pod=node['id'],tag=args.tag,utc=datetime.now(timezone.utc).isoformat(),
         file_count=len(receipt['files']),merged_files=merged,bytes=receipt['total_bytes'],
         archive_sha256=receipt['archive']['sha256'],control_archive=control,retired=args.retired)

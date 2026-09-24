@@ -54,6 +54,13 @@ def main():
             assert manifest['runtime']['gpu']=='NVIDIA GeForce RTX 5090'
             assert manifest['config']['precision']=='bfloat16' and manifest['implementation']['identity']=='opt073-31m-v1'
             assert quality['blocks']==338 and quality['excluded_tail_tokens']==1444 and all(quality['pass'].values())
+            if manifest['arguments']['replicate']==1:
+                diagnostics_path=folder/'runtime-diagnostics.json';diagnostics=read(diagnostics_path)
+                assert diagnostics['blocks']==338 and diagnostics['input_tokens']==692224
+                assert diagnostics['documents']==500 and diagnostics['excluded_tail_tokens']==1444
+                assert len(diagnostics['activation_rows'])==42
+                assert len(diagnostics['h_z_work'])==len(diagnostics['row_nnz_histograms'])==12
+                source_hashes[diagnostics_path.relative_to(ROOT).as_posix()]=sha(diagnostics_path)
             for record in manifest['checkpoint_files']:
                 path = final/record['path']
                 assert path.stat().st_size==record['bytes'] and sha(path)==record['sha256']
@@ -82,7 +89,7 @@ def main():
     assert len({r['source_identity'] for p in points for r in p['processes']})==1
     assert len({r['gpu_uuid'] for p in points for r in p['processes']})==1
     output = HERE/'data/31m-results.json';output.parent.mkdir(parents=True,exist_ok=True)
-    output.write_text(json.dumps(dict(points=points,sources_sha256=source_hashes),indent=2)+'\n',encoding='utf-8')
+    output.write_text(json.dumps(dict(points=points,sources_sha256=source_hashes),indent=2)+'\n',encoding='utf-8',newline='\n')
     print(json.dumps([dict(condition=p['condition']['id'],loss=p['loss'],latency_ms=p['implementation_latency_ms']) for p in points],indent=2))
 
 
