@@ -1,0 +1,93 @@
+{
+  "status": "launch approval pending",
+  "design_approved_on": "2026-09-25",
+  "run": "056-2026-09-25-pythia14m-mechanism-ablation",
+  "question": "Conditional tile-bypass and short-row execution effects, fixed 14M T7/Pall kappa=0.5 checkpoint",
+  "create_pod_body": {
+    "name": "run056-mechanism-001",
+    "cloud": "COMMUNITY",
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "gpu": {
+      "id": "NVIDIA GeForce RTX 5090",
+      "count": 1,
+      "minCudaVersion": "12.8",
+      "minRamPerGpu": 16,
+      "minVcpuCountPerGpu": 4
+    },
+    "disk": 30,
+    "mounts": {
+      "persistent": {
+        "path": "/workspace",
+        "size": 25
+      }
+    },
+    "ports": [
+      "22/tcp"
+    ],
+    "startSsh": true,
+    "startJupyter": false,
+    "globalNetworking": false
+  },
+  "placement": "Any available location; no attached network volume",
+  "fallback": {
+    "cloud": "SECURE",
+    "only_if_available": true,
+    "max_hourly_gpu_usd": 0.99
+  },
+  "current_community_hourly_usd": 0.69,
+  "maximum_aggregate_gpu_minutes": 90,
+  "maximum_incremental_usd": 2,
+  "retrieval_reserve_minutes": 10,
+  "expected_etc_minutes": [
+    35,
+    65
+  ],
+  "etc_basis": "Run037: 37.06 seconds per scientific process, 69.22 minutes total including setup; new controls require 15 rather than 30 processes, plus an extra frozen graph and exact operand passes. No new full-model calibration yet.",
+  "science": {
+    "modes": [
+      "frozen",
+      "t00",
+      "t10",
+      "t01",
+      "t11"
+    ],
+    "processes_per_mode": 3,
+    "concurrent_gpu_processes": 1,
+    "validation_blocks_per_process": 338,
+    "timing_inputs": 64,
+    "timing_passes": 7
+  },
+  "target_smoke": {
+    "synthetic_cuda_cases": 48,
+    "full_model_modes": 5,
+    "blocks_per_mode": 8,
+    "timing_inputs": 4,
+    "timing_passes": 2
+  },
+  "guards": "Arm 10_deadline_guard.py on the Pod and in a hidden local Python process. Both use one global absolute deadline measured from the first task Pod creation; infrastructure retries never reset it. Stop compute, preserve the Pod volume, recover and delete promptly.",
+  "execution": "Detached setup/worker with durable logs under /workspace. 04_setup.sh then 05_execute.sh RETRIEVAL_DEADLINE_EPOCH. After terminal worker: 08_collect.py, copy receipt/inventory/archive, 09_verify_retrieval.py, 07_reduce.py and 13_report.py locally, then delete task Pod.",
+  "monitor_interval_seconds": 60,
+  "warning_conditions": [
+    "numerical or bitwise failure",
+    "work-count mismatch",
+    "nonfinite outputs",
+    "CUDA/process failure",
+    "less than 2 GiB free after graph capture",
+    "stale progress outside active compilation",
+    "projected budget/deadline overrun"
+  ],
+  "existing_resources_unchanged": {
+    "stopped_pod": "qa00sm05lmrs7w",
+    "network_volume": "9luykg5yc3"
+  },
+  "artifacts": "All raw timings, per-block checks, full diagnostics, source/config/provenance, compiler reports, runtime setup/worker logs, reductions and failures; original checkpoint and caches remain verified locally.",
+  "pricing_source": "https://docs.runpod.io/pods/pricing",
+  "running_storage_gb": 55,
+  "running_storage_usd_per_gb_month": 0.1,
+  "no_ingress_egress_fee": true,
+  "credential_handling": "Temporary guard settings contain credentials; keep out of logs/Git, consume and unlink. Registered SSH keys already exist.",
+  "one_live_task_pod_at_a_time": true,
+  "input_bundle": "bundles/input-002.tar",
+  "input_bundle_receipt": "bundles/input-002.receipt.json",
+  "input_bundle_note": "001 is retained as a superseded prelaunch snapshot; 002 includes final whitespace/byte-preservation review. CUDA scientific code is unchanged."
+}

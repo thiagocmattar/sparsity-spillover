@@ -1,8 +1,9 @@
 # Proposed 14M tile-bypass and short-row ablation
 
-Status: proposed on 25 September 2026, awaiting design confirmation. The user
-approved proceeding from assessment to design. No new numbered run, experiment
-code, GPU execution, or manuscript change is part of this proposal.
+Status: design and diagnostic retention explicitly confirmed on 25 September
+2026. [Run056](../../runs/056-2026-09-25-pythia14m-mechanism-ablation/README.md)
+implements this contract. Scientific execution and cloud launch remain pending
+separate launch approval. The approved design below is retained.
 
 ## Question and manuscript connection
 

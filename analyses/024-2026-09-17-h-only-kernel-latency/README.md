@@ -1,9 +1,10 @@
 # H-only pressure: final K050 latency extension
 
-25 September 2026: the proposed [tile-bypass/short-row mechanism ablation](MECHANISM-ABLATION-DESIGN.md)
+25 September 2026: the approved [tile-bypass/short-row mechanism ablation](MECHANISM-ABLATION-DESIGN.md)
 separates the two h/z execution mechanisms at the retained 14M T7/Pall
-kappa=0.5 checkpoint. Design confirmation is pending; no new run, experiment
-code, GPU work or manuscript edit has been made.
+kappa=0.5 checkpoint. [Run056](../../runs/056-2026-09-25-pythia14m-mechanism-ablation/README.md)
+owns implementation and prelaunch checks. Scientific execution and cloud launch
+remain pending separate approval; no manuscript edit is included.
 
 The current manuscript Figure 1 and complete-results export are extended by
 [Analysis027](../027-2026-09-20-run044-manuscript/README.md): Run044 completes
