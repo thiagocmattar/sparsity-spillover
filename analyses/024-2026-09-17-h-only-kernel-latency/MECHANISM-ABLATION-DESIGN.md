@@ -2,8 +2,10 @@
 
 Status: design and diagnostic retention explicitly confirmed on 25 September
 2026. [Run056](../../runs/056-2026-09-25-pythia14m-mechanism-ablation/README.md)
-implements this contract. Scientific execution and cloud launch remain pending
-separate launch approval. The approved design below is retained.
+implements this contract. Separate launch approval was received and all 15
+scientific processes completed and qualified on 25 September. Artifacts were
+verified locally and the Pod deleted. See the [result and interpretation](../../runs/056-2026-09-25-pythia14m-mechanism-ablation/observations/002-interpretation.md).
+The approved design below is retained.
 
 ## Question and manuscript connection
 

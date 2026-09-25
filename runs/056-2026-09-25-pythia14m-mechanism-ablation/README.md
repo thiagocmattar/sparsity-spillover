@@ -1,8 +1,12 @@
 # Run056: tile bypass and short-row execution at 14M
 
-Status: design and retention approved on 25 September 2026. Implemented and
-locally tested; scientific execution and RunPod launch await explicit approval.
-The manuscript and supplementary archive are unchanged.
+Status: completed and qualified on 25 September 2026 after explicit launch
+approval. All 15 scientific processes passed; all 210 transferred files were
+hash-verified before the Pod was deleted. See the execution closeout below,
+[figure](figures/01-mechanism-ablation.pdf), [timing table](results/mechanism-effects.md),
+and [interpretation](observations/002-interpretation.md).
+The manuscript and supplementary archive are unchanged. The original prelaunch
+README/config/source snapshot remains in the sealed input and retrieval archives.
 
 ## Approved comparison
 
@@ -83,7 +87,8 @@ dense reference, and these effects do not decompose memory and arithmetic time.
   No model checkpoint was evaluated or scientific latency measured locally.
   The compiler log and results are in `prelaunch/cuda-development.*`.
 - Target RTX 5090 compilation/components, five full-model smokes and the
-  scientific measurements are pending launch. Smokes use four timing inputs,
+  scientific measurements were pending at prelaunch and are now complete
+  (see execution closeout). Smokes use four timing inputs,
   two passes and eight correctness/diagnostic blocks; they are not paper evidence.
 
 Reproduce CPU checks from the repository root:
@@ -94,7 +99,7 @@ Reproduce CPU checks from the repository root:
 .venv/Scripts/python.exe runs/056-2026-09-25-pythia14m-mechanism-ablation/01_prepare.py verify
 ```
 
-## Proposed launch envelope
+## Prelaunch envelope (historical)
 
 One new on-demand Community RTX 5090, 32 GB, CUDA >= 12.8, any available
 location, named `run056-mechanism-001`. Live catalog reads on 25 September
@@ -156,3 +161,54 @@ retention/verification procedure. No new network volume or endpoint is needed.
 The pre-existing stopped Run052 Pod `qa00sm05lmrs7w` and shared 100 GB volume
 `9luykg5yc3` remain untouched; their continuing storage is outside this new
 incremental envelope. No endpoints were present in the inventory.
+
+## Execution closeout: 25 September 2026
+
+Launch approval is recorded in `prelaunch/launch-receipt-001.json`.
+One Community RTX 5090 Pod, `zsikftp72v00sv`, ran from 13:08:31 UTC until
+13:33:24 UTC (24.89 minutes). The physical GPU UUID is
+`GPU-ca900097-9afa-4b1a-8971-1d688af30227`; driver 580.65.06, with the pinned
+CUDA 12.8 / Torch 2.11.0+cu128 Python environment. The sealed input-002 bundle
+passed its remote size/SHA256 check. Setup completed in one attempt. Windows
+stdin encoding/newline handling was corrected only in the local SSH transport
+before setup; no measurement input or kernel changed after launch.
+
+All 48 target synthetic CUDA cases and all five full-model smokes passed.
+All 15 scientific processes passed full coverage, numerical bounds, bitwise
+candidate/frozen logits and h/z operands, and independent work-counter audits.
+Validation loss was 5.83130066301001 in every mode and reference implementation.
+The scientific matrix took 402.60 seconds (about 6.7 minutes), excluding setup,
+smokes and transfer. Peak allocation was 3.322 GiB; captured models left more
+than 29 GiB free. The final reduction retained 13,440 paired host/device timing
+records and passed the prespecified frozen-anchor range-overlap rule.
+
+Full-model geometric means: neither 0.661507 ms; tile only 0.494815 ms;
+short-row only 0.579327 ms; both 0.496476 ms; frozen K050 0.496453 ms.
+Both mechanisms save 165.031 us (24.95%) versus neither. Conditional tile
+savings are 82.851 us; conditional short-row savings are -1.661 us. Thus the
+short-row path slightly slows the tile-enabled implementation in this run,
+despite reducing issued matrix work. Its standalone benefit is 82.180 us;
+the interaction is -83.841 us. These are conditional net effects, not additive
+shares of total savings or a separation of memory and arithmetic time.
+See observations 001/002 for coverage, extrema spans and interpretation limits.
+
+The terminal worker exited zero. `08_collect.py` sealed 210 files / 23,312,433
+payload bytes into a 1,371,470-byte archive, SHA256
+`34fd251ddf777e66075997c65ba7336140b65146769479ca390883f7a748a908`.
+`09_verify_retrieval.py` verified every file and all 15 processes locally;
+`07_reduce.py` reproduced the qualified reduction. The PDF was rendered and
+visually checked with Poppler. `15_work_summary.py` is a post-hoc reporting
+addition that pools retained integer counters; it was not a measurement input.
+README closeout and interpretation notes were added after the sealed transfer;
+the original bytes remain in the transfer archive/inventory. Replaying that
+archive into this now-documented folder intentionally encounters the updated
+README, so use a clean extraction directory to recheck the original snapshot.
+
+The Pod was deleted only after successful verification; a fresh resource list
+confirmed its absence. No new volume or endpoint remains. The pre-existing
+stopped Run052 Pod and shared network volume were untouched. Both deadline
+guards logged successful arming; the local guard was absent at the post-delete
+process check. Teardown-time provisional cost is approximately USD0.289
+(GPU plus temporary storage), well below USD2. Posted billing was not yet
+available in the initial provider read; see `prelaunch/teardown-001.json` and
+the later billing receipt for the final observed billing state.
