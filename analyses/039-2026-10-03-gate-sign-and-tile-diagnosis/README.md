@@ -88,3 +88,11 @@ confirmations. No new model pass, benchmark, training or cloud action occurs.
 The compact current-status section of `research/INDEX.md` ends at Run053, while
 completed Run054–056 and Analysis037–038 are present. This audit consulted those
 newer records directly; the central index was not revised.
+
+## Requested follow up
+
+The user deferred tile pressure and requested a compact 14M RunPod gate test.
+See the [research backlog](../../research/BACKLOG.md) and the
+[proposed T4 design](PROPOSED-14M-T4-DESIGN.md). The pressure label P-o and
+the concrete design still require confirmation; this does not reopen or alter
+the completed diagnostic measurements.
