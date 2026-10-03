@@ -17,12 +17,16 @@ Retain row/tile occupancy in the preceding gate experiment where practical.
 
 Evidence and limitations: [gate and tile diagnosis](../analyses/039-2026-10-03-gate-sign-and-tile-diagnosis/README.md).
 
-## Active planning for the 14M gate sign comparison
+## Approved design: 14M gate sign comparison
 
 The latest request narrows the study to T4 with two pressure recipes, RunPod,
-and two or at most three thresholds per intervention. The second pressure
-label was spoken as P-o and still needs its exact site set clarified.
+and two or at most three thresholds per intervention. The proposed P-o = Pall
+interpretation (a,m,h,z pressure) was included in the design approved by the
+user's “Toca o barco” on 3 October 2026.
 
 The [concrete proposed design](../analyses/039-2026-10-03-gate-sign-and-tile-diagnosis/PROPOSED-14M-T4-DESIGN.md)
 uses two thresholds, holds h/z gates fixed, and varies the sign rule at a/m.
-Design confirmation and the later launch confirmation remain pending.
+Implementation belongs to [Run 057](../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md).
+The user's subsequent explicit RunPod/AFK authorization covers launch,
+monitoring, retrieval and analysis through figures/results within the recorded
+responsible envelope.

@@ -179,6 +179,15 @@ created Pods and check for unintended owned billable resources.
 
 ## Remaining design confirmation
 
+Approved on 3 October 2026 by the user's “Toca o barco” after the concrete
+proposal. This includes the proposed P-o = Pall interpretation and diagnostic
+inventory. Implementation is [Run 057](../../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md).
+The user's accompanying instruction prioritizes time to a verified answer when
+balancing current GPU availability, speed and total cost. Separate launch
+confirmation was subsequently supplied by the user's explicit RunPod/AFK
+instruction to proceed through figures and results; the paragraphs below retain
+the original question.
+
 Clarify P-o, confirm the eight-condition matrix and kappa 0/0.1, and confirm
 or extend the proposed retained measurements. These are scientific choices;
 full filesystem access does not resolve their meaning. The repository's

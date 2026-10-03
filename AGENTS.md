@@ -133,6 +133,12 @@ artifacts have been copied and verified locally.
 
 ## Execution and monitoring
 
+- Prioritize time to a verified research answer. Balance total cost against
+  speed, live GPU availability, provisioning, setup, transfer, and parallel
+  execution of independent conditions. Prefer a faster available GPU when it
+  materially shortens iteration within the approved billable envelope; do not
+  default to the cheapest or smallest GPU. Explain the choice using workload
+  evidence and the current catalog.
 - Do locally when the representative workload fits with headroom and the user
   accepts its ETC and impact on the local machine.
 - Use RunPod when local memory is insufficient or the local ETC is unacceptable

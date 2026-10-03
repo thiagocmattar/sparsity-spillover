@@ -5,6 +5,10 @@
 
 ## Current status
 
+Run057 implements the approved 14M T4 unilateral/bilateral a/m comparison under
+Ph and Pall at kappa=0/.1. Launch and analysis are authorized; tile pressure is deferred.
+See [the run](../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md) and [backlog](BACKLOG.md).
+
 Run053 establishes local70M iteration on the RTX5070Ti Laptop under WSL.
 Wider feature unions pass eight component shortlists, but the full model fails
 the .1 numerical gate on one input: a small z-projection rounding difference

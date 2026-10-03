@@ -13,6 +13,14 @@ and maximum cost.
 Do not encode a universal hour or VRAM threshold. Present the evidence and let
 the user decide.
 
+The user's priority, confirmed on 3 October 2026, is time to a verified research
+answer. Balance total cost with GPU speed, live availability, provisioning,
+setup, transfer and parallel execution of independent conditions. Prefer faster
+available hardware when it materially shortens iteration within the approved
+billable envelope. Do not default to the cheapest or smallest GPU, or infer
+workload speed solely from the GPU name. Compare the end-to-end ETC and its
+uncertainty using measured workload evidence where available.
+
 ## Representative calibration
 
 Use the exact architecture, precision, sequence length, microbatch,
@@ -94,7 +102,8 @@ The operational connection, launch, transfer, and teardown sequence is in
 - Verify authentication without printing the API key.
 - List existing Pods and volumes and reconcile resources for this project.
 - Query current GPU availability, VRAM, data center, cloud tier, and hourly price.
-- Choose the smallest GPU that fits the representative workload with headroom.
+- Choose available hardware and condition parallelism that minimize time to a
+  verified answer with memory headroom and acceptable total cost.
 - State Pod name, image/digest, GPU/count, data center constraints, storage,
   maximum duration, termination deadline, maximum cost, and cleanup intent.
 - Ensure an SSH public key is registered/injected before Pod creation.

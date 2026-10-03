@@ -86,6 +86,11 @@ directories are disposable test scratch, never experiment evidence.
 
 ## 5. Launch packet and launch approval
 
+Prioritize time to a verified research answer when selecting hardware and
+parallelism. Compare live availability, setup and transfer time, measured
+workload throughput, and total cost. A faster GPU may be preferable at a higher
+hourly price within the approved envelope; do not default to the cheapest GPU.
+
 Before any scientific execution or cloud creation, report:
 
 - implementation and exact tests passed;
