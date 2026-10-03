@@ -5,6 +5,12 @@
 
 ## Current status
 
+Run058 completed the requested 14M T2/P2 versus T2/Ph comparison at kappa=0/.1.
+P2 raises validation loss by .1531/.1782, increases empty z tiles and reduces h
+sparsity. At .1, z empty8x16 tiles rise20.70% to74.83%, but R_model rises only
+.0262pp. All checkpoints are local; owned Pod deleted, estimated USD16.57.
+Two PDF figures and full tables are verified. See [Run058](../runs/058-2026-10-03-pythia14m-t2-p2-versus-ph/README.md).
+
 Run057 completed the approved 14M T4 unilateral/bilateral a/m comparison at
 kappa=0/.1. Bilateral improves loss under Ph (-.0850/-.0544), but worsens Pall
 (+.0186/+.1267); logical opportunity falls in all four pairs. One-seed evidence

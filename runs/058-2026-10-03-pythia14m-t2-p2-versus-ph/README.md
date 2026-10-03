@@ -1,6 +1,7 @@
 # Run 058: 14M T2/P2 versus T2/Ph
 
-Status: implementing the explicitly authorized four-condition comparison.
+Status: all four conditions completed and verified locally. Tables and two PDF
+figures are retained; the owned Pod is deleted.
 
 On 3 October 2026 the user requested T2 (one-sided gates at h,z only), P2
 (pressure at h,z), compared with Ph, and explicitly authorized RunPod execution
@@ -50,3 +51,68 @@ and the previously used HZ topology. Inputs remain unchanged after execution;
 infrastructure retries, if needed, receive new attempt records.
 
 The concrete launch and closeout records are in [LAUNCH.md](LAUNCH.md).
+
+## Verified results
+
+P2 raises full-validation loss compared with Ph at both tested thresholds:
+
+| kappa | Ph loss | P2 loss | P2 minus Ph | R_model difference (pp) |
+|---|---:|---:|---:|---:|
+| 0 | 5.127033 | 5.280096 | +0.153062 | +0.3257 |
+| .1 | 5.152346 | 5.330544 | +0.178198 | +0.0262 |
+
+Adding z to the mean-pressure recipe increases z sparsity and empty tiles,
+while h loses sparsity. At kappa=.1, empty 8x16 tiles change from 20.704% to
+74.828% in z, and from 43.696% to 34.653% in h. The corresponding logical
+model opportunity barely changes: 5.1708% to 5.1970%. Thus P2 produces more
+structured zeros at z with a quality cost, and does not improve validation
+quality in this one-seed comparison. The degradation occurs with no a/m gate
+or pressure. The declared pressure-mean normalization remains an interpretation
+limit; these results do not isolate the added z gradient from h reweighting.
+
+A and m have zero exact-zero elements and zero empty tiles in all four cases.
+Full validation covers all 500 documents, 338 complete blocks and the declared
+1,444-token excluded tail. No inference speedup was measured.
+
+The [complete tables](results/tables.md), [source-hashed numerical export](results/results.json)
+and [observation with captions](observations/001-p2-versus-ph.md) retain both
+tile shapes, integer counts, all-site moments and training gradient summaries.
+Both final PDF pages were rendered and visually checked; their source and
+figure hashes are in [analysis verification](results/analysis-verification.json).
+Tile pressure stays deferred and no manuscript or finding was changed.
+
+## Execution and closeout
+
+Deployed source: 2f2823ca7c889b28a9c6ecd95b1440b09ad5eb34. One Secure Pod,
+8l18iz1u8gt2cl, started at 2026-10-03T21:11:53.940Z in AP-IN-1 with four H100
+80GB GPUs, 112 vCPU and 1,006GB host RAM, at USD13.96/hour. The local deadline
+guard and credential-free remote workload guard were armed. The CLI returned
+a non-ISO timestamp during creation; the existing Pod's ISO timestamps were
+retrieved from MCP before guard setup. No replacement resource or scientific
+input change was needed.
+
+The pinned builder reproduced both canonical token-cache hashes; training
+tokenization plus final hash verification took 958.892 seconds. All four
+production preflights passed: five timed updates after warmup, median
+3.389--3.476 seconds/update, complete validation/diagnostics, checkpoint
+roundtrip and no skips. The actual workload used about 59,319MiB GPU memory
+per condition. All four scientific workers completed 712 optimizer updates
+without overflow or skips; the complete remote verifier passed.
+
+All 268 sealed files passed archive and individual member hashes locally:
+4,060,751,094 payload bytes; 3,759,206,034-byte compressed archive,
+SHA256 daadd72ad8ab5a33d34220dc507ba972fc46def08fed04b47ea6e4882fa18777.
+The local scientific verifier passed all four attempts without rewriting the
+sealed cohort record. All 48 model checkpoints and 12 full recovery states are
+retained locally. Transfer took 189.703 seconds and local figure QA overlapped it.
+
+Deletion returned successfully at 2026-10-03T22:23:02.011409Z; provider inventory
+confirmed absence at 22:23:23Z. The owned deadline guard was disarmed afterward.
+Lifecycle duration was about 71.13 minutes: estimated GPU USD16.551, total
+USD16.567 using the observed partial billing rate including disk overhead.
+Both are estimates below the USD45 limit. Posted billing was only USD2.119
+for 545,867 milliseconds, so it is incomplete and is not the final invoice.
+See [compute closeout](results/compute-closeout.json).
+
+Concurrent CDR resources, the old EXITED Run052 Pod and the existing shared
+network volume were not modified and are outside this run's lifecycle/cost.
