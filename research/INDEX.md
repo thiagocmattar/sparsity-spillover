@@ -5,9 +5,12 @@
 
 ## Current status
 
-Run057 implements the approved 14M T4 unilateral/bilateral a/m comparison under
-Ph and Pall at kappa=0/.1. Launch and analysis are authorized; tile pressure is deferred.
-See [the run](../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md) and [backlog](BACKLOG.md).
+Run057 completed the approved 14M T4 unilateral/bilateral a/m comparison at
+kappa=0/.1. Bilateral improves loss under Ph (-.0850/-.0544), but worsens Pall
+(+.0186/+.1267); logical opportunity falls in all four pairs. One-seed evidence
+is pressure-dependent. All checkpoints are local, the owned Pod is deleted,
+and four PDF figures/tables are verified. Tile pressure stays deferred.
+See [the run and results](../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md) and [backlog](BACKLOG.md).
 
 Run053 establishes local70M iteration on the RTX5070Ti Laptop under WSL.
 Wider feature unions pass eight component shortlists, but the full model fails
