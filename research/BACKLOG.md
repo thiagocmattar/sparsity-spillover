@@ -11,12 +11,14 @@ gate without degenerating the network. Thresholds are kappa=0 and .1. Measure
 activation sparsity, fully zero tiles, and quality; inference latency/speed and
 tile-based pressure remain deferred.
 
-Status: concrete design proposed. The user requested further elaboration on
-GPU weight-load avoidance and portability across 14M/31M/70M before selecting
-tile geometry. [Analysis040](../analyses/040-2026-10-04-tile-gate-hardware-alignment/README.md)
-inspects the existing consumers and recommends a per-token K16 gate with
-separate inference row grouping. The complete interpretation awaits user
-confirmation. No new numbered run or experiment code exists yet.
+Status: the user now selects the stronger temporal structure: a decision at
+the first token of a block forces the same feature mask on subsequent tokens.
+The requested hypothesis is representational reorganization across the network
+under that restriction. [Analysis040](../analyses/040-2026-10-04-tile-gate-hardware-alignment/README.md)
+retains the initial GPU audit and the updated anchor-based proposal. Proposed
+geometry is8 tokens x16 features, matching the14M/31M consumers. Exact geometry
+and whether the trigger examines all16 anchor features remain to be confirmed.
+No new numbered run or experiment code exists yet.
 
 ### Proposed comparison and matched recipe
 
@@ -46,29 +48,43 @@ need not be retrained if initial bytes, cache, data order and recipe match.
 - Retain model steps0,1,2,4,8,16,32,64,128,256,512,712 and optimizer recovery
   at256,512,712, including final, as in Run058.
 
-### Exact proposed gate and open geometry
+### Exact proposed temporal gate and open choices
 
-Partition features into fixed contiguous, nonoverlapping tiles within each
-token and sequence. Suggested tile is 1 token x16 features; 1x8 or 1x32 are
-different designs requiring selection. Never cross batch/sequence boundaries.
-Ordinary 8x16 token xfeature tiles are useful occupancy diagnostics but using
-their any-element mask as an architectural gate would let earlier tokens
-depend on future tokens. The proposed per-token partition preserves causality.
+Partition each sequence into fixed nonoverlapping8-token blocks starting at
+t0=0,8,16,..., and each feature axis into contiguous16-feature groups C.
+Never cross a batch/sequence boundary. Unlike the initial per-token proposal,
+this deliberately enforces a shared mask for all eight tokens in a tile.
+The mask is determined only from the first token t0, not from any later row.
 
-For the raw input X to a gate and tile C, evaluate the user's literal trigger
-on the original values once:
+For the raw input X to a gate, the proposed interpretation examines all16
+features of C in the anchor token. The first triggering feature is equivalent
+to an any reduction over that row; scan order does not affect the result:
 
 ```text
-drop(C) = any(x == 0 or x < kappa for x in C)
-G_tile(X)[C] = 0 if drop(C), otherwise X[C]
+drop(t0,C) = any(X[t0,c] == 0 or X[t0,c] < kappa for c in C)
+G_tile(X)[t0:t0+8,C] = 0 if drop(t0,C), otherwise X[t0:t0+8,C]
 ```
 
-There is no scan-order dependence, overlapping neighborhood or propagation
-from newly written zeros. This is one-sided, not an absolute-magnitude rule.
-At positive kappa, equality survives. At kappa=0, the explicit exact-zero
-trigger additionally kills a tile containing an original zero, unlike the
-elementwise equality-survives contract; this follows the user's stated rule.
-Apply the same gate during training and validation/inference.
+The rule uses the original anchor values once; there are no overlapping tiles,
+retroactive edits, cascades from newly written zeros or later-token triggers.
+It is one-sided, not an absolute-magnitude rule. At positive kappa, equality
+survives. At kappa=0, an original anchor zero kills its tile, following the
+user's explicit zero trigger rather than the old equality-survives boundary.
+
+An admitted tile retains all original values in the seven following rows,
+including negatives and values below kappa: no second elementwise threshold
+is applied there. This follows the requested gate only at the anchor. Adding
+a positional gate on those rows would be another scientific variant. The
+anchor any-of16 criterion and this admitted-tile behavior are part of the
+concrete interpretation to confirm; a single designated anchor feature would
+be a different trigger, not an implementation detail.
+
+The raw anchor at t0 depends only on the prefix through t0. Every affected row
+is at t>=t0, so the shared gate is causal. Test future-token perturbations,
+prefix invariance within blocks and sequence-local boundaries. Use identical
+block alignment in training and full validation. A later streaming inference
+implementation must retain each layer/site's anchor mask and absolute block
+offset; decoding and its speed benchmark remain deferred.
 
 Proposed backward follows the current detached mask: identity gradient on
 surviving tiles and zero input gradient on rejected tiles. No STE, soft gate,
@@ -76,6 +92,13 @@ warmup or rescue mechanism is silently added. The post-gate Ph objective also
 cannot supply an input gradient through a dead h tile. Representational
 capacity alone does not guarantee recovery. Measure the initial and evolving
 surviving-tile counts rather than assuming that adaptation will occur.
+
+The restriction acts on h/z features, not entire residual tokens or whole
+attention heads. It makes shared h/z tiles skippable at downstream projections;
+the current kernels still compute upstream W1, QKV and attention. Redistribution
+across heads/layers is a hypothesis, not a direct property of the gate or a
+measured mechanism. The first experiment tests viability and quality, not
+hardware acceleration or a mechanistic attribution of redistribution.
 
 ### Measurements, evidence boundary and later launch
 
@@ -91,7 +114,8 @@ Primary table puts exact-zero percentage beside empty-tile percentage at
 loss changes against Run058. Count both the chosen gate tiles and the historical
 aligned8x16/16x16 diagnostic tiles plus32x16 for the wider retained consumer,
 with distinct names and denominators.
-Retain pre/post-gate trigger, survival and removed-energy counts at h/z,
+Retain per-layer anchor trigger counts, masks per feature group, survival by
+position0--7 within the block, pre/post-gate values and removed energy at h/z,
 exact/near-zero counts at eps0,.001,.01, RMS/L2, named weight norms and
 per-boundary task/pressure/OL1 gradient geometry. Logical products are auxiliary
 opportunity counters, not speed; no clipping sweep or latency benchmark.
@@ -102,12 +126,15 @@ budget: persistent branch collapse, stalled loss, nonfinite behavior or a large
 quality penalty. Report the actual loss/perplexity delta; no numerical definition
 of an acceptable quality penalty has been selected. One seed, two thresholds
 and a fixed horizon cannot rule out adaptation with another training recipe.
+The comparison tests the complete anchor-based operator. Because admitted
+nonanchor values are preserved, a quality change cannot be attributed only
+to imposing larger zero tiles while keeping the old elementwise sign rule.
 
-This proposes a new grouped operator relative to the elementwise gates in
+This proposes a new causal temporal grouped operator relative to the elementwise gates in
 manuscript/draft/04-methodology.tex (sparsification interventions); it tests the
 quality/structured-zero trade-off. Operational Ph stays unchanged. No TeX edit
 or speedup claim is requested. After design confirmation, implement focused
-gate/gradient/causality/counting tests and the bootstrap suite, calibrate the
+anchor/broadcast/gradient/causality/counting tests and the bootstrap suite, calibrate the
 production workload, and present a current RunPod execution/cost envelope.
 The earlier GPU price and spending cap do not become a new launch quote.
 

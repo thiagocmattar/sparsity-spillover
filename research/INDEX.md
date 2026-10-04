@@ -8,8 +8,8 @@
 The user closed T2/P2 versus T2/Ph on 4 October: P2 raises loss, with K050
 latency0.677% higher at0 and1.660% lower at.1. Verified artifacts are local and
 owned Pods deleted. See [F004](findings/F004-14m-p2-ph-quality-and-latency.md).
-Next requested: 14M T2/Ph tile gates at0/.1; quality and structure first,
-latency later. [Design and open geometry](BACKLOG.md); not yet implemented.
+Next requested: 14M T2/Ph temporal tile gates at0/.1; an anchor token determines
+the block mask. Quality/structure first, latency later. [Design](BACKLOG.md).
 
 Run058 completed the requested 14M T2/P2 versus T2/Ph comparison at kappa=0/.1.
 P2 raises validation loss by .1531/.1782, increases empty z tiles and reduces h

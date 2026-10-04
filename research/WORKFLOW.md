@@ -12,9 +12,11 @@ loss at both tested thresholds and has only a small, threshold-dependent K050
 latency effect. Results, figures and hashes are verified locally; owned Pods
 are deleted. No additional P2/Ph or latency experiment is queued.
 
-The requested next workstream is 14M T2/Ph with an any-element tile gate at
-kappa=0/.1, prioritizing sparsity, empty tiles and validation quality. The
-[proposed design](BACKLOG.md) records matched inputs and the open tile geometry.
+The requested next workstream is 14M T2/Ph with an anchor-based temporal tile
+gate at kappa=0/.1, prioritizing sparsity, empty tiles and validation quality.
+The first token decides a shared mask for itself and the following tokens in
+the block. The [proposed design](BACKLOG.md) records matched inputs, proposed
+8x16 geometry and the open anchor trigger interpretation.
 Tile pressure and inference speed remain later questions. This handoff is a
 mutable human guide, not approval of an unresolved design or billable launch.
 
