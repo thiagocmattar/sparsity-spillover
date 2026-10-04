@@ -87,7 +87,8 @@ transfer throughput and process progress; stop before an unapproved overrun.
 
 ## Transfer and evidence inventory
 
-Training upload: committed Git bundle (previously about160MB),56,279,344-byte
+Training upload: sealed167,468,861-byte Git bundle from commit
+`03dff662132c9d2b20e4c513dc34c6b5cda4daa8`,56,279,344-byte
 untrained replay; verify both remote hashes and the remote Git commit. Rebuild
 the pinned ~6GB train token file on Pod, rather than uploading it over an
 uncalibrated workstation link. Preserve cache identities and block-order hash.
