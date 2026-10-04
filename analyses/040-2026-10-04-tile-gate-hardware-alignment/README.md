@@ -2,11 +2,13 @@
 
 Status: source audit complete. This analysis performed no GPU job, experiment
 or benchmark. The subsequently approved gate is implemented separately in
-[Run060](../../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md), with launch approved.
+[Run060](../../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md), now complete.
+[Analysis041](../041-2026-10-04-corner-tile-versus-elementwise/README.md) contains
+its verified quality/structure comparison. This source audit remains unchanged.
 
 The user requests a tile structure whose zeros can prevent weight loads and
 whose definition can carry across Pythia14M/31M/70M and other model families.
-The next training comparison remains 14M T2/Ph at kappa=0/.1, measuring quality,
+The completed training comparison uses 14M T2/Ph at kappa=0/.1, measuring quality,
 activation zeros and empty tiles before any inference-speed experiment.
 
 The original audit recommends fixed contiguous groups of16 input features per

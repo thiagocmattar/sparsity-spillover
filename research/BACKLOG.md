@@ -3,7 +3,7 @@
 The human selects the research direction. This list records requested work;
 it does not authorize implementation, launch or cloud spending.
 
-## Requested next: tile threshold, 14M T2/Ph
+## Completed: tile threshold viability, 14M T2/Ph
 
 Requested on 4 October 2026, after the user closed the P2/Ph comparison. Test
 whether training can reorganize representations under a more aggressive tile
@@ -19,6 +19,14 @@ retains the initial GPU audit. Geometry is8 tokens x16 features, matching the
 14M/31M consumers. The approved gate is implemented in
 [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md).
 Launch is explicitly approved through results/figures, within the Run060 packet.
+
+Completed: both conditions and all transfers/diagnostics are verified locally;
+the owned Pod is deleted. [Analysis041](../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md)
+shows more empty 8x16 tiles with loss +.426737/+.444400 and perplexity +53.225%/+55.955%.
+Both models learn with surviving activity in every h/z layer, but this recipe
+has a substantial quality cost. Total h/z element sparsity decreases. One seed;
+neither redistribution nor speedup is established. The approved design below
+is retained as the executed contract. Latency and tile pressure remain deferred.
 
 ### Approved comparison and matched recipe
 
@@ -99,17 +107,17 @@ hardware acceleration or a mechanistic attribution of redistribution.
 
 ### Measurements, evidence boundary and later launch
 
-Validate all500 documents, all338 complete2048-token blocks, 692224 inputs and
+Validate all 500 documents, all338 complete 2048-token blocks, 692224 inputs and
 691886 predicted tokens; report the excluded1444-token tail. Evaluate at
-step0,1,32,128,256,512,712 to observe recovery or persistently impaired learning.
-Run full activation/tile diagnostics at0,32,128,712; preserve final checkpoint
+step 0,1,32,128,256,512,712 to observe recovery or persistently impaired learning.
+Run full activation/tile diagnostics at 0,32,128,712; preserve final checkpoint
 and original cache identity for later diagnostics. Pool integer counts before
 fractions.
 
 Primary table puts exact-zero percentage beside empty-tile percentage at
 {a,m,h,z}, per layer and pooled, plus validation loss/perplexity and paired
 loss changes against Run058. Count both the chosen gate tiles and the historical
-aligned8x16/16x16 diagnostic tiles plus32x16 for the wider retained consumer,
+aligned 8x16/16x16 diagnostic tiles plus32x16 for the wider retained consumer,
 with distinct names and denominators.
 Retain per-layer corner trigger counts, counts per feature group, survival by
 position0--7 within the block, pre/post-gate statistics and removed energy at h/z,

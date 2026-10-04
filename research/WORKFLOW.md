@@ -12,15 +12,21 @@ loss at both tested thresholds and has only a small, threshold-dependent K050
 latency effect. Results, figures and hashes are verified locally; owned Pods
 are deleted. No additional P2/Ph or latency experiment is queued.
 
-The requested next workstream is 14M T2/Ph with an anchor-based temporal tile
-gate at kappa=0/.1, prioritizing sparsity, empty tiles and validation quality.
-The first feature of the first token decides each8x16 tile: corner <= kappa
-zeros the entire tile; otherwise preserve it. The [approved design](BACKLOG.md)
-records matched inputs. [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md)
-implements this rule and its tests; the user explicitly approved the launch
-through verified results and figures within its packet.
-Tile pressure and inference speed remain later questions. This handoff is a
-mutable human guide, not approval of a billable launch.
+[Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md) is complete:
+14M T2/Ph at kappa=0/.1, with the first feature/token deciding each 8x16 tile.
+Both 712-update conditions, full validation and diagnostics passed verification;
+all checkpoints are local and the owned Pod is deleted. No overflow/skips.
+[Analysis041](../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md)
+records more empty tiles, fewer total h/z element zeros, and loss increases
+.426737/.444400 (+53.225%/+55.955% perplexity). The models learn and every h/z
+layer retains activity, with a substantial quality cost in this recipe.
+
+Tile pressure and inference speed remain deferred. Any later kernel comparison
+must implement the complete inclusive corner rule, signed noncorner retention
+and temporal mask, and qualify against these new checkpoints. Existing scalar
+kernels and zero percentages do not establish speedup for this operator.
+The [executed design](BACKLOG.md) remains a human guide; no follow-up launch is
+authorized by this closeout. No manuscript finding is promoted.
 
 ## 1. Plain-language request
 

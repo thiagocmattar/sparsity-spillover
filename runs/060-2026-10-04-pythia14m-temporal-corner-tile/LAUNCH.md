@@ -4,7 +4,7 @@ The user explicitly approved this packet: “Approved. Go on. Get back with the
 results.” No billable resource or scientific training had started at approval.
 User design refinement
 selected the inclusive first-corner8x16 gate. This packet covers only the two
-14M T2/Ph conditions at0/.1 in config, with the matched recipe in README.
+14M T2/Ph conditions at 0/.1 in config, with the matched recipe in README.
 
 ## Verified preparation and local fit
 
@@ -107,3 +107,18 @@ Both design and launch are now approved, including this post-hoc inventory.
 No additional approval is required to execute within this scope and billable
 envelope. Record actual provisioning, calibration and teardown below/alongside
 the execution receipts.
+
+## Completed execution
+
+Provisioned two H100SXM GPUs at the actual total rate USD6.98/hour. Both production
+preflights passed at 3.382s/update and 72.3% peak reserved memory; cache hashes,
+initial bytes, schedule and source identity matched. The two scientific conditions
+completed 712 updates without overflow/skips. Remote and local scientific
+verification passed, and all 144 archived files passed local byte/SHA256 checks.
+All24 model checkpoints and 6 recovery states are retained locally.
+
+Analysis041 contains the full comparison, three visually verified PDFs and their
+observations. The owned Pod was terminated at approximately 13:51UTC, before the
+14:23:51UTC hard deadline. Estimated GPU expense USD10.126-10.215 plus bounded
+storage is below the USD30 envelope; posted billing remains partial. No owned
+billable resources remain. See `results/compute-closeout.json` and the run README.

@@ -1,0 +1,565 @@
+# Archived research navigation
+
+Snapshot retained before the Run060 closeout. Historical status/resource claims
+are preserved as written; current state is in [INDEX.md](INDEX.md).
+
+# Research Index
+
+> Compact state only. Detail belongs in numbered runs, analyses, observations,
+> and findings.
+
+## Current status
+
+The user closed T2/P2 versus T2/Ph on 4 October: P2 raises loss, with K050
+latency0.677% higher at0 and1.660% lower at.1. Verified artifacts are local and
+owned Pods deleted. See [F004](findings/F004-14m-p2-ph-quality-and-latency.md).
+Next: [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md),
+14M T2/Ph corner gates at0/.1; first feature/token <= kappa drops an8x16 tile.
+Executing on two H100 GPUs. Quality/structure first, latency later. [Design](BACKLOG.md).
+
+Run058 completed the requested 14M T2/P2 versus T2/Ph comparison at kappa=0/.1.
+P2 raises validation loss by .1531/.1782, increases empty z tiles and reduces h
+sparsity. At .1, z empty8x16 tiles rise20.70% to74.83%, but R_model rises only
+.0262pp. All checkpoints are local; owned Pod deleted, estimated USD16.57.
+Two PDF figures and full tables are verified. See [Run058](../runs/058-2026-10-03-pythia14m-t2-p2-versus-ph/README.md).
+
+Run057 completed the approved 14M T4 unilateral/bilateral a/m comparison at
+kappa=0/.1. Bilateral improves loss under Ph (-.0850/-.0544), but worsens Pall
+(+.0186/+.1267); logical opportunity falls in all four pairs. One-seed evidence
+is pressure-dependent. All checkpoints are local, the owned Pod is deleted,
+and four PDF figures/tables are verified. Tile pressure stays deferred.
+See [the run and results](../runs/057-2026-10-03-pythia14m-t4-gate-sign/README.md) and [backlog](BACKLOG.md).
+
+Run053 establishes local70M iteration on the RTX5070Ti Laptop under WSL.
+Wider feature unions pass eight component shortlists, but the full model fails
+the .1 numerical gate on one input: a small z-projection rounding difference
+propagates through hard thresholds. Full diagnostics and failed timings are
+retained. The aligned-tile follow-up has bitwise training-prefix component
+agreement but misses the moderate speed margin. The bounded local iteration
+is complete, all workers are terminal, and no new kernel is promoted.
+See the [local workstream](../runs/053-2026-09-23-local70m-high-sparsity/README.md).
+
+Run052's RTX5090 search passed all15 full-validation reference processes but
+did not establish the larger70M latency drop; none of16 candidates met its
+component margin. All483 output files are verified locally. See the
+[completed search](../runs/052-2026-09-23-pythia70m-sparse-attribution/README.md).
+
+**F003: the current 70M kernel does not demonstrate effective exploitation of
+the broader h/z sparsity.** Run051 shows 5.55%/6.51% lower latency at T2/Ph
+kappa=.05/.1 versus the same checkpoint's optimized dense control, rising to
+8.43% at .5. Sparse execution covers h in five layers; z remains dense.
+Most of the approximately 1.4x gain over PyTorch comes from dense optimization.
+See the [approved finding](findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md)
+and [complete table](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/complete-table.md).
+T7/Pall .01/.05 are slower than matched dense; 0/.1 fail numerical qualification.
+
+Runs049--051 are complete with artifacts verified locally. The retained GPU
+was stopped by its deadline guard and the Pod was terminated at the user's
+request on 22 September 2026. Provider checks confirm no Pods remain; the
+pre-existing shared network volume is retained. See the
+[compute closeout](../runs/051-2026-09-22-pythia70m-frozen-kernel-grid/results/compute-closeout.json).
+
+Analysis035 audits the 70M kernel gap using retained results: the low-loss T2/Ph
+checkpoints still hit an expensive h/z fallback, while a qualified efficient
+dense control already exists. It recomputes all 26 Run045 timing triples and
+identifies the missing controls and selection criteria. No new GPU work or
+manuscript change. See the [assessment](../analyses/035-2026-09-22-70m-kernel-assessment/README.md).
+
+Run047 completed the later 70M T2/Ph kappa=.5 optimized measurement: 1.214368ms
+versus 1.695806ms for the port, 1.363778x its same-session native Base.
+All nine processes qualify; 217 returned files verified; Pod deleted, estimated
+total below USD0.37. Analysis030 adds the point and repeated session references
+without pooling or rescaling the original 26 timings. See the
+[verified integration](../analyses/030-2026-09-20-70m-t2-optimized-endpoint/README.md).
+
+Run045 completed the matched 70M native/original-port/opt073 sweep: 26 checkpoints,
+78/78 qualified processes, 819 returned artifacts verified, both Pods deleted
+(estimated total below USD2.60). Optimized peak 1.481x native Base versus 1.013x
+for the port; dense improvements also contribute. Analysis028 updates the
+manuscript with 26 matched points and retains Run046 separately in the appendix.
+See the [verified integration](../analyses/028-2026-09-20-70m-optimized-grid/README.md).
+
+Run044 completed the missing Pythia-14M T2/Ph kappa=.5 endpoint, matching
+Run041's h/z gates and h-only OL1: validation loss5.536255, R_model5.339%,
+and qualified K050 speedup1.4189x. All checkpoints and diagnostics are local;
+both Pods are deleted (estimated GPU USD4.286). See the
+[verified result](../runs/044-2026-09-20-pythia14m-hz-h-only-ol1-kappa05/observations/001-final-results.md).
+
+Run036 completed all 40 dense/ReLU post-hoc clipping settings at 14M/70M with
+the final kernels: 120/120 processes qualify, 1,032 outputs are verified locally,
+and the Pod is deleted (estimated GPU USD2.161). See the
+[latency table and evidence](../runs/036-2026-09-18-controls-clipping-final-kernel/README.md).
+
+Run035 completed the approved 70M K050-derived port: all 22 checkpoints/66
+processes qualify; all 705 outputs are verified locally and the Pod is deleted
+(estimated compute USD1.015). [Analysis024 Figure04 and caption](../analyses/024-2026-09-17-h-only-kernel-latency/observations/004-70m-final-latency-topology.md)
+record latency versus sparsity and the shape-port/optimization-budget limits.
+
+Analysis025 plots all 22 completed 70M trained endpoints: GeLU/ReLU controls
+and A4/A7 with all-site or h-only OL1 across all five kappas. It uses uniform
+ordinary final-checkpoint loss and pooled model-wide logical sparsity, with
+source hashes and a clean PDF. See
+[Analysis025](../analyses/025-2026-09-17-70m-quality-sparsity/README.md).
+
+Run034 completed and locally verified all ten 70M h-only OL1 conditions:
+A4 and A7 at kappa=0,.01,.05,.1,.5, with matched Run018 initialization/data/recipe.
+All 120 model checkpoints and 30 full recovery states (50.71GB) are safe locally.
+All Pods are deleted; GPU spend is zero, observed expense about USD119.28 against
+the USD200 allowance. The existing network volume remains. See
+[Run034](../runs/034-2026-09-17-pythia70m-h-only-ol1/README.md) for verified
+endpoints, provenance and cost scope. No 410M run was launched.
+
+Run033 completed **only the five new Run032 A7+OL1(h) checkpoints** with frozen
+K050: all 15 processes qualified, speedups 1.206--1.784x. All 180 outputs are
+verified locally; the Pod is deleted, estimated cost USD0.496. Analysis024
+owns clean sparsity/speedup and latency figures, reusing all 35 historical
+checkpoints including A4+OL1(h). At kappa=0.5, h-only/all-site A7 observed
+speedups are 1.784x/1.783x despite 16.66%/27.48% logical sparsity; sessions
+differ. See
+[Analysis024](../analyses/024-2026-09-17-h-only-kernel-latency/README.md) and
+[Run033](../runs/033-2026-09-17-a7-h-only-k050-benchmark/README.md).
+
+Analysis 023 is the user-approved paper evidence table for all 30 Pythia-14M
+A4/A7 endpoints with no, all-site, or h-only OL1. It preserves the exact
+reported values, audits the small final-validation loss-pass difference,
+and retains uniform-pass alternatives and source hashes. The user has resumed
+70M/410M planning: [two-grid ETC/cost estimates](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/70M-410M-ETC-COST.md)
+are saved with fresh prices and historical timings. The full 70M grid is now
+authorized as Run034; 410M remains deferred.
+See [Analysis 023](../analyses/023-2026-09-17-14m-pressure-targets-paper-table/README.md).
+
+Run 032 has recovered and verified all five Pythia-14M A7/h-only OL1
+conditions, including all checkpoints. All Pods are deleted and the recovery
+worker has exited. Analysis 022 retains the complete matched comparison.
+The original budget overrun and recovery are documented in
+`runs/032-2026-09-16-pythia14m-a7-h-only-ol1/README.md`.
+
+Analysis 021 revises the manuscript's 14M quality-sparsity overview with short
+labels, baseline/ReLU clipping and both architectural reach guides, using
+retained measurements. See
+`analyses/021-2026-09-10-training-results-figures/README.md`.
+
+Analysis 019 audits retained records for the current manuscript rewrite:
+quality budgets, runtime attribution, historical controls and revised displays.
+The draft adopts architectural reach (`R_arch`) without changing raw metric
+identifiers. No new experiment or finding promotion. See
+`analyses/019-2026-09-09-manuscript-rewrite-audit/README.md`.
+
+Run 031 completed seven full-validation signed activation-density passes for
+Analysis 018 Figure 05-v3. FFN/attention overlays, exact-zero mass, trained gate
+thresholds and lossless per-layer/site counts are retained. All checks passed;
+the Pod is deleted, estimated GPU expense USD0.206, and the existing volume is
+retained. See `runs/031-2026-09-08-signed-activation-density/README.md`.
+
+Run 030 completed all 540 post-hoc clipping evaluations across the 54-checkpoint
+14M/70M/410M manuscript cohort (350 new, 190 reused). CSV, raw/normalized JSON,
+per-scale full-range PDFs and hash verification are retained. Analysis 018
+Figure 01 shows the OL1 recipes, A0/A1-H controls, and A0 post-hoc clipping. Both Pods are deleted;
+zero Pods/endpoints remain, with the existing network volume preserved. See
+`runs/030-2026-09-08-all-models-posthoc-clipping/README.md`.
+
+Analysis 018 packages the 8 September draft's results materials: eight revised
+paper-width PDFs, 54 trained conditions, OL1-focused 14M overview, matched effects,
+ceiling-versus-size and scale/clipping views, activation mass, and a consistent
+30-checkpoint runtime subset. Other clipping panels retain their earlier subsets; finer
+magnitude bins remain deferred; signed-density measurement is complete in Run 031.
+Historical h-only A4 pressure is excluded. No manuscript edit or finding promotion.
+See `analyses/018-2026-09-08-results-materials/README.md`.
+
+Run029 completed the matched retrospective:1173 process outcomes,42 eligible14M
+proposals, one RTX5090 and a common native SDPA CUDA-graph denominator. Qualified
+c30 progress reaches1.783x; K050 passes35/35 checkpoints, geomean1.250x,
+canonical R_model regression R_squared0.781. Sparse-path benefit is conditional;
+attention skipping adds overhead. The Sakana-derived P0 qualifies on5/35, not an
+unchanged upstream benchmark. Evidence and publication PDFs are verified
+locally; the Pod is deleted and the existing volume retained. See Run029's
+observations. The 8 September implementation audit supports the user-approved
+scoped case study now in `manuscript/draft/kernel-autoresearch.tex`; it records
+a non-cohort threshold bug and the agent-identity/causal limits. No finding is
+promoted.
+
+Run 028's frozen K050 final evaluation and diagnostics are complete. Qualified
+full-model graph speedups across35 checkpoints range0.979--1.739x; sparse-path
+and fusion ablations are retained. Figure07 and Analysis017 require their
+stated baseline boundaries; mixed historical phases are not one matched curve.
+See Run028's final observations; Run029 now supplies a common-denominator history.
+
+Run 027 completed the 35-checkpoint Pythia-14M characterization of K019+K018.
+Six variants pass all full-validation gates; their speedups are 1.490-1.808x.
+The best qualified A7+OL1 endpoint has a 1.2365x skip-toggle benefit, about
+29% of its net latency saving; R_model alone is not proportional to speedup.
+Both PDFs and all 105 processes are verified locally. The 29 logit-gate
+failures remain visible; zero Pods/endpoints remain, estimated new expense
+is $0.93/$5 (posted billing incomplete), and the existing volume is unchanged.
+No finding or manuscript change is promoted; see Run 027's observations.
+
+Run 026 completed the user-authorized Pythia-14M continuation: frozen K019+K018
+achieves 1.8149x over qualified stock eager SDPA, with bitwise-identical full
+validation logits in three processes. Fusion and sparsity both contribute;
+this is not a >1.6x claim over custom fused-dense ablations. Its README links
+all variant latencies, canonical R_model and progress. Evidence is hash-verified
+locally; zero Pods/endpoints remain, estimated new study spend about $0.44/$25
+(posted billing pending), and the existing volume is unchanged.
+
+Run 025 completed its Sakana-derived search through K016, the frozen
+36-checkpoint Blackwell matrix, three-process Blackwell replication, fixed-policy
+H100 endpoint transfer, component probes, and direct fixed-`R_model`
+confirmations. Analysis 015 owns the detailed reductions; Analysis 016 owns the
+focused `R_model`--speedup and autoresearch-progress figures. Fresh-process
+qualified `R2` is 0.347/0.0027/0.636 on RTX and 0.321/0.051/0.700 on H100 for
+14M/70M/410M, but all six H100 410M sentinels remain slower than native. The
+common high-sparsity endpoint score finishes at 1.0461x/1.0213x/1.0147x on RTX.
+QK/PV stayed dense and the strongest compiled-dense comparator remains absent.
+Evidence is local and hash-verified; zero Pods/endpoints remain and the existing
+100 GB volume is retained.
+
+Run 024 completed and independently verified the six Pythia-410M sparse-kernel
+sentinels on the exact physical H100 NVL used by Run 023. The official
+SparseLM0.5B control reached 1.2739x, but none of 432 linear primitives, 48 A7
+attention compositions, or 12 full-model condition Ãƒâ€” batch timings broke
+even. Best full-model speedup was 0.3275x at batch one and 0.4989x at batch 32.
+All six batch-one endpoints were worse than their matched 70M results; only
+high-threshold A7 improved slightly at batch 32 and remained a 2.32x slowdown.
+Analysis 014 owns the same-GPU reduction. This refutes the narrow hypothesis
+that increasing Pythia scale to 410M is enough to amortize the exact-ELL path;
+it does not turn `R_model` into a runtime estimand. Artifacts were hash-verified
+locally, the Pod was deleted, zero Pods/endpoints remain, and the pre-existing
+volume is unchanged.
+
+Run 023 completed and verified all six Pythia-70M sentinels. Its official
+positive control reached 1.2876x, while no linear, attention, or full-model
+Pythia timing broke even. The derived path is technically compatible through
+A7 attention, but the result is a systems limitation rather than a runtime
+validation of `R_model`.
+
+Run 022 reproduced the official SparseLM0.5B H100 control at 1.3001x, then
+stopped correctly when the raw Pythia-14M `M=256,K=512,N=128` ELL operation
+had relative-L2 error 0.69055. Its bounded post-mortem found correct behavior
+at N=256/512/2048 and isolated divergent full-warp shuffle participation below
+N=256. Evidence was retrieved and the Pod was terminated.
+
+Run 019 completed and terminally verified the approved one-seed Pythia-410M
+promotion of A0, A1-H, A4-OL1, and A7-OL1. All 12 conditions completed 712
+optimizer boundaries, full 338-block validation, retained diagnostics and
+checkpoints, and the two complete ten-target post-hoc TEAL frontiers. Analysis
+011 owns the paired-loss reduction, complete Markdown tables, and separate
+410M-only and 14M/70M/410M publication PDFs. At `kappa=0.5`, A7-OL1 reaches
+80.6155% `R_model` at loss 5.120692 versus A4-OL1's 71.5914% at 5.190966.
+The A7-over-A4 high-dose ordering persists across all three sizes, while the
+zero-threshold ordering reverses at 410M. This remains one-seed descriptive
+evidence, not a scaling law or measured-speedup result; no finding or
+manuscript claim was promoted. All Run 019 Pods and endpoints are deleted.
+
+Run 018 completed and verified the selected one-seed Pythia-70M promotion of
+A0, A1-H, A4-OL1, and A7-OL1: 12/12 conditions completed 712 optimizer
+boundaries, full 338-block validation, retained diagnostics/checkpoints, and
+the two complete ten-target post-hoc TEAL frontiers. Analysis 010 owns the
+original two-scale reduction, complete Markdown tables, and publication PDF.
+The 14M crossover persists descriptively at 70M: A4-OL1 has higher `R_model`
+at `kappa=0`, while A7-OL1 is higher at `kappa=0.5`. Status Report Number 2
+reports that result and its Pod-ID-reconciled billing audit.
+Run 016 was superseded after GPU-dependent initialization hashes, and Run 017
+stopped before science when its proposed portable initialization failed the
+remote identity check.
+
+Analysis 009 directly compares historical Run 012 A4-Z + OL1@h with corrected
+Run 015 four-site A4-OL1 at all five matched thresholds. Status Report Number 1
+now uses Run 015 only in its main A4-OL1 result and corrected Analysis 008
+frontier, retaining Run 012 as an A4-OL1[`h`] appendix. Four-site pressure
+raises validation loss by 0.242--0.320 at every `kappa`; its `R_model` is lower
+at `kappa=0`, effectively tied at `0.01`, and 1.42--2.49 percentage points
+higher at `0.05`--`0.5`. Its PDF also includes matched Run 011 A4 without OL1
+as the common baseline. The analysis owns the all-eight-site count-pooled
+exact-zero table and machine-readable reduction. The result is
+descriptive; discarded F001 is not restored and no paper finding is promoted.
+
+Run 015 completed and verified the corrective paper-scale Pythia-14M A4-OL1
+cohort. Every one of 3,560 boundaries realized all 24
+`{a,m,h,z}.layer_{0..5}` pressure tensors, and all five conditions completed
+full validation and local artifact reconciliation. Against matched Run 011,
+corrected OL1 improves both validation loss and `R_model` at `kappa=0` and
+`0.01`; at larger thresholds it adds 2.25--2.50 percentage points of logical
+opportunity with increasing validation-loss cost. All Pods are deleted and the
+pre-existing volume is unchanged. Analysis 009 now compares the corrected
+result directly with Run 012's historical `h`-only realization; Analysis 007
+remains historical A4-Z + OL1@h frontier evidence.
+
+Run 014 completed the five-condition paper-scale A7-OL1 cohort with valid
+evidence. At matched `kappa=0.1`, OL1 adds 1.3717 percentage points of
+`R_model` for `+0.000816` validation loss; at `kappa=0.5`, it adds 12.0959
+points for `+0.126466` loss. The zero-threshold row regresses, so the effect is
+threshold-dependent rather than uniform. All attempts, diagnostics, and final
+checkpoints are local and verified; all Pods are deleted. Analysis 008 now
+includes the endpoints in its count-reconciled full-pass frontier and
+interleaved all-site table. Status Report Number 1 now includes that table and
+the corrected single-panel Analysis 008 frontier; A7-OL1 is marked completed at
+the report cutoff. The comparison remains descriptive and has not been promoted
+to a finding.
+Finding F002 tentatively consolidates the one-seed Pythia-14M A4/A7
+comparison. A7 is a near-null topology expansion at `kappa=0`; at
+`kappa=0.01`, it improves loss by 0.007678 and `R_model` by 0.2039 percentage
+points. Larger thresholds add 0.9210--5.1713 percentage points of logical
+opportunity with increasing validation-loss cost. Analysis 008 owns the
+count-reconciled A7/A7-OL1 zero-mass table, expanded full-pass frontier figure,
+observation, and machine-readable evidence. Finding F002 remains scoped to the
+matched Runs 011/013 A4/A7 endpoints; Run 014's A7-OL1 extension has no promoted
+finding. All Run 013 artifacts are local and verified, all Pods are deleted,
+and the pre-existing volume remains intentionally retained.
+Run 012 completed five paper-scale A4-Z + OL1@h conditions. Its 3,560 optimizer
+steps, validation passes, checkpoints, and diagnostics remain locally
+reconciled for that realized intervention, but its declared four-site A4-OL1
+identity and former verifier label are invalid.
+Run 011 completed its five-condition, paper-scale A4-Z threshold cohort with
+valid evidence. `R_model` rose monotonically from 7.212% at `kappa=0` to
+10.216% at `kappa=0.5`; the lowest final validation loss was 5.419642 at
+`kappa=0.1`, while `kappa=0.5` degraded to 5.659680. All requested diagnostics
+and final recovery checkpoints are local and verified. All Pods are deleted,
+the pre-existing 100 GB volume remains intentionally retained, and the matched
+A4 endpoints remain the Run 015 comparator and support tentative Finding F002.
+Run 010 completed its mixed A7-Z-POST plus all-site OL1 cohort in 62m00s with
+valid evidence. `R_model` rose from 7.774% at `kappa=0` to the 29.952% analytic
+ceiling at `kappa=0.5`; the lowest validation loss was 5.645979 at `kappa=0.01`.
+Run 009 completed its separate full-pass, `h`-only OL1 grid with valid evidence
+and reused Run 004 controls. Matched validation loss was lower than naive L1 at
+lambda `0.05`, `0.1`, and `0.5`, and higher at `1.0`. Analysis 003 now records
+the complete per-site, validation-loss, and quality--logical-opportunity
+comparison, together with boundary-level gradient interference, OL1 geometry,
+and per-boundary conflict and projection PDFs; no finding was promoted.
+Run 008 completed its five-condition mixed A7-Z-POST threshold cohort in 46m49s
+with valid evidence. `R_model` rose from 7.882% at `kappa=0` to 27.572% at
+`kappa=0.5`; the lowest final validation loss was 5.648046 at `kappa=0.1`.
+Run 004 is closed with valid evidence: six
+full-pass conditions, locally verified checkpoint/diagnostic inventories, two
+post-hoc PDF figures, and a near-zero/`R_model` table. Its observations have not
+been promoted to a finding or manuscript claim. A live RunPod closeout found
+zero Pods and one intentionally retained 100 GB volume at `$7/month`.
+
+Next run number: `052`. Next analysis number: `037`. Next finding number: `F003`.
+
+## Where we stopped
+
+- 2026-09-06: Run 025's full achieved systems package completed. Analysis 015
+  owns the detailed checkpoint, hardware, component, and fixed-`R_model`
+  reductions; Analysis 016 distills the `R_model`--speedup relation and
+  correctness-constrained candidate progress into two verified PDFs. The
+  evidence is one adaptive systems case study, not a universal speed law or an
+  optimizer comparison; no finding or manuscript claim was promoted. No GPU
+  resource remains.
+- 2026-09-04: Run 024 completed the matched Pythia-410M sparse-kernel sentinel
+  on Run 023's physical H100 NVL. All six conditions and full validation pass;
+  no primitive, attention composition, or full model breaks even. Analysis 014
+  records the negative 70MÃ¢â€ â€™410M systems scaling result. The result archive and
+  internal hashes were independently verified; the Pod and guard are deleted.
+- 2026-09-04: Run 023 completed and verified the six Pythia-70M sparse-kernel
+  sentinels. The official control accelerates, but every derived Pythia path is
+  slower than native dense. Artifacts are local and no GPU resource remains.
+- 2026-09-04: Run 022 stopped at its declared Pythia correctness gate after the
+  official SparseLM positive control passed. The N=128 failure and width audit
+  are retained; all GPU compute was terminated.
+- 2026-09-03: Analysis 011 completed the selected-ladder synthesis through
+  Pythia-410M. It records 30 trained endpoints and all 60 A0/A1-H TEAL points,
+  pairs trained loss and `R_model` within the same eager logical pass, and owns
+  separate 410M-only and three-scale frontier PDFs, an A0 cross-scale training
+  loss, gradient-norm, and learning-rate PDF, and complete sitewise tables. The
+  result is descriptive;
+  no finding or manuscript claim was promoted.
+- 2026-09-03: Run 019 completed and terminally verified all 12 Pythia-410M
+  conditions and both ten-target TEAL frontiers. All result archives and
+  checkpoints are local and hash-reconciled. The final control-plane audit
+  found zero GPU Pods and zero endpoints; the pre-existing unattached network
+  volume remains intentionally retained.
+- 2026-09-01: Run 019 was implemented and locally verified for the 410M
+  selected-ladder promotion. The canonical seed-1234 initialization and RNG
+  artifacts are pinned, and the exact A0/A4-OL1/A7-OL1 calibration will compare
+  at least two GPU SKUs before any scientific launch. No Run 019 cloud resource
+  or scientific attempt has been created.
+- 2026-09-01: Status Report Number 2 was compiled and adversarially reviewed.
+  It retains Report 1's architecture/intervention diagram and 14M evidence,
+  updates the scope and current RunPod costs, adds cross-scale A4-OL1/A7-OL1
+  exact-zero tables, shows all ten 70M TEAL targets, and embeds Analysis 010's
+  single loss--`R_model` frontier. No finding or scaling-law claim was promoted.
+- 2026-09-01: Analysis 010 completed the 14M/70M selected-ladder synthesis with
+  all 20 trained endpoints and all 40 post-hoc TEAL points. Its PDF retains
+  off-scale trajectories above validation loss 6 and its Markdown tables carry
+  all requested sitewise exact-zero masses.
+- 2026-09-01: Run 018 completed and verified all 12 canonical Pythia-70M
+  conditions, including A0/A1-H TEAL, diagnostics, final checkpoints, archive
+  hashes, and complete validation. All Pods were deleted; the one pre-existing
+  100 GB volume remains intentionally retained.
+- 2026-09-01: Runs 016 and 017 stopped before scientific execution after two
+  distinct initialization-portability failures. Their preflight and
+  compatibility records are retained; Run 018 replaced initialization with a
+  canonical, hash-verified model artifact.
+
+- 2026-08-31: Status Report Number 1 now uses corrected Run 015 as its only
+  main-text A4-OL1 evidence, updates Analysis 008's full-pass frontier to the
+  same series, and retains historical Run 012 as an A4-OL1[`h`] appendix with
+  its endpoint table, direct comparison figure, and compute accounting. F001
+  remains discarded; the corrected A4/A4-OL1 comparison remains descriptive.
+- 2026-08-31: Analysis 009 completed the matched Run 012/015 pressure-target
+  comparison. Its PDF plots matched A4 without OL1, historical `h`-only OL1,
+  and corrected four-site OL1; its observation contains
+  the count-pooled exact-zero table for all eight recorded diagnostics. The
+  result remains descriptive and does not restore F001.
+- 2026-08-31: Run 015 completed and verified the corrected five-condition
+  four-site A4-OL1 full pass. All 3,560 boundaries proved the 24-tensor pressure
+  identity; complete validation, diagnostics, checkpoints, archive hashes, and
+  local verification reconcile. All RunPod Pods are deleted. The candidate
+  observation is not a promoted finding; Analysis 009 is complete and F001
+  remains discarded.
+- 2026-08-31: Status Report Number 1 was updated through Run 014: A7-OL1 is
+  complete at the cutoff, the report contains the interleaved all-site
+  A7/A7-OL1 table, Run 014 compute/cost, and Analysis 008's corrected
+  single-panel frontier with plain OL1 labels. No A7/A7-OL1 finding was
+  promoted.
+- 2026-08-31: Analysis 008 added Run 014 A7-OL1 to its full-pass trained and
+  post-hoc frontier, widened the plotted logical-opportunity range, and updated
+  its machine-readable reduction, interleaved A7/A7-OL1 table, and observation.
+  The A7/A7-OL1 result remains descriptive; Finding F002 is unchanged.
+- 2026-08-31: Run 014 completed and verified the five paper-scale A7-OL1
+  conditions against matched Run 013 A7 endpoints. It adds nondominated
+  `kappa=0.1` and `0.5` points, while `kappa=0` regresses. All eight Run 014
+  infrastructure/science Pods were deleted; the pre-existing volume is
+  unchanged. No finding or manuscript claim was promoted.
+- 2026-08-31: Finding F002 tentatively consolidated Analysis 008's matched
+  full-pass A4/A7 result and linked its dose-dependent
+  quality--logical-opportunity statement into the manuscript and
+  experiment-control crosswalks.
+- 2026-08-31: Analysis 008 added Run 013 A7 to Analysis 007's full-pass
+  trained/post-hoc frontier and produced one count-pooled table containing
+  `kappa`, validation loss, `R_model`, and all eight recorded exact-zero site
+  masses. It now supports tentative Finding F002.
+- 2026-08-31: Run 013 completed and verified valid: five condition-parallel
+  A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, retained recovery checkpoints, and
+  all approved diagnostics reconcile. All Run 013 Pods were deleted, and the
+  run-local candidate observation records the matched A7/A4 result.
+- 2026-08-30: Finding F001 tentatively consolidated what was then interpreted
+  as matched A4/A4-OL1 evidence. The 2026-08-31 implementation audit supersedes
+  this entry and discards the finding.
+- 2026-08-30: Analysis 007 added what was then labeled Run 012 A4-OL1 to the
+  frontier. It is now classified as historical A4-Z + OL1@h data.
+- 2026-08-30: Run 012 completed and verified valid: five condition-parallel A100
+  attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, five checkpoints, and all approved
+  diagnostics reconcile. All Run 012 Pods were deleted.
+- 2026-08-30: Analysis 006 completed uniform TEAL-style clipping of all 13
+  trained full-pass A1-H/A4-Z checkpoints and combined them with the two frozen
+  control sweeps. All 150 points are verified; the one-panel PDF and table are
+  complete, with no finding promoted.
+- 2026-08-30: Analysis 005 evaluated uniform TEAL-style post-hoc clipping of
+  Run 004's verified full-pass GeLU and ReLU controls over 20 complete-validation
+  points. The count-reconciled PDFs and observations are complete, and the user
+  approved the result for Status Report Number 1; no centralized finding was
+  promoted.
+- 2026-08-30: Analysis 004 combined the verified full-pass Run 004/009 A1-H
+  naive-L1/OL1 endpoints with Run 011's A4-Z threshold cohort in a
+  count-reconciled quality--logical-opportunity table and paper-ready PDF. The
+  topology/intervention difference is explicit; no finding was promoted.
+- 2026-08-30: Run 011 completed and verified valid: five condition-parallel
+  A100 attempts, 3,560 optimizer steps, 20 complete validation passes, common
+  initialization/schedule/code identities, exact checkpoint inventories, and
+  all approved diagnostics reconcile. All Run 011 Pods were deleted. Its later
+  consolidation with Run 012 in F001 was discarded after the capture audit.
+- 2026-08-30: Analysis 003 completed the verified Run 004 naive-L1 versus Run
+  009 OL1 endpoint and gradient-interaction comparison, with count-reconciled
+  exact/near-zero tables, endpoint, per-boundary conflict, and OL1-projection
+  PDFs, and explicit limits on the OL1 guarantee. No finding was promoted.
+- 2026-08-30: Run 010 completed and verified valid: five conditions, 2,905
+  updates, 15 complete validation passes, five checkpoints, mixed-gate and
+  seven-site OL1 identities, gradient diagnostics, and logical counters all
+  reconcile.
+- 2026-08-30: Run 009 completed and verified valid: four distributed OL1
+  conditions, 2,848 boundaries, complete validation/diagnostics/checkpoints,
+  verified retrievals, zero remaining Pods, and one pre-existing retained
+  volume. No finding was promoted.
+- 2026-08-30: Run 004 closed. Posted Pod charges are `$21.5213452158`; all Pods
+  are deleted; volume `9luykg5yc3` remains intentionally billable. The optional
+  checkpoint validation-loss trajectory is deferred and requires no retraining.
+- 2026-08-30: Run 008 completed and verified valid. All five conditions, 2,905
+  updates, 15 complete validation passes, five checkpoints, mixed-gate
+  identities, diagnostics, and logical counters reconcile.
+- 2026-08-29: Run 007 remains paused after repeated OOM in its final condition;
+  Runs 002, 003, 005, and 006 are complete at the evidence statuses below.
+
+## Available baseline
+
+- Core Pythia site/gate, L1/OL1, diagnostic, and artifact primitives.
+- Known MiniPile/Pythia-14M revisions and cache identities in `DATA.md`.
+- Local token caches and retained run-owned checkpoints/diagnostics are present;
+  use each run's verification and inventory rather than assuming availability.
+
+## Paper direction
+
+- Test and delimit sparsity spillover: targeted near-zero concentration versus
+  responses in untargeted attention sites.
+- Connect sitewise activation behavior to actual zero-operand counts across the
+  complete Pythia block and dense LM-head denominator.
+- Validate topology/architecture/sequence-dependent `R_model_max` ceilings.
+- Evaluate whether architecture-wide interventions improve the
+  quality--logical-compute frontier without claiming unmeasured speedup.
+
+These are manuscript-led goals, not accepted findings or approved runs.
+
+## Findings
+
+| # | Statement | Status | Source |
+| --- | --- | --- | --- |
+| F001 | Former four-site A4-OL1 claim; discarded because Run 012 actually applied OL1 only at `h`. | discarded | `research/findings/F001-a4-ol1-improves-moderate-threshold-frontier.md` |
+| F002 | At Pythia-14M, A7 is near-null at `kappa=0`, improves matched A4 loss and `R_model` at `kappa=0.01`, and adds logical opportunity with increasing quality cost at larger thresholds. | tentative | `research/findings/F002-a7-extends-a4-logical-opportunity.md` |
+| F003 | The measured 70M kernel provides limited sparse h acceleration; it does not demonstrate effective exploitation of broader h/z sparsity. | confirmed within measured scope | [Finding](findings/F003-70m-sparse-h-gain-does-not-establish-broad-hz-exploitation.md) |
+
+## Runs
+
+| # | Question | State | Folder |
+| --- | --- | --- | --- |
+| 001 | Can the local pipeline complete a matched four-LR Pythia-14M shakedown? | completed (provisional) | `runs/001-2026-08-28-local-lr-pipeline-calibration/` |
+| 002 | Does naive L1 pressure at `h` induce opposing near-zero movement in untargeted attention sites? | completed (valid) | `runs/002-2026-08-29-l1n-spillover-local/` |
+| 003 | Does disabling global gradient clipping change the matched GeLU/ReLU `lambda=5` L1N outcome? | completed (valid with provenance limitation) | `runs/003-2026-08-29-l1n-lambda5-no-gradient-clipping/` |
+| 004 | Does a full MiniPile pass show ReLU L1N spillover under the mapped Pythia recipe? | closed (valid; observations complete, no finding promoted) | `runs/004-2026-08-29-pythia14m-full-pass-l1n/` |
+| 005 | How does ReLU `h`-only OL1 strength change sparsity, quality, conflict, and logical opportunity locally? | completed (valid with provenance limitation) | `runs/005-2026-08-29-pythia14m-relu-ol1-local/` |
+| 006 | How does joint one-sided thresholding at `a,m,h,z` change quality and logical opportunity locally? | completed (valid) | `runs/006-2026-08-29-pythia14m-a4z-threshold-local/` |
+| 007 | Does all-site OL1 improve the joint A4-Z threshold quality--logical-opportunity frontier? | four conditions complete; repeated local OOM, paused | `runs/007-2026-08-29-pythia14m-a4z-threshold-ol1-local/` |
+| 008 | Do symmetric post-RoPE Q/K/V gates extend Run 006's joint threshold quality--logical-opportunity frontier? | completed (valid) | `runs/008-2026-08-29-pythia14m-a7-z-post-mixed-threshold-local/` |
+| 009 | Does `h`-only OL1 improve the full-pass ReLU naive-L1 frontier? | completed (valid; Analysis 003 complete) | `runs/009-2026-08-30-pythia14m-full-pass-ol1/` |
+| 010 | Does all-site OL1 improve Run 008's mixed A7-Z-POST threshold frontier? | completed (valid) | `runs/010-2026-08-30-pythia14m-a7-z-post-mixed-threshold-ol1-local/` |
+| 011 | How does paper-scale A4-Z threshold strength change quality and logical opportunity? | completed (valid; Run 015 comparator and F002 source) | `runs/011-2026-08-30-pythia14m-full-pass-a4z/` |
+| 012 | What happened under A4-Z gates plus the realized `h`-only OL1 pressure? | completed (valid only as A4-Z + OL1@h; declared four-site identity invalid) | `runs/012-2026-08-30-pythia14m-full-pass-a4-ol1/` |
+| 013 | Do symmetric post-RoPE Q/K/V gates improve the paper-scale A4 quality--logical-opportunity frontier? | completed (valid; Analysis 008 and F002 complete) | `runs/013-2026-08-30-pythia14m-full-pass-a7/` |
+| 014 | Does seven-site OL1 improve the paper-scale A7 quality--logical-opportunity frontier? | completed (valid; run-local observation, no finding promoted) | `runs/014-2026-08-31-pythia14m-full-pass-a7-ol1/` |
+| 015 | Does correctly realized four-site OL1 improve the matched paper-scale A4 frontier? | completed (valid; Analysis 009 complete) | `runs/015-2026-08-31-pythia14m-corrected-a4-ol1/` |
+| 016 | Does the selected ladder persist at 70M under a GPU-realized initialization identity? | superseded before science; GPU-specific initialization hash | `runs/016-2026-08-31-pythia70m-selected-ladder/` |
+| 017 | Can CPU-before-CUDA initialization make the selected 70M promotion portable? | stopped before science; remote identity mismatch | `runs/017-2026-09-01-pythia70m-selected-ladder-portable-init/` |
+| 018 | Does the selected A0/A1-H/A4-OL1/A7-OL1 ladder persist at Pythia-70M with a canonical initialization artifact? | completed (valid; Analysis 010 and Status Report 2 complete) | `runs/018-2026-09-01-pythia70m-selected-ladder-canonical-init/` |
+| 019 | Does the selected ladder and its A0/A1-H TEAL frontier persist at Pythia-410M? | completed (valid; Analysis 011 complete) | `runs/019-2026-09-01-pythia410m-selected-ladder-canonical-init/` |
+| 020 | Can a two-arm higher-LR screen repair the weak one-pass Pythia-410M A0 endpoint? | terminally failed before science; replaced by Run 021 | `runs/020-2026-09-03-pythia410m-a0-learning-rate-screen/` |
+| 021 | Does the corrected higher-LR A0 screen outperform the Run-019 3e-4 baseline? | completed (valid; baseline retained) | `runs/021-2026-09-03-pythia410m-a0-learning-rate-screen-resolved-lr/` |
+| 022 | Can the official sparse kernel execute an exact Pythia-14M A0 W2 shape? | stopped at correctness gate; bounded N=128 defect isolated | `runs/022-2026-09-04-pythia14m-sparse-kernel-a0-baseline/` |
+| 023 | Do the Sakana-derived kernels accelerate selected Pythia-70M endpoints? | completed (valid negative systems result) | `runs/023-2026-09-04-pythia70m-sakana-sparse-kernel-sentinels/` |
+| 024 | Does scaling the same sparse-kernel sentinels to Pythia-410M reach break-even? | completed (valid negative systems result; Analysis 014 complete) | `runs/024-2026-09-04-pythia410m-sakana-sparse-kernel-sentinels/` |
+| 025 | Can a bounded Sakana-derived agentic search convert Pythia logical opportunity into full-model speedup? | Blackwell matrix complete; partial against paper minimum; Analysis 015 complete | `runs/025-2026-09-05-pythia-agentic-sparse-kernel-search/` |
+
+## Analyses
+
+| # | Question | State | Folder |
+| --- | --- | --- | --- |
+| 001 | How does seven-site OL1 change Run 008 at each matched kappa? | completed; descriptive, no finding promoted | `analyses/001-2026-08-30-run008-vs-run010-all-site-ol1/` |
+| 002 | How does four-site OL1 change Run 006 at each completed matched kappa? | completed for four available pairs; descriptive, no finding promoted | `analyses/002-2026-08-30-run006-vs-run007-partial-a4z-ol1/` |
+| 003 | How does `h`-only OL1 change Run 004's matched endpoints and gradient interactions? | completed; descriptive, no finding promoted | `analyses/003-2026-08-30-run004-vs-run009-full-pass-l1-ol1/` |
+| 004 | Where do the verified full-pass A1-H pressure and A4-Z threshold endpoints lie on the quality--logical-opportunity plane? | completed; descriptive, no finding promoted | `analyses/004-2026-08-30-full-pass-quality-logical-frontier/` |
+| 005 | How does uniform TEAL-style post-hoc clipping change the Run 004 GeLU/ReLU control frontiers? | completed; descriptive; reported in Status Report Number 1; no finding promoted | `analyses/005-2026-08-30-run004-controls-teal-posthoc/` |
+| 006 | How does uniform TEAL-style post-hoc clipping change every full-pass A1-H and A4-Z checkpoint frontier? | completed; descriptive, no finding promoted | `analyses/006-2026-08-30-full-pass-all-variants-teal-posthoc/` |
+| 007 | Where do the historical Run 012 A4-Z + OL1@h endpoints lie relative to the trained and post-hoc frontiers? | completed as historical reduction; does not support four-site A4-OL1 or F001 | `analyses/007-2026-08-30-full-pass-frontier-a4-ol1/` |
+| 008 | Where do the full-pass A7 and A7-OL1 endpoints lie relative to the trained and post-hoc frontiers? | completed; supports tentative F002 for A4/A7, A7/A7-OL1 descriptive | `analyses/008-2026-08-31-full-pass-frontier-with-a7/` |
+| 009 | How does corrected four-site A4-OL1 compare with Run 012's historical `h`-only realization? | completed; descriptive, no finding promoted | `analyses/009-2026-08-31-run012-vs-run015-a4-ol1-pressure-sites/` |
+| 010 | Does the selected A0/A1-H/A4-OL1/A7-OL1 loss--`R_model` structure persist from Pythia-14M to 70M? | completed; descriptive two-size synthesis, no finding promoted | `analyses/010-2026-09-01-pythia14m-vs-70m-selected-ladder/` |
+| 011 | How do the selected trained and post-hoc loss--`R_model` frontiers and A0 optimization trajectories compare through 410M? | completed; descriptive three-size synthesis and A0 loss/gradient/learning-rate diagnostic, no finding promoted | `analyses/011-2026-09-03-pythia14m-70m-410m-selected-ladder/` |
+| 012 | What is the evidence-preserving paper synthesis of the selected ladder through 410M? | completed; descriptive paper-facing reduction, no finding promoted | `analyses/012-2026-09-04-paper-synthesis/` |
+| 013 | What matched intervention evidence should support the manuscript rewrite? | completed; manuscript evidence refactor and verified draft assets | `analyses/013-2026-09-04-matched-intervention-manuscript/` |
+| 014 | Does moving the sparse-kernel sentinels from 70M to 410M improve realized speedup? | completed; same-GPU negative systems calibration, no finding promoted | `analyses/014-2026-09-04-pythia70m-vs-410m-sparse-kernel-sentinels/` |
+| 015 | After specialization, how do `R_model`, full-model speed, and fixed-`R_model` implementation changes relate through 410M? | completed Blackwell reduction; partial systems evidence, no finding promoted | `analyses/015-2026-09-06-pythia-agentic-kernel-search/` |
+
+## Key documents
+
+`DEFINITIONS.md` Ã‚Â· `DATA.md` Ã‚Â· `METHODS.md` Ã‚Â· `METRICS.md` Ã‚Â· `MANUSCRIPT.md` Ã‚Â·
+`WORKFLOW.md` Ã‚Â· `COMPUTE.md` Ã‚Â· `RUNPOD.md` Ã‚Â· `PLOTTING.md`

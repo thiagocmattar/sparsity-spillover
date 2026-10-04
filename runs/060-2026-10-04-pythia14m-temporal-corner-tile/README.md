@@ -1,8 +1,10 @@
 # Run060 — 14M T2/Ph with causal corner tile gates
 
-Status: design and launch approved; local prelaunch checks passed. The user
-requested execution through verified results and analysis. The approved billable
-envelope is in [LAUNCH.md](LAUNCH.md); provisioning/calibration are next.
+Status: completed and verified locally. Both 712-update conditions finished
+without overflow or skipped updates. All 144 transferred files, including 24
+model checkpoints and six recovery states, passed byte/SHA256 checks. Tables,
+three PDF figures and observations are complete in Analysis041. The owned Pod
+was terminated and provider inventory confirms its absence.
 
 ## Question and comparison
 
@@ -11,7 +13,7 @@ eight consecutive tokens and16 features, with tolerable validation-quality loss?
 The user chose this strong temporal restriction and explicitly refined its
 trigger to the first feature of the first token, position1,1 of each tile.
 
-Train two random-initialized14M conditions, kappa0 and.1, with T2 gates at h/z
+Train two random-initialized14M conditions, kappa 0 and.1, with T2 gates at h/z
 and Ph pressure at h. Compare final full-validation FP16 results with the retained
 elementwise T2/Ph endpoints from [Run058](../058-2026-10-03-pythia14m-t2-p2-versus-ph/README.md).
 Pressure and training recipe are matched; the gate operator changes. No a/m
@@ -69,15 +71,15 @@ features, not the complete residual token or an entire attention head.
 - Python3.12, PyTorch2.11.0+cu128, Transformers5.12.1; pinned container digest
   and full package versions in config/setup. This is the existing recipe mapping,
   not a claim of bitwise GPT-NeoX/DeepSpeed framework reproduction.
-- Every validation/diagnostic pass covers all500 documents, all338 complete
+- Every validation/diagnostic pass covers all 500 documents, all338 complete
   blocks:692,224 input tokens,691,886 predictions, excluded tail1,444 tokens.
 - Model checkpoints0,1,2,4,8,16,32,64,128,256,512,712; complete optimizer,
   scaler and RNG recovery states at256,512,712; retain the final checkpoint.
 
 ## Measurements and interpretation
 
-Full loss validation at0,1,32,128,256,512,712; activation/tile diagnostics at
-0,32,128,712. Compare loss/perplexity and put exact-zero and empty8x16-tile
+Full loss validation at 0,1,32,128,256,512,712; activation/tile diagnostics at
+0,32,128,712. Compare loss/perplexity and put exact-zero and empty 8x16-tile
 percentages side by side at a,m,h,z. Retain per-layer and pooled integer counts,
 additional1x16/16x16/32x16 occupancy, row nonzero histograms, near-zero mass at
 0/.001/.01 and the trained threshold, pre/post RMS/L2/moments and removed energy.
@@ -127,6 +129,59 @@ Commands:
 .venv/Scripts/python.exe runs/060-2026-10-04-pythia14m-temporal-corner-tile/09_local_smoke.py
 ```
 
-The approved launch would run two production CUDA preflights first, then discard
-their model/optimizer state and restart both scientific conditions from step-zero
-bytes. Local artifacts are retained; scientific results/figures remain pending.
+Both production CUDA preflights passed, their model/optimizer state was discarded,
+and scientific conditions restarted from step-zero bytes. Median full updates
+were 3.3822/3.3821s, with 61,467,525,120 reserved bytes out of 85,017,493,504 (72.3%).
+The frozen cache rebuild reproduced both canonical hashes. Scientific runtime
+identity remained unchanged throughout execution.
+
+## Execution record
+
+Owned Pod `b0jo43zzd0xvbg` (`run060-temporal-corner-tile-001`) started at
+2026-10-04T12:23:51.572Z in US-MO-1. Two H100 SXM 80GB GPUs cost USD6.98/hour
+in total. Actual `nvidia-smi` reports 81559MiB per GPU, driver580.159.04;
+the provider's `gpu.memory=503` field in the raw lease is host memory, not VRAM.
+The two-hour provider-stop deadline was 2026-10-04T14:23:51.572Z. Both the remote
+workload guard and hidden workstation provider-stop guard were armed at launch;
+the local guard was cancelled after verified teardown.
+
+Deployment uses commit `92769d86c21064e5486fa9c3ea2ee7a0fe32d80f` and the
+pinned container digest. Upload/source and lease receipts are under `prelaunch/`.
+Existing foreign Pods and the shared network volume remain untouched.
+Cross-run analysis belongs to
+[Analysis041](../../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md).
+
+## Verified result and closeout
+
+| kappa | Scalar T2/Ph loss (Run058) | Corner tile T2/Ph loss | Change | Perplexity change | H empty 8x16 | Z empty 8x16 |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 5.127033 | 5.553770 | +.426737 | +53.225% | 57.5056% | 44.9262% |
+| .1 | 5.152346 | 5.596746 | +.444400 | +55.955% | 84.3082% | 70.9567% |
+
+The models learn (initial losses 11.0252/11.0267) and every final h/z layer retains
+activity. The fixed-budget comparison shows substantially more fully empty tiles
+and a substantial quality penalty, alongside fewer element zeros than scalar
+gates. It supports viability of learning with this restriction, but does not
+support preservation of quality in this recipe or establish redistribution.
+No latency, tile pressure, new model size or manuscript change was added.
+
+See the [full a/m/h/z comparison](../../analyses/041-2026-10-04-corner-tile-versus-elementwise/results/comparison.md)
+and [figure observations](../../analyses/041-2026-10-04-corner-tile-versus-elementwise/observations/INDEX.md).
+Attempts are `001-20261004-125905-e5a32225` (kappa 0) and
+`002-20261004-125906-45dd6a88` (.1). The terminal archive has 1878058178 bytes,
+SHA256 `74d8b68bfa97b76f2c70bb89239f7a641e6e272d80d5babc619a2d2c4c883f6b`;
+all 144 members passed local verification, followed by `03_verify.py`.
+
+Termination requested at 2026-10-04T13:50:54Z; absence confirmed at 13:51:40Z.
+Estimated GPU cost is USD10.126-10.215 from provider-start/teardown bounds, with
+an estimated storage allowance below USD.10, within the approved USD30 ceiling.
+Posted billing is partial, not the final invoice. No owned billable resource
+remains; the deadline guard was cancelled after deletion. Existing Run052's
+EXITED Pod and shared 100GB volume remain untouched. See
+[compute closeout](results/compute-closeout.json).
+
+Metadata note: the immutable random replay's historical `reason` string mentions
+an earlier T4 comparison. The replay is the same untrained parameter bytes;
+actual resolved configs, topology, pressure captures and manifests verify T2/Ph
+at h/z for this run. The historical string was retained, rather than rewriting
+hashed input provenance.
