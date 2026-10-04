@@ -14,11 +14,12 @@ are deleted. No additional P2/Ph or latency experiment is queued.
 
 The requested next workstream is 14M T2/Ph with an anchor-based temporal tile
 gate at kappa=0/.1, prioritizing sparsity, empty tiles and validation quality.
-The first token decides a shared mask for itself and the following tokens in
-the block. The [proposed design](BACKLOG.md) records matched inputs, proposed
-8x16 geometry and the open anchor trigger interpretation.
+The first feature of the first token decides each8x16 tile: corner <= kappa
+zeros the entire tile; otherwise preserve it. The [approved design](BACKLOG.md)
+records matched inputs. [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md)
+implements this rule and its tests; billable launch remains pending.
 Tile pressure and inference speed remain later questions. This handoff is a
-mutable human guide, not approval of an unresolved design or billable launch.
+mutable human guide, not approval of a billable launch.
 
 ## 1. Plain-language request
 

@@ -1,7 +1,8 @@
 # Tile gates aligned with the retained GPU implementations
 
-Status: source audit complete; training design remains proposed. No GPU job,
-new experiment code, benchmark or manuscript edit was performed.
+Status: source audit complete. This analysis performed no GPU job, experiment
+or benchmark. The subsequently approved gate is implemented separately in
+[Run060](../../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md), pending launch.
 
 The user requests a tile structure whose zeros can prevent weight loads and
 whose definition can carry across Pythia14M/31M/70M and other model families.
@@ -12,9 +13,9 @@ The original audit recommends fixed contiguous groups of16 input features per
 token (1x16 gate), with independent hardware execution row groups. Its source
 observation remains unchanged. The user subsequently selects a stronger causal
 restriction: decide a shared mask at the first token and enforce it on all
-following tokens in the same fixed block. The updated proposal is8x16 with
-only the first row participating in the threshold decision, as detailed in
-the backlog. Exact geometry and anchor trigger await confirmation.
+following tokens in the same fixed block. The approved8x16 gate examines only
+the first feature of the first token: corner <= kappa rejects the entire tile.
+An admitted tile retains its original values. See the backlog for this refinement.
 
 Both use K16 support compatible with the inspected consumers. Neither is a
 measured optimal gate or proof of transferable speedup.
@@ -22,6 +23,5 @@ measured optimal gate or proof of transferable speedup.
 See [the observation](observations/001-tile-geometry-and-weight-loads.md) for
 source locations, causal semantics, portability and evidence limits; the
 [source identities](data/source-identity.json) preserve inspected file hashes.
-The [backlog](../../research/BACKLOG.md) retains the proposed training recipe,
-literal any-zero/any-below-kappa anchor trigger, unchanged Ph, backward rule,
-preserved values in admitted tiles and open design choices.
+The [backlog](../../research/BACKLOG.md) retains the approved training recipe,
+inclusive single-corner trigger, unchanged Ph, backward rule and evidence limits.
