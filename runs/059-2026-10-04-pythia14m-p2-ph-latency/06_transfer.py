@@ -23,7 +23,9 @@ def connect():
         raise ValueError('Unscoped SSH target')
     known=RUN/'prelaunch/known_hosts';known.touch(exist_ok=True)
     client=paramiko.SSHClient();client.load_host_keys(str(known));client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(info['ip'],port=info['port'],username='root',key_filename=info['ssh_key']['path'],
+    # MCP creation injects the registered Ed25519 public key; CLI discovery
+    # may instead advertise its registered RSA default. Try both local keys.
+    client.connect(info['ip'],port=info['port'],username='root',key_filename=[info['ssh_key']['path'],str(Path.home()/'.ssh/id_ed25519_runpod')],
         timeout=20,auth_timeout=20,banner_timeout=20,look_for_keys=False,allow_agent=False)
     client.get_transport().set_keepalive(20)
     return client,lease
@@ -70,6 +72,14 @@ run=Path('{REMOTE}');control=Path('{CONTROL}')
 output={{'pipeline_exit':(control/'pipeline.exit').read_text().strip() if (control/'pipeline.exit').exists() else None,
     'setup_complete':(run/'runtime/setup-complete').exists(),'statuses':[],
     'pipeline_tail':(control/'pipeline.log').read_text(errors='replace')[-1800:]}}
+cache=run/'artifacts/control/local-cache-status.json'
+if cache.exists():output['cache_status']=json.loads(cache.read_text())
+cache_done=run/'artifacts/control/local-cache.json'
+if cache_done.exists():
+    row=json.loads(cache_done.read_text())
+    output['cache_complete']={{key:row[key] for key in ['status','source_files','runtime_bytes','seconds']}}
+precompile=run/'runtime/precompile-status.json'
+if precompile.exists():output['precompile_status']=json.loads(precompile.read_text())
 for path in sorted((run/'artifacts/attempts').glob('*/status.json')):
     output['statuses'].append({{'attempt':path.parent.name,**json.loads(path.read_text())}})
 print(json.dumps(output))

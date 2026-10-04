@@ -1,6 +1,16 @@
 # Run059: direct P2 versus Ph inference latency
 
-Status: implementing the user-requested latency benchmark. The current request
+Status: completed and verified. P2 has 0.677% higher latency at kappa=0 and
+1.660% lower latency at kappa=.1 with frozen K050. All three process ratios
+have the same direction within each threshold. All numerical checks passed,
+with zero observed logit error against each checkpoint's own BF16 eager anchor.
+All 99 returned files are hash-verified locally; the owned Pod is deleted and
+its local guard is disarmed. Estimated lifecycle cost USD1.45, below USD2.
+The provider ledger is still incomplete. See [tables](results/tables.md),
+[the observation](observations/01-p2-ph-latency.md), and
+[compute closeout](results/compute-closeout.json).
+
+The current request
 and standing authorization to run responsible, bounded RunPod experiments and
 complete their verified analysis authorize this matched inference follow-up.
 The previously executed Run058 remains unchanged.
@@ -68,3 +78,56 @@ only for declared warnings or projected completion: OOM, nonfinite/reference
 failure, process timeout, stale progress or deadline risk. Report progress,
 loss/error, throughput and refreshed ETC. Explicit scoped teardown follows
 local scientific/hash verification; retain foreign Pods and the existing volume.
+
+## Compatibility retry before timing
+
+Smoke001 stopped at adapter installation: the archived Run027 characterization
+allowlist excluded HZ. No timing or numerical result was produced. The complete
+failure and pipeline log remain immutable. Retry002 appends the already used
+Run044 HZ adapter and replay: the adapter differs from the original by only
+adding HZ to its label allowlist. Every CUDA kernel, checkpoint, gate, timing
+and qualification input is unchanged. Alternate02b/03b/05b entry points retain
+the original executed sources. All four real checkpoints pass native CPU
+forward and BF16 K050 installation checks with the existing adapter. Retry uses
+the same owned Pod, environment and original creation-time deadline.
+
+Smoke002 reached the external 600-second limit during cold compilation, before
+timing. Attempt003 separates unchanged extension precompilation from the bounded
+scientific leaves. Slow imports and vendor metadata on the network-backed Pod
+volume remained material. Attempt003 was cancelled before timing and retained.
+Infrastructure attempt004 caches the original verified source upload and exact
+runtime files on local disk, preserving both persistent originals. Every source
+and copied runtime file is hash-checked; symlink targets are checked. This follows
+the earlier Run048 local-cache approach. It changes storage placement only, with
+the same Pod, runtime, scientific inputs and original deadline. The source path
+change can trigger compilation; precompilation remains outside all timed samples.
+
+The resolved local dependency paths triggered duplicate compilation inside the
+first smoke. A bounded cold-capture guard briefly paused its supervising
+controller, with a maximum900-second cold allowance and no change to the child
+measurement code or Pod deadline. The child completed in516.75seconds, within
+the original600 seconds. The second smoke completed in83.86seconds; both passed.
+
+Attempt004 completed four scientific processes, then stopped before the next
+job because its660-second reservation exceeded the remaining lease. Attempt005
+resumed only the two unfinished fixed jobs, in the original order and with the
+same inputs, seeds, measurements and numerical bounds. Its stricter300-second
+cached-process limit was based on the observed99--136-second full processes;
+it retained a60-second retrieval reserve. All six processes completed, taking
+99--168seconds each. Original and resumed summaries remain unchanged beside
+the explicit combined cohort. This is an infrastructure continuation, with no
+retraining, scientific-input correction or repeated/selected successful trial.
+
+Primary host geomeans are0.659690/0.664153ms (Ph/P2) at0 and
+0.625165/0.614790ms at.1. P2/Ph paired speedup ranges are
+0.988689--0.996753 and1.015749--1.018378. The native graph control is effectively
+tied (P2/Ph0.998415/0.998565). BF16 full-validation loss is
+5.128739/5.285315 at0 and5.153716/5.331877 at.1; P2's loss penalties are
+.156577/.178161. Run058's canonical FP16 figures retain their own precision
+identity. The measured small gain at.1 does not establish a general P2 latency
+advantage or a quality-matched improvement.
+
+For future reuse, put immutable vendor sources and the pinned runtime on local
+disk before compilation, preserve runtime header timestamps, and precompile
+dependencies using the same resolved paths as their actual installation chain.
+This run retained all original files, failed attempts and setup logs.

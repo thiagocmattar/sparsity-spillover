@@ -5,6 +5,13 @@
 
 ## Current status
 
+Run059 directly benchmarks the original14M T2/P2 and T2/Ph checkpoints.
+With frozen K050 on RTX5090, P2 latency is0.677% higher at0 and1.660% lower
+at.1; all three processes agree in direction per threshold and all500-document
+numerical checks pass. P2 still has higher loss. All99 returned files and one
+PDF are verified; owned Pod deleted, estimated USD1.45. See
+[Run059](../runs/059-2026-10-04-pythia14m-p2-ph-latency/README.md).
+
 Run058 completed the requested 14M T2/P2 versus T2/Ph comparison at kappa=0/.1.
 P2 raises validation loss by .1531/.1782, increases empty z tiles and reduces h
 sparsity. At .1, z empty8x16 tiles rise20.70% to74.83%, but R_model rises only
