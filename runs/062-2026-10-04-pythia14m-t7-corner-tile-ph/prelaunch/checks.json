@@ -1,0 +1,406 @@
+{
+  "recorded_at_utc": "2026-10-04T17:32:45.055827+00:00",
+  "launch_status": "pending separate confirmation",
+  "tests": [
+    {
+      "name": "focused",
+      "returncode": 0,
+      "argv": [
+        ".venv/Scripts/python.exe",
+        "-m",
+        "pytest",
+        "runs\\062-2026-10-04-pythia14m-t7-corner-tile-ph\\test_run062.py",
+        "-q",
+        "--basetemp=.pytest_tmp/run062-focused-final"
+      ],
+      "passed_tests": 26,
+      "seconds": 3.33,
+      "log": {
+        "path": "prelaunch/test-focused-final.log",
+        "bytes": 101,
+        "sha256": "83d8da4cde4be94ad8b9c352bfd427892f09f28e194eaba19233dd7143286c7a"
+      }
+    },
+    {
+      "name": "bootstrap",
+      "returncode": 0,
+      "argv": [
+        ".venv/Scripts/python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=.pytest_tmp/run062-bootstrap-final"
+      ],
+      "passed_tests": 242,
+      "seconds": 7.94,
+      "log": {
+        "path": "prelaunch/test-bootstrap-final.log",
+        "bytes": 345,
+        "sha256": "11adab7e403e95d286e58e37b09a2738d9e4e650de84c41d45225e8bd256f701"
+      }
+    }
+  ],
+  "cpu_smoke": {
+    "path": "prelaunch/local-smoke.json",
+    "bytes": 17810,
+    "sha256": "2d287f77ab8763b5313f518137b6116c891b2ec9ead697ba4f3fa11ffd74b6a3"
+  },
+  "component_cuda": {
+    "passed_checks": 32,
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "seconds": 70.996054215,
+    "result": {
+      "path": "latency/prelaunch/component-cuda.json",
+      "bytes": 5736,
+      "sha256": "a635e29da93e47cce3d336bfe33aba785fa36c5f24330a69eabf72cfec7e217d"
+    }
+  },
+  "full_model_development": {
+    "status": "completed_with_qualification_failure",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "blocks_per_checkpoint": 2,
+    "rows": [
+      {
+        "checkpoint": "c36",
+        "pass": {
+          "native": true,
+          "native_graph": true,
+          "no_skip_graph": true,
+          "sparse_graph": true
+        }
+      },
+      {
+        "checkpoint": "c39",
+        "pass": {
+          "native": true,
+          "native_graph": true,
+          "no_skip_graph": false,
+          "sparse_graph": false
+        }
+      },
+      {
+        "checkpoint": "t7-tile-ph-kappa-0",
+        "pass": {
+          "native": true,
+          "native_graph": true,
+          "no_skip_graph": false,
+          "sparse_graph": false
+        }
+      },
+      {
+        "checkpoint": "t7-tile-ph-kappa-0p1",
+        "pass": {
+          "native": true,
+          "native_graph": true,
+          "no_skip_graph": true,
+          "sparse_graph": true
+        }
+      }
+    ],
+    "result": {
+      "path": "latency/prelaunch/native-cuda-smoke-003.json",
+      "bytes": 9386,
+      "sha256": "61fd1c862b38e2067117c020e531f496f9abd5cc1df7d5c818b11b4fde3554a8"
+    },
+    "diagnosis": "Local native attention is unsplit; preserved K035 is the RTX5090 two-split schedule. First-layer gates and projection inputs are exact; target GPU qualification still required.",
+    "diagnostic_sources": [
+      "latency/prelaunch/operand-trace-dispatch-source.py",
+      "latency/prelaunch/operand-trace-nocudnn-source.py"
+    ]
+  },
+  "syntax": {
+    "python_files": 43,
+    "python_ast": "passed",
+    "bash": [
+      {
+        "path": "00_setup_remote.sh",
+        "returncode": 0
+      },
+      {
+        "path": "08_pipeline.sh",
+        "returncode": 0
+      },
+      {
+        "path": "latency/04_setup.sh",
+        "returncode": 0
+      },
+      {
+        "path": "latency/05_execute.sh",
+        "returncode": 0
+      }
+    ],
+    "duplicated_gate_topology_bytes_identical": true
+  },
+  "source_files": [
+    {
+      "path": "00_setup_remote.sh",
+      "bytes": 1084,
+      "sha256": "d82701ee39f38696953929e942099fa8879d19d8930c0fb5b18598053f5ceadc"
+    },
+    {
+      "path": "01_validate_preflights.py",
+      "bytes": 1012,
+      "sha256": "d8797eb4e8c70aab37e4f04bd0f7d09e02891f112a0c64ee763aaba549888b48"
+    },
+    {
+      "path": "02_train.py",
+      "bytes": 442,
+      "sha256": "aa205e16bb728be11454fb7c7b4597d798563037dacbd65d849fceb92c3abf3f"
+    },
+    {
+      "path": "03_verify.py",
+      "bytes": 5767,
+      "sha256": "554865c7ada99eca370541f65538bf3316f6e08e45fab49c95eec567e9aa9f15"
+    },
+    {
+      "path": "04_monitor.py",
+      "bytes": 2621,
+      "sha256": "aea7d8f5c403db6d130c48fba68f1b860794f7b3ba016b94cd11bc996e5b9686"
+    },
+    {
+      "path": "05_remote_preflight.py",
+      "bytes": 6891,
+      "sha256": "ddb78b5de740e39d28c33c9fcf2bd58ecad513e7dfa67d3918a98899a8f74bc6"
+    },
+    {
+      "path": "06_build_cache_from_hf.py",
+      "bytes": 285,
+      "sha256": "32ab92a5a8827758d7df5fe4f9df84db5727b62ac14a4e8d0e4e96babb31ea15"
+    },
+    {
+      "path": "07_prepare.py",
+      "bytes": 1097,
+      "sha256": "981cc9122f7f7f124c1017ec7a8afe8cd7d6424d148128c0354269ce7dd8c0cb"
+    },
+    {
+      "path": "08_pipeline.sh",
+      "bytes": 1314,
+      "sha256": "e33d89aeffddbb5d53f4b8b602f341d0d38ed29dd4807881e40db1d43cfec2bc"
+    },
+    {
+      "path": "09_local_smoke.py",
+      "bytes": 2767,
+      "sha256": "c4afdfb0bf259080ef61606783a21b536228483b0a0510af0573995b787e4549"
+    },
+    {
+      "path": "10_remote.py",
+      "bytes": 6212,
+      "sha256": "21f295ad9b1e832c667e25b3836c7185cb1d930b177418cde9e5ce8ecc3f0539"
+    },
+    {
+      "path": "12_deadline_guard.py",
+      "bytes": 1604,
+      "sha256": "996ee04a8cc7306aaab873a3dfb656a0e56c6b1ec9468181cd07d35a7eca047c"
+    },
+    {
+      "path": "15_seal_training.py",
+      "bytes": 1916,
+      "sha256": "a1ab906c8d98e3f0e7720cb8ebc3026f78bd200529107540c7bf342b5495da84"
+    },
+    {
+      "path": "16_retrieve_training.py",
+      "bytes": 4042,
+      "sha256": "ef197c58f91c98f33ecf98e3ffaa7a3fa5c2f18683dfa74f42a50e813219081b"
+    },
+    {
+      "path": "config.yaml",
+      "bytes": 6374,
+      "sha256": "34f0c2544db9fc0ddceca04690bec181b9cb5f5301d2c790adc5938ed4eccca9"
+    },
+    {
+      "path": "diagnostics.py",
+      "bytes": 14297,
+      "sha256": "5578e46a58b4e29455f9537ccf0d375ff0432cb262758031cb76a5d45c7e8a9d"
+    },
+    {
+      "path": "frozen.py",
+      "bytes": 899,
+      "sha256": "50f71d82e9c684a2499893f398a7189f1e6ef818f928fa7f14503b7f4a5f1e34"
+    },
+    {
+      "path": "initialization.py",
+      "bytes": 1398,
+      "sha256": "7c3cfd8601894d824d0e332d1b9bfcd4f67a5240d9cd5f28cd3eda98ef8da29a"
+    },
+    {
+      "path": "latency/00_component.py",
+      "bytes": 6905,
+      "sha256": "47a5e67018649182253a1939076d94b2022da690dcdffadff28cfc71dda5b09e"
+    },
+    {
+      "path": "latency/00_precompile.py",
+      "bytes": 897,
+      "sha256": "ce78f1757331aaf758c047c277668ae5de53b716a805d674caf2f761abadcfc5"
+    },
+    {
+      "path": "latency/01_prepare.py",
+      "bytes": 8628,
+      "sha256": "7e05eb4ccf8ecd417222949fbf1dd0982c7a7f4b55e97761cc6619ba00737bfe"
+    },
+    {
+      "path": "latency/02_benchmark.py",
+      "bytes": 10180,
+      "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+    },
+    {
+      "path": "latency/03_execute.py",
+      "bytes": 2425,
+      "sha256": "a9b146c6d5d06f8b13f972edfdac57bd7c448d20074b0255cf782ad7d40c3605"
+    },
+    {
+      "path": "latency/04_setup.sh",
+      "bytes": 1492,
+      "sha256": "4b54ea56f36b33ae76200d5368d1bdeecae8d02840d8b88f07faa2733d46cbbc"
+    },
+    {
+      "path": "latency/05_execute.sh",
+      "bytes": 483,
+      "sha256": "0a912ae903d806f003b0be41506a239b47a9d6cf710e73dd60fc923edbb5914d"
+    },
+    {
+      "path": "latency/06_transfer.py",
+      "bytes": 8494,
+      "sha256": "4aa4299361683a2e50178989e444538b81690da7d822677289d839da70e49fd7"
+    },
+    {
+      "path": "latency/08_deadline_guard.py",
+      "bytes": 1604,
+      "sha256": "996ee04a8cc7306aaab873a3dfb656a0e56c6b1ec9468181cd07d35a7eca047c"
+    },
+    {
+      "path": "latency/09_component_local.py",
+      "bytes": 3670,
+      "sha256": "cfc85097ff5c4c8ddbb42a6d324e078557cfd8e36ba08c5cc20f903bb42b3631"
+    },
+    {
+      "path": "latency/10_native_smoke.py",
+      "bytes": 3142,
+      "sha256": "d02cf8b8eeceb7db3a5ffa65507b12f787a4f678babc6d5a90a394a02ac0e7d5"
+    },
+    {
+      "path": "latency/11_verify_cache.py",
+      "bytes": 738,
+      "sha256": "f868fe51a988e9ce9b20c03e675bd46f18d66987e49d1650a41f8ef56b4d758e"
+    },
+    {
+      "path": "latency/12_trace_native.py",
+      "bytes": 3563,
+      "sha256": "31dd5999c54f6c7a687bedf1d83afb1c59aa61955320f048635fcd92ec4f034c"
+    },
+    {
+      "path": "latency/20_analyze.py",
+      "bytes": 7765,
+      "sha256": "ce459117bc0c1f64d98cb6fd14453f560d0a90827e7d9af6f52639cb07de1c6c"
+    },
+    {
+      "path": "latency/config.json",
+      "bytes": 1623,
+      "sha256": "4faa83db308a41e443e6964b17cb228344bcc5320842a57a50479996b3ae7531"
+    },
+    {
+      "path": "latency/diagnostics.py",
+      "bytes": 9862,
+      "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+    },
+    {
+      "path": "latency/hz_adapter.py",
+      "bytes": 3451,
+      "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+    },
+    {
+      "path": "latency/io_utils.py",
+      "bytes": 1929,
+      "sha256": "4e4ad9ad9005fee9fd713ceb68774ea520a9f733e71c339ef0f0bee0a8d85705"
+    },
+    {
+      "path": "latency/joint.cu",
+      "bytes": 11362,
+      "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+    },
+    {
+      "path": "latency/kernel.py",
+      "bytes": 3061,
+      "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+    },
+    {
+      "path": "latency/port_gates.cu",
+      "bytes": 3366,
+      "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+    },
+    {
+      "path": "latency/port_gates.py",
+      "bytes": 2523,
+      "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+    },
+    {
+      "path": "latency/replay.py",
+      "bytes": 2547,
+      "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+    },
+    {
+      "path": "latency/tile_gate.py",
+      "bytes": 5407,
+      "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+    },
+    {
+      "path": "latency/topology.py",
+      "bytes": 184,
+      "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+    },
+    {
+      "path": "optimizer_boundary.py",
+      "bytes": 7360,
+      "sha256": "a74e71999fe0846a30f5f980c09e782a7bdc658b5b5e37cbcca2087c3deb8d9c"
+    },
+    {
+      "path": "run_config.py",
+      "bytes": 8924,
+      "sha256": "f485c506f95d804fd609b55ea49e4ebc4ab51eb8b1958de65f796954da661c65"
+    },
+    {
+      "path": "test_run062.py",
+      "bytes": 13269,
+      "sha256": "c2ab2e91f80807e9284540487418aa9d6e80a46d564429967ff35162f7f53d73"
+    },
+    {
+      "path": "tile_gate.py",
+      "bytes": 5407,
+      "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+    },
+    {
+      "path": "topology.py",
+      "bytes": 184,
+      "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+    },
+    {
+      "path": "training.py",
+      "bytes": 23731,
+      "sha256": "c07f03eda626a7dc8ddc8194465359c516178c24c17df3d25f517f1bed24426e"
+    },
+    {
+      "path": "latency/prelaunch/operand-trace-dispatch-source.py",
+      "bytes": 3561,
+      "sha256": "f98ea7769324492ef29c74240add256edc051072c947f2ec1b42efc9e5e5ac97"
+    },
+    {
+      "path": "latency/prelaunch/operand-trace-nocudnn-source.py",
+      "bytes": 3278,
+      "sha256": "504751948437b3e58e24f6c9f533b8782c2ac3612807405e76aa81476867eb9a"
+    }
+  ],
+  "invariants": {
+    "random_initialization_parameter_sha256": "ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57",
+    "data_order_sha256": "f1755812b4f70806bd137ee900c9338f64c4c2074b6dd8b7661e6bde9b141faa",
+    "site_comparisons": "signed a/m/h/z; magnitude q_post/k_post/v",
+    "pressure_sites": [
+      "h"
+    ],
+    "scientific_updates_executed": 0
+  },
+  "mandatory_cloud_checks": [
+    "exact-condition full MB32/GAS32 training preflights and full validation/diagnostics",
+    "final RTX5090 smokes and 338-block own-eager qualification without tolerance relaxation"
+  ],
+  "cli_auth_verified": true,
+  "resources_created": []
+}
