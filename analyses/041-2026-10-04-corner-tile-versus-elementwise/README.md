@@ -84,3 +84,14 @@ promotion is part of this figure. The original three PDFs are unchanged.
 
 Regenerate Figure04 with
 .venv/Scripts/python.exe -X utf8 analyses/041-2026-10-04-corner-tile-versus-elementwise/02_quality_latency_frontier.py.
+
+## Approved T7/Ph extension: in progress
+
+[Run062](../../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) runs
+the same corner operator at all seven T7 sites, kappa0/.1, keeping pressure at h.
+`03_t7_training.py` will compare canonical FP16 quality and pooled seven-site
+zero/empty8x16 counts against the retained Run032 scalar controls. The scalar
+counts receive a separate complete FP16 post-hoc replay, preserving the original
+canonical quality field. `04_t7_frontier.py` will append two qualified tile
+endpoints and two auxiliary matched scalar references while retaining every
+previous coordinate and PDF. No new results are asserted before verification.

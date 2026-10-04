@@ -135,3 +135,29 @@ Regenerate checks from the repository root:
 .venv/Scripts/python.exe -m pytest -q --basetemp=.pytest_tmp/run062-bootstrap
 .venv/Scripts/python.exe -X utf8 runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/09_local_smoke.py
 ```
+
+## Approved execution: attempt001
+
+The user's explicit launch approval followed design approval and the separate
+launch packet. Pod `iwoydp694czykb` was created at 2026-10-04 17:58:24 UTC:
+two H100 SXM GPUs in EUR-NO-2, actual host price USD6.98/hour. Its two-hour
+deadline is 19:58:24 UTC; detached workload and independent workstation provider
+stop guards were armed before setup. The USD30 combined training/inference
+ceiling remains in force. See `prelaunch/lease-training-001.json`.
+
+The executed checkout is `03ff9227e3700bf93802d6a38533d5cc815bef66`, uploaded
+as source bundle002 and checked remotely by byte count and SHA256. Both canonical
+token caches were rebuilt and their hashes verified. The real exact-condition
+preflights precede fresh scientific training; no preflight state becomes a
+scientific checkpoint.
+
+After training, `17_scalar_structure.py` will evaluate the two retained scalar
+controls with native FP16 autocast and complete validation, without optimization
+or clipping. This adds comparable seven-site zero and tile occupancy counts.
+Its explicit script and input hashes distinguish this post-hoc measurement from
+the already running, unchanged training checkout. All agreed training and
+post-hoc artifacts must be sealed and verified locally before Pod deletion.
+
+Analysis041 scripts03/04 prepare the seven-site table, learning/occupancy PDFs
+and the orange-frontier comparison. New optimized latency coordinates require
+successful RTX5090 qualification; preparation of plotting code is not a result.

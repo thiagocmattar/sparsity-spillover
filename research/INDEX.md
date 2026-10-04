@@ -5,6 +5,11 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run062](../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) is approved
+and executing:14M T7/Ph corner gates at kappa0/.1, parallel on two H100s,
+then qualified RTX5090 latency and an orange-frontier comparison in Analysis041.
+No result is available yet; the total approved billable ceiling is USD30.
+
 [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md) completed
 14M T2/Ph corner gates at kappa 0/.1: two verified 712-update conditions, full
 validation/diagnostics, all checkpoints local, owned Pod deleted. Both models
