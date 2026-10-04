@@ -1,8 +1,8 @@
 # Run062: 14M T7/Ph with causal corner tiles
 
 Status: design confirmed by the user ("Confirmed. Go on"). Implementation and
-prelaunch checks are recorded. Launch confirmation is pending; no billable
-resource or scientific training has started.
+prelaunch checks are recorded. Launch confirmed by the user ("yes") within the
+USD30 packet; provisioning and execution evidence will be appended below.
 
 ## Question and matched comparison
 
