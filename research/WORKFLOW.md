@@ -4,6 +4,20 @@ This is a conversation and record-keeping protocol, not an executable approval
 engine. The research plan may change whenever the user chooses; an executed run
 remains an immutable record of what actually happened.
 
+## Recorded handoff - 4 October 2026
+
+The user closed the T2/P2 versus T2/Ph workstream after Runs058/059. The scoped
+conclusion is [F004](findings/F004-14m-p2-ph-quality-and-latency.md): P2 raises
+loss at both tested thresholds and has only a small, threshold-dependent K050
+latency effect. Results, figures and hashes are verified locally; owned Pods
+are deleted. No additional P2/Ph or latency experiment is queued.
+
+The requested next workstream is 14M T2/Ph with an any-element tile gate at
+kappa=0/.1, prioritizing sparsity, empty tiles and validation quality. The
+[proposed design](BACKLOG.md) records matched inputs and the open tile geometry.
+Tile pressure and inference speed remain later questions. This handoff is a
+mutable human guide, not approval of an unresolved design or billable launch.
+
 ## 1. Plain-language request
 
 The user states the experiment or diagnostic in ordinary language. The agent
