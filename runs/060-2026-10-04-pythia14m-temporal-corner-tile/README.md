@@ -1,8 +1,8 @@
 # Run060 — 14M T2/Ph with causal corner tile gates
 
-Status: approved design implemented; local prelaunch checks passed. Scientific
-training and cloud provisioning have not started. The proposed billable envelope
-is in [LAUNCH.md](LAUNCH.md); launch confirmation remains pending.
+Status: design and launch approved; local prelaunch checks passed. The user
+requested execution through verified results and analysis. The approved billable
+envelope is in [LAUNCH.md](LAUNCH.md); provisioning/calibration are next.
 
 ## Question and comparison
 

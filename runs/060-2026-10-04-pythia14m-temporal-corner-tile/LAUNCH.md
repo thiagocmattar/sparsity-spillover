@@ -1,6 +1,8 @@
-# Proposed launch — confirmation pending
+# Approved launch
 
-No billable resource or scientific training has started. User design refinement
+The user explicitly approved this packet: “Approved. Go on. Get back with the
+results.” No billable resource or scientific training had started at approval.
+User design refinement
 selected the inclusive first-corner8x16 gate. This packet covers only the two
 14M T2/Ph conditions at0/.1 in config, with the matched recipe in README.
 
@@ -101,7 +103,7 @@ for10min, nonfinite loss, any skipped/overflow boundary, >90% memory, disk short
 process/coverage/transfer failures or ETC nearing the deadline. No silent rescue
 gate/pressure/training variant is permitted.
 
-Launch requires confirmation of this implemented scope and billable envelope.
-Before launch, ask whether any additional post-hoc measurement is needed beyond
-this inventory. The repository AGENTS.md says: “Ask for explicit launch approval.
-Design approval is not launch approval.”
+Both design and launch are now approved, including this post-hoc inventory.
+No additional approval is required to execute within this scope and billable
+envelope. Record actual provisioning, calibration and teardown below/alongside
+the execution receipts.

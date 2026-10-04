@@ -17,7 +17,8 @@ gate at kappa=0/.1, prioritizing sparsity, empty tiles and validation quality.
 The first feature of the first token decides each8x16 tile: corner <= kappa
 zeros the entire tile; otherwise preserve it. The [approved design](BACKLOG.md)
 records matched inputs. [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md)
-implements this rule and its tests; billable launch remains pending.
+implements this rule and its tests; the user explicitly approved the launch
+through verified results and figures within its packet.
 Tile pressure and inference speed remain later questions. This handoff is a
 mutable human guide, not approval of a billable launch.
 

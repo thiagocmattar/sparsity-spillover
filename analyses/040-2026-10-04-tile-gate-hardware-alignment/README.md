@@ -2,7 +2,7 @@
 
 Status: source audit complete. This analysis performed no GPU job, experiment
 or benchmark. The subsequently approved gate is implemented separately in
-[Run060](../../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md), pending launch.
+[Run060](../../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md), with launch approved.
 
 The user requests a tile structure whose zeros can prevent weight loads and
 whose definition can carry across Pythia14M/31M/70M and other model families.

@@ -18,7 +18,7 @@ under that restriction. [Analysis040](../analyses/040-2026-10-04-tile-gate-hardw
 retains the initial GPU audit. Geometry is8 tokens x16 features, matching the
 14M/31M consumers. The approved gate is implemented in
 [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md).
-No scientific training or new cloud allocation has started; launch is pending.
+Launch is explicitly approved through results/figures, within the Run060 packet.
 
 ### Approved comparison and matched recipe
 
