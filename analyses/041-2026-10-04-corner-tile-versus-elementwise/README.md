@@ -2,15 +2,16 @@
 
 Status: complete. Run060 passed remote and local scientific verification;
 the archive and all 144 transferred members passed SHA256/byte checks.
-All three final PDFs were rendered and visually inspected. The owned Pod was
+The initial three PDFs were rendered and visually inspected. The owned Pod was
 terminated and provider inventory confirms its absence.
 
 Both tile conditions learn and retain activity in every h/z layer, but their
 final losses rise .426737/.444400 versus matched scalar controls (perplexity
 +53.225%/+55.955%). Empty 8x16 tiles increase substantially, while total h/z
 element sparsity decreases. This supports learning viability under the restriction
-with a substantial quality cost in this recipe; it does not establish preservation
-of quality, redistribution or speedup.
+with a substantial quality cost in this recipe; those training diagnostics do
+not establish preservation of quality, redistribution or speedup. The separately
+verified Run061 latency evidence is now included below.
 
 See the [wide comparison table](results/comparison.md),
 [layerwise counts](results/per-layer.csv), and [observations](observations/INDEX.md).
@@ -54,3 +55,32 @@ Regenerate from the retained, verified sources:
 `data/source-identity.json` records input bytes/SHA256; `results/summary.json`
 retains unrounded values, paired deltas, counts and curves. Tables and PDFs
 derive from those same source artifacts. No manuscript edit is requested.
+
+## Quality-latency frontier with the two tile endpoints
+
+The user's follow-up requested the manuscript's quality-on-X, latency-on-Y
+comparison with the two new tile points, saved here. The current source asset
+02-14m-70m-latency-quality.pdf comes from Analysis038: retain all 36 historical
+Base, T2/Ph and T7/Ph execution points across 14M/31M/70M, append the two 14M corner
+endpoints, and draw the observed frontier over this 38-point cohort. A linear 14M detail
+also displays the two matched Run061 scalar references, excluded from the
+frontier cohort. The other panel preserves the source's logarithmic axes.
+
+- [Figure04](figures/04-quality-latency-frontier-with-corner-tiles.pdf).
+- [Observation004: caption, coverage and caveats](observations/004-quality-latency-frontier.md).
+- [Exact coordinates, Pareto set and source hashes](data/quality-latency-frontier.json).
+- [Coordinate table](results/quality-latency-frontier.md).
+
+Tile coordinates use the canonical FP16 loss above and the verified BF16
+Run061 sparse host latency: (5.553770, .540220 ms) at κ=0 and
+(5.596746, .508340 ms) at κ=.1. Neither extends the observed historical frontier.
+Scalar T2/Ph κ=.5 previously measured (5.536255, .506323 ms) dominates both
+by point estimates. Its .002016 ms gap against tile κ=.1 is small and comes from
+different sessions/kernel variants; the comparison is descriptive.
+The controlled Run061 gains of 10.990%/10.067% over matched scalar κ=0/.1
+remain valid. Whiskers span three process means, not confidence intervals.
+No normalization, new benchmark, cloud spend, manuscript edit or finding
+promotion is part of this figure. The original three PDFs are unchanged.
+
+Regenerate Figure04 with
+.venv/Scripts/python.exe -X utf8 analyses/041-2026-10-04-corner-tile-versus-elementwise/02_quality_latency_frontier.py.
