@@ -3,13 +3,25 @@
 The human selects the research direction. This list records requested work;
 it does not authorize implementation, launch or cloud spending.
 
+## Approved design: scalar versus corner-tile latency, 14M T2/Ph
+
+The user requested latency for the four scalar/corner checkpoints at kappa
+0/.1 and explicitly confirmed the benchmark design on 4 October 2026.
+[Run061](../runs/061-2026-10-04-pythia14m-corner-tile-latency/README.md) implements
+the exact gates with matched native, sparse and no-h/z-skip full-model graphs,
+three fresh processes per threshold on one RTX5090, BF16 B1/T2048, complete
+validation and the existing timing protocol. The user confirmed the diagnostic
+inventory as sufficient. Implementation is approved; launch approval is pending
+the concrete [packet](../runs/061-2026-10-04-pythia14m-corner-tile-latency/LAUNCH.md).
+Tile pressure and cached decoding remain deferred. No speedup result exists yet.
+
 ## Completed: tile threshold viability, 14M T2/Ph
 
 Requested on 4 October 2026, after the user closed the P2/Ph comparison. Test
 whether training can reorganize representations under a more aggressive tile
 gate without degenerating the network. Thresholds are kappa=0 and .1. Measure
-activation sparsity, fully zero tiles, and quality; inference latency/speed and
-tile-based pressure remain deferred.
+activation sparsity, fully zero tiles, and quality. Its latency follow-up is now
+in the separately approved Run061 design; tile-based pressure remains deferred.
 
 Status: the user selected the causal temporal gate and refined its trigger to
 the first feature of the first token (top-left corner), with inclusive rejection.
@@ -26,7 +38,8 @@ shows more empty 8x16 tiles with loss +.426737/+.444400 and perplexity +53.225%/
 Both models learn with surviving activity in every h/z layer, but this recipe
 has a substantial quality cost. Total h/z element sparsity decreases. One seed;
 neither redistribution nor speedup is established. The approved design below
-is retained as the executed contract. Latency and tile pressure remain deferred.
+is retained as the executed contract. Latency belongs to Run061; tile pressure
+remains deferred.
 
 ### Approved comparison and matched recipe
 

@@ -1,0 +1,124 @@
+--- frozen-k049/joint.cu
++++ run061/joint.cu
+@@ -1,4 +1,4 @@
+-// Exact short-row SIMT plus native-order MMA for the remaining h/z rows.
++// Run061: K049 arithmetic and scheduling; exact scalar/corner gates before support and weight loads.
+ #include <torch/extension.h>
+ #include <ATen/cuda/CUDAContext.h>
+ #include <c10/cuda/CUDAGuard.h>
+@@ -7,15 +7,24 @@
+ using bf16=__nv_bfloat16;
+ 
+ struct TinyRow { int count=3,i0=0,i1=0; float v0=0.f,v1=0.f; unsigned tiles=0; };
+-__device__ __forceinline__ float gated(const bf16* x,int index,float threshold,bool gate){
+-    float value=__bfloat162float(x[index]);return gate && value<threshold?0.f:value;
++template<int K>
++__device__ __forceinline__ bool rejected_corner(const bf16* x,int index,float threshold){
++    int row=index/K,feature=index%K;
++    int corner=(row/8*8)*K+(feature/16*16);
++    return !(__bfloat162float(x[corner])>threshold);
+ }
+ template<int K>
+-__device__ __forceinline__ TinyRow inspect(const bf16* x,int row,int lane,float threshold,bool gate){
++__device__ __forceinline__ float gated(const bf16* x,int index,float threshold,int gate){
++    if(gate==2 && rejected_corner<K>(x,index,threshold))return 0.f;
++    float value=__bfloat162float(x[index]);
++    return gate==1 && value<threshold?0.f:value;
++}
++template<int K>
++__device__ __forceinline__ TinyRow inspect(const bf16* x,int row,int lane,float threshold,int gate){
+     TinyRow out;out.count=0;
+     #pragma unroll
+     for(int base=0;base<K;base+=32){
+-        float value=gated(x,row*K+base+lane,threshold,gate);
++        float value=gated<K>(x,row*K+base+lane,threshold,gate);
+         unsigned mask=__ballot_sync(0xffffffffu,value!=0.f);
+         if(mask&0xffffu)out.tiles|=1u<<(base/16);
+         if(mask&0xffff0000u)out.tiles|=1u<<(base/16+1);
+@@ -36,8 +45,11 @@
+     if(a.count==2)value=__fmaf_rn(a.v1,__bfloat162float(wt[a.i1*128+col]),value);
+     return __float2bfloat16_rn(__fadd_rn(value,__bfloat162float(bias[col])));
+ }
+-__device__ __forceinline__ unsigned gate_pair(unsigned value,float threshold,bool gate){
+-    if(!gate)return value;
++template<int K>
++__device__ __forceinline__ unsigned gate_pair(const bf16* x,int index,float threshold,int gate){
++    if(gate==2 && rejected_corner<K>(x,index,threshold))return 0u;
++    unsigned value=*reinterpret_cast<const unsigned*>(x+index);
++    if(gate!=1)return value;
+     bf16 a=__ushort_as_bfloat16(value&65535),b=__ushort_as_bfloat16(value>>16);
+     if(__bfloat162float(a)<threshold)a=__float2bfloat16_rn(0.f);
+     if(__bfloat162float(b)<threshold)b=__float2bfloat16_rn(0.f);
+@@ -45,17 +57,17 @@
+ }
+ template<int K,bool Skip,bool Count>
+ __device__ __forceinline__ void accumulate(const bf16* x,const bf16* w,int row,int col,int lane,
+-    float threshold,bool gate,bool hybrid,const bool* complex,int local_row,unsigned active_tiles,float (&acc)[4][4],int& issued,int& bypassed){
++    float threshold,int gate,bool hybrid,const bool* complex,int local_row,unsigned active_tiles,float (&acc)[4][4],int& issued,int& bypassed){
+     unsigned pending=Skip?active_tiles:(K==512?0xffffffffu:0xffu);
+     if constexpr(Count)bypassed+=(K/16-__popc(pending))*4;
+     while(pending){
+         int base=(__ffs(pending)-1)*16;pending&=pending-1;
+         int k=base+(lane%4)*2;
+         bool low=!hybrid || complex[local_row],high=false;
+-        unsigned a0=low?gate_pair(*reinterpret_cast<const unsigned*>(x+row*K+k),threshold,gate):0;
+-        unsigned a1=high?gate_pair(*reinterpret_cast<const unsigned*>(x+(row+8)*K+k),threshold,gate):0;
+-        unsigned a2=low?gate_pair(*reinterpret_cast<const unsigned*>(x+row*K+k+8),threshold,gate):0;
+-        unsigned a3=high?gate_pair(*reinterpret_cast<const unsigned*>(x+(row+8)*K+k+8),threshold,gate):0;
++        unsigned a0=low?gate_pair<K>(x,row*K+k,threshold,gate):0;
++        unsigned a1=high?gate_pair<K>(x,(row+8)*K+k,threshold,gate):0;
++        unsigned a2=low?gate_pair<K>(x,row*K+k+8,threshold,gate):0;
++        unsigned a3=high?gate_pair<K>(x,(row+8)*K+k+8,threshold,gate):0;
+         if constexpr(Skip){
+             // Unsafe-weight fast-path disable retains the original zero-A test.
+             if(!hybrid && __all_sync(0xffffffffu,((a0|a1|a2|a3)&0x7fff7fffu)==0)){
+@@ -84,7 +96,7 @@
+ }
+ template<bool Skip,bool Count>
+ __global__ void joint(const bf16* h,const bf16* z,const bf16* wh,const bf16* wz,const bf16* wht,const bf16* wzt,
+-    const bf16* bh,const bf16* bz,const bf16* residual,bf16* out,long long* stats,float th,float tz,bool gh,bool gz,bool fast_weights){
++    const bf16* bh,const bf16* bz,const bf16* residual,bf16* out,long long* stats,float th,float tz,int gh,int gz,bool fast_weights){
+     __shared__ bool hc[8],zc[8];
+     __shared__ bf16 hs[8*128],zs[8*128];
+     __shared__ unsigned h_masks[8],z_masks[8];
+@@ -135,7 +147,7 @@
+ }
+ void forward(torch::Tensor h,torch::Tensor z,torch::Tensor wh,torch::Tensor wz,torch::Tensor wht,torch::Tensor wzt,
+     torch::Tensor bh,torch::Tensor bz,torch::Tensor residual,torch::Tensor out,torch::Tensor stats,
+-    double th,double tz,bool gh,bool gz,bool skip,bool fast_weights,bool count){
++    double th,double tz,int gh,int gz,bool skip,bool fast_weights,bool count){
+     TORCH_CHECK(h.is_cuda() && h.scalar_type()==at::kBFloat16 && h.dim()==2,"CUDA BF16 required");
+     for(const auto& tensor:{h,z,wh,wz,wht,wzt,bh,bz,residual,out})TORCH_CHECK(tensor.device()==h.device() && tensor.scalar_type()==h.scalar_type() && tensor.is_contiguous(),"Type/layout mismatch");
+     int m=h.size(0);
+@@ -144,6 +156,7 @@
+     TORCH_CHECK(wht.sizes()==at::IntArrayRef({512,128}) && wzt.sizes()==at::IntArrayRef({128,128}),"Transposed weight shape");
+     TORCH_CHECK(bh.numel()==128 && bz.numel()==128 && residual.sizes()==z.sizes() && out.sizes()==z.sizes(),"Output shape");
+     TORCH_CHECK(stats.device()==h.device() && stats.scalar_type()==at::kLong && stats.is_contiguous() && stats.numel()==(m/8)*8*6,"Counter shape");
++    TORCH_CHECK(gh>=0 && gh<=2 && gz>=0 && gz<=2,"Gate mode");
+     TORCH_CHECK(std::isfinite(th) && std::isfinite(tz) && th>=0 && tz>=0,"Gate threshold");
+     c10::cuda::CUDAGuard guard(h.device());auto stream=at::cuda::getCurrentCUDAStream();
+     #define P(t) reinterpret_cast<bf16*>(t.data_ptr())
+@@ -152,4 +165,22 @@
+     else{if(count){LAUNCH(false,true);}else{LAUNCH(false,false);}}
+     C10_CUDA_KERNEL_LAUNCH_CHECK();
+ }
+-PYBIND11_MODULE(TORCH_EXTENSION_NAME,m){m.def("forward",&forward);}
++// Qualification-only gate export; never called in the timed model.
++template<int K>
++__global__ void gate_export(const bf16* input,bf16* output,int count,float threshold,int mode){
++    int index=blockIdx.x*blockDim.x+threadIdx.x;
++    if(index<count)output[index]=__float2bfloat16_rn(gated<K>(input,index,threshold,mode));
++}
++void gate_values(torch::Tensor input,torch::Tensor output,double threshold,int mode){
++    TORCH_CHECK(input.is_cuda() && input.dim()==2 && input.scalar_type()==at::kBFloat16 && input.is_contiguous(),"CUDA BF16 matrix required");
++    TORCH_CHECK(output.device()==input.device() && output.scalar_type()==input.scalar_type() && output.sizes()==input.sizes() && output.is_contiguous(),"Gate output layout");
++    TORCH_CHECK(input.size(0)>0 && input.size(0)%8==0 && (input.size(1)==128 || input.size(1)==512),"Aligned M8 K128/K512 required");
++    TORCH_CHECK(mode>=0 && mode<=2 && std::isfinite(threshold) && threshold>=0,"Gate specification");
++    c10::cuda::CUDAGuard guard(input.device());auto stream=at::cuda::getCurrentCUDAStream();
++    int count=input.numel();dim3 grid((count+255)/256);
++    auto a=reinterpret_cast<bf16*>(input.data_ptr());auto b=reinterpret_cast<bf16*>(output.data_ptr());
++    if(input.size(1)==512)gate_export<512><<<grid,256,0,stream>>>(a,b,count,threshold,mode);
++    else gate_export<128><<<grid,256,0,stream>>>(a,b,count,threshold,mode);
++    C10_CUDA_KERNEL_LAUNCH_CHECK();
++}
++PYBIND11_MODULE(TORCH_EXTENSION_NAME,m){m.def("forward",&forward);m.def("gate_values",&gate_values);}

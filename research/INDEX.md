@@ -12,8 +12,11 @@ learn with surviving h/z activity, but loss rises .426737/.444400 and perplexity
 53.225%/55.955% versus matched scalar controls. Empty 8x16 tiles increase while
 h/z element sparsity decreases. [Analysis041](../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md)
 contains the full table and three verified PDF figures. One seed; no speedup or
-redistribution claim, manuscript edit or finding promotion. Tile pressure and
-inference latency remain deferred; [backlog](BACKLOG.md) retains the contract.
+redistribution claim, manuscript edit or finding promotion. Inference latency
+is now in implementation after the user's design confirmation:
+[Run061](../runs/061-2026-10-04-pythia14m-corner-tile-latency/README.md) compares
+the four retained Ph checkpoints; launch approval is pending. Tile pressure
+remains deferred; [backlog](BACKLOG.md) retains the contract.
 
 The user closed P2 versus Ph: P2 raises loss, with only small threshold-dependent
 K050 latency changes. All artifacts are local and owned Pods deleted.
