@@ -5,11 +5,11 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
-[Run062](../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) is approved
-and executing:14M T7/Ph corner gates at kappa0/.1 completed712 updates. Loss rises
-.501244/.597707 versus scalar T7/Ph; all training artifacts are verified locally,
-and the H100 Pod is deleted. RTX5090 qualification/latency is in progress for
-the Analysis041 frontier comparison. The total approved billable ceiling is USD30.
+[Run062](../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) completed14M
+T7/Ph tiles at kappa0/.1. Loss rises.501244/.597707; matched sparse latency falls
+11.133%/7.187%. All graphs pass full RTX5090 qualification; all artifacts are
+local and owned Pods deleted. [Analysis041](../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md)
+places both points outside the previous orange frontier, with three new PDFs.
 
 [Run060](../runs/060-2026-10-04-pythia14m-temporal-corner-tile/README.md) completed
 14M T2/Ph corner gates at kappa 0/.1: two verified 712-update conditions, full

@@ -80,9 +80,11 @@ def draw(ax,data,scales,detail=False):
             ax.errorbar(p['loss'],p['latency_ms'],yerr=[[p['latency_ms']-min(p['process_latency_ms'])],
               [max(p['process_latency_ms'])-p['latency_ms']]],fmt=marker,color=color,ms=8,mec='white',mew=.6,capsize=3,zorder=8)
             if detail:
-                offset=(9,10 if p['kappa']==0 else -18)
+                inset=label=='T7' and p['kappa']==.1
+                offset=(-12,12) if inset else (9,10 if p['kappa']==0 else -18)
                 ax.annotate(f"{label} tile k={p['kappa']:g}",(p['loss'],p['latency_ms']),xytext=offset,
-                  textcoords='offset points',fontsize=8,color=color,bbox=dict(facecolor='white',edgecolor='none',pad=.4))
+                  textcoords='offset points',ha='right' if inset else 'left',fontsize=8,color=color,
+                  bbox=dict(facecolor='white',edgecolor='none',pad=.4))
     if detail:
         for p in data['matched_t7_scalar_references']:
             ax.scatter(p['loss'],p['latency_ms'],marker='P',s=50,facecolor='white',edgecolor=T7,zorder=7)
@@ -112,8 +114,10 @@ def main():
       Line2D([],[],color=T7,marker='P',mfc='white',ls='none',label='Matched T7 scalar (reference)'),
       Line2D([],[],color='#656C73',ls=':',label='Observed Pareto frontier')]
     fig.legend(handles=handles,loc='lower center',bbox_to_anchor=(.52,.09),ncol=3,frameon=False,fontsize=8.5)
-    fig.text(.52,.035,'40 frontier points: 36 previous + 2 T2 tiles + 2 T7 tiles. Hollow references excluded.\n'
-      'Process-range whiskers; one seed. Historical sessions/kernel variants differ; no coordinate normalization.',ha='center',fontsize=8,color='#555B61')
+    fig.text(.52,.025,'40 frontier points: 36 previous + 2 T2 tiles + 2 T7 tiles. Hollow references excluded.\n'
+      'Process-range whiskers; one seed. Historical sessions/kernel variants differ; no coordinate normalization.\n'
+      'BF16 B1/T2048, uncached, full logits. Circles/triangles/squares: 14M/31M/70M; gray: Base (native filled, kernel hollow).',
+      ha='center',va='bottom',fontsize=7.5,color='#555B61')
     output=HERE/'figures/07-t7-quality-latency-frontier.pdf'; fig.savefig(output,metadata={'CreationDate':None,'ModDate':None}); plt.close(fig)
     assert all(identity(HERE/'figures'/n)['sha256']==h for n,h in preserved.items())
     data['output']=identity(output); data['preserved_figures']=preserved

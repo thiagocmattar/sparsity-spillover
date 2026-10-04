@@ -1,0 +1,163 @@
+{
+  "status": "closed",
+  "approved_total_envelope_usd": 30,
+  "cost_estimate": {
+    "method": "Quoted GPU host-hour rate multiplied by provider startedAt to confirmed absence time. Includes setup and transfer; endpoint is a conservative bound, not the billing cutoff. Provisional, not an invoice.",
+    "training_gpu_usd": 7.803977366666667,
+    "latency_gpu_usd": 0.366662175,
+    "total_gpu_usd": 8.170639541666667,
+    "storage_allowance_usd": 0.2,
+    "estimated_total_with_storage_allowance_usd": 8.370639541666666,
+    "posted_billing_status": "Incomplete at 2026-10-04T19:29:06Z; training only one 18:00-19:00 bucket, latency no records. Missing records do not mean zero charges."
+  },
+  "owned_pods": [
+    {
+      "id": "iwoydp694czykb",
+      "role": "training",
+      "gpu": "2 x H100 80GB SXM",
+      "region": "EUR-NO-2",
+      "gpu_host_hour_usd": 6.98,
+      "started_at_utc": "2026-10-04T17:58:24.026Z",
+      "delete_response": 204,
+      "delete_observed_utc": "2026-10-04T19:05:17Z",
+      "absence_confirmed_utc": "2026-10-04T19:05:29Z",
+      "maximum_running_hours": 2,
+      "deadline_utc": "2026-10-04T19:58:24.026Z",
+      "container_disk_gb": 40,
+      "pod_volume_gb": 50,
+      "source_checkout": "03ff9227e3700bf93802d6a38533d5cc815bef66",
+      "lease": "prelaunch/lease-training-001.json",
+      "provider_stop_guard": {
+        "pid": 53992,
+        "status": "stopped after provider absence; process command identity verified"
+      }
+    },
+    {
+      "id": "7ugmnw8p4ksb74",
+      "role": "latency",
+      "gpu": "1 x RTX5090 32GB",
+      "region": "EU-RO-1",
+      "gpu_host_hour_usd": 0.99,
+      "started_at_utc": "2026-10-04T19:06:03.683Z",
+      "delete_response": 204,
+      "delete_observed_utc": "2026-10-04T19:27:57Z",
+      "absence_confirmed_utc": "2026-10-04T19:28:17Z",
+      "maximum_running_hours": 1,
+      "deadline_utc": "2026-10-04T20:06:03.683Z",
+      "container_disk_gb": 30,
+      "pod_volume_gb": 40,
+      "source_checkout": "9a3c9a1b773cd690f4db8d48351c8e880485b2cc",
+      "lease": "latency/prelaunch/lease-001.json",
+      "provider_stop_guard": {
+        "pid": 45256,
+        "status": "stopped after provider absence; process command identity verified"
+      }
+    }
+  ],
+  "final_inventory": {
+    "pods_observed_utc": "2026-10-04T19:28:17Z",
+    "pods": [
+      {
+        "id": "qa00sm05lmrs7w",
+        "name": "run052-sparse-attribution-001",
+        "status": "EXITED",
+        "ownership": "pre-existing, preserved"
+      }
+    ],
+    "volumes_observed_utc": "2026-10-04T19:29:06Z",
+    "network_volumes": [
+      {
+        "dataCenter": "EUR-IS-1",
+        "id": "9luykg5yc3",
+        "name": "sparsity-spillover-shared",
+        "size": 100,
+        "type": "STANDARD",
+        "ownership": "pre-existing, preserved"
+      }
+    ],
+    "owned_billable_resources_remaining": 0,
+    "new_network_volumes": 0
+  },
+  "transfers": {
+    "training": {
+      "receipt": "transfer/training-receipt-001.json",
+      "inventory": "transfer/training-inventory-001.json",
+      "archive_bytes": 1877912761,
+      "archive_sha256": "69243c9c0f1d600c7a3be78c893b757c10b52a147f6c3c6c1c163073b3a089f4",
+      "verified_files": 148,
+      "payload_bytes": 2032885394,
+      "checkpoints_retained_locally": 24,
+      "recovery_states_retained_locally": 6,
+      "verification": "artifacts/verification.json",
+      "local_verification": "prelaunch/local-verification-training-001.json"
+    },
+    "latency": {
+      "receipt": "latency/transfer/receipt-001.json",
+      "inventory": "latency/transfer/inventory-001.json",
+      "verified_files": 80,
+      "payload_bytes": 16813852,
+      "analysis": "latency/results/results.json",
+      "numerical_verification": "latency/results/numerical-verification.json",
+      "full_qualified_processes": 6,
+      "paired_samples_per_threshold": 1344,
+      "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4"
+    }
+  },
+  "final_posted_billing": {
+    "observed_utc": "2026-10-04T19:29:06Z",
+    "training": {
+      "metadata": {
+        "query": {
+          "bucketSize": "hour",
+          "endTime": "2026-10-04T20:00:00Z",
+          "podId": "iwoydp694czykb",
+          "startTime": "2026-10-04T17:00:00Z"
+        },
+        "recordCount": 1,
+        "totals": {
+          "cpuAmount": 0,
+          "diskAmount": 0.006250000325962901,
+          "gpuAmount": 3.2225147783756256,
+          "totalAmount": 3.2287647787015885
+        },
+        "uniquePodCount": 1
+      },
+      "records": [
+        {
+          "cpuAmount": 0,
+          "diskAmount": 0.006250000325962901,
+          "endTime": "2026-10-04T19:00:00Z",
+          "gpuAmount": 3.2225147783756256,
+          "podId": "iwoydp694czykb",
+          "startTime": "2026-10-04T18:00:00Z",
+          "totalAmount": 3.2287647787015885
+        }
+      ]
+    },
+    "latency": {
+      "metadata": {
+        "query": {
+          "bucketSize": "hour",
+          "endTime": "2026-10-04T20:00:00Z",
+          "podId": "7ugmnw8p4ksb74",
+          "startTime": "2026-10-04T19:00:00Z"
+        },
+        "recordCount": 0,
+        "totals": {
+          "cpuAmount": 0,
+          "diskAmount": 0,
+          "gpuAmount": 0,
+          "totalAmount": 0
+        },
+        "uniquePodCount": 0
+      },
+      "records": []
+    }
+  },
+  "limitations": [
+    "Elapsed-cost estimates and provider/remote clocks have different origins; original timestamps are retained without adjustment.",
+    "Provider GPU memory metadata describes host allocation; GPU VRAM is established by target CUDA evidence.",
+    "Existing stopped Run052 Pod and shared network volume are outside this run's ownership.",
+    "Scientific configurations and source checkout hashes retain their execution origins; subsequent commits capture analysis and documentation."
+  ]
+}

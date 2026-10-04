@@ -188,3 +188,41 @@ The approved four-checkpoint RTX5090 follow-up is now allocated as Pod
 `7ugmnw8p4ksb74`, EU-RO-1, USD.99/hour, provider start19:06:03 UTC and one-hour
 deadline20:06:03 UTC. Its independent provider stop guard is armed. Optimized
 latency remains pending numerical qualification.
+
+## Final execution closeout
+
+The four retained checkpoints pass the target-GPU smokes and all six declared
+full scientific processes on one physical RTX5090. Each of the three graphs per
+checkpoint matches its own eager BF16 model over all338 blocks. All12168
+model/graph/block comparisons have zero maximum absolute/relative-L2 logit error;
+pooled losses match. Numerical bounds and scientific inputs were unchanged.
+`latency/21_numerical_summary.py` reproduces the full logit-error summary and
+records its raw quality-file hashes in `latency/results/numerical-verification.json`.
+
+| kappa | Matched scalar sparse latency (ms) | Tile sparse latency (ms) | Paired speedup | Latency reduction |
+|---:|---:|---:|---:|---:|
+| 0 | .635143 | .564432 | 1.125277x | 11.133% |
+| .1 | .556401 | .516416 | 1.077430x | 7.187% |
+
+The six-process estimator pools1344 same-input/pass pairs per comparison, not
+selected medians. Native/no-skip/sparse times and BF16 qualification losses are
+in `latency/results/tables.md`; canonical FP16 quality remains in Analysis041.
+The inference archive and80 returned files passed byte/SHA256 checks before Pod
+deletion. Provider inventory confirms both owned Pods are absent; both hidden
+workstation stop guards were stopped after deletion. Existing Run052's stopped
+Pod and the shared100GB network volume are preserved.
+
+Analysis041 contains three new, rendered/visually inspected PDFs and matching
+observations005–007. Both models learn and retain activity at all42 final ports,
+but quality penalties are substantial. Tiles accelerate their matched scalar
+controls; neither improves the historical orange frontier at this budget.
+The15-member observed frontier is unchanged. Historical sessions/fusion differ,
+so dominance is descriptive; no equal-quality, redistribution, DRAM or decoding
+claim is made. No manuscript or findings file is changed.
+
+See `results/compute-closeout.json` for resource ownership, verified inventories,
+provisional quoted-rate cost and incomplete posted billing. Training executed
+checkout03ff9227; inference deployed the sealed bundle from checkout9a3c9a1b.
+Source bundle/checkpoint hashes retain their actual origins independently of
+later analysis/documentation commits. The SSH-discovery hiccup was a read-only
+retry; no scientific state or configuration was restarted.

@@ -1,4 +1,4 @@
-# 14M T2/Ph — causal corner tiles versus elementwise gates
+# 14M T2/Ph and T7/Ph — causal corner tiles versus elementwise gates
 
 Status: complete. Run060 passed remote and local scientific verification;
 the archive and all 144 transferred members passed SHA256/byte checks.
@@ -104,3 +104,25 @@ substantially. See the [seven-site table](results/t7-comparison.md),
 and [Figure06 and observation006](observations/006-t7-learning-and-tile-structure.md).
 RTX5090 numerical qualification and latency remain in progress; no new T7
 optimized latency or frontier membership is asserted yet.
+
+## T7/Ph follow-up: complete
+
+Run062's six fresh RTX5090 processes passed full own-eager BF16 qualification;
+all12168 model/graph/block comparisons have zero maximum logit error. All80
+returned inference files are verified locally, and both owned training/inference
+Pods are deleted. The independent provider guards are stopped. All checkpoints,
+raw timings, diagnostics and gradient measurements remain local.
+
+T7 tile latency is.564432/.516416ms versus matched scalar.635143/.556401ms:
+reductions11.133%/7.187% (1.125277x/1.077430x). The original quality penalties
+remain.501244/.597707. Neither tile endpoint extends the observed frontier:
+previous orange T7/Ph kappa.1 dominates tile kappa0, and orange kappa.5 dominates
+tile kappa.1. This is a descriptive cross-session comparison; the controlled
+same-threshold runtime gains are measured separately.
+
+See [Figure07, caption and caveats](observations/007-t7-quality-latency-frontier.md),
+[all40 coordinates and the15-point frontier](data/t7-quality-latency-frontier.json),
+and [runtime table](../../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/latency/results/tables.md).
+Earlier six PDFs are preserved byte-for-byte. Regenerate the verified extension
+with scripts03_t7_training.py and04_t7_frontier.py. No manuscript edit or finding
+promotion is included.

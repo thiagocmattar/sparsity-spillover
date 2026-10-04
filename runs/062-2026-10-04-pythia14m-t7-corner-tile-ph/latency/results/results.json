@@ -1,0 +1,2908 @@
+{
+  "limits": "one seed/GPU; original FP16 quality is reported separately from BF16 runtime qualification; skipping gain is not measured DRAM bandwidth or decoding speed",
+  "pairs": [
+    {
+      "cuda_geomean_ms": {
+        "scalar_native": 0.7187801675109597,
+        "scalar_no_skip": 0.6156270126576265,
+        "scalar_sparse": 0.6282926491312381,
+        "tile_native": 1.2296036839850222,
+        "tile_no_skip": 0.624350485372117,
+        "tile_sparse": 0.5576052488311924
+      },
+      "diagnostics": {
+        "scalar": {
+          "bytes": 121384,
+          "path": "artifacts/attempts/scientific-k0-r1-001/diagnostics-scalar.json",
+          "sha256": "6f535eae05875e18b2e2b4b2ff2b42356b983b1730293ddbd6a2619c7645fb9b"
+        },
+        "tile": {
+          "bytes": 119733,
+          "path": "artifacts/attempts/scientific-k0-r1-001/diagnostics-tile.json",
+          "sha256": "f55bf87d64b1eb6ab138117e1ea9051ebcacaafa0b1a43628070bdbe1ec198db"
+        }
+      },
+      "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+      "host_geomean_ms": {
+        "scalar_native": 0.7256394225714852,
+        "scalar_no_skip": 0.6224830822614345,
+        "scalar_sparse": 0.6351425071857957,
+        "tile_native": 1.2363644124965267,
+        "tile_no_skip": 0.631183924075513,
+        "tile_sparse": 0.5644322974446878
+      },
+      "host_median_ms": {
+        "scalar_native": 0.7251407951116562,
+        "scalar_no_skip": 0.6222911179065704,
+        "scalar_sparse": 0.6343163549900055,
+        "tile_native": 1.2364443391561508,
+        "tile_no_skip": 0.6307326257228851,
+        "tile_sparse": 0.5645975470542908
+      },
+      "kappa": 0.0,
+      "paired_samples_per_comparison": 1344,
+      "processes": [
+        {
+          "attempt": "scientific-k0-r3-001",
+          "loss": {
+            "scalar": {
+              "native": 5.221073095687458,
+              "native_graph": 5.221073095687458,
+              "no_skip_graph": 5.221073095687458,
+              "sparse_graph": 5.221073095687458
+            },
+            "tile": {
+              "native": 5.723607896173014,
+              "native_graph": 5.723607896173014,
+              "no_skip_graph": 5.723607896173014,
+              "sparse_graph": 5.723607896173014
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5026873344,
+          "ratios": {
+            "scalar_sparse_over_native": 1.1428554394631518,
+            "scalar_sparse_over_no_skip": 0.9797639227272847,
+            "tile_over_scalar_native": 0.5870051625930172,
+            "tile_over_scalar_no_skip": 0.9854088790753321,
+            "tile_over_scalar_sparse": 1.124713995926345,
+            "tile_sparse_over_native": 2.189734588375239,
+            "tile_sparse_over_no_skip": 1.1182710243377392
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 5.479156970977783e-05,
+                "native_graph": 0.15692728757858276,
+                "no_skip_graph": 0.5171437934041023,
+                "sparse_graph": 0.2744278386235237
+              },
+              "tile": {
+                "native": 4.2811036109924316e-05,
+                "native_graph": 0.03301260620355606,
+                "no_skip_graph": 0.2796670086681843,
+                "sparse_graph": 0.27860430628061295
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0-r2-001",
+          "loss": {
+            "scalar": {
+              "native": 5.221073095687458,
+              "native_graph": 5.221073095687458,
+              "no_skip_graph": 5.221073095687458,
+              "sparse_graph": 5.221073095687458
+            },
+            "tile": {
+              "native": 5.723607896173014,
+              "native_graph": 5.723607896173014,
+              "no_skip_graph": 5.723607896173014,
+              "sparse_graph": 5.723607896173014
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5026873344,
+          "ratios": {
+            "scalar_sparse_over_native": 1.141633149588875,
+            "scalar_sparse_over_no_skip": 0.9798895734290168,
+            "tile_over_scalar_native": 0.5869348949845362,
+            "tile_over_scalar_no_skip": 0.9871586956062605,
+            "tile_over_scalar_sparse": 1.1260980621531276,
+            "tile_sparse_over_native": 2.190346643941957,
+            "tile_sparse_over_no_skip": 1.1178058347394582
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 6.592646241188049e-05,
+                "native_graph": 0.15978050976991653,
+                "no_skip_graph": 0.5434085056185722,
+                "sparse_graph": 0.2757055051624775
+              },
+              "tile": {
+                "native": 4.073604941368103e-05,
+                "native_graph": 0.03222981095314026,
+                "no_skip_graph": 0.2736194357275963,
+                "sparse_graph": 0.27403052523732185
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0-r1-001",
+          "loss": {
+            "scalar": {
+              "native": 5.221073095687458,
+              "native_graph": 5.221073095687458,
+              "no_skip_graph": 5.221073095687458,
+              "sparse_graph": 5.221073095687458
+            },
+            "tile": {
+              "native": 5.723607896173014,
+              "native_graph": 5.723607896173014,
+              "no_skip_graph": 5.723607896173014,
+              "sparse_graph": 5.723607896173014
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5033164800,
+          "ratios": {
+            "scalar_sparse_over_native": 1.142960441422371,
+            "scalar_sparse_over_no_skip": 0.9805517991254383,
+            "tile_over_scalar_native": 0.5868015718633761,
+            "tile_over_scalar_no_skip": 0.9860783514763846,
+            "tile_over_scalar_sparse": 1.1250184807840078,
+            "tile_sparse_over_native": 2.191288641784002,
+            "tile_sparse_over_no_skip": 1.1187132277374057
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 6.50063157081604e-05,
+                "native_graph": 0.1596907302737236,
+                "no_skip_graph": 0.5238350629806519,
+                "sparse_graph": 0.27388161420822144
+              },
+              "tile": {
+                "native": 4.1678547859191895e-05,
+                "native_graph": 0.030995026230812073,
+                "no_skip_graph": 0.2757641226053238,
+                "sparse_graph": 0.27421457692980766
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.0,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        }
+      ],
+      "qualified": true,
+      "source_files": [
+        {
+          "bytes": 467352,
+          "path": "artifacts/attempts/scientific-k0-r3-001/result.json",
+          "sha256": "47665410b6bbc9a69eaf435b51a2b52f122c654b142db8301a3ef6124718f448"
+        },
+        {
+          "bytes": 761560,
+          "path": "artifacts/attempts/scientific-k0-r3-001/timing.json",
+          "sha256": "cd97075a5ae0f491369f5a06a545f70901184044aa575ee8fe68e1831947cf2d"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r3-001/quality.json",
+          "sha256": "3ae87f7df242366924ca68f1ce64aee61cdfa1c474d1afab0c4f1f7b5ac10d47"
+        },
+        {
+          "bytes": 467352,
+          "path": "artifacts/attempts/scientific-k0-r3-001/manifest.json",
+          "sha256": "47665410b6bbc9a69eaf435b51a2b52f122c654b142db8301a3ef6124718f448"
+        },
+        {
+          "bytes": 531369,
+          "path": "artifacts/attempts/scientific-k0-r3-001/samples.jsonl",
+          "sha256": "106c24f6125f3e34c356ad07851045a4f4e25c5b667d69ae2a67b89057ea2a57"
+        },
+        {
+          "bytes": 467351,
+          "path": "artifacts/attempts/scientific-k0-r2-001/result.json",
+          "sha256": "562138e9d442816924b36ce53b09864a213edaad4b54efdb4fd3796d7db3be97"
+        },
+        {
+          "bytes": 761498,
+          "path": "artifacts/attempts/scientific-k0-r2-001/timing.json",
+          "sha256": "ae981098c527bc1aae0723ef18026e414a1e000f75cbc22f3db2af7d003db5a3"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r2-001/quality.json",
+          "sha256": "3ae87f7df242366924ca68f1ce64aee61cdfa1c474d1afab0c4f1f7b5ac10d47"
+        },
+        {
+          "bytes": 467351,
+          "path": "artifacts/attempts/scientific-k0-r2-001/manifest.json",
+          "sha256": "562138e9d442816924b36ce53b09864a213edaad4b54efdb4fd3796d7db3be97"
+        },
+        {
+          "bytes": 531307,
+          "path": "artifacts/attempts/scientific-k0-r2-001/samples.jsonl",
+          "sha256": "fdcc4d6108b6fab9e62808dca7437d5e72e5e6f9ac028e43f8610956d0d0df84"
+        },
+        {
+          "bytes": 467352,
+          "path": "artifacts/attempts/scientific-k0-r1-001/result.json",
+          "sha256": "5b12c91471c67f5fc62f0a0c5d7d668ae77a76565819e34b7241fa8c65de2706"
+        },
+        {
+          "bytes": 761525,
+          "path": "artifacts/attempts/scientific-k0-r1-001/timing.json",
+          "sha256": "de2cec324e6f18e0ea19d3f403b0137fba436f8e03f9cffacd18fd5a9fd9b86e"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r1-001/quality.json",
+          "sha256": "3ae87f7df242366924ca68f1ce64aee61cdfa1c474d1afab0c4f1f7b5ac10d47"
+        },
+        {
+          "bytes": 467352,
+          "path": "artifacts/attempts/scientific-k0-r1-001/manifest.json",
+          "sha256": "5b12c91471c67f5fc62f0a0c5d7d668ae77a76565819e34b7241fa8c65de2706"
+        },
+        {
+          "bytes": 531334,
+          "path": "artifacts/attempts/scientific-k0-r1-001/samples.jsonl",
+          "sha256": "34af65ed3d7bd2ac7b459af65c952e4370545b4c8d74cb251824cea9a19f8633"
+        },
+        {
+          "bytes": 121384,
+          "path": "artifacts/attempts/scientific-k0-r1-001/diagnostics-scalar.json",
+          "sha256": "6f535eae05875e18b2e2b4b2ff2b42356b983b1730293ddbd6a2619c7645fb9b"
+        },
+        {
+          "bytes": 119733,
+          "path": "artifacts/attempts/scientific-k0-r1-001/diagnostics-tile.json",
+          "sha256": "f55bf87d64b1eb6ab138117e1ea9051ebcacaafa0b1a43628070bdbe1ec198db"
+        }
+      ],
+      "speedup": {
+        "scalar_sparse_over_native": 1.142482851268553,
+        "scalar_sparse_over_no_skip": 0.9800683708283785,
+        "tile_over_scalar_native": 0.5869138704067347,
+        "tile_over_scalar_no_skip": 0.9862150452788818,
+        "tile_over_scalar_sparse": 1.1252766896246529,
+        "tile_sparse_over_native": 2.1904565314455375,
+        "tile_sparse_over_no_skip": 1.1182633009007898
+      }
+    },
+    {
+      "cuda_geomean_ms": {
+        "scalar_native": 0.8206694068714768,
+        "scalar_no_skip": 0.6165079759001494,
+        "scalar_sparse": 0.5490461419602767,
+        "tile_native": 1.2276267198474744,
+        "tile_no_skip": 0.6242265791404132,
+        "tile_sparse": 0.5089834524745744
+      },
+      "diagnostics": {
+        "scalar": {
+          "bytes": 121187,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/diagnostics-scalar.json",
+          "sha256": "9066a150a8514546b9979e945eba66d15a6bc5dc213d69268caed4b8eea39f97"
+        },
+        "tile": {
+          "bytes": 120065,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/diagnostics-tile.json",
+          "sha256": "f770737825a85ecfb394bed96e98cc2f67eeadaa5816ddce0867bf6e0fa77ed1"
+        }
+      },
+      "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+      "host_geomean_ms": {
+        "scalar_native": 0.8280277106701588,
+        "scalar_no_skip": 0.6241108743469759,
+        "scalar_sparse": 0.5564014514326657,
+        "tile_native": 1.2349825648931976,
+        "tile_no_skip": 0.6316404186697433,
+        "tile_sparse": 0.5164155163016301
+      },
+      "host_median_ms": {
+        "scalar_native": 0.8271411061286926,
+        "scalar_no_skip": 0.6228312849998474,
+        "scalar_sparse": 0.5546398460865021,
+        "tile_native": 1.2344904243946075,
+        "tile_no_skip": 0.630602240562439,
+        "tile_sparse": 0.5158074200153351
+      },
+      "kappa": 0.1,
+      "paired_samples_per_comparison": 1344,
+      "processes": [
+        {
+          "attempt": "scientific-k0p1-r1-001",
+          "loss": {
+            "scalar": {
+              "native": 5.238962853676061,
+              "native_graph": 5.238962853676061,
+              "no_skip_graph": 5.238962853676061,
+              "sparse_graph": 5.238962853676061
+            },
+            "tile": {
+              "native": 5.83760859329382,
+              "native_graph": 5.83760859329382,
+              "no_skip_graph": 5.83760859329382,
+              "sparse_graph": 5.83760859329382
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5033164800,
+          "ratios": {
+            "scalar_sparse_over_native": 1.4876833205719477,
+            "scalar_sparse_over_no_skip": 1.1225027683921138,
+            "tile_over_scalar_native": 0.6705250323768931,
+            "tile_over_scalar_no_skip": 0.9884818599805084,
+            "tile_over_scalar_sparse": 1.0771275554661581,
+            "tile_sparse_over_native": 2.389805929713207,
+            "tile_sparse_over_no_skip": 1.2231672748613052
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 7.848814129829407e-05,
+                "native_graph": 0.1702871136367321,
+                "no_skip_graph": 0.5385743230581284,
+                "sparse_graph": 0.29482370242476463
+              },
+              "tile": {
+                "native": 4.9680471420288086e-05,
+                "native_graph": 0.03913037106394768,
+                "no_skip_graph": 0.29832232743501663,
+                "sparse_graph": 0.29804903268814087
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0p1-r2-001",
+          "loss": {
+            "scalar": {
+              "native": 5.238962853676061,
+              "native_graph": 5.238962853676061,
+              "no_skip_graph": 5.238962853676061,
+              "sparse_graph": 5.238962853676061
+            },
+            "tile": {
+              "native": 5.83760859329382,
+              "native_graph": 5.83760859329382,
+              "no_skip_graph": 5.83760859329382,
+              "sparse_graph": 5.83760859329382
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5026873344,
+          "ratios": {
+            "scalar_sparse_over_native": 1.4870409696003626,
+            "scalar_sparse_over_no_skip": 1.1209144376978846,
+            "tile_over_scalar_native": 0.67096493808181,
+            "tile_over_scalar_no_skip": 0.9877554100957396,
+            "tile_over_scalar_sparse": 1.0772486929072742,
+            "tile_sparse_over_native": 2.387476378991113,
+            "tile_sparse_over_no_skip": 1.2224722846659977
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 9.027868509292603e-05,
+                "native_graph": 0.18607784062623978,
+                "no_skip_graph": 0.5447094440460205,
+                "sparse_graph": 0.29686741530895233
+              },
+              "tile": {
+                "native": 5.0887465476989746e-05,
+                "native_graph": 0.038211941719055176,
+                "no_skip_graph": 0.29306207969784737,
+                "sparse_graph": 0.31541500985622406
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0p1-r3-001",
+          "loss": {
+            "scalar": {
+              "native": 5.238962853676061,
+              "native_graph": 5.238962853676061,
+              "no_skip_graph": 5.238962853676061,
+              "sparse_graph": 5.238962853676061
+            },
+            "tile": {
+              "native": 5.83760859329382,
+              "native_graph": 5.83760859329382,
+              "no_skip_graph": 5.83760859329382,
+              "sparse_graph": 5.83760859329382
+            }
+          },
+          "peak_allocated_bytes": 4492248064,
+          "peak_reserved_bytes": 5026873344,
+          "ratios": {
+            "scalar_sparse_over_native": 1.4898289965619118,
+            "scalar_sparse_over_no_skip": 1.121658372843304,
+            "tile_over_scalar_native": 0.669942164290417,
+            "tile_over_scalar_no_skip": 0.9880010132570585,
+            "tile_over_scalar_sparse": 1.0779132304580998,
+            "tile_sparse_over_native": 2.39708212456687,
+            "tile_sparse_over_no_skip": 1.2237339677984018
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32109MB, multi_processor_count=170, uuid=e1e51157-5291-3947-d231-eccd0c07b6d4, pci_bus_id=2, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "e1e51157-5291-3947-d231-eccd0c07b6d4",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 5.711987614631653e-05,
+                "native_graph": 0.1593383625149727,
+                "no_skip_graph": 0.4968021400272846,
+                "sparse_graph": 0.2734467573463917
+              },
+              "tile": {
+                "native": 3.801658749580383e-05,
+                "native_graph": 0.03154812008142471,
+                "no_skip_graph": 0.27393217757344246,
+                "sparse_graph": 0.2726706191897392
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3061,
+                "path": "kernel.py",
+                "sha256": "a1ced0f47ab84909a2020c77f2ada8dee748089717cb94ec8b420d8aabcbef3c"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "a53016e6f3ef14c646ac49d1ef34846c6d2013481e9dc813a8fbd3ae5f8f582a"
+              },
+              {
+                "bytes": 2523,
+                "path": "port_gates.py",
+                "sha256": "f951a5f1261d5b77922c36ffaedd2a184ed14333f35a0976c7eb91613cda5cf5"
+              },
+              {
+                "bytes": 3366,
+                "path": "port_gates.cu",
+                "sha256": "23fdc44e900c15a92a5c1cc2f0f60658a64f5506e09bb0e6690b7b1245296a65"
+              },
+              {
+                "bytes": 3451,
+                "path": "hz_adapter.py",
+                "sha256": "4a7cb91d5b5cf0fa0a65562c6d2d13775dcacc20af65f75d1547adf6695f3f54"
+              },
+              {
+                "bytes": 9862,
+                "path": "diagnostics.py",
+                "sha256": "e385074d9c312e593c2f2cd5d856e0a13c7f06a6999e0ff34052d15ba9c1c9de"
+              },
+              {
+                "bytes": 10180,
+                "path": "02_benchmark.py",
+                "sha256": "3195cded72274724d91c5f899cb27f45705d9ea05bee08cbeb2f4b05ee6523f5"
+              },
+              {
+                "bytes": 2547,
+                "path": "replay.py",
+                "sha256": "9b3a49a0a49e74b8f0a583802f68ef9b15abc23e2ff6425dd8f2ffdc109aa468"
+              },
+              {
+                "bytes": 5407,
+                "path": "tile_gate.py",
+                "sha256": "f3f2cb6bfe92b3bb0ec278a78c966609b8c10a464fe6848506e5f23591393c8f"
+              },
+              {
+                "bytes": 184,
+                "path": "topology.py",
+                "sha256": "d723252cb5e6ad651ca2126125d9b2585da4bb89bfe3d35d7d9eb5d86539ba22"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "k_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "m": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "q_post": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "v": {
+                    "kappa": 0.1,
+                    "operator": "symmetric_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "a",
+                  "m",
+                  "h",
+                  "q_post",
+                  "k_post",
+                  "v",
+                  "z"
+                ],
+                "qk_placement": "post_rope",
+                "site_gate": null,
+                "site_gates": {
+                  "a": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "h": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "k_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "m": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "q_post": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "v": {
+                    "comparison": "magnitude",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "comparison": "signed",
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "A7-Z-POST"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        }
+      ],
+      "qualified": true,
+      "source_files": [
+        {
+          "bytes": 467859,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/result.json",
+          "sha256": "18b820dc58be3ab42a8ed2e7252ef3ed2a8eed464891527088e65f4d561d7682"
+        },
+        {
+          "bytes": 761518,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/timing.json",
+          "sha256": "02d3666a5d52a1f0e518c533f1b5f21ea70e4c564974b315e1545f8eabc6196a"
+        },
+        {
+          "bytes": 390127,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/quality.json",
+          "sha256": "2859e1f7a5dd48c92374b18c09da40d99f2e600b5460dc1a6b353ca2f5def4a8"
+        },
+        {
+          "bytes": 467859,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/manifest.json",
+          "sha256": "18b820dc58be3ab42a8ed2e7252ef3ed2a8eed464891527088e65f4d561d7682"
+        },
+        {
+          "bytes": 531325,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/samples.jsonl",
+          "sha256": "9e9251d370d3455efbbc35758cf49237cac71e8ebb5bf30d6b053ceb9e8eaa0b"
+        },
+        {
+          "bytes": 121187,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/diagnostics-scalar.json",
+          "sha256": "9066a150a8514546b9979e945eba66d15a6bc5dc213d69268caed4b8eea39f97"
+        },
+        {
+          "bytes": 120065,
+          "path": "artifacts/attempts/scientific-k0p1-r1-001/diagnostics-tile.json",
+          "sha256": "f770737825a85ecfb394bed96e98cc2f67eeadaa5816ddce0867bf6e0fa77ed1"
+        },
+        {
+          "bytes": 467861,
+          "path": "artifacts/attempts/scientific-k0p1-r2-001/result.json",
+          "sha256": "a8145e42832b8686da63b8af2701102f496f3543d8ca287b2e0d7fd3b9839312"
+        },
+        {
+          "bytes": 761490,
+          "path": "artifacts/attempts/scientific-k0p1-r2-001/timing.json",
+          "sha256": "0f2c04ef3a18a364c950643d422539c141381e93f40575e6bc46293a978ea777"
+        },
+        {
+          "bytes": 390127,
+          "path": "artifacts/attempts/scientific-k0p1-r2-001/quality.json",
+          "sha256": "2859e1f7a5dd48c92374b18c09da40d99f2e600b5460dc1a6b353ca2f5def4a8"
+        },
+        {
+          "bytes": 467861,
+          "path": "artifacts/attempts/scientific-k0p1-r2-001/manifest.json",
+          "sha256": "a8145e42832b8686da63b8af2701102f496f3543d8ca287b2e0d7fd3b9839312"
+        },
+        {
+          "bytes": 531298,
+          "path": "artifacts/attempts/scientific-k0p1-r2-001/samples.jsonl",
+          "sha256": "bd91cf20234dfb5e2ae7327ca73ad3a7702c0bd28bc85cf294d595eea000bc37"
+        },
+        {
+          "bytes": 467854,
+          "path": "artifacts/attempts/scientific-k0p1-r3-001/result.json",
+          "sha256": "2ec8dc1a88b0a7a4e0639b2aafb5c834c68aa0c2a96031448ae99b2bba690ac1"
+        },
+        {
+          "bytes": 761654,
+          "path": "artifacts/attempts/scientific-k0p1-r3-001/timing.json",
+          "sha256": "0b50b36ff973080555157851598666a444439122a4968fa6811514bd0c08b147"
+        },
+        {
+          "bytes": 390127,
+          "path": "artifacts/attempts/scientific-k0p1-r3-001/quality.json",
+          "sha256": "2859e1f7a5dd48c92374b18c09da40d99f2e600b5460dc1a6b353ca2f5def4a8"
+        },
+        {
+          "bytes": 467854,
+          "path": "artifacts/attempts/scientific-k0p1-r3-001/manifest.json",
+          "sha256": "2ec8dc1a88b0a7a4e0639b2aafb5c834c68aa0c2a96031448ae99b2bba690ac1"
+        },
+        {
+          "bytes": 531463,
+          "path": "artifacts/attempts/scientific-k0p1-r3-001/samples.jsonl",
+          "sha256": "52181a8220dd3b4b4504bafaeaa68e8108979a625ecd7108bfbe8dedb19bf31a"
+        }
+      ],
+      "speedup": {
+        "scalar_sparse_over_native": 1.488183951602011,
+        "scalar_sparse_over_no_skip": 1.1216916719752739,
+        "tile_over_scalar_native": 0.6704772473786036,
+        "tile_over_scalar_no_skip": 0.988079381717489,
+        "tile_over_scalar_sparse": 1.0774297709282623,
+        "tile_sparse_over_native": 2.3914513137360185,
+        "tile_sparse_over_no_skip": 1.2231244002761763
+      }
+    }
+  ],
+  "scope": "RTX5090 BF16 B1/T2048 full50304 logits; uncached; equal staging/setup excluded; six fresh processes",
+  "source_script": {
+    "bytes": 7765,
+    "path": "20_analyze.py",
+    "sha256": "ce459117bc0c1f64d98cb6fd14453f560d0a90827e7d9af6f52639cb07de1c6c"
+  },
+  "status": "verified"
+}

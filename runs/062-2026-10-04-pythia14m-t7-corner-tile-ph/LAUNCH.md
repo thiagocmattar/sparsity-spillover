@@ -131,3 +131,13 @@ After agreed artifacts pass local hashes and scientific verifiers, delete only
 Pods created by this launch and confirm their absence. Preserve existing foreign
 Pods and the100GB shared network volume. Record provisional GPU/storage costs,
 refresh posted billing when available and disclose any retained billable storage.
+
+## Historical packet: executed and closed
+
+The user separately approved this packet. Both training conditions and the
+four-checkpoint RTX5090 follow-up completed with unchanged scientific inputs.
+All agreed artifacts are verified locally; both owned Pods are deleted and
+their absence confirmed. The README's final closeout and
+`results/compute-closeout.json` record actual source identities, results,
+resource ownership and provisional cost. Earlier future-tense statements in
+this file preserve the prelaunch proposal, rather than current execution status.
