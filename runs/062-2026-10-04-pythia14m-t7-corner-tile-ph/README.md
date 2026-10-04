@@ -161,3 +161,30 @@ post-hoc artifacts must be sealed and verified locally before Pod deletion.
 Analysis041 scripts03/04 prepare the seven-site table, learning/occupancy PDFs
 and the orange-frontier comparison. New optimized latency coordinates require
 successful RTX5090 qualification; preparation of plotting code is not a result.
+
+## Verified training and transfer
+
+Both exact-condition H100 preflights passed: post-warmup median3.5366/3.5363s,
+61,501,079,552 reserved of85,017,493,504 bytes (72.3%). Both fresh scientific
+conditions completed all712 updates without overflows or skipped boundaries.
+Remote and local scientific verification passed. The1,877,912,761-byte archive
+and all148 members were checked; all24 model checkpoints and six recovery states
+are retained locally. The owned H100 Pod was deleted and its absence confirmed.
+
+| kappa | Scalar canonical FP16 loss | Tile canonical FP16 loss | Tile minus scalar | Perplexity change |
+|---:|---:|---:|---:|---:|
+| 0 | 5.219827 | 5.721071 | +0.501244 | +65.077% |
+| .1 | 5.237395 | 5.835102 | +0.597707 | +81.795% |
+
+Both conditions learn with finite activations and exact corner certificates;
+the fixed-budget quality cost is substantial. The full seven-site table is in
+Analysis041 `results/t7-comparison.md`. Scalar occupancy comes from the separate
+complete FP16 replay; its loss differs from the original canonical scalar loss
+by less than.00002. The local verifier's identical result was saved separately
+and original transferred LF bytes restored after its Windows CRLF rewrite, so
+the transfer inventory remains exact. See `prelaunch/local-verification-training-001.json`.
+
+The approved four-checkpoint RTX5090 follow-up is now allocated as Pod
+`7ugmnw8p4ksb74`, EU-RO-1, USD.99/hour, provider start19:06:03 UTC and one-hour
+deadline20:06:03 UTC. Its independent provider stop guard is armed. Optimized
+latency remains pending numerical qualification.
