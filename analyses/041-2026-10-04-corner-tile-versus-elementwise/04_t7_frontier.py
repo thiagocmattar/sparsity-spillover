@@ -8,7 +8,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.ticker import NullLocator,ScalarFormatter
+from matplotlib.ticker import MaxNLocator,NullLocator,ScalarFormatter
 
 HERE=Path(__file__).resolve().parent; ROOT=HERE.parents[1]
 RUN=ROOT/'runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/latency'
@@ -99,7 +99,9 @@ def main():
     fig,axes=plt.subplots(1,2,figsize=(12.5,5.7)); fig.subplots_adjust(left=.065,right=.985,bottom=.25,top=.88,wspace=.29)
     draw(axes[0],data,['14M','31M','70M']); draw(axes[1],data,['14M'],detail=True)
     axes[0].set(xscale='log',yscale='log')
-    for axis in [axes[0].xaxis,axes[0].yaxis]: axis.set_major_formatter(ScalarFormatter()); axis.set_minor_locator(NullLocator())
+    for axis,bounds in [(axes[0].xaxis,axes[0].get_xlim()),(axes[0].yaxis,axes[0].get_ylim())]:
+        axis.set_ticks([v for v in MaxNLocator(nbins=6).tick_values(*bounds) if bounds[0]<=v<=bounds[1]])
+        axis.set_major_formatter(ScalarFormatter()); axis.set_minor_locator(NullLocator())
     axes[0].set_title('(a) Previous manuscript cohort + four tile endpoints',loc='left',fontsize=10)
     axes[1].set_title('(b) 14M detail and matched T7 scalar references',loc='left',fontsize=10)
     fig.suptitle('T7/Ph corner tiles against the orange quality-latency frontier',fontsize=13)

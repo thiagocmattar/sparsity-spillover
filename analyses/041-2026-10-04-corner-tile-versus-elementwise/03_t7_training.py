@@ -77,6 +77,13 @@ def collect():
             events=[json.loads(line) for line in (attempt/'events.jsonl').read_text().splitlines()]
             updates=[e for e in events if e.get('event')=='train']; assert len(updates)==712
             loss=metrics['validation']['final']['loss']
+            ports=data['occupancy_rows']
+            empty_ranges={}
+            for site in SITES:
+                values=[100*r['tiles']['8x16']['empty']/r['tiles']['8x16']['total']
+                        for r in ports if r['name'].split('.')[0]==site]
+                assert len(values)==6
+                empty_ranges[site]={'min':min(values),'max':max(values)}
             cadence=[]
             if family=='tile':
                 for step in [0,32,128,712]:
@@ -84,6 +91,8 @@ def collect():
                     cadence.append({'step':step,'sites':stats(read(path))}); sources.add(path)
             rows.append({'family':family,'condition':cond['id'],'kappa':k,'loss':loss,'perplexity':math.exp(loss),
                 'sites':stats(data),'R_model_percent':100*logical['R_model'],'logical_counts':logical,
+                'fully_empty_ports':[r['name'] for r in ports if r['tiles']['8x16']['empty']==r['tiles']['8x16']['total']],
+                'per_layer_empty_8x16_range_percent':empty_ranges,
                 'loss_curve':[{'step':e['step'],'loss':e['loss']} for e in events if e.get('event')=='validation'],
                 'diagnostic_curve':cadence,'attempt':attempt.relative_to(ROOT).as_posix(),
                 'final_checkpoint_content_sha256':manifest['checkpoints']['final']['content_sha256'],

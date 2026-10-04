@@ -95,3 +95,12 @@ counts receive a separate complete FP16 post-hoc replay, preserving the original
 canonical quality field. `04_t7_frontier.py` will append two qualified tile
 endpoints and two auxiliary matched scalar references while retaining every
 previous coordinate and PDF. No new results are asserted before verification.
+
+The training extension is now verified: both712-update conditions learn and
+retain activity at all42 final gate ports. Compared with scalar T7/Ph, losses
+rise.501244/.597707 and perplexity65.077%/81.795%; empty8x16 tiles increase
+substantially. See the [seven-site table](results/t7-comparison.md),
+[Figure05 and observation005](observations/005-t7-site-sparsity-and-tiles.md),
+and [Figure06 and observation006](observations/006-t7-learning-and-tile-structure.md).
+RTX5090 numerical qualification and latency remain in progress; no new T7
+optimized latency or frontier membership is asserted yet.
