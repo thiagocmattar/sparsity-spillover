@@ -1,0 +1,1612 @@
+{
+  "limits": "one seed/GPU; tile models have higher original loss; skipping gain is not measured DRAM bandwidth or decoding speed",
+  "pairs": [
+    {
+      "cuda_geomean_ms": {
+        "scalar_native": 0.630417659377298,
+        "scalar_no_skip": 0.5872863660421386,
+        "scalar_sparse": 0.5911999527513172,
+        "tile_native": 0.732771383124054,
+        "tile_no_skip": 0.5886461376652605,
+        "tile_sparse": 0.5259949295500015
+      },
+      "diagnostics": {
+        "scalar": {
+          "bytes": 118857,
+          "path": "artifacts/attempts/scientific-k0-r1-002/diagnostics-scalar.json",
+          "sha256": "d44635cf18b312757d7b6c9a0cbb752ac33f2450937dd49cf9d668dec291fde2"
+        },
+        "tile": {
+          "bytes": 117393,
+          "path": "artifacts/attempts/scientific-k0-r1-002/diagnostics-tile.json",
+          "sha256": "b70486db092f50568ddc1d45f5b04a4dbeecd8126e592a46d823ffbe13fd5ab0"
+        }
+      },
+      "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+      "host_geomean_ms": {
+        "scalar_native": 0.6456576384866294,
+        "scalar_no_skip": 0.6015313427297345,
+        "scalar_sparse": 0.6069219376097862,
+        "tile_native": 0.7469994566208573,
+        "tile_no_skip": 0.6036713689139053,
+        "tile_sparse": 0.5402200891630984
+      },
+      "host_median_ms": {
+        "scalar_native": 0.6437844967877027,
+        "scalar_no_skip": 0.6007629999658093,
+        "scalar_sparse": 0.6044020010449458,
+        "tile_native": 0.74612999742385,
+        "tile_no_skip": 0.6020695036568213,
+        "tile_sparse": 0.5395095031417441
+      },
+      "kappa": 0.0,
+      "paired_samples_per_comparison": 1344,
+      "processes": [
+        {
+          "attempt": "scientific-k0-r3-002",
+          "loss": {
+            "scalar": {
+              "native": 5.128738832621654,
+              "native_graph": 5.128738832621654,
+              "no_skip_graph": 5.128738832621654,
+              "sparse_graph": 5.128738832621654
+            },
+            "tile": {
+              "native": 5.556248486078721,
+              "native_graph": 5.556248486078721,
+              "no_skip_graph": 5.556248486078721,
+              "sparse_graph": 5.556248486078721
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4957667328,
+          "ratios": {
+            "scalar_sparse_over_native": 1.066208388895753,
+            "scalar_sparse_over_no_skip": 0.9900037666977507,
+            "tile_over_scalar_native": 0.867165391309941,
+            "tile_over_scalar_no_skip": 0.9981646537827781,
+            "tile_over_scalar_sparse": 1.124849172411493,
+            "tile_sparse_over_native": 1.3830390786881839,
+            "tile_sparse_over_no_skip": 1.115652526298101
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 0.00013736199616687372,
+                "native_graph": 0.3919219820018043,
+                "no_skip_graph": 0.9435344440062181,
+                "sparse_graph": 0.6926907209999627
+              },
+              "tile": {
+                "native": 5.483499990077689e-05,
+                "native_graph": 0.06478865000099177,
+                "no_skip_graph": 0.8936034099970129,
+                "sparse_graph": 0.8941442009963794
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0-r2-002",
+          "loss": {
+            "scalar": {
+              "native": 5.128738832621654,
+              "native_graph": 5.128738832621654,
+              "no_skip_graph": 5.128738832621654,
+              "sparse_graph": 5.128738832621654
+            },
+            "tile": {
+              "native": 5.556248486078721,
+              "native_graph": 5.556248486078721,
+              "no_skip_graph": 5.556248486078721,
+              "sparse_graph": 5.556248486078721
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4957667328,
+          "ratios": {
+            "scalar_sparse_over_native": 1.064135985597799,
+            "scalar_sparse_over_no_skip": 0.9929717413211058,
+            "tile_over_scalar_native": 0.8632196513294799,
+            "tile_over_scalar_no_skip": 0.9934043204287631,
+            "tile_over_scalar_sparse": 1.1212166323552648,
+            "tile_sparse_over_native": 1.38218234988329,
+            "tile_sparse_over_no_skip": 1.1207283972224584
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 9.814400254981592e-05,
+                "native_graph": 0.40670022900303593,
+                "no_skip_graph": 1.1826950920003583,
+                "sparse_graph": 0.8572776660003001
+              },
+              "tile": {
+                "native": 4.325200279708952e-05,
+                "native_graph": 0.08041670099919429,
+                "no_skip_graph": 0.8622566240010201,
+                "sparse_graph": 0.8921320369991008
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0-r1-002",
+          "loss": {
+            "scalar": {
+              "native": 5.128738832621654,
+              "native_graph": 5.128738832621654,
+              "no_skip_graph": 5.128738832621654,
+              "sparse_graph": 5.128738832621654
+            },
+            "tile": {
+              "native": 5.556248486078721,
+              "native_graph": 5.556248486078721,
+              "no_skip_graph": 5.556248486078721,
+              "sparse_graph": 5.556248486078721
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4963958784,
+          "ratios": {
+            "scalar_sparse_over_native": 1.0611313561077342,
+            "scalar_sparse_over_no_skip": 0.9903815478939794,
+            "tile_over_scalar_native": 0.8626264430835722,
+            "tile_over_scalar_no_skip": 0.9978030256318333,
+            "tile_over_scalar_sparse": 1.1243525041301083,
+            "tile_sparse_over_native": 1.3830850039628584,
+            "tile_sparse_over_no_skip": 1.1159897743482277
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 0.00013184099952923134,
+                "native_graph": 0.6578742119963863,
+                "no_skip_graph": 1.1039301470009377,
+                "sparse_graph": 0.8978452310038847
+              },
+              "tile": {
+                "native": 6.342299457173795e-05,
+                "native_graph": 0.12576673900184687,
+                "no_skip_graph": 0.7356693330002599,
+                "sparse_graph": 0.8252117740048561
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.0,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        }
+      ],
+      "qualified": true,
+      "source_files": [
+        {
+          "bytes": 861,
+          "path": "artifacts/bootstrap-retry-002/2029.json",
+          "sha256": "eff96e43062f1ee295cc4114784092f5a48554e5d3d2a750f88dbdc3c9f5eb03"
+        },
+        {
+          "bytes": 459606,
+          "path": "artifacts/attempts/scientific-k0-r3-002/result.json",
+          "sha256": "6df864c57ca1cad27017b006f44f8e1bc529c8ae2e096f8dc09c35d040fee730"
+        },
+        {
+          "bytes": 761146,
+          "path": "artifacts/attempts/scientific-k0-r3-002/timing.json",
+          "sha256": "7a7888b10f1ce9ff42a9dec798ff1261e17f45dc06924d0c361f8aa0827822ef"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r3-002/quality.json",
+          "sha256": "77eb4024a2f70ea51e6da6e177cf14f1e0008430b5a5156ee3979d1bccbbfdd6"
+        },
+        {
+          "bytes": 459606,
+          "path": "artifacts/attempts/scientific-k0-r3-002/manifest.json",
+          "sha256": "6df864c57ca1cad27017b006f44f8e1bc529c8ae2e096f8dc09c35d040fee730"
+        },
+        {
+          "bytes": 530957,
+          "path": "artifacts/attempts/scientific-k0-r3-002/samples.jsonl",
+          "sha256": "ac713623b9bdfe144ea9365bf58c8435780c936a8fe41e5b7c55709831d1034a"
+        },
+        {
+          "bytes": 861,
+          "path": "artifacts/bootstrap-retry-002/2215.json",
+          "sha256": "f137fab41c268dd1d41a94508bf47551b5df3910666e09e748557e1a0d1be7b8"
+        },
+        {
+          "bytes": 459608,
+          "path": "artifacts/attempts/scientific-k0-r2-002/result.json",
+          "sha256": "89cba7eb2b598536c16a4df0f7be9109a8cd7122c0d6018d160298004a009649"
+        },
+        {
+          "bytes": 761082,
+          "path": "artifacts/attempts/scientific-k0-r2-002/timing.json",
+          "sha256": "60790413295da10eb72aa16a596cf223934ebcaee81877a30e2d5be3c27d7a35"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r2-002/quality.json",
+          "sha256": "77eb4024a2f70ea51e6da6e177cf14f1e0008430b5a5156ee3979d1bccbbfdd6"
+        },
+        {
+          "bytes": 459608,
+          "path": "artifacts/attempts/scientific-k0-r2-002/manifest.json",
+          "sha256": "89cba7eb2b598536c16a4df0f7be9109a8cd7122c0d6018d160298004a009649"
+        },
+        {
+          "bytes": 530891,
+          "path": "artifacts/attempts/scientific-k0-r2-002/samples.jsonl",
+          "sha256": "585a04a3c44433bf71f002019218412260d88d3d0482fa1eecab27bcce86d7d1"
+        },
+        {
+          "bytes": 861,
+          "path": "artifacts/bootstrap-retry-002/2572.json",
+          "sha256": "71542f7c68614188d774fddc3b8dd36e3a0e5a68309f4d87426ecb33290e3450"
+        },
+        {
+          "bytes": 459609,
+          "path": "artifacts/attempts/scientific-k0-r1-002/result.json",
+          "sha256": "191953c4160636df584032c172a513a35cc8ab5a30e722984416d37b1dd099ff"
+        },
+        {
+          "bytes": 761164,
+          "path": "artifacts/attempts/scientific-k0-r1-002/timing.json",
+          "sha256": "328e228a71047070bb08b5ac976ee5bed965c34a1bff983faea03b36d718692a"
+        },
+        {
+          "bytes": 390131,
+          "path": "artifacts/attempts/scientific-k0-r1-002/quality.json",
+          "sha256": "77eb4024a2f70ea51e6da6e177cf14f1e0008430b5a5156ee3979d1bccbbfdd6"
+        },
+        {
+          "bytes": 459609,
+          "path": "artifacts/attempts/scientific-k0-r1-002/manifest.json",
+          "sha256": "191953c4160636df584032c172a513a35cc8ab5a30e722984416d37b1dd099ff"
+        },
+        {
+          "bytes": 530973,
+          "path": "artifacts/attempts/scientific-k0-r1-002/samples.jsonl",
+          "sha256": "9bbb3259f2345dec4d2b7469b751b78bc61408a702569c4b3e7ec5021ba16708"
+        },
+        {
+          "bytes": 118857,
+          "path": "artifacts/attempts/scientific-k0-r1-002/diagnostics-scalar.json",
+          "sha256": "d44635cf18b312757d7b6c9a0cbb752ac33f2450937dd49cf9d668dec291fde2"
+        },
+        {
+          "bytes": 117393,
+          "path": "artifacts/attempts/scientific-k0-r1-002/diagnostics-tile.json",
+          "sha256": "b70486db092f50568ddc1d45f5b04a4dbeecd8126e592a46d823ffbe13fd5ab0"
+        }
+      ],
+      "speedup": {
+        "scalar_sparse_over_native": 1.0638232011012725,
+        "scalar_sparse_over_no_skip": 0.991118141319325,
+        "tile_over_scalar_native": 0.8643348167980471,
+        "tile_over_scalar_no_skip": 0.9964549814777188,
+        "tile_over_scalar_sparse": 1.123471617928947,
+        "tile_sparse_over_native": 1.3827687485263622,
+        "tile_sparse_over_no_skip": 1.1174544986823884
+      }
+    },
+    {
+      "cuda_geomean_ms": {
+        "scalar_native": 0.6301282105447875,
+        "scalar_no_skip": 0.5873769397723031,
+        "scalar_sparse": 0.5499205970579583,
+        "tile_native": 0.7322295283793478,
+        "tile_no_skip": 0.5881053585241018,
+        "tile_sparse": 0.49266067752001286
+      },
+      "diagnostics": {
+        "scalar": {
+          "bytes": 118019,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/diagnostics-scalar.json",
+          "sha256": "012a2bed4752a2b48d9c51f95aac334b1e752127960cc3ded7f08055fe024ffe"
+        },
+        "tile": {
+          "bytes": 117329,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/diagnostics-tile.json",
+          "sha256": "235246c932a27f7755d75dac4d3dafcc10a332e1239001748009bcaefc3b03e4"
+        }
+      },
+      "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+      "host_geomean_ms": {
+        "scalar_native": 0.6462975819529425,
+        "scalar_no_skip": 0.6031032602492956,
+        "scalar_sparse": 0.5652424749702625,
+        "tile_native": 0.747714359589763,
+        "tile_no_skip": 0.6060295710939284,
+        "tile_sparse": 0.5083403115599782
+      },
+      "host_median_ms": {
+        "scalar_native": 0.6438675009121653,
+        "scalar_no_skip": 0.6009405005897861,
+        "scalar_sparse": 0.564663001568988,
+        "tile_native": 0.74596049671527,
+        "tile_no_skip": 0.6015845028741751,
+        "tile_sparse": 0.5066295016149525
+      },
+      "kappa": 0.1,
+      "paired_samples_per_comparison": 1344,
+      "processes": [
+        {
+          "attempt": "scientific-k0p1-r1-002",
+          "loss": {
+            "scalar": {
+              "native": 5.153716179766474,
+              "native_graph": 5.153716179766474,
+              "no_skip_graph": 5.153716179766474,
+              "sparse_graph": 5.153716179766474
+            },
+            "tile": {
+              "native": 5.5987847543876,
+              "native_graph": 5.5987847543876,
+              "no_skip_graph": 5.5987847543876,
+              "sparse_graph": 5.5987847543876
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4963958784,
+          "ratios": {
+            "scalar_sparse_over_native": 1.1420395574084037,
+            "scalar_sparse_over_no_skip": 1.0672038082533828,
+            "tile_over_scalar_native": 0.8629831597260791,
+            "tile_over_scalar_no_skip": 0.9948797583722966,
+            "tile_over_scalar_sparse": 1.110059472204085,
+            "tile_sparse_over_native": 1.4690110856107,
+            "tile_sparse_over_no_skip": 1.1907566579323499
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 0.00018512600217945874,
+                "native_graph": 0.4754952739967848,
+                "no_skip_graph": 1.0297750160025316,
+                "sparse_graph": 0.9350016669995966
+              },
+              "tile": {
+                "native": 5.041999975219369e-05,
+                "native_graph": 0.07957404600165319,
+                "no_skip_graph": 0.8975845360037056,
+                "sparse_graph": 0.8528252390024136
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0p1-r2-002",
+          "loss": {
+            "scalar": {
+              "native": 5.153716179766474,
+              "native_graph": 5.153716179766474,
+              "no_skip_graph": 5.153716179766474,
+              "sparse_graph": 5.153716179766474
+            },
+            "tile": {
+              "native": 5.5987847543876,
+              "native_graph": 5.5987847543876,
+              "no_skip_graph": 5.5987847543876,
+              "sparse_graph": 5.5987847543876
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4957667328,
+          "ratios": {
+            "scalar_sparse_over_native": 1.1453075766067382,
+            "scalar_sparse_over_no_skip": 1.0680687639973019,
+            "tile_over_scalar_native": 0.8666537509358592,
+            "tile_over_scalar_no_skip": 1.000886592491173,
+            "tile_over_scalar_sparse": 1.1125589567931233,
+            "tile_sparse_over_native": 1.4702782988718153,
+            "tile_sparse_over_no_skip": 1.1872368745579323
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 0.0002583800014690496,
+                "native_graph": 0.4706728419987485,
+                "no_skip_graph": 0.972155705007026,
+                "sparse_graph": 0.7179668259996106
+              },
+              "tile": {
+                "native": 5.309499829309061e-05,
+                "native_graph": 0.06464174600114347,
+                "no_skip_graph": 0.9503116269988823,
+                "sparse_graph": 0.9014757930053747
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        },
+        {
+          "attempt": "scientific-k0p1-r3-002",
+          "loss": {
+            "scalar": {
+              "native": 5.153716179766474,
+              "native_graph": 5.153716179766474,
+              "no_skip_graph": 5.153716179766474,
+              "sparse_graph": 5.153716179766474
+            },
+            "tile": {
+              "native": 5.5987847543876,
+              "native_graph": 5.5987847543876,
+              "no_skip_graph": 5.5987847543876,
+              "sparse_graph": 5.5987847543876
+            }
+          },
+          "peak_allocated_bytes": 4429333504,
+          "peak_reserved_bytes": 4957667328,
+          "ratios": {
+            "scalar_sparse_over_native": 1.142851873094717,
+            "scalar_sparse_over_no_skip": 1.0656732882569944,
+            "tile_over_scalar_native": 0.8634605249751025,
+            "tile_over_scalar_no_skip": 0.9897787238244056,
+            "tile_over_scalar_sparse": 1.113195479872274,
+            "tile_sparse_over_native": 1.4733939797992321,
+            "tile_sparse_over_no_skip": 1.1985534331598426
+          },
+          "runtime": {
+            "cuda": "12.8",
+            "eager_anchor": "each checkpoint has its own native uncached forward",
+            "gpu": "NVIDIA GeForce RTX 5090",
+            "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32110MB, multi_processor_count=170, uuid=43adf9b5-a3c2-7743-9860-e88eb4ca4d96, pci_bus_id=216, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+            "gpu_uuid": "43adf9b5-a3c2-7743-9860-e88eb4ca4d96",
+            "numpy": "2.5.0",
+            "python": "3.12.3",
+            "setup_seconds": {
+              "scalar": {
+                "native": 0.00012132099800510332,
+                "native_graph": 0.7828907149960287,
+                "no_skip_graph": 1.233857341001567,
+                "sparse_graph": 0.918439266999485
+              },
+              "tile": {
+                "native": 4.596300277626142e-05,
+                "native_graph": 0.08145332099957159,
+                "no_skip_graph": 0.7368203480000375,
+                "sparse_graph": 0.8461173630057601
+              }
+            },
+            "source_files": [
+              {
+                "bytes": 3031,
+                "path": "kernel.py",
+                "sha256": "56dc0b208895d354089c62cd23582c6398eb3ab7bae095dc09901b9185c2f41f"
+              },
+              {
+                "bytes": 11362,
+                "path": "joint.cu",
+                "sha256": "50252a127a2791e09ced77bee811e777ca2dedb8e66bfc382746cda3f4d92539"
+              },
+              {
+                "bytes": 9959,
+                "path": "02_benchmark.py",
+                "sha256": "36ea0376998c3d5fb13c5f866d4a63c6e8e4c43cd5f5ec33a1ba8cb5bd8d0156"
+              },
+              {
+                "bytes": 1611,
+                "path": "replay.py",
+                "sha256": "e1cf567ff8c1a5e65ffc38f225b0941c979e5722caf76846fd49334319b9da68"
+              },
+              {
+                "bytes": 4675,
+                "path": "tile_gate.py",
+                "sha256": "e1ab360d8bf539b48f716ecda6589bf66bcfdd13e6e53e9f1f19981df205c10f"
+              },
+              {
+                "bytes": 431,
+                "path": "topology.py",
+                "sha256": "17815922509c281f622a7846f931a87ecb88c01506ed3867355ba263e5eb279d"
+              }
+            ],
+            "timer": "synchronized host full-logit graph replay; equal input staging/setup excluded; recurring gates/support/packing included",
+            "topologies": {
+              "scalar_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "scalar_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "one_sided_threshold"
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_native": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_no_skip": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              },
+              "tile_sparse": {
+                "active_sites": [
+                  "h",
+                  "z"
+                ],
+                "qk_placement": null,
+                "site_gate": null,
+                "site_gates": {
+                  "h": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  },
+                  "z": {
+                    "kappa": 0.1,
+                    "operator": "tile_corner_threshold",
+                    "tile_features": 16,
+                    "tile_tokens": 8
+                  }
+                },
+                "topology_id": "HZ"
+              }
+            },
+            "torch": "2.11.0+cu128",
+            "torch_git": "70d99e998b4955e0049d13a98d77ae1b14db1f45",
+            "transformers": "5.12.1"
+          }
+        }
+      ],
+      "qualified": true,
+      "source_files": [
+        {
+          "bytes": 865,
+          "path": "artifacts/bootstrap-retry-002/1672.json",
+          "sha256": "4179f3355f761a749996514207e81c3109fff71df56496160407f25330b8b26f"
+        },
+        {
+          "bytes": 460114,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/result.json",
+          "sha256": "03cf8653f02deb9374a05f60b70010483ab4000f190f61fe645dde8532e1e769"
+        },
+        {
+          "bytes": 761295,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/timing.json",
+          "sha256": "1b43216cfd8ace7a44580e097543ed7b6dc20fe640ce6a46611ee47abdb216a4"
+        },
+        {
+          "bytes": 390123,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/quality.json",
+          "sha256": "2c985a5ddcd86b1c79ec5bda7b8a4a35a718865756de142419ce5cc529e51ac4"
+        },
+        {
+          "bytes": 460114,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/manifest.json",
+          "sha256": "03cf8653f02deb9374a05f60b70010483ab4000f190f61fe645dde8532e1e769"
+        },
+        {
+          "bytes": 531106,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/samples.jsonl",
+          "sha256": "56fa48737efca071d0e46ec9cea3f0aea58659c2844bb613137b49f5a2628fc8"
+        },
+        {
+          "bytes": 118019,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/diagnostics-scalar.json",
+          "sha256": "012a2bed4752a2b48d9c51f95aac334b1e752127960cc3ded7f08055fe024ffe"
+        },
+        {
+          "bytes": 117329,
+          "path": "artifacts/attempts/scientific-k0p1-r1-002/diagnostics-tile.json",
+          "sha256": "235246c932a27f7755d75dac4d3dafcc10a332e1239001748009bcaefc3b03e4"
+        },
+        {
+          "bytes": 865,
+          "path": "artifacts/bootstrap-retry-002/1858.json",
+          "sha256": "e650f00e3e3287a9ed4cc98f3e4e7876895ff6108cf9211a099fee681822bd78"
+        },
+        {
+          "bytes": 460111,
+          "path": "artifacts/attempts/scientific-k0p1-r2-002/result.json",
+          "sha256": "857812917cdde2c94909fab45ad2f7731c3d6172e14d5ce8181915e06bb35fc9"
+        },
+        {
+          "bytes": 761106,
+          "path": "artifacts/attempts/scientific-k0p1-r2-002/timing.json",
+          "sha256": "7c864fd1814e6c013b489f61923697eeb6a53b12ecd7bf17fe76dbe23fe7259a"
+        },
+        {
+          "bytes": 390123,
+          "path": "artifacts/attempts/scientific-k0p1-r2-002/quality.json",
+          "sha256": "2c985a5ddcd86b1c79ec5bda7b8a4a35a718865756de142419ce5cc529e51ac4"
+        },
+        {
+          "bytes": 460111,
+          "path": "artifacts/attempts/scientific-k0p1-r2-002/manifest.json",
+          "sha256": "857812917cdde2c94909fab45ad2f7731c3d6172e14d5ce8181915e06bb35fc9"
+        },
+        {
+          "bytes": 530918,
+          "path": "artifacts/attempts/scientific-k0p1-r2-002/samples.jsonl",
+          "sha256": "6f49b3ea474495168d9f1d1097b4c6972107df92b856f1ea2c285789a3e05dd9"
+        },
+        {
+          "bytes": 865,
+          "path": "artifacts/bootstrap-retry-002/2399.json",
+          "sha256": "a6f7d8dbb4b77c3a3486e8214793b7d072eac997f7ce6fbaaefc7f3b636612f1"
+        },
+        {
+          "bytes": 460113,
+          "path": "artifacts/attempts/scientific-k0p1-r3-002/result.json",
+          "sha256": "be370dad075039d42569ad683c8f90580a11d5cabd18c5d3d55367ba7afbc1a1"
+        },
+        {
+          "bytes": 761425,
+          "path": "artifacts/attempts/scientific-k0p1-r3-002/timing.json",
+          "sha256": "b8344cd8a4933aa1027cd78146663f8b25535e7ce38c475ac09b267ee7d6d1fb"
+        },
+        {
+          "bytes": 390123,
+          "path": "artifacts/attempts/scientific-k0p1-r3-002/quality.json",
+          "sha256": "2c985a5ddcd86b1c79ec5bda7b8a4a35a718865756de142419ce5cc529e51ac4"
+        },
+        {
+          "bytes": 460113,
+          "path": "artifacts/attempts/scientific-k0p1-r3-002/manifest.json",
+          "sha256": "be370dad075039d42569ad683c8f90580a11d5cabd18c5d3d55367ba7afbc1a1"
+        },
+        {
+          "bytes": 531235,
+          "path": "artifacts/attempts/scientific-k0p1-r3-002/samples.jsonl",
+          "sha256": "3654b799bc46a38de3d62fee5d2c502dfe75b76d601bde843e33237378ea364f"
+        }
+      ],
+      "speedup": {
+        "scalar_sparse_over_native": 1.1433988254101823,
+        "scalar_sparse_over_no_skip": 1.0669814937050246,
+        "tile_over_scalar_native": 0.8643642771653292,
+        "tile_over_scalar_no_skip": 0.9951713398417992,
+        "tile_over_scalar_sparse": 1.1119371454836324,
+        "tile_sparse_over_native": 1.4708933023533026,
+        "tile_sparse_over_no_skip": 1.1921729544410213
+      }
+    }
+  ],
+  "scope": "RTX5090 BF16 B1/T2048 full50304 logits; uncached; equal staging/setup excluded; six fresh processes",
+  "source_script": {
+    "bytes": 8687,
+    "path": "20_analyze.py",
+    "sha256": "7d40c8588a208b55e192e179cf00e994e56ac02195eaf9d4fb86f50a384d0c30"
+  },
+  "status": "verified"
+}

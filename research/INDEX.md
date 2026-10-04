@@ -11,11 +11,14 @@ validation/diagnostics, all checkpoints local, owned Pod deleted. Both models
 learn with surviving h/z activity, but loss rises .426737/.444400 and perplexity
 53.225%/55.955% versus matched scalar controls. Empty 8x16 tiles increase while
 h/z element sparsity decreases. [Analysis041](../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md)
-contains the full table and three verified PDF figures. One seed; no speedup or
-redistribution claim, manuscript edit or finding promotion. Inference latency
-is now in implementation after the user's design confirmation:
+contains the full table and three verified PDF figures. One seed; redistribution
+is untested, with no manuscript edit or finding promotion. The latency follow-up
+is completed:
 [Run061](../runs/061-2026-10-04-pythia14m-corner-tile-latency/README.md) compares
-the four retained Ph checkpoints; launch approval is pending. Tile pressure
+the four retained Ph checkpoints on one RTX5090. Sparse tile/scalar speedups
+are1.123x/1.112x (latency-10.990%/-10.067%); every graph passes full own-eager
+qualification. Original tile quality penalties remain. Artifacts/PDF are local;
+the owned Pod is terminated (estimated GPU USD.303). Tile pressure
 remains deferred; [backlog](BACKLOG.md) retains the contract.
 
 The user closed P2 versus Ph: P2 raises loss, with only small threshold-dependent

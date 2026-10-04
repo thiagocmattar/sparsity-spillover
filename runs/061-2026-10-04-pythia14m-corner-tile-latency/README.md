@@ -1,8 +1,9 @@
 # Run061: scalar versus causal corner-tile inference latency
 
-Status: design explicitly confirmed on 4 October 2026; implementation and
-pre-launch checks complete. Cloud launch approval is pending. No billable
-resource has been created and no accepted latency result exists yet.
+Status: completed on4 October2026 after explicit design, diagnostic and launch
+approvals. Six full processes, numerical qualification, diagnostics and transfers
+are verified locally; the owned RTX5090 Pod is terminated. Sparse corner tiles
+reduce latency10.990%/10.067% versus sparse scalar at κ=0/.1, with higher loss.
 
 Question: do the additional aligned empty tiles in Run060 lower full-model
 inference latency relative to the matched scalar T2/Ph checkpoints of Run058?
@@ -102,9 +103,59 @@ installation cases. All 242 bootstrap tests pass in 11.03 s. See `prelaunch/`.
 Mandatory real RTX5090 smokes of both threshold pairs precede complete
 measurement after launch approval.
 
-## Proposed launch
+## Launch packet and execution record
 
 See [LAUNCH.md](LAUNCH.md) for current inventory, live quote, resource fit,
 ETC, maximum duration/cost, storage, transfer, monitoring and teardown. Source
-checkpoints remain local. No cloud launch is authorized by this implementation
-commit or by design approval alone.
+checkpoints remain local. The preparation commit did not authorize cloud launch;
+the user's later explicit "Aprovado" authorized the quoted envelope.
+
+## Verified outcome
+
+Accepted evidence is the six-process controller cohort002; `20_analyze.py
+--tag 002` verifies120 transferred members, unchanged measured sources/config,
+the exact module-selection bootstrap per process, checkpoint identities, same
+physical GPU, all paired timings, full numerical checks and diagnostics.
+Each threshold has1344 same-input/pass scalar/tile pairs from three fresh
+processes. [Full table](results/tables.md), [machine result](results/results.json)
+and [observation](observations/01-corner-tile-latency.md) retain provenance.
+
+| Gate | κ | Native ms | No H/Z skip ms | Sparse ms | Native/sparse | No-skip/sparse | BF16 loss |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| scalar | 0 | .645658 | .601531 | .606922 | 1.0638x | .9911x | 5.128739 |
+| tile8x16 | 0 | .746999 | .603671 | .540220 | 1.3828x | 1.1175x | 5.556248 |
+| scalar | .1 | .646298 | .603103 | .565242 | 1.1434x | 1.0670x | 5.153716 |
+| tile8x16 | .1 | .747714 | .606030 | .508340 | 1.4709x | 1.1922x | 5.598785 |
+
+Direct sparse tile/scalar ratios are1.123472x and1.111937x: latency decreases
+10.990186%/10.066859%, throughput increases12.347%/11.194%. The three process
+ratios are1.124849/1.121217/1.124353 at0 and1.110059/1.112559/1.113195 at.1.
+Sparse execution reduces the tile checkpoints' own no-skip time by10.511% and
+16.120%; scalar κ=0 receives no observed h/z skip benefit (.9911x).
+The no-skip control disables both tile bypass and short-row SIMT substitution,
+so it does not isolate tile-only skipping. Larger native/tile speedups also
+include differences in native gate overhead and other optimized components.
+
+All three graph modes have zero observed own-eager logit error and exactly
+equal pooled loss in every accepted process over338 blocks/500 documents,
+691886 predictions, with1444 tail tokens excluded. In this BF16 benchmark the
+tile/scalar loss penalties are+.427510/+.445069. Original canonical FP16 quality
+remains in [Analysis041](../../analyses/041-2026-10-04-corner-tile-versus-elementwise/README.md):
+loss+.426737/+.444400 and perplexity+53.225%/+55.955%. No equal-quality claim.
+Peak allocated memory is4.125GiB; reserved4.617--4.623GiB. These are full-logit
+uncached B1/T2048 results on one RTX5090, not cached decoding or model scaling.
+
+Initial attempt001 stopped at a diagnostic import collision after valid timing
+and numerical checks. Its36-member verified download and failed attempt are
+preserved and excluded from accepted estimates. The append-only
+[retry record](infrastructure/retry-002/README.md) explains the infrastructure
+bootstrap; all scientific inputs stayed byte-identical. Both smokes were repeated.
+
+Creation14:40:30.515 UTC; termination confirmed14:58:52 UTC,18m21s of Pod life.
+Estimated GPU costUSD.302908, plus small storage; scoped official billing had
+no posted records at closeout, so this is provisional rather than an invoice.
+Both inventories/archives are SHA-verified; final transfer has120 files and
+19,607,531 uncompressed bytes. No Run061 billable resource remains, its local
+deadline guard is disarmed, and foreign Pods/volume were untouched. See
+`prelaunch/closeout-001.json`. The single PDF is visually verified; no manuscript
+edit or finding promotion was requested. Tile pressure remains deferred.

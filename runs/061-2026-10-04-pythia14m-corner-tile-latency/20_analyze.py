@@ -24,6 +24,22 @@ def reduce_pair(attempts):
             raise ValueError('Source checkpoint changed')
         if any(row!=record(RUN/row['path']) for row in result['runtime']['source_files']):
             raise ValueError('Runtime scientific source changed')
+        if attempt.name.endswith('-002'):
+            audits=[]
+            for path in (RUN/'artifacts/bootstrap-retry-002').glob('*.json'):
+                audit=read(path)
+                if attempt.name in audit['argv'] and audit['argv'][0].endswith('02_benchmark.py'):
+                    audits.append((path,audit))
+            if len(audits)!=1:
+                raise ValueError('One module-selection audit per retry process required')
+            path,audit=audits[0]
+            if audit['status']!='verified' or 'blocks=338' not in audit['diagnostic_signature']:
+                raise ValueError('Run061 diagnostic interface not verified')
+            if {r['path'] for r in audit['source_files']}!={'kernel.py','diagnostics.py','infrastructure/retry-002/sitecustomize.py'}:
+                raise ValueError('Unexpected retry modules')
+            for row in audit['source_files']:
+                verify(row)
+            sources.append(record(path))
         uuid.add(result['runtime']['gpu_uuid']);replicates.add(result['arguments']['replicate'])
         if indices is not None and timing['indices']!=indices:
             raise ValueError('Timing inputs changed')
@@ -79,9 +95,13 @@ def reduce_pair(attempts):
 
 
 def main():
-    for row in read(RUN/'transfer/inventory-001.json')['files']:
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--tag',default='001',choices=['001','002'])
+    args=parser.parse_args()
+    for row in read(RUN/f'transfer/inventory-{args.tag}.json')['files']:
         verify(row)
-    summary=read(RUN/'artifacts/scientific/summary-001.json')
+    summary=read(RUN/f'artifacts/scientific/summary-{args.tag}.json')
     if len(summary)!=6:
         raise ValueError('Exactly six declared full processes required')
     pairs=[]

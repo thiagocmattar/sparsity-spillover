@@ -3,7 +3,7 @@
 The human selects the research direction. This list records requested work;
 it does not authorize implementation, launch or cloud spending.
 
-## Approved design: scalar versus corner-tile latency, 14M T2/Ph
+## Completed: scalar versus corner-tile latency, 14M T2/Ph
 
 The user requested latency for the four scalar/corner checkpoints at kappa
 0/.1 and explicitly confirmed the benchmark design on 4 October 2026.
@@ -11,9 +11,16 @@ The user requested latency for the four scalar/corner checkpoints at kappa
 the exact gates with matched native, sparse and no-h/z-skip full-model graphs,
 three fresh processes per threshold on one RTX5090, BF16 B1/T2048, complete
 validation and the existing timing protocol. The user confirmed the diagnostic
-inventory as sufficient. Implementation is approved; launch approval is pending
-the concrete [packet](../runs/061-2026-10-04-pythia14m-corner-tile-latency/LAUNCH.md).
-Tile pressure and cached decoding remain deferred. No speedup result exists yet.
+inventory as sufficient and explicitly approved the concrete
+[packet](../runs/061-2026-10-04-pythia14m-corner-tile-latency/LAUNCH.md).
+All six full processes and120 transferred files are verified; the owned Pod
+is terminated. Sparse tile/scalar speedups are1.123472x/1.111937x at0/.1,
+latency-10.990186%/-10.066859%. All graph modes have zero observed own-eager
+logit error and identical pooled loss over338 blocks. The tile checkpoints'
+quality penalty remains, so this is not an equal-quality speedup.
+The [table and observation](../runs/061-2026-10-04-pythia14m-corner-tile-latency/observations/01-corner-tile-latency.md)
+retain timing, PDF, process variation and scope. Tile pressure, model-family
+scaling and cached decoding remain deferred; no new direction is selected.
 
 ## Completed: tile threshold viability, 14M T2/Ph
 

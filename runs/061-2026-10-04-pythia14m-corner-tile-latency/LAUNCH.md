@@ -132,3 +132,48 @@ caches, archives, credentials or a push.
 Current inventory contains only foreign stopped Pod `qa00sm05lmrs7w` and the
 pre-existing100GB EUR-IS-1 network volume `9luykg5yc3`. Neither will be changed
 or reused. Their continuing storage is not a cost of Run061.
+
+## Approved execution record
+
+The user explicitly approved this packet with "Aprovado" on 4 October 2026.
+The live read immediately before creation found RTX5090 Secure stock Low on
+host CUDA13.0 and13.2, both USD.99/hour. Pod `a7kx4d05y0spap`, named
+`run061-corner-tile-latency-001`, was created at14:40:30.515 UTC with the
+approved pinned image, one RTX5090, 40GB container disk and25GB workspace.
+The absolute stop deadline is16:40:30.515 UTC. The independent hidden provider
+guard logged ARMED before upload. Full deployment/cost/checkout identities
+are retained in `prelaunch/lease-001.json`.
+
+The first SSH discovery occurred while the image was provisioning and did not
+yet advertise an IP. It failed before upload or scientific execution; wait for
+SSH readiness on the same Pod. This is infrastructure readiness, with unchanged
+sealed input004 and no additional resource creation. A subsequent live SSH
+discovery identified the actual cause: the created Pod did not publish22/tcp,
+despite `startSsh:true`. The owned Pod's ports were updated to22/tcp before
+upload; this changes transport only. The original deadline and billable cap
+remain unchanged.
+
+## Verified closeout
+
+The initial scientific attempt failed only in diagnostic module resolution,
+after full numerical qualification. Its first36-member SHA-verified retrieval
+is preserved. Infrastructure retry002 preloads the unchanged run-local modules,
+repeats both smokes and all six full processes, and uses the same Pod/deadline;
+see `infrastructure/retry-002/README.md`. Scientific inputs are unchanged.
+
+All six accepted processes are complete and qualified. Each threshold has
+1344 paired observations and full338-block diagnostics. Final transfer002 has
+120 files/19,607,531 uncompressed bytes, verified archive and every member SHA.
+The reducer confirms same GPU, original inputs, bootstrap identities and full
+coverage before accepting estimates. Its table, PDF and observation are local;
+the PDF has been rendered and visually checked.
+
+After local verification, Pod termination returned204 and a live Pod listing
+confirmed absence at14:58:52 UTC. The hidden provider guard was disarmed.
+Elapsed creation-to-termination is1101.485 seconds, estimated GPUUSD.302908
+atUSD.99/hour, plus storage. Scoped official billing has no posted records yet;
+this is a provisional wall-clock estimate. No owned Run061 resource remains.
+The post-closeout inventory also includes two newly appearing foreign running
+Pods, `64aa1by0fk9p67` and `8t9ep4a5vf1fxf`, alongside the original stopped
+Pod and shared network volume. No foreign resource was modified. Exact safe
+inventory and billing metadata are in `prelaunch/closeout-001.json`.
