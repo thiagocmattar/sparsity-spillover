@@ -93,13 +93,24 @@ approved hardware comparison and the frozen attention schedule. Previous
 Run061 used 4.617–4.623GiB reserved with more checkpoint families; allow
 8–10GiB for five graph modes and verify actual fit in the remote smoke.
 
-Initial cloud ETC: **40–75 minutes**, including provisioning, upload, pinned
-setup/cold compilation, two smokes, six full processes, diagnostics, verified
-download and analysis. Approximate components: provision/upload2–5min;
-setup/compile15–30min; smokes2–5min; cohort/diagnostics15–25min;
-retrieval/analysis3–10min. Previous Run061 completed in18m21s on a favorable
-host; cold compilation and host storage justify this conservative envelope.
-Refresh ETC after the actual setup and first smoke.
+Revised initial cloud ETC: **20–35 minutes from Pod creation through verified
+retrieval and teardown**, assuming available capacity and normal installation
+and compilation. The earlier40–75min estimate overstated the benchmark phase.
+In comparable Run061, the six accepted processes totalled268.24s (4m28s),
+including loading/capture, full numerical qualification and diagnostics;
+their timing phases totalled10.90s, calculated from the first `timing` to first
+`validation` elapsed event in each process. The entire Pod lifetime was18m21s.
+Sources: [accepted process summary](../061-2026-10-04-pythia14m-corner-tile-latency/artifacts/scientific/summary-002.json),
+[phase events](../061-2026-10-04-pythia14m-corner-tile-latency/artifacts/attempts/)
+and [closeout record](../061-2026-10-04-pythia14m-corner-tile-latency/README.md).
+
+Planning allowances: provision/upload2–5min; pinned setup/cold compilation
+10–20min; smokes/six processes/diagnostics5–7min; verified retrieval/teardown
+1–3min. These are estimates, not a measured Run063 result; the new consumer
+still needs cold compilation and RTX5090 qualification. Local analysis follows
+Pod termination and is separate from billable ETC. Capacity wait is also
+separate. Refresh ETC after actual setup and the first smoke. The two-hour
+limit below is a failure/troubleshooting ceiling, not the expected duration.
 
 Maximum: **two GPU hours from provider creation, USD3 total**. At .99/hour,
 GPU ceiling is USD1.98. Use40GB container disk plus25GB Pod workspace volume,
