@@ -1,0 +1,76 @@
+{
+  "backends": {
+    "cudnn": {
+      "equal_default": false,
+      "max_abs": 0.015625
+    },
+    "flash": {
+      "equal_default": true,
+      "max_abs": 0.0
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "operators": [
+    "aten::scaled_dot_product_attention",
+    "aten::_scaled_dot_product_flash_attention",
+    "aten::_flash_attention_forward"
+  ],
+  "quality_native_attention": {
+    "gates": {
+      "generic_sparse": [
+        {
+          "elementwise_gate": true,
+          "finite": true,
+          "input_index": 0,
+          "max_abs": 0.0,
+          "pass": true,
+          "relative_l2": 0.0
+        },
+        {
+          "elementwise_gate": true,
+          "finite": true,
+          "input_index": 1,
+          "max_abs": 0.0,
+          "pass": true,
+          "relative_l2": 0.0
+        }
+      ],
+      "tile_sparse": [
+        {
+          "elementwise_gate": true,
+          "finite": true,
+          "input_index": 0,
+          "max_abs": 0.0,
+          "pass": true,
+          "relative_l2": 0.0
+        },
+        {
+          "elementwise_gate": true,
+          "finite": true,
+          "input_index": 1,
+          "max_abs": 0.0,
+          "pass": true,
+          "relative_l2": 0.0
+        }
+      ]
+    },
+    "loss": {
+      "generic_sparse": 5.006120809416219,
+      "native": 5.006120809416219,
+      "tile_sparse": 5.006120809416219
+    },
+    "loss_delta": {
+      "generic_sparse": 0.0,
+      "native": 0.0,
+      "tile_sparse": 0.0
+    },
+    "pass": {
+      "generic_sparse": true,
+      "native": true,
+      "tile_sparse": true
+    },
+    "prediction_tokens": 4094
+  },
+  "scope": "development substitution only; production RTX5090 K035 attention unchanged",
+  "sm_count": 46
+}

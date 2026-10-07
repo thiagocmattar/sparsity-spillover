@@ -1,0 +1,56 @@
+{
+  "run_id": "063-2026-10-07-pythia14m-tile-specialized-kernel",
+  "authorization": "User approved kernel-specialization design on 2026-10-07 (executa o 2); launch approval pending.",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "runtime": {
+    "python": "3.12",
+    "torch": "2.11.0",
+    "transformers": "5.12.1",
+    "numpy": "2.5.0",
+    "cuda": "12.8"
+  },
+  "precision": "bfloat16",
+  "batch_size": 1,
+  "sequence_length": 2048,
+  "vocabulary": 50304,
+  "validation_blocks": 338,
+  "validation_documents": 500,
+  "excluded_tail_tokens": 1444,
+  "timing_inputs": 64,
+  "timing_passes": 7,
+  "process_replicates": 3,
+  "runtime_seed": 2801,
+  "timing_seed": 2504,
+  "pair_conditions": {
+    "0": [
+      "t2-tile-ph-kappa-0"
+    ],
+    "0p1": [
+      "t2-tile-ph-kappa-0p1"
+    ]
+  },
+  "modes": [
+    "native",
+    "generic_sparse",
+    "generic_no_skip",
+    "tile_sparse",
+    "tile_no_skip"
+  ],
+  "numerical_bounds": {
+    "logit_atol": 0.25,
+    "logit_rtol": 0.02,
+    "logit_relative_l2": 0.02,
+    "validation_loss_atol": 0.001
+  },
+  "near_zero_thresholds": [
+    0.0,
+    0.001,
+    0.01
+  ],
+  "leaf_timeout_seconds": 900,
+  "monitor_interval_seconds": 60,
+  "maximum_gpu_hours": 2,
+  "budget_usd": 3,
+  "estimator": "Same-input/pass geometric mean generic/specialized host latency, three fresh processes per threshold; matched no-h/z-skip controls.",
+  "skip_control": "Generic no_skip disables h/z tile bypass and short-row SIMT; specialized no_skip disables tile bypass (no SIMT exists). Other components and gate remain matched."
+}
