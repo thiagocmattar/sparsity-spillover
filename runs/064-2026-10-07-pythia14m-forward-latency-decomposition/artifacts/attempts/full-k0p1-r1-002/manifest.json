@@ -1,0 +1,56 @@
+{
+  "arguments": {
+    "pair": "0p1",
+    "replicate": 1,
+    "smoke": false,
+    "tag": "002"
+  },
+  "config": {
+    "authorization": "User explicitly pre-approved the complete decomposition and RunPod launch on 2026-10-07.",
+    "budget_usd": 3,
+    "excluded_tail_tokens": 1444,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "internal_inputs": 8,
+    "internal_repeats": 5,
+    "maximum_gpu_hours": 2,
+    "modes": [
+      "native",
+      "generic_sparse",
+      "generic_no_skip",
+      "tile_sparse",
+      "tile_no_skip"
+    ],
+    "monitor_interval_seconds": 60,
+    "numerical_bounds": {
+      "logit_atol": 0.25,
+      "logit_relative_l2": 0.02,
+      "logit_rtol": 0.02,
+      "validation_loss_atol": 0.001
+    },
+    "pairs": [
+      "0",
+      "0p1"
+    ],
+    "process_replicates": 3,
+    "run_id": "064-2026-10-07-pythia14m-forward-latency-decomposition",
+    "runtime_seed": 2801,
+    "timing_inputs": 64,
+    "timing_passes": 7,
+    "timing_seed": 2504,
+    "trace_inputs": 4,
+    "trace_replays": 3,
+    "validation_blocks": 338,
+    "validation_documents": 500
+  },
+  "elapsed_seconds": 1.1956017008051276,
+  "error": "[Errno 17] File exists: '/workspace/run064/artifacts/attempts/full-k0p1-r1-002'",
+  "finished_utc": "2026-10-07T22:04:36Z",
+  "run_id": "064-2026-10-07-pythia14m-forward-latency-decomposition",
+  "source_config": {
+    "bytes": 839,
+    "path": "config.json",
+    "sha256": "f6db1da209310aea636b4962b5d9db680596fb1a2a4d4a4699e841dc3e2abdaf"
+  },
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/run064/02_profile.py\", line 58, in main\n    model=load_checkpoint_pythia(transformers.AutoModelForCausalLM,BASE/checkpoint['checkpoint'],torch=torch).to('cuda',dtype=torch.bfloat16).eval()\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2262, in __getattr__\n    module = self._get_module(self._class_to_module[name])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2496, in _get_module\n    raise e\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2494, in _get_module\n    return importlib.import_module(\".\" + module_name, self.__name__)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"<frozen importlib._bootstrap_external>\", line 995, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/models/auto/modeling_auto.py\", line 21, in <module>\n    from .auto_factory import (\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/models/auto/auto_factory.py\", line 42, in <module>\n    from ...generation import GenerationMixin\n  File \"<frozen importlib._bootstrap>\", line 1412, in _handle_fromlist\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2262, in __getattr__\n    module = self._get_module(self._class_to_module[name])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2496, in _get_module\n    raise e\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/utils/import_utils.py\", line 2494, in _get_module\n    return importlib.import_module(\".\" + module_name, self.__name__)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/generation/utils.py\", line 44, in <module>\n    from ..masking_utils import create_masks_for_generate\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/transformers/masking_utils.py\", line 38, in <module>\n    from torch._dynamo._trace_wrapped_higher_order_op import TransformGetItemToIndex\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/torch/_dynamo/__init__.py\", line 13, in <module>\n    from . import (\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/torch/_dynamo/aot_compile.py\", line 15, in <module>\n    from torch._dynamo.convert_frame import GraphRuntimeEnv\n  File \"/opt/run064-fast/venv/lib/python3.12/site-packages/torch/_dynamo/convert_frame.py\", line 28, in <module>\n    import cProfile\n  File \"/usr/lib/python3.12/cProfile.py\", line 12, in <module>\n    import profile as _pyprofile\n  File \"/workspace/run064/infrastructure/retry-001/profile.py\", line 23, in <module>\n    raise SystemExit(profile.main())\n                     ^^^^^^^^^^^^^^\n  File \"/workspace/run064/02_profile.py\", line 22, in main\n    dest.mkdir(parents=True,exist_ok=False);start=time.monotonic()\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1313, in mkdir\n    os.mkdir(self, mode)\nFileExistsError: [Errno 17] File exists: '/workspace/run064/artifacts/attempts/full-k0p1-r1-002'\n"
+}

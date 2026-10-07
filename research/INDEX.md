@@ -5,6 +5,14 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run064](../runs/064-2026-10-07-pythia14m-forward-latency-decomposition/README.md)
+decomposes the complete forward on one RTX5090. The repeated specialization
+gain is 10.337%/9.002%, localized to joint gate/down-projection/residual kernels.
+Vocabulary projection and attention now take 38-40% and 26-27% of specialized
+GPU-active time. Full qualification is exact; artifacts are local and the Pod
+is terminated. [Detailed map, timings and PDF](../runs/064-2026-10-07-pythia14m-forward-latency-decomposition/observations/01-forward-decomposition.md)
+separate wall time, CUPTI activities, event overhead and internal SM cycles.
+
 [Run063](../runs/063-2026-10-07-pythia14m-tile-specialized-kernel/README.md)
 completed the same-gate RTX5090 consumer comparison for retained T2/Ph models.
 Specialized latency falls 10.526%/8.896% at kappa 0/.1; all five graphs match eager
