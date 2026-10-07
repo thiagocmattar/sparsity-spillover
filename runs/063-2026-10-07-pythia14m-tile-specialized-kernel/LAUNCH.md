@@ -73,7 +73,12 @@ Live read on 7 October2026, retained in `prelaunch/catalog-001.json`: Secure
 RTX5090, 32GB, LOW availability, USD .99/hour; deep probe confirms LOW stock on
 host CUDA13.2. CLI data-center discovery shows LOW RTX5090 stock in EU-RO-1.
 The MCP catalog expansion did not return data-center stock; the explicit CLI
-read supplies placement evidence. Recheck price/stock immediately before create.
+read supplies the earlier placement evidence. The final refresh, retained in
+`prelaunch/catalog-002.json`, reports **NONE** Secure stock on every returned
+host CUDA version. The catalog lists .99/hour, but no matching host is currently
+available. This proposal applies only when matching RTX5090 Secure capacity
+returns at no more than .99/hour. Recheck price/placement immediately before
+create; do not substitute another GPU or change the billable envelope.
 
 Use one owned Pod named `run063-tile-specialized-kernel-001`, Secure Cloud,
 one `NVIDIA GeForce RTX 5090`, EU-RO-1, eligible host CUDA13.2, explicit22/tcp and

@@ -10,7 +10,8 @@ qualifies both T2/Ph corner consumers locally at kappa0/.1 with exact full
 validation equality under matched native SDPA. The failed laptop smoke is
 isolated to shared frozen attention. RTX5090 qualification/benchmark and
 [launch approval](../runs/063-2026-10-07-pythia14m-tile-specialized-kernel/LAUNCH.md)
-remain pending; no new speedup result exists.
+remain pending; Secure RTX5090 stock is unavailable at final refresh. No new
+speedup result exists.
 
 [Run062](../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) completed14M
 T7/Ph tiles at kappa0/.1. Loss rises.501244/.597707; matched sparse latency falls
