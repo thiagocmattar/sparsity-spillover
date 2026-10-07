@@ -1,10 +1,12 @@
-# Run063 launch packet — approval pending
+# Run063 launch packet — approved and executed
 
 Design approval covers a specialized inference consumer for the two retained
 Run060 T2/Ph corner8x16 checkpoints at kappa 0/.1, step712, training seed1234.
 Weights, gate semantics, pressure history, validation cache and workload stay
-unchanged. No training or gate-selection experiment is included. This packet
-requests separate billable launch approval under root `AGENTS.md`.
+unchanged. No training or gate-selection experiment is included. The user
+approved billable execution on 7 October 2026 ("Ok. Go on.. execute it") and
+retained the flexible two-hour/$3 maximum. The proposal below is retained as
+the pre-launch record; actual execution and closeout are appended at the end.
 
 ## Implemented comparison
 
@@ -164,4 +166,27 @@ table, one PDF and its source-linked observation, and commit accepted evidence.
 Current foreign resources: stopped Pod `qa00sm05lmrs7w`,
 `run052-sparse-attribution-001`, and pre-existing100GB network volume
 `9luykg5yc3`, `sparsity-spillover-shared`. Neither is reused or modified.
-No Run063 Pod or other billable resource has been created.
+At packet preparation, no Run063 billable resource had been created.
+
+## Execution and closeout
+
+EU-RO-1 creation failed for unavailable capacity. Region-independent transfer
+allowed the same Secure RTX5090 at $.99/hour in EUR-NO-1, host CUDA 12.8, with
+the pinned CUDA 12.8 application and scientific bundle unchanged. Owned Pod
+`yp38ht95t3ag67` ran from18:42:31.334 UTC to deletion confirmed 19:34:24 UTC.
+Infrastructure retry001 resolved false/intermittent SSH readiness and slow
+ingress; retry002 extended pinned-wheel network timeouts after setup failed
+before any GPU check. The same physical GPU and original deadline were retained.
+
+All 22 RTX5090 component checks, two smokes and six full processes passed. All
+five graphs have exactly matching eager logits/loss across full validation.
+The accepted comparison gives10.526%/8.896% lower specialized sparse latency
+at kappa 0/.1. No acceptance criterion, checkpoint, gate or metric was changed.
+[Results observation](observations/01-generic-versus-specialized.md).
+
+All 86 returned files/14,104,050 bytes were hash-verified before teardown.
+Pod life was51 min 52.666 s; the six full processes took 4 min 47.748 s, with12.511 s in
+timing phases. Setup/transfer/compilation and retries explain the additional
+wall time. Provisional GPU plus running-storage estimate isUSD 0.864; official
+scoped billing had no posted records at closeout. The owned Pod is absent and
+its guard disarmed; foreign resources are unchanged. [Closeout](prelaunch/closeout-001.json).

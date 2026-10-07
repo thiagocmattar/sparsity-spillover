@@ -1,10 +1,22 @@
 # Run063: corner-specialized T2/Ph inference consumer
 
-Status: local consumer qualification passed; RTX5090 launch approval pending.
-No cloud benchmark or new speedup result exists. [Launch packet](LAUNCH.md).
+Status: complete and verified. Specialized sparse latency falls 10.526%/8.896%
+at kappa 0/.1; all five graphs match eager logits and loss exactly over full
+validation. Artifacts are local and the owned Pod is deleted. [Observation](observations/01-generic-versus-specialized.md).
 The user approved option 2 on 7 October 2026: specialize the consumer for the
 two existing 14M T2/Ph Run060 corner8x16 checkpoints at kappa 0/.1. Separate
-billable launch confirmation is pending under the repository workflow.
+billable launch was approved on 7 October 2026 ("Ok. Go on.. execute it").
+The user retained a flexible maximum instead of using the revised ETC as a
+timeout; the two-hour/$3 backstop was retained and disarmed after teardown.
+
+Owned Pod `yp38ht95t3ag67` was created at 18:42:31.334 UTC in EUR-NO-1 at $.99/h,
+host CUDA 12.8, with the pinned application and sealed input bundle unchanged.
+No other Pod or network volume was created. Initial regional capacity and
+transport/readiness issues are recorded in [retry001](infrastructure/retry-001/README.md).
+Pinned-wheel setup001 then failed on a 30-second network timeout before any GPU
+check. Its logs were retrieved and hash-verified; [retry002](infrastructure/retry-002/README.md)
+uses the same Pod, package pins and scientific inputs, longer network timeouts
+and fresh scientific tag002. The accepted results below come from tag002.
 
 Question: does consuming known corner-tile structure directly reduce full-model
 latency relative to the generic Run061 consumer, at unchanged weights and gate?
@@ -102,3 +114,55 @@ remain identical to the passing22-check component receipt.
 The source scripts, evidence and launch envelope remain in this run. PDFs and
 source-linked observations will be produced after accepted results. Inputs and
 scientific code become append-only once an executed cloud attempt begins.
+
+## Accepted RTX5090 results
+
+Three fresh processes per threshold on one physical RTX5090,64 fixed inputs
+x 7 paired passes,1344 paired observations per comparison. Geometric mean host
+latency includes the recurring gates/support/projections and full 50304 logits,
+and excludes equal staging and setup. BF16 B1/T2048 uncached workload.
+
+| kappa | Generic sparse ms | Specialized sparse ms | Speedup | Latency reduction | Process speedups |
+|---:|---:|---:|---:|---:|---|
+|0|0.578467|0.517577|1.117644x|10.526%|1.113239, 1.112600, 1.127152|
+|.1|0.545248|0.496740|1.097651x|8.896%|1.100685, 1.100174, 1.092116|
+
+Both no-skip controls were measured. The specialized package is 3.409%/4.775%
+slower than generic with skipping disabled; the advantage therefore depends
+on this sparse workload and skip handling. This package comparison includes
+corner support consumption and warp/block changes. It does not isolate their
+causal contributions or establish measured DRAM traffic savings. The complete
+five-graph host table and CUDA-event measurements are in the observation.
+
+All 22 component checks and both eight-block smokes passed on RTX5090. Every
+full process qualified all five graphs against its own eager checkpoint on
+all 500 documents/338 blocks,692224 inputs and 691886 predictions, excluding the
+1444-token tail. Across 10,140 graph/block comparisons, maximum absolute logit
+error and relative L2 are zero. Pooled BF16 losses match eager exactly:
+5.556248486078721 and 5.5987847543876. Bounds, weights and corner-gate semantics
+were unchanged. Activation and tile diagnostics agree exactly between consumers.
+Peak memory is 3.898 GiB allocated/4.354 GiB reserved.
+
+The answer is yes for these retained models and this workload: the tailored
+consumer recovers additional speed with unchanged inference outputs. This
+does not remove the existing trained tile models' quality penalty or establish
+performance for decoding, another batch/sequence/GPU/model, or the deferred
+tile-selection metric experiment.
+
+Evidence: [results](results/results.json), [generated table](results/tables.md),
+[PDF](figures/01-generic-versus-specialized.pdf), and the source-linked
+[observation](observations/01-generic-versus-specialized.md). The accepted
+reduction is `20_analyze.py --tag 002`; `21_figure.py` generated the visually
+verified single-page PDF. No manuscript edit or finding promotion is included.
+
+All 86 returned files/14,104,050 bytes passed inventory SHA256/byte checks before
+termination. Original checkpoints remain retained locally; this run created
+none. Creation 18:42:31.334 UTC, deletion confirmed 19:34:24 UTC:51 min 52.666 s of
+Pod life. The six full processes took 4 min 47.748 s, including qualification and
+diagnostics; timing phases totalled 12.511 s. Upload, setup, compilation and
+infrastructure retries account for the remaining time. Estimated GPU cost is
+USD 0.855983 plusUSD 0.007699 running storage (aboutUSD 0.864 total), provisional
+until official billing posts. Scoped billing returned no posted records at
+closeout. The owned Pod is absent, its guard is disarmed, and the pre-existing
+stopped Pod/network volume were unchanged. [Closeout](prelaunch/closeout-001.json)
+and [verified transfer](transfer/receipt-002.json).

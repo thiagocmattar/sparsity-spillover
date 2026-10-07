@@ -1,0 +1,99 @@
+{
+  "approval_message": "Ok. Go on.. execute it. You can use a flexible max time at runpod.. no need to tighten it with the new estimate",
+  "recorded_utc": "2026-10-07 18:40:37 UTC",
+  "maximum_gpu_hours": 2,
+  "maximum_total_usd": 3,
+  "gpu_hourly_usd_maximum": 0.99,
+  "interpretation": "Launch approved; retain two-hour/$3 backstop, do not impose the revised 20–35-minute estimate as a deadline.",
+  "source_checkout": "20aee33b6e0baecd2c17d97fd3cbe373d71c0d29",
+  "definition": {
+    "name": "run063-tile-specialized-kernel-001",
+    "cloud": "SECURE",
+    "gpu": {
+      "id": "NVIDIA GeForce RTX 5090",
+      "count": 1,
+      "allowedCudaVersions": [
+        "13.0",
+        "13.2"
+      ]
+    },
+    "dataCenterIds": [
+      "EU-RO-1"
+    ],
+    "disk": 40,
+    "mounts": {
+      "persistent": {
+        "path": "/workspace",
+        "size": 25
+      }
+    },
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "startSsh": true,
+    "startJupyter": false,
+    "ports": [
+      "22/tcp"
+    ],
+    "env": "Registered public SSH keys; omitted from record"
+  },
+  "capacity": {
+    "probedCudaVersions": [
+      "13.0",
+      "13.2"
+    ],
+    "items": [
+      {
+        "id": "NVIDIA GeForce RTX 5090",
+        "displayName": "RTX 5090",
+        "memoryGb": 32,
+        "secureCloud": true,
+        "communityCloud": true,
+        "cudaVersions": {
+          "13.0": {
+            "stock": "Out",
+            "pricePerHr": null
+          },
+          "13.2": {
+            "stock": "Out",
+            "pricePerHr": null
+          }
+        }
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "returned": 1,
+      "offset": 0,
+      "truncated": false,
+      "nextCursor": null
+    }
+  },
+  "creation_attempt_001": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"detail\": \"There are no longer any instances available with the requested specifications. Please refresh and try again.\",\n  \"status\": 400,\n  \"title\": \"Bad Request\",\n  \"hint\": \"Input shape mismatch: check this tool's schema for required fields. For job payloads, the worker's release config defines the expected input object — fix the payload and retry; don't abandon the task.\"\n}"
+      }
+    ],
+    "isError": true
+  },
+  "existing_resources": {
+    "pods": [
+      {
+        "id": "qa00sm05lmrs7w",
+        "name": "run052-sparse-attribution-001",
+        "status": "EXITED"
+      }
+    ],
+    "network_volumes": {
+      "networkVolumes": [
+        {
+          "dataCenter": "EUR-IS-1",
+          "id": "9luykg5yc3",
+          "name": "sparsity-spillover-shared",
+          "size": 100,
+          "type": "STANDARD"
+        }
+      ]
+    }
+  }
+}

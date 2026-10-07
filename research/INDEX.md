@@ -6,12 +6,12 @@ Compact current state; full history belongs to numbered runs and analyses.
 ## Current status
 
 [Run063](../runs/063-2026-10-07-pythia14m-tile-specialized-kernel/README.md)
-qualifies both T2/Ph corner consumers locally at kappa0/.1 with exact full
-validation equality under matched native SDPA. The failed laptop smoke is
-isolated to shared frozen attention. RTX5090 qualification/benchmark and
-[launch approval](../runs/063-2026-10-07-pythia14m-tile-specialized-kernel/LAUNCH.md)
-remain pending; Secure RTX5090 stock is unavailable at final refresh. No new
-speedup result exists.
+completed the same-gate RTX5090 consumer comparison for retained T2/Ph models.
+Specialized latency falls 10.526%/8.896% at kappa 0/.1; all five graphs match eager
+logits/loss exactly over 338 validation blocks in each of six processes. With
+skipping disabled, specialization is 3.409%/4.775% slower. Weights/gates stay
+unchanged; the trained tile models' quality penalty remains. Artifacts are local
+and the owned Pod is deleted. [Observation and PDF](../runs/063-2026-10-07-pythia14m-tile-specialized-kernel/observations/01-generic-versus-specialized.md).
 
 [Run062](../runs/062-2026-10-04-pythia14m-t7-corner-tile-ph/README.md) completed14M
 T7/Ph tiles at kappa0/.1. Loss rises.501244/.597707; matched sparse latency falls

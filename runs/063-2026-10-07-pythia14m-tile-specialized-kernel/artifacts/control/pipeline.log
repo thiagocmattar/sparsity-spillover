@@ -1,0 +1,119 @@
+Requirement already satisfied: uv==0.8.15 in /opt/run063-fast/bootstrap/lib/python3.12/site-packages (0.8.15)
+Using CPython 3.12.3 interpreter at: /usr/local/bin/python
+Creating virtual environment at: /opt/run063-fast/venv
+Activate with: source /opt/run063-fast/venv/bin/activate
+Using Python 3.12.3 environment at: /opt/run063-fast/venv
+Resolved 58 packages in 5.17s
+Downloading torch (782.3MiB)
+Downloading nvidia-cudnn-cu12 (627.4MiB)
+ Downloading nvidia-cudnn-cu12
+Downloading nvidia-cublas-cu12 (566.8MiB)
+ Downloading torch
+Downloading nvidia-nccl-cu12 (283.0MiB)
+ Downloading nvidia-nccl-cu12
+Downloading nvidia-cusparse-cu12 (274.9MiB)
+ Downloading nvidia-cusparse-cu12
+Downloading nvidia-cusparselt-cu12 (273.9MiB)
+ Downloading nvidia-cusparselt-cu12
+Downloading nvidia-cusolver-cu12 (255.1MiB)
+ Downloading nvidia-cusolver-cu12
+Downloading nvidia-cufft-cu12 (184.2MiB)
+ Downloading nvidia-cufft-cu12
+Downloading triton (179.5MiB)
+ Downloading triton
+ Downloading nvidia-cublas-cu12
+Prepared 9 packages in 4m 39s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 58 packages in 49.23s
+ + annotated-doc==0.0.5
+ + anyio==4.15.1
+ + certifi==2026.7.22
+ + click==8.5.0
+ + cuda-bindings==12.9.7
+ + cuda-pathfinder==1.6.0
+ + cuda-toolkit==12.8.1
+ + filelock==3.32.3
+ + fsspec==2026.7.0
+ + h11==0.16.0
+ + hf-xet==1.6.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + huggingface-hub==1.30.0
+ + idna==3.19
+ + iniconfig==2.3.0
+ + jinja2==3.1.6
+ + markdown-it-py==4.2.0
+ + markupsafe==3.0.3
+ + mdurl==0.1.2
+ + mpmath==1.3.0
+ + networkx==3.6.1
+ + ninja==1.11.1.4
+ + numpy==2.5.0
+ + nvidia-cublas-cu12==12.8.4.1
+ + nvidia-cuda-cupti-cu12==12.8.90
+ + nvidia-cuda-nvrtc-cu12==12.8.93
+ + nvidia-cuda-runtime-cu12==12.8.90
+ + nvidia-cudnn-cu12==9.19.0.56
+ + nvidia-cufft-cu12==11.3.3.83
+ + nvidia-cufile-cu12==1.13.1.3
+ + nvidia-curand-cu12==10.3.9.90
+ + nvidia-cusolver-cu12==11.7.3.90
+ + nvidia-cusparse-cu12==12.5.8.93
+ + nvidia-cusparselt-cu12==0.7.1
+ + nvidia-nccl-cu12==2.28.9
+ + nvidia-nvjitlink-cu12==12.8.93
+ + nvidia-nvshmem-cu12==3.4.5
+ + nvidia-nvtx-cu12==12.8.90
+ + packaging==26.3
+ + pip==25.2
+ + pluggy==1.6.0
+ + pygments==2.21.0
+ + pytest==9.0.2
+ + pyyaml==6.0.2
+ + regex==2026.9.3
+ + rich==15.0.0
+ + safetensors==0.8.0
+ + setuptools==80.9.0
+ + shellingham==1.5.4
+ + sympy==1.14.0
+ + tokenizers==0.22.2
+ + torch==2.11.0+cu128
+ + tqdm==4.70.0
+ + transformers==5.12.1
+ + triton==3.6.0
+ + typer==0.27.2
+ + typing-extensions==4.16.0
+Using Python 3.12.3 environment at: /opt/run063-fast/venv
+Verified 1389 input identities and generic consumer
+Verified fast source cache 1374 files
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF generic.cuda.o.d -DTORCH_EXTENSION_NAME=run063_joint_50252a127a27 -DTORCH_API_INCLUDE_EXTENSION_H -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo -std=c++17 -c /workspace/run063/generic.cu -o generic.cuda.o 
+[2/2] c++ generic.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run063_joint_50252a127a27.so
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF joint.cuda.o.d -DTORCH_EXTENSION_NAME=run063_joint_2443ec956d2b -DTORCH_API_INCLUDE_EXTENSION_H -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo -std=c++17 -c /workspace/run063/joint.cu -o joint.cuda.o 
+[2/2] c++ joint.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run063_joint_2443ec956d2b.so
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF inspection.cuda.o.d -DTORCH_EXTENSION_NAME=run063_inspection_24be494cf2e7 -DTORCH_API_INCLUDE_EXTENSION_H -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo -std=c++17 -c /workspace/run063/inspection.cu -o inspection.cuda.o 
+[2/2] c++ inspection.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run063_inspection_24be494cf2e7.so
+Passed 22 CUDA checks
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF norm.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k050_a78415cba25b -DTORCH_API_INCLUDE_EXTENSION_H -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo -std=c++17 -c /opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k050/norm.cu -o norm.cuda.o 
+[2/2] c++ norm.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run028_k050_a78415cba25b.so
+{'compiled': 'k050', 'elapsed_seconds': 58.47746672201902}
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF projection.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k042_d356a72e5dcf -DTORCH_API_INCLUDE_EXTENSION_H -I/opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --expt-relaxed-constexpr -std=c++17 -c /opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k042/projection.cu -o projection.cuda.o 
+[2/2] c++ projection.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run028_k042_d356a72e5dcf.so
+{'compiled': 'k042', 'elapsed_seconds': 143.37747879512608}
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run028_k035_984b3e1ed7e6 -DTORCH_API_INCLUDE_EXTENSION_H -I/opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k035 -I/opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/flash/csrc/flash_attn/src -I/opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/runtime/vendor/cutlass/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo --expt-relaxed-constexpr --expt-extended-lambda -std=c++17 -c /opt/run063-fast/archive/root/runs/028-2026-09-06-pythia14m-all-site-sparse-kernels/candidates/k035/kernel.cu -o kernel.cuda.o 
+[2/2] c++ kernel.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run028_k035_984b3e1ed7e6.so
+{'compiled': 'k035', 'elapsed_seconds': 264.09435874037445}
+[1/2] /usr/local/cuda/bin/nvcc -MD -MF kernel.cuda.o.d -DTORCH_EXTENSION_NAME=run026_k019_a5cca086b065 -DTORCH_API_INCLUDE_EXTENSION_H -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include -isystem /opt/run063-fast/venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -isystem /usr/local/cuda/include -isystem /usr/include/python3.12 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr -gencode=arch=compute_120,code=sm_120 --compiler-options '-fPIC' -O3 -lineinfo -std=c++17 -c /opt/run063-fast/archive/root/runs/026-2026-09-06-pythia14m-fused-sparse-kernel/autoresearch/candidates/k019/kernel.cu -o kernel.cuda.o 
+[2/2] c++ kernel.cuda.o -shared -L/opt/run063-fast/venv/lib/python3.12/site-packages/torch/lib -lc10 -lc10_cuda -ltorch_cpu -ltorch_cuda -ltorch -ltorch_python -L/usr/local/cuda/lib64 -lcudart -o run026_k019_a5cca086b065.so
+ninja: no work to do.
+ninja: no work to do.
+ninja: no work to do.
+{"attempt": "smoke-k0-r1-002", "returncode": 0, "elapsed_seconds": 21.766460126265883, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 4.760785302710522, "generic_sparse_graph": 4.760785302710522, "native": 4.760785302710522, "native_graph": 4.760785302710522, "tile_no_skip_graph": 4.760785302710522, "tile_sparse_graph": 4.760785302710522}}}
+{"attempt": "smoke-k0p1-r1-002", "returncode": 0, "elapsed_seconds": 14.950549731962383, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 4.799590840826514, "generic_sparse_graph": 4.799590840826514, "native": 4.799590840826514, "native_graph": 4.799590840826514, "tile_no_skip_graph": 4.799590840826514, "tile_sparse_graph": 4.799590840826514}}}
+{"attempt": "scientific-k0p1-r1-002", "returncode": 0, "elapsed_seconds": 66.33586330804974, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.5987847543876, "generic_sparse_graph": 5.5987847543876, "native": 5.5987847543876, "native_graph": 5.5987847543876, "tile_no_skip_graph": 5.5987847543876, "tile_sparse_graph": 5.5987847543876}}}
+{"attempt": "scientific-k0p1-r2-002", "returncode": 0, "elapsed_seconds": 38.29050705768168, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.5987847543876, "generic_sparse_graph": 5.5987847543876, "native": 5.5987847543876, "native_graph": 5.5987847543876, "tile_no_skip_graph": 5.5987847543876, "tile_sparse_graph": 5.5987847543876}}}
+{"attempt": "scientific-k0-r3-002", "returncode": 0, "elapsed_seconds": 38.6683233557269, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.556248486078721, "generic_sparse_graph": 5.556248486078721, "native": 5.556248486078721, "native_graph": 5.556248486078721, "tile_no_skip_graph": 5.556248486078721, "tile_sparse_graph": 5.556248486078721}}}
+{"attempt": "scientific-k0-r2-002", "returncode": 0, "elapsed_seconds": 41.21671882271767, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.556248486078721, "generic_sparse_graph": 5.556248486078721, "native": 5.556248486078721, "native_graph": 5.556248486078721, "tile_no_skip_graph": 5.556248486078721, "tile_sparse_graph": 5.556248486078721}}}
+{"attempt": "scientific-k0p1-r3-002", "returncode": 0, "elapsed_seconds": 40.706699517555535, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.5987847543876, "generic_sparse_graph": 5.5987847543876, "native": 5.5987847543876, "native_graph": 5.5987847543876, "tile_no_skip_graph": 5.5987847543876, "tile_sparse_graph": 5.5987847543876}}}
+{"attempt": "scientific-k0-r1-002", "returncode": 0, "elapsed_seconds": 62.53025030530989, "status": "complete", "qualified": true, "loss": {"tile": {"generic_no_skip_graph": 5.556248486078721, "generic_sparse_graph": 5.556248486078721, "native": 5.556248486078721, "native_graph": 5.556248486078721, "tile_no_skip_graph": 5.556248486078721, "tile_sparse_graph": 5.556248486078721}}}
