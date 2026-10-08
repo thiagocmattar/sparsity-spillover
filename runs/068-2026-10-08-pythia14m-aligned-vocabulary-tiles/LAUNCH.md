@@ -121,6 +121,13 @@ random parameter replay. Datasets are rebuilt and hash-verified; no credential
 enters source, artifacts or logs. Source bundle receipt is generated after the
 implementation commit. All source/cache/init/schedule hashes are retained.
 
+The prepared source bundle deploys implementation commit
+`f69ac644166de774c6a1ecc9abf1646105aa69a9`:212,032,868 bytes, SHA256
+`57d5d362b269c2c5b8170a02ee44ba66b25234eb7c0f91fa0154f533f3ea08d7`.
+Its [receipt](prelaunch/source-001.receipt.json) records the actual source identity.
+The bundle and random replay remain ignored local transfer payloads. The later
+packet-sealing commit adds this receipt and does not change runtime arithmetic.
+
 Retrieve both configs/manifests/statuses/events, all validation losses,
 head/block pre/post zero/near-zero/moment/energy/occupancy/corner statistics at
 steps0/32/128/712, weight/final-LayerNorm records, logical counts, training
