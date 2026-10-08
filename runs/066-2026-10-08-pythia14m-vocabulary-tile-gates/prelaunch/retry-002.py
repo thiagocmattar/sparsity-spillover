@@ -1,8 +1,10 @@
 """Retry only the failed qualification/reporting infrastructure on the owned Pod."""
 import json
+import socket
 from pathlib import Path
 import shlex
 import sys
+import paramiko
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from run_config import RUN_DIR as RUN,run_code_identity,write_json
 from importlib import import_module
@@ -12,7 +14,7 @@ if __name__=='__main__':
     receipt=json.loads((RUN/'prelaunch/source-002.receipt.json').read_text())
     client,lease=remote.connect()
     try:
-        archive="""python3 - <<'PY'
+        archive=r"""python3 - <<'PY'
 import hashlib,json,shutil
 from pathlib import Path
 r=Path('/workspace/sparsity-spillover/runs/066-2026-10-08-pythia14m-vocabulary-tile-gates')
@@ -38,8 +40,13 @@ note={'status':'failed_before_scientific_training','cause':'Preflight diagnostic
 (a/'failure-inventory.json').write_text(json.dumps(note,indent=2)+'\n')
 print(json.dumps({'preserved_files':len(records),'scientific_training_started':False}))
 PY"""
-        print(remote.execute(client,archive),flush=True)
-        with client.open_sftp() as sftp:
+        if '--resume-upload' in sys.argv:
+            remote.execute(client,"test -f /workspace/sparsity-spillover/runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/prelaunch/attempts/001/failure-inventory.json && test ! -d /workspace/sparsity-spillover/runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts")
+        else:
+            print(remote.execute(client,archive),flush=True)
+        transport=client.get_transport()
+        transport.sock.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,8*1024**2)
+        with paramiko.SFTPClient.from_transport(transport,window_size=64*1024**2,max_packet_size=1024**2) as sftp:
             destination='/workspace/run066-source-002.bundle'
             remote.upload(sftp,RUN/receipt['path'],destination)
         if remote.execute(client,'sha256sum '+destination).split()[0]!=receipt['sha256']:
