@@ -6,10 +6,11 @@ Compact current state; full history belongs to numbered runs and analyses.
 ## Current status
 
 [Run067](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/README.md)
-implements the frozen Run066 sparse vocabulary head. All four models pass local
-full338 qualification with exact logits/loss;254 CPU tests and48 CUDA component
-checks pass. RTX5090 comparison is unmeasured; [launch packet](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/LAUNCH.md)
-awaits separate approval. h/z block projections stay native dense in this run.
+completed the frozen Run066 sparse vocabulary-head comparison on one RTX 5090.
+All twelve full processes match native logits/loss exactly. Skipping saves
+11.43-16.79% versus custom no-skip, but full forward is 7.19-8.86% slower than
+dense cuBLAS. [Table, occupancy diagnosis and PDF](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/results/DIAGNOSTICS.md).
+Artifacts are hash-verified and the Pod deleted. h/z projections stay native dense.
 
 [Run066](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/results/REPORT.md)
 completed four matched 14M head-input tile trainings and two retained-parent

@@ -1,8 +1,10 @@
 # Run067 — sparse vocabulary-head consumer
 
-Status: implemented and locally qualified; cloud launch pending.
-The user confirmed the four-checkpoint inference design on 8 October 2026.
-There is no accepted RTX5090 speed result yet.
+Status: completed and verified on one RTX 5090; owned Pod deleted.
+The user confirmed the design and separately approved the launch on 8 October 2026.
+The kernel preserves logits and loss exactly, but is slower than dense cuBLAS.
+See the [latency table](results/REPORT.md), [quality and kernel diagnosis](results/DIAGNOSTICS.md),
+and [figure with process means](figures/01-sparse-vocabulary-head.pdf).
 
 Question: does a consumer of Run066's structured head-input zeros reduce head
 and complete forward latency without changing trained model semantics?
@@ -129,5 +131,39 @@ Failures are retained:001/002 expose the native captured-mask discrepancy;
 003 passes the first smoke then its controller rejects the underscore in a
 Ph+head attempt name;004 fully qualifies the first checkpoint before the same
 controller-name issue. Both issues are fixed;005 completes all four full
-qualifications and006 completes the final smokes. No accepted cloud experiment
-has executed. See [launch definition](LAUNCH.md) and [checks](prelaunch/checks.json).
+qualifications and006 completes the final smokes. See the approved
+[launch definition](LAUNCH.md) and [local checks](prelaunch/checks.json).
+
+## Verified cloud execution and result
+
+Cloud cohort `001` completed all 48 component checks, four eight-block smokes,
+and twelve full processes (three per checkpoint). All 12,168 full-graph logit
+comparisons and 4,608 real-operand standalone head comparisons match exactly.
+Pooled loss deltas are zero. All processes used the same physical GPU UUID and
+the byte-verified source at commit `72ff70aba176da41a5af022d112f255d34c4222e`.
+
+The custom sparse head saves 11.43-16.79% versus its own no-skip control, but
+is 35.37-44.55% slower than dense cuBLAS. Full-forward latency increases
+7.19-8.86%, consistently across all three processes. The custom no-skip head
+already costs about 63% more than cuBLAS. Empty 8x16 gate tiles reach
+17.34-27.42%, but only 7.07-15.92% of the paired 16x16 consumer tiles are empty.
+Thus skipping saves work without recovering the baseline custom execution gap.
+The separate CUDA-event replays support the same conclusion.
+
+All 163 scientific files and eight supplemental delivery files were copied
+and hash-verified before deletion. [Teardown](ops/teardown-001.json) confirms
+no new Pod or network volume remains; existing foreign resources are unchanged.
+The scoped two-hour stop guard was disarmed. The initial placement lost a
+capacity race; the next Secure request succeeded at USD 1.19/hour. A slow
+legacy-SCP upload was replaced by Runpodctl/croc, preserving the sealed bytes.
+CUDA 12.8 existed outside the initial PATH and was selected by the run wrapper.
+Scientific inputs and kernel sources were unchanged throughout execution.
+
+For reproduction: `20_analyze.py --tag 001` reduces verified paired records;
+`21_figure.py` creates the initial plot and observation; `22_diagnostic_report.py`
+adds pooled statistics and numerical interpretation; `23_figure.py` generates
+the final visually checked layout with process means. The sealed prelaunch
+scripts remain intact; the two final reporting scripts were added after execution.
+The [observation](observations/01-sparse-vocabulary-head.md) retains coverage,
+legend, aggregation, limitations and all generating sources. No manuscript edit
+or finding promotion is included.

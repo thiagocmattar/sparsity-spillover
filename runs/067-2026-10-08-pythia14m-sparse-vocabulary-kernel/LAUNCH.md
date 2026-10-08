@@ -1,4 +1,9 @@
-# Run067 launch packet — approval pending
+# Run067 launch packet - approved and executed
+
+The user explicitly approved this packet on 8 October 2026. Cohort `001`
+completed; artifacts were verified locally and the owned Pod was deleted.
+The launch definition below retains the prelaunch scope and cost envelope.
+See [execution and results](README.md#verified-cloud-execution-and-result).
 
 ## Implemented comparison and qualification
 
@@ -111,5 +116,6 @@ before deleting the owned Pod. Disarm its guard and re-list resources. Never
 delete the Pod before agreed artifacts are verified. Generate the comparison
 table and visually checked publication PDF locally, retaining observations.
 
-Separate explicit launch approval is required by AGENTS.md; this packet is
-implemented and reviewable, but no billable resource has been created.
+Separate explicit launch approval was obtained as required by AGENTS.md.
+The executed Pod and verified closeout are recorded in ops/launch-001.json
+and ops/teardown-001.json.
