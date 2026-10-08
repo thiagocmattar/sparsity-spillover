@@ -1,9 +1,13 @@
 # Run068 — aligned vocabulary-head tiles
 
-Status: design confirmed on 8 October 2026; implemented and locally qualified;
-awaiting separate launch approval. No scientific training or Run068 cloud spend
-has occurred. Development checkpoints and timings are not experimental results.
+Status: design and separate launch approved on 8 October 2026. The two-H100
+training Pod was created at 22:33:38 UTC for $7.98/hour. Setup and the production
+preflight barrier are running before fresh training. Development checkpoints
+and timings are not experimental results.
 See [the launch packet](LAUNCH.md) and [local checks](prelaunch/checks.json).
+Operational identities and the four-hour deadline are retained in
+[the launch approval](prelaunch/launch-approval-001.json) and
+[the training lease](prelaunch/lease-training-001.json).
 
 ## Approved question and conditions
 

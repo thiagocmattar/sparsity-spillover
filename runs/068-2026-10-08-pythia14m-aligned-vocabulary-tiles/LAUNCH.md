@@ -1,9 +1,12 @@
 # Run068 launch packet
 
-Status: ready for separate launch approval; no owned billable resource exists.
-The user confirmed the two-model design and retained diagnostic inventory.
+Status: separate launch approved; the owned two-H100 Pod started at
+2026-10-08 22:33:38 UTC for $7.98/hour. Setup and production preflights are running.
+The user confirmed the two-model design, retained inventory and $60 envelope.
 Scientific fields are in [config.yaml](config.yaml); scope and limitations are
-in [README.md](README.md). Preparation does not authorize cloud execution.
+in [README.md](README.md). The explicit user approval is recorded in
+[launch-approval-001.json](prelaunch/launch-approval-001.json); the actual provider
+identity and deadline are in [lease-training-001.json](prelaunch/lease-training-001.json).
 
 ## Implemented and checked
 
