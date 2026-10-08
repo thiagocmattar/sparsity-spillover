@@ -109,7 +109,7 @@ def main():
             coverage={'documents':500 if blocks==338 else None,'blocks':blocks,'input_tokens':blocks*2048,
                       'predictions':predictions,'excluded_tail_tokens':1444 if blocks==338 else None}
             write(dest/'quality.json',{'rows':quality,'loss':losses,'coverage':coverage,'bounds':cfg['numerical_bounds'],
-                                      'native_reference':'unmodified FP32 parameters, FP16 autocast, SDPA B1/T2048; Run066 B32 loss is provenance only'})
+                                      'native_reference':'unmodified FP32 parameters, FP16 autocast, SDPA B1/T2048; Run068 B32 loss is provenance only'})
             write(dest/'head-diagnostics.json',{'counts':diagnostics.pool(head_rows),'per_block':head_rows,'coverage':coverage,
                                                'native_dtype':'float32','gate_tile':[16,16],
                                                'consumer_tile':[cfg['kernel_tile_tokens'],16],

@@ -63,10 +63,10 @@ def main():
           'primary_timer':'synchronized host; CUDA events use separate replays',
           'precision':'FP32 checkpoint parameters, native FP32 head gate, FP16 projection',
           'interpretation':'16x16 gate emptiness equals 16x16 consumer skip fraction; source-level skipped loads are not measured DRAM traffic'})
-    lines=['# Sparse vocabulary head â€” verified RTX5090 comparison','',
-           'All values are milliseconds. Three fresh processes per model; 64 fixed inputs Ã— 7 paired passes per process.',
+    lines=['# Sparse vocabulary head - verified RTX5090 comparison','',
+           'All values are milliseconds. Three fresh processes per model; 64 fixed inputs x 7 paired passes per process.',
            'The gate, weights and full-vocabulary output contract remain matched. This is B1/T2048 inference.','',
-           '| Îº | Pressure history | Dense head path | No-skip head path | Sparse head path | Head reduction vs dense | Dense forward | Sparse forward | Forward reduction |',
+           '| Head kappa | Pressure history | Dense head path | No-skip head path | Sparse head path | Head reduction vs dense | Dense forward | Sparse forward | Forward reduction |',
            '|---:|---|---:|---:|---:|---:|---:|---:|---:|']
     for row in comparisons:
         head=row['timings']['gate_cast_projection']['host_ms'];full=row['timings']['full_forward']['host_ms']
