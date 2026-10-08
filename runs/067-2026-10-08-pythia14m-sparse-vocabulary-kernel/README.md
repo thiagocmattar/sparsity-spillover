@@ -1,4 +1,4 @@
-# Run067 â€” sparse vocabulary-head consumer
+# Run067 — sparse vocabulary-head consumer
 
 Status: implemented and locally qualified; cloud launch pending.
 The user confirmed the four-checkpoint inference design on 8 October 2026.
@@ -114,7 +114,7 @@ full graphs on all338 blocks:4056 full-logit comparisons. Every comparison has
 zero absolute/relative error and exactly equal pooled losses. The six head
 graphs per checkpoint also match exactly on all64 real timing inputs:1536
 component comparisons. Peak allocated memory is1,710,866,432 bytes (1.593GiB).
-The four qualification processes take86.36â€“89.60 seconds each, including
+The four qualification processes take86.36–89.60 seconds each, including
 diagnostics and development timings. These timings are not RTX5090 results.
 
 Final tag006 repeats48 CUDA component checks, all four eight-block full smokes,

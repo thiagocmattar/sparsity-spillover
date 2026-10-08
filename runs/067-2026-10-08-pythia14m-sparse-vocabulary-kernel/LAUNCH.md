@@ -1,4 +1,4 @@
-# Run067 launch packet â€” approval pending
+# Run067 launch packet — approval pending
 
 ## Implemented comparison and qualification
 
@@ -19,15 +19,15 @@ stop guard and report/figure scripts are run-local.
 
 Evidence:254 CPU tests pass (242 bootstrap+12 focused,8.24s);48 final GPU component
 checks pass. All four models pass full local qualification:three full graphs
-per model Ã—338 blocks=4056 comparisons, all exact logits and loss agreement.
-Six head graphs per model Ã—64 real operands=1536 comparisons also match exactly.
+per model ×338 blocks=4056 comparisons, all exact logits and loss agreement.
+Six head graphs per model ×64 real operands=1536 comparisons also match exactly.
 Final-code tag006 repeats the component checks and four eight-block smokes after
 metadata/setup additions; arithmetic/CUDA/forward/bounds remain unchanged.
 All Python, shell and PowerShell sources parse. Failed checks are retained.
 
 The local RTX5070Ti laptop has12GiB VRAM. The exact B1/T2048 representative fits
 at1.593GiB peak allocation. The four full qualification processes took
-86.36â€“89.60s each, including numerical checks, diagnostics and development
+86.36–89.60s each, including numerical checks, diagnostics and development
 timings. Local timing does not establish the requested RTX5090 result.
 
 ## Execution definition and ETC
@@ -35,16 +35,16 @@ timings. Local timing does not establish the requested RTX5090 result.
 One physical RTX5090/32GB, twelve sequential fresh processes:three per model.
 Each qualifies all500 validation documents/338 complete2048-token blocks,
 692224 input tokens/691886 predictions, excluding1444 tail tokens. Each times
-64 fixed inputs Ã—7 randomized paired passes, with host and CUDA-event replays
+64 fixed inputs ×7 randomized paired passes, with host and CUDA-event replays
 separate. Full-forward and gate/cast/projection include recurring preparation;
 projection-only excludes it and is diagnostic. Equal staging/setup are excluded.
 No softmax, loss or token selection is inside forward timing.
 
 Run the pinned component checks and four eight-block smokes first. Failures stop
 before the twelve full processes. The representative local cohort projects
-17.6min for twelve qualification/measurement processes; allow15â€“25min on the
+17.6min for twelve qualification/measurement processes; allow15–25min on the
 5090, plus provisioning/setup/upload/cold compilation/retrieval. Proposed total
-ETC25â€“50min; availability and package-transfer uncertainty remain. Keep the
+ETC25–50min; availability and package-transfer uncertainty remain. Keep the
 flexible two-hour backstop rather than tightening it to the estimate.
 
 ## Live cloud envelope
