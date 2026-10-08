@@ -1,0 +1,51 @@
+{
+  "status": "proposed_not_created",
+  "create_pod": {
+    "body": {
+      "name": "run066-vocabulary-tile-001",
+      "cloud": "SECURE",
+      "gpu": {
+        "id": "NVIDIA H100 80GB HBM3",
+        "count": 2,
+        "minCudaVersion": "12.8",
+        "minRamPerGpu": 32,
+        "minVcpuCountPerGpu": 8
+      },
+      "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+      "disk": 40,
+      "mounts": {
+        "persistent": {
+          "path": "/workspace",
+          "size": 50
+        }
+      },
+      "ports": [
+        "22/tcp"
+      ],
+      "startSsh": true,
+      "startJupyter": false
+    }
+  },
+  "fallback_gpu_id": "NVIDIA H200",
+  "maximum_running_hours": 4,
+  "maximum_incremental_usd": 60,
+  "deadline_action": "stop_preserve_volume",
+  "approval": "Pending explicit launch confirmation",
+  "worker_order": [
+    "t2-tile-head-ph-kappa-0",
+    "t2-tile-head-ph-kappa-0p1",
+    "t2-tile-head-ph_head-kappa-0",
+    "t2-tile-head-ph_head-kappa-0p1"
+  ],
+  "waves": [
+    [
+      0,
+      1
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "registered_public_ssh_keys": 2
+}

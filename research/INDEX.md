@@ -5,6 +5,12 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run066](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/README.md)
+has an approved four-condition 14M vocabulary-input tile/pressure design,
+matched to Run060 initialization and training order. Local qualification passed;
+[launch packet](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/LAUNCH.md)
+awaits launch approval. No training result or new sparsity/speedup claim exists.
+
 [Analysis042](../analyses/042-2026-10-08-model-latency-decomposition/README.md)
 collects per-model latency tables and PDFs with explicit tiled (14M) and scalar
 (31M/70M) threshold labels, using completed Runs064/065. Common categories/colors
