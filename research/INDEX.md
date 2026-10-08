@@ -5,6 +5,14 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run065](../runs/065-2026-10-07-larger-model-forward-decomposition/README.md)
+profiles retained scalar-gated 31M/70M T2/Ph models on one RTX 5090. Sparse
+full-forward reductions are 4.63%/15.61% (31M) and 28.22%/31.03% (70M), at
+kappa 0/.1. 31M's joint consumer remains a bottleneck; 70M's vocabulary head
+leads. All 12 processes qualify; all 48 maps and artifacts are verified, owned Pod
+deleted. [Full decomposition and PDF](../runs/065-2026-10-07-larger-model-forward-decomposition/observations/01-larger-forward-decomposition.md).
+Different gates/consumers limit comparison with Run064's 14M corner models.
+
 [Run064](../runs/064-2026-10-07-pythia14m-forward-latency-decomposition/README.md)
 decomposes the complete forward on one RTX5090. The repeated specialization
 gain is 10.337%/9.002%, localized to joint gate/down-projection/residual kernels.

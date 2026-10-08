@@ -1,0 +1,54 @@
+{
+  "authorization": "Existing user pre-approval plus explicit selection of profiling existing models",
+  "tests": {
+    "bootstrap": 242,
+    "instrumentation": 8,
+    "checkpoint_headers": 4,
+    "remote_smoke": "four checkpoints x8blocks before full cohort"
+  },
+  "gpu": "RTX5090 x1",
+  "cloud": "COMMUNITY",
+  "price_usd_per_hour": 0.69,
+  "maximum_gpu_hours": 3,
+  "maximum_gpu_usd": 2.07,
+  "storage_estimate_usd": 0.06,
+  "total_budget_usd": 3,
+  "storage": {
+    "container_gb": 40,
+    "persistent_gb": 25,
+    "network_volume": null
+  },
+  "expected_minutes": [
+    45,
+    90
+  ],
+  "workload": "BF16 B1 T2048 full50304 logits;3models/6graphs plus native anchor per process; estimated peak<12GB",
+  "bundle": {
+    "path": "bundles/input-001.tar.gz",
+    "bytes": 757424421,
+    "sha256": "dbcb5bceebd27d7a439de3b01b21a9e76cfefefc7461281298a038565afb6026",
+    "files": 2987,
+    "payload_bytes": 873894475
+  },
+  "retrieval": [
+    "all result/quality JSON",
+    "baseline and stage sample JSONL",
+    "raw eager and graph CUPTI traces",
+    "trace mapping JSON",
+    "full338block activation counts/moments and weight norms",
+    "runtime/compiler/driver files",
+    "logs and transfer hash inventory"
+  ],
+  "retained_locally": "four source final checkpoints and exact validation cache; no training or gradient reconstruction",
+  "monitor_seconds": 60,
+  "warning_conditions": [
+    "non-finite loss",
+    "any numerical-bound failure",
+    "missing/changed source identity",
+    "stale stage for10min outside compilation",
+    "GPU memory>28GB",
+    "disk free<3GB",
+    "deadline reserve<32min"
+  ],
+  "teardown": "retrieve and verify every artifact hash, terminate only owned pod, re-list resources;deadline backstop stops compute preserving disk"
+}

@@ -1,0 +1,263 @@
+{
+  "status": "complete",
+  "run_id": "065-2026-10-07-larger-model-forward-decomposition",
+  "config": {
+    "run_id": "065-2026-10-07-larger-model-forward-decomposition",
+    "authorization": "User selected existing larger models; full decomposition and RunPod execution pre-approved; no training or kernel search.",
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "pairs": [
+      "0",
+      "0p1"
+    ],
+    "modes": [
+      "native",
+      "sparse",
+      "no_skip"
+    ],
+    "runtime_seed": 2801,
+    "timing_seed": 2504,
+    "timing_inputs": 64,
+    "timing_passes": 7,
+    "process_replicates": 3,
+    "validation_blocks": 338,
+    "validation_documents": 500,
+    "excluded_tail_tokens": 1444,
+    "trace_inputs": 4,
+    "trace_replays": 3,
+    "maximum_gpu_hours": 3,
+    "budget_usd": 3,
+    "monitor_interval_seconds": 60,
+    "numerical_bounds": {
+      "logit_atol": 0.25,
+      "logit_rtol": 0.02,
+      "logit_relative_l2": 0.02,
+      "validation_loss_atol": 0.001
+    },
+    "sizes": [
+      "31m",
+      "70m"
+    ]
+  },
+  "arguments": {
+    "size": "31m",
+    "pair": "0p1",
+    "replicate": 1,
+    "smoke": false,
+    "tag": "001"
+  },
+  "source_config": {
+    "path": "config.json",
+    "bytes": 895,
+    "sha256": "829da12fc2c4a91f2682bdb41dd630517e2cfc4c313c353c048d7ad29b794c14"
+  },
+  "checkpoint": {
+    "size": "31m",
+    "pair": "0p1",
+    "source_run": "054-2026-09-24-pythia31m-t2-ph",
+    "source_attempt": "005-20260924-134241-3b66fc99",
+    "checkpoint": "inputs/checkpoints/31m-k0p1",
+    "files": [
+      {
+        "path": "inputs/checkpoints/31m-k0p1/checkpoint_metadata.json",
+        "bytes": 395,
+        "sha256": "982127cf322995879967ebc08eec9ad684f93bb5158166e63a9e6b14f5608352"
+      },
+      {
+        "path": "inputs/checkpoints/31m-k0p1/config.json",
+        "bytes": 1486,
+        "sha256": "21a96ad22e5acd6d333fdf2858c12447a710caf3ccca42e41510bbe2eedb4fa8"
+      },
+      {
+        "path": "inputs/checkpoints/31m-k0p1/generation_config.json",
+        "bytes": 195,
+        "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+      },
+      {
+        "path": "inputs/checkpoints/31m-k0p1/model.safetensors",
+        "bytes": 121987544,
+        "sha256": "48ebc375413af6445c313e251be62345bf2b2f2bafbbd01d588ba9647ff46192"
+      }
+    ]
+  },
+  "validation": {
+    "path": "inputs/validation.int32.bin",
+    "bytes": 2774672,
+    "sha256": "51cd758fda72f14383da30c358a895d0223c0d1d80b31455d2d842c3656d0451"
+  },
+  "source_deployment": {
+    "lease": {
+      "id": "qon53j3aqgr9gf",
+      "name": "run065-larger-decomposition-001",
+      "cloud": "COMMUNITY",
+      "price_per_hour": 0.69,
+      "created_at": "2026-10-07T23:04:54.417Z",
+      "deadline_epoch": 1791425094.417,
+      "deadline_utc": "2026-10-08T02:04:54.417Z",
+      "source_commit": "f670d4786f9536fae4bb3c361ed6c550aba758f0",
+      "source_dirty": "Run065 newly implemented, sealed inventory",
+      "gpu": {
+        "count": 1,
+        "id": "NVIDIA GeForce RTX 5090",
+        "memory": 53,
+        "vcpuCount": 27
+      },
+      "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+      "storage": {
+        "container_gb": 40,
+        "persistent_gb": 25
+      },
+      "maximum_gpu_hours": 3,
+      "budget_usd": 3,
+      "authorization": "Existing full decomposition/RunPod pre-approval; user selected existing larger models",
+      "host_cuda": "12.8"
+    },
+    "bundle": {
+      "path": "bundles/input-001.tar.gz",
+      "bytes": 757424421,
+      "sha256": "dbcb5bceebd27d7a439de3b01b21a9e76cfefefc7461281298a038565afb6026",
+      "files": 2987,
+      "payload_bytes": 873894475
+    },
+    "source_commit": "f670d4786f9536fae4bb3c361ed6c550aba758f0",
+    "ingress_attempt": 4
+  },
+  "implementation": {
+    "sparse": {
+      "identity": "opt073-31m-v1",
+      "parent": "Run045 opt073",
+      "dimensions": {
+        "d": 256,
+        "ffn": 1024,
+        "heads": 8,
+        "head_dim": 32
+      },
+      "input_projections": "native dense, as opt073",
+      "normalization": "shared-input width256 paired LayerNorm",
+      "output_projections": "M8 N256 K16, <=8-entry scalar rows, parallel inspection and native-order MMA fallback",
+      "attention": "dense Flash M64 N128, four warps, head32, token-major output",
+      "head": "CUTLASS 128x128x32 full50304",
+      "new_optimization_search": false,
+      "same_policy_all_checkpoints": true,
+      "mode": "sparse"
+    },
+    "no_skip": {
+      "identity": "opt073-31m-v1",
+      "parent": "Run045 opt073",
+      "dimensions": {
+        "d": 256,
+        "ffn": 1024,
+        "heads": 8,
+        "head_dim": 32
+      },
+      "input_projections": "native dense, as opt073",
+      "normalization": "shared-input width256 paired LayerNorm",
+      "output_projections": "M8 N256 K16, <=8-entry scalar rows, parallel inspection and native-order MMA fallback",
+      "attention": "dense Flash M64 N128, four warps, head32, token-major output",
+      "head": "CUTLASS 128x128x32 full50304",
+      "new_optimization_search": false,
+      "same_policy_all_checkpoints": true,
+      "mode": "no_skip"
+    }
+  },
+  "runtime": {
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "gpu_uuid": "758a506b-7a27-1452-c9fc-42e57288a13b",
+    "properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32119MB, multi_processor_count=170, uuid=758a506b-7a27-1452-c9fc-42e57288a13b, pci_bus_id=65, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+    "python": "3.12.3",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1",
+    "numpy": "2.5.0",
+    "cuda": "12.8"
+  },
+  "source_files": [
+    {
+      "path": "01_prepare.py",
+      "bytes": 4502,
+      "sha256": "3d8513c4515644d46f831ee2f301044a43837c8cd12f3270c2965e5c3b357fb5"
+    },
+    {
+      "path": "02_profile.py",
+      "bytes": 9320,
+      "sha256": "22e8d530c8b16b670d72528c281b30077b0241afe786778e0a166f7ab2e96dfc"
+    },
+    {
+      "path": "03_execute.py",
+      "bytes": 1568,
+      "sha256": "3a88631d8b05875c5f4f291a48a727b81a4ab20f91b32d38017da7318705ea5f"
+    },
+    {
+      "path": "06_cloud.py",
+      "bytes": 8360,
+      "sha256": "8deec2fddd825dcdc1fb764296e185c23ce312faa5531857deeb83e86a2f717f"
+    },
+    {
+      "path": "accounting.py",
+      "bytes": 975,
+      "sha256": "885269e93f0ba45ba6d9c25bdae926d28d8446a5312190049f25bb45159f2779"
+    },
+    {
+      "path": "bindings.py",
+      "bytes": 1156,
+      "sha256": "7e142cb3f8114f96a5624e2b12157ef22185b712ebe34a746f239c7945a2b2ad"
+    },
+    {
+      "path": "diagnostics.py",
+      "bytes": 2351,
+      "sha256": "c2bca61ff66361152ec5601f13641d343b2dff5e708a3d11349b0ea562969a07"
+    },
+    {
+      "path": "profiling.py",
+      "bytes": 2862,
+      "sha256": "5815931540663d5623df22f50bd15e260bae3c70408243848fe5079b3d8d9377"
+    },
+    {
+      "path": "runio.py",
+      "bytes": 1365,
+      "sha256": "04fa79e669bea563e6ee1a16e18bac31fd3d685b144bd971ee784800b2cb4b36"
+    },
+    {
+      "path": "stages.py",
+      "bytes": 5910,
+      "sha256": "8c8369b3aa3251feb31fc7d4091c4f9ed14709ee471df084436a385e67a71bc5"
+    },
+    {
+      "path": "test_decomposition.py",
+      "bytes": 785,
+      "sha256": "0c45d69c690fa5a0ed8d86251ce44cac195a66e0f73f484a2248465ef0be4470"
+    },
+    {
+      "path": "test_trace_mapping.py",
+      "bytes": 1386,
+      "sha256": "c59f7286a867e09065656efb0af3d282c1970b7d4de141f2f01f7b9a23f97356"
+    },
+    {
+      "path": "trace_copy_mapping.py",
+      "bytes": 2490,
+      "sha256": "e0d0766f5de2e780afdbdee1d53fbfde7031f87816fe4866695cd2995959a01c"
+    }
+  ],
+  "setup_seconds": {
+    "native": 8.147000335156918e-05,
+    "baseline_native": 0.3139940779656172,
+    "mapped_native": 0.019453821005299687,
+    "baseline_sparse": 39.85363024799153,
+    "mapped_sparse": 0.017549811862409115,
+    "baseline_no_skip": 0.4983946648426354,
+    "mapped_no_skip": 0.006858286913484335
+  },
+  "qualified": true,
+  "loss": {
+    "native": 4.759870408225669,
+    "baseline_native": 4.759870408225669,
+    "mapped_native": 4.759870408225669,
+    "baseline_sparse": 4.75987064111492,
+    "mapped_sparse": 4.75987064111492,
+    "baseline_no_skip": 4.759870408225669,
+    "mapped_no_skip": 4.759870408225669
+  },
+  "peak_allocated_bytes": 3947507712,
+  "peak_reserved_bytes": 4544528384,
+  "evidence_label": "valid",
+  "elapsed_seconds": 73.7479745328892,
+  "finished_utc": "2026-10-07T23:34:10Z"
+}
