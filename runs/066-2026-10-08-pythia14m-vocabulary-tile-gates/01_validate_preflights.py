@@ -1,10 +1,10 @@
 """Review four actual preflights before a fresh scientific initialization."""
 import json
-from run_config import RUN_DIR,load_config,condition_specs,run_code_identity
+from run_config import PREFLIGHT_DIR,load_config,condition_specs,run_code_identity
 
 if __name__ == '__main__':
     for condition in condition_specs(load_config()):
-        path=RUN_DIR/'prelaunch'/f"remote-preflight-{condition['id']}.json"
+        path=PREFLIGHT_DIR/f"remote-preflight-{condition['id']}.json"
         row=json.loads(path.read_text())
         if row['status']!='passed' or row['run_code']!=run_code_identity():
             raise RuntimeError(f'Preflight failed or source changed: {path}')

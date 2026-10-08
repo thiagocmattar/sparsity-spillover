@@ -12,6 +12,7 @@ register()
 from sparsity_research.sites import resolve_topology_and_gates
 
 RUN_DIR = Path(__file__).resolve().parent
+PREFLIGHT_DIR = RUN_DIR / 'prelaunch' / 'attempts' / '002'
 REPO_ROOT = RUN_DIR.parents[1]
 DEFAULT_CONFIG = RUN_DIR / 'config.yaml'
 EXPECTED_INITIAL_PARAMETER_SHA256 = 'ece58512e94ee2f97d17278fe8af4c1abef9c5f7f9dbdd4087e36d7f67d7af57'

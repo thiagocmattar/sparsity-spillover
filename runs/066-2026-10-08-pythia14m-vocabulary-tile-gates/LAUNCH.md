@@ -1,8 +1,8 @@
-# Run066 launch packet — awaiting launch approval
+# Run066 approved launch packet
 
-The user approved the four-condition design and the post-hoc inventory on
-8 October 2026. This packet requests launch approval; no Pod has been created
-and no scientific training has started. See [README](README.md) and
+The user approved the four-condition design, the post-hoc inventory and this
+launch packet on 8 October 2026, replying “Approved.” At approval, no Pod had
+been created and no scientific training had started. See [README](README.md) and
 [resolved recipe](config.yaml) for the scientific contract.
 
 ## Implemented scope and verification
@@ -165,7 +165,6 @@ nonfinite values, memory above90%, free disk below10GB, process/coverage/hash
 failure, or refreshed ETC entering the final30 minutes of the running deadline.
 No unapproved scientific rescue changes; preserve failure evidence.
 
-The user has accepted the diagnostic inventory. **Launch approval remains
-pending**. [AGENTS.md](../../AGENTS.md) requires a separate launch confirmation:
-“Design approval is not launch approval.” Approval of this packet authorizes
-the exact workload and resource/cost envelope above.
+The user accepted the diagnostic inventory and explicitly approved launch.
+No further confirmation is required within this scientific and billable scope.
+The execution lease records the actual resource and absolute backstop deadline.

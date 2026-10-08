@@ -25,7 +25,8 @@ if __name__=='__main__':
         if path.is_file() and path.suffix in ('.log','.exit','.txt'):
             shutil.copyfile(path,logs/path.name)
     paths=sorted([p for p in (RUN/'artifacts').rglob('*') if p.is_file()]+
-        [p for p in logs.rglob('*') if p.is_file()]+list((RUN/'prelaunch').glob('remote-preflight-*.json')))
+        [p for p in logs.rglob('*') if p.is_file()]+list((RUN/'prelaunch').glob('remote-preflight-*.json'))+
+        [p for p in (RUN/'prelaunch/attempts').rglob('*') if p.is_file()])
     inventory={'files':[record(p) for p in paths]}
     inventory['total_bytes']=sum(r['bytes'] for r in inventory['files'])
     inventory_path=target/'training-inventory-001.json'

@@ -1,8 +1,10 @@
 # Run066 - vocabulary-input tiles on the 14M T2/Ph recipe
 
-Status: design and post-hoc inventory approved; locally qualified, awaiting
-launch approval. No cloud resource has been
-created and no scientific training has started. Launch approval is separate.
+Status: design, post-hoc inventory and launch approved. The owned two-H100 Pod
+has been created; source/input transfer, setup and GPU qualification precede
+scientific training. [Launch lease](prelaunch/lease-training-001.json) records
+the actual offer, Pod identity, approval and deadline. The original preparation
+config's launch flag is historical; explicit user approval authorizes execution.
 
 ## Approved question and comparison
 
@@ -118,16 +120,24 @@ and restart scientific training from original bytes only after all checks pass.
 Focused tests39/39 and bootstrap242/242 passed. All four real14M CPU boundaries
 passed, with exact initialization, checkpoint logits and causal prefix logits.
 Receipts are [checks](prelaunch/checks.json) and [CPU smoke](prelaunch/local-smoke.json).
-CUDA production qualification and new training throughput remain unmeasured.
+CUDA qualification attempt001 reached the final preflight summary but failed because
+a diagnostic dict shadowed Python's statistics module. No scientific training
+started. A reporting-only fix passed the same39 focused and242 bootstrap tests;
+attempt002 repeats all four preflights, including exact checkpoint logits/loss,
+with unchanged scientific inputs and acceptance criteria. Attempt001 logs,
+receipts and calibration checkpoints are preserved under prelaunch/attempts/001.
+New qualification receipts/checkpoints use prelaunch/attempts/002.
 
 RunPod deployment, live price/capacity, cost envelope, artifact inventory,
 monitoring, warnings, transfer and teardown are in [the launch packet](LAUNCH.md):
 two H10080GB GPUs in two waves, four-hour flexible running backstop, USD60 total
-ceiling, with a same-scope two-H200 fallback. No billable resource is active for
-this run. Any maximum duration is a flexible backstop; normal
+ceiling, with a same-scope two-H200 fallback. The approved owned Pod is active at USD6.98/hour. Its original
+four-hour deadline remains unchanged across the qualification retry. Any maximum duration is a flexible backstop; normal
 completion transfers and verifies artifacts before resource termination.
 
 The deployment bundle is prepared from implementation commit `e745d27f`.
 [Source receipt](prelaunch/source-001.receipt.json) records its exact commit,
 208,428,798 bytes and SHA256. The bundle and checkpoint weight files remain
-outside Git; no upload or cloud execution has occurred.
+outside Git. Source and input uploads were hash-verified; the rebuilt MiniPile
+cache matches both approved hashes exactly. Source002 captures the qualification
+reporting fix; the initial deployment remains preserved in the source001 receipt.

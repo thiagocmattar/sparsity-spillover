@@ -5,7 +5,7 @@ import math
 import statistics
 import sys
 from time import perf_counter
-from run_config import (RUN_DIR, load_config, load_verified_caches, build_schedule,
+from run_config import (RUN_DIR, PREFLIGHT_DIR, load_config, load_verified_caches, build_schedule,
     condition_specs, resolved_condition_config, seed_everything, parameter_sha256,
     microbatches_for_step, EXPECTED_INITIAL_PARAMETER_SHA256, EXPECTED_SCHEDULE_SHA256,
     run_code_identity, write_json)
@@ -26,7 +26,7 @@ def main():
     from training import timed_validation
     from diagnostics import activation_diagnostic_validation,logical_product_validation
     c=load_config();t=c['training'];device=torch.device('cuda')
-    out=RUN_DIR/'prelaunch'/('remote-preflight-'+args.worker+'.json')
+    out=PREFLIGHT_DIR/('remote-preflight-'+args.worker+'.json')
     runtime={'python':f'{sys.version_info.major}.{sys.version_info.minor}',
              'torch':torch.__version__.split('+')[0],'transformers':transformers.__version__,
              'cuda_runtime':torch.version.cuda}
@@ -73,7 +73,7 @@ def main():
     del optimizer
     capture.clear()
     validation,validation_seconds=timed_validation(model=model,tokens=val,config=c,torch=torch,np=np)
-    start=perf_counter();checkpoint=RUN_DIR/'prelaunch'/('calibration-checkpoint-'+args.worker)
+    start=perf_counter();checkpoint=PREFLIGHT_DIR/('calibration-checkpoint-'+args.worker)
     model.save_pretrained(checkpoint,safe_serialization=True);checkpoint_seconds=perf_counter()-start
     from head_site import load_checkpoint_pythia
     restored=load_checkpoint_pythia(transformers.AutoModelForCausalLM,checkpoint,torch=torch)
@@ -93,9 +93,9 @@ def main():
     del restored
     diagnostic_seconds={}
     if True:  # Every operator/pressure condition exercises its complete diagnostics.
-        start=perf_counter();_,statistics=activation_diagnostic_validation(model=model,tokens=val,config=c,torch=torch,np=np)
+        start=perf_counter();_,activation_statistics=activation_diagnostic_validation(model=model,tokens=val,config=c,torch=torch,np=np)
         diagnostic_seconds['activation']=perf_counter()-start
-        start=perf_counter();logical_product_validation(model=model,tokens=val,config=c,torch=torch,np=np,activation_statistics=statistics)
+        start=perf_counter();logical_product_validation(model=model,tokens=val,config=c,torch=torch,np=np,activation_statistics=activation_statistics)
         diagnostic_seconds['logical']=perf_counter()-start
     reserved=torch.cuda.max_memory_reserved();capacity=torch.cuda.get_device_properties(0).total_memory
     result.update(status='passed' if reserved<=.9*capacity else 'failed',

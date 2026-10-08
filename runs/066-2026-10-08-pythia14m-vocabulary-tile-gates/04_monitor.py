@@ -2,7 +2,7 @@
 import json
 from statistics import median
 from time import time
-from run_config import RUN_DIR,load_config
+from run_config import RUN_DIR,PREFLIGHT_DIR,load_config
 
 if __name__=='__main__':
     config=load_config();rows=[]
@@ -23,7 +23,7 @@ if __name__=='__main__':
         if latest:
             remaining=config['training']['max_steps']-int(latest['step'])
             step_seconds=median(r['step_wall_seconds'] for r in updates[-10:])
-            calibration=RUN_DIR/'prelaunch'/f"remote-preflight-{latest['worker_id']}.json"
+            calibration=PREFLIGHT_DIR/f"remote-preflight-{latest['worker_id']}.json"
             timing=json.loads(calibration.read_text()) if calibration.exists() else {}
             pending_validation=set(config['validation']['steps'])-validations
             pending_diagnostics=set(config['diagnostics']['steps'])-diagnostics
