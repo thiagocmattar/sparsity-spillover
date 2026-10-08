@@ -18,6 +18,17 @@ evolve from approved findings, but it is not evidence or a launch plan. Do not
 force textual alignment: surface scientifically meaningful differences between
 manuscript, operational definitions, and implementation.
 
+## User communication preferences
+
+- The user may dictate messages in Portuguese through speech-to-text.
+- Continue responding and working in English, including new documentation and
+  reports, even when the user's message is in Portuguese.
+- Expect transcription errors, especially in technical terms, acronyms, names,
+  and spelling.
+- Use the conversation and repository context to recover the intended meaning
+  when it is clear. If ambiguity remains and could change the scientific
+  interpretation or requested action, ask for clarification before proceeding.
+
 ## Read first
 
 1. `research/INDEX.md`
