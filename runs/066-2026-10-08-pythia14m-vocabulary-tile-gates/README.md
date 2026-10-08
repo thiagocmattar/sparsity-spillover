@@ -126,3 +126,8 @@ two H10080GB GPUs in two waves, four-hour flexible running backstop, USD60 total
 ceiling, with a same-scope two-H200 fallback. No billable resource is active for
 this run. Any maximum duration is a flexible backstop; normal
 completion transfers and verifies artifacts before resource termination.
+
+The deployment bundle is prepared from implementation commit `e745d27f`.
+[Source receipt](prelaunch/source-001.receipt.json) records its exact commit,
+208,428,798 bytes and SHA256. The bundle and checkpoint weight files remain
+outside Git; no upload or cloud execution has occurred.

@@ -110,8 +110,8 @@ guard stops its process group; a separate hidden workstation guard performs
 provider stop at the same deadline. Record provider-start time, exact quote,
 Pod identity, absolute deadline and guard PIDs before training.
 
-Upload a bundle of the actual committed Git revision (historically about
-160–200MB), 56.3MB original random replay, and **112,563,120 bytes** of retained
+Upload the prepared bundle of implementation commit `e745d27f`
+(**208,428,798 bytes**), 56.3MB original random replay, and **112,563,120 bytes** of retained
 control checkpoint inputs. Check source/replay/control SHA256 remotely. Rebuild
 the pinned HF MiniPile/tokenizer cache once on the Pod, matching train/validation
 identities and the approved schedule SHA. A source bundle receipt is prepared
