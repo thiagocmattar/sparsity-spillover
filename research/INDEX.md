@@ -6,9 +6,10 @@ Compact current state; full history belongs to numbered runs and analyses.
 ## Current status
 
 [Run068](../runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/README.md)
-passed both production preflights and is training on two H100s. Two fresh14M
-Ph+head models use head16x16 kappa.1/.5 with h/z8x16 kappa0, followed by a
-matched5090 endpoint benchmark. No new training or speed result exists.
+completed two fresh14M Ph+head trainings: head16x16 kappa.1/.5, h/z8x16 kappa0.
+Native loss is5.560725/5.882600; empty head tiles39.878%/70.763%. All150 artifacts
+are local/hash-verified and the H100 Pod is deleted. The matched5090 endpoint
+benchmark is next; no new speed result exists.
 
 [Run067](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/README.md)
 completed the frozen Run066 sparse vocabulary-head comparison on one RTX 5090.

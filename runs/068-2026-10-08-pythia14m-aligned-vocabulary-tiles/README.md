@@ -1,9 +1,10 @@
 # Run068 — aligned vocabulary-head tiles
 
 Status: design and separate launch approved on 8 October 2026. The two-H100
-training Pod was created at 22:33:38 UTC for $7.98/hour. Both production
-preflights passed; fresh training started at 22:55:09 UTC. Development checkpoints
-and timings are not experimental results.
+training Pod was created at 22:33:38 UTC for $7.98/hour. Both models completed
+712 fresh updates and passed terminal verification. All150 retained files were
+hash-verified locally; the training Pod was deleted at23:43 UTC. The separate
+RTX5090 endpoint comparison is next. Development timings are not experimental results.
 See [the launch packet](LAUNCH.md) and [local checks](prelaunch/checks.json).
 Operational identities and the four-hour deadline are retained in
 [the launch approval](prelaunch/launch-approval-001.json) and
@@ -16,7 +17,11 @@ times were3.500626/3.501335 seconds; peak reserved memory was61,467,525,120 of
 85,028,372,480 bytes (72.3%). The preflight state was discarded. Immutable
 [condition.1](prelaunch/attempts/001/remote-preflight-t2-hz0-head16-ph_head-kappa-0p1.json)
 and [condition.5](prelaunch/attempts/001/remote-preflight-t2-hz0-head16-ph_head-kappa-0p5.json)
-receipts retain the complete checks. Terminal scientific results remain pending.
+receipts retain the complete checks. [Native training results](results/TRAINING.md)
+give losses5.560725/5.882600 and empty16×16 head tiles39.878%/70.763% for head
+κ.1/.5. The paired loss increase is.321875. Inference bypass and latency remain
+pending. [Retrieval](prelaunch/retrieval-training-001.json) and
+[teardown](prelaunch/teardown-training-001.json) retain operational evidence.
 
 ## Approved question and conditions
 

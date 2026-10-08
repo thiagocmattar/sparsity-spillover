@@ -1,8 +1,9 @@
 # Run068 launch packet
 
 Status: separate launch approved; the owned two-H100 Pod started at
-2026-10-08 22:33:38 UTC for $7.98/hour. Both production preflights passed;
-fresh training started at 22:55:09 UTC.
+2026-10-08 22:33:38 UTC for $7.98/hour. Both712-update trainings completed;
+all150 retained files are hash-verified locally and the H100 Pod is deleted.
+The approved separate RTX5090 stage is next.
 The user confirmed the two-model design, retained inventory and $60 envelope.
 Scientific fields are in [config.yaml](config.yaml); scope and limitations are
 in [README.md](README.md). The explicit user approval is recorded in
@@ -23,7 +24,10 @@ parameters, one OL1 boundary, causal-prefix logits and checkpoint restoration.
 Final WSL tag003 qualifies both development models across all338 blocks:2028 exact
 full-logit comparisons and768 exact standalone head comparisons. Four reduced
 FP16 training boundaries and63 CUDA component checks pass. See
-[checks](prelaunch/checks.json). Terminal training and RTX5090 results are pending.
+[checks](prelaunch/checks.json). [Terminal native training results](results/TRAINING.md)
+are verified; RTX5090 results are pending. Benchmark metadata now names Run068
+as the B32 provenance source, and report character encoding is corrected.
+These label-only edits leave arithmetic and qualification criteria unchanged.
 
 ## Resource fit and estimated completion
 
