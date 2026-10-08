@@ -5,6 +5,12 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run067](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/README.md)
+implements the frozen Run066 sparse vocabulary head. All four models pass local
+full338 qualification with exact logits/loss;254 CPU tests and48 CUDA component
+checks pass. RTX5090 comparison is unmeasured; [launch packet](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/LAUNCH.md)
+awaits separate approval. h/z block projections stay native dense in this run.
+
 [Run066](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/results/REPORT.md)
 completed four matched 14M head-input tile trainings and two retained-parent
 re-evaluations. Head exact zeros/empty 8x16 tiles reach 17.34-27.42%; all four

@@ -1,0 +1,164 @@
+{
+  "arguments": {
+    "attempt": "local-t2-tile-head-ph-kappa-0-001",
+    "development": true,
+    "model": "t2-tile-head-ph-kappa-0",
+    "replicate": 1,
+    "smoke": true
+  },
+  "config": {
+    "bytes": 1125,
+    "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/config.json",
+    "sha256": "0ae31f689a755e94541db6687fbeef33527c9ede4987583eb20a3ab351369847"
+  },
+  "elapsed_seconds": 2.568816122000001,
+  "error": "Full logit qualification failed",
+  "implementation": {
+    "custom_no_skip": {
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "gate": {
+        "kappa": 0.0,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 8
+      },
+      "gate_materialized": true,
+      "mode": "custom_no_skip",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast"
+    },
+    "custom_sparse": {
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "gate": {
+        "kappa": 0.0,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 8
+      },
+      "gate_materialized": true,
+      "mode": "custom_sparse",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast"
+    },
+    "dense": {
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "gate": {
+        "kappa": 0.0,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 8
+      },
+      "gate_materialized": true,
+      "mode": "dense",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast"
+    }
+  },
+  "runtime": {
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "python": "3.12.3",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1"
+  },
+  "setup_seconds": {
+    "custom_no_skip": 0.04407398099999682,
+    "custom_sparse": 0.03995343300000087,
+    "dense": 0.5858991869999954
+  },
+  "source": {
+    "checkpoint": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/checkpoints/step_000712",
+    "files": [
+      {
+        "bytes": 2154,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/checkpoints/step_000712/config.json",
+        "sha256": "8dcb78b577ce136eb10a6a1df412aecd00787eecf1303bdc1362dc234d1ff9bc"
+      },
+      {
+        "bytes": 195,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/checkpoints/step_000712/generation_config.json",
+        "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+      },
+      {
+        "bytes": 56279344,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/checkpoints/step_000712/model.safetensors",
+        "sha256": "33f0b3870ba95ffc7e2a0580a9f3028223cdc84dcc80eadaa7f215fe43797161"
+      },
+      {
+        "bytes": 308,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/checkpoints/step_000712/checkpoint_metadata.json",
+        "sha256": "1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9"
+      }
+    ],
+    "id": "t2-tile-head-ph-kappa-0",
+    "kappa": 0.0,
+    "pressure_sites": [
+      "h"
+    ],
+    "production_loss": 5.529001346001258,
+    "provenance": [
+      {
+        "bytes": 15953,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/manifest.json",
+        "sha256": "b08b679439152dcb5c895cae863938e2e48b285d95244b0ee0665c1437a520d2"
+      },
+      {
+        "bytes": 34047,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/metrics.json",
+        "sha256": "473ce93f50363e16b6df0764e01881eb76cc644f4b439030dae900cb3543335e"
+      },
+      {
+        "bytes": 5897,
+        "path": "runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/artifacts/attempts/001-20261008-151805-4f5bac47/config.yaml",
+        "sha256": "481fe06936587a51d6bb0a6281a476b7ff9dbf5b9e71845ac218574a31681882"
+      }
+    ]
+  },
+  "source_files": [
+    {
+      "bytes": 4755,
+      "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/head.py",
+      "sha256": "e88c81d4a0b9c038cbbb22960a3d88f3bf582891be12a78be7ffcd9b95637ab7"
+    },
+    {
+      "bytes": 6368,
+      "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/head.cu",
+      "sha256": "25caaa872c2c3aa2e4a84756c41ff964ad868a4155272e50d6dbe6f8dbde724a"
+    },
+    {
+      "bytes": 3813,
+      "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/measurement.py",
+      "sha256": "cfb956ce964186b1a67a8eaa7ba75a6bbc3d50a7e94df343fad5b5b3fd8245e8"
+    },
+    {
+      "bytes": 1389,
+      "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/diagnostics.py",
+      "sha256": "cabf0e51ceaea20bbe28c19470e18e2cff6e7c4644b123657176763c42650d35"
+    },
+    {
+      "bytes": 11022,
+      "path": "runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/02_benchmark.py",
+      "sha256": "1741bcb898d2053057608bac2ffdcc41f5b63486c9c5930ec1e4afc3338447e0"
+    }
+  ],
+  "status": "failed",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/researcher/sparsity-spillover/run067-001/runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/02_benchmark.py\", line 86, in main\n    raise ValueError('Full logit qualification failed')\nValueError: Full logit qualification failed\n"
+}
