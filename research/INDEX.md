@@ -5,12 +5,13 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
-[Run066](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/README.md)
-has an approved four-condition 14M vocabulary-input tile/pressure design,
-matched to Run060 initialization and training order. Local qualification passed;
-[launch packet](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/LAUNCH.md)
-is launch-approved; the owned two-H100 Pod is qualifying an infrastructure
-retry before training. No training result or new sparsity/speedup claim exists.
+[Run066](../runs/066-2026-10-08-pythia14m-vocabulary-tile-gates/results/REPORT.md)
+completed four matched 14M head-input tile trainings and two retained-parent
+re-evaluations. Head exact zeros/empty 8x16 tiles reach 17.34-27.42%; all four
+losses are below same-kappa parents. Ph+head kappa 0 gives loss 5.497717 and 27.421%
+empty tiles. Head matmuls remain dense; speed is unmeasured. All 320 artifacts
+are local and hash-verified; the owned Pod is deleted. One seed and the six-to-seven
+pressure-average change limit generalization/attribution.
 
 [Analysis042](../analyses/042-2026-10-08-model-latency-decomposition/README.md)
 collects per-model latency tables and PDFs with explicit tiled (14M) and scalar

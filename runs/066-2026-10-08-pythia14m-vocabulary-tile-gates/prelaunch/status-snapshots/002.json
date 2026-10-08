@@ -1,0 +1,165 @@
+﻿{
+  "stage_markers": {
+    "environment-ready": true,
+    "cache-ready": true,
+    "preflight-passed": true,
+    "completed": false
+  },
+  "pipeline_exit": null,
+  "logs": {
+    "guard.log": [
+      "{\"event\": \"armed\", \"pod_id\": \"eci93owzcktgwh\", \"kind\": \"workload-only; provider stop is workstation-managed\", \"deadline_epoch\": 1791484600.738, \"utc\": \"2026-10-08T14:38:42.806989+00:00\"}"
+    ],
+    "pipeline.log": [
+      "All four production preflights passed"
+    ]
+  },
+  "preflights": [
+    {
+      "worker": "t2-tile-head-ph-kappa-0",
+      "status": "passed",
+      "median_boundary_seconds": 3.4090281799435616,
+      "peak_reserved_bytes": 61467525120,
+      "total_memory_bytes": 85017493504,
+      "checkpoint_numerical_smoke": {
+        "batch_size": 1,
+        "logits_exact": true,
+        "loss_exact": true,
+        "precision": "production FP16 autocast",
+        "sequence_length": 2048
+      }
+    },
+    {
+      "worker": "t2-tile-head-ph-kappa-0p1",
+      "status": "passed",
+      "median_boundary_seconds": 3.416795138269663,
+      "peak_reserved_bytes": 61467525120,
+      "total_memory_bytes": 85017493504,
+      "checkpoint_numerical_smoke": {
+        "batch_size": 1,
+        "logits_exact": true,
+        "loss_exact": true,
+        "precision": "production FP16 autocast",
+        "sequence_length": 2048
+      }
+    },
+    {
+      "worker": "t2-tile-head-ph_head-kappa-0",
+      "status": "passed",
+      "median_boundary_seconds": 3.4983119927346706,
+      "peak_reserved_bytes": 61467525120,
+      "total_memory_bytes": 85017493504,
+      "checkpoint_numerical_smoke": {
+        "batch_size": 1,
+        "logits_exact": true,
+        "loss_exact": true,
+        "precision": "production FP16 autocast",
+        "sequence_length": 2048
+      }
+    },
+    {
+      "worker": "t2-tile-head-ph_head-kappa-0p1",
+      "status": "passed",
+      "median_boundary_seconds": 3.5025817081332207,
+      "peak_reserved_bytes": 61467525120,
+      "total_memory_bytes": 85017493504,
+      "checkpoint_numerical_smoke": {
+        "batch_size": 1,
+        "logits_exact": true,
+        "loss_exact": true,
+        "precision": "production FP16 autocast",
+        "sequence_length": 2048
+      }
+    }
+  ],
+  "gpu": "NVIDIA H100 80GB HBM3, 99 %, 57853 MiB, 81559 MiB\nNVIDIA H100 80GB HBM3, 99 %, 57853 MiB, 81559 MiB",
+  "disk": "Filesystem                   Size  Used Avail Use% Mounted on\nmfs#ap-in-2.runpod.net:9421  420T  380T   40T  91% /workspace",
+  "owned_workspace_bytes": "7924717688\t/workspace/sparsity-spillover\n7372981714\t/workspace/run066-venv",
+  "training": [
+    {
+      "attempt": "001-20261008-151805-4f5bac47",
+      "status": "running",
+      "step": 238,
+      "task_loss": 6.019012659788132,
+      "throughput": 611673.4923649761,
+      "training_remaining_seconds": 1619.5328000932932,
+      "estimated_completion_seconds": 1630.1193759180605,
+      "etc_scope": "training and calibrated remaining validation/diagnostics; transfer/verification reported separately",
+      "pending_validation_steps": [
+        256,
+        512,
+        712
+      ],
+      "pending_diagnostic_steps": [
+        712
+      ],
+      "stale_event_seconds": 1.673579216003418,
+      "elapsed_seconds": 828.0810763835907,
+      "latest_validation": {
+        "batches": 11,
+        "complete_block_coverage": true,
+        "condition_id": "t2-tile-head-ph-kappa-0",
+        "elapsed_seconds": 449.1524537354708,
+        "event": "validation",
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.5611856900728664,
+        "sequences": 338,
+        "source_tokens": 693668,
+        "step": 128,
+        "wall_seconds": 0.42210763320326805
+      },
+      "worker": "t2-tile-head-ph-kappa-0",
+      "head_diagnostic": {
+        "source": "artifacts/attempts/001-20261008-151805-4f5bac47/diagnostics/step_000128/activation_statistics.json",
+        "exact_zero_count": 28951936,
+        "elements": 88604672,
+        "empty_8x16_tiles": 226187,
+        "total_8x16_tiles": 692224
+      }
+    },
+    {
+      "attempt": "002-20261008-151803-5e0fb7bd",
+      "status": "running",
+      "step": 238,
+      "task_loss": 6.0034593641757965,
+      "throughput": 612016.2303840147,
+      "training_remaining_seconds": 1620.57811986655,
+      "estimated_completion_seconds": 1631.5505049712956,
+      "etc_scope": "training and calibrated remaining validation/diagnostics; transfer/verification reported separately",
+      "pending_validation_steps": [
+        256,
+        512,
+        712
+      ],
+      "pending_diagnostic_steps": [
+        712
+      ],
+      "stale_event_seconds": 2.7226264476776123,
+      "elapsed_seconds": 829.0972296781838,
+      "latest_validation": {
+        "batches": 11,
+        "complete_block_coverage": true,
+        "condition_id": "t2-tile-head-ph-kappa-0p1",
+        "elapsed_seconds": 449.8197090961039,
+        "event": "validation",
+        "excluded_tail_tokens": 1444,
+        "input_tokens": 692224,
+        "loss": 6.516992622578638,
+        "sequences": 338,
+        "source_tokens": 693668,
+        "step": 128,
+        "wall_seconds": 0.42050181701779366
+      },
+      "worker": "t2-tile-head-ph-kappa-0p1",
+      "head_diagnostic": {
+        "source": "artifacts/attempts/002-20261008-151803-5e0fb7bd/diagnostics/step_000128/activation_statistics.json",
+        "exact_zero_count": 26898944,
+        "elements": 88604672,
+        "empty_8x16_tiles": 210148,
+        "total_8x16_tiles": 692224
+      }
+    }
+  ]
+}
+

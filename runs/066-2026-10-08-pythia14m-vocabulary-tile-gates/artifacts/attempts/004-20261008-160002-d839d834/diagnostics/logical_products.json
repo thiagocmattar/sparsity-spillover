@@ -1,0 +1,102 @@
+{
+  "architecture_maximum": {
+    "R_model_max_fraction": 0.053471467958893806,
+    "R_model_max_percent": 5.347146795889381,
+    "active_sites": [
+      "h",
+      "z"
+    ],
+    "block_product_count": 5638717440,
+    "ffn_size": 512,
+    "hidden_size": 128,
+    "layers": 6,
+    "lm_head_product_count": 13186891776,
+    "model_product_count": 18825609216,
+    "per_block_operation_products": {
+      "attention_output_projection": 33554432,
+      "mlp_w1": 134217728,
+      "mlp_w2": 134217728,
+      "probability_value": 268566528,
+      "qk_scores": 268566528,
+      "qkv_projection": 100663296
+    },
+    "reachable_operations": [
+      "attention_output_projection",
+      "mlp_w2"
+    ],
+    "reachable_product_count": 1006632960,
+    "scope": "Legacy h/z reach only; excludes the new head-input gate",
+    "sequence_length": 2048,
+    "topology_id": "HZ",
+    "unit": "logical scalar multiplication products per one complete uncached sequence across all layers and LM head",
+    "valid_causal_pairs_per_sequence": 2098176,
+    "vocabulary_size": 50304
+  },
+  "coverage": {
+    "batches": 338,
+    "complete_block_coverage": true,
+    "excluded_tail_tokens": 1444,
+    "input_tokens": 692224,
+    "loss": 5.507027671887324,
+    "sequences": 338,
+    "source_tokens": 693668
+  },
+  "interpretation": "logical zero-product opportunities; not removed FLOPs or measured speedup",
+  "measured": {
+    "R_block": 0.14236055118112423,
+    "R_model": 0.04264036895181973,
+    "block_product_count": 1905886494720,
+    "block_zero_product_count": 271323051877,
+    "head_input_accounting": "Separate head counts; existing block-only R_model numerator unchanged",
+    "head_input_eager_opportunity": {
+      "batch_size": 1,
+      "execution": "eager attention logical-product pass",
+      "fraction": 0.19807894554363906,
+      "products": 4457169420288,
+      "unit": "logical scalar multiplication products over the complete validation input positions",
+      "zero_activation_products": 882871418880
+    },
+    "head_input_opportunity": {
+      "batch_size": 32,
+      "execution": "production SDPA activation-statistics pass",
+      "fraction": 0.19808183478180474,
+      "products": 4457169420288,
+      "unit": "logical scalar multiplication products over the complete validation input positions",
+      "zero_activation_products": 882884296704
+    },
+    "lm_head_product_count": 4457169420288,
+    "model_product_count": 6363055915008,
+    "per_operation": {
+      "attention_output_projection": {
+        "product_count": 68048388096,
+        "zero_product_count": 46203602944,
+        "zero_product_fraction": 0.6789815929044163
+      },
+      "mlp_w1": {
+        "product_count": 272193552384,
+        "zero_product_count": 0,
+        "zero_product_fraction": 0.0
+      },
+      "mlp_w2": {
+        "product_count": 272193552384,
+        "zero_product_count": 225119412864,
+        "zero_product_fraction": 0.8270563754809679
+      },
+      "probability_value": {
+        "product_count": 544652918784,
+        "zero_product_count": 23032,
+        "zero_product_fraction": 4.228748108322191e-08
+      },
+      "qk_scores": {
+        "product_count": 544652918784,
+        "zero_product_count": 13037,
+        "zero_product_fraction": 2.3936344689213445e-08
+      },
+      "qkv_projection": {
+        "product_count": 204145164288,
+        "zero_product_count": 0,
+        "zero_product_fraction": 0.0
+      }
+    }
+  }
+}

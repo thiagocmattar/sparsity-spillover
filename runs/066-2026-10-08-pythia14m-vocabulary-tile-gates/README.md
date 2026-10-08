@@ -1,10 +1,40 @@
 # Run066 - vocabulary-input tiles on the 14M T2/Ph recipe
 
-Status: design, post-hoc inventory and launch approved. The owned two-H100 Pod
-has been created; source/input transfer, setup and GPU qualification precede
-scientific training. [Launch lease](prelaunch/lease-training-001.json) records
-the actual offer, Pod identity, approval and deadline. The original preparation
-config's launch flag is historical; explicit user approval authorizes execution.
+Status: completed and verified. All four matched trainings finished 712 updates,
+with no skipped optimizer steps; both retained parents were re-evaluated.
+All 320 artifact files and the 4.08 GB archive were copied and hash-verified locally.
+The owned Pod is deleted and its workstation guard is terminated. See
+[results and figures](results/REPORT.md), [local verification](prelaunch/local-verification-001.json)
+and [teardown/cost receipt](prelaunch/teardown-training-001.json).
+The original preparation config's launch flag is historical; explicit user
+approval authorized execution.
+
+## Measured outcome
+
+| kappa | Head intervention | Validation loss | Delta vs same-kappa parent | Empty 8x16 head tiles |
+|---:|---|---:|---:|---:|
+|0|None (parent)|5.553770|0|0.000%|
+|0|Tile gate / Ph|5.529001|-0.024769|25.328%|
+|0|Tile gate / Ph+head|5.497717|-0.056053|27.421%|
+|.1|None (parent)|5.596746|0|0.000%|
+|.1|Tile gate / Ph|5.547977|-0.048769|17.340%|
+|.1|Tile gate / Ph+head|5.507129|-0.089616|19.808%|
+
+All six models retain the existing h/z corner gates. Only the four new models
+add a head-input gate after affine final LayerNorm. The vocabulary matmul,
+weights and logits are dense in every condition; no head latency was measured.
+Native head exact-zero fractions equal the empty 8x16 tile fractions at these
+endpoints. Actual head pre/post gate dtypes are FP32 before the projection's
+FP16 autocast. Native zeros and larger 16x16/32x16 occupancy remain separately
+reported in [the diagnostics table and PDFs](results/REPORT.md).
+
+All four new conditions have lower observed loss than their same-kappa parents.
+Ph+head further improves endpoint loss and empty tiles over Ph at both kappas.
+Its lowest-loss point is kappa 0: 27.421% empty tiles, loss 5.497717; rejected tiles
+contain 6.515% of measured pre-gate squared activation energy. This supports
+useful structured sparsity against these chosen parents in this matched test.
+One seed/architecture/budget and the six-to-seven pressure-average change limit
+attribution/generalization. Kernel speed remains an open measurement.
 
 ## Approved question and comparison
 
@@ -83,7 +113,7 @@ Measure head pre/post exact/near zeros at0/.001/.01 and the declared threshold,
 RMS/L2/moments, sign and removed energy, row nonzero histograms, and empty
 1x16/8x16/16x16/32x16 tiles. Verify the corner certificate, per-feature-group
 counts and within-tile token-position zero counts. Each full head pass has
-88,604,672 activation elements and692,224 aligned8x16 tiles.
+88,604,672 activation elements and 692,224 aligned 8x16 tiles.
 Retain matching h/z/block diagnostics, final LayerNorm affine values and named
 weight norms. Training events retain task/pressure gradient interaction and
 OL1 adaptive direction/trust metrics, which cannot be recovered later.
@@ -111,33 +141,65 @@ authorized by this run.
 
 Focused tests cover placement after affine final normalization, tile algebra,
 causality/backward, exact pressure capture/averaging, checkpoint restoration,
-complete diagnostic count pooling and retained-control diagnostics. A real14M
+complete diagnostic count pooling and retained-control diagnostics. A real 14M
 T16/MB1 FP32 CPU smoke exercises all four conditions and checks initialization.
 These do not establish CUDA memory fit or production ETC. GPU preflights use
 the exact full-sequence workload, discard their updated model/optimizer state,
 and restart scientific training from original bytes only after all checks pass.
 
-Focused tests39/39 and bootstrap242/242 passed. All four real14M CPU boundaries
+Focused tests 39/39 and bootstrap 242/242 passed. All four real 14M CPU boundaries
 passed, with exact initialization, checkpoint logits and causal prefix logits.
 Receipts are [checks](prelaunch/checks.json) and [CPU smoke](prelaunch/local-smoke.json).
-CUDA qualification attempt001 reached the final preflight summary but failed because
+CUDA qualification attempt 001 reached the final preflight summary but failed because
 a diagnostic dict shadowed Python's statistics module. No scientific training
-started. A reporting-only fix passed the same39 focused and242 bootstrap tests;
-attempt002 repeats all four preflights, including exact checkpoint logits/loss,
-with unchanged scientific inputs and acceptance criteria. Attempt001 logs,
+started. A reporting-only fix passed the same 39 focused and 242 bootstrap tests;
+attempt 002 repeated all four preflights, including exact checkpoint logits/loss,
+with unchanged scientific inputs and acceptance criteria. All four passed;
+scientific training then restarted from original parameter bytes. Attempt001 logs,
 receipts and calibration checkpoints are preserved under prelaunch/attempts/001.
 New qualification receipts/checkpoints use prelaunch/attempts/002.
+All four scientific trainings and both controls subsequently passed remote
+and local cohort verification. The local verifier's Windows line endings were
+restored to the sealed Linux summary bytes, with a separate local receipt.
 
 RunPod deployment, live price/capacity, cost envelope, artifact inventory,
 monitoring, warnings, transfer and teardown are in [the launch packet](LAUNCH.md):
-two H10080GB GPUs in two waves, four-hour flexible running backstop, USD60 total
-ceiling, with a same-scope two-H200 fallback. The approved owned Pod is active at USD6.98/hour. Its original
-four-hour deadline remains unchanged across the qualification retry. Any maximum duration is a flexible backstop; normal
+two H100 80GB GPUs in two waves, four-hour flexible running backstop, USD60 total
+ceiling, with a same-scope two-H200 fallback. The owned Pod ran at USD6.98/hour and was deleted at 16:52:06 UTC.
+Its original four-hour deadline was preserved across the qualification retry. Any maximum duration is a flexible backstop; normal
 completion transfers and verifies artifacts before resource termination.
 
-The deployment bundle is prepared from implementation commit `e745d27f`.
+The initial deployment bundle was prepared from implementation commit `e745d27f`.
 [Source receipt](prelaunch/source-001.receipt.json) records its exact commit,
 208,428,798 bytes and SHA256. The bundle and checkpoint weight files remain
 outside Git. Source and input uploads were hash-verified; the rebuilt MiniPile
-cache matches both approved hashes exactly. Source002 captures the qualification
-reporting fix; the initial deployment remains preserved in the source001 receipt.
+cache matches both approved hashes exactly. Source 002 captures the qualification
+reporting fix; the initial deployment remains preserved in the source 001 receipt.
+
+## Execution closeout
+
+The production preflights passed with exact B1/T2048 checkpoint logits/loss,
+full 338-block validation/diagnostics and 72.3% peak reserved GPU memory. All four
+scientific conditions have 712 actual optimizer steps with no overflow or skip,
+matched initialization and data-order hashes, full validation, all 48 scheduled
+model checkpoints and all 12 optimizer/scaler/RNG recovery checkpoints retained.
+Four fresh trainings ran in two waves on the same two H100 80GB GPUs.
+
+[Retrieval receipt](prelaunch/retrieval-training-001.json) verifies the 4,077,590,190-byte
+archive and every one of 320 members before Pod deletion. The original failed
+preflight is preserved in prelaunch/attempts/001; corrected qualification is in
+prelaunch/attempts/002. Source 002 deploys commit 9162afab with identical scientific
+inputs. All agreed gradient interaction, activation, occupancy, norm, affine,
+logical-product and checkpoint diagnostics are local. Large weights, recovery
+states, dataset/cache files and archives remain outside Git.
+
+The Pod ran from 14:36:40.738UTC to deletion observed at 16:52:06 UTC. Offer price
+multiplied by this full interval estimates USD15.75 GPU cost, plus small storage
+charges, within the USD60 ceiling. This includes provisioning, the reporting
+retry and transfer. The billing receipt currently covers only buckets through
+16:00UTC and is explicitly incomplete; it is not a final invoice. Existing
+foreign Pod/volume resources were left unchanged; no Run066 resource remains.
+
+Three PDF figures were rendered with Poppler and visually checked. Their
+observations and source are indexed in [observations/INDEX.md](observations/INDEX.md).
+No manuscript TeX change or findings promotion was made.

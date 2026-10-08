@@ -168,3 +168,15 @@ No unapproved scientific rescue changes; preserve failure evidence.
 The user accepted the diagnostic inventory and explicitly approved launch.
 No further confirmation is required within this scientific and billable scope.
 The execution lease records the actual resource and absolute backstop deadline.
+
+
+## Executed outcome
+
+Approved launch completed on two H100 80GB GPUs at USD6.98/hour. Four production
+preflights passed after a reporting-only infrastructure retry; the original
+attempt is preserved. All four 712-step trainings and two retained controls
+passed cohort verification. All 320 artifacts were copied and hash-verified
+locally before deletion of the owned Pod at 16:52:06 UTC. The four-hour backstop
+was preserved. Estimated GPU cost from the full Pod interval is USD15.75;
+provider billing is currently incomplete. See the [teardown receipt](prelaunch/teardown-training-001.json)
+and [scientific comparison](results/REPORT.md). No vocabulary kernel was run.
