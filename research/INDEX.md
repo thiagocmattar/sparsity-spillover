@@ -5,6 +5,10 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Analysis042](../analyses/042-2026-10-08-model-latency-decomposition/README.md)
+collects per-model latency tables and PDFs with explicit tiled (14M) and scalar
+(31M/70M) threshold labels, using completed Runs064/065.
+
 [Run065](../runs/065-2026-10-07-larger-model-forward-decomposition/README.md)
 profiles retained scalar-gated 31M/70M T2/Ph models on one RTX 5090. Sparse
 full-forward reductions are 4.63%/15.61% (31M) and 28.22%/31.03% (70M), at
