@@ -6,7 +6,7 @@ Compact current state; full history belongs to numbered runs and analyses.
 ## Current status
 
 [Run068](../runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/README.md)
-is launch-approved and setting up on two H100s. Two fresh14M
+passed both production preflights and is training on two H100s. Two fresh14M
 Ph+head models use head16x16 kappa.1/.5 with h/z8x16 kappa0, followed by a
 matched5090 endpoint benchmark. No new training or speed result exists.
 

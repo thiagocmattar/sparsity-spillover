@@ -1,13 +1,22 @@
 # Run068 — aligned vocabulary-head tiles
 
 Status: design and separate launch approved on 8 October 2026. The two-H100
-training Pod was created at 22:33:38 UTC for $7.98/hour. Setup and the production
-preflight barrier are running before fresh training. Development checkpoints
+training Pod was created at 22:33:38 UTC for $7.98/hour. Both production
+preflights passed; fresh training started at 22:55:09 UTC. Development checkpoints
 and timings are not experimental results.
 See [the launch packet](LAUNCH.md) and [local checks](prelaunch/checks.json).
 Operational identities and the four-hour deadline are retained in
 [the launch approval](prelaunch/launch-approval-001.json) and
 [the training lease](prelaunch/lease-training-001.json).
+
+Production preflight: each condition completed six MB32/GAS32 updates without
+overflow or skipped boundaries, full338-block validation and activation/logical
+diagnostics, and an exact FP16 checkpoint logits/loss round trip. Median update
+times were3.500626/3.501335 seconds; peak reserved memory was61,467,525,120 of
+85,028,372,480 bytes (72.3%). The preflight state was discarded. Immutable
+[condition.1](prelaunch/attempts/001/remote-preflight-t2-hz0-head16-ph_head-kappa-0p1.json)
+and [condition.5](prelaunch/attempts/001/remote-preflight-t2-hz0-head16-ph_head-kappa-0p5.json)
+receipts retain the complete checks. Terminal scientific results remain pending.
 
 ## Approved question and conditions
 
