@@ -8,3 +8,4 @@
 - [06-31m-hz-detail](06-31m-hz-detail.md): Which independently measured components form the 31M H/Z output block?
 - [07-70m-hz-detail](07-70m-hz-detail.md): Which independently measured components form the 70M H/Z output block?
 - [08-dense-sparse-across-models](08-dense-sparse-across-models.md): How do dense and sparse forward budgets compare across model sizes with one fixed semantic legend?
+- [09-output-head-dataflow](09-output-head-dataflow.md): Where are vocabulary scores computed, and which sparsity could reduce that work? Conceptual explanation; no new measurement.

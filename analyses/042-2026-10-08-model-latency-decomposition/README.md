@@ -292,6 +292,12 @@ These are detail views of the same purple category used above. Patterns distingu
 
 Final direct comparison of native dense arithmetic and the selected sparse consumer at 14M, 31M and 70M, for kappa 0 and 0.1. Each size has an adjacent dense/sparse pair. Colours, hatching, category order, legend and microsecond scale are identical across both panels and model sizes. The purple H/Z output block always includes gates, sparse preparation, W2, Wo and residual combination. Labels identify the 14M tiled threshold and 31M/70M scalar thresholds. Dense means native execution of that same gated checkpoint, not a different ungated model; sparse selects the corner-specialized 14M consumer or the existing scalar consumers at 31M/70M. Bars sum actual CUPTI activity means from 12 profiled forwards; end labels show GPU-active microseconds. This is a component budget, not uninstrumented host latency; gaps and host overhead are outside these bars. Original timing distributions remain in the CSVs. Different gates/consumers and the separate physical 14M GPU session restrict cross-size interpretation to a descriptive comparison.
 
+## Vocabulary head: output path and possible sparsity
+
+[Figure 9 - vocabulary head dataflow](figures/09-output-head-dataflow.pdf) · [Diagram and detailed explanation](observations/09-output-head-dataflow.md)
+
+The vocabulary projection already computes the raw scores (logits). Final LayerNorm precedes it; vocabulary softmax, selection and loss are downstream consumers outside the timed forward. The diagram distinguishes existing dense execution from hypothetical head-input feature-block skipping. It adds no gate, sparsity measurement, timing result or experiment.
+
 ## Timing boundaries and qualification
 
 | Model | kappa | Sparse active us | Trace gaps us | Trace span us | Unprofiled host geomean us | Event slowdown |

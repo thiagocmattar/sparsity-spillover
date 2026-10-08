@@ -75,13 +75,15 @@ def main():
     qa.mkdir(parents=True, exist_ok=True)
     pages, bad = 0, []
     pdfs = sorted((ROOT / 'figures').glob('*.pdf'))
-    assert len(pdfs) == 8
+    assert len(pdfs) == 9
     for path in pdfs:
         with fitz.open(path) as doc:
             assert len(doc) == 1
             page = doc[0]
             text = page.get_text()
-            if '14m' in path.name:
+            if path.stem == '09-output-head-dataflow':
+                assert all(value in text for value in ['LayerNorm', 'logits', '50,304', 'Skip zero K blocks', 'Conceptual diagram'])
+            elif '14m' in path.name:
                 assert 'TILED' in text and '8 x 16' in text
             elif any(s in path.name for s in ['31m', '70m']):
                 assert 'SCALAR' in text and 'not tiled' in text
@@ -112,7 +114,7 @@ def main():
               'temporary_renders': 'Ignored tmp/analysis042-figure-qa/',
               'visual_review': 'Pending separate inspection of the rendered pages.'}
     (ROOT / 'results/verification.json').write_bytes((json.dumps(record, indent=2) + '\n').encode())
-    print('Verified hashes, 1286 original stage rows, 198 common-category rows, H/Z sums, fixed colors, links and 8 PDF bounds.')
+    print('Verified hashes, 1286 original stage rows, 198 common-category rows, H/Z sums, fixed colors, links and 9 PDF bounds.')
 
 
 if __name__ == '__main__':

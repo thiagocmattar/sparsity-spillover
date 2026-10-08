@@ -50,6 +50,10 @@ def main():
     observations = ROOT / 'observations'
     figures.mkdir(exist_ok=True)
     observations.mkdir(exist_ok=True)
+    head_spec = importlib.util.spec_from_file_location('head_diagram042', ROOT / '04_output_head_diagram.py')
+    head_diagram = importlib.util.module_from_spec(head_spec)
+    head_spec.loader.exec_module(head_diagram)
+    head_entry = head_diagram.build(ROOT)
     plt.rcParams.update({'font.size': 9, 'pdf.fonttype': 42})
     maximum_host = max(m['host']['p90'] for c in conditions for m in c['modes'].values()) / 1000 * 1.06
     maximum_active = max(m['active_us'] for c in conditions for m in c['modes'].values()) * 1.04
@@ -246,6 +250,13 @@ def main():
     name, _, caption, _ = figure_entries[7]
     text += ['## Final dense–sparse comparison across model sizes', '',
              f'[Figure 8 — dense versus sparse execution, identical semantic colours](figures/{name}.pdf)', '', caption, '']
+    text += ['## Vocabulary head: output path and possible sparsity', '',
+             '[Figure 9 - vocabulary head dataflow](figures/09-output-head-dataflow.pdf) · '
+             '[Diagram and detailed explanation](observations/09-output-head-dataflow.md)', '',
+             'The vocabulary projection already computes the raw scores (logits). Final LayerNorm precedes it; '
+             'vocabulary softmax, selection and loss are downstream consumers outside the timed forward. '
+             'The diagram distinguishes existing dense execution from hypothetical head-input feature-block skipping. '
+             'It adds no gate, sparsity measurement, timing result or experiment.', '']
     budget_rows, distribution_rows, quality_rows = [], [], []
     for c in conditions:
         for name in mode_order(c):
@@ -285,15 +296,17 @@ def main():
             '**Source script:** ../02_report.py (data: ../01_collect.py).', '',
             f'[Figure PDF](../figures/{name}.pdf) · [Full tables](../README.md)']))
     md(observations / 'INDEX.md', '# Figure observations\n\n' + '\n'.join(
-        f'- [{name}]({name}.md): {question}' for name, question, _, _ in figure_entries))
+        f'- [{name}]({name}.md): {question}' for name, question, _, _ in figure_entries) +
+        f'\n- [{head_entry[0]}]({head_entry[0]}.md): {head_entry[1]} Conceptual explanation; no new measurement.')
     paths = [ROOT / 'README.md', ROOT / 'LABELS.md'] + list(observations.glob('*.md')) + list(figures.glob('*.pdf')) + list((ROOT / 'results').glob('*.csv'))
     collect.write(ROOT / 'provenance/generated.json', {
         'scripts': [collect.record(ROOT / '01_collect.py'), collect.record(ROOT / '02_report.py'),
                     collect.record(ROOT / '03_verify.py'), collect.record(ROOT / 'labels.py'),
-                    collect.record(ROOT / 'detail_figures.py'), collect.record(ROOT / 'comparison_figure.py')],
+                    collect.record(ROOT / 'detail_figures.py'), collect.record(ROOT / 'comparison_figure.py'),
+                    collect.record(ROOT / '04_output_head_diagram.py')],
         'input': collect.record(ROOT / 'results/decomposition.json'),
         'outputs': [collect.record(p) for p in sorted(paths)]})
-    print('Created README.md, LABELS.md, 8 PDF figures/observations and standard semantic timing tables.')
+    print('Created README.md, LABELS.md, 8 measured PDF figures plus 1 conceptual diagram and standard timing tables.')
 
 
 if __name__ == '__main__':
