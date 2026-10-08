@@ -51,7 +51,7 @@ Primary numbers below are pooled geometric means of synchronized host latency in
 
 [Figure 1 — full-forward latency, distributions and process repeats](figures/01-full-forward-latency.pdf)
 
-Bars show pooled host geometric means; black whiskers are pooled sample p10-p90; three black diamonds show fresh-process geometric means. These are descriptive distributions, not confidence intervals. Green bars identify the selected sparse implementation. Hatching means arithmetic skipping is disabled; the trained gate stays active. All panels share the millisecond axis. 14M has a tiled gate in every mode, including native and generic. 31M/70M have scalar gates in every mode. Different gates/consumers and physical GPU sessions make the cross-size comparison descriptive.
+Bars show pooled host geometric means; black whiskers are pooled sample p10-p90; three black diamonds show fresh-process geometric means. These are descriptive distributions, not confidence intervals. Blue means native; green the selected sparse implementation; red the selected no-skip control; gray the additional generic 14M consumer. Hatching means arithmetic skipping is disabled; the trained gate stays active. All panels share the millisecond axis. 14M has a tiled gate in every mode, including native and generic. 31M/70M have scalar gates in every mode. Different gates/consumers and physical GPU sessions make the cross-size comparison descriptive.
 
 **The 14M specialization gain is a different comparison:** against the generic consumer on the same tiled checkpoint, the corner consumer reduces host latency by 10.34%/9.00% at kappa 0/0.1. The larger native-to-sparse reductions also include frozen norm, layout, attention, head and dispatch optimizations. They cannot all be attributed to sparsity.
 
@@ -74,38 +74,32 @@ The joint stage and fused attention remain indivisible where the evidence has no
 
 ## Per-model decomposition
 
-Tables report arithmetic means of actual CUPTI CUDA activity durations, summed over all six layers where applicable. Shares divide by that mode’s GPU-active interval union; they are not percentages of uninstrumented host latency. **N/A** means no separate stage in that execution mode (often because it is fused); an observed 0.000 for context layout means a view with no CUDA activity.
+Tables and Figures 2–4 and 8 use nine common semantic categories with identical labels, colors, patterns and ordering for every model and execution mode. The purple **H/Z output block** is gates + sparse preparation + W2 + Wo + residual sum. At 14M/31M it includes the whole indivisible fused consumer; at 70M/native it sums the matching separately measured stages. This grouping preserves the original activity total and does not manufacture internal h/z timings. [Exact definitions, colors and source-stage mapping (Portuguese)](LABELS.md).
+
+Tables report arithmetic means of actual CUPTI CUDA activity durations, summed over all six layers where applicable. Shares divide by that mode’s GPU-active interval union; they are not percentages of uninstrumented host latency. The bars are accounting budgets, not timelines. Original implementation-stage values remain in the detailed CSVs and Figures 5–7. In those details, N/A means no independent measurement; an observed zero context-layout activity means a view.
 
 ### 14M: TILED threshold, corner-specialized sparse consumer
 
 [Figure 2 — 14M complete GPU budget and per-layer branch costs](figures/02-14m-decomposition.pdf)
 
-14M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards; color and hatching identify execution categories. Absent/fused categories are not independent measurements; zero CUDA-activity context layout is a view. Lower panels sum the H/Z gates, down projections, feature compaction and residual activities within each layer, making native separate stages comparable with an indivisible fused stage. The layer bundle is an accounting group, not an additional timed kernel. All three model figures share the upper microsecond axis and lower vertical axis. Gaps and host overhead are excluded from these active budgets. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
+14M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards into nine fixed semantic categories. All model sizes and modes use the same category order, colors, patterns and complete legend. The purple H/Z output block includes gates, sparse preparation, W2, Wo and residual combination, whether fused or separately measured. No fused consumer is split into unmeasured internal phases. Bars are activity budgets, not chronological timelines. Lower panels show the same H/Z output block per layer; line colors encode execution mode: blue native, green selected sparse, red selected no-skip, gray additional 14M generic. All three model figures share the upper microsecond axis and lower vertical axis. The category is an accounting group, not an additional timed kernel. Gaps and host overhead are excluded. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
 
 #### kappa = 0
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.888 | 0.837 | 0.869 | 0.18% |
-| Token embedding | 2.197 | 2.173 | 2.216 | 0.46% |
-| RoPE tables | 14.544 | 12.867 | 12.931 | 2.73% |
-| Block layer norms | 41.986 | 10.485 | 10.453 | 2.23% |
+| Input setup | 17.629 | 15.877 | 16.016 | 3.37% |
+| Block normalization | 41.986 | 10.485 | 10.453 | 2.23% |
 | QKV projection | 24.154 | 24.349 | 24.341 | 5.17% |
-| RoPE / QKV layout | 125.930 | 13.917 | 14.053 | 2.95% |
+| RoPE / context layout | 125.930 | 24.149 | 24.307 | 5.13% |
 | Attention | 122.602 | 121.322 | 121.967 | 25.75% |
-| Context layout | 0.000 | 10.232 | 10.253 | 2.17% |
 | MLP up projection | 24.691 | 27.536 | 26.941 | 5.85% |
-| H gate | 67.042 | N/A | N/A | N/A |
-| Z gate | 69.333 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 14.955 | N/A | N/A | N/A |
-| H down projection | 28.696 | N/A | N/A | N/A |
-| Joint H/Z gates / down / residual | N/A | 63.397 | 210.299 | 13.46% |
-| Residual sum | 11.976 | N/A | N/A | N/A |
-| Final norm | 3.451 | 3.475 | 3.461 | 0.74% |
+| H/Z output block | 192.002 | 63.397 | 210.299 | 13.46% |
+| Final normalization | 3.451 | 3.475 | 3.461 | 0.74% |
 | Vocabulary projection | 187.447 | 180.482 | 183.385 | 38.31% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Corner sparse us | Corner, no skip us |
 | --- | --- | --- | --- |
@@ -119,28 +113,20 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 
 #### kappa = 0.1
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.885 | 0.840 | 0.888 | 0.19% |
-| Token embedding | 2.192 | 2.211 | 2.237 | 0.49% |
-| RoPE tables | 14.446 | 12.765 | 12.872 | 2.86% |
-| Block layer norms | 41.931 | 10.442 | 10.413 | 2.34% |
+| Input setup | 17.523 | 15.816 | 15.997 | 3.54% |
+| Block normalization | 41.931 | 10.442 | 10.413 | 2.34% |
 | QKV projection | 24.208 | 24.288 | 24.312 | 5.43% |
-| RoPE / QKV layout | 125.652 | 13.856 | 14.008 | 3.10% |
+| RoPE / context layout | 125.652 | 24.075 | 24.234 | 5.39% |
 | Attention | 122.458 | 121.250 | 121.532 | 27.12% |
-| Context layout | 0.000 | 10.219 | 10.227 | 2.29% |
 | MLP up projection | 24.627 | 27.389 | 26.946 | 6.13% |
-| H gate | 66.906 | N/A | N/A | N/A |
-| Z gate | 69.234 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 14.861 | N/A | N/A | N/A |
-| H down projection | 28.546 | N/A | N/A | N/A |
-| Joint H/Z gates / down / residual | N/A | 40.568 | 208.276 | 9.08% |
-| Residual sum | 11.925 | N/A | N/A | N/A |
-| Final norm | 3.451 | 3.483 | 3.480 | 0.78% |
+| H/Z output block | 191.473 | 40.568 | 208.276 | 9.08% |
+| Final normalization | 3.451 | 3.483 | 3.480 | 0.78% |
 | Vocabulary projection | 186.687 | 179.700 | 183.180 | 40.20% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Corner sparse us | Corner, no skip us |
 | --- | --- | --- | --- |
@@ -152,9 +138,9 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 | 5 | 31.912 | 5.907 | 33.608 |
 
 
-The specialized joint stage is cheaper than the generic joint stage on the same tiled activations. The remaining selected-sparse GPU-active budget is led by the vocabulary projection (38.31%/40.20%) and attention (25.75%/27.12%). The checkpoints’ previously measured quality penalty from training with tile gates is unchanged; faster inference does not repair it.
+The specialized H/Z output block is cheaper than the generic H/Z output block on the same tiled activations. Both are fused implementations of the same semantic category. The remaining selected-sparse GPU-active budget is led by the vocabulary projection (38.31%/40.20%) and attention (25.75%/27.12%). The checkpoints’ previously measured quality penalty from training with tile gates is unchanged; faster inference does not repair it.
 
-| kappa | Generic sparse host ms | Corner sparse host ms | Generic joint us | Corner joint us |
+| kappa | Generic sparse host ms | Corner sparse host ms | Generic H/Z output us | Corner H/Z output us |
 | --- | --- | --- | --- | --- |
 | 0 | 0.5687 | 0.5099 | 121.025 | 63.397 |
 | 0.1 | 0.5346 | 0.4864 | 89.324 | 40.568 |
@@ -164,32 +150,24 @@ The specialized joint stage is cheaper than the generic joint stage on the same 
 
 [Figure 3 — 31M complete GPU budget and per-layer branch costs](figures/03-31m-decomposition.pdf)
 
-31M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards; color and hatching identify execution categories. Absent/fused categories are not independent measurements; zero CUDA-activity context layout is a view. Lower panels sum the H/Z gates, down projections, feature compaction and residual activities within each layer, making native separate stages comparable with an indivisible fused stage. The layer bundle is an accounting group, not an additional timed kernel. All three model figures share the upper microsecond axis and lower vertical axis. Gaps and host overhead are excluded from these active budgets. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
+31M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards into nine fixed semantic categories. All model sizes and modes use the same category order, colors, patterns and complete legend. The purple H/Z output block includes gates, sparse preparation, W2, Wo and residual combination, whether fused or separately measured. No fused consumer is split into unmeasured internal phases. Bars are activity budgets, not chronological timelines. Lower panels show the same H/Z output block per layer; line colors encode execution mode: blue native, green selected sparse, red selected no-skip, gray additional 14M generic. All three model figures share the upper microsecond axis and lower vertical axis. The category is an accounting group, not an additional timed kernel. Gaps and host overhead are excluded. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
 
 #### kappa = 0
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.968 | 0.901 | 0.923 | 0.09% |
-| Token embedding | 2.595 | 2.445 | 2.515 | 0.25% |
-| RoPE tables | 14.835 | 12.693 | 12.784 | 1.31% |
-| Block layer norms | 43.419 | 14.952 | 14.763 | 1.54% |
+| Input setup | 18.397 | 16.039 | 16.221 | 1.65% |
+| Block normalization | 43.419 | 14.952 | 14.763 | 1.54% |
 | QKV projection | 49.160 | 48.451 | 49.941 | 4.99% |
-| RoPE / QKV layout | 147.215 | 22.488 | 22.421 | 2.32% |
+| RoPE / context layout | 147.215 | 22.488 | 22.421 | 2.32% |
 | Attention | 188.462 | 122.885 | 122.909 | 12.65% |
-| Context layout | 0.000 | 0.000 | 0.000 | 0.00% |
 | MLP up projection | 79.710 | 80.381 | 80.035 | 8.28% |
-| H gate | 35.931 | N/A | N/A | N/A |
-| Z gate | 18.621 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 27.165 | N/A | N/A | N/A |
-| H down projection | 76.830 | N/A | N/A | N/A |
-| Joint H/Z gates / down / residual | N/A | 431.555 | 506.451 | 44.43% |
-| Residual sum | 14.333 | N/A | N/A | N/A |
-| Final norm | 3.637 | 3.640 | 3.669 | 0.37% |
+| H/Z output block | 172.881 | 431.555 | 506.451 | 44.43% |
+| Final normalization | 3.637 | 3.640 | 3.669 | 0.37% |
 | Vocabulary projection | 281.373 | 230.982 | 232.512 | 23.78% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Scalar sparse us | Scalar, no skip us |
 | --- | --- | --- | --- |
@@ -203,28 +181,20 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 
 #### kappa = 0.1
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.965 | 0.896 | 0.915 | 0.10% |
-| Token embedding | 2.597 | 2.493 | 2.488 | 0.29% |
-| RoPE tables | 14.891 | 12.699 | 12.763 | 1.48% |
-| Block layer norms | 43.480 | 14.795 | 14.690 | 1.73% |
+| Input setup | 18.453 | 16.088 | 16.165 | 1.88% |
+| Block normalization | 43.480 | 14.795 | 14.690 | 1.73% |
 | QKV projection | 48.821 | 48.501 | 49.474 | 5.66% |
-| RoPE / QKV layout | 147.080 | 22.541 | 22.410 | 2.63% |
+| RoPE / context layout | 147.080 | 22.541 | 22.410 | 2.63% |
 | Attention | 188.378 | 123.321 | 122.973 | 14.40% |
-| Context layout | 0.000 | 0.000 | 0.000 | 0.00% |
 | MLP up projection | 79.586 | 80.508 | 79.984 | 9.40% |
-| H gate | 35.939 | N/A | N/A | N/A |
-| Z gate | 18.604 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 27.099 | N/A | N/A | N/A |
-| H down projection | 76.840 | N/A | N/A | N/A |
-| Joint H/Z gates / down / residual | N/A | 315.837 | 511.135 | 36.89% |
-| Residual sum | 14.368 | N/A | N/A | N/A |
-| Final norm | 3.675 | 3.645 | 3.659 | 0.43% |
+| H/Z output block | 172.851 | 315.837 | 511.135 | 36.89% |
+| Final normalization | 3.675 | 3.645 | 3.659 | 0.43% |
 | Vocabulary projection | 279.354 | 230.926 | 232.176 | 26.97% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Scalar sparse us | Scalar, no skip us |
 | --- | --- | --- | --- |
@@ -236,38 +206,30 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 | 5 | 28.744 | 65.492 | 83.986 |
 
 
-The joint stage takes 44.43%/36.89% of sparse GPU-active time, and costs 431.56/315.84 us versus 172.88/172.85 us for the complete native gate/down/residual bundle. Savings in other optimized stages and dispatch gaps compensate for this slower consumer. The kappa 0 short-row prepass completes no token row over the entire 338-block validation workload; kappa 0.1 helps mainly layers 1–3.
+The H/Z output block is fused at 31M. It takes 44.43%/36.89% of sparse GPU-active time, and costs 431.56/315.84 us versus 172.88/172.85 us for the complete native H/Z output block. Savings in other optimized stages and dispatch gaps compensate for this slower consumer. The kappa 0 short-row prepass completes no token row over the entire 338-block validation workload; kappa 0.1 helps mainly layers 1–3.
 
 ### 70M: SCALAR threshold, not tiled
 
 [Figure 4 — 70M complete GPU budget and per-layer branch costs](figures/04-70m-decomposition.pdf)
 
-70M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards; color and hatching identify execution categories. Absent/fused categories are not independent measurements; zero CUDA-activity context layout is a view. Lower panels sum the H/Z gates, down projections, feature compaction and residual activities within each layer, making native separate stages comparable with an indivisible fused stage. The layer bundle is an accounting group, not an additional timed kernel. All three model figures share the upper microsecond axis and lower vertical axis. Gaps and host overhead are excluded from these active budgets. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
+70M at kappa 0 and 0.1. Upper panels sum per-stage CUPTI means from 12 traced forwards into nine fixed semantic categories. All model sizes and modes use the same category order, colors, patterns and complete legend. The purple H/Z output block includes gates, sparse preparation, W2, Wo and residual combination, whether fused or separately measured. No fused consumer is split into unmeasured internal phases. Bars are activity budgets, not chronological timelines. Lower panels show the same H/Z output block per layer; line colors encode execution mode: blue native, green selected sparse, red selected no-skip, gray additional 14M generic. All three model figures share the upper microsecond axis and lower vertical axis. The category is an accounting group, not an additional timed kernel. Gaps and host overhead are excluded. No event or CUPTI number is rescaled to the primary uninstrumented host total. CUPTI means are descriptive; distribution data are retained per original stage/kernel in the CSVs.
 
 #### kappa = 0
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.864 | 0.877 | 0.880 | 0.07% |
-| Token embedding | 2.797 | 2.784 | 2.741 | 0.23% |
-| RoPE tables | 13.347 | 12.301 | 12.315 | 1.02% |
-| Block layer norms | 45.403 | 19.875 | 19.646 | 1.66% |
+| Input setup | 17.009 | 15.962 | 15.936 | 1.33% |
+| Block normalization | 45.403 | 19.875 | 19.646 | 1.66% |
 | QKV projection | 116.390 | 116.227 | 115.942 | 9.68% |
-| RoPE / QKV layout | 182.267 | 34.963 | 34.813 | 2.91% |
+| RoPE / context layout | 182.267 | 34.963 | 34.813 | 2.91% |
 | Attention | 341.840 | 218.123 | 217.669 | 18.17% |
-| Context layout | 0.000 | 0.000 | 0.000 | 0.00% |
 | MLP up projection | 146.096 | 147.072 | 146.298 | 12.25% |
-| H gate | 60.185 | 3.587 | 3.600 | 0.30% |
-| Z gate | 23.936 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 49.810 | 56.939 | 56.776 | 4.74% |
-| H down projection | 151.718 | 115.171 | 690.146 | 9.59% |
-| H feature compaction | N/A | 19.147 | 18.931 | 1.60% |
-| Residual sum | 18.662 | 10.717 | 10.707 | 0.89% |
-| Final norm | 3.768 | 3.896 | 3.944 | 0.32% |
+| H/Z output block | 304.310 | 205.560 | 780.159 | 17.12% |
+| Final normalization | 3.768 | 3.896 | 3.944 | 0.32% |
 | Vocabulary projection | 497.358 | 438.691 | 439.204 | 36.55% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Scalar sparse us | Scalar, no skip us |
 | --- | --- | --- | --- |
@@ -281,28 +243,20 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 
 #### kappa = 0.1
 
-| Forward category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
+| Common semantic category | Native us | Selected sparse us | No-skip us | Selected sparse active share |
 | --- | --- | --- | --- | --- |
-| Position indices | 0.861 | 0.877 | 0.883 | 0.08% |
-| Token embedding | 2.784 | 2.757 | 2.752 | 0.24% |
-| RoPE tables | 13.317 | 12.299 | 12.309 | 1.07% |
-| Block layer norms | 45.448 | 19.878 | 19.683 | 1.72% |
+| Input setup | 16.963 | 15.934 | 15.944 | 1.38% |
+| Block normalization | 45.448 | 19.878 | 19.683 | 1.72% |
 | QKV projection | 116.234 | 116.239 | 116.083 | 10.07% |
-| RoPE / QKV layout | 182.035 | 34.981 | 34.824 | 3.03% |
+| RoPE / context layout | 182.035 | 34.981 | 34.824 | 3.03% |
 | Attention | 341.966 | 218.413 | 218.024 | 18.92% |
-| Context layout | 0.000 | 0.000 | 0.000 | 0.00% |
 | MLP up projection | 146.120 | 146.725 | 146.426 | 12.71% |
-| H gate | 60.269 | 3.579 | 3.608 | 0.31% |
-| Z gate | 23.925 | N/A | N/A | N/A |
-| Z down projection (gate fused if applicable) | 49.776 | 56.534 | 56.773 | 4.90% |
-| H down projection | 151.757 | 69.638 | 689.573 | 6.03% |
-| H feature compaction | N/A | 19.190 | 19.000 | 1.66% |
-| Residual sum | 18.664 | 10.734 | 10.714 | 0.93% |
-| Final norm | 3.776 | 3.880 | 3.936 | 0.34% |
+| H/Z output block | 304.391 | 159.674 | 779.668 | 13.83% |
+| Final normalization | 3.776 | 3.880 | 3.936 | 0.34% |
 | Vocabulary projection | 497.786 | 438.799 | 439.034 | 38.01% |
 
 
-Comparable h/z branch bundle (gates + down projections + compaction + residual), by layer:
+The same H/Z output block (gates + sparse preparation + W2 + Wo + residual), by layer:
 
 | Layer | Native (dense) us | Scalar sparse us | Scalar, no skip us |
 | --- | --- | --- | --- |
@@ -315,6 +269,28 @@ Comparable h/z branch bundle (gates + down projections + compaction + residual),
 
 
 Vocabulary projection is the largest remaining sparse component (36.55%/38.01%); attention takes 18.17%/18.92%. Actual h feature-union counters in the five gathered layers retain 7.815%/3.052% of the no-skip padded tensor-core logical products. Those counters are not measured speedups. All z products and h0 stay dense.
+
+## Measured detail of the H/Z output block
+
+These are detail views of the same purple category used above. Patterns distinguish measured children within the purple family. A solid fused H/Z output block is indivisible in the available evidence; it is not an H-only projection. At 70M, H down (W2) is one measured child, alongside H preparation, Z gate/down and residual. Their sum is the comparable whole. [Detail data](results/hz-detail.csv) retain only components measured independently.
+
+[Figure 5 — 14M H/Z implementation detail](figures/05-14m-hz-detail.pdf)
+
+14M, kappa 0/0.1. Every bar is the same H/Z output block used in the common decomposition. All components keep the parent purple color; fixed patterns identify H gate/preparation, H down (W2), Z gate + down (Wo), residual, or an indivisible fused H/Z consumer. H gate/preparation sums separately measured H gate and feature compaction. Z gate + down sums the measured Z gate/projection or their fused equivalent. The solid fused category contains the complete measured consumer, including prepass and fallback where present. Its internal components are not assigned separate latencies. Missing components have no independent measurement, not a demonstrated zero cost. The same complete legend and microsecond axis are used in all three detail figures. All values are arithmetic sums of actual CUPTI activity means; these accounting groups are not independent contiguous timed intervals.
+
+[Figure 6 — 31M H/Z implementation detail](figures/06-31m-hz-detail.pdf)
+
+31M, kappa 0/0.1. Every bar is the same H/Z output block used in the common decomposition. All components keep the parent purple color; fixed patterns identify H gate/preparation, H down (W2), Z gate + down (Wo), residual, or an indivisible fused H/Z consumer. H gate/preparation sums separately measured H gate and feature compaction. Z gate + down sums the measured Z gate/projection or their fused equivalent. The solid fused category contains the complete measured consumer, including prepass and fallback where present. Its internal components are not assigned separate latencies. Missing components have no independent measurement, not a demonstrated zero cost. The same complete legend and microsecond axis are used in all three detail figures. All values are arithmetic sums of actual CUPTI activity means; these accounting groups are not independent contiguous timed intervals.
+
+[Figure 7 — 70M H/Z implementation detail](figures/07-70m-hz-detail.pdf)
+
+70M, kappa 0/0.1. Every bar is the same H/Z output block used in the common decomposition. All components keep the parent purple color; fixed patterns identify H gate/preparation, H down (W2), Z gate + down (Wo), residual, or an indivisible fused H/Z consumer. H gate/preparation sums separately measured H gate and feature compaction. Z gate + down sums the measured Z gate/projection or their fused equivalent. The solid fused category contains the complete measured consumer, including prepass and fallback where present. Its internal components are not assigned separate latencies. Missing components have no independent measurement, not a demonstrated zero cost. The same complete legend and microsecond axis are used in all three detail figures. All values are arithmetic sums of actual CUPTI activity means; these accounting groups are not independent contiguous timed intervals.
+
+## Final dense–sparse comparison across model sizes
+
+[Figure 8 — dense versus sparse execution, identical semantic colours](figures/08-dense-sparse-across-models.pdf)
+
+Final direct comparison of native dense arithmetic and the selected sparse consumer at 14M, 31M and 70M, for kappa 0 and 0.1. Each size has an adjacent dense/sparse pair. Colours, hatching, category order, legend and microsecond scale are identical across both panels and model sizes. The purple H/Z output block always includes gates, sparse preparation, W2, Wo and residual combination. Labels identify the 14M tiled threshold and 31M/70M scalar thresholds. Dense means native execution of that same gated checkpoint, not a different ungated model; sparse selects the corner-specialized 14M consumer or the existing scalar consumers at 31M/70M. Bars sum actual CUPTI activity means from 12 profiled forwards; end labels show GPU-active microseconds. This is a component budget, not uninstrumented host latency; gaps and host overhead are outside these bars. Original timing distributions remain in the CSVs. Different gates/consumers and the separate physical 14M GPU session restrict cross-size interpretation to a descriptive comparison.
 
 ## Timing boundaries and qualification
 
@@ -378,7 +354,7 @@ Microseconds; p10/p90 describe the pooled 1,344 samples and are not confidence b
 
 [Run064 observation](../../runs/064-2026-10-07-pythia14m-forward-latency-decomposition/observations/01-forward-decomposition.md) · [Run065 observation](../../runs/065-2026-10-07-larger-model-forward-decomposition/observations/01-larger-forward-decomposition.md). The checkpoint sources are Run060 (14M), Run054 (31M) and Run043 (70M). Exact source/checkpoint identities and SHA256 values are in [source provenance](provenance/sources.json) and [combined evidence](results/decomposition.json). Figures have individual [observations](observations/INDEX.md).
 
-[Full-forward timings](results/full-forward-latency.csv) · [Forward categories](results/forward-categories.csv) · [Every forward stage](results/forward-stages.csv) · [Per-layer branch bundle](results/branch-bundle-by-layer.csv) · [Every CUDA activity](results/cuda-kernel-nodes.csv).
+[Full-forward timings](results/full-forward-latency.csv) · [Common semantic categories](results/semantic-categories.csv) · [Category mapping](results/category-mapping.csv) · [Original implementation categories](results/forward-categories.csv) · [H/Z detail](results/hz-detail.csv) · [Every forward stage](results/forward-stages.csv) · [Per-layer H/Z block](results/branch-bundle-by-layer.csv) · [Every CUDA activity](results/cuda-kernel-nodes.csv).
 
 Run locally from the repository root:
 

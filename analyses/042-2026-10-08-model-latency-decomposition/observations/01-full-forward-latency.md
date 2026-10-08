@@ -6,9 +6,9 @@
 
 **Sources:** Run064 results/decomposition.json and Run065 results/decomposition.json; exact identities in ../provenance/sources.json. Main tables in ../README.md.
 
-**Aggregation:** Host latency uses pooled geometric means and sample quantiles. GPU categories use arithmetic sums of measured CUPTI activity means. The branch bundle pools disjoint named activities within each layer. Shares divide by that mode’s measured GPU-active union; no host-time rescaling.
+**Aggregation:** Host latency uses pooled geometric means and sample quantiles. GPU categories use arithmetic sums of measured CUPTI activity means. The H/Z output block pools disjoint named activities within each layer; the definition is fixed across models. Shares divide by that mode’s measured GPU-active union; no host-time rescaling. Exact definitions and fixed colors are in ../LABELS.md.
 
-**Caption and legend:** Bars show pooled host geometric means; black whiskers are pooled sample p10-p90; three black diamonds show fresh-process geometric means. These are descriptive distributions, not confidence intervals. Green bars identify the selected sparse implementation. Hatching means arithmetic skipping is disabled; the trained gate stays active. All panels share the millisecond axis. 14M has a tiled gate in every mode, including native and generic. 31M/70M have scalar gates in every mode. Different gates/consumers and physical GPU sessions make the cross-size comparison descriptive.
+**Caption and legend:** Bars show pooled host geometric means; black whiskers are pooled sample p10-p90; three black diamonds show fresh-process geometric means. These are descriptive distributions, not confidence intervals. Blue means native; green the selected sparse implementation; red the selected no-skip control; gray the additional generic 14M consumer. Hatching means arithmetic skipping is disabled; the trained gate stays active. All panels share the millisecond axis. 14M has a tiled gate in every mode, including native and generic. 31M/70M have scalar gates in every mode. Different gates/consumers and physical GPU sessions make the cross-size comparison descriptive.
 
 **Result:** The selected sparse implementations reduce latency versus their own gated native references; the 14M specialized-versus-generic comparison is distinct from either comparison with native.
 

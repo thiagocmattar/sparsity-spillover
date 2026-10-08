@@ -4,6 +4,7 @@ import csv
 import hashlib
 import json
 from pathlib import Path
+import labels
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -74,9 +75,11 @@ def collect():
         points.append((condition['size'].upper(), condition['pair'], condition,
                        RUNBIG, 'sparse', 'no_skip'))
     output = {'status': 'verified', 'category_order': ORDER,
+              'semantic_category_order': list(labels.COMMON_STYLES),
+              'semantic_styles': labels.COMMON_STYLES,
               'conditions': [], 'measurement_boundary':
               'Resident-input, synchronized host CUDA-graph replay; B1/T2048, BF16, full 50304-way logits.'}
-    timing_rows, stage_rows, category_rows, layer_rows, node_rows = [], [], [], [], []
+    timing_rows, stage_rows, category_rows, layer_rows, node_rows, common_rows = [], [], [], [], [], []
     for size, pair, condition, source, selected, no_skip in points:
         cfg = read(source / 'config.json')
         assert [cfg[k] for k in ['timing_inputs', 'timing_passes', 'process_replicates',
@@ -113,6 +116,14 @@ def collect():
                 category_rows.append({'condition': key, 'model': size, 'mode': mode,
                                      'category': label, 'cupti_mean_us': value,
                                      'active_share': value / trace['mean_active_us']})
+            common = labels.common_values(cats)
+            assert abs(sum(common.values()) - trace['mean_active_us']) < .1
+            assert abs(common['H/Z output block'] - sum(layers.values())) < .001
+            for label, value in common.items():
+                common_rows.append({'condition': key, 'model': size, 'mode': mode,
+                                    'category': label, 'cupti_mean_us': value,
+                                    'active_share': value / trace['mean_active_us'],
+                                    'color': labels.COMMON_STYLES[label]['color']})
             for layer, value in layers.items():
                 layer_rows.append({'condition': key, 'model': size, 'mode': mode,
                                    'layer': layer, 'branch_bundle_cupti_us': value})
@@ -125,6 +136,7 @@ def collect():
                           'process_host_geomean_us': [p['timing'][mode]['host_us']['geomean']
                                                      for p in condition['processes']],
                           'cuda_outer': data['baseline_cuda_us'], 'categories': dict(cats),
+                          'semantic_categories': common,
                           'branches_by_layer': dict(layers),
                           'active_us': trace['mean_active_us'], 'span_us': trace['mean_span_us'],
                           'gap_us': trace['mean_gap_us'],
@@ -155,7 +167,10 @@ def collect():
     write(ROOT / 'results/decomposition.json', output)
     for filename, rows in [('full-forward-latency.csv', timing_rows), ('forward-stages.csv', stage_rows),
                            ('forward-categories.csv', category_rows), ('branch-bundle-by-layer.csv', layer_rows),
-                           ('cuda-kernel-nodes.csv', node_rows)]:
+                           ('cuda-kernel-nodes.csv', node_rows), ('semantic-categories.csv', common_rows),
+                           ('category-mapping.csv', [{'original_category': k, 'semantic_category': v,
+                                                     'color': labels.COMMON_STYLES[v]['color']}
+                                                    for k, v in labels.CATEGORY_TO_COMMON.items()])]:
         csvout(filename, rows)
     sources = [source / name for source in [RUN14, RUNBIG]
                for name in ['results/decomposition.json', 'config.json', 'README.md']]

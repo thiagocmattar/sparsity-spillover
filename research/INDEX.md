@@ -7,7 +7,9 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 [Analysis042](../analyses/042-2026-10-08-model-latency-decomposition/README.md)
 collects per-model latency tables and PDFs with explicit tiled (14M) and scalar
-(31M/70M) threshold labels, using completed Runs064/065.
+(31M/70M) threshold labels, using completed Runs064/065. Common categories/colors
+and [exact definitions](../analyses/042-2026-10-08-model-latency-decomposition/LABELS.md)
+separate cross-model budgets from measured implementation detail.
 
 [Run065](../runs/065-2026-10-07-larger-model-forward-decomposition/README.md)
 profiles retained scalar-gated 31M/70M T2/Ph models on one RTX 5090. Sparse
