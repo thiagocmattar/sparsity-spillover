@@ -5,6 +5,11 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 ## Current status
 
+[Run068](../runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/README.md)
+is implemented and locally qualified; launch approval is pending. Two fresh14M
+Ph+head models will use head16x16 kappa.1/.5 with h/z8x16 kappa0, followed by a
+matched5090 endpoint benchmark. No new training or speed result exists.
+
 [Run067](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/README.md)
 completed the frozen Run066 sparse vocabulary-head comparison on one RTX 5090.
 All twelve full processes match native logits/loss exactly. Skipping saves
