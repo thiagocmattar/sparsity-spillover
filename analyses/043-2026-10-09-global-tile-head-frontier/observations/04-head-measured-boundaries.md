@@ -2,7 +2,7 @@
 
 Question: How does each head intervention change projection, head-path, and complete latency?
 
-Sources: Analysis037/038/041 cohort coordinates; Run063 process timing samples; Analysis042 Run064/065 decomposition and original checkpoint metadata; Runs066/068 canonical validation and Runs067/068 verified timing results. Exact identities are in [latency source receipts](../provenance/latency-sources.json); reduced values and source attempts are in [latency.json](../data/latency.json).
+Sources: Analysis037/041 retained 14M cohort coordinates; Run063 process timing samples; Analysis042 Run064 14M decomposition and original checkpoint metadata; Runs066/068 canonical validation and Runs067/068 verified timing results. Plot style reference: Analysis041 Figure04 panel (b) and its 02_quality_latency_frontier.py script. Exact identities are in [latency source receipts](../provenance/latency-sources.json); reduced values and source attempts are in [latency.json](../data/latency.json).
 
 Coverage: Runs067/068, 6 checkpoints × 3 modes × 3 timing boundaries; 3 processes/checkpoint, 64 inputs × 7 paired timing passes/process. Validation coordinates/counts use all 500 MiniPile documents, 338 complete 2,048-token blocks, 691,886 predictions and the declared 1,444-token excluded tail. Geometry observations use training boundaries rather than validation batches.
 

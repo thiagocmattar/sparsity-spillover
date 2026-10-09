@@ -183,6 +183,12 @@ def main():
     decomposition=profiles(points)
     head=heads(points)
     assert len(points)==len({p['id'] for p in points})==138
+    # User-requested regeneration: select 14M without changing any measured coordinate.
+    points=[p for p in points if p['model']=='14M']
+    assert len(points)==87
+    decomposition['conditions']=[c for c in decomposition['conditions'] if c['model']=='14M']
+    decomposition['checkpoint_sources']={'14M':decomposition['checkpoint_sources']['14M']}
+    decomposition['total_logit_comparisons']=sum(c['logit_comparisons'] for c in decomposition['conditions'])
     assert all(math.isfinite(p['loss']) and math.isfinite(p['latency_ms']) and p['latency_ms']>0 for p in points)
     edge=frontier(points)
     cohort_edges={cohort:[p['id'] for p in frontier([q for q in points if q['execution_cohort']==cohort])]
@@ -195,8 +201,11 @@ def main():
         decomposition=decomposition, counts=dict(points=len(points), global_frontier=len(edge),
             head_checkpoints=len(head), head_executions=len(dominance)),
         coverage=dict(documents=500, blocks=338, input_tokens=692224, predictions=691886, excluded_tail_tokens=1444),
-        caveat='Observed point-estimate envelope across different GPU sessions, kernel packages and precisions; not a controlled causal frontier.'))
+        model_filter='14M only: 87 of the original 138 executions, with unchanged coordinates.',
+        caveat='Observed 14M point-estimate envelope across different GPU sessions, kernel packages and precisions; not a controlled causal frontier.'))
     identity(__file__)
+    identity(ROOT/'analyses/041-2026-10-04-corner-tile-versus-elementwise/02_quality_latency_frontier.py')
+    identity(ROOT/'analyses/041-2026-10-04-corner-tile-versus-elementwise/figures/04-quality-latency-frontier-with-corner-tiles.pdf')
     write('provenance/latency-sources.json', list(SOURCES.values()))
     print({'status':'collected', 'points':len(points), 'frontier':len(edge), 'head_checkpoints':len(head)}, flush=True)
 

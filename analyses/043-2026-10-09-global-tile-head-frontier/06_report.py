@@ -63,10 +63,10 @@ def tables(latency, geometry):
                   dose_name=row.get('dose_name',''),dose=row.get('dose','')))
     csv_file('results/all-executions.csv',flat)
     csv_file('results/global-frontier.csv',[r for r in flat if r['global_nondominated']])
-    headers=['Model','Training recipe','Body gate κ or pressure λ','Head κ','Execution','Loss','Full host ms','Session','Global frontier']
+    headers=['Model','Training recipe','Body gate κ or pressure λ','Head κ','Execution','Loss','Full host ms','Session','14M frontier']
     text_file('results/ALL-POINTS.md',"""# All retained execution coordinates
 
-138 executions, including native and skip-disabled controls, not 138 trained models.
+87 retained 14M executions, including native and skip-disabled controls, not 87 trained models.
 Loss is the canonical final-checkpoint FP16 full-validation result; latency is
 complete B1/T2048/full-logits forward on RTX 5090, using the declared timing precision.
 All modes for a checkpoint share its quality coordinate. A native or no-skip mode
@@ -105,18 +105,17 @@ T1 retains its historical ReLU intervention, rather than a κ threshold sweep.
     cat=d['semantic_category_order']
     text_file('results/DECOMPOSITION.md',"""# Measured full-model decomposition
 
-Runs064/065 only: complete CUPTI profiles for six retained checkpoints. Categories
+Run064 only: complete CUPTI profiles for two retained 14M checkpoints. Categories
 below are milliseconds of arithmetic mean CUDA activity durations across 12 traces
 per condition/mode. They keep Analysis042's categories, colors, and mapping.
 The total is a sum of activities, not the independently timed host geometric mean.
 The CSV also preserves the GPU activity union, span, and gaps. Small differences
 between summed activities and the union reflect the original timestamp reductions.
 
-Only 14M has trained 8×16 corner thresholds at h/z. 31M/70M use scalar thresholds;
-their consumers' matrix tiles or compaction do not make the training gate tiled.
+Both checkpoints have trained 8×16 corner thresholds at h/z.
 Every vocabulary head here has its threshold OFF and dense arithmetic. The H/Z
 output block groups gate, consumer/preparation, down projections and residual work;
-fused 14M/31M internals have no independent substep timing.
+fused 14M internals have no independent substep timing.
 
 """+table(['Model','κ','Mode']+cat+['Activity sum','Host geometric mean'],
         [[r['model'],r['kappa'],r['mode']]+[f'{r[k]:.6f}' for k in cat]+
@@ -129,7 +128,7 @@ projection-only, gate+cast+projection, and complete-forward timings, measured as
 separate overlapping boundaries. Their independent geometric means are never
 subtracted or stacked to estimate unmeasured stages.
 
-[All 22 execution decompositions](semantic-decomposition.csv) ·
+[All 10 execution decompositions](semantic-decomposition.csv) ·
 [Original stage mapping and fusion limits](../../042-2026-10-08-model-latency-decomposition/LABELS.md) ·
 [Original detailed stage table](../../042-2026-10-08-model-latency-decomposition/results/forward-stages.csv).
 """)
@@ -164,11 +163,11 @@ def report(latency, geometry):
             [f"{s['cap_active']['count']}/712",','.join(map(str,s['eligible_parameter_tensors']))])
     nondominated=[r for r in points if r['id'] in edge]
     nondominated.sort(key=lambda r:(r['loss'],r['latency_ms']))
-    text_file('results/REPORT.md',"""# Global tile/head quality–latency and pressure geometry
+    text_file('results/REPORT.md',"""# 14M tile/head quality–latency and pressure geometry
 
-The declared inventory contains **138 execution points** and **20 observed globally
+The 14M-only inventory contains **87 execution points** and **12 observed
 nondominated points**. None of the 18 head execution points extends this observed
-global envelope. The specialized 14M T2 corner-tile model at κ=0.1 does appear on
+14M envelope. The specialized 14M T2 corner-tile model at κ=0.1 does appear on
 it: loss **5.596746**, complete-forward **0.486441 ms** (Run064). This is a descriptive
 comparison of retained measurements across sessions and implementations.
 
@@ -180,9 +179,10 @@ does not establish a better measured quality–latency trade-off in this invento
 
 ## Scope and comparability
 
-The cohort starts with Analysis037's 14M/31M/70M global study, adds Analysis038's
-31M T7 sweep, Analysis041's T2/T7 tile experiments and matched scalar references,
-and the executions in Runs063–065 and 067–068. It is a declared cohort of existing
+At the user's request, the cohort selects only the 14M coordinates from the
+previous inventory. It includes Analysis037's 14M historical study, Analysis041's
+T2/T7 tile experiments and matched scalar references, and the executions in
+Runs063/064/067/068. No quality or latency coordinate changes. It is a cohort of existing
 evidence, rather than an exhaustive inventory of every repository experiment.
 Different executions of the same retained checkpoint remain separate points.
 
@@ -202,21 +202,23 @@ ablation. A checkpoint's trained gates remain active in native and no-skip modes
 
 Figures [01](../figures/01-global-quality-latency.pdf) and
 [02](../figures/02-execution-cohort-frontiers.pdf) show both the global envelope and
-the separate execution cohorts. There are 120 BF16 block executions (20 frontier
+the separate execution cohorts. There are 69 BF16 block executions (12 frontier
 points) and 18 FP16 head executions (3 frontier points, all native dense). Session
 differences remain within those cohorts. Frontier membership uses strict Pareto
 dominance of point estimates, not significance tests; process ranges are not CIs.
-The dotted envelope does not assert measured interpolation between points.
+The dotted step envelope does not assert measured intermediate executions.
+Figure01 uses one 14M-only panel with linear axes and connected historical T2/Ph
+and T7/Ph sweeps, following Analysis041 Figure04 panel (b). The latency range
+expands to include the new head modes; none are cropped from view.
 
 ## What is tiled and what runs sparsely?
 
 | Evidence | Trained body gate | Trained head gate | Measured sparse execution |
 | --- | --- | --- | --- |
-| Historical scalar T2 / Ph | h,z, elementwise | OFF | Size-specific h/z consumers; 70M z arithmetic remains dense |
+| Historical scalar T2 / Ph | h,z, elementwise | OFF | 14M h/z consumer |
 | Historical scalar T4 / T7 | Declared 4 / 7 sites, elementwise | OFF | Site-specific kernel package; a gate alone does not imply bypass |
 | T2 corner models, Runs060/061/063/064 | h,z, 8×16 corner tiles | OFF | Generic or corner-aware h/z consumer |
 | T7 corner models, Run062 | Declared seven sites, 8×16 corner tiles | OFF | Retained T7 consumer package |
-| Run065 larger-model decomposition | h,z, scalar, κ=0/0.1 | OFF | 31M joint consumer; 70M h compaction/down, z arithmetic dense |
 | Run066 training / Run067 timing | h,z, 8×16 tiles, κ=0/0.1 | 8×16 tiles, same κ | Head only; consumer M16/K16 requires two neighboring token tiles empty |
 | Run068 | h,z, 8×16 tiles, κ=0 | 16×16 tiles, κ=0.1/0.5 | Head only; gate and consumer tiles aligned |
 
@@ -251,7 +253,7 @@ decomposition is **unavailable** for these six checkpoints. Figure
 [04](../figures/04-head-measured-boundaries.pdf) presents the overlapping boundaries
 separately. Figure [03](../figures/03-existing-full-decomposition.pdf) and the
 [decomposition table](DECOMPOSITION.md) retain the complete, consistently colored
-profiles from Runs064/065. Their vocabulary heads have threshold OFF.
+profiles from Run064. Their vocabulary heads have threshold OFF.
 
 Pooled B1 occupancy/instruction counts over the same complete validation workload:
 
@@ -325,17 +327,17 @@ these results cannot isolate the head's local gradient, assign its resistance to
 a specific layer, or claim that only one site caused the difference. Comparison
 of head8 with head16 additionally changes alignment and, at head κ=0.1, body κ.
 
-## Observed global frontier
+## Observed 14M frontier
 
 Sorted by increasing canonical loss; all native/skip-disabled executions were
 eligible. Ties remain nondominated unless another point is strictly better in at
 least one objective. A cheaper training intervention is not inferred from this
 inference-only frontier.
 
-        """+table(['Model','Training recipe','Body gate κ or pressure λ','Head κ','Execution','Loss','Full host ms','Session','Global frontier'],point_rows(nondominated,edge))+
+        """+table(['Model','Training recipe','Body gate κ or pressure λ','Head κ','Execution','Loss','Full host ms','Session','14M frontier'],point_rows(nondominated,edge))+
         """
 
-[All 138 points](ALL-POINTS.md) · [All-execution CSV](all-executions.csv) ·
+[All 87 14M points](ALL-POINTS.md) · [All-execution CSV](all-executions.csv) ·
 [Frontier CSV](global-frontier.csv) · [Head-boundary CSV](head-boundaries.csv) ·
 [Geometry CSV](pressure-geometry.csv) · [Analysis scope and reproduction](../README.md).
 
@@ -346,23 +348,23 @@ change, or research-finding promotion was performed.
 
 def observations():
     items=[
-      ('01-global-quality-latency','Does vocabulary-head intervention extend the observed global quality–latency envelope?',
-       '03_plot_frontiers.py','latency','138 existing execution points at 14M, 31M and 70M; all measured modes retained.',
+      ('01-global-quality-latency','Does vocabulary-head intervention extend the observed 14M quality–latency envelope?',
+       '03_plot_frontiers.py','latency','87 existing 14M execution points; all measured modes retained.',
        'Canonical final validation loss versus synchronized complete-forward host geometric mean. Pareto dominance minimizes both, with at least one strict inequality.',
-       'Two panels: all sizes and explicitly labeled 14M detail. Colors identify base, other scalar, scalar T2, scalar T7, tile T2, tile T7, head8 and head16 recipes. Model shapes are circle/triangle/square; head8/head16 are diamond/star. Open markers are native dense arithmetic with the trained gates, × is no-skip, and dots connect the observed envelope. Thin whiskers show process minimum/maximum where available; no confidence interval is inferred.',
-       '20 global nondominated points; none of the 18 head execution points extends the envelope. Run064 T2 tile κ=0.1 is nondominated at loss 5.596746 and 0.486441 ms.',
-       'Mixed sessions, BF16 optimized body kernels versus FP16 native-body/head kernels. No combined body/head timing exists. The envelope is descriptive; dotted connections do not assert measured intermediate points. Expanded axes are labeled detail.'),
+       'One 14M-only detail panel with linear axes, following Analysis041 Figure04 panel (b). Historical five-threshold T2/Ph is dashed blue; T7/Ph is solid orange. Base has a vertical loss guide. Green and purple mark T2/T7 body tiles with head OFF; pink/orange mark head8/head16. Open markers mean native dense arithmetic with the trained gates; × is no-skip. The dotted step envelope is the observed Pareto set. Whiskers show process min/max, not confidence intervals. The larger latency range includes every new head execution.',
+       '12 14M nondominated points; none of the 18 head execution points extends the envelope. Run064 T2 tile κ=0.1 is nondominated at loss 5.596746 and 0.486441 ms.',
+       'Mixed sessions, BF16 optimized body kernels versus FP16 native-body/head kernels. No combined body/head timing exists. Connected sweep segments show threshold order, not interpolation; the descriptive step envelope does not assert measured intermediate executions. The detail axes do not start at zero.'),
       ('02-execution-cohort-frontiers','Does the global conclusion survive separating the execution packages?',
-       '03_plot_frontiers.py','latency','120 BF16 block executions and 18 FP16 native-body/head executions.',
+       '03_plot_frontiers.py','latency','14M only: 69 BF16 block executions and 18 FP16 native-body/head executions.',
        'Recompute strict Pareto dominance independently inside each declared cohort using original measured coordinates; no latency rescaling.',
        'Two explicitly labeled detail panels have their own axes because latency ranges differ. Colors, symbols, native/no-skip encoding and process-range whiskers match Figure01. Each panel has its own dotted point-estimate envelope.',
-       '20 BF16 frontier points, 3 FP16 head frontier points. All 3 head-cohort frontier points use native dense arithmetic. Head16 κ=0.5 sparse is point-estimate dominated by Head16 κ=0.1 dense.',
+       '12 BF16 frontier points, 3 FP16 head frontier points. All 3 head-cohort frontier points use native dense arithmetic. Head16 κ=0.5 sparse is point-estimate dominated by Head16 κ=0.1 dense.',
        'Timing sessions and checkpoint weights still differ inside the cohorts. This separation does not create a paired gate-off ablation or statistical frontier.'),
-      ('03-existing-full-decomposition','Where is complete-forward CUDA work spent under common cross-model labels?',
-       '04_plot_latency.py','latency','Runs064/065, 6 checkpoints, κ=0/0.1, native and selected sparse modes; 12 CUPTI traces per condition/mode.',
+      ('03-existing-full-decomposition','Where is 14M complete-forward CUDA work spent under the existing semantic labels?',
+       '04_plot_latency.py','latency','Run064, 2 retained 14M checkpoints, κ=0/0.1, native and selected sparse modes; 12 CUPTI traces per condition/mode.',
        'Preserve Analysis042 original arithmetic CUDA activity means; group into nine fixed categories. Stack activity durations without rescaling. Independent complete-host geometric means appear as text.',
-       'Three model panels share the activity-sum scale. Input setup gray; block normalization sky blue; QKV blue; RoPE/context orange; attention yellow; MLP up green; H/Z output pink; final norm black; vocabulary projection vermillion. Patterns reinforce colors. 14M h/z thresholds are 8×16 tiles; 31M/70M are scalar. Every head threshold is OFF.',
-       'Vocabulary projection remains dense and prominent in the optimized profiles. The H/Z aggregate makes the fused 14M/31M and separate 70M implementations comparable without inventing internal timings.',
+       'One 14M panel. Input setup gray; block normalization sky blue; QKV blue; RoPE/context orange; attention yellow; MLP up green; H/Z output pink; final norm black; vocabulary projection vermillion. Patterns reinforce colors. Both checkpoints have h/z thresholds in 8×16 tiles. Every head threshold is OFF.',
+       'Vocabulary projection remains dense and prominent in the optimized 14M profiles. The H/Z aggregate preserves the measured fused consumer without inventing internal timings.',
        'Bars are summed activities, not a timeline or host latency. Fusion prevents independent timing of several H/Z internals. New head experiments have no full CUPTI stage profile; do not infer it by subtracting independent boundary means.'),
       ('04-head-measured-boundaries','How does each head intervention change projection, head-path, and complete latency?',
        '04_plot_latency.py','latency','Runs067/068, 6 checkpoints × 3 modes × 3 timing boundaries; 3 processes/checkpoint, 64 inputs × 7 paired timing passes/process.',
@@ -383,7 +385,7 @@ def observations():
        'New head-pressure recipes have larger removed components than the matched Ph head8 recipes, but rarely saturate the cap. Original T7/Pall cap activity is 3,453/3,560 boundaries (96.99%) across five κ conditions.',
        'Family medians pool different numbers/choices of thresholds and are descriptive; head16/body-threshold axes are not a matched common sweep. Manuscript r/b is after projection, not the pre-projection norm ratio. Global geometry and one-seed limitations remain; manuscript text is unchanged.')]
     for stem,question,script,kind,coverage,method,caption,result,caveat in items:
-        source=('Analysis037/038/041 cohort coordinates; Run063 process timing samples; Analysis042 Run064/065 decomposition and original checkpoint metadata; Runs066/068 canonical validation and Runs067/068 verified timing results.' if kind=='latency' else
+        source=('Analysis037/041 retained 14M cohort coordinates; Run063 process timing samples; Analysis042 Run064 14M decomposition and original checkpoint metadata; Runs066/068 canonical validation and Runs067/068 verified timing results. Plot style reference: Analysis041 Figure04 panel (b) and its 02_quality_latency_frontier.py script.' if kind=='latency' else
                 'Runs060/066/068 raw events.jsonl and manifests; Analysis024 original OL1 appendix and its 20 14M source conditions; Analysis021 retained geometry auditor. Manuscript draft/05-experimental-study.tex and draft/08-appendix-interventions.tex define the contextual metrics.')
         text_file(f'observations/{stem}.md',f"""# {stem[3:].replace('-',' ').capitalize()}
 

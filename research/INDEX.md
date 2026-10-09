@@ -6,9 +6,10 @@ Compact current state; full history belongs to numbered runs and analyses.
 ## Current status
 
 [Analysis043](../analyses/043-2026-10-09-global-tile-head-frontier/README.md)
-consolidates 138 retained execution points, common latency decomposition and
-Ph versus Ph+head global OL1 geometry. No head point extends the observed global
-envelope; T2 tile kappa=.1 does. Six verified PDFs and tables distinguish trained
+consolidates 87 retained 14M execution points, common latency decomposition and
+Ph versus Ph+head global OL1 geometry. No head point extends the observed
+14M envelope; T2 tile kappa=.1 does. The frontier follows Analysis041 panel (b).
+Six verified PDFs and tables distinguish trained
 body/head gates, precision and timing coverage. Local descriptive analysis;
 no new GPU run, manuscript change or finding promotion.
 

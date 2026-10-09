@@ -16,9 +16,9 @@ def main():
     data=json.loads((HERE/'data/latency.json').read_text(encoding='utf-8'))
     d=data['decomposition'];styles=d['semantic_styles']
     plt.rcParams.update({'font.size':9,'pdf.fonttype':42,'axes.spines.top':False,'axes.spines.right':False})
-    fig,axes=plt.subplots(1,3,figsize=(15,6.1),sharex=True)
+    fig,axis=plt.subplots(figsize=(10.5,6.1));axes=[axis]
     fig.subplots_adjust(left=.10,right=.985,top=.79,bottom=.24,wspace=.18)
-    for ax,model in zip(axes,('14M','31M','70M')):
+    for ax,model in zip(axes,('14M',)):
         conditions=[c for c in d['conditions'] if c['model']==model]
         rows=[]
         for c in conditions:
@@ -36,13 +36,13 @@ def main():
             ax.text(offset+.025,index,f"host {row['host']['geomean']/1000:.3f} ms",va='center',fontsize=8)
         ax.set_yticks(range(len(rows)),[f"κ={c['kappa']} · {'dense' if m=='native' else 'sparse'}" for c,m,_ in rows])
         ax.invert_yaxis()
-        ax.set(xlabel='Mean summed CUPTI activities (ms)',xlim=(0,2.05))
+        ax.set(xlabel='Mean summed CUPTI activities (ms)',xlim=(0,.98))
         ax.set_title(f"{model}: {'h/z tiles 8×16' if model=='14M' else 'h/z scalar gates'}\nVocabulary head threshold OFF",fontsize=10)
         ax.grid(axis='x',alpha=.15);ax.set_axisbelow(True)
     handles=[Patch(facecolor=s['color'],hatch=s['hatch'],label=k) for k,s in styles.items()]
     fig.legend(handles=handles,loc='lower center',ncol=3,frameon=False,fontsize=9,bbox_to_anchor=(.5,.03))
-    fig.suptitle('Existing full-model latency decomposition — fixed categories and colors',fontsize=14,y=.97)
-    fig.text(.5,.89,'Runs064/065 · 12 CUPTI traces per condition/mode · arithmetic activity means\nHost labels are independently measured geometric means; component bars are not rescaled to them.',ha='center',fontsize=9)
+    fig.suptitle('14M full-model latency decomposition — fixed categories and colors',fontsize=14,y=.97)
+    fig.text(.5,.89,'Run064 · 12 CUPTI traces per condition/mode · arithmetic activity means\nHost labels are independently measured geometric means; component bars are not rescaled to them.',ha='center',fontsize=9)
     fig.savefig(HERE/'figures/03-existing-full-decomposition.pdf',metadata={'CreationDate':None,'ModDate':None});plt.close(fig)
     rows=data['head_boundaries'];x=np.arange(len(rows))
     ticks=[f"H{r['head_tile_tokens']} {'Ph' if r['pressure']=='h' else 'Ph+head'}\nh/z κ={r['block_kappa']:g}\nhead κ={r['head_kappa']:g}" for r in rows]

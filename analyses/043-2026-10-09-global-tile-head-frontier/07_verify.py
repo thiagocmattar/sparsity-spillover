@@ -25,9 +25,16 @@ def main():
         assert path.stat().st_size==row['bytes'] and digest(path)==row['sha256'],row['path']
     latency=json.loads((HERE/'data/latency.json').read_text(encoding='utf-8'))
     geometry=json.loads((HERE/'data/geometry.json').read_text(encoding='utf-8'))
-    points=latency['points'];assert len(points)==len({p['id'] for p in points})==138
+    points=latency['points'];assert len(points)==len({p['id'] for p in points})==87
+    assert all(p['model']=='14M' for p in points)
+    parent_commit='19f4cd82'
+    original=json.loads(subprocess.check_output(['git','show',parent_commit+':'+
+        (HERE/'data/latency.json').relative_to(ROOT).as_posix()],cwd=ROOT,encoding='utf-8'))
+    original_points=[p for p in original['points'] if p['model']=='14M']
+    assert points==original_points  # A model filter must preserve every original coordinate and mode.
+    assert latency['decomposition']['conditions']==[c for c in original['decomposition']['conditions'] if c['model']=='14M']
     assert [p['id'] for p in frontier(points)]==latency['global_frontier_ids']
-    assert len(latency['global_frontier_ids'])==20
+    assert len(latency['global_frontier_ids'])==12
     for cohort,edge in latency['compatible_frontier_ids'].items():
         assert [p['id'] for p in frontier([p for p in points if p['execution_cohort']==cohort])]==edge
     assert len(latency['compatible_frontier_ids']['FP16 native-body/head cohort'])==3
@@ -43,6 +50,7 @@ def main():
                 computed=math.exp(sum(math.log(p['timings'][boundary]['host_ms']['geomean_ms'][mode]) for p in r['processes'])/3)
                 assert math.isclose(value,computed,rel_tol=1e-12)
     for c in latency['decomposition']['conditions']:
+        assert c['model']=='14M'
         for r in c['modes'].values():
             assert math.isclose(sum(r['categories'].values()),sum(r['semantic_categories'].values()),rel_tol=1e-12)
     all_geometry=geometry['conditions']+geometry['manuscript_context']
@@ -59,13 +67,14 @@ def main():
     assert all(r['summary']['eligible_parameter_tensors']==[75 if r['pressure_recipe']=='Ph+head' else 65] for r in geometry['conditions'])
     with (HERE/'results/all-executions.csv').open(encoding='utf-8',newline='') as stream:
         csv_rows=list(csv.DictReader(stream))
-    assert len(csv_rows)==138
+    assert len(csv_rows)==87
     for row,p in zip(csv_rows,points):
         assert row['id']==p['id'] and float(row['loss'])==p['loss'] and float(row['latency_ms'])==p['latency_ms']
     figures=sorted((HERE/'figures').glob('*.pdf'));assert len(figures)==6
     for path in figures:
         with pymupdf.open(path) as doc:
             assert len(doc)==1 and len(doc[0].get_text())>500
+            assert '31M' not in doc[0].get_text() and '70M' not in doc[0].get_text()
         assert (HERE/'observations'/f'{path.stem}.md').is_file()
     links=0
     final_outputs={HERE/'results/verification.json',HERE/'provenance/generated.json'}
@@ -78,9 +87,10 @@ def main():
             links+=1
     result=subprocess.run([sys.executable,'-X','utf8',str(HERE/'test_analysis.py')],capture_output=True,text=True)
     print(result.stderr.strip(),flush=True);assert result.returncode==0
-    write('results/verification.json',dict(status='verified',source_files=len(sources),execution_points=138,
-        global_frontier_points=20,head_global_frontier_points=0,head_cohort_frontier_points=3,
-        head_checkpoints=6,head_boundaries=18,profiled_checkpoints=6,profiled_execution_modes=22,
+    write('results/verification.json',dict(status='verified',source_files=len(sources),model_filter='14M only',execution_points=87,
+        coordinate_reference_commit=parent_commit,coordinates_unchanged=True,
+        global_frontier_points=12,head_global_frontier_points=0,head_cohort_frontier_points=3,
+        head_checkpoints=6,head_boundaries=18,profiled_checkpoints=2,profiled_execution_modes=10,
         geometry_conditions=28,geometry_boundaries=19936,mathematical_tests=5,
         pdf_figures=6,observation_files=6,resolved_markdown_links=links,
         visual_review='All six PDF pages rendered to ignored temporary PNGs and inspected; publication outputs are PDF only.',

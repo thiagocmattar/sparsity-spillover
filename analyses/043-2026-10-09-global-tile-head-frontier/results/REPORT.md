@@ -1,8 +1,8 @@
-# Global tile/head quality–latency and pressure geometry
+# 14M tile/head quality–latency and pressure geometry
 
-The declared inventory contains **138 execution points** and **20 observed globally
+The 14M-only inventory contains **87 execution points** and **12 observed
 nondominated points**. None of the 18 head execution points extends this observed
-global envelope. The specialized 14M T2 corner-tile model at κ=0.1 does appear on
+14M envelope. The specialized 14M T2 corner-tile model at κ=0.1 does appear on
 it: loss **5.596746**, complete-forward **0.486441 ms** (Run064). This is a descriptive
 comparison of retained measurements across sessions and implementations.
 
@@ -14,9 +14,10 @@ does not establish a better measured quality–latency trade-off in this invento
 
 ## Scope and comparability
 
-The cohort starts with Analysis037's 14M/31M/70M global study, adds Analysis038's
-31M T7 sweep, Analysis041's T2/T7 tile experiments and matched scalar references,
-and the executions in Runs063–065 and 067–068. It is a declared cohort of existing
+At the user's request, the cohort selects only the 14M coordinates from the
+previous inventory. It includes Analysis037's 14M historical study, Analysis041's
+T2/T7 tile experiments and matched scalar references, and the executions in
+Runs063/064/067/068. No quality or latency coordinate changes. It is a cohort of existing
 evidence, rather than an exhaustive inventory of every repository experiment.
 Different executions of the same retained checkpoint remain separate points.
 
@@ -36,21 +37,23 @@ ablation. A checkpoint's trained gates remain active in native and no-skip modes
 
 Figures [01](../figures/01-global-quality-latency.pdf) and
 [02](../figures/02-execution-cohort-frontiers.pdf) show both the global envelope and
-the separate execution cohorts. There are 120 BF16 block executions (20 frontier
+the separate execution cohorts. There are 69 BF16 block executions (12 frontier
 points) and 18 FP16 head executions (3 frontier points, all native dense). Session
 differences remain within those cohorts. Frontier membership uses strict Pareto
 dominance of point estimates, not significance tests; process ranges are not CIs.
-The dotted envelope does not assert measured interpolation between points.
+The dotted step envelope does not assert measured intermediate executions.
+Figure01 uses one 14M-only panel with linear axes and connected historical T2/Ph
+and T7/Ph sweeps, following Analysis041 Figure04 panel (b). The latency range
+expands to include the new head modes; none are cropped from view.
 
 ## What is tiled and what runs sparsely?
 
 | Evidence | Trained body gate | Trained head gate | Measured sparse execution |
 | --- | --- | --- | --- |
-| Historical scalar T2 / Ph | h,z, elementwise | OFF | Size-specific h/z consumers; 70M z arithmetic remains dense |
+| Historical scalar T2 / Ph | h,z, elementwise | OFF | 14M h/z consumer |
 | Historical scalar T4 / T7 | Declared 4 / 7 sites, elementwise | OFF | Site-specific kernel package; a gate alone does not imply bypass |
 | T2 corner models, Runs060/061/063/064 | h,z, 8×16 corner tiles | OFF | Generic or corner-aware h/z consumer |
 | T7 corner models, Run062 | Declared seven sites, 8×16 corner tiles | OFF | Retained T7 consumer package |
-| Run065 larger-model decomposition | h,z, scalar, κ=0/0.1 | OFF | 31M joint consumer; 70M h compaction/down, z arithmetic dense |
 | Run066 training / Run067 timing | h,z, 8×16 tiles, κ=0/0.1 | 8×16 tiles, same κ | Head only; consumer M16/K16 requires two neighboring token tiles empty |
 | Run068 | h,z, 8×16 tiles, κ=0 | 16×16 tiles, κ=0.1/0.5 | Head only; gate and consumer tiles aligned |
 
@@ -97,7 +100,7 @@ decomposition is **unavailable** for these six checkpoints. Figure
 [04](../figures/04-head-measured-boundaries.pdf) presents the overlapping boundaries
 separately. Figure [03](../figures/03-existing-full-decomposition.pdf) and the
 [decomposition table](DECOMPOSITION.md) retain the complete, consistently colored
-profiles from Runs064/065. Their vocabulary heads have threshold OFF.
+profiles from Run064. Their vocabulary heads have threshold OFF.
 
 Pooled B1 occupancy/instruction counts over the same complete validation workload:
 
@@ -185,23 +188,15 @@ these results cannot isolate the head's local gradient, assign its resistance to
 a specific layer, or claim that only one site caused the difference. Comparison
 of head8 with head16 additionally changes alignment and, at head κ=0.1, body κ.
 
-## Observed global frontier
+## Observed 14M frontier
 
 Sorted by increasing canonical loss; all native/skip-disabled executions were
 eligible. Ties remain nondominated unless another point is strictly better in at
 least one objective. A cheaper training intervention is not inferred from this
 inference-only frontier.
 
-        | Model | Training recipe | Body gate κ or pressure λ | Head κ | Execution | Loss | Full host ms | Session | Global frontier |
+        | Model | Training recipe | Body gate κ or pressure λ | Head κ | Execution | Loss | Full host ms | Session | 14M frontier |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 70M | Base | — | — | PyTorch | 4.099767 | 1.611048 | Run045 | yes |
-| 70M | T2 scalar / Ph | 0 | — | sparse | 4.128669 | 1.246257 | Run065 | yes |
-| 70M | T2 scalar / Ph | 0.1 | — | sparse | 4.182317 | 1.194367 | Run065 | yes |
-| 31M | Base | — | — | PyTorch | 4.565514 | 1.023861 | Run054 | yes |
-| 31M | T2 scalar / Ph | 0 | — | sparse | 4.688476 | 1.006855 | Run065 | yes |
-| 31M | T2 scalar / Ph | 0.05 | — | opt073-31m-v1 | 4.702921 | 0.969383 | Run054 | yes |
-| 31M | T2 scalar / Ph | 0.1 | — | sparse | 4.757208 | 0.890827 | Run065 | yes |
-| 31M | T7 scalar / Ph | 0.1 | — | 31M kernel | 4.942717 | 0.800644 | Run055 | yes |
 | 14M | ReLU h / Ph | λ=0.5 | — | K050 | 5.110235 | 0.616329 | Run029 | yes |
 | 14M | ReLU h / Ph | λ=1 | — | K050 | 5.121030 | 0.599598 | Run029 | yes |
 | 14M | T2 scalar / Ph | 0.05 | — | K050 | 5.134379 | 0.590124 | Run041 | yes |
@@ -215,7 +210,7 @@ inference-only frontier.
 | 14M | T4 scalar / Ph | 0.5 | — | K050 | 5.722666 | 0.462252 | Run029 | yes |
 | 14M | T4 scalar / Pall | 0.5 | — | K050 | 6.037987 | 0.459476 | Run029 | yes |
 
-[All 138 points](ALL-POINTS.md) · [All-execution CSV](all-executions.csv) ·
+[All 87 14M points](ALL-POINTS.md) · [All-execution CSV](all-executions.csv) ·
 [Frontier CSV](global-frontier.csv) · [Head-boundary CSV](head-boundaries.csv) ·
 [Geometry CSV](pressure-geometry.csv) · [Analysis scope and reproduction](../README.md).
 
