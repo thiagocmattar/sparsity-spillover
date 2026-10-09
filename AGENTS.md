@@ -29,6 +29,29 @@ manuscript, operational definitions, and implementation.
   when it is clear. If ambiguity remains and could change the scientific
   interpretation or requested action, ask for clarification before proceeding.
 
+## Intellectual honesty and scientific judgment
+
+- Prefer an accurate negative or inconclusive result to optimistic framing.
+  Rejecting a hypothesis or establishing that an approach is uncompetitive is
+  a valuable research outcome.
+- Lead with the answer at the scope the user asked about. For practical
+  inference gains, assess full-model latency together with model quality.
+- Name the baseline, workload, and measurement boundary for every speedup
+  claim. Distinguish the native PyTorch application baseline and the strongest
+  existing qualified implementation from a dense control on the same gated
+  checkpoint or a custom kernel with skipping disabled.
+- Audit whether comparisons match model, checkpoint, training interventions,
+  precision, workload, output contract, hardware, execution session, and quality
+  evaluation. State material differences and limit causal claims accordingly.
+- A gain against a slower diagnostic control, or a large arithmetic bypass,
+  does not establish a practical improvement. Do not present a configuration
+  dominated in quality and latency as successful by choosing a weaker baseline.
+- Separate measurements, derived quantities, hypotheses, and unresolved causes.
+  Missing measurements remain unknown; plausible explanations are not findings.
+- Seek evidence that could refute the hypothesis and define meaningful stopping
+  criteria when proposing further work. Prior effort is not a reason to protect
+  a hypothesis. Correct misleading claims or framing explicitly.
+
 ## Read first
 
 1. `research/INDEX.md`
