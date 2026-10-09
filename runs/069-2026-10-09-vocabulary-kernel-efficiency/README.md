@@ -98,3 +98,25 @@ See [launch packet](prelaunch/LAUNCH.md), [checks](prelaunch/checks.json), and
 [Run068 results](../068-2026-10-08-pythia14m-aligned-vocabulary-tiles/results/REPORT.md).
 No result-bearing figure is created before final evidence exists. Final PDFs will
 have observation records and an `observations/INDEX.md` in this run.
+
+## Execution closeout: 2026-10-09
+
+The preceding sections and launch packet record the sealed pre-launch state.
+The user subsequently approved launch. Run069 is now executed and locally verified;
+Pod d9ryfnu2zhri2w was terminated after all agreed artifacts were copied and hashed.
+No newly created billable resource remains. The deadline guard is cancelled.
+
+All 160 cloud CUDA checks and all 14,196 full-model mode/block comparisons pass;
+the latter are bitwise exact. Six fresh processes cover all 338 validation blocks.
+The best no-skip projection gap shrinks from about 65% to 27-28% versus native.
+Best sparse full-forward gains are 1.86% and 3.05% against the matched gated native
+control. Existing head quality penalties remain; no practical global frontier win
+is established. Nsight Compute denied counters, leaving hardware-cycle attribution
+unresolved. Provisional compute plus storage is about USD 0.94, not a posted invoice.
+
+See [diagnostic](results/DIAGNOSTIC.md), [all final measurements](results/REPORT.md),
+[observations](observations/INDEX.md), and [cloud closeout](prelaunch/cloud-001/closeout.json).
+The source protocol remains commit 9937f806; this appendix is post-run documentation.
+Its original sealed README is retained at provenance/frozen-README.md and in that
+commit/input archive. Replaying strict source verification requires the sealed
+checkout, rather than this annotated README. Scientific runtime/configs are unchanged.
