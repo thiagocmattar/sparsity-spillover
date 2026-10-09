@@ -1,0 +1,29 @@
+{
+  "question": "Locate and reduce the Run068 vocabulary projection implementation penalty against native PyTorch, with trained operands and output contract unchanged.",
+  "design_approval": "User said Go on after the matched profiling, bounded tuning, and unchanged numerical-qualification proposal on 2026-10-09.",
+  "source_run": "068-2026-10-08-pythia14m-aligned-vocabulary-tiles",
+  "new_training": false,
+  "runtime_seed": 2801,
+  "timing_seed": 2504,
+  "timing_inputs": 64,
+  "timing_passes": 7,
+  "process_replicates": 3,
+  "shortlist_limit": 2,
+  "numerical_bounds": {"logit_atol": 0.25, "logit_rtol": 0.02, "logit_relative_l2": 0.02, "validation_loss_atol": 0.001},
+  "variants": [
+    {"name": "legacy_n128", "family": "legacy", "n": 128, "groups": 1},
+    {"name": "legacy_n256", "family": "legacy", "n": 256, "groups": 1},
+    {"name": "legacy_n512", "family": "legacy", "n": 512, "groups": 1},
+    {"name": "direct_n256", "family": "direct", "n": 256, "groups": 1},
+    {"name": "prefetch_n128", "family": "prefetch", "n": 128, "groups": 1},
+    {"name": "prefetch_n256", "family": "prefetch", "n": 256, "groups": 1},
+    {"name": "reuse2_n128", "family": "reuse", "n": 128, "groups": 2},
+    {"name": "reuse2_n256", "family": "reuse", "n": 256, "groups": 2}
+  ],
+  "validation": {"documents": 500, "blocks": 338, "input_tokens": 692224, "predictions": 691886, "excluded_tail_tokens": 1444},
+  "runtime": {"torch": "2.11.0", "transformers": "5.12.1", "numpy": "2.5.0", "cuda": "12.8"},
+  "profiler_inputs": [0, 16, 32, 48],
+  "monitor_interval_seconds": 60,
+  "maximum_gpu_hours": 4,
+  "maximum_total_usd": 6
+}
