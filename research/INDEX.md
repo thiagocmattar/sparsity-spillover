@@ -7,9 +7,12 @@ Compact current state; full history belongs to numbered runs and analyses.
 
 [Run068](../runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/README.md)
 completed two fresh14M Ph+head trainings: head16x16 kappa.1/.5, h/z8x16 kappa0.
-Native loss is5.560725/5.882600; empty head tiles39.878%/70.763%. All150 artifacts
-are local/hash-verified and the H100 Pod is deleted. The matched5090 endpoint
-benchmark is next; no new speed result exists.
+Native loss is 5.560725/5.882600; empty head tiles 39.878%/70.763%. Aligned B1
+consumer/MMA bypass is 39.881%/70.763%. Sparse head-path latency changes
++4.44%/-15.55%; full forward changes +1.03%/-3.10% versus dense on one RTX5090.
+All six processes match native logits/loss exactly. Training and benchmark
+artifacts are hash-verified locally; both owned Pods are deleted.
+[Table and PDFs](../runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/results/REPORT.md).
 
 [Run067](../runs/067-2026-10-08-pythia14m-sparse-vocabulary-kernel/README.md)
 completed the frozen Run066 sparse vocabulary-head comparison on one RTX 5090.

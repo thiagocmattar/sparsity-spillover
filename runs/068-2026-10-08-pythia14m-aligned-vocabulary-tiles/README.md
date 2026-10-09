@@ -1,10 +1,16 @@
 # Run068 — aligned vocabulary-head tiles
 
-Status: design and separate launch approved on 8 October 2026. The two-H100
-training Pod was created at 22:33:38 UTC for $7.98/hour. Both models completed
-712 fresh updates and passed terminal verification. All150 retained files were
-hash-verified locally; the training Pod was deleted at23:43 UTC. The separate
-RTX5090 endpoint comparison is next. Development timings are not experimental results.
+Status: completed and verified. Both models completed 712 fresh updates; all
+150 retained training files are hash-verified locally and the H100 Pod is deleted.
+The RTX 5090 comparison also completed: all six processes match native logits
+and loss exactly over all 338 validation blocks, and all 83 returned files are
+hash-verified locally. The benchmark Pod was deleted at 00:19:48 UTC on 9 October.
+The head gate/consumer mismatch is removed. At head κ=0.1/0.5, MMA bypass is
+39.881%/70.763%; sparse full forward is 1.03% slower / 3.10% faster than dense.
+The higher threshold raises native validation loss by 0.321875.
+See the [complete result and figures](results/REPORT.md) and
+[operational closeout](CLOSEOUT.md). Quoted-rate total cost is approximately
+$9.93 including storage; posted billing is incomplete.
 See [the launch packet](LAUNCH.md) and [local checks](prelaunch/checks.json).
 Operational identities and the four-hour deadline are retained in
 [the launch approval](prelaunch/launch-approval-001.json) and
@@ -19,8 +25,9 @@ times were3.500626/3.501335 seconds; peak reserved memory was61,467,525,120 of
 and [condition.5](prelaunch/attempts/001/remote-preflight-t2-hz0-head16-ph_head-kappa-0p5.json)
 receipts retain the complete checks. [Native training results](results/TRAINING.md)
 give losses5.560725/5.882600 and empty16×16 head tiles39.878%/70.763% for head
-κ.1/.5. The paired loss increase is.321875. Inference bypass and latency remain
-pending. [Retrieval](prelaunch/retrieval-training-001.json) and
+κ.1/.5. The paired loss increase is .321875. The verified endpoint results and
+numerical checks are in [the consolidated report](results/REPORT.md).
+[Retrieval](prelaunch/retrieval-training-001.json) and
 [teardown](prelaunch/teardown-training-001.json) retain operational evidence.
 
 ## Approved question and conditions
@@ -127,8 +134,9 @@ timing pairs, input indices, all numerical checks, work counts, setup/memory,
 environment/source/cache/checkpoint identities and failed attempts.
 
 `18_report.py` reduces only verified terminal training evidence; the inference
-reducer requires verified local transfer. Final tables/observations/PDFs will
-belong here. Greater useful bypass with a favorable measured loss-latency
+reducer requires verified local transfer. `19_figures.py` and `21_summary.py`
+produce the final [tables](results/REPORT.md), [observations](observations/INDEX.md)
+and PDFs in this folder. Greater useful bypass with a favorable measured loss-latency
 tradeoff supports the question; loss degradation without enough sparsity or
 latency savings argues against it. Increasing kappa is monotonic for fixed
 activations, not necessarily after adaptive training. The custom no-skip
@@ -163,6 +171,8 @@ A combined pytest invocation also exposed historical `run_config` module-name
 collision during collection; bootstrap/focused suites pass in isolated processes.
 Neither issue required changing numerical criteria or scientific inputs.
 
-Production MB32/GAS32 resource fit and ETC will be checked on the approved
-training GPU before fresh initialization and scientific execution. Nothing is
-launched while approval is pending.
+Production MB32/GAS32 preflights passed on the approved two-H100 Pod before
+fresh scientific training. The subsequent benchmark uses one RTX 5090 with
+the two retained step-712 checkpoints. No scientific input or numerical bound
+changed during infrastructure transport retries; those attempts are recorded
+under `inference/prelaunch/attempts/` and in [the closeout](CLOSEOUT.md).

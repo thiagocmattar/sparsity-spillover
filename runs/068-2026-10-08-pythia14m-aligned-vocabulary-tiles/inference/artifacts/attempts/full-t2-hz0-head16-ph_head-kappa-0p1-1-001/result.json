@@ -1,0 +1,380 @@
+{
+  "arguments": {
+    "attempt": "full-t2-hz0-head16-ph_head-kappa-0p1-1-001",
+    "development": false,
+    "model": "t2-hz0-head16-ph_head-kappa-0p1",
+    "replicate": 1,
+    "smoke": false
+  },
+  "config": {
+    "bytes": 1245,
+    "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/config.json",
+    "sha256": "de7d21697c5572cf5d43e495b2b54c4a23e4fc0381254971a8922a2219f0122a"
+  },
+  "coverage": {
+    "blocks": 338,
+    "documents": 500,
+    "excluded_tail_tokens": 1444,
+    "input_tokens": 692224,
+    "predictions": 691886
+  },
+  "elapsed_seconds": 48.488916264032014,
+  "evidence_label": "valid",
+  "implementation": {
+    "custom_no_skip": {
+      "additional_mma_weight_bytes": 12877824,
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "fp16_weight_bytes": 12877824,
+      "gate": {
+        "kappa": 0.1,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 16
+      },
+      "gate_materialized": true,
+      "mode": "custom_no_skip",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast",
+      "weight_preparation_seconds": 0.0008649289957247674
+    },
+    "custom_sparse": {
+      "additional_mma_weight_bytes": 12877824,
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "fp16_weight_bytes": 12877824,
+      "gate": {
+        "kappa": 0.1,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 16
+      },
+      "gate_materialized": true,
+      "mode": "custom_sparse",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast",
+      "weight_preparation_seconds": 0.0006699369987472892
+    },
+    "dense": {
+      "additional_mma_weight_bytes": 0,
+      "certificate": "native post-gate FP32 corner > native FP32 threshold before cast",
+      "consumer_tile": [
+        16,
+        256,
+        16
+      ],
+      "fp16_weight_bytes": 12877824,
+      "gate": {
+        "kappa": 0.1,
+        "operator": "tile_corner_threshold",
+        "tile_features": 16,
+        "tile_tokens": 16
+      },
+      "gate_materialized": true,
+      "mode": "dense",
+      "parameters": "unchanged FP32",
+      "projection": "FP16 inputs and weights, FP32 accumulation, FP16 logits",
+      "static_weight_preparation": "identical FP16 cast for dense and custom, outside timing; qualified vs unmodified eager autocast",
+      "weight_preparation_seconds": 0.016808343003503978
+    }
+  },
+  "loss": {
+    "custom_no_skip": 5.56068977883288,
+    "custom_sparse": 5.56068977883288,
+    "dense": 5.56068977883288,
+    "native": 5.56068977883288
+  },
+  "peak_allocated_bytes": 1710830080,
+  "peak_reserved_bytes": 2325741568,
+  "qualified": true,
+  "runtime": {
+    "cuda": "12.8",
+    "fp16_reduced_precision_reduction": false,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "gpu_properties": "_CudaDeviceProperties(name='NVIDIA GeForce RTX 5090', major=12, minor=0, total_memory=32120MB, multi_processor_count=170, uuid=b596bab9-9965-95f9-434d-4d5496057625, pci_bus_id=14, pci_device_id=0, pci_domain_id=0, L2_cache_size=96MB)",
+    "gpu_uuid": "b596bab9-9965-95f9-434d-4d5496057625",
+    "numpy": "2.5.0",
+    "python": "3.12.3",
+    "tf32": false,
+    "torch": "2.11.0+cu128",
+    "transformers": "5.12.1"
+  },
+  "setup_seconds": {
+    "custom_no_skip": 0.03637434495612979,
+    "custom_sparse": 0.030431460996624082,
+    "dense": 0.4601471810019575
+  },
+  "source": {
+    "block_kappa": 0.0,
+    "checkpoint": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/checkpoints/step_000712",
+    "development_model": false,
+    "files": [
+      {
+        "bytes": 2127,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/checkpoints/step_000712/config.json",
+        "sha256": "d5f2de5b03d578947707b4c4ccd3efb3984acd96d1e7548d4cd4695fb73a74d7"
+      },
+      {
+        "bytes": 195,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/checkpoints/step_000712/generation_config.json",
+        "sha256": "ba94d7eb4a38969fc8c3813fefe9b32eb5c1980e7db6f1eaa5da7c04de6c144e"
+      },
+      {
+        "bytes": 56279344,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/checkpoints/step_000712/model.safetensors",
+        "sha256": "6cdca69d0402d58d4f89b6c4a06e7c19e8b8538d2cdf27f719651fdfb3bbde2f"
+      },
+      {
+        "bytes": 308,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/checkpoints/step_000712/checkpoint_metadata.json",
+        "sha256": "1f15393c77d2a3c28e6ca0012f077f306ffdc77454632282b306e42baadefec9"
+      }
+    ],
+    "id": "t2-hz0-head16-ph_head-kappa-0p1",
+    "kappa": 0.1,
+    "pressure_sites": [
+      "h",
+      "head_in"
+    ],
+    "production_loss": 5.560724963803263,
+    "provenance": [
+      {
+        "bytes": 16065,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/manifest.json",
+        "sha256": "89901193eb687d9862b31efa094f9469339b6926b4b9cacdf45c883fec4bacd5"
+      },
+      {
+        "bytes": 34250,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/metrics.json",
+        "sha256": "f5c278c0bc125937e4c759f9cbea398f7689df663a02bda7a2e341170f23eba1"
+      },
+      {
+        "bytes": 6223,
+        "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/artifacts/attempts/001-20261008-225509-57136b74/config.yaml",
+        "sha256": "26c0b29f200a9b28f86b0e0c1bab9d2f09ae63b2f3c7d21c25cff84651d59683"
+      }
+    ]
+  },
+  "source_checkout": {
+    "git_commit": "35a4c2b7d470191f52e439df961ab77c9b5daec2",
+    "runtime_inventory": {
+      "bytes": 16384,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/provenance/trained-upload-inventory.json",
+      "sha256": "d2cc7d6ee85fd4cdcfafa1d765e049b82a00b188b5370a8f6a2f8daf1b09afd1"
+    },
+    "scope": "minimal checkout; runtime bytes verified against the sealed inventory; unrelated local untracked files excluded"
+  },
+  "source_files": [
+    {
+      "bytes": 5865,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/head.py",
+      "sha256": "40fac742b12473d4991c70f77ee2e94663fa505ada0638b422f7de23cb63501a"
+    },
+    {
+      "bytes": 6821,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/head.cu",
+      "sha256": "6c4bacbfa36e5f1700124149a078657f320474eb1530ce2ca61c0194e45f9f9d"
+    },
+    {
+      "bytes": 1085,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/forward.py",
+      "sha256": "ac2203877b988747f6f696b9147f02752b2e27650eceffd8476e443c7c8af1e1"
+    },
+    {
+      "bytes": 3965,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/measurement.py",
+      "sha256": "5dc0d9ffc052e71d524d04912475c3b09ab0d60abf4f4b02ef401d7c34fa83b7"
+    },
+    {
+      "bytes": 1421,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/diagnostics.py",
+      "sha256": "665fd72bedfa602dd04ebf8ad0b9080d73b108111d3464dcda9063dca2846ee6"
+    },
+    {
+      "bytes": 13089,
+      "path": "runs/068-2026-10-08-pythia14m-aligned-vocabulary-tiles/inference/02_benchmark.py",
+      "sha256": "582369add088fb4f076a5a8ed8ad869ac1f54f7d81bda6ef2d7dcd5fffeb8713"
+    }
+  ],
+  "status": "complete",
+  "timings": {
+    "full_forward": {
+      "boundary": "full-forward",
+      "summary": {
+        "custom_no_skip": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 1.1397247646566793,
+            "mean": 1.139727144102965,
+            "median": 1.1395040154457092,
+            "p05": 1.136875170469284,
+            "p95": 1.1429120302200317
+          },
+          "host_ms": {
+            "geomean": 1.1487830259328775,
+            "mean": 1.1489542745535712,
+            "median": 1.1469775,
+            "p05": 1.143936,
+            "p95": 1.154335
+          }
+        },
+        "custom_sparse": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 1.0241055490391202,
+            "mean": 1.0241782129076975,
+            "median": 1.0237919688224792,
+            "p05": 1.0028415679931642,
+            "p95": 1.0440959930419922
+          },
+          "host_ms": {
+            "geomean": 1.032509942913621,
+            "mean": 1.0325915892857143,
+            "median": 1.031476,
+            "p05": 1.0099765,
+            "p95": 1.05476
+          }
+        },
+        "dense": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 1.0141563606089083,
+            "mean": 1.0141587150948388,
+            "median": 1.0138239860534668,
+            "p05": 1.0117119550704956,
+            "p95": 1.0162559747695923
+          },
+          "host_ms": {
+            "geomean": 1.0222583140428914,
+            "mean": 1.022263203125,
+            "median": 1.0216664999999998,
+            "p05": 1.0193948499999999,
+            "p95": 1.02819535
+          }
+        }
+      }
+    },
+    "gate_cast_projection": {
+      "boundary": "gate-cast-projection",
+      "summary": {
+        "custom_no_skip": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.331599761019723,
+            "mean": 0.33161428584051983,
+            "median": 0.3311839997768402,
+            "p05": 0.3282560110092163,
+            "p95": 0.3351087912917137
+          },
+          "host_ms": {
+            "geomean": 0.3391670123165658,
+            "mean": 0.3391828482142857,
+            "median": 0.33870849999999997,
+            "p05": 0.33610335,
+            "p95": 0.34407
+          }
+        },
+        "custom_sparse": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.21346229857506824,
+            "mean": 0.21383328586151557,
+            "median": 0.2128640040755272,
+            "p05": 0.19160160347819327,
+            "p95": 0.23357760533690453
+          },
+          "host_ms": {
+            "geomean": 0.22336525304619168,
+            "mean": 0.22373910267857142,
+            "median": 0.222793,
+            "p05": 0.2019755,
+            "p95": 0.24532464999999998
+          }
+        },
+        "dense": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.20482625517872308,
+            "mean": 0.2048456429370812,
+            "median": 0.2040960043668747,
+            "p05": 0.20237920358777045,
+            "p95": 0.20887359604239464
+          },
+          "host_ms": {
+            "geomean": 0.21399172942654776,
+            "mean": 0.21412327901785716,
+            "median": 0.213092,
+            "p05": 0.211342,
+            "p95": 0.21882849999999998
+          }
+        }
+      }
+    },
+    "projection_only": {
+      "boundary": "projection-only",
+      "summary": {
+        "custom_no_skip": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.3096702354284759,
+            "mean": 0.3096798569895327,
+            "median": 0.3093920052051544,
+            "p05": 0.3068479895591736,
+            "p95": 0.3131824031472206
+          },
+          "host_ms": {
+            "geomean": 0.31891852398412973,
+            "mean": 0.31893991517857145,
+            "median": 0.318543,
+            "p05": 0.315854,
+            "p95": 0.3224155
+          }
+        },
+        "custom_sparse": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.18989900277923344,
+            "mean": 0.1903117855212518,
+            "median": 0.1894560009241104,
+            "p05": 0.16954399943351744,
+            "p95": 0.2122399993240833
+          },
+          "host_ms": {
+            "geomean": 0.2042821275172019,
+            "mean": 0.20489967857142857,
+            "median": 0.203272,
+            "p05": 0.18268500000000001,
+            "p95": 0.22552065000000002
+          }
+        },
+        "dense": {
+          "count": 448,
+          "cuda_ms": {
+            "geomean": 0.18352689329412955,
+            "mean": 0.1835508570075035,
+            "median": 0.18291200697422028,
+            "p05": 0.18090720176696778,
+            "p95": 0.18735839873552323
+          },
+          "host_ms": {
+            "geomean": 0.19669962668553298,
+            "mean": 0.19691547991071426,
+            "median": 0.195883,
+            "p05": 0.19339015,
+            "p95": 0.2005715
+          }
+        }
+      }
+    }
+  }
+}
